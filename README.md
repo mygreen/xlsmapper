@@ -1,0 +1,4 @@
+xlsmapper
+=========
+
+ExcelのシートをJavaBean（POJO）にマッピングするライブラリ。
