@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- XlsMapper Schema -->
+<grammar 
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:xsp="http://apache.org/xsp/core/v1"
+  xmlns:s="http://www.ascc.net/xml/schematron"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+  xmlns:f="http://axkit.org/NS/xsp/perform/v1"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+	<define name="AnnotationsInfo">
+		<element name="annotations">
+			<zeroOrMore>
+				<ref name="ClassInfo"/>
+			</zeroOrMore>
+		</element>
+	</define>
+	
+	<define name="ClassInfo">
+		<element name="class">
+			<attribute name="name"><text/></attribute>
+			<zeroOrMore>
+				<ref name="AnnotationInfo"/>
+			</zeroOrMore>
+			<zeroOrMore>
+				<ref name="MethodInfo"/>
+			</zeroOrMore>
+			<zeroOrMore>
+				<ref name="FieldInfo"/>
+			</zeroOrMore>
+		</element>
+	</define>
+	
+	<define name="AnnotationInfo">
+		<element name="annotation">
+			<attribute name="name"><text/></attribute>
+			<zeroOrMore>
+				<ref name="AttributeInfo"/>
+			</zeroOrMore>
+		</element>
+	</define>
+	
+	<define name="AttributeInfo">
+		<element name="attribute">
+			<attribute name="name"><text/></attribute>
+		</element>
+	</define>
+	
+	<define name="MethodInfo">
+		<element name="method">
+			<attribute name="name"><text/></attribute>
+			<zeroOrMore>
+				<ref name="AnnotationInfo"/>
+			</zeroOrMore>
+		</element>
+	</define>
+	
+	<define name="FieldInfo">
+		<element name="field">
+			<attribute name="name"><text/></attribute>
+			<zeroOrMore>
+				<ref name="AnnotationInfo"/>
+			</zeroOrMore>
+		</element>
+	</define>
+
+</grammar>

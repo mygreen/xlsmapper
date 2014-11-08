@@ -1,0 +1,27 @@
+package org.mygreen.xlsmapper;
+
+import java.lang.annotation.Annotation;
+
+
+/**
+ * 使い方やパラメータが間違っているアノテーション付与された場合にスローする例外。
+ *
+ * @author T.TSUCHIE
+ *
+ */
+public class AnnotationInvalidException extends XlsMapperException {
+
+    /** serialVersionUID */
+    private static final long serialVersionUID = 1L;
+    
+    private final Annotation anno;
+    
+    public AnnotationInvalidException(final String message, final Annotation anno) {
+        super(message);
+        this.anno = anno;
+    }
+    
+    public Annotation getAnno() {
+        return anno;
+    }
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- XlsMapper Schema -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.1">
+  <xs:annotation>
+    <xs:appinfo>
+      <jxb:globalBindings>
+        <jxb:serializable uid="1"/>
+      </jxb:globalBindings>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="annotations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="class"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="class">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="annotation"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="method"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="field"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="annotation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="attribute"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="attribute">
+    <xs:complexType>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="method">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="annotation"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="annotation"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

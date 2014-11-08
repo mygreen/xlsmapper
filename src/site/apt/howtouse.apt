@@ -1,0 +1,1068 @@
+            ------
+            基本的な使い方
+            ------
+            Tatsuo TSUCHIE
+            ------
+            2014-10-30
+
+XlsMapperの基本的な使い方
+
+%{toc|section=1|fromDepth=1|toDepth=3}
+
+* {読み込み方}
+
+ XlsMapperはアノテーションを付与してJavaBeansとExcelをマッピングするライブラリです。
+ アノテーションを付与したJavaBeanを作成したうえで以下のようにして読み込みを行います。
+
+--------
+SheetObject sheet = new XlsMapper().load(
+    new FileInputStream("example.xls"), // 読み込むExcelファイル
+    SheetObject.class                   // アノテーションを付与したクラス。
+    );                 
+--------
+
+~~ なお、@XlsCell, @XlsLabelledCell, @XlsColumnアノテーションでマッピングするプロパティに関しては、
+~~ 現時点ではString型、プリミティブ型、プリミティブ型のラッパー型のいずれかである必要があります。
+~~ より具体的な使用例はXlsMapperのディストリビューションに同梱されているテストケースのソースコードをご覧ください。
+
+ XlsMapperは、Apache POIを使用してExcelのシートの読み込みと書き込みを行います。
+  拡張子がxlsのExcel2003形式、xlsxのExcel2007形式と特に区別なく読み込むことができます。
+
+  Apache POIは、ver.3.5以上に対応しています。
+
+* {書き込み方}
+
+  書き込む際には、読み込むときに使用したアノテーションを付与したJavaBeansのクラスのインスタンスを渡します。
+  また、雛形となるテンプレートのシートを記述しているExcelファイルを引数に渡します。
+
+--------
+SheetObject sheet = //... POJOのインスタンス。
+new XlsMapper().load(
+    new FileInputStream("template.xls"), // テンプレートのExcelファイル
+    new FileOutputStream("example.xls"), // 書き込むExcelファイル
+    sheet                                // JavaBeansのインスタンス
+    );
+--------
+
+ 書き込むExcelファイルの形式は、テンプレートとなるExcelファイルと同じ形式になります。
+ そのため、テンプレートファイルのExcelファイルがxls(Excel2003形式)で、
+ 書き込むExcelファイルの拡張子をxlsx(2007形式)を指定しても、xls(Excel2003形式)となります。
+
+
+* {アノテーション（シートのマッピング用）}
+
+ XlsMapperでは以下のアノテーションが利用可能です。
+
+ [Note] XlsMapper 1.1.0以降ではアクセサメソッドの代わりにpublicフィールドにアノテーションを付与することもできます。
+        以下のリファレンスでsetterメソッドに付与することが可能なアノテーションはpublicフィールドにも付与することができます。
+
+** {@XlsSheet}
+
+ 読み込むシートをシート番号、シート名、シート名に対する正規表現のいずれかで指定します。クラスに付与します。
+
+--------
+/** シート番号で指定する場合 */
+@XlsSheet(number=0)
+public class SheetObject {
+  ...
+}
+--------
+
+--------
+/** シート名で指定する場合 */
+@XlsSheet(name="Users")
+public class SheetObject {
+  ...
+}
+--------
+
+--------
+/** 正規表現で指定する場合 */
+@XlsSheet(regex="Sheet_[0-9]+")
+public class SheetObject {
+  ...
+}
+--------
+
+ 正規表現で指定する場合はXlsMapper#loadMultiple()メソッドを用いることでマッチしたシートの情報を一度に取得することができます。
+
+** {@XlsCell}
+
+ セルの列、行を指定してBeanのプロパティにマッピングします。
+ フィールドまたはメソッドに対して付与します。
+
+ * 属性column、rowで座標を指定します。
+   
+   * columnは列番号で、0から始まります。
+   
+   * rowは行番号で、0から始まります。
+    
+ * 属性addressで、 'A1'のようにシートのアドレス形式で指定もできます。
+   
+   * 属性addressを指定する場合は、column, rowは指定しないでください。
+   
+   * 属性addressの両方を指定した場合、addressの値が優先されます。
+ 
+ []
+
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  
+  // インデックス形式で指定する場合
+  @XlsCell(column=0, row=0)
+  private String title;
+  
+  // アドレス形式で指定する場合
+  @XlsCell(address="B3")
+  private String name;
+  
+}
+--------
+
+** {@XlsLabelledCell}
+
+ セルの文字列を指定し、その左右もしくは下側のセルの値をマッピングします。
+ フィールドまたはメソッドに対して付与します。
+ 
+ * 属性labelで、見出しとなるセルの値を指定します。
+ 
+ * 属性typeで、見出しセルから見て値が設定されている位置を指定します。
+ 
+   * 列挙型LabelledCellTypeで、左右もしくは下側のセルを指定できます。
+ 
+ * 属性optionalで、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。
+ 
+ []
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+
+  @XlsLabelledCell(label="Title", type=LabelledCellType.Right)
+  private String title;
+}
+--------
+
+ range属性を指定すると、type属性の方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルの値を取得します。
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  @XlsLabelledCell(label="Title", type=LabelledCellType.Right, range=3)
+  private String title;
+  
+}
+--------
+
+ 同じラベルのセルが複数ある場合は、領域の見出しをheaderLabel属性で指定します。
+ headerLabel属性で指定されたセルからlabel属性で指定されたセルを下方向に検索し、最初に見つかったセルをラベルセルとして使用します。
+
+[images/LabelledCell_headerLabel.png] LabelledCell
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+
+  @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, headerLabel="アクション")
+  private String actionClassName;
+  
+  @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, headerLabel="アクションフォーム")
+  private String formClassName;
+  
+}
+--------
+
+ skip属性を指定することで、ラベルセルから指定したセル数分離れたセルの値をマッピングすることができます。
+
+--------
+// クラス名というセルから右側に2つ離れたセルの値をマッピング
+@XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, skip=2)
+public void setActionClassName(String actionClassName){
+  ...
+}
+--------
+
+ セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。
+
+** {@XlsSheetName}
+
+ シート名をString型のプロパティにマッピングします。
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  
+  @XlsSheetName
+  private String sheetName;
+}
+--------
+
+ [Note] 書き込み時で、シート名を正規表現で指定している場合は、@XlsSheetNameを付与しているフィールドで書き込むシートを決定します。
+        そのため書き込む前に、シート名を指定する必要があります。
+
+** {@XlsHorizontalRecords}
+
+ 水平方向に連続する行をListまたは配列にマッピングします。表には最上部にテーブルの名称と列名を記述した行が必要になります。
+
+[images/HorizontalRecord.png] HorizontalRecords
+
+ tableLabel属性でテーブルの名称を指定します。List型または配列のフィールドに付与します。
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  @XlsHorizontalRecords(tableLabel="ユーザ一覧")
+  private List<Record> records;
+}
+--------
+
+ デフォルトでは行に1つもデータが存在しない場合、そのテーブルの終端となります。
+ 行の一番左側の列のボーダーによってテーブルの終端を検出する方法もあります。
+ この場合は@XlsHorizontalRecordsのterminal属性にRecordTerminal.Borderを指定してください。
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  @XlsHorizontalRecords(tableLabel="Horizontal Records", terminal=RecordTerminal.Border)
+  private List<Record> records;
+}
+--------
+
+ テーブルが他のテーブルと連続しておりterminal属性でBorder、Emptyのいずれを指定しても終端を検出できない場合があります。
+ このような場合はterminateLabel属性で終端を示すセルの文字列を指定します。
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminateLabel="Terminate")
+  private List<Record> records;
+}
+--------
+
+ headerLimit属性を指定すると、テーブルのカラムが指定数見つかったタイミングでExcelシートの走査を終了します。
+ 主に無駄な走査を抑制したい場合にしますが、@XlsIterateTables使用時に、テーブルが隣接しており終端を検出できない場合などに
+ カラム数を明示的に指定してテーブルの区切りを指定する場合にも使用できます。
+
+ たとえば以下の例は、カラムのヘッダを4つ分検出したところでそのテーブルの終端と見なします。
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border, headerLimit=4)
+  private List<Record> records;
+}
+--------
+
+ なお、セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。
+
+
+ テーブルの名称用のセルが存在しない場合、属性headerColumn, headerRowで表の開始位置（左上部の端）の座標を指定できます。
+ また、座標はheaderAddressで'A1'のようにシートのアドレス形式で指定可能です。
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  @XlsHorizontalRecords(headerColumn=0, headerRow=1, terminal=RecordTerminal.Border)
+  private List<Record> records;
+  
+  @XlsHorizontalRecords(headerAddress="B13", terminal=RecordTerminal.Border)
+  private List<Record> sample;
+
+}
+--------
+ 
+ overRecord、redaminedRecord属性で、書き込み時のレコードの操作を指定することができます。
+ 
+ * overRecored属性で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
+   
+   * Insertを指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。
+   
+   * Copyを指定すると上部のセルを下部にコピーして値を設定します。
+   
+   * Breakを指定すると、レコードの書き込みをその時点で止めます。
+   
+ * redaminedRecord属性で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
+ 
+   * Clearでセルの値をクリアします。
+   
+   * Deleteで行を削除します。
+   
+   * Noneは何もしません。
+ 
+ []
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  @XlsHorizontalRecords(tableLabel="ユーザ一覧", overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Clear)
+  private List<Record> records;
+}
+--------
+
+** {@XlsVerticalRecords}
+
+ 垂直方向に連続する列をListまたは配列にマッピングします。要するに@XlsHorizontalRecordsを縦方向にしたものです。
+ @XlsHorizontalRecordsと同じくList型の引数を1つだけ取るsetterメソッドに対して付与します。
+
+--------
+@XlsSheet(name="Users")
+public class SheetObject {
+  @XlsVerticalRecords(tableLabel="Vertical Records")
+  private List<Record> records;
+}
+--------
+
+ * @XlsHorizontalRecordsと同じくterminal属性、およびoptional属性を指定することもできます。
+ 
+ * overRecord、redaminedRecord属性で、書き込み時のレコードの操作を指定することができます。
+ 
+   * @XlsHorizontalRecordsでは、overRecord=OverRecordOperate.Insertはサポートしていません。
+   
+   * @XlsHorizontalRecordsでは、remainedRecord=RemainedRecordOperate.Deleteはサポートしていません。
+
+** {@XlsColumn}
+
+ @XlsHorizontalRecordsまたは@XlsVerticalRecordsで指定されたクラスのプロパティをカラム名にマッピングします。
+ フィールドやメソッドに対して付与します。
+
+--------
+public class Record {
+  @XlsColumn(columnName="ID")
+  private String id;
+}
+--------
+
+ 同じ値がグループごとに結合されているカラムの場合はmerged属性をtrueに設定します。
+ こうしておくと、前の列の値が引き継がれて設定されます。
+
+--------
+public class Record {
+  @XlsColumn(columnName="Gender", merged=true)
+  private String id;
+}
+--------
+
+ [Note] 書き込みにおいては、merged属性の値がtrueであっても、上部または左側のセルと値が同じでも結合は基本的に行いません。
+       ただし、システム設定XlsMapperConfigの項目「mergeCellOnSave」の値をtrueにすると結合されます。
+ 
+
+ 見出し行が結合され、1つの見出しに対して複数の列が存在する場合はheaderMergedプロパティを使用します。
+ headerMergedの値には列見出しから何セル分離れているかを指定します。
+
+[images/Column_headerMerged.png] Column
+
+--------
+public class User {
+  @XlsColumn(columnName="連絡先")
+  private String mailAddress;
+  
+  @XlsColumn(columnName="連絡先", headerMerged=1)
+  private String mailAddress;
+  
+}
+--------
+
+** {@XlsMapColumns}
+
+ @XlsHorozintalRecordもしくは@XlsVerticalRecordでカラム数が可変の場合に、
+ それらのカラムをMapとして設定します。BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。
+
+[images/MapColumns.png] MapColumns
+
+--------
+public class User {
+    @XlsMapColumns(previousColumnName="名前")
+    private Map<String, String> attributes;
+}
+--------
+
+ previousColumnName属性で指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。
+ 
+ @XlsConverterなどで型変換を適用するときは、マップの値が変換対象となります。
+ マップのキーは必ずString型を指定してください。
+
+
+** {@XlsIterateTables}
+
+ 同一の構造の表がシート内で繰り返し出現する場合に使用します。
+ tableLabelプロパティで繰り返し部分の見出しラベルを指定します。
+ また、bottomプロパティは@XlsIterateTables内で@XlsHorizontalRecordを使用する場合に、
+ テーブルの開始位置が@XlsIterateTablesの見出しセルからどれだけ離れているかを指定します。
+
+[images/IterateTables.png] IterateTables
+
+--------
+@XlsSheet(name="シート名")
+public class SheetObject {
+  @XlsIterateTables(tableLabel="部門情報", bottom=2)
+  private List<Unit> units;
+}
+--------
+
+ 繰り返し部分に対応するJavaBeanでは以下のように@XlsLabelledCellや@XlsHorizontalRecordなどのアノテーションを使用することができます。
+ @XlsHorizontalRecordを使用する場合、tableLabelプロパティには@XlsIterateTablesのtableLabelプロパティで指定したラベルと同じラベルを
+ 指定する必要がある点に注意してください。
+
+--------
+public class Unit {
+  @XlsLabelledCell(label="部門名", type=LabelledCellType.Right)
+  private List<Unit> units;
+  
+  @XlsHorizontalRecords(tableLabel="部門情報")
+  private List<UnitUser> unitUsers;
+}
+--------
+
+ 繰り返し部分に対応するJavaBeanで@XlsHorizontalRecordを使用した場合、通常の場合と同じく@XlsColumnで列とのマッピングを行います。
+
+--------
+public class UnitUser {
+  @XlsColumn(columnName="ID")
+  private String id;
+  
+  @XlsColumn(columnName="名前")
+  private String name;
+}
+--------
+
+** {@XlsHint}
+
+ 書き込み時に、@XlsHoriontalRecordsを使用して行の挿入や削除を行う設定を行っている場合、
+ フィールドの処理順序によって、Map<String, Point> positionsフィールドで座標がずれる場合があります。
+ 
+ このようなときに、@XlsHintで書き込む処理順序を指定し一定に保つことができます。
+ 
+ @XlsHintを付与しないフィールドは、付与しているフィールドよりも後から処理が実行されます。
+ order属性が同じ値を設定されているときは、 フィールド名の昇順で優先度を決めて処理されます。
+
+[images/Hint.png] Hint
+
+--------
+public class UnitUser {
+  @XlsHorizontalRecords(tableLabel="ユーザ一覧")
+  @XlsHint(order=2)
+  private List<User> users;
+  
+  @XlsLabelledCell(label="更新日", type=LabelledCellType.Right)
+  @XlsHint(order=1)
+  private String updateTime;
+}
+--------
+
+
+* {アノテーション（型変換用）}
+
+ 数値や日時、列挙型にマッピングする際の変換規則の設定を行います。
+ 
+ 型変換用のアノテーションを付与しない場合は、アノテーションの初期値の設定を元に変換されます。
+
+** {@XlsConverter}
+
+ 値がnullや空のときの初期値の定義やトリム処理の設定を定義します。
+ 
+ * 属性defaultValueで読み込み時/書き込み時のデフォルト値を指定します。
+   
+   * デフォルト値を指定しないでプリミティブ型に対して読み込む場合、数値型の場合は0や0.0、booleanの場合はfalseが設定されます。
+     プリミティブのラッパークラスやオブジェクト型の場合は、nullが設定されます。
+     
+ * 属性trimの値をtruにすると、読み込み時と書き込み時にトリムを行います。
+   
+   * シート上のセルのタイプ（分類）が数値などの文字列以外の場合は、トリム処理は行われません。
+     ただし、シートのセルタイプが文字列型で、Javaの型がString型以外の数値型やDate型などの場合は、変換する前にトリム処理を行います。
+ 
+ []
+ 
+--------
+public class UnitUser {
+  
+  // 読み込み時や書き込み時の初期値、トリム処理の有効を設定できます。
+  @XlsConverter(defaultValue="10", trim=true)
+  private int age;
+
+}
+--------
+
+ \
+ 書き込み時にセルの折り返し設定や縮小表示設定を強制的に行うこともできます。
+ 
+ 書き込み時はテンプレートとなるシートのセルの書式を基本的に使用するので、事前に折り返し設定が有効になって入れば書き込み時もそれらの設定が有効になります。
+ 
+ * 属性forceWrapTextの値がtrueの場合、強制的にセルの内の文字表示の設定「折り返して全体を表示する」が有効になります。
+   
+   * falseの場合、テンプレートとなるセルの設定を引き継ぎます。
+   
+ * 属性forceShrinkToFitの値がtrueの場合、強制的にセル内の文字表示の設定「縮小して全体を表示する」が有効になります。
+ 
+   * falseの場合、テンプレートとなるセルの設定を引き継ぎます。
+ 
+ []
+ 
+--------
+public class UnitUser {
+  
+  // 書き込み時のセルの文字表示の折り返し設定などが指定できます。
+  @XlsConverter(forceWrapText=false, forceShrinkToFit=true)
+  private int age;
+
+}
+--------
+
+ \
+ [Note]Excelの仕様上、設定「折り返して全体を表示する」と「縮小して全体を表示する」は、二者択一であるため、両方の設定を有効にすることはできません。
+      もし、属性forceWrapTextとforceShrinkToFitの値をtrueに設定した場合、forceShrinkToFitの設定が優先され、「縮小して全体を表示する」が有効になります。
+
+
+** {@XlsBooleanConverer}
+
+ boolean、Boolean型の変換規則の設定を行います。
+ 
+ 単純に、「true、false」以外に、「○、×」とのマッピングも可能となります。
+ 
+ * 属性loadForTrue、loadForFalseで読み込み時のtrueまたはfalseと判断するの候補の値を指定します。
+   
+   * 属性loadForTrueとloadForFalseの値に重複がある場合、loadForTrueの定義が優先されまます。
+   
+   * 属性laodForTrueを指定しない場合、デフォルトで「"true", "1", "yes", "on", "y", "t"」が設定されます。
+   
+   * 属性loadForFalseを指定しない場合、デフォルトで「"false", "0", "no", "off", "f", "n"」が設定されます。
+   
+ 
+ * 属性saveAsTrueとsaveAsFalseで書き込み時のtrueまたはfalse値に該当する文字を指定します。
+ 
+   * 属性saveAsTrueを指定しない場合は、デフォルトで"true"が設定され、セルのタイプもBoolean型になります。
+   
+   * 属性saveAsFalseを指定しない場合は、デフォルトで"false"が設定され、セルのタイプもBoolean型になります。
+   
+   * 読み込みと書き込みの両方を行うプログラムの場合、loadForTrueとloadForFalseの値にsaveAsTrueとsaveAsFalseの値を含める必要があります。
+ 
+ * 属性ignoreCaseの値をtrueにすると、読み込み時に大文字、小文字の区別なく候補の値と比較します。
+ 
+ []
+ 
+--------
+public class UnitUser {
+  
+  // boolean型の読み込み時と書き込み時のtrueとfalseの値の変換規則を指定します。
+  @XlsBooleanConverer(
+    loadForTrue={"○", "有効", "レ"}, loadForFalse={"×", "無効", "-", ""},
+    saveAsTrue="○", saveAsFalse="-",
+    ignoreCase=true
+  )
+  private boolean availale;
+
+}
+--------
+
+ \
+ 読み込み時にtrueまたはfalseに変換できない場合、例外TypeBindExceptionが発生します。
+ 
+ * 属性failToFalseをtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、例外を発生しなくできます。
+ 
+ []
+ 
+--------
+public class UnitUser {
+  
+  // 読み込み時に変換できない場合に、強制的に値をfalseとして読み込みます。
+  @XlsBooleanConverer(failToFalse=true)
+  private boolean availale;
+
+}
+--------
+
+** {@XlsNumberConverer}
+
+ 数値型（short、int、long、float、double、プリミティブのラッパークラス、BigDecimal、BigInteger）の書式などの設定を行います。
+ 
+ * 属性patternで書式を指定します。
+   
+   * Javaのクラスjava.text.DecimalFormatで解釈可能な書式を設定します。
+ 
+ * 属性localeでロケールを指定します。
+   
+   * 言語コードのみを指定する場合、'ja'の2桁で指定します。
+   
+   * 言語コードと国コードを指定する場合、'ja _JP'のようにアンダーバーで区切り指定します。
+   
+ * 属性currentcyで通貨コード（ISO-4217コード）を指定します。
+ 
+   * Javaのクラスjava.util.Currencyで解釈可能なコードを指定します。
+ 
+ []
+ 
+--------
+public class UnitUser {
+  
+  @XlsNumberConverer(pattern="#,##0.0000", locale="ja_JP", currentcy="USD")
+  private double salary;
+
+}
+---------
+
+** {@XlsDateConverer}
+
+ 日付型（java.util.Date、java.sql.Date, java.sql.Timestamp, java.sql.Time）の書式などの設定を行います。
+
+ * 属性patternで書式を指定します。
+   * Javaのクラスjava.util.SimpleDateFormatで解釈可能な書式を指定します。
+   
+ * 属性localeでロケールを指定します。
+   
+   * 言語コードのみを指定する場合、'ja'の2桁で指定します。
+   
+   * 言語コードと国コードを指定する場合、'ja _JP'のようにアンダーバーで区切り指定します。
+ 
+ * 属性lenientで、日付/時刻の解析を厳密に行わないか指定します。
+ 
+   * trueの厳密に解析を行いません。falseの場合厳密に解析を行います。
+   
+   * 読み込み時に書式に合わないセルの値を読み込んだ場合、例外TypeBindExceptionが発生します。
+   
+ []
+ 
+--------
+public class UnitUser {
+  
+  @XlsDateConverer(pattern="yyyy年MM月dd日 HH時mm分ss秒", locale="ja_JP", lenient=true)
+  private Date expired;
+
+}
+---------
+ 
+ [Note] 読み込み時のセルの値が属性patternで指定した書式に一致していなくても、
+        セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
+ 
+
+** {@XlsEnumConverer}
+
+ 列挙型の変換規則の設定を行います。
+ 
+ * 属性ignoreCaseの値をtrueにすると、読み込み時に大文字/小文字の区別なく変換します。
+ 
+ * 属性valueMethodNameで列挙型の項目の値を取得するメソッド名を指定します。
+   
+   * 指定しない場合、Enum#name()のメソッドの値が使用されます。
+   
+ []
+
+--------
+public class UnitUser {
+  
+  // 列挙型のマッピング
+  @XlsEnumConverer(ignoreCase=true, valueMethodName="localeName")
+  private RoleType role;
+
+}
+
+// 列挙型の定義
+public enum RoleType {
+  Normal("一般権限"), Admin("管理者権限");
+  
+  // 別名の設定
+  private String localeName;
+  
+  private RoleType(String localeName) {
+    this.localeName = localeName;
+  }
+  
+  // 別名の取得
+  public String localeName() {
+    return this.localeName;
+  }
+  
+}
+---------
+
+** {@XlsArrayConverer}
+
+ 配列またはCollection型（List, Set）の変換規則の設定を行います。
+ 
+ 配列またはCollectoinの要素のクラス型は、String型、プリミティブ型またはそのラッパークラスをとることができます。
+
+ * 属性separatorで区切り文字を指定します。
+ 
+ * 属性ignoreEmptyItemで、区切った項目の値が空文字の場合、無視するか指定します。
+ 
+   * 例えば、区切り文字","のとき、セルの値が"a,,b"の場合、trueを設定すると\["a", "b"\]として読み込みます。
+   
+   * 書き込み時も同様に、値が空またはnullの項目を無視します。
+ 
+ []
+
+--------
+public class UnitUser {
+  
+  @XlsArrayConverer(separator=",", ignoreEmptyItem=true)
+  private String[] arrays;
+  
+  @XlsArrayConverer(separator=";")
+  private List<Integer> list;
+  
+}
+---------
+
+ 読み込む際に各要素の値をトリミングしたい場合は、アノテーション@XlsConverter(trim=true)を付与します。
+
+--------
+public class UnitUser {
+  
+  // 要素のトリム処理を指定する
+  @XlsConverter(trim=true)
+  @XlsArrayConverer(separator=";")
+  private Set<Integer> set;
+  
+}
+---------
+
+
+ 基本的に、Genericsの型パラメータから要素のクラス型を自動的に判断しますが、属性itemClassで直接指定することもできます。
+
+--------
+public class UnitUser {
+  // 要素のクラス型を指定する
+  @XlsArrayConverer(itemClass=Integer.class)
+  private List list;
+  
+}
+---------
+
+
+* {アノテーション（ライフサイクル・コールバック用）}
+
+ 読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。
+ 
+ publicメソッドである必要があります。
+ 
+ 
+*----------------+-----------------------------------------------------------------------------------------+
+  アノテーション | 説明                                                                                     
+*----------------+-----------------------------------------------------------------------------------------+
+  @XlsPreLoad    | シートの値の読み込み直前に実行されます。                                                 
+*----------------+-----------------------------------------------------------------------------------------+
+  @XlsPostLoad   | シートの値の読み込み後に実行されます。シート内の全ての値の読み込み後に実行されます。     
+*----------------+-----------------------------------------------------------------------------------------+
+  @XlsPreSave    | オブジェクトの書き込み直前に実行されます。                                               
+*----------------+-----------------------------------------------------------------------------------------+
+  @XlsPostSave   | オブジェクトの書き込み後に実行されます。 シート内の全ての値の書き込み後に実行されます。  
+*----------------+-----------------------------------------------------------------------------------------+
+
+
+ また、特定の引数をとることができます。引数は、とらなくても可能です。
+
+
+*---------------------------------------------------+----------------------------------------------------------------------------------+
+ 指定可能な引数                                     |説明                                                                               
+*---------------------------------------------------+----------------------------------------------------------------------------------+
+  org.apache.poi.ss.usermodel.Sheet                 | 処理対象のSheetオブジェクト。                                                     
+*---------------------------------------------------+----------------------------------------------------------------------------------+
+  proj.green.xlsmapper.XlsMapperConfig              | XlsMapperの設定オブジェクト。                                                     
+*---------------------------------------------------+----------------------------------------------------------------------------------+
+  proj.green.xlsmapper.validation.SheetBindingErrors| シートのエラー情報を格納するオブジェクト。読み込み時に引数で渡したオブジェクト。  
+*---------------------------------------------------+----------------------------------------------------------------------------------+
+
+
+ 以下のような時にライフサイクルコールバック関数を利用します。
+ 
+ * 読み込み前、書き込み前のフィールドの初期化。
+ 
+ * 読み込み後の入力値の検証。
+ 
+ * 書き込み後の本ライブラリで提供されない機能の補完。
+ 
+   * 例えば、Excelファイル上の定義された名前の範囲の変更。
+ 
+ []
+
+--------
+public class UnitUser {
+  
+  private Date date;
+  
+  // 読み込み前、書き込み前の処理
+  @XlsPreLoad
+  @XlsPreSave
+  public void onInit() {
+      // フィールドの初期化
+      this.date = new Date();
+  }
+  
+  // 読み込み後の処理
+  public void onPostSave(Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
+     // 入力値チェックなどを行う。
+  }
+  
+  // 書き込み後の処理
+  @XlsPostSave
+  public void onPostSave(Sheet sheet) {
+      // 提供されない機能の補完。
+      
+  }
+  
+}
+---------
+
+
+* {動作のカスタマイズ}
+
+ 読み込み時及び書き込み時の動作をXlsMapperConfigクラスでカスタマイズすることができます。
+
+--------
+XlsMapper XlsMapper = new XlsMapper();
+
+// シートが見つからない場合にエラーにしない。
+XlsMapperConfig config = new XlsMapperConfig();
+config.config.setIgnoreSheetNotFound(true);
+
+XlsMapper.setConfig(config);
+
+SheetObject sheet = new XlsMapper.load(
+    new FileInputStream("example.xls"), SheetObject.class);
+--------
+
+ XlsMapperConfigでは以下の設定を行うことができます。
+
+*-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+ プロパティ名           |クラス型                                                 |説明                                                                                                                                                                                         |
+*-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+  ignoreSheetNotFound   |boolean                                                  |シートが見つからなくても無視するかどうか。                                                                                                                                                   |
+*-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+  skipTypeBindFailure   |boolean                                                  |型変換エラーが発生しても処理を続けるかどうか。                                                                                                                                               |
+*-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+  mergeCellOnSave       |boolean                                                  |書き込み時にセルの結合を行うかどうか。アノテーション@XlsColumnの属性mergedを書き込み時も考慮します。                                                                                         |
+*-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+  cellFormatter         |proj.green.xlsmapper.POICellFormatter                    |POIのセルの値を取得するクラス。                                                                                                                                                              |
+*-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+  fieldProcessorRegistry|proj.green.xlsmapper.fieldprocessor.FieldProcessorRegstry|フィールドプロセッサーを管理する。                                                                                                                                                           |
+*-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+  CellConverterRegistry |proj.green.xlsmapper.cellconvert.CellConverterRegistry   |セルの値をJavaオブジェクトに変換するクラスを管理する。                                                                                                                                       |
+*-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+  beanFactory           |proj.green.xlsmapper.FactoryCallback                     | 読み込み時などのJavaBeansオブジェクトのインスタンスを作成すためのコールバック用クラス。独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスをしようすることができる。|
+*-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+* {シート上の位置情報の取得}
+
+ 読み込み時、書き込み時にマッピングしたセルのアドレス取得することができます。
+ 
+ 取得方法は複数ありますが、Map\<String, Point\> positionsフィールドを用いるのが記述量が少なく簡単だと思います。
+ 
+ 
+ [[1]] Map\<String, Point\> positionsというフィールドを定義しておくとプロパティ名をキーにセルの位置がセットされるようになっています。
+ 
+   * アノテーション@XlsMapColumnsのセルの位置情報のキーは、プロパティ名+['セルの見出し']としてセットされます。
+ 
+ [[2]] アノテーションを付与したsetterメソッド名+Positionというメソッドを用意しておくと、引数にセルの位置が渡されます。
+ 
+   * 位置情報を取得用のsetterメソッドは以下のいずれかの引数を取る必要があります。
+    
+     * int x, int y
+     
+     * java.awt.Point
+     
+   * ただし、@XlsMapColumnsに対するsetterメソッドは、第一引数にセルの見出しが必要になります。
+   
+     * String key, int x, int y
+     
+     * String key, java.awt.Point
+     
+ [[3]] アノテーションを付与したフィールド名+Positionというjava.awt.Point型のフィールドを用意しておくと、セルの位置が渡されます。
+ 
+   * ただし、@XlsMapColumnsに対するフィールドは、Map\<String, Point\>型にする必要があります。キーには見出しが入ります。
+ 
+ []
+
+--------
+@XlsLabelledCell(label="Name")
+public void setName(String name){
+  ...
+}
+
+public Map<String, Point> positions;
+
+// positionsフィールドが定義されている場合は、setter メソッドは必要ありません。
+public void setNamePosition(int x, int y){
+  ...
+}
+--------
+
+ [Note] フィールドMap\<String, Point\> positionsと対応するsetterメソッドやフィールドをそれぞれ定義していた場合、
+      優先度「positions > setterメソッド > フィールド」に従い設定されます。
+
+
+** {書き込み時の位置情報取得の注意点}
+ 
+ 書き込み時は、行を追加/削除する処理がある場合、アノテーションを付与したプロパティの処理順序によって、
+ セルの位置が正しく取得できない場合があります。
+ 
+ 例えば、既に処理して取得したセルの位置情報よりも、上方の表で後から行を削除、追加したとき、
+ 取得済みのセルの位置情報が不正になります。
+ 
+ このような場合、アノテーション@XlsHintをプロパティに付与して、処理順序を一定に保ちます。
+ 
+
+--------
+@XlsSheet(name="情報")
+public Employee {
+   // セルの位置情報
+   public Map<String, Point> positions;
+   
+   @XlsHorizontalRecords(tableLabel="履歴", terminal=RecordTerminal.Border,
+      overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete // データによって行の追加、削除する設定
+   )
+   @XlsHint(order=2) // プロパティの処理順序を指定します。
+   private List<EmployeeHistory> histories;
+   
+   @XlsLabelledCell(label="名前")
+   @XlsHint(order=1) // プロパティの処理順序を指定します。
+   private String name;
+   
+}
+--------
+
+* {シート上の見出しの取得}
+
+ 読み込み時、書き込み時にマッピングしたセルの見出しを取得することができます。
+ 
+ 入力値検証の際などのメッセージの引数に使用したりします。
+ 
+ 取得方法は複数ありますが、Map\<String, String\> labelsフィールドを用いるのが記述量が少なく簡単だと思います。
+ 
+ [Note] セルの見出しを取得できるのは、アノテーション@XlsLabelledCell, @XlsColumn, @XlsMapColumnsを付与したプロパティです。
+ 
+ []
+ 
+ [[1]] Map\<String, String\> labelsというフィールドを定義しておくとプロパティ名をキーにセルの位置がセットされるようになっています。
+ 
+   * アノテーション@XlsMapColumnsのセルの位置情報のキーは、プロパティ名+['セルの見出し']としてセットされます。
+ 
+ [[2]] アノテーションを付与したsetterメソッド名+Labelというメソッドを用意しておくと、引数にセルの位置が渡されます。
+ 
+   * 位置情報を取得用のsetterメソッドは、引数「String label」を取る必要があります。
+    
+   * ただし、@XlsMapColumnsに対するsetterメソッドは、第一引数にセルの見出しが必要になります。
+   
+     * String key, String label
+     
+ [[3]] アノテーションを付与したフィールド名+LabelというString型のフィールドを用意しておくと、セルの位置が渡されます。
+ 
+   * ただし、@XlsMapColumnsに対するフィールドは、Map\<String, String\>型にする必要があります。キーには見出しが入ります。
+ 
+ []
+
+--------
+@XlsLabelledCell(label="Name")
+public void setName(String name){
+  ...
+}
+
+public Map<String, String> labels;
+
+// labelsフィールドが定義されている場合は、setter メソッドは必要ありません。
+public void setNameLabel(String label){
+  ...
+}
+--------
+
+ [Note] フィールドMap\<String, String\> labelsと対応するsetterメソッドやフィールドをそれぞれ定義していた場合、
+      優先度「labels > setterメソッド > フィールド」に従い設定されます。
+
+
+
+* {XMLファイルによるマッピング}
+
+ アノテーションだけではなく、外部XMLファイルでマッピングを行うことも可能です。
+ これはダイナミック・アノテーションという、アノテーションと同様の情報をXMLファイルで定義することで行います。
+ 以下にクラスに対してアノテーションを付与するXMLファイルの例を示します。
+
+--------
+<?xml version="1.0" encoding="utf-8"?>
+<annotations>
+  <class name="org.mygreen.xlsmapper.example.SheetObject">
+    <annotation name="org.mygreen.xlsmapper.annotation.XlsSheet">
+      <attribute name="name">'Users'</attribute>
+    </annotation>
+  </class>
+</annotations>
+--------
+
+ アノテーションの属性値の指定にはOGNL式を使用します。メソッドにアノテーションを付与する場合は次のようになります。
+
+--------
+<?xml version="1.0" encoding="utf-8"?>
+<annotations>
+  <class name="org.mygreen.xlsmapper.example.SheetObject">
+    <annotation name="org.mygreen.xlsmapper.annotation.XlsSheet">
+      <attribute name="name">'Users'</attribute>
+    </annotation>
+    <method name="setTitle">
+      <annotation name="org.mygreen.xlsmapper.annotation.XlsLabelledCell">
+        <attribute name="label">'Title'</attribute>
+        <attribute name="type">@Xlsorg.mygreen.xlsmapper.annotation.XlsLabelledCellType@Right</attribute>
+      </annotation>
+    </method>
+  </class>
+</annotations>
+--------
+
+ XlsMapperでは使用しませんが、フィールドにアノテーションを付与することも可能です。
+
+--------
+<?xml version="1.0" encoding="utf-8"?>
+<annotations>
+  <class name="org.mygreen.xlsmapper.example.SheetObject">
+    <field name="setTitle">
+      <annotation name="...">
+        ...
+      </annotation>
+    </field>
+  </class>
+</annotations>
+--------
+
+ 外部XMLファイルを使う場合、ハードコードされたアノテーションを外部XMLファイルの内容でオーバーライドすることが可能です。
+ 読み込み時は以下のようにExcelファイルとXMLファイルの両方をXMLBeans#load()メソッドに渡します。
+
+--------
+SheetObject sheet = new XlsMapper().load(
+  new FileInputStream("example.xls"),
+  new FileInputStream("example.xml"), SheetObject.class);
+--------
+
+ なお、AnnotationReaderクラスを使用することで、XlsMapperのダイナミック・アノテーション機能を別のプログラムでも利用することが可能です。
+
+--------
+// XMLファイルの読み込み
+XMLInfo info = XMLLoader.load(new FileInputStream("example.xml"));
+
+// AnnotationReaderのインスタンスを作成
+AnnotationReader reader = new AnnotationReader(info);
+
+// SheetObjectクラスに付与されたSheetアノテーションを取得
+Sheet sheet = reader.getAnnotation(SheetObject.class, Sheet.class);
+--------
+
+ ClassやMethod、Fieldオブジェクトから直接アノテーションを取得する代わりにAnnotationReaderを使えば、
+ XMLで宣言されたアノテーションと、クラスに埋め込まれているアノテーションを区別せずに取得することができます。
+ AnnotationReaderにはこの他にもメソッド、フィールドに付与されたアノテーションを取得するためのメソッドも用意されています。
+
+* {アノテーションを付与するフィールドとメソッド}
+ 
+ XlsMapperでは、フィールドとメソッドの両方にアノテーションを付与することができます。
+ 
+ * フィールドの場合、全てのアクセスレベル（public/protected/privte/なし）に付与したアノテーションが有効になります。
+ 
+ * メソッドの場合、publicのみ有効になります。
+
+   * メソッドに付与した場合、読み込み時はsetterに付与したアノテーションを用います。
+     書き込み時は、getterに付与したアノテーションを用います。
+   
+   * フィールドと対応するメソッド（getter/setter）の両方にアノテーションを付与した場合、メソッドに付与したアノテーションが優先されます。
+   
+   * 読み込み時と書き込み時の両方を行うことを考慮すると、フィールドにアノテーションを付与することをお薦めします。
+   
+ []
+
+
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<annotations>
+	<class name="net.java.amateras.xlsbeans.example.SheetObject">
+		<annotation name="net.java.amateras.xlsbeans.annotation.Sheet">
+			<attribute name="name">'Users'</attribute>
+		</annotation>
+		<method name="setTitle">
+			<annotation name="net.java.amateras.xlsbeans.annotation.LabelledCell">
+				<attribute name="label">'Title'</attribute>
+				<attribute name="type">@net.java.amateras.xlsbeans.annotation.LabelledCellType@Right
+				</attribute>
+			</annotation>
+		</method>
+	</class>
+</annotations>

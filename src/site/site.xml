@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="XlsMapper">
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-fluido-skin</artifactId>
+		<version>1.3.1</version>
+	</skin>
+	<body>
+		<menu name="ドキュメント">
+			<item name="基本的な使い方" href="howtouse.html" />
+			<item name="シートの値の入力値検証" href="validation.html" />
+			<item name="拡張方法" href="extension.html" />
+			<item name="XLSBeansとの違い" href="diff_xlsbeans.html" />
+			<item name="ダウンロード" href="download.html" />
+			<item name="リリースノート" href="release.html" />
+		</menu>
+		<menu ref="reports" />
+	</body>
+</project>
