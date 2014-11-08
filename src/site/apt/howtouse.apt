@@ -514,7 +514,7 @@ public class UnitUser {
       もし、属性forceWrapTextとforceShrinkToFitの値をtrueに設定した場合、forceShrinkToFitの設定が優先され、「縮小して全体を表示する」が有効になります。
 
 
-** {@XlsBooleanConverer}
+** {@XlsBooleanConverter}
 
  boolean、Boolean型の変換規則の設定を行います。
  
@@ -545,7 +545,7 @@ public class UnitUser {
 public class UnitUser {
   
   // boolean型の読み込み時と書き込み時のtrueとfalseの値の変換規則を指定します。
-  @XlsBooleanConverer(
+  @XlsBooleanConverter(
     loadForTrue={"○", "有効", "レ"}, loadForFalse={"×", "無効", "-", ""},
     saveAsTrue="○", saveAsFalse="-",
     ignoreCase=true
@@ -566,13 +566,13 @@ public class UnitUser {
 public class UnitUser {
   
   // 読み込み時に変換できない場合に、強制的に値をfalseとして読み込みます。
-  @XlsBooleanConverer(failToFalse=true)
+  @XlsBooleanConverter(failToFalse=true)
   private boolean availale;
 
 }
 --------
 
-** {@XlsNumberConverer}
+** {@XlsNumberConverter}
 
  数値型（short、int、long、float、double、プリミティブのラッパークラス、BigDecimal、BigInteger）の書式などの設定を行います。
  
@@ -595,13 +595,13 @@ public class UnitUser {
 --------
 public class UnitUser {
   
-  @XlsNumberConverer(pattern="#,##0.0000", locale="ja_JP", currentcy="USD")
+  @XlsNumberConverter(pattern="#,##0.0000", locale="ja_JP", currentcy="USD")
   private double salary;
 
 }
 ---------
 
-** {@XlsDateConverer}
+** {@XlsDateConverter}
 
  日付型（java.util.Date、java.sql.Date, java.sql.Timestamp, java.sql.Time）の書式などの設定を行います。
 
@@ -625,7 +625,7 @@ public class UnitUser {
 --------
 public class UnitUser {
   
-  @XlsDateConverer(pattern="yyyy年MM月dd日 HH時mm分ss秒", locale="ja_JP", lenient=true)
+  @XlsDateConverter(pattern="yyyy年MM月dd日 HH時mm分ss秒", locale="ja_JP", lenient=true)
   private Date expired;
 
 }
@@ -635,7 +635,7 @@ public class UnitUser {
         セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
  
 
-** {@XlsEnumConverer}
+** {@XlsEnumConverter}
 
  列挙型の変換規則の設定を行います。
  
@@ -651,7 +651,7 @@ public class UnitUser {
 public class UnitUser {
   
   // 列挙型のマッピング
-  @XlsEnumConverer(ignoreCase=true, valueMethodName="localeName")
+  @XlsEnumConverter(ignoreCase=true, valueMethodName="localeName")
   private RoleType role;
 
 }
@@ -675,7 +675,7 @@ public enum RoleType {
 }
 ---------
 
-** {@XlsArrayConverer}
+** {@XlsArrayConverter}
 
  配列またはCollection型（List, Set）の変換規則の設定を行います。
  
@@ -694,10 +694,10 @@ public enum RoleType {
 --------
 public class UnitUser {
   
-  @XlsArrayConverer(separator=",", ignoreEmptyItem=true)
+  @XlsArrayConverter(separator=",", ignoreEmptyItem=true)
   private String[] arrays;
   
-  @XlsArrayConverer(separator=";")
+  @XlsArrayConverter(separator=";")
   private List<Integer> list;
   
 }
@@ -710,7 +710,7 @@ public class UnitUser {
   
   // 要素のトリム処理を指定する
   @XlsConverter(trim=true)
-  @XlsArrayConverer(separator=";")
+  @XlsArrayConverter(separator=";")
   private Set<Integer> set;
   
 }
@@ -722,7 +722,7 @@ public class UnitUser {
 --------
 public class UnitUser {
   // 要素のクラス型を指定する
-  @XlsArrayConverer(itemClass=Integer.class)
+  @XlsArrayConverter(itemClass=Integer.class)
   private List list;
   
 }
