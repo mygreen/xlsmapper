@@ -151,9 +151,9 @@ public class POIUtils {
      * @param cell
      * @return
      */
-    public static String getCellContents(final Cell cell) {
-        return getCellContents(cell, defaultCellFormatter);
-    }
+//    public static String getCellContents(final Cell cell) {
+//        return getCellContents(cell, defaultCellFormatter);
+//    }
     
     /**
      * フォーマッターを指定してセルの値を取得する
@@ -184,15 +184,21 @@ public class POIUtils {
      * フォーマッターを指定してセルの値が空かどうか判定する。
      * <p>ブランクセルなどの判定は優先的に行う。
      * @param cell
+     * @param cellFormatter
      * @return
      */
     public static boolean isEmptyCellContents(final Cell cell, final POICellFormatter cellFormatter) {
-        //TODO: 実装する
+        ArgUtils.notNull(cell, "cell");
+        ArgUtils.notNull(cellFormatter, "cellFormatter");
+        
+        if(isBlankCell(cell)) {
+            return true;
+        }
         return getCellContents(cell, cellFormatter).isEmpty();
     }
     
     /**
-     * ブランクセルかどうか。
+     * セルの値が空かどうか。
      * @param cell
      * @return
      */

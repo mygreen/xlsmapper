@@ -967,15 +967,18 @@ public class Utils {
      * @param sheet 検索対象のシート。
      * @param label 検索するセルの値
      * @param from 検索開始位置の列
+     * @param config システム設定
      * @return  引数labelで指定した値を持つセル。
      * @throws CellNotFoundException シート中に引数'label'を持つセルが存在しない場合。
      */
-    public static Cell getCell(final Sheet sheet, final String label, final int from) throws CellNotFoundException {
+    public static Cell getCell(final Sheet sheet, final String label, final int from,
+            final XlsMapperConfig config) throws CellNotFoundException {
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(label, "label");
         ArgUtils.notMin(from, 0, "from");
+        ArgUtils.notNull(config, "config");
         
-        return getCell(sheet, label, from, true);
+        return getCell(sheet, label, from, true, config);
     }
     
     /**
@@ -987,17 +990,19 @@ public class Utils {
      * @return 引数labelで指定した値を持つセル。見つからに場合は、nullを返す。
      * @throws CellNotFoundException シート中に引数'label'を持つセルが存在しない場合。
      */
-    public static Cell getCell(final Sheet sheet, final String label, final int from, boolean throwableWhenNotFound) throws CellNotFoundException {
+    public static Cell getCell(final Sheet sheet, final String label, final int from,
+            boolean throwableWhenNotFound, final XlsMapperConfig config) throws CellNotFoundException {
         
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(label, "label");
         ArgUtils.notMin(from, 0, "from");
+        ArgUtils.notNull(config, "config");
         
         final int rows = POIUtils.getColumns(sheet);
         for(int i=0; i < rows; i++) {
             final Cell[] columns = POIUtils.getColumn(sheet, i);
             for(int j=from; j < columns.length; j++) {
-                final String cellValue = POIUtils.getCellContents(columns[j]);
+                final String cellValue = POIUtils.getCellContents(columns[j], config.getCellFormatter());
                 if(cellValue.equals(label)) {
                     return columns[j];
                 }
@@ -1028,8 +1033,8 @@ public class Utils {
      * @throws CellNotFoundException This occures when the cell is not found.
      */
     public static Cell getCell(final Sheet sheet, final String label, final Cell after,
-            final boolean includeAfter) throws CellNotFoundException {
-        return getCell(sheet, label, after, includeAfter, true);
+            final boolean includeAfter, final XlsMapperConfig config) throws CellNotFoundException {
+        return getCell(sheet, label, after, includeAfter, true, config);
     }
 
     /**
@@ -1043,21 +1048,20 @@ public class Utils {
      * @param label Target cell label.
      * @param after A lower right cell is scanned from the cell object.
      * @param includeingAfter Is the third argument cell object scanned?
-     * @param throwableWhenNotFound If this argument is true, throws XLSBeansException when
-     * we can't find target cell.
+     * @param throwableWhenNotFound If this argument is true, throws XLSBeansException when we can't find target cell.
      *
      * @return Target JExcel Api cell object.
      * @throws CellNotFoundException This occures when the cell is not found.
      */
     public static Cell getCell(final Sheet sheet, final String label, final Cell after,
-            boolean includeAfter, boolean throwableWhenNotFound) throws CellNotFoundException {
+            boolean includeAfter, boolean throwableWhenNotFound, final XlsMapperConfig config) throws CellNotFoundException {
         
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(label, "label");
         
         if (after == null) {
             // Call XLSBeans#getCell() - method if third argument is null.
-            return Utils.getCell(sheet, label, 0, throwableWhenNotFound);
+            return Utils.getCell(sheet, label, 0, throwableWhenNotFound, config);
         }
         
         //[TO POI]
@@ -1073,7 +1077,7 @@ public class Utils {
                 if (col == columnStart && row == rowStart && !includeAfter) {
                     continue;
                 }
-                if (POIUtils.getCellContents(columns[row]).equals(label)) {
+                if (POIUtils.getCellContents(columns[row], config.getCellFormatter()).equals(label)) {
                     return columns[row];
                 }
             }
@@ -1096,12 +1100,12 @@ public class Utils {
      * @param sheet JExcel Api sheet object.
      * @param label Target cell label.
      * @param after A lower right cell is scanned from this cell object.
-     *
+     * @param config api configuration.
      * @return Target JExcel Api cell object.
      * @throws XlsMapperException This occures when the cell is not found.
      */
-    public static Cell getCell(final Sheet sheet, final String label, final Cell after) throws CellNotFoundException {
-        return getCell(sheet, label, after, false);
+    public static Cell getCell(final Sheet sheet, final String label, final Cell after, final XlsMapperConfig config) throws CellNotFoundException {
+        return getCell(sheet, label, after, false, config);
     }
     
     /**

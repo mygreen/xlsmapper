@@ -51,7 +51,7 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         final XlsEnumConverter anno = getLoadingAnnotation(adaptor);
         
-        String cellValue = POIUtils.getCellContents(cell);
+        String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
         cellValue = Utils.trim(cellValue, converterAnno);
         if(Utils.isEmpty(cellValue) && Utils.hasNotDefaultValue(converterAnno)) {
             return null;

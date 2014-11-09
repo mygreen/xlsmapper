@@ -40,7 +40,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         final XlsNumberConverter anno = getLoadingAnnotation(adaptor);
         
         T resultValue = null;
-        if(POIUtils.isBlankCell(cell)) {
+        if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
             
             if(Utils.hasNotDefaultValue(converterAnno)) {
 //                return null;
@@ -59,7 +59,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             resultValue = convertNumber(cell.getNumericCellValue());
             
         } else {
-            String cellValue = POIUtils.getCellContents(cell);
+            String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
             cellValue = Utils.trim(cellValue, converterAnno);
             if(Utils.isNotEmpty(cellValue)) {
                 try {

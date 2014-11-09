@@ -23,7 +23,7 @@ public class CharacterCellConverter extends AbstractCellConverter<Character> {
         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         
-        final String cellValue = POIUtils.getCellContents(cell);
+        final String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
         Character resultValue = null;
         if(Utils.isNotEmpty(cellValue)) {
             resultValue = cellValue.charAt(0);

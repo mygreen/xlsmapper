@@ -40,7 +40,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         final XlsDateConverter anno = getLoadingAnnotation(adaptor);
         
         T resultValue = null;
-        if(POIUtils.isBlankCell(cell)) {
+        if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
             
             if(Utils.hasNotDefaultValue(converterAnno)) {
                 return null;
@@ -59,7 +59,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             resultValue = convertDate(cell.getDateCellValue());
             
         } else {
-            String cellValue = POIUtils.getCellContents(cell);
+            String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
             cellValue = Utils.trim(cellValue, converterAnno);
             if(Utils.isNotEmpty(cellValue)) {
                 try {

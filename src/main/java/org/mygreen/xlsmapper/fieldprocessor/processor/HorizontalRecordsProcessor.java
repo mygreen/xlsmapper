@@ -56,8 +56,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0);
-                Utils.setLabel(POIUtils.getCellContents(tableLabelCell), obj, adaptor.getName());
+                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
+                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), obj, adaptor.getName());
             } catch(CellNotFoundException e) {
                 
             }
@@ -108,7 +108,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final List<RecordHeader> headers = new ArrayList<>();
         
         // get header
-        final Point initPosition = getHeaderPosition(sheet, anno);
+        final Point initPosition = getHeaderPosition(sheet, anno, config);
         if(initPosition == null) {
             return null;
         }
@@ -124,16 +124,16 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             try {
                 Cell cell = POIUtils.getCell(sheet, hColumn, hRow);
                 
-                while(POIUtils.getCellContents(cell).equals("") && rangeCount < anno.range()) {
+                while(POIUtils.isEmptyCellContents(cell, config.getCellFormatter()) && rangeCount < anno.range()) {
                     cell = POIUtils.getCell(sheet, hColumn + rangeCount, hRow);
                     rangeCount++;
                 }
                 
-                if(POIUtils.getCellContents(cell).equals("")){
+                if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){
                     break;
                 }
                 
-                headers.add(new RecordHeader(POIUtils.getCellContents(cell), rangeCount - 1));
+                headers.add(new RecordHeader(POIUtils.getCellContents(cell, config.getCellFormatter()), rangeCount - 1));
                 hColumn = hColumn + rangeCount;
                 rangeCount = 1;
                 
@@ -181,7 +181,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 final Cell cell = POIUtils.getCell(sheet, hColumn, hRow);
                 
                 // find end of the table
-                if(!POIUtils.getCellContents(cell).equals("")){
+                if(!POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){
                     emptyFlag = false;
                 }
                 
@@ -196,7 +196,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 }
                 
                 if(!anno.terminateLabel().equals("")){
-                    if(POIUtils.getCellContents(cell).equals(anno.terminateLabel())){
+                    if(POIUtils.getCellContents(cell, config.getCellFormatter()).equals(anno.terminateLabel())){
                         emptyFlag = true;
                         break;
                     }
@@ -213,7 +213,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     }
                     
                     // for merged cell
-                    if(POIUtils.getCellContents(valueCell).equals("")) {
+                    if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())) {
                         final CellStyle valueCellFormat = valueCell.getCellStyle();
                         if(column.merged()
                                 && (valueCellFormat == null || valueCellFormat.getBorderTop() == CellStyle.BORDER_NONE)) {
@@ -223,7 +223,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                                 if(tmpCellFormat!=null && !(tmpCellFormat.getBorderBottom() == CellStyle.BORDER_NONE)){
                                     break;
                                 }
-                                if(!POIUtils.getCellContents(tmpCell).equals("")){
+                                if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){
                                     valueCell = tmpCell;
                                     break;
                                 }
@@ -284,10 +284,12 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
      * 
      * @param sheet
      * @param anno
+     * @param config
      * @return Point.y = row, Point.x = column
      * @throws XlsMapperException 
      */
-    private Point getHeaderPosition(final Sheet sheet, final XlsHorizontalRecords anno) throws XlsMapperException {
+    private Point getHeaderPosition(final Sheet sheet, final XlsHorizontalRecords anno,
+            final XlsMapperConfig config) throws XlsMapperException {
         
         //TODO: AnnotationInvalidExceptionのメッセージは、フィールド、メソッド名も出力する。
         
@@ -302,7 +304,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0);
+                Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
                 int initColumn = labelCell.getColumnIndex();
                 int initRow = labelCell.getRowIndex() + anno.bottom();
                 
@@ -386,8 +388,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0);
-                Utils.setLabel(POIUtils.getCellContents(tableLabelCell), obj, adaptor.getName());
+                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
+                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), obj, adaptor.getName());
             } catch(CellNotFoundException e) {
                 
             }
@@ -430,7 +432,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final List<RecordHeader> headers = new ArrayList<>();
         
         // get header
-        final Point initPosition = getHeaderPosition(sheet, anno);
+        final Point initPosition = getHeaderPosition(sheet, anno, config);
         if(initPosition == null) {
             return;
         }
@@ -446,16 +448,16 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         while(true) {
             try {
                 Cell cell = POIUtils.getCell(sheet, hColumn, hRow);
-                while(POIUtils.getCellContents(cell).equals("") && rangeCount < anno.range()) {
+                while(POIUtils.isEmptyCellContents(cell, config.getCellFormatter()) && rangeCount < anno.range()) {
                     cell = POIUtils.getCell(sheet, hColumn + rangeCount, hRow);
                     rangeCount++;
                 }
                 
-                if(POIUtils.getCellContents(cell).equals("")){
+                if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){
                     break;
                 }
                 
-                headers.add(new RecordHeader(POIUtils.getCellContents(cell), rangeCount - 1));
+                headers.add(new RecordHeader(POIUtils.getCellContents(cell, config.getCellFormatter()), rangeCount - 1));
                 hColumn = hColumn + rangeCount;
                 rangeCount = 1;
                 
@@ -516,7 +518,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 final Cell cell = POIUtils.getCell(sheet, hColumn, hRow);
 //                    System.out.printf("cell=[%s], value=%s\n", Utils.formatCellAddress(cell), POIUtils.getCellContents(cell));
                 // find end of the table
-                if(!POIUtils.getCellContents(cell).equals("")){
+                if(!POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){
                     emptyFlag = false;
                 }
                 
@@ -531,7 +533,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 }
                 
                 if(!anno.terminateLabel().equals("")){
-                    if(POIUtils.getCellContents(cell).equals(anno.terminateLabel())){
+                    if(POIUtils.getCellContents(cell, config.getCellFormatter()).equals(anno.terminateLabel())){
                         emptyFlag = true;
 //                            break;
                     }
@@ -551,7 +553,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         }
                         
                         // for merged cell
-                        if(POIUtils.getCellContents(valueCell).equals("")) {
+                        if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())) {
                             final CellStyle valueCellFormat = valueCell.getCellStyle();
                             if(column.merged()
                                     && (valueCellFormat == null || valueCellFormat.getBorderTop() == CellStyle.BORDER_NONE)) {
@@ -561,7 +563,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                                     if(tmpCellFormat != null && !(tmpCellFormat.getBorderBottom() == CellStyle.BORDER_NONE)){
                                         break;
                                     }
-                                    if(!POIUtils.getCellContents(tmpCell).equals("")){
+                                    if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){
                                         valueCell = tmpCell;
                                         break;
                                     }
@@ -622,7 +624,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         }
                         // セルをマージする
                         if(column.merged() && (r > 0) && config.isMergeCellOnSave()) {
-                            processSavingMergedCell(valueCell, sheet, mergedRanges);
+                            processSavingMergedCell(valueCell, sheet, mergedRanges, config);
                         }
                     }
                 }
@@ -675,9 +677,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
      * @param currentCell
      * @param sheet
      * @param mergedRanges
+     * @param config
      * @return
      */
-    private boolean processSavingMergedCell(final Cell currentCell, final Sheet sheet, final List<CellRangeAddress> mergedRanges) {
+    private boolean processSavingMergedCell(final Cell currentCell, final Sheet sheet,
+            final List<CellRangeAddress> mergedRanges, final XlsMapperConfig config) {
         
         final int row = currentCell.getRowIndex();
         final int column = currentCell.getColumnIndex();
@@ -687,8 +691,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         }
         
         // 上のセルと比較する
-        final String value = POIUtils.getCellContents(currentCell);
-        String upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row-1));
+        final String value = POIUtils.getCellContents(currentCell, config.getCellFormatter());
+        String upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row-1), config.getCellFormatter());
         
         // 結合されている場合、結合の先頭セルを取得する
         int startRow = row - 1;
@@ -704,7 +708,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 continue;
             }
             
-            upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, column, range.getFirstRow()));
+            upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, column, range.getFirstRow()), config.getCellFormatter());
             currentMergedRange = range;
             break;
         }
@@ -770,7 +774,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     }
                     
                     if(!anno.terminateLabel().equals("")) {
-                        if(POIUtils.getCellContents(cell).equals(anno.terminateLabel())) {
+                        if(POIUtils.getCellContents(cell, config.getCellFormatter()).equals(anno.terminateLabel())) {
                             emptyFlag = true;
                         }
                     }

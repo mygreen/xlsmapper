@@ -55,8 +55,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0);
-                Utils.setLabel(POIUtils.getCellContents(tableLabelCell), obj, adaptor.getName());
+                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
+                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), obj, adaptor.getName());
             } catch(CellNotFoundException e) {
                 
             }
@@ -107,7 +107,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final List<RecordHeader> headers = new ArrayList<>();
         
         // get header
-        final Point initPosition = getHeaderPosition(sheet, anno);
+        final Point initPosition = getHeaderPosition(sheet, anno, config);
         if(initPosition == null) {
             return null;
         }
@@ -122,24 +122,24 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         while(true){
             try {
                 Cell cell = POIUtils.getCell(sheet, hColumn, hRow);
-                while(POIUtils.getCellContents(cell).equals("") && rangeCount < anno.range()){
+                while(POIUtils.isEmptyCellContents(cell, config.getCellFormatter()) && rangeCount < anno.range()){
                     cell = POIUtils.getCell(sheet, hColumn, hRow + rangeCount);
                     rangeCount++;
                 }
                 
-                if(POIUtils.getCellContents(cell).equals("")){
+                if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){
                     break;
                 } else {
                     for(int j=hColumn; j > initColumn; j--){
                         final Cell tmpCell = POIUtils.getCell(sheet, j, hRow);
-                        if(!POIUtils.getCellContents(tmpCell).equals("")){
+                        if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){
                             cell = tmpCell;
                             break;
                         }
                     }
                 }
                 
-                headers.add(new RecordHeader(POIUtils.getCellContents(cell), rangeCount-1));
+                headers.add(new RecordHeader(POIUtils.getCellContents(cell, config.getCellFormatter()), rangeCount-1));
                 hRow = hRow + rangeCount;
                 rangeCount = 1;
                 
@@ -189,7 +189,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 Cell cell = POIUtils.getCell(sheet, hColumn, hRow);
                 
                 // find end of the table
-                if(!POIUtils.getCellContents(cell).equals("")){
+                if(!POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){
                     emptyFlag = false;
                 }
                 
@@ -204,7 +204,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 }
                 
                 if(!anno.terminateLabel().equals("")){
-                    if(POIUtils.getCellContents(cell).equals(anno.terminateLabel())){
+                    if(POIUtils.getCellContents(cell, config.getCellFormatter()).equals(anno.terminateLabel())){
                         emptyFlag = true;
                         break;
                     }
@@ -223,7 +223,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     }
                     
                     // for merged cell
-                    if(POIUtils.getCellContents(valueCell).equals("")){
+                    if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())){
                         CellStyle valueCellFormat = valueCell.getCellStyle();
                         if(column.merged() && 
                                 (valueCellFormat == null || valueCellFormat.getBorderRight() == CellStyle.BORDER_NONE)){
@@ -235,7 +235,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                                     break;
                                 }
                                 
-                                if(!POIUtils.getCellContents(tmpCell).equals("")){
+                                if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){
                                     valueCell = tmpCell;
                                     break;
                                 }
@@ -295,10 +295,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * 
      * @param sheet
      * @param anno
+     * @param config
      * @return Point.y = row, Point.x = column
      * @throws XlsMapperException 
      */
-    private Point getHeaderPosition(final Sheet sheet, final XlsVerticalRecords anno) throws XlsMapperException {
+    private Point getHeaderPosition(final Sheet sheet, final XlsVerticalRecords anno,
+            final XlsMapperConfig config) throws XlsMapperException {
         
         if(Utils.isNotEmpty(anno.tableAddress())) {
             Point address = Utils.parseCellAddress(anno.headerAddress());
@@ -310,7 +312,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0);
+                Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
                 int initColumn = labelCell.getColumnIndex() + 1;
                 int initRow = labelCell.getRowIndex();
                 
@@ -390,8 +392,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0);
-                Utils.setLabel(POIUtils.getCellContents(tableLabelCell), obj, adaptor.getName());
+                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
+                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), obj, adaptor.getName());
             } catch(CellNotFoundException e) {
                 
             }
@@ -435,7 +437,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final List<RecordHeader> headers = new ArrayList<>();
         
         // get header
-        final Point initPosition = getHeaderPosition(sheet, anno);
+        final Point initPosition = getHeaderPosition(sheet, anno, config);
         if(initPosition == null) {
             return;
         }
@@ -451,16 +453,16 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         while(true) {
             try {
                 Cell cell = POIUtils.getCell(sheet, hColumn, hRow);
-                while(POIUtils.getCellContents(cell).equals("") && rangeCount < anno.range()) {
+                while(POIUtils.isEmptyCellContents(cell, config.getCellFormatter()) && rangeCount < anno.range()) {
                     cell = POIUtils.getCell(sheet, hColumn, hRow + rangeCount);
                     rangeCount++;
                 }
                 
-                if(POIUtils.getCellContents(cell).equals("")){
+                if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
                     break;
                 }
                 
-                headers.add(new RecordHeader(POIUtils.getCellContents(cell), rangeCount - 1));
+                headers.add(new RecordHeader(POIUtils.getCellContents(cell, config.getCellFormatter()), rangeCount - 1));
                 hRow = hRow + rangeCount;
                 rangeCount = 1;
                 
@@ -519,7 +521,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 hRow = hRow + headerInfo.getHeaderRange();
                 final Cell cell = POIUtils.getCell(sheet, hColumn, hRow);
                 // find end of the table
-                if(!POIUtils.getCellContents(cell).equals("")){
+                if(!POIUtils.getCellContents(cell, config.getCellFormatter()).equals("")){
                     emptyFlag = false;
                 }
                 
@@ -534,7 +536,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 }
                 
                 if(!anno.terminateLabel().equals("")){
-                    if(POIUtils.getCellContents(cell).equals(anno.terminateLabel())){
+                    if(POIUtils.getCellContents(cell, config.getCellFormatter()).equals(anno.terminateLabel())){
                         emptyFlag = true;
 //                            break;
                     }
@@ -554,7 +556,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         }
                         
                         // for merged cell
-                        if(POIUtils.getCellContents(valueCell).equals("")) {
+                        if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())) {
                             final CellStyle valueCellFormat = valueCell.getCellStyle();
                             if(column.merged()
                                     && (valueCellFormat == null || valueCellFormat.getBorderRight() == CellStyle.BORDER_NONE)){
@@ -564,7 +566,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                                     if(tmpCellFormat!=null && !(tmpCellFormat.getBorderLeft() == CellStyle.BORDER_NONE)){
                                         break;
                                     }
-                                    if(!POIUtils.getCellContents(tmpCell).equals("")){
+                                    if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){
                                         valueCell = tmpCell;
                                         break;
                                     }
@@ -609,7 +611,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         
                         // セルをマージする
                         if(column.merged() && (r > 0) && config.isMergeCellOnSave()) {
-                            processSavingMergedCell(valueCell, sheet, mergedRanges);
+                            processSavingMergedCell(valueCell, sheet, mergedRanges, config);
                         }
                     }
                 }
@@ -661,7 +663,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * @param mergedRanges
      * @return
      */
-    private boolean processSavingMergedCell(final Cell currentCell, final Sheet sheet, final List<CellRangeAddress> mergedRanges) {
+    private boolean processSavingMergedCell(final Cell currentCell, final Sheet sheet,
+            final List<CellRangeAddress> mergedRanges, final XlsMapperConfig config) {
         
         final int row = currentCell.getRowIndex();
         final int column = currentCell.getColumnIndex();
@@ -671,8 +674,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         }
         
         // 上のセルと比較する
-        final String value = POIUtils.getCellContents(currentCell);
-        String upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, column-1, row));
+        final String value = POIUtils.getCellContents(currentCell, config.getCellFormatter());
+        String upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, column-1, row), config.getCellFormatter());
         
         // 結合されている場合、結合の先頭セルを取得する
         int startColumn = column - 1;
@@ -688,7 +691,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 continue;
             }
             
-            upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, range.getFirstColumn(), row));
+            upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, range.getFirstColumn(), row), config.getCellFormatter());
             currentMergedRange = range;
             break;
         }
@@ -753,7 +756,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     }
                     
                     if(!anno.terminateLabel().equals("")) {
-                        if(POIUtils.getCellContents(cell).equals(anno.terminateLabel())) {
+                        if(POIUtils.getCellContents(cell, config.getCellFormatter()).equals(anno.terminateLabel())) {
                             emptyFlag = true;
                         }
                     }

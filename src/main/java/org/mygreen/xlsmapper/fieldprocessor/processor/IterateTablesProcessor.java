@@ -93,7 +93,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         Cell currentCell = null;
         
         final String label = iterateTablesAnno.tableLabel();
-        currentCell = Utils.getCell(sheet, label, after, false, !iterateTablesAnno.optional());
+        currentCell = Utils.getCell(sheet, label, after, false, !iterateTablesAnno.optional(), config);
         
         while(currentCell != null) {
             // 1 table object instance
@@ -122,7 +122,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             resultTableList.add(tableObj);
             after = currentCell;
-            currentCell = Utils.getCell(sheet, label, after, false, false);
+            currentCell = Utils.getCell(sheet, label, after, false, false, config);
             
             // set PostProcess method
             for(Method method : tableObj.getClass().getMethods()) {
@@ -160,7 +160,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             Cell titleCell = null;
             try {
-                titleCell = Utils.getCell(sheet, ann.label(), headerCell);
+                titleCell = Utils.getCell(sheet, ann.label(), headerCell, config);
             } catch (CellNotFoundException e) {
                 if (ann.optional()) {
                     continue;
@@ -296,7 +296,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 }
             }
             
-            currentCell = Utils.getCell(sheet, label, after, false, !iterateTablesAnno.optional());
+            currentCell = Utils.getCell(sheet, label, after, false, !iterateTablesAnno.optional(), config);
             if(currentCell == null) {
                 //TODO: 見出しが足りない場合の追加処理を記述する
                 
@@ -344,7 +344,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             Cell titleCell = null;
             try {
-                titleCell = Utils.getCell(sheet, anno.label(), headerCell);
+                titleCell = Utils.getCell(sheet, anno.label(), headerCell, config);
             } catch (CellNotFoundException e) {
                 if (anno.optional()) {
                     continue;

@@ -24,11 +24,11 @@ public class StringCellConverter extends AbstractCellConverter<String> {
         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         
-        if(POIUtils.isBlankCell(cell)) {
+        if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
             return Utils.getDefaultValueIfEmpty(null, converterAnno);
         }
         
-        String resultValue = POIUtils.getCellContents(cell);
+        String resultValue = POIUtils.getCellContents(cell, config.getCellFormatter());
         resultValue = Utils.trim(resultValue, converterAnno);
         resultValue = Utils.getDefaultValueIfEmpty(resultValue, converterAnno);
         

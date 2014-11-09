@@ -36,7 +36,7 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
             return cell.getBooleanCellValue();
             
         } else {
-            String cellValue = POIUtils.getCellContents(cell);
+            String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
             cellValue = Utils.trim(cellValue, converterAnno);
             cellValue = Utils.getDefaultValueIfEmpty(cellValue, converterAnno);
             

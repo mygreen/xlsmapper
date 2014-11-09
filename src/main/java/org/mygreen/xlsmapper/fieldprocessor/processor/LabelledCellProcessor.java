@@ -31,7 +31,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno,
             final FieldAdaptor adaptor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final FindInfo info = findCell(sheet, anno);
+        final FindInfo info = findCell(sheet, anno, config);
         Utils.setPosition(info.position.x, info.position.y, beansObj, adaptor.getName());
         Utils.setLabel(info.label, beansObj, adaptor.getName());
         
@@ -53,11 +53,12 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         String label;
     }
     
-    private FindInfo findCell(final Sheet sheet, final XlsLabelledCell anno) throws XlsMapperException {
+    private FindInfo findCell(final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config)
+            throws XlsMapperException {
         
         Cell targetCell = null;
         
-        final Point labelPosition = getLabelPosition(sheet, anno);
+        final Point labelPosition = getLabelPosition(sheet, anno, config);
         if(labelPosition == null) {
             return null;
         }
@@ -86,16 +87,16 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
                         String.format("@XlsLabelledCell atrribute 'type' is invalid. : %s", anno.type().name()), anno);
             }
             
-            if(POIUtils.getCellContents(targetCell).length()>0){
+            if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length()>0){
                 break;
             }
         }
         
         final FindInfo info = new FindInfo();
         info.targetCell = targetCell;
-        info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row));
+        info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());
         
-        if(POIUtils.getCellContents(targetCell).length() > 0) {
+        if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length() > 0) {
             info.position = new Point(targetCell.getColumnIndex(), targetCell.getRowIndex());
         } else {
             info.position = new Point(column, row);
@@ -104,7 +105,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         return info;
     }
     
-    private Point getLabelPosition(final Sheet sheet, final XlsLabelledCell anno) throws XlsMapperException {
+    private Point getLabelPosition(final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config) throws XlsMapperException {
         
         if(Utils.isNotEmpty(anno.labelAddress())) {
             final Point address = Utils.parseCellAddress(anno.labelAddress());
@@ -117,14 +118,14 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         } else if(Utils.isNotEmpty(anno.label())) {
             try {
                 if(Utils.isNotEmpty(anno.headerLabel())){
-                    Cell headerCell = Utils.getCell(sheet, anno.headerLabel(), 0);
-                    Cell labelCell = Utils.getCell(sheet, anno.label(), headerCell.getRowIndex() + 1);
+                    Cell headerCell = Utils.getCell(sheet, anno.headerLabel(), 0, config);
+                    Cell labelCell = Utils.getCell(sheet, anno.label(), headerCell.getRowIndex() + 1, config);
                     int column = labelCell.getColumnIndex();
                     int row = labelCell.getRowIndex();
                     return new Point(column, row);
                     
                 } else {
-                    Cell labelCell = Utils.getCell(sheet, anno.label(), 0);
+                    Cell labelCell = Utils.getCell(sheet, anno.label(), 0, config);
                     int column = labelCell.getColumnIndex();
                     int row = labelCell.getRowIndex();
                     return new Point(column, row);
@@ -154,7 +155,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno, final FieldAdaptor adaptor,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        final FindInfo info = findCell(sheet, anno);
+        final FindInfo info = findCell(sheet, anno, config);
         Utils.setPosition(info.position.x, info.position.y, beansObj, adaptor.getName());
         Utils.setLabel(info.label, beansObj, adaptor.getName());
         

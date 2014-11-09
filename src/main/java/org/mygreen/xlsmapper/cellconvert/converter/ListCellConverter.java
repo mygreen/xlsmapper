@@ -33,7 +33,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         final XlsArrayConverter anno = getLoadingAnnotation(adaptor);
         
-        String cellValue = POIUtils.getCellContents(cell);
+        String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
         cellValue = Utils.getDefaultValueIfEmpty(cellValue, converterAnno);
         
         Class<?> itemClass = anno.itemClass();
