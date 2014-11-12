@@ -69,7 +69,7 @@ if(errors.hasErrors()) {
     
   * フィールドに対するエラーを設定する場合、SheetBindingErrors#rejectValue("フィールド名", "エラーコード", "エラー引数")で設定します。
   
-    * Map<String, Points>フィールドでセルのアドレスを保持している場合は、SheetBindingErrors#rejectSheetValue(...)でセルのアドレスを指定できます。
+    * Map\<String, Points\>フィールドでセルのアドレスを保持している場合は、SheetBindingErrors#rejectSheetValue(...)でセルのアドレスを指定できます。
     
     * エラー引数は、インデックス形式の配列型と名前付きのマップ型のどちらでも指定できます。名前付きのマップ型の利用をお勧めします。
     
@@ -169,15 +169,15 @@ public class EmployerHistoryValidator extends AbstractObjectValidator<EmployerHi
  
  * 型変換エラーは、読み込み時に自動的にチェックされ、エラーコードは、「cellTypeMismatch」と決まっています。
  
-   * フィールドのクラスタイプごとに、メッセージを指定することもでき、「cellTypeTypemsmatch.<クラス名>」で定義します。
+   * フィールドのクラスタイプごとに、メッセージを指定することもでき、「cellTypeMismatch.\<クラス名\>」で定義します。
    
-   * さらに、フィールド名でも指定することができ、「cellTypeTypemsmatch.<フィールド名>」で定義します。
+   * さらに、フィールド名でも指定することができ、「cellTypeMismatch.\<フィールド名\>」で定義します。
    
    * クラスタイプよりもフィールド名で指定する方が優先されます。
  
  * メッセージ中ではEL式を利用することができます。
  
-  * メッセージ中の通常の変数は、{変数名}で定義し、EL式は${EL式}で定義します。
+  * メッセージ中の通常の変数は、\{変数名\}で定義し、EL式は$\{EL式\}で定義します。
  
    * ただし、EL式のライブラリを依存関係に追加しておく必要があります。
   
@@ -225,7 +225,7 @@ SheetMessageConverter messageConverter = new SheetMessageConverter();
 messageConverter.setMessageResolver(new SpringMessageResolver(messageSource));
 ---------
 
-** EL式のカスタマイズ
+** {EL式のカスタマイズ}
 
  メッセージ中の式言語は、EL式以外も利用できます。
  

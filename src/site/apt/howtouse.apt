@@ -11,8 +11,10 @@ XlsMapperの基本的な使い方
 
 * {読み込み方}
 
+** {単一のシートを読み込む場合}
+
  XlsMapperはアノテーションを付与してJavaBeansとExcelをマッピングするライブラリです。
- アノテーションを付与したJavaBeanを作成したうえで以下のようにして読み込みを行います。
+ アノテーション@XlsSheetを付与したJavaBeanを作成したうえで以下のようにして読み込みを行います。
 
 --------
 SheetObject sheet = new XlsMapper().load(
@@ -30,14 +32,41 @@ SheetObject sheet = new XlsMapper().load(
 
   Apache POIは、ver.3.5以上に対応しています。
 
+** {複数のシートを読み込む場合}
+
+ 複数のシートを読み込む場合、XlsMapper#loadMultplue(...)を使用します。
+ 
+ シートの読み込み先のJavaBeansが異なる場合、クラスタイプを配列として渡します。
+ 戻り値は配列Object[]として返されます。
+ 
+--------
+Object[] sheets = new XlsMapper().loadMultiple(
+    new FileInputStream("example.xls"),                  // 読み込むExcelファイル
+    new Class[]{SheetObject1.class, SheetObject2.class}  // アノテーションを付与したクラス。
+    );
+---------
+ 
+ 
+ アノテーション@XlsSheet(regex="正規表現+")のように、シート名を正規表現で指定した場合、
+ シート内の表の形式は同じですが、名前が異なる複数のシートとしを読み込むことができます。
+
+--------
+SheetObject[] sheets = new XlsMapper().loadMultiple(
+    new FileInputStream("example.xls"),  // 読み込むExcelファイル
+    SheetObject.class                    // アノテーションを付与したクラス。
+    );
+---------
+
 * {書き込み方}
 
-  書き込む際には、読み込むときに使用したアノテーションを付与したJavaBeansのクラスのインスタンスを渡します。
+** {単一のシートの書き込み型}
+
+  書き込む際には、@XlsSheetアノテーションを付与したJavaBeansのクラスのインスタンスを渡します。
   また、雛形となるテンプレートのシートを記述しているExcelファイルを引数に渡します。
 
 --------
 SheetObject sheet = //... POJOのインスタンス。
-new XlsMapper().load(
+new XlsMapper().save(
     new FileInputStream("template.xls"), // テンプレートのExcelファイル
     new FileOutputStream("example.xls"), // 書き込むExcelファイル
     sheet                                // JavaBeansのインスタンス
@@ -48,6 +77,58 @@ new XlsMapper().load(
  そのため、テンプレートファイルのExcelファイルがxls(Excel2003形式)で、
  書き込むExcelファイルの拡張子をxlsx(2007形式)を指定しても、xls(Excel2003形式)となります。
 
+
+ アノテーション@XlsSheet(regexp="正規表現*")のようにシート名を正規表現で定義している場合、
+ 書き込み先のシート名はアノテーション@XlsSheetNameを付与したフィールドを元に決定します。
+ そのため、書き込むシート名を予め設定しておく必要があります。
+
+---------------
+/** 正規表現で指定する場合 */
+@XlsSheet(regex="Sheet_[0-9]+")
+public class SheetObject {
+  @XlsSheetName
+  public String sheetName;
+}
+
+SheetObject1 sheet = //... POJOのインスタンス。
+sheet.sheetName = "Sheet_1"; // 予めシート名を設定しておく必要があります。
+
+new XlsMapper().save(
+    new FileInputStream("template.xls"), // テンプレートのExcelファイル
+    new FileOutputStream("example.xls"), // 書き込むExcelファイル
+    sheet         // JavaBeansのインスタンスの配列
+    );
+---------------
+
+** {複数のシートを書き込む場合}
+
+ 複数のシートを読み込む場合、XlsMapper#saveMultplue(...)を使用します。
+ 
+ 書き込むJavaBeansのクラスのインスタンスは、アノテーション@XlsSheetを付与する必要があります。
+ 
+ シートのオブジェクトは配列として渡します。
+
+---------------
+SheetObject1 sheet1 = //... POJOのインスタンス。
+SheetObject2 sheet2 = //... POJOのインスタンス。
+
+new XlsMapper().saveMultiple(
+    new FileInputStream("template.xls"), // テンプレートのExcelファイル
+    new FileOutputStream("example.xls"), // 書き込むExcelファイル
+    new Object[]{sheet1, sheet2}         // JavaBeansのインスタンスの配列
+    );
+---------------
+
+ アノテーション@XlsSheet(regexp="正規表現*")のようにシート名を正規表現で定義している場合、
+ 書き込み先のシート名はアノテーション@XlsSheetNameを付与したフィールドを元に決定します。
+ 
+ テンプレートのExcelファイル中にシートが1つしかない場合、書き込む個数分コピーしておく必要があります。
+ 
+ コピー処理はコール用関数を実装し、その中で定義することをお薦めします。
+
+---------------
+ //TODO: 実装中
+---------------
 
 * {アノテーション（シートのマッピング用）}
 
@@ -177,10 +258,13 @@ public class SheetObject {
  skip属性を指定することで、ラベルセルから指定したセル数分離れたセルの値をマッピングすることができます。
 
 --------
-// クラス名というセルから右側に2つ離れたセルの値をマッピング
-@XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, skip=2)
-public void setActionClassName(String actionClassName){
-  ...
+@XlsSheet(name="Users")
+public class SheetObject {
+
+  // クラス名というセルから右側に2つ離れたセルの値をマッピング
+  @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, skip=2)
+  private String setActionClassName;
+  
 }
 --------
 
@@ -225,7 +309,7 @@ public class SheetObject {
 --------
 @XlsSheet(name="Users")
 public class SheetObject {
-  @XlsHorizontalRecords(tableLabel="Horizontal Records", terminal=RecordTerminal.Border)
+  @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border)
   private List<Record> records;
 }
 --------
@@ -264,6 +348,7 @@ public class SheetObject {
 --------
 @XlsSheet(name="Users")
 public class SheetObject {
+  
   @XlsHorizontalRecords(headerColumn=0, headerRow=1, terminal=RecordTerminal.Border)
   private List<Record> records;
   
@@ -273,7 +358,7 @@ public class SheetObject {
 }
 --------
  
- overRecord、redaminedRecord属性で、書き込み時のレコードの操作を指定することができます。
+ overRecord、remainedRecord属性で、書き込み時のレコードの操作を指定することができます。
  
  * overRecored属性で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
    
@@ -283,7 +368,7 @@ public class SheetObject {
    
    * Breakを指定すると、レコードの書き込みをその時点で止めます。
    
- * redaminedRecord属性で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
+ * remainedRecord属性で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
  
    * Clearでセルの値をクリアします。
    
@@ -309,14 +394,14 @@ public class SheetObject {
 --------
 @XlsSheet(name="Users")
 public class SheetObject {
-  @XlsVerticalRecords(tableLabel="Vertical Records")
+  @XlsVerticalRecords(tableLabel="ユーザ一覧(垂直方向)")
   private List<Record> records;
 }
 --------
 
  * @XlsHorizontalRecordsと同じくterminal属性、およびoptional属性を指定することもできます。
  
- * overRecord、redaminedRecord属性で、書き込み時のレコードの操作を指定することができます。
+ * overRecord、remainedRecord属性で、書き込み時のレコードの操作を指定することができます。
  
    * @XlsHorizontalRecordsでは、overRecord=OverRecordOperate.Insertはサポートしていません。
    
@@ -355,6 +440,7 @@ public class Record {
 
 --------
 public class User {
+  
   @XlsColumn(columnName="連絡先")
   private String mailAddress;
   
@@ -388,7 +474,7 @@ public class User {
 
  同一の構造の表がシート内で繰り返し出現する場合に使用します。
  tableLabelプロパティで繰り返し部分の見出しラベルを指定します。
- また、bottomプロパティは@XlsIterateTables内で@XlsHorizontalRecordを使用する場合に、
+ また、bottomプロパティは@XlsIterateTables内で@XlsHorizontalRecordsを使用する場合に、
  テーブルの開始位置が@XlsIterateTablesの見出しセルからどれだけ離れているかを指定します。
 
 [images/IterateTables.png] IterateTables
@@ -430,7 +516,7 @@ public class UnitUser {
 ** {@XlsHint}
 
  書き込み時に、@XlsHoriontalRecordsを使用して行の挿入や削除を行う設定を行っている場合、
- フィールドの処理順序によって、Map<String, Point> positionsフィールドで座標がずれる場合があります。
+ フィールドの処理順序によって、Map\<String, Point\> positionsフィールドで座標がずれる場合があります。
  
  このようなときに、@XlsHintで書き込む処理順序を指定し一定に保つことができます。
  
@@ -757,9 +843,9 @@ public class UnitUser {
 *---------------------------------------------------+----------------------------------------------------------------------------------+
   org.apache.poi.ss.usermodel.Sheet                 | 処理対象のSheetオブジェクト。                                                     
 *---------------------------------------------------+----------------------------------------------------------------------------------+
-  proj.green.xlsmapper.XlsMapperConfig              | XlsMapperの設定オブジェクト。                                                     
+  com.gh.mygreen.xlsmapper.XlsMapperConfig              | XlsMapperの設定オブジェクト。                                                     
 *---------------------------------------------------+----------------------------------------------------------------------------------+
-  proj.green.xlsmapper.validation.SheetBindingErrors| シートのエラー情報を格納するオブジェクト。読み込み時に引数で渡したオブジェクト。  
+  com.gh.mygreen.xlsmapper.validation.SheetBindingErrors| シートのエラー情報を格納するオブジェクト。読み込み時に引数で渡したオブジェクト。  
 *---------------------------------------------------+----------------------------------------------------------------------------------+
 
 
@@ -832,13 +918,13 @@ SheetObject sheet = new XlsMapper.load(
 *-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
   mergeCellOnSave       |boolean                                                  |書き込み時にセルの結合を行うかどうか。アノテーション@XlsColumnの属性mergedを書き込み時も考慮します。                                                                                         |
 *-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-  cellFormatter         |proj.green.xlsmapper.POICellFormatter                    |POIのセルの値を取得するクラス。                                                                                                                                                              |
+  cellFormatter         |com.gh.mygreen.xlsmapper.POICellFormatter                    |POIのセルの値を取得するクラス。                                                                                                                                                              |
 *-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-  fieldProcessorRegistry|proj.green.xlsmapper.fieldprocessor.FieldProcessorRegstry|フィールドプロセッサーを管理する。                                                                                                                                                           |
+  fieldProcessorRegistry|com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegstry|フィールドプロセッサーを管理する。                                                                                                                                                           |
 *-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-  CellConverterRegistry |proj.green.xlsmapper.cellconvert.CellConverterRegistry   |セルの値をJavaオブジェクトに変換するクラスを管理する。                                                                                                                                       |
+  CellConverterRegistry |com.gh.mygreen.xlsmapper.cellconvert.CellConverterRegistry   |セルの値をJavaオブジェクトに変換するクラスを管理する。                                                                                                                                       |
 *-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-  beanFactory           |proj.green.xlsmapper.FactoryCallback                     | 読み込み時などのJavaBeansオブジェクトのインスタンスを作成すためのコールバック用クラス。独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスをしようすることができる。|
+  beanFactory           |com.gh.mygreen.xlsmapper.FactoryCallback                     | 読み込み時などのJavaBeansオブジェクトのインスタンスを作成すためのコールバック用クラス。独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスをしようすることができる。|
 *-----------------------+---------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
@@ -979,8 +1065,8 @@ public void setNameLabel(String label){
 --------
 <?xml version="1.0" encoding="utf-8"?>
 <annotations>
-  <class name="org.mygreen.xlsmapper.example.SheetObject">
-    <annotation name="org.mygreen.xlsmapper.annotation.XlsSheet">
+  <class name="com.gh.mygreen.xlsmapper.example.SheetObject">
+    <annotation name="com.gh.mygreen.xlsmapper.annotation.XlsSheet">
       <attribute name="name">'Users'</attribute>
     </annotation>
   </class>
@@ -992,14 +1078,14 @@ public void setNameLabel(String label){
 --------
 <?xml version="1.0" encoding="utf-8"?>
 <annotations>
-  <class name="org.mygreen.xlsmapper.example.SheetObject">
-    <annotation name="org.mygreen.xlsmapper.annotation.XlsSheet">
+  <class name="com.gh.mygreen.xlsmapper.example.SheetObject">
+    <annotation name="com.gh.mygreen.xlsmapper.annotation.XlsSheet">
       <attribute name="name">'Users'</attribute>
     </annotation>
     <method name="setTitle">
-      <annotation name="org.mygreen.xlsmapper.annotation.XlsLabelledCell">
+      <annotation name="com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell">
         <attribute name="label">'Title'</attribute>
-        <attribute name="type">@Xlsorg.mygreen.xlsmapper.annotation.XlsLabelledCellType@Right</attribute>
+        <attribute name="type">@Xlscom.gh.mygreen.xlsmapper.annotation.XlsLabelledCellType@Right</attribute>
       </annotation>
     </method>
   </class>
@@ -1011,7 +1097,7 @@ public void setNameLabel(String label){
 --------
 <?xml version="1.0" encoding="utf-8"?>
 <annotations>
-  <class name="org.mygreen.xlsmapper.example.SheetObject">
+  <class name="com.gh.mygreen.xlsmapper.example.SheetObject">
     <field name="setTitle">
       <annotation name="...">
         ...

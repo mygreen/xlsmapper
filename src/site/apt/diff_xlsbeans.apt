@@ -10,7 +10,7 @@ XLSBeansとの違い
 ~~ %{toc|section=1|fromDepth=1|toDepth=3}
 
  XlsMapperは、XLSBeans ver.1.1 のソースを元に開発を行っています。
- そのため、仕様はXLSBeansと似ている部分もあります。
+ そのため、仕様、特にアノテーションの使い方はXLSBeansと共通しています。
  XLSBeansとの違いを以下に示します。
 
 * {改善機能}
@@ -19,11 +19,6 @@ XLSBeansとの違い
       
           * セルの座標を指定する属性addressが使用できます。
       
-      * 読み込み時、書き込み時のコールバック用メソッドを定義するためのアノテーション
-        @XlsPreLoad/@XlsPostLoad/@XlsPreSave/@XlsPostLoadが使用できます。
-          
-          * アノテーション@PostProcessorとは異なり、現在の処理対象のシートの「Sheetオブジェクト」の引数などをとることができます。
-            
       * エラーメッセージの内容を詳細に表示し、設定間違いの対応をしやすくしています。
       
       * Generics対応として、@XlsMapColums、@XlsIterateTablesにも対応しており、マッピング先のClassを指定する必要がありません。
@@ -41,6 +36,9 @@ XLSBeansとの違い
           * @XlsHorizontalRecords/@XlsVerticalRecordsに書き込み用の属性を追加し、
                         行が余ったときや足りないときの動作をカスタマイズできます。
                         
+      * 読み込み時、書き込み時のコールバック用メソッドを定義するためのアノテーション
+        @XlsPreLoad/@XlsPostLoad/@XlsPreSave/@XlsPostLoadが使用できます。
+          
       * 型変換機能として、専用のアノテーションを利用して各フィールドごとに細かく設定できます。
       
       * 読み込んだシートの内容をチェックするValidation機能があります。
@@ -55,5 +53,8 @@ XLSBeansとの違い
 
       * コードをシンプルにするため、jExcel API対応を排除し、Apache POIのみに対応しています。
       
+      * アノテーション@PostProcessorを削除しました。
+        代わりに、@XlsPreLoad/@XlsPostLoad/@XlsPreSave/@XlsPostLoadが使用できます。
+            
       []
 
