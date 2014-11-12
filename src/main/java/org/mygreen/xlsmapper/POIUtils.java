@@ -1,5 +1,6 @@
 package org.mygreen.xlsmapper;
 
+import java.awt.Point;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -10,8 +11,10 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.extensions.XSSFCellAlignment;
+import org.mygreen.xlsmapper.cellconvert.LinkType;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCellAlignment;
 
 /**
@@ -22,6 +25,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCellAlignment;
  */
 public class POIUtils {
     
+    /** 標準のセルフォーマッター */
     private static POICellFormatter defaultCellFormatter = new POICellFormatter();
     
     /**
@@ -366,6 +370,68 @@ public class POIUtils {
             }
             
             
+        }
+        
+    }
+    
+    /**
+     * 座標をExcelのアドレス形式'A1'などに変換する
+     * @param rowIndex 行インデックス
+     * @param colIndex 列インデックス
+     * @return
+     */
+    public static String formatCellAddress(final int rowIndex, final int colIndex) {
+        return CellReference.convertNumToColString(colIndex) + String.valueOf(rowIndex+1);
+    }
+    
+    /**
+     * 座標をExcelのアドレス形式'A1'になどに変換する。
+     * @param address
+     * @return
+     * @throws IllegalArgumentException address == null.
+     */
+    public static String formatCellAddress(final Point cellAddress) {
+        ArgUtils.notNull(cellAddress, "cellAddress");
+        return formatCellAddress(cellAddress.y, cellAddress.x);
+    }
+    
+    /**
+     * セルのアドレス'A1'を取得する。
+     * @param cell
+     * @return IllegalArgumentException cell == null.
+     */
+    public static String formatCellAddress(final Cell cell) {
+        ArgUtils.notNull(cell, "cell");
+        return CellReference.convertNumToColString(cell.getColumnIndex()) + String.valueOf(cell.getRowIndex()+1);
+    }
+    
+    /**
+     * リンクのアドレスを判定する。
+     * @param linkAddress
+     * @return 不明な場合は{@link LinkType#UNKNOWN}を返す。
+     * @throws IllegalArgumentException linkAddress が空文字の場合。
+     */
+    public static LinkType judgeLinkType(final String linkAddress) {
+        
+        ArgUtils.notEmpty(linkAddress, "linkAddress");
+        
+        if(linkAddress.matches(".*![\\p{Alnum}]+")) {
+            // !A1のアドレスを含むかどうか
+            return LinkType.DOCUMENT;
+            
+        } else if(linkAddress.matches(".+@.+")) {
+            // @を含むかどうか
+            return LinkType.EMAIL;
+            
+        } else if(linkAddress.matches("[\\p{Alpha}]+://.+")) {
+            // プロトコル付きかどうか
+            return LinkType.URL;
+            
+        } else if(linkAddress.matches(".+\\.[\\p{Alnum}]+")) {
+            // 拡張子付きかどうか
+            return LinkType.FILE;
+        } else {
+            return LinkType.UNKNOWN;
         }
         
     }

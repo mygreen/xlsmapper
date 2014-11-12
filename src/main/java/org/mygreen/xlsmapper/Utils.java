@@ -937,7 +937,7 @@ public class Utils {
      * @return
      */
     public static String formatCellAddress(final int rowIndex, final int colIndex) {
-        return CellReference.convertNumToColString(colIndex) + String.valueOf(rowIndex+1);
+        return POIUtils.formatCellAddress(rowIndex, colIndex);
     }
     
     /**
@@ -947,8 +947,7 @@ public class Utils {
      * @throws IllegalArgumentException address == null.
      */
     public static String formatCellAddress(final Point cellAddress) {
-        ArgUtils.notNull(cellAddress, "cellAddress");
-        return formatCellAddress(cellAddress.y, cellAddress.x);
+        return POIUtils.formatCellAddress(cellAddress);
     }
     
     /**
@@ -957,8 +956,7 @@ public class Utils {
      * @return IllegalArgumentException cell == null.
      */
     public static String formatCellAddress(final Cell cell) {
-        ArgUtils.notNull(cell, "cell");
-        return CellReference.convertNumToColString(cell.getColumnIndex()) + String.valueOf(cell.getRowIndex()+1);
+        return POIUtils.formatCellAddress(cell);
     }
     
     /**

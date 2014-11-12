@@ -2,6 +2,7 @@ package org.mygreen.xlsmapper.cellconvert;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -17,6 +18,7 @@ import org.mygreen.xlsmapper.cellconvert.converter.BigDecimalCellConverter;
 import org.mygreen.xlsmapper.cellconvert.converter.BigIntegerCellConverter;
 import org.mygreen.xlsmapper.cellconvert.converter.BooleanCellConverter;
 import org.mygreen.xlsmapper.cellconvert.converter.ByteCellConverter;
+import org.mygreen.xlsmapper.cellconvert.converter.CellLinkCellConverter;
 import org.mygreen.xlsmapper.cellconvert.converter.CharacterCellConverter;
 import org.mygreen.xlsmapper.cellconvert.converter.DateCellConverter;
 import org.mygreen.xlsmapper.cellconvert.converter.DoubleCellConverter;
@@ -31,6 +33,7 @@ import org.mygreen.xlsmapper.cellconvert.converter.SqlDateCellConverter;
 import org.mygreen.xlsmapper.cellconvert.converter.SqlTimeCellConverter;
 import org.mygreen.xlsmapper.cellconvert.converter.SqlTimestampCellConverter;
 import org.mygreen.xlsmapper.cellconvert.converter.StringCellConverter;
+import org.mygreen.xlsmapper.cellconvert.converter.URICellConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,6 +119,9 @@ public class CellConverterRegistry {
         registerConverter(List.class, new ListCellConverter());
         registerConverter(Set.class, new SetCellConverter());
         registerConverter(Object[].class, new ArrayCellConverter());
+        
+        registerConverter(URI.class, new URICellConverter());
+        registerConverter(CellLink.class, new CellLinkCellConverter());
         
     }
     

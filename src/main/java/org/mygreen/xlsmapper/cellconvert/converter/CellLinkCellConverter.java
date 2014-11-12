@@ -1,8 +1,5 @@
 package org.mygreen.xlsmapper.cellconvert.converter;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Hyperlink;
@@ -13,19 +10,21 @@ import org.mygreen.xlsmapper.XlsMapperConfig;
 import org.mygreen.xlsmapper.XlsMapperException;
 import org.mygreen.xlsmapper.annotation.converter.XlsConverter;
 import org.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
+import org.mygreen.xlsmapper.cellconvert.CellLink;
+import org.mygreen.xlsmapper.cellconvert.LinkType;
 import org.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 
 
 /**
- * URIのConverter.
+ * CellLinkのConverter.
  *
  * @author T.TSUCHIE
  *
  */
-public class URICellConverter extends AbstractCellConverter<URI>{
+public class CellLinkCellConverter extends AbstractCellConverter<CellLink>{
     
     @Override
-    public URI toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config)
+    public CellLink toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config)
             throws XlsMapperException {
         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
@@ -36,30 +35,20 @@ public class URICellConverter extends AbstractCellConverter<URI>{
                 return null;
             } else {
                 final String defaultValue = converterAnno.defaultValue();
-                try {
-                    return new URI(defaultValue);
-                } catch (URISyntaxException e) {
-                    throw newTypeBindException(cell, adaptor, defaultValue);
-                }
+                return new CellLink(defaultValue, defaultValue);
             }
             
         } else if(cell.getHyperlink() != null) {
             // リンクが設定されているセルは、リンクの内容を値とする
             final String address = Utils.trim(cell.getHyperlink().getAddress(), converterAnno);
-            try {
-                return new URI(address);
-            } catch (URISyntaxException e) {
-                throw newTypeBindException(cell, adaptor, address);
-            }
+            final String label = Utils.trim(cell.getHyperlink().getLabel(), converterAnno);
+            
+            return new CellLink(address, label);
             
         } else {
             // リンクがないセルは、セルの文字列を値とする
-            final String str = Utils.trim(POIUtils.getCellContents(cell, config.getCellFormatter()), converterAnno);
-            try {
-                return new URI(str);
-            } catch (URISyntaxException e) {
-                throw newTypeBindException(cell, adaptor, str);
-            }
+            final String label = Utils.trim(POIUtils.getCellContents(cell, config.getCellFormatter()), converterAnno);
+            return new CellLink(null, label);
             
         }
     }
@@ -91,20 +80,25 @@ public class URICellConverter extends AbstractCellConverter<URI>{
             POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
         }
         
-        final URI value;
+        final CellLink value;
         if(mapKey == null) {
-            value = (URI)adaptor.getValue(targetObj);
+            value = (CellLink)adaptor.getValue(targetObj);
         } else {
-            value = (URI)adaptor.getValueOfMap(mapKey, targetObj);
+            value = (CellLink)adaptor.getValueOfMap(mapKey, targetObj);
         }
         
-        if(value != null) {
+        if(value != null && Utils.isNotEmpty(value.getLink())) {
             final CreationHelper helper = sheet.getWorkbook().getCreationHelper();
-            final Hyperlink link = helper.createHyperlink(Hyperlink.LINK_URL);
-            link.setAddress(value.toString());
-            cell.setHyperlink(link);
+            final LinkType type = POIUtils.judgeLinkType(value.getLink());
+            final Hyperlink link = helper.createHyperlink(type.poiType());
             
-            cell.setCellValue(value.toString());
+            link.setAddress(value.getLink());
+            cell.setHyperlink(link);
+            cell.setCellValue(value.getLabel());
+            
+        } else if(value != null && Utils.isNotEmpty(value.getLabel())) {
+            // 見出しのみ設定されている場合
+            cell.setCellValue(value.getLabel());
             
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);
