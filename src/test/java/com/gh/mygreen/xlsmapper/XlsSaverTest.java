@@ -1,4 +1,4 @@
-package org.mygreen.xlsmapper;
+package com.gh.mygreen.xlsmapper;
 
 import static org.junit.Assert.fail;
 
@@ -13,8 +13,9 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mygreen.xlsmapper.XlsSaver;
-import org.mygreen.xlsmapper.Employer.UpdateType;
+
+import com.gh.mygreen.xlsmapper.XlsSaver;
+import com.gh.mygreen.xlsmapper.Employer.UpdateType;
 
 
 public class XlsSaverTest {

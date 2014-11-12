@@ -1,4 +1,4 @@
-package org.mygreen.xlsmapper;
+package com.gh.mygreen.xlsmapper;
 
 import static org.junit.Assert.fail;
 
@@ -7,12 +7,14 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mygreen.xlsmapper.XlsLoader;
-import org.mygreen.xlsmapper.expression.ExpressionLanguageRegistry;
-import org.mygreen.xlsmapper.validation.EmployerValidator;
-import org.mygreen.xlsmapper.validation.ObjectError;
-import org.mygreen.xlsmapper.validation.SheetBindingErrors;
-import org.mygreen.xlsmapper.validation.SheetMessageConverter;
+
+import com.gh.mygreen.xlsmapper.XlsLoader;
+import com.gh.mygreen.xlsmapper.XlsMapper;
+import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageRegistry;
+import com.gh.mygreen.xlsmapper.validation.EmployerValidator;
+import com.gh.mygreen.xlsmapper.validation.ObjectError;
+import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 
 
 public class XlsLoaderTest {

@@ -1,11 +1,13 @@
-package org.mygreen.xlsmapper;
+package com.gh.mygreen.xlsmapper;
 
 import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mygreen.xlsmapper.cellconvert.LinkType;
+
+import com.gh.mygreen.xlsmapper.POIUtils;
+import com.gh.mygreen.xlsmapper.cellconvert.LinkType;
 
 
 public class POIUtilsTest {

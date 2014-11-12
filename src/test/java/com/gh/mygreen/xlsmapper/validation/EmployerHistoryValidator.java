@@ -1,14 +1,14 @@
-package org.mygreen.xlsmapper.validation;
+package com.gh.mygreen.xlsmapper.validation;
 
 import java.util.Date;
 
-import org.mygreen.xlsmapper.EmployerHistory;
-import org.mygreen.xlsmapper.validation.AbstractObjectValidator;
-import org.mygreen.xlsmapper.validation.SheetBindingErrors;
-import org.mygreen.xlsmapper.validation.fieldvalidation.CellField;
-import org.mygreen.xlsmapper.validation.fieldvalidation.MaxValidator;
-import org.mygreen.xlsmapper.validation.fieldvalidation.MinValidator;
-import org.mygreen.xlsmapper.validation.fieldvalidation.StringValidator;
+import com.gh.mygreen.xlsmapper.EmployerHistory;
+import com.gh.mygreen.xlsmapper.validation.AbstractObjectValidator;
+import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.CellField;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.MaxValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.MinValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.StringValidator;
 
 
 public class EmployerHistoryValidator extends AbstractObjectValidator<EmployerHistory>{

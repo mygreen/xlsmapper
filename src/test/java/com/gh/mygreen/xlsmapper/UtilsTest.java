@@ -1,4 +1,4 @@
-package org.mygreen.xlsmapper;
+package com.gh.mygreen.xlsmapper;
 
 import static org.junit.Assert.*;
 
@@ -6,7 +6,8 @@ import java.awt.Point;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mygreen.xlsmapper.Utils;
+
+import com.gh.mygreen.xlsmapper.Utils;
 
 
 public class UtilsTest {

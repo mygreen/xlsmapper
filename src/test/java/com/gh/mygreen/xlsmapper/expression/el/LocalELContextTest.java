@@ -1,4 +1,4 @@
-package org.mygreen.xlsmapper.expression.el;
+package com.gh.mygreen.xlsmapper.expression.el;
 
 import static org.junit.Assert.fail;
 
@@ -13,8 +13,9 @@ import javax.el.ValueExpression;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mygreen.xlsmapper.expression.el.FormatterWrapper;
-import org.mygreen.xlsmapper.expression.el.LocalELContext;
+
+import com.gh.mygreen.xlsmapper.expression.el.FormatterWrapper;
+import com.gh.mygreen.xlsmapper.expression.el.LocalELContext;
 
 /**
  * EL式のテスタ

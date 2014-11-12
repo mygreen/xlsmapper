@@ -4,19 +4,20 @@
  *
  * (C) Copyright 2003-2010 GreenDay Project. All rights reserved.
  */
-package org.mygreen.xlsmapper;
+package com.gh.mygreen.xlsmapper;
 
 import java.awt.Point;
 import java.util.Date;
 import java.util.Map;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.mygreen.xlsmapper.annotation.XlsColumn;
-import org.mygreen.xlsmapper.annotation.XlsMapColumns;
-import org.mygreen.xlsmapper.annotation.XlsPostLoad;
-import org.mygreen.xlsmapper.annotation.XlsPreLoad;
-import org.mygreen.xlsmapper.annotation.converter.XlsDateConverter;
-import org.mygreen.xlsmapper.annotation.converter.XlsNumberConverter;
+
+import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
+import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
+import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
+import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
+import com.gh.mygreen.xlsmapper.annotation.converter.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.converter.XlsNumberConverter;
 
 
 /**

@@ -1,4 +1,4 @@
-package org.mygreen.xlsmapper.validation.beanvalidation;
+package com.gh.mygreen.xlsmapper.validation.beanvalidation;
 
 import static org.junit.Assert.*;
 
@@ -16,17 +16,18 @@ import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mygreen.xlsmapper.Employer;
-import org.mygreen.xlsmapper.XlsLoader;
-import org.mygreen.xlsmapper.expression.ExpressionLanguageRegistry;
-import org.mygreen.xlsmapper.validation.MessageInterpolator;
-import org.mygreen.xlsmapper.validation.MessageResolver;
-import org.mygreen.xlsmapper.validation.ResourceBundleMessageResolver;
-import org.mygreen.xlsmapper.validation.SheetBindingErrors;
-import org.mygreen.xlsmapper.validation.SheetMessageConverter;
-import org.mygreen.xlsmapper.validation.beanvalidation.MessageInterpolatorAdapter;
-import org.mygreen.xlsmapper.validation.beanvalidation.MessageResolverInterpolator;
-import org.mygreen.xlsmapper.validation.beanvalidation.SheetBeanValidator;
+
+import com.gh.mygreen.xlsmapper.Employer;
+import com.gh.mygreen.xlsmapper.XlsLoader;
+import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageRegistry;
+import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.validation.MessageResolver;
+import com.gh.mygreen.xlsmapper.validation.ResourceBundleMessageResolver;
+import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.beanvalidation.MessageInterpolatorAdapter;
+import com.gh.mygreen.xlsmapper.validation.beanvalidation.MessageResolverInterpolator;
+import com.gh.mygreen.xlsmapper.validation.beanvalidation.SheetBeanValidator;
 
 
 public class BeanValidationTest {

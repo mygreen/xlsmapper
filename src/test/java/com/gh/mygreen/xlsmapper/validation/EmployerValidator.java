@@ -1,8 +1,8 @@
-package org.mygreen.xlsmapper.validation;
+package com.gh.mygreen.xlsmapper.validation;
 
-import org.mygreen.xlsmapper.Employer;
-import org.mygreen.xlsmapper.validation.AbstractObjectValidator;
-import org.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.Employer;
+import com.gh.mygreen.xlsmapper.validation.AbstractObjectValidator;
+import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 
 public class EmployerValidator extends AbstractObjectValidator<Employer>{

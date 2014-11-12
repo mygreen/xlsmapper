@@ -1,4 +1,4 @@
-package org.mygreen.xlsmapper.validation;
+package com.gh.mygreen.xlsmapper.validation;
 
 import static org.junit.Assert.*;
 
@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.mygreen.xlsmapper.expression.ExpressionEvaluationException;
-import org.mygreen.xlsmapper.validation.MessageInterpolator;
-import org.mygreen.xlsmapper.validation.MessageParseException;
+
+import com.gh.mygreen.xlsmapper.expression.ExpressionEvaluationException;
+import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.validation.MessageParseException;
 
 
 @SuppressWarnings("unused")
