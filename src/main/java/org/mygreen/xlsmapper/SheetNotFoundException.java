@@ -1,5 +1,7 @@
 package org.mygreen.xlsmapper;
 
+import org.mygreen.xlsmapper.annotation.XlsSheet;
+
 
 /**
  * シートが見つからない場合にスローされる例外クラス。
@@ -14,7 +16,7 @@ public class SheetNotFoundException extends XlsMapperException {
     
     private String sheetName;
     
-    private Integer sheetIndex;
+    private Integer sheetNumber;
     
     private Integer bookSheetSize;
     
@@ -29,23 +31,35 @@ public class SheetNotFoundException extends XlsMapperException {
     
     /**
      * 指定したシートのインデックスが見つからない場合に、そのシートインデックスを指定するコンストラクタ。
-     * @param sheetIndex シートインデックス
+     * @param sheetNumber シート番号
      * @param bookSheetSize ワークブックのシートサイズ。
      */
-    public SheetNotFoundException(final int sheetIndex, final int bookSheetSize) {
-        super(String.format("Cannot find sheet index [%d]. book only has number of sheet %d.", sheetIndex, bookSheetSize));
-        this.sheetIndex = sheetIndex;
+    public SheetNotFoundException(final int sheetNumber, final int bookSheetSize) {
+        super(String.format("Cannot find sheet number [%d]. book only has number of sheet %d.", sheetNumber, bookSheetSize));
+        this.sheetNumber = sheetNumber;
         this.bookSheetSize = bookSheetSize;
     }
     
+    /**
+     * 検索対象のシート名。{@link XlsSheet}のname属性を指定されていた場合に設定される。
+     * @return
+     */
     public String getSheetName() {
         return sheetName;
     }
     
-    public Integer getSheetIndex() {
-        return sheetIndex;
+    /**
+     * 検索対象のシート番号。{@link XlsSheet}のnumber属性を指定されていた場合に設定される。
+     * @return
+     */
+    public Integer getSheetNumber() {
+        return sheetNumber;
     }
     
+    /**
+     * Excelファイルのシートの個数。{@link XlsSheet}のnumber属性を指定されていた場合に設定される。
+     * @return
+     */
     public Integer getBookSheetSize() {
         return bookSheetSize;
     }
