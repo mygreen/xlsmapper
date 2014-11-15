@@ -1,5 +1,11 @@
 package com.gh.mygreen.xlsmapper.annotation.converter;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 
 
 /**
@@ -8,6 +14,9 @@ package com.gh.mygreen.xlsmapper.annotation.converter;
  * @author T.TSUCHIE
  *
  */
+@Target({ElementType.METHOD, ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface XlsArrayConverter {
     
     /**
