@@ -10,7 +10,6 @@ import java.util.Map;
 
 import com.gh.mygreen.xlsmapper.ArgUtils;
 import com.gh.mygreen.xlsmapper.Utils;
-import com.gh.mygreen.xlsmapper.XlsMapperException;
 
 
 /**
@@ -31,6 +30,12 @@ public class SheetMessageConverter {
         
     }
     
+    /**
+     * エラーオブジェクトのリストをメッセージに変換する。
+     * @param errors 変換対象のエラーオブジェクト。
+     * @return
+     * @throws IllegalArgumentException errors == null.
+     */
     public List<String> convertMessages(final Collection<ObjectError> errors) {
         ArgUtils.notNull(errors, "errors");
         
@@ -42,7 +47,14 @@ public class SheetMessageConverter {
         return messageList;
     }
     
+    /**
+     * {@link ObjectError}をメッセージに変換する。
+     * @param error
+     * @return
+     * @throws IllegalArgumentException errors == null.
+     */
     public String convertMessage(final ObjectError error) {
+        ArgUtils.notNull(error, "error");
         
         if(error.getArgs() != null) {
             return convertMessageWithIndexArgs(error);
@@ -54,6 +66,11 @@ public class SheetMessageConverter {
         
     }
     
+    /**
+     * インデックス形式の変数のメッセージとして{@link ObjectError}を変換する。
+     * @param error
+     * @return
+     */
     protected String convertMessageWithIndexArgs(final ObjectError error) {
         
         final List<Object> args = new ArrayList<Object>();
@@ -91,6 +108,11 @@ public class SheetMessageConverter {
         
     }
     
+    /**
+     * 名前付き変数のメッセージとして{@link ObjectError}を変換する。
+     * @param error
+     * @return
+     */
     protected String convertMessageWithNameArgs(final ObjectError error) {
         
         final Map<String, Object> vars = new LinkedHashMap<String, Object>();
@@ -161,7 +183,7 @@ public class SheetMessageConverter {
     
     /**
      * 指定した引数の候補からメッセージを取得する。
-     * @param codes
+     * @param codes メッセージコードの候補
      * @param メッセージコードが見つからない場合のメッセージ
      * @return
      */
@@ -182,13 +204,6 @@ public class SheetMessageConverter {
         }
         
         throw new RuntimeException(String.format("not found message code [%s].", Utils.join(codes, ",")));
-    }
-    
-    public String format(final String[] codes, final Map<String, Object> vars, final String defaultMessage) throws XlsMapperException {
-        
-        final String message = getMessage(codes, defaultMessage);
-        return messageInterporlator.interpolate(message, vars);
-        
     }
     
     public MessageResolver getMessageResolver() {
