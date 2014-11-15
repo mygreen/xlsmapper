@@ -235,10 +235,7 @@ public class XlsLoader {
             xmlInfo = XMLLoader.load(xmlIn);
         }
         
-        final LoadingWorkObject work = new LoadingWorkObject();
-        
         final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
-        work.setAnnoReader(annoReader);
         
         final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
         if(sheetAnno == null) {
@@ -267,6 +264,9 @@ public class XlsLoader {
             int sheetNum = book.getNumberOfSheets();
             for(int i=0; i < sheetNum; i++) {
                 final org.apache.poi.ss.usermodel.Sheet sheet = book.getSheetAt(i);
+                
+                final LoadingWorkObject work = new LoadingWorkObject();
+                work.setAnnoReader(annoReader);
                 work.setErrors(container.findBindingResult(i));
                 list.add(loadSheet(sheet, clazz, work));
             }
@@ -276,6 +276,9 @@ public class XlsLoader {
             try {
                 final org.apache.poi.ss.usermodel.Sheet[] xlsSheet = findSheet(book, sheetAnno);
                 for(org.apache.poi.ss.usermodel.Sheet sheet : xlsSheet) {
+                    
+                    final LoadingWorkObject work = new LoadingWorkObject();
+                    work.setAnnoReader(annoReader);
                     work.setErrors(container.findBindingResult(list.size()));
                     list.add(loadSheet(sheet, clazz, work));
                 }
@@ -317,10 +320,7 @@ public class XlsLoader {
             xmlInfo = XMLLoader.load(xmlIn);
         }
         
-        final LoadingWorkObject work = new LoadingWorkObject();
-        
         final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
-        work.setAnnoReader(annoReader);
         
         final SheetBindingErrorsContainer container;
         if(errorsContainer != null) {
@@ -347,6 +347,9 @@ public class XlsLoader {
             try {
                 final org.apache.poi.ss.usermodel.Sheet[] xlsSheet = findSheet(book, sheetAnno);
                 for(org.apache.poi.ss.usermodel.Sheet sheet: xlsSheet) {
+                    
+                    final LoadingWorkObject work = new LoadingWorkObject();
+                    work.setAnnoReader(annoReader);
                     work.setErrors(container.findBindingResult(list.size()));
                     list.add(loadSheet(sheet, clazz, work));
                     

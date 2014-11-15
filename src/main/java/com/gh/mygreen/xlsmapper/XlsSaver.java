@@ -110,7 +110,7 @@ public class XlsSaver {
         }
         
         try {
-            final org.apache.poi.ss.usermodel.Sheet[] xlsSheet = findSheet(book, sheetAnno, beanObj, work);
+            final org.apache.poi.ss.usermodel.Sheet[] xlsSheet = findSheet(book, sheetAnno, beanObj, annoReader);
             saveSheet(xlsSheet[0], beanObj, work);
         } catch(SheetNotFoundException e) {
             if(config.isIgnoreSheetNotFound()){
@@ -166,9 +166,6 @@ public class XlsSaver {
         final SheetBindingErrorsContainer errorsContainer = new SheetBindingErrorsContainer(getObjectNames(beanObjs));
         
         final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
-        final SavingWorkObject work = new SavingWorkObject();
-        work.setAnnoReader(annoReader);
-        
         final Workbook book;
         try {
             book = WorkbookFactory.create(templateXlsIn);
@@ -180,13 +177,17 @@ public class XlsSaver {
         for(int i=0; i < beanObjs.length; i++) {
             final Object beanObj = beanObjs[i];
             final Class<?> clazz = beanObj.getClass();
+            
             final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
             if(sheetAnno == null) {
                 throw new AnnotationInvalidException("Cannot finld annoation '@XlsSheet'", sheetAnno);
             }
             
+            final SavingWorkObject work = new SavingWorkObject();
+            work.setAnnoReader(annoReader);
+            
             try {
-                final org.apache.poi.ss.usermodel.Sheet[] xlsSheet = findSheet(book, sheetAnno, beanObj, work);
+                final org.apache.poi.ss.usermodel.Sheet[] xlsSheet = findSheet(book, sheetAnno, beanObj, annoReader);
                 work.setErrors(errorsContainer.findBindingResult(i));
                 saveSheet(xlsSheet[0], beanObj, work);
             } catch(SheetNotFoundException e) {
@@ -296,14 +297,14 @@ public class XlsSaver {
      * @param sheetAnno アノテーション{@link XlsSheet}
      * @param obj
      * @param config
-     * @param work
+     * @param annoReader
      * @return Excelのシート情報。複数ヒットする場合は、該当するものを全て返す。
      * @throws SheetNotFoundException
      * @throws AnnotationInvalidException
      * @throws AnnotationReadException 
      */
     private org.apache.poi.ss.usermodel.Sheet[] findSheet(final Workbook book, final XlsSheet sheetAnno,
-            final Object obj, final SavingWorkObject work) throws SheetNotFoundException, AnnotationInvalidException, AnnotationReadException {
+            final Object obj, final AnnotationReader annoReader) throws SheetNotFoundException, AnnotationInvalidException, AnnotationReadException {
         
         if(sheetAnno.name().length() > 0) {
             // シート名から取得する。
@@ -322,7 +323,7 @@ public class XlsSaver {
         } else if(sheetAnno.regex().length() > 0) {
             // シート名（正規表現）をもとにして、取得する。
             final String sheetNameValue;
-            FieldAdaptor sheetNameField = getSheetNameField(obj, work);
+            FieldAdaptor sheetNameField = getSheetNameField(obj, annoReader);
             if(sheetNameField != null) {
                 sheetNameValue = sheetNameField.getValue(obj).toString();
             } else {
@@ -359,11 +360,11 @@ public class XlsSaver {
      * アノテーション「@XlsSheetName」が付与されているフィールド／メソッドを取得する。
      * @param obj
      * @param config
-     * @param work
+     * @param annoReader
      * @return
      * @throws AnnotationReadException 
      */
-    private FieldAdaptor getSheetNameField(final Object obj, SavingWorkObject work) throws AnnotationReadException {
+    private FieldAdaptor getSheetNameField(final Object obj, final AnnotationReader annoReader) throws AnnotationReadException {
         
         Class<?> clazz = obj.getClass();
         for(Method method : clazz.getMethods()) {
@@ -372,23 +373,23 @@ public class XlsSaver {
                 continue;
             }
             
-            XlsSheetName sheetNameAnno = work.getAnnoReader().getAnnotation(clazz, method, XlsSheetName.class);
+            XlsSheetName sheetNameAnno = annoReader.getAnnotation(clazz, method, XlsSheetName.class);
             if(sheetNameAnno == null) {
                 continue;
             }
             
-            return new FieldAdaptor(clazz, method, work.getAnnoReader());
+            return new FieldAdaptor(clazz, method, annoReader);
         }
         
         for(Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
             
-            XlsSheetName sheetNameAnno = work.getAnnoReader().getAnnotation(clazz, field, XlsSheetName.class);
+            XlsSheetName sheetNameAnno = annoReader.getAnnotation(clazz, field, XlsSheetName.class);
             if(sheetNameAnno == null) {
                 continue;
             }
             
-            return new FieldAdaptor(clazz, field, work.getAnnoReader());
+            return new FieldAdaptor(clazz, field, annoReader);
         }
         
         // not found
