@@ -283,7 +283,6 @@ public class XlsLoader {
             } catch(SheetNotFoundException e) {
                 if(config.isIgnoreSheetNotFound()){
                     logger.warn("skip loading by not-found sheet.", e);
-                    return null;
                 } else {
                     throw e;
                 }

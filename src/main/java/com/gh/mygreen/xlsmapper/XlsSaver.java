@@ -191,8 +191,8 @@ public class XlsSaver {
                 saveSheet(xlsSheet[0], beanObj, work);
             } catch(SheetNotFoundException e) {
                 if(config.isIgnoreSheetNotFound()){
-                    logger.warn("skip loading by not-found sheet.", e);
-                    return;
+                    logger.warn("skip saving by not-found sheet.", e);
+                    continue;
                 } else {
                     throw e;
                 }
