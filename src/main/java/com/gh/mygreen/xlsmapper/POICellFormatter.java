@@ -580,16 +580,17 @@ public class POICellFormatter {
      * @param cell
      * @return 値が設定されていない場合、空文字を返す。
      */
-    private String getCellValueOfString(Cell cell) {
+    private String getCellValueOfString(final Cell cell) {
         
         String value = cell.getRichStringCellValue().getString();
-        if((value == null) || value.isEmpty()) {
+        if((value == null)) {
             return "";
             
         } 
         
         // 文字列の最後の半角スペースを削除する
-        return value.replaceAll(" +$", "");
+//        return value.replaceAll(" +$", "");
+        return value;
         
     }
 }
