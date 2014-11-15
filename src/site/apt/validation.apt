@@ -206,24 +206,31 @@ cellTypeMismatch.updateTime=[{sheetName}]:${empty label ? '' : label} - {cellAdd
 
 ** {メッセージファイルの読み込み方法の変更}
 
- メッセージファイルは、java.util.PropertiesやSpringのMessageSourceからも取得できます。
+ メッセージファイルは、ResourceBundleやProperties、またSpringのMessageSourceからも取得できます。
  
- 取得する場合、SheetMessageConverter#setMessageResolver(...)で対応するクラスを設定します。
+ 設定する場合、SheetMessageConverter#setMessageResolver(...)で対応するクラスを設定します。
  
- * java.util.ResourceBundleを指定する場合は、ResourceBundleMessageResolverクラスを利用します。
- 
- * java.util.Prpertiesクラスを指定する場合は、PropertiesMessageResolverクラスを利用します。
- 
- * Springのorg.springframework.context.MessageSourceを利用する場合は、SpringMessageResolverを使用します。
- 
- []
+
+*------------------------------------------------------------------+------------------------------------------+
+  XlsMapper提供のクラス                                            | メッセージ取得元のクラス                  
+*------------------------------------------------------------------+------------------------------------------+
+  com.gh.mygreen.xlsmapper.validation.ResourceBundleMessageResolver| java.util.ResourceBundle                  
+*------------------------------------------------------------------+------------------------------------------+
+  com.gh.mygreen.xlsmapper.validation.PropertiesMessageResolver    | java.util.Prperties                       
+*------------------------------------------------------------------+------------------------------------------+
+  com.gh.mygreen.xlsmapper.validation.SpringMessageResolver        | org.springframework.context.MessageSource 
+*------------------------------------------------------------------+------------------------------------------+
+
 
 ---------
+// SpringのMessageSourceからメッセージを取得する場合
 MessageSource messageSource = /*...*/;
 
 SheetMessageConverter messageConverter = new SheetMessageConverter();
 messageConverter.setMessageResolver(new SpringMessageResolver(messageSource));
 ---------
+
+
 
 ** {EL式のカスタマイズ}
 

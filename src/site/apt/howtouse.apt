@@ -857,7 +857,7 @@ public class UnitUser {
  
  * 書き込み後の本ライブラリで提供されない機能の補完。
  
-   * 例えば、Excelファイル上の定義された名前の範囲の変更。
+   * 例えば、Excelファイル上の定義された名前の範囲の変更や入力規則の設定。
  
  []
 
@@ -875,6 +875,7 @@ public class UnitUser {
   }
   
   // 読み込み後の処理
+  @XlsPostLoad
   public void onPostSave(Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
      // 入力値チェックなどを行う。
   }
