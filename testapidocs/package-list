@@ -1,4 +1,4 @@
-org.mygreen.xlsmapper
-org.mygreen.xlsmapper.expression.el
-org.mygreen.xlsmapper.validation
-org.mygreen.xlsmapper.validation.beanvalidation
+com.gh.mygreen.xlsmapper
+com.gh.mygreen.xlsmapper.expression.el
+com.gh.mygreen.xlsmapper.validation
+com.gh.mygreen.xlsmapper.validation.beanvalidation
