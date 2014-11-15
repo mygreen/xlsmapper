@@ -2,15 +2,64 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.mygreen</groupId>
+	<groupId>com.github.mygreen</groupId>
 	<artifactId>xlsmapper</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1</version>
 	<name>XlsMapper</name>
-	<url></url>
+	<url>http://mygreen.github.io/xlsmapper/</url>
 	<description><![CDATA[
-ExcelのシートをJava Beanをアノテーションでマッピングするためのライブラリです。
+XlsMapper is Java Library for mapping Excel sheets to POJO.
 ]]></description>
+	
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/mygreen/xlsmapper/issues</url>
+	</issueManagement>
+	
+	<scm>
+		<connection>scm:git:ssh://github.com/mygreen/xlsmapper.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/mygreen/xlsmapper.git</developerConnection>
+		<url>https://github.com/mygreen/xlsmapper</url>
+	</scm>
+	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<distributionManagement>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Maven Central Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+	
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	
+	<organization>
+		<name>mygreen</name>
+		<url>http://mygreen.github.io/xlsmapper/</url>
+	</organization>
+	
+	<developers>
+		<developer>
+			<id>mygreen</id>
+			<name>Tatsuo TSUCHIE</name>
+			<url>http://mygreen.github.io/xlsmapper/</url>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+	
 	<properties>
 		<poi.version>3.5-FINAL</poi.version>
 		<slf4j.version>1.7.1</slf4j.version>
@@ -57,6 +106,39 @@ ExcelのシートをJava Beanをアノテーションでマッピングするた
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>source-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<nohelp>true</nohelp>
+					<charset>UTF-8</charset>
+					<encoding>UTF-8</encoding>
+					<docencoding>UTF-8</docencoding>
+					<locale>ja_JP</locale>
+					<maxmemory>512m</maxmemory>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
 					<downloadSources>true</downloadSources>
@@ -70,6 +152,21 @@ ExcelのシートをJava Beanをアノテーションでマッピングするた
 					<inputEncoding>UTF-8</inputEncoding>
 					<outputEncoding>UTF-8</outputEncoding>
 				</configuration>
+			</plugin>
+			
+			<plugin>
+				<!-- pgp -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			
 		</plugins>
@@ -145,7 +242,9 @@ ExcelのシートをJava Beanをアノテーションでマッピングするた
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
 			<version>3.0.0</version>
+			<!-- 
 			<scope>provided</scope>
+			 -->
 		</dependency>
 		
 		<!-- Bean Validation 1.1 系を利用する -->
@@ -171,8 +270,6 @@ ExcelのシートをJava Beanをアノテーションでマッピングするた
 		</dependency>
 		
 	</dependencies>
-	<distributionManagement>
-	</distributionManagement>
 	<reporting>
 		<plugins>
 			<plugin>
@@ -182,6 +279,7 @@ ExcelのシートをJava Beanをアノテーションでマッピングするた
 					<encoding>UTF-8</encoding>
 					<charset>UTF-8</charset>
 					<docencoding>UTF-8</docencoding>
+					<locale>ja_JP</locale>
 				</configuration>
 			</plugin>
 			<!-- 
