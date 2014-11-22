@@ -85,6 +85,7 @@ public class CellField<T> {
         this.validators = new ArrayList<FieldValidator<T>>();
     }
     
+    @SuppressWarnings("unchecked")
     protected T getProperyValue(final Object targetObj, final String fieldName) {
         
         try {
@@ -163,12 +164,17 @@ public class CellField<T> {
      */
     protected void appendSheetInfo(final SheetBindingErrors errors) {
         
-        final String fullPath = errors.buildFieldPath(getName());
-        for(FieldError error : errors.getFieldErrors(fullPath)) {
+        for(FieldError error : errors.getFieldErrors(getName())) {
             error.setLabel(getLabel());
         }
     }
     
+    /**
+     * 指定したFieldValidatorを実行し、値を検証する。
+     * @param validator 
+     * @param errors
+     * @return
+     */
     protected boolean invokeValidate(final FieldValidator<T> validator, final SheetBindingErrors errors) {
         
         if(validator instanceof CellFieldValidator && getCellAddress() != null) {
