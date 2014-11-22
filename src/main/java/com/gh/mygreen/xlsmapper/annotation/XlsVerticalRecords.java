@@ -105,4 +105,11 @@ public @interface XlsVerticalRecords {
      * @return
      */
     RemainedRecordOperate remainedRecord() default RemainedRecordOperate.None; 
+    
+    /**
+     * 空のレコードの場合、処理をスキップするかどうか。
+     * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsEmpty}を付与する必要があります。
+     * @return
+     */
+    boolean skipEmptyRecord() default false;
 }

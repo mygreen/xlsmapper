@@ -100,5 +100,12 @@ public @interface XlsHorizontalRecords {
      * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
      * @return
      */
-    RemainedRecordOperate remainedRecord() default RemainedRecordOperate.None; 
+    RemainedRecordOperate remainedRecord() default RemainedRecordOperate.None;
+    
+    /**
+     * 空のレコードの場合、処理をスキップするかどうか。
+     * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsEmpty}を付与する必要があります。
+     * @return
+     */
+    boolean skipEmptyRecord() default false;
 }

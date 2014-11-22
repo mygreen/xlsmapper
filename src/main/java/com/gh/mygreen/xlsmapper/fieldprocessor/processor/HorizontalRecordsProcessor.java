@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor.processor;
 
 import java.awt.Point;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
+import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
@@ -39,6 +41,8 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordHeader;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordsProcessorUtil;
+import com.gh.mygreen.xlsmapper.xml.AnnotationReadException;
+import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 
 /**
@@ -261,7 +265,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 break;
             }
             
-            result.add(record);
+            if(!anno.skipEmptyRecord() && !isEmptyRecord(record, work.getAnnoReader())) {
+                result.add(record);
+                
+            }
             
             // set PostProcess method
             for(Method method : record.getClass().getMethods()) {
@@ -380,6 +387,36 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             property.setValue(record, map);
         }
+    }
+    
+    /**
+     * レコードの値か空かどうか判定する。
+     * <p>アノテーション<code>@XlsIsEmpty</code>のメソッドで判定を行う。
+     * @param record
+     * @param annoReader
+     * @return アノテーションがない場合はfalseを返す。
+     * @throws AnnotationReadException 
+     * @throws AnnotationInvalidException 
+     */
+    private boolean isEmptyRecord(final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
+        
+        for(Method method : record.getClass().getMethods()) {
+            final XlsIsEmpty emptyAnno = annoReader.getAnnotation(record.getClass(), method, XlsIsEmpty.class);
+            if(emptyAnno == null) {
+                continue;
+            }
+            
+            try {
+                return (boolean) method.invoke(record, null);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                throw new AnnotationInvalidException(
+                        String.format("@XlsIsEmpty should be appended method that no args and returning boolean type."),
+                        emptyAnno);
+            }
+        }
+        
+        // メソッドが見つからない場合。
+        return false;
     }
     
     @Override

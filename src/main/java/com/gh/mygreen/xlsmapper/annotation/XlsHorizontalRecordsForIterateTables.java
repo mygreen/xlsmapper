@@ -24,6 +24,7 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
     private int _headerCount = 0;
     private OverRecordOperate _orverRecord = null;
     private RemainedRecordOperate _remainedRecord = null;
+    private boolean _skipEmptyRecord = false;
     
     public XlsHorizontalRecordsForIterateTables(final XlsHorizontalRecords rec, int headerColumn, int headerRow) {
         this._headerColumn = headerColumn;
@@ -45,6 +46,7 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
         
         this._orverRecord = rec.overRecord();
         this._remainedRecord = rec.remainedRecord();
+        this._skipEmptyRecord = rec.skipEmptyRecord();
     }
     
     @Override
@@ -114,5 +116,10 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
     @Override
     public RemainedRecordOperate remainedRecord() {
         return this._remainedRecord;
+    }
+    
+    @Override
+    public boolean skipEmptyRecord() {
+        return this._skipEmptyRecord;
     }
 }
