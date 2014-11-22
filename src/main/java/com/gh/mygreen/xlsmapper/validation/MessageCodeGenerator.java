@@ -78,7 +78,7 @@ public class MessageCodeGenerator {
      */
     public String[] generateFieldNameCodes(final String objectName, final String field) {
         
-        List<String> codeList = new ArrayList<String>();
+        final List<String> codeList = new ArrayList<String>();
         codeList.addAll(Arrays.asList(generateCodes(null, objectName, field, null)));
         
         // オブジェクト名の最後の値を取得する
@@ -94,6 +94,25 @@ public class MessageCodeGenerator {
         }
         
         return codeList.toArray(new String[codeList.size()]);
+    }
+    
+    /**
+     * フィールドの親のキーの候補を生成する。
+     * @param objectName オブジェクト名
+     * @param field フィールド
+     * @return
+     */
+    public String[] generateParentNameCodes(final String objectName, final String field) {
+        
+        if(Utils.isEmpty(field) || !field.contains(".")) {
+            return generateObjectNameCodes(objectName);
+        }
+        
+        // フィールド名の前の値を取得する
+        final int dotIndex = field.lastIndexOf('.');
+        final String subName = field.substring(0, dotIndex);
+        return generateFieldNameCodes(objectName, subName);
+        
     }
     
     /**
@@ -115,7 +134,7 @@ public class MessageCodeGenerator {
         
         addCodes(codeList, baseCode, objectName, fieldList);
         
-        if(Utils.isEmpty(field)) {
+        if(Utils.isNotEmpty(field)) {
             int dotIndex = field.lastIndexOf('.');
             if(dotIndex > 0) {
                 buildFieldList(field.substring(dotIndex + 1), fieldList);

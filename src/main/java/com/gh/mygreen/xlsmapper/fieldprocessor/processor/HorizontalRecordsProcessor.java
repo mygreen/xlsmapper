@@ -265,7 +265,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 break;
             }
             
-            if(!anno.skipEmptyRecord() && !isEmptyRecord(record, work.getAnnoReader())) {
+            if(!anno.skipEmptyRecord() || !isEmptyRecord(record, work.getAnnoReader())) {
                 result.add(record);
                 
             }

@@ -149,6 +149,13 @@ public class SheetMessageConverter {
             }
             
             try {
+                // 親のラベル名を取得する
+                String[] parentCode = messageCodeGenerator.generateParentNameCodes(fieldError.getObjectName(), fieldError.getFieldPath());
+                vars.put("parentLabel", getMessage(parentCode, null));
+            } catch(Throwable e) {
+            }
+            
+            try {
                 String[] objectCode = messageCodeGenerator.generateObjectNameCodes(fieldError.getObjectName());
                 vars.put("objectLabel", getMessage(objectCode, null));
             } catch(Throwable e) {
