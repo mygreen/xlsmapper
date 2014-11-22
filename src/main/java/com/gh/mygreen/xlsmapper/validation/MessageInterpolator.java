@@ -20,6 +20,8 @@ import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageELImpl;
  * <p><code>${...}</code>の場合、EL式を利用し処理する。
  * <p>文字'$', '{', '}'は特殊文字のため、<code>\</code>でエスケープを行う。
  * <p>ELのパーサは、{@link ExpressionLanguage}の実装クラスで切り替え可能。
+ * <p>{@link MessageResolver}を指定した場合、メッセージ中の変数<code>{...}</code>をメッセージ定義コードとして解決する。
+ *    ただし、メッセージ変数で指定されている変数が優先される。
  * 
  * @author T.TSUCHIE
  *
@@ -62,16 +64,32 @@ public class MessageInterpolator {
      * @return 補完したメッセージ。
      */
     public String interpolate(final String message, final Map<String, ?> vars, boolean recursive) {
-        return parse(message, vars, recursive);
+        return parse(message, vars, recursive, null);
+    }
+    
+    /**
+     * メッセージを引数varsで指定した変数で補完する。
+     * <p>{@link MessageResolver}を指定した場合、メッセージ中の変数をメッセージコードとして解決します。
+     * 
+     * @param message 対象のメッセージ。
+     * @param vars メッセージ中の変数に対する値のマップ。
+     * @param recursive 変換したメッセージに対しても再帰的に処理するかどうか
+     * @param messageResolver メッセージを解決するクラス。nullの場合、指定しないと同じ意味になります。
+     * @return 補完したメッセージ。
+     */
+    public String interpolate(final String message, final Map<String, ?> vars, boolean recursive,
+            final MessageResolver messageResolver) {
+        return parse(message, vars, recursive, messageResolver);
     }
     
     /**
      * メッセージをパースし、変数に値を差し込み、EL式を評価する。
      * @param message 対象のメッセージ。
      * @param vars メッセージ中の変数に対する値のマップ。
+     * @param messageResolver メッセージを解決するクラス。nullの場合、指定しないと同じ意味になります。
      * @return 補完したメッセージ。
      */
-    protected String parse(final String message, final Map<String, ?> vars, boolean recursive) {
+    protected String parse(final String message, final Map<String, ?> vars, boolean recursive, final MessageResolver messageResolver) {
         
         // 評価したメッセージを格納するバッファ。
         final StringBuilder sb = new StringBuilder(message.length());
@@ -119,7 +137,7 @@ public class MessageInterpolator {
                     
                     if(endExp) {
                         // 式が終わりの場合、式を取り出し評価する。
-                        final String value = evaluate(stack, vars, recursive);
+                        final String value = evaluate(stack, vars, recursive, messageResolver);
                         sb.append(value);
                         stack.clear();
                     }
@@ -161,6 +179,13 @@ public class MessageInterpolator {
         }
     }
     
+    /**
+     * 評価中のメッセージの最後の文字が、引数で指定した値'value'でないかどうか検証する。
+     * {@link #equalsBufferLast(StringBuilder, char)}の否定。
+     * @param sb
+     * @param value
+     * @return メッセージの最後の文字が引数'value'で指定した値と異なる場合。
+     */
     private static boolean notEqualsBufferLast(final StringBuilder sb, final char value) {
         return !equalsBufferLast(sb, value);
     }
@@ -221,7 +246,16 @@ public class MessageInterpolator {
         
     }
     
-    private String evaluate(final Stack<Character> stack, final Map<String, ?> values, final boolean recursive) {
+    /**
+     * メッセージ中の変数またはEL式を評価する。
+     * @param stack
+     * @param values
+     * @param recursive
+     * @param messageResolver
+     * @return
+     */
+    private String evaluate(final Stack<Character> stack, final Map<String, ?> values, final boolean recursive,
+            final MessageResolver messageResolver) {
         
         if(stack.firstElement().equals('{')) {
             // 変数の置換の場合
@@ -231,7 +265,21 @@ public class MessageInterpolator {
                 // 該当するキーが存在する場合
                 final String eval = values.get(varName).toString();
                 if(recursive) {
-                    return parse(eval, values, recursive);
+                    return parse(eval, values, recursive, messageResolver);
+                } else {
+                    return eval;
+                }
+                
+            } else if(messageResolver != null) {
+                // メッセージコードをとして解決をする。
+                final String eval = messageResolver.getMessage(varName);
+                if(eval == null) {
+                    // 該当するキーが存在しない場合は、値をそのまま返す。
+                    return String.format("{%s}", varName);
+                }
+                
+                if(recursive) {
+                    return parse(eval, values, recursive, messageResolver);
                 } else {
                     return eval;
                 }
@@ -246,7 +294,7 @@ public class MessageInterpolator {
             final String expr = convertStackToString(stack, 2, stack.size() -1);
             final String eval = evaluateExpression(expr, values);
             if(recursive) {
-                return parse(eval, values, recursive);
+                return parse(eval, values, recursive, messageResolver);
             } else {
                 return eval;
             }

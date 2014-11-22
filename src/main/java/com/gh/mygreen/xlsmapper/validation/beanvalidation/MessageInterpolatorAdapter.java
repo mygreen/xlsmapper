@@ -33,12 +33,12 @@ public class MessageInterpolatorAdapter implements javax.validation.MessageInter
     
     @Override
     public String interpolate(final String messageTemplate, final Context context) {
-        return sheetMessageInterpolator.interpolate(messageTemplate, createMessageVars(context), true);
+        return sheetMessageInterpolator.interpolate(messageTemplate, createMessageVars(context), true, messageResolver);
     }
     
     @Override
     public String interpolate(final String messageTemplate, final Context context, final Locale locale) {
-        return sheetMessageInterpolator.interpolate(messageTemplate, createMessageVars(context), true);
+        return sheetMessageInterpolator.interpolate(messageTemplate, createMessageVars(context), true, messageResolver);
     }
     
     protected Map<String, Object> createMessageVars(final Context context) {

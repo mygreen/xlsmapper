@@ -14,6 +14,14 @@ import com.gh.mygreen.xlsmapper.Utils;
 
 /**
  * エラーオブジェクトを解釈して、メッセージに変換するクラス。
+ * <p>オブジェクトの種類ごとに、デフォルトメッセージ変数が利用できます。
+ * <ul>
+ *  <li>'fieldLabel'：フィールドのラベル。メッセージ用のプロパティファイルにフィールド名を定義している場合、自動的に設定されます。
+ *  <li>'objectLabel'：オブジェクトのラベル。メッセージ用のプロパティファイルにオブジェクト名を定義している場合、自動的に設定されます。
+ *  <li>'label'：ラベル変数'label'が指定されていない場合、エラー対象のオブジェクト名またはフィールド名から自動的に決定されます。
+ *  <li>'sheetName':シート用のエラーの場合、シート名が設定されます。
+ *  <li>'cellAddress':シート用のフィールドエラーの場合、セルのアドレスが設定されます。'A1'のような形式になります。
+ * 
  * 
  * @author T.TSUCHIE
  *
@@ -127,7 +135,7 @@ public class SheetMessageConverter {
             final String[] labelCode = messageCodeGenerator.generateFieldNameCodes(fieldError.getObjectName(), fieldError.getFieldPath());
             
             try {
-                vars.put("fieldLabel", getMessage(labelCode, error.getDefaultMessage()));
+                vars.put("fieldLabel", getMessage(labelCode, null));
             } catch(Throwable e) {
             }
             
@@ -135,14 +143,14 @@ public class SheetMessageConverter {
                 vars.put("label", error.getLabel());
             } else {
                 try {
-                    vars.put("label", getMessage(labelCode, error.getDefaultMessage()));
+                    vars.put("label", getMessage(labelCode, null));
                 } catch(Throwable e) {
                 }
             }
             
             try {
                 String[] objectCode = messageCodeGenerator.generateObjectNameCodes(fieldError.getObjectName());
-                vars.put("objectLabel", getMessage(objectCode, error.getDefaultMessage()));
+                vars.put("objectLabel", getMessage(objectCode, null));
             } catch(Throwable e) {
                 
             }
@@ -161,14 +169,14 @@ public class SheetMessageConverter {
                 vars.put("label", error.getLabel());
             } else {
                 try {
-                    vars.put("label", getMessage(labelCode, error.getDefaultMessage()));
+                    vars.put("label", getMessage(labelCode, null));
                 } catch(Throwable e) {
                 }
             }
             
             try {
                 String[] objectCode = messageCodeGenerator.generateObjectNameCodes(error.getObjectName());
-                vars.put("objectLabel", getMessage(objectCode, error.getDefaultMessage()));
+                vars.put("objectLabel", getMessage(objectCode, null));
             } catch(Throwable e) {
                 
             }
@@ -181,7 +189,7 @@ public class SheetMessageConverter {
         }
         
         final String message = getMessage(error.getCodes(), error.getDefaultMessage());
-        return messageInterporlator.interpolate(message, vars, true);
+        return messageInterporlator.interpolate(message, vars, true, messageResolver);
         
     }
     

@@ -20,10 +20,10 @@ public class MessageCodeGenerator {
     public static final String CODE_SEPARATOR = ".";
     
     /** メッセージの接頭語 */
-    protected String prefix = "";
+    private String prefix = "";
     
     /** 型変換エラー時のコード */
-    protected String typeMismatchCode = "cellTypeMismatch";
+    private String typeMismatchCode = "cellTypeMismatch";
     
     /**
      * コードの候補を生成する。
