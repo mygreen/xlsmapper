@@ -446,8 +446,8 @@ public class SheetBindingErrors {
     }
     
     /**
-     * エラーコードを指定してグローバルエラーを設定します。
-     * @param errorCode
+     * エラーコードを指定してグローバルエラーを登録します。
+     * @param errorCode エラーコード
      */
     public void reject(final String errorCode) {
         addError(new ObjectError(
@@ -455,6 +455,11 @@ public class SheetBindingErrors {
                 getMessageCodeGenerator().generateCodes(errorCode, getObjectName(), null, null), new Object[]{}));
     }
     
+    /**
+     * エラーコードとデフォルトメッセージを指定してグローバルエラーを登録します。
+     * @param errorCode エラーコード
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void reject(final String errorCode, final String defaultMessage) {
         addError(new ObjectError(
                 getObjectName(),
@@ -462,12 +467,24 @@ public class SheetBindingErrors {
             .setDefaultMessage(defaultMessage));
     }
     
+    /**
+     * エラーコードとメッセージ引数の値を指定してグローバルエラーを登録します。
+     * <p>メッセージ中の変数はインデックス形式で指定する必要がります。
+     * @param errorCode エラーコード
+     * @param errorArgs メッセージ引数。
+     */
     public void reject(final String errorCode, final Object[] errorArgs) {
         addError(new ObjectError(
                 getObjectName(),
                 getMessageCodeGenerator().generateCodes(errorCode, getObjectName(), null, null), errorArgs));
     }
     
+    /**
+     * エラーコードとメッセージ引数の値を指定してグローバルエラーを登録します。
+     * @param errorCode エラーコード
+     * @param errorArgs メッセージ引数。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void reject(final String errorCode, final Object[] errorArgs, final String defaultMessage) {
         addError(new ObjectError(
                 getObjectName(),
@@ -475,12 +492,23 @@ public class SheetBindingErrors {
                 .setDefaultMessage(defaultMessage));
     }
     
+    /**
+     * エラーコードとメッセージ変数の値を指定してグローバルエラーを登録します。
+     * @param errorCode エラーコード
+     * @param errorVars メッセージ変数。
+     */
     public void reject(final String errorCode, final Map<String, Object> errorVars) {
         addError(new ObjectError(
                 getObjectName(),
                 generateMessageCodes(errorCode), errorVars));
     }
     
+    /**
+     * エラーコードとメッセージ変数の値を指定してグローバルエラーを登録します。
+     * @param errorCode エラーコード
+     * @param errorVars メッセージ変数。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void reject(final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
         addError(new ObjectError(
                 getObjectName(),
@@ -488,6 +516,10 @@ public class SheetBindingErrors {
             .setDefaultMessage(defaultMessage));
     }
     
+    /**
+     * エラーコードを指定してシートのグローバルエラーを登録します。
+     * @param errorCode エラーコード。
+     */
     public void rejectSheet(final String errorCode) {
         addError(new SheetObjectError(
                 getObjectName(),
@@ -495,6 +527,11 @@ public class SheetBindingErrors {
            getSheetName()));
     }
     
+    /**
+     * エラーコードとデフォルトメッセージを指定してシートのグローバルエラーを登録します。
+     * @param errorCode エラーコード。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void rejectSheet(final String errorCode, final String defaultMessage) {
         addError(new SheetObjectError(
                 getObjectName(),
@@ -503,6 +540,12 @@ public class SheetBindingErrors {
             .setDefaultMessage(defaultMessage));
     }
     
+    /**
+     * エラーコードとメッセージ引数を指定してシートのグローバルエラーを登録します。
+     * <p>メッセージ中の変数はインデックス形式で指定する必要がります。
+     * @param errorCode エラーコード
+     * @param errorArgs メッセージ引数
+     */
     public void rejectSheet(final String errorCode, final Object[] errorArgs) {
         addError(new SheetObjectError(
                 getObjectName(),
@@ -510,6 +553,13 @@ public class SheetBindingErrors {
             getSheetName()));
     }
     
+    /**
+     * エラーコードとメッセージ引数を指定してシートのグローバルエラーを登録します。
+     * <p>メッセージ中の変数はインデックス形式で指定する必要がります。
+     * @param errorCode エラーコード
+     * @param errorArgs メッセージ引数
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void rejectSheet(final String errorCode, final Object[] errorArgs, final String defaultMessage) {
         addError(new SheetObjectError(
                 getObjectName(),
@@ -518,6 +568,11 @@ public class SheetBindingErrors {
             .setDefaultMessage(defaultMessage));
     }
     
+    /**
+     * エラーコードとメッセージ変数を指定してシートのグローバルエラーを登録します。
+     * @param errorCode エラーコード
+     * @param errorVars メッセージ変数
+     */
     public void rejectSheet(final String errorCode, final Map<String, Object> errorVars) {
         addError(new SheetObjectError(
                 getObjectName(),
@@ -525,6 +580,12 @@ public class SheetBindingErrors {
                 getSheetName()));
     }
     
+    /**
+     * エラーコードとメッセージ変数を指定してシートのグローバルエラーを登録します。
+     * @param errorCode エラーコード
+     * @param errorVars メッセージ変数
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void rejectSheet(final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
         addError(new SheetObjectError(
                 getObjectName(),
@@ -533,6 +594,11 @@ public class SheetBindingErrors {
             .setDefaultMessage(defaultMessage));
     }
     
+    /**
+     * エラーコードを指定してフィールドエラーを登録します。
+     * @param field フィールドパス。
+     * @param errorCode エラーコード。
+     */
     public void rejectValue(final String field, final String errorCode) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -540,6 +606,12 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードを指定してフィールドエラーを登録します。
+     * @param field フィールドパス。
+     * @param errorCode エラーコード。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void rejectValue(final String field, final String errorCode, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -548,6 +620,13 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードとメッセージ引数を指定してフィールドエラーを登録します。
+     * <p>メッセージ中の変数はインデックス形式で指定する必要がります。
+     * @param field フィールドパス。
+     * @param errorCode エラーコード。
+     * @param errorArgs メッセージ引数。
+     */
     public void rejectValue(final String field, final String errorCode, final Object[] errorArgs) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -555,6 +634,14 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードとメッセージ引数を指定してフィールドエラーを登録します。
+     * <p>メッセージ中の変数はインデックス形式で指定する必要がります。
+     * @param field フィールドパス。
+     * @param errorCode エラーコード。
+     * @param errorArgs メッセージ引数。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void rejectValue(final String field, final String errorCode, final Object[] errorArgs, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -563,6 +650,12 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードとメッセージ引数を指定してフィールドエラーを登録します。
+     * @param field フィールドパス。
+     * @param errorCode エラーコード。
+     * @param errorVars メッセージ変数。
+     */
     public void rejectValue(final String field, final String errorCode, final Map<String, Object> errorVars) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -570,6 +663,12 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードを指定してシートのフィールドエラーを登録します。
+     * @param field フィールドパス。
+     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param errorCode メッセージコード。
+     */
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -578,6 +677,13 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードとデフォルトメッセージを指定してシートのフィールドエラーを登録します。
+     * @param field フィールドパス。
+     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param errorCode メッセージコード。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -587,6 +693,14 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードとメッセージ引数を指定してシートのフィールドエラーを登録します。
+     * <p>メッセージ中の変数はインデックス形式で指定する必要がります。
+     * @param field フィールドパス。
+     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param errorCode メッセージコード。
+     * @param errorArgs メッセージ変数。
+     */
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Object[] errorArgs) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -595,6 +709,15 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードとメッセージ引数を指定してシートのフィールドエラーを登録します。
+     * <p>メッセージ中の変数はインデックス形式で指定する必要がります。
+     * @param field フィールドパス。
+     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param errorCode メッセージコード。
+     * @param errorArgs メッセージ変数。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Object[] errorArgs, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -604,6 +727,13 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードとデメッセージ変数を指定してシートのフィールドエラーを登録します。
+     * @param field フィールドパス。
+     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param errorCode メッセージコード。
+     * @param errorVars メッセージ変数。
+     */
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Map<String, Object> errorVars) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -612,6 +742,14 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * エラーコードとメッセージ変数を指定してシートのフィールドエラーを登録します。
+     * @param field フィールドパス。
+     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param errorCode メッセージコード。
+     * @param errorVars メッセージ変数。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -621,6 +759,13 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * メッセージ変数付きのフィールド型変換エラーを指定する。
+     * @param field フィールドパス。
+     * @param fieldValue フィールドの値。
+     * @param fieldType フィールドのクラスタイプ。
+     * @param errorVars メッセージ変数
+     */
     public void rejectTypeBind(final String field, final Object fieldValue, final Class<?> fieldType, final Map<String, Object> errorVars) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -629,6 +774,15 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * メッセージ変数付きのシートのフィールド型変換エラーを指定する。
+     * @param field フィールドパス。
+     * @param fieldValue フィールドの値。
+     * @param fieldType フィールドのクラスタイプ。
+     * @param errorVars メッセージ変数
+     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param label フィールドのラベル。
+     */
     public void rejectSheetTypeBind(final String field, final Object fieldValue, final Class<?> fieldType, final Map<String, Object> errorVars,
             final Point cellAddress, final String label) {
         addError(FieldErrorBuilder.create()
@@ -640,6 +794,12 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * フィールド型変換エラーを指定する。
+     * @param field フィールドパス。
+     * @param fieldValue フィールドの値。
+     * @param fieldType フィールドのクラスタイプ。
+     */
     public void rejectTypeBind(final String field, final Object fieldValue, final Class<?> fieldType) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
@@ -648,6 +808,14 @@ public class SheetBindingErrors {
                 .build());
     }
     
+    /**
+     * シートのフィールド型変換エラーを指定する。
+     * @param field フィールドパス。
+     * @param fieldValue フィールドの値。
+     * @param fieldType フィールドのクラスタイプ。
+     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param label フィールドのラベル。
+     */
     public void rejectSheetTypeBind(final String field, final Object fieldValue, final Class<?> fieldType,
             final Point cellAddress, final String label) {
         addError(FieldErrorBuilder.create()
