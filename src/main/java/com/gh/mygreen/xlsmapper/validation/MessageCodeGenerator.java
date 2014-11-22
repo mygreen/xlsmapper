@@ -115,10 +115,13 @@ public class MessageCodeGenerator {
         
         addCodes(codeList, baseCode, objectName, fieldList);
         
-        int dotIndex = field.lastIndexOf('.');
-        if(dotIndex > 0) {
-            buildFieldList(field.substring(dotIndex + 1), fieldList);
+        if(Utils.isEmpty(field)) {
+            int dotIndex = field.lastIndexOf('.');
+            if(dotIndex > 0) {
+                buildFieldList(field.substring(dotIndex + 1), fieldList);
+            }
         }
+        
         addCodes(codeList, code, null, fieldList);
         
         if(fieldType != null) {
