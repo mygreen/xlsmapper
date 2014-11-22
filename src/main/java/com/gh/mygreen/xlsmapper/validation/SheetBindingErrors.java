@@ -408,6 +408,101 @@ public class SheetBindingErrors {
     }
     
     /**
+     * セルのフィールドエラーを取得する
+     * @return エラーがない場合は空のリストを返す
+     */
+    public List<CellFieldError> getCellFieldErrors() {
+        final List<CellFieldError> list = new ArrayList<CellFieldError>();
+        for(ObjectError item : this.errors) {
+            if(item instanceof CellFieldError) {
+                list.add((CellFieldError) item);
+            }
+        }
+        
+        return list;
+    }
+    
+    /**
+     * 先頭のセルフィールドエラーを取得する
+     * @return エラーがない場合は空のリストを返す
+     */
+    public CellFieldError getCellFirstFieldError() {
+        for(ObjectError item : this.errors) {
+            if(item instanceof CellFieldError) {
+                return (CellFieldError) item;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * セルフィールドエラーが存在するか確かめる。
+     * @return true:フィールドエラーを持つ。
+     */
+    public boolean hasCellFieldErrors() {
+        return !getCellFieldErrors().isEmpty();
+    }
+    
+    /**
+     * セルフィールドエラーの件数を取得する。
+     * @return
+     */
+    public int getCellFieldErrorCount() {
+        return getCellFieldErrors().size();
+    }
+    
+    /**
+     * パスを指定してセルフィールドエラーを取得する
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return
+     */
+    public List<CellFieldError> getCellFieldErrors(final String path) {
+        final String fullPath = buildFieldPath(path);
+        final List<CellFieldError> list = new ArrayList<CellFieldError>();
+        for(ObjectError item : this.errors) {
+            if(item instanceof CellFieldError && isMatchingFieldError(fullPath, (CellFieldError) item)) {
+                list.add((CellFieldError) item);
+            }
+        }
+        
+        return list;
+    }
+    
+    /**
+     * パスを指定して先頭のセルフィールドエラーを取得する
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return エラーがない場合は空のリストを返す
+     */
+    public CellFieldError getFirstCellFieldError(final String path) {
+        for(ObjectError item : this.errors) {
+            if(item instanceof CellFieldError && isMatchingFieldError(path, (CellFieldError) item)) {
+                return (CellFieldError) item;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * 指定したパスのセルフィィールドエラーが存在するか確かめる。
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return true:エラーがある場合。
+     */
+    public boolean hasCellFieldErrors(final String path) {
+        return !getCellFieldErrors(path).isEmpty();
+    }
+    
+    /**
+     * 指定したパスのセルフィィールドエラーの件数を取得する。
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return
+     */
+    public int getCellFieldErrorCount(final String path) {
+        return getCellFieldErrors(path).size();
+    }
+    
+    /**
      * 指定したパスがフィールドエラーのパスと一致するかチェックするかどうか。
      * @param path 
      * @param fieldError
