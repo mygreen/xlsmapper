@@ -215,6 +215,10 @@ public class SheetBindingErrors {
         return new ArrayList<ObjectError>(errors);
     }
     
+    /**
+     * エラーがあるか確かめる。
+     * @return true:エラーがある。
+     */
     public boolean hasErrors() {
         return !getAllErrors().isEmpty();
     }
@@ -248,10 +252,18 @@ public class SheetBindingErrors {
         return null;
     }
     
+    /**
+     * グローバルエラーがあるか確かめる。
+     * @return
+     */
     public boolean hasGlobalErrors() {
         return !getGlobalErrors().isEmpty();
     }
     
+    /**
+     * グローバルエラーの件数を取得する
+     * @return
+     */
     public int getGlobalErrorCount() {
         return getGlobalErrors().size();
     }
@@ -284,10 +296,18 @@ public class SheetBindingErrors {
         return null;
     }
     
+    /**
+     * シートに関するグローバルエラーがあるか確かめる。
+     * @return true:シートに関するグローバルエラー。
+     */
     public boolean hasSheetGlobalErrors() {
         return !getSheetGlobalErrors().isEmpty();
     }
     
+    /**
+     * シートに関するグローバルエラーの件数を取得する。
+     * @return
+     */
     public int getSheetGlobalErrorCount() {
         return getSheetGlobalErrors().size();
     }
@@ -321,10 +341,18 @@ public class SheetBindingErrors {
         return null;
     }
     
+    /**
+     * フィールドエラーが存在するか確かめる。
+     * @return true:フィールドエラーを持つ。
+     */
     public boolean hasFieldErrors() {
         return !getFieldErrors().isEmpty();
     }
     
+    /**
+     * フィールドエラーの件数を取得する。
+     * @return
+     */
     public int getFieldErrorCount() {
         return getFieldErrors().size();
     }
@@ -335,9 +363,10 @@ public class SheetBindingErrors {
      * @return
      */
     public List<FieldError> getFieldErrors(final String path) {
+        final String fullPath = buildFieldPath(path);
         final List<FieldError> list = new ArrayList<FieldError>();
         for(ObjectError item : this.errors) {
-            if(item instanceof FieldError && isMatchingFieldError(path, (FieldError) item)) {
+            if(item instanceof FieldError && isMatchingFieldError(fullPath, (FieldError) item)) {
                 list.add((FieldError) item);
             }
         }
@@ -360,10 +389,20 @@ public class SheetBindingErrors {
         return null;
     }
     
+    /**
+     * 指定したパスのフィィールドエラーが存在するか確かめる。
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return true:エラーがある場合。
+     */
     public boolean hasFieldErrors(final String path) {
         return !getFieldErrors(path).isEmpty();
     }
     
+    /**
+     * 指定したパスのフィィールドエラーの件数を取得する。
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return
+     */
     public int getFieldErrorCount(final String path) {
         return getFieldErrors(path).size();
     }
@@ -388,15 +427,28 @@ public class SheetBindingErrors {
         return false;
     }
     
+    /**
+     * 現在のシート名を取得する。
+     * @return
+     */
     public String getSheetName() {
         return sheetName;
     }
     
-    public SheetBindingErrors setSheetName(String sheetName) {
+    /**
+     * 現在のシート名を設定します。
+     * @param sheetName
+     * @return
+     */
+    public SheetBindingErrors setSheetName(final String sheetName) {
         this.sheetName = sheetName;
         return this;
     }
     
+    /**
+     * エラーコードを指定してグローバルエラーを設定します。
+     * @param errorCode
+     */
     public void reject(final String errorCode) {
         addError(new ObjectError(
                 getObjectName(),
