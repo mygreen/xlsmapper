@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
  * レコードの値が空からどうか判定するメソッドに付与します。
  * <p>引数なしで、戻り値がbooleanである必要があります。
  * 
+ * @since 0.2
  * @author T.TSUCHIE
  *
  */

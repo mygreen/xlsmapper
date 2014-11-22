@@ -110,6 +110,7 @@ public @interface XlsVerticalRecords {
      * 空のレコードの場合、処理をスキップするかどうか。
      * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsEmpty}を付与する必要があります。
      * @return
+     * @since 0.2
      */
     boolean skipEmptyRecord() default false;
 }
