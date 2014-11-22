@@ -121,6 +121,8 @@ public class SheetMessageConverter {
         }
         
         if(error instanceof FieldError) {
+            // フィールドエラーのメッセージを処理する
+            
             final FieldError fieldError = (FieldError) error;
             final String[] labelCode = messageCodeGenerator.generateFieldNameCodes(fieldError.getObjectName(), fieldError.getFieldPath());
             
@@ -133,7 +135,7 @@ public class SheetMessageConverter {
                 vars.put("label", error.getLabel());
             } else {
                 try {
-                    vars.put("field", getMessage(labelCode, error.getDefaultMessage()));
+                    vars.put("label", getMessage(labelCode, error.getDefaultMessage()));
                 } catch(Throwable e) {
                 }
             }
@@ -152,6 +154,8 @@ public class SheetMessageConverter {
             }
             
         } else {
+            // オブジェクトエラーのメッセージを処理する。
+            
             final String[] labelCode = messageCodeGenerator.generateObjectNameCodes(error.getObjectName());
             if(error.getLabel() != null) {
                 vars.put("label", error.getLabel());
