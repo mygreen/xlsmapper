@@ -196,7 +196,7 @@ public class SheetMessageConverter {
         }
         
         final String message = getMessage(error.getCodes(), error.getDefaultMessage());
-        return messageInterporlator.interpolate(message, vars, true, messageResolver);
+        return messageInterporlator.interpolate(message, vars, false, messageResolver);
         
     }
     
