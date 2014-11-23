@@ -663,9 +663,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         // なにもしない
                         
                     } else if(anno.remainedRecord().equals(RemainedRecordOperate.Clear)) {
-                        CellStyle style = POIUtils.getCell(sheet, hColumn-1, hRow).getCellStyle();
                         Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
-                        clearCell.setCellStyle(style);
                         clearCell.setCellType(Cell.CELL_TYPE_BLANK);
                         
                     } else if(anno.remainedRecord().equals(RemainedRecordOperate.Delete)) {

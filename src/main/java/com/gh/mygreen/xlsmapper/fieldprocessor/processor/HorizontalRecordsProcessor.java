@@ -676,15 +676,20 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         // なにもしない
                         
                     } else if(anno.remainedRecord().equals(RemainedRecordOperate.Clear)) {
-                        CellStyle style = POIUtils.getCell(sheet, hColumn, hRow-1).getCellStyle();
-                        Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
-                        clearCell.setCellStyle(style);
+                        final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
                         clearCell.setCellType(Cell.CELL_TYPE_BLANK);
                         
                     } else if(anno.remainedRecord().equals(RemainedRecordOperate.Delete)) {
-                        final Row row = sheet.getRow(hRow);
-                        if(row != null) {
-                            sheet.removeRow(row);
+                        if(initRow == hRow -1) {
+                            // 1行目は残しておき、値をクリアする
+                            final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
+                            clearCell.setCellType(Cell.CELL_TYPE_BLANK);
+                            
+                        } else {
+                            final Row row = sheet.getRow(hRow);
+                            if(row != null) {
+                                sheet.removeRow(row);
+                            }
                         }
                     }
                 }
