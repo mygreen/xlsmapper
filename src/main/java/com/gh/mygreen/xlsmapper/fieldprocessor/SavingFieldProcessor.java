@@ -20,13 +20,13 @@ public interface SavingFieldProcessor<A extends Annotation> extends FieldProcess
      * 書き込み時のアノテーションを処理する。
      * 
      * @param sheet Excelのシート
-     * @param obj マッピング対象のBean。
+     * @param targetObj マッピング対象のBean。
      * @param anno 処理対象のアノテーション。
      * @param adaptor マッピング対象のフィールド情報
      * @param config システム設定
      * @param work 一時オブジェクト
      * @throws XlsMapperException 
      */
-    void saveProcess(Sheet sheet, Object obj, A anno, FieldAdaptor adaptor, XlsMapperConfig config, SavingWorkObject work) throws XlsMapperException;
+    void saveProcess(Sheet sheet, Object targetObj, A anno, FieldAdaptor adaptor, XlsMapperConfig config, SavingWorkObject work) throws XlsMapperException;
     
 }
