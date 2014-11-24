@@ -10,5 +10,11 @@
  Mavenを使用する場合はpom.xmlに以下の記述を追加してください。
 
 --------
-準備中
+<dependencies>
+  <dependency>
+    <groupId>com.github.mygreen</groupId>
+    <artifactId>xlsmapper</artifactId>
+    <version>0.2</version>
+  </dependency>
+</dependencies>
 --------

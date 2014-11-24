@@ -386,6 +386,40 @@ public class SheetObject {
 }
 --------
 
+ skipEmptyRecord属性で、読み込み時に空のレコードを読み飛ばすことができます。
+ 
+ レコード用のクラスには、レコードを空と判定するためのメソッド用意し、アノテーション@XlsIsEmptyを付与します。
+ 
+ また、この属性は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。
+
+---------
+// ルートのオブジェクト
+@XlsSheet(name="シート名")
+public class UnitUser {
+
+  @XlsHorizontalRecords(tableLabel="ユーザ一覧", skipEmptyRecord=true)
+  private List<User> users;
+}
+
+// レコードのオブジェクト
+public class User {
+
+  @XlsColumn(columnName="名前")
+  private String name;
+  
+  // レコードが空と判定するためのメソッド
+  @XlsIsEmpty
+  public boolean isEmpty() {
+    
+    if(name != null || !name.isEmpty()) {
+      return false;
+    }
+    
+    return true;
+  }
+}
+---------
+
 ** {@XlsVerticalRecords}
 
  垂直方向に連続する列をListまたは配列にマッピングします。要するに@XlsHorizontalRecordsを縦方向にしたものです。
@@ -536,6 +570,59 @@ public class UnitUser {
   private String updateTime;
 }
 --------
+
+** {@XlsIsEmpty}
+
+ @XlsHorizontalRecordsを使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
+ レコードが空と判定するためのメソッドに付与します。
+ 
+ このアノテーションを使用する場合は、@XlsVerticalRecordsを使用して、属性「skipEmptyRecord=true」を設定する必要があります。
+ 
+ @XlsIsEmptyを付与したメソッドは、引数なしの戻り値がboolean形式の書式にする必要があります。
+ 
+ @XlsVertialRecordsでも同様に使用できます。
+ 
+ また、この機能は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。
+
+---------
+// ルートのオブジェクト
+@XlsSheet(name="シート名")
+public class UnitUser {
+
+  @XlsHorizontalRecords(tableLabel="ユーザ一覧", skipEmptyRecord=true)
+  private List<User> users;
+  
+}
+
+// レコードのオブジェクト
+public class User {
+
+  @XlsColumn(columnName="No.")
+  private int no;
+  
+  @XlsColumn(columnName="名前")
+  private String name;
+  
+  @XlsColumn(columnName="住所")
+  private String address;
+  
+  // レコードが空と判定するためのメソッド
+  @XlsIsEmpty
+  public boolean isEmpty() {
+    
+    if(name != null || !name.isEmpty()) {
+      return false;
+    }
+    
+    if(address != null || !address.isEmpty()) {
+      return false;
+    }
+    
+    return true;
+  }
+}
+
+---------
 
 
 * {アノテーション（型変換用）}

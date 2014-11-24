@@ -7,6 +7,28 @@
 
 リリースノート
 
+* {0.2 - 2014/11/24}
+
+ * アノテーション @XlsIsEmptyを追加しました。
+   
+   * @XlsHorizontalRecords, @XlsVertialRecordsの属性skipEmptyRecordで'true'を指定した場合、レコードが空の場合、そのレコードの読み込みをスキップします。
+   
+   * アノテーション @XlsIsEmptyは、引数なしで、戻り値がtrueのメソッドに付与する必要がります。
+   
+ * MessageInterpolatorを改善し、メッセージ中に定義した変数をメッセージコードとして処理する機能を追加しました。
+ 
+   * メッセージをフォーマットする際に、引数で渡した変数用オブジェクトに存在しない変数名がメッセージに存在する場合、MessageResolverから値を取得します。
+   
+ * SheetBindingErrors中のフィールドエラーにアクセスするメソッドにおいて、現在の位置を考慮するように改善しました。
+ 
+ * @XlsHorzontalRecords(remainedRecord=RemainedRecordOperate.Clear)を指定指示に書き込んだ場合、書き込むレコードの件数が0件の場合、出力したシートがヘッダーのスタイルになる現象を修正しました。
+ 
+ * @XlsHorzontalRecords(remainedRecord=RemainedRecordOperate.Delete)を指定指示に書き込んだ場合、書き込むレコードの件数が0件の場合、見出し行を除く行が全て削除される現象を改善しまいた。1件のみ残すよう修正しました。
+ 
+
+ []
+
+
 * {0.1 - 2014/10/30}
 
  * 初期リリース。
