@@ -352,7 +352,7 @@ public class POIUtils {
             }
             
         } else if(style instanceof XSSFCellStyle) {
-         // POI-3.9以前のExcel2007形式
+            // POI-3.9以前のExcel2007形式
             try {
                 final Method aligngmentMethod = style.getClass().getDeclaredMethod("getCellAlignment");
                 aligngmentMethod.setAccessible(true);
