@@ -7,6 +7,16 @@
 
 リリースノート
 
+* {0.2.1 - 2014/11/25}
+ 
+ * 下記の不良を修正。
+
+   * {{{https://github.com/mygreen/xlsmapper/issues/1}bug#1}} - @XlsHorizontalRecordsに、Set型を使用すると例外が発生する。
+ 
+   * {{{https://github.com/mygreen/xlsmapper/issues/2}bug#2}} - ExpressionLanguageELImplが、Spring-expression依存になっている。
+
+ []
+
 * {0.2 - 2014/11/24}
 
  * アノテーション @XlsIsEmptyを追加しました。
