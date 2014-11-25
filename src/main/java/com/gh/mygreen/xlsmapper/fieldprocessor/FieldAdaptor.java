@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.gh.mygreen.xlsmapper.ArgUtils;
 import com.gh.mygreen.xlsmapper.Utils;
@@ -439,6 +440,16 @@ public class FieldAdaptor {
                 return (Class<?>) type.getActualTypeArguments()[0];
             }
             
+        } else if(Set.class.isAssignableFrom(targetClass)) {
+            if(withField) {
+                final ParameterizedType type = (ParameterizedType) targetField.getGenericType();
+                return (Class<?>) type.getActualTypeArguments()[0];
+                
+            } else {
+                final ParameterizedType type = (ParameterizedType) targetSetter.getGenericParameterTypes()[0];
+                return (Class<?>) type.getActualTypeArguments()[0];
+            }
+            
         } else if(targetClass.isArray()) {
             return targetClass.getComponentType();
             
@@ -465,6 +476,16 @@ public class FieldAdaptor {
     public Class<?> getSavingGenericClassType() {
         
         if(List.class.isAssignableFrom(targetClass)) {
+            if(withField) {
+                ParameterizedType type = (ParameterizedType) targetField.getGenericType();
+                return (Class<?>) type.getActualTypeArguments()[0];
+                        
+            } else {
+                ParameterizedType type = (ParameterizedType) targetGetter.getGenericReturnType();
+                return (Class<?>) type.getActualTypeArguments()[0];
+            }
+            
+        } else if(List.class.isAssignableFrom(targetClass)) {
             if(withField) {
                 ParameterizedType type = (ParameterizedType) targetField.getGenericType();
                 return (Class<?>) type.getActualTypeArguments()[0];

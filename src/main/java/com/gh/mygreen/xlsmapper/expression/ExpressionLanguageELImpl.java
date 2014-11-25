@@ -4,13 +4,13 @@ import java.util.Formatter;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 
 import org.hibernate.validator.internal.engine.messageinterpolation.el.RootResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.expression.ExpressionException;
 
 import com.gh.mygreen.xlsmapper.ArgUtils;
 import com.gh.mygreen.xlsmapper.expression.el.FormatterWrapper;
@@ -63,7 +63,7 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
             final ValueExpression resultExp = expressionFactory.createValueExpression(context, bracket(expression), Object.class);
             return resultExp.getValue(context);
         
-        } catch (final ExpressionException ex){
+        } catch (final ELException ex){
             throw new ExpressionEvaluationException(String.format("Evaluating [%s] script with EL failed.", expression), ex);
         }
     }
