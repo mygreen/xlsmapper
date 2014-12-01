@@ -3,14 +3,21 @@ package com.gh.mygreen.xlsmapper;
 import java.awt.Point;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import org.apache.poi.hssf.record.ExtendedFormatRecord;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.extensions.XSSFCellAlignment;
@@ -151,16 +158,6 @@ public class POIUtils {
     }
     
     /**
-     * セルの値を取得する
-     * 
-     * @param cell
-     * @return
-     */
-//    public static String getCellContents(final Cell cell) {
-//        return getCellContents(cell, defaultCellFormatter);
-//    }
-    
-    /**
      * フォーマッターを指定してセルの値を取得する
      * 
      * @param cell
@@ -286,6 +283,9 @@ public class POIUtils {
      */
     public static Row insertRow(final Sheet sheet, final int rowIndex) {
         
+        ArgUtils.notNull(sheet, "cell");
+        ArgUtils.notMin(rowIndex, 0, "rowIndex");
+        
         // 最終行を取得する
         int lastRow = sheet.getLastRowNum();
         
@@ -300,6 +300,8 @@ public class POIUtils {
      */
     public static void wrapCellText(final Cell cell, final boolean forceWrapText) {
         
+        ArgUtils.notNull(cell, "cell");
+        
         if(!forceWrapText) {
             return;
         }
@@ -311,7 +313,15 @@ public class POIUtils {
         cell.setCellStyle(style);
     }
     
+    /**
+     * セルの縮小表示設定を有効にする。
+     * @param cell
+     * @param forceShrinkToFit trueの場合有効にする。falseの場合は変更しない。
+     */
     public static void shrinkToFit(final Cell cell, final boolean forceShrinkToFit) {
+        
+        ArgUtils.notNull(cell, "cell");
+        
         if(!forceShrinkToFit) {
             return;
         }
@@ -321,8 +331,18 @@ public class POIUtils {
         style.setWrapText(false);
         setCellStyleWithShrinkToFit(cell, style, true);
     }
-
-    private static void setCellStyleWithShrinkToFit(final Cell cell, final CellStyle style, final boolean shrinkToFit) {
+    
+    /**
+     * セルの縮小表示設定を変更する。
+     * <p>POI-3.9以前の場合は、リフレクションで強制的に変更する。
+     * @param cell 変更対象のセル
+     * @param style 縮小表示設定を行うStyle
+     * @param shrinkToFit
+     */
+    public static void setCellStyleWithShrinkToFit(final Cell cell, final CellStyle style, final boolean shrinkToFit) {
+        
+        ArgUtils.notNull(cell, "cell");
+        ArgUtils.notNull(style, "style");
         
         try {
             //POI-3.10以降
@@ -436,5 +456,149 @@ public class POIUtils {
         }
         
     }
+    
+    /**
+     * テンプレートの入力規則の制約「リスト」を追加する。
+     * @param sheet シート
+     * @param constaints 制約とするコレクションの中身
+     * @param startPosition 開始位置
+     * @param endPosition 終了位置
+     */
+    public static void setupExplicitListConstaint(final Sheet sheet, final Collection<String> constraints,
+            final Point startPosition, final Point endPosition) {
+        
+        ArgUtils.notNull(sheet, "sheet");
+        ArgUtils.notEmpty(constraints, "constraints");
+        ArgUtils.notNull(startPosition, "startPosition");
+        ArgUtils.notNull(endPosition, "endPosition");
+        
+        setupExplicitListConstaint(sheet, constraints.toArray(new String[constraints.size()]),
+                startPosition, endPosition);
+    }
+        
+    /**
+     * テンプレートの入力規則の制約「リスト」を追加する。
+     * @param sheet シート
+     * @param constaints 制約とするリストの中身
+     * @param startPosition 開始位置
+     * @param endPosition 終了位置
+     */
+    public static void setupExplicitListConstaint(final Sheet sheet, final String[] constraints,
+            final Point startPosition, final Point endPosition) {
+        
+        ArgUtils.notNull(sheet, "sheet");
+        ArgUtils.notEmpty(constraints, "constraints");
+        ArgUtils.notNull(startPosition, "startPosition");
+        ArgUtils.notNull(endPosition, "endPosition");
+        
+        final DataValidationHelper helper = sheet.getDataValidationHelper();
+        final DataValidationConstraint constraint = helper.createExplicitListConstraint(constraints);
+        setupConstaint(sheet, constraint, startPosition, endPosition);
+        
+    }
+    
+    /**
+     * テンプレートの入力規則の制約「リスト」を式形式で追加する。
+     * @param sheet シート
+     * @param listFormula 入力規則の式('='は含まない)
+     * @param startPosition 設定するセルの開始位置
+     * @param endPosition 設定するセルの終了位置
+     */
+    public static void setupFormulaListConstaint(final Sheet sheet, final String listFormula,
+            final Point startPosition, final Point endPosition) {
+        
+        ArgUtils.notNull(sheet, "sheet");
+        ArgUtils.notEmpty(listFormula, "listFormula");
+        ArgUtils.notNull(startPosition, "startPosition");
+        ArgUtils.notNull(endPosition, "endPosition");
+        
+        final DataValidationHelper helper = sheet.getDataValidationHelper();
+        final DataValidationConstraint constraint = helper.createFormulaListConstraint("=" + listFormula);
+        setupConstaint(sheet, constraint, startPosition, endPosition);
+    }
+    
+    /**
+     * 指定した範囲のセルに制約を追加する。
+     * @param sheet シート
+     * @param constraint 制約
+     * @param startPosition 設定するセルの開始位置
+     * @param endPosition 設定するセルの終了位置
+     */
+    public static void setupConstaint(final Sheet sheet, final DataValidationConstraint constraint,
+            final Point startPosition, final Point endPosition) {
+        
+        ArgUtils.notNull(sheet, "sheet");
+        ArgUtils.notNull(constraint, "constraint");
+        ArgUtils.notNull(startPosition, "startPosition");
+        ArgUtils.notNull(endPosition, "endPosition");
+        
+        final DataValidationHelper helper = sheet.getDataValidationHelper();
+        
+        final CellRangeAddressList region = new CellRangeAddressList(
+                startPosition.y, endPosition.y,
+                startPosition.x, endPosition.x
+                );
+        final DataValidation dataValidation = helper.createValidation(constraint, region);
+        sheet.addValidationData(dataValidation);
+    }
+    
+    /**
+     * 指定した範囲の名前を登録する。
+     * <p>指定した名前が既に存在する場合は、新しい範囲に書き換える。
+     * @param sheet シート
+     * @param name 名前
+     * @param startPosition 設定するセルの開始位置
+     * @param endPosition 設定するセルの終了位置
+     * @return
+     */
+    public static Name defineName(final Sheet sheet, final String name,
+            final Point startPosition, final Point endPosition) {
+        
+        ArgUtils.notNull(sheet, "sheet");
+        ArgUtils.notEmpty(name, "name");
+        ArgUtils.notNull(startPosition, "startPosition");
+        ArgUtils.notNull(endPosition, "endPosition");
+        
+        final Workbook workbook = sheet.getWorkbook();
+        Name nameObj = workbook.getName(name);
+        if(nameObj == null) {
+            nameObj = workbook.createName();
+            nameObj.setNameName(name);
+        }
+        
+        final String nameFormula = buildNameFormula(sheet.getSheetName(), startPosition, endPosition);
+        nameObj.setRefersToFormula(nameFormula);
+        
+        return nameObj;
+        
+    }
+    
+    /**
+     * 名前の範囲の形式を組み立てる。
+     * <code>シート名!$A$1:$A:$5</code>
+     * @param sheetName シート名
+     * @param startPosition 設定するセルの開始位置
+     * @param endPosition 設定するセルの終了位置
+     * @return
+     */
+    public static String buildNameFormula(final String sheetName,
+            final Point startPosition, final Point endPosition) {
+        
+        ArgUtils.notEmpty(sheetName, "sheetName");
+        ArgUtils.notNull(startPosition, "startPosition");
+        ArgUtils.notNull(endPosition, "endPosition");
+        
+        StringBuilder refs = new StringBuilder();
+        refs.append(sheetName)
+            .append("!")
+            .append("$").append(CellReference.convertNumToColString(startPosition.x))
+            .append("$").append(startPosition.y+1)
+            .append(":")
+            .append("$").append(CellReference.convertNumToColString(endPosition.x))
+            .append("$").append(endPosition.y+1);
+        return refs.toString();
+        
+    }
+  
     
 }
