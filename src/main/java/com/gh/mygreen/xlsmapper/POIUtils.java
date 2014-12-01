@@ -459,6 +459,7 @@ public class POIUtils {
     
     /**
      * テンプレートの入力規則の制約「リスト」を追加する。
+     * <p>POI-3.7以上が必要。
      * @param sheet シート
      * @param constaints 制約とするコレクションの中身
      * @param startPosition 開始位置
@@ -478,6 +479,7 @@ public class POIUtils {
         
     /**
      * テンプレートの入力規則の制約「リスト」を追加する。
+     * <p>POI-3.7以上が必要。
      * @param sheet シート
      * @param constaints 制約とするリストの中身
      * @param startPosition 開始位置
@@ -499,6 +501,7 @@ public class POIUtils {
     
     /**
      * テンプレートの入力規則の制約「リスト」を式形式で追加する。
+     * <p>POI-3.7以上が必要。
      * @param sheet シート
      * @param listFormula 入力規則の式('='は含まない)
      * @param startPosition 設定するセルの開始位置
@@ -519,6 +522,7 @@ public class POIUtils {
     
     /**
      * 指定した範囲のセルに制約を追加する。
+     * <p>POI-3.7以上が必要。
      * @param sheet シート
      * @param constraint 制約
      * @param startPosition 設定するセルの開始位置
@@ -544,6 +548,7 @@ public class POIUtils {
     
     /**
      * 指定した範囲の名前を登録する。
+     * <p>POI-3.7以上が必要。
      * <p>指定した名前が既に存在する場合は、新しい範囲に書き換える。
      * @param sheet シート
      * @param name 名前
@@ -575,6 +580,7 @@ public class POIUtils {
     
     /**
      * 名前の範囲の形式を組み立てる。
+     * <p>POI-3.7以上が必要。
      * <code>シート名!$A$1:$A:$5</code>
      * @param sheetName シート名
      * @param startPosition 設定するセルの開始位置
