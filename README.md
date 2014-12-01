@@ -10,7 +10,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
   <dependency>
     <groupId>com.github.mygreen</groupId>
     <artifactId>xlsmapper</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
   </dependency>
 </dependencies>
 ```

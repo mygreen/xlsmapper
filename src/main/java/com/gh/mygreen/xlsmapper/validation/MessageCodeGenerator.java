@@ -145,6 +145,11 @@ public class MessageCodeGenerator {
         
         if(fieldType != null) {
             addCode(codeList, code, null, fieldType.getName());
+            
+            // 列挙型の場合は、java.lang.Enumとしてクラスタイプを追加する。
+            if(Enum.class.isAssignableFrom(fieldType)) {
+                addCode(codeList, code, null, Enum.class.getName());
+            }
         }
         
         addCode(codeList, code, null, null);

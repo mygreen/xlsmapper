@@ -37,6 +37,25 @@ public class POIUtils {
     private static POICellFormatter defaultCellFormatter = new POICellFormatter();
     
     /**
+     * セルの「縮小して表示する」のメソッドが利用可能かどうか。
+     * POI-3.10以上の場合、trueとなる。
+     */
+    public static final boolean AVAILABLE_METHOD_CELL_SHRINK_TO_FIT;
+    static {
+        boolean available = false;
+        try {
+            //POI-3.10以降
+            final Method method = CellStyle.class.getMethod("setShrinkToFit", boolean.class);
+            method.setAccessible(true);
+            available = true;
+        } catch (Exception e) {
+            available = false;
+        } 
+        
+        AVAILABLE_METHOD_CELL_SHRINK_TO_FIT = available;
+    }
+    
+    /**
      * シートの最大列数を取得する。
      * @see jxl.Sheet.getColumns()
      * @param sheet
@@ -193,22 +212,22 @@ public class POIUtils {
         ArgUtils.notNull(cell, "cell");
         ArgUtils.notNull(cellFormatter, "cellFormatter");
         
-        if(isBlankCell(cell)) {
-            return true;
-        }
+//        if(isBlankCell(cell)) {
+//            return true;
+//        }
         return getCellContents(cell, cellFormatter).isEmpty();
     }
     
-    /**
-     * セルの値が空かどうか。
-     * @param cell
-     * @return
-     */
-    public static boolean isBlankCell(final Cell cell) {
-        ArgUtils.notNull(cell, "cell");
-        
-        return cell.getCellType() == Cell.CELL_TYPE_BLANK;
-    }
+//    /**
+//     * セルの値が空かどうか。
+//     * @param cell
+//     * @return
+//     */
+//    public static boolean isBlankCell(final Cell cell) {
+//        ArgUtils.notNull(cell, "cell");
+//        
+//        return cell.getCellType() == Cell.CELL_TYPE_BLANK;
+//    }
     
     /**
      * 指定した書式のインデックス番号を取得する。シートに存在しない場合は、新しく作成する。
@@ -344,17 +363,19 @@ public class POIUtils {
         ArgUtils.notNull(cell, "cell");
         ArgUtils.notNull(style, "style");
         
-        try {
-            //POI-3.10以降
-            final Method method = style.getClass().getMethod("setShrinkToFit", boolean.class);
-            method.setAccessible(true);
-            method.invoke(style, true);
-            
-            cell.setCellStyle(style);
-            
-            return;
-            
-        } catch (Exception e) { } 
+        if(AVAILABLE_METHOD_CELL_SHRINK_TO_FIT) {
+            try {
+                //POI-3.10以降
+                final Method method = style.getClass().getMethod("setShrinkToFit", boolean.class);
+                method.setAccessible(true);
+                method.invoke(style, true);
+                
+                cell.setCellStyle(style);
+                
+                return;
+                
+            } catch (Exception e) {}
+        }
         
         if(style instanceof HSSFCellStyle) {
             // POI-3.9以前のExcel2003形式
@@ -367,9 +388,7 @@ public class POIUtils {
                 
                 cell.setCellStyle(style);
                 return;
-            } catch (Exception e ) {
-//                e.printStackTrace();
-            }
+            } catch (Exception e ) { }
             
         } else if(style instanceof XSSFCellStyle) {
             // POI-3.9以前のExcel2007形式
@@ -386,10 +405,7 @@ public class POIUtils {
                 
                 cell.setCellStyle(style);
                 return;
-            } catch (Exception e ) {
-//                e.printStackTrace();
-            }
-            
+            } catch (Exception e ) { }
             
         }
         

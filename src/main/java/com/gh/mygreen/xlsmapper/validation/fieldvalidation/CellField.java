@@ -131,8 +131,7 @@ public class CellField<T> {
     public CellField<T> validate(final SheetBindingErrors errors) {
         ArgUtils.notNull(errors, "errors");
         
-        final String fieldPath = errors.buildFieldPath(getName());
-        if(errors.hasFieldErrors(fieldPath)) {
+        if(hasErrors(errors)) {
             // 既にフィールドに対するエラーがある場合
             return this;
         }

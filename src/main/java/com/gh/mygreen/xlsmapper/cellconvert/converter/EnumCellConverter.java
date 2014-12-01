@@ -66,7 +66,7 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
             final String candidateValues = Utils.join(getLoadingAvailableValue(taretClass, anno), ", ");
             
             throw newTypeBindException(cell, adaptor, cellValue)
-                .addMessageVar("candiateValues", candidateValues);
+                .addMessageVar("candidateValues", candidateValues);
         }
         
         return resultValue;

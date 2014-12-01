@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
+import javax.el.ELProcessor;
 
 import org.hibernate.validator.internal.engine.messageinterpolation.el.RootResolver;
 import org.slf4j.Logger;
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.ArgUtils;
 import com.gh.mygreen.xlsmapper.expression.el.FormatterWrapper;
-import com.gh.mygreen.xlsmapper.expression.el.LocalELContext;
+import com.gh.mygreen.xlsmapper.expression.el.RootELResolver;
 
 
 /**
@@ -26,9 +25,15 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
     
     private static final Logger logger = LoggerFactory.getLogger(ExpressionLanguageELImpl.class);
     
-    private static final ExpressionFactory expressionFactory;
-    static {
-        expressionFactory = ExpressionFactory.newInstance();
+    /** EL3.xが使用可能かどうか */
+    boolean availabledEl3;
+    {
+        try {
+            Class.forName("javax.el.ELProcessor");
+            this.availabledEl3 = true;
+        } catch (ClassNotFoundException e) {
+            this.availabledEl3 = false;
+        }
     }
     
     /**
@@ -40,19 +45,32 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
         ArgUtils.notEmpty(expression, "expression");
         ArgUtils.notEmpty(values, "values");
         
+        if(availabledEl3) {
+            return evaluateWithEL3(expression, values);
+        } else {
+            return evaluateWithEL2(expression, values);
+        }
+        
+    }
+    
+    /**
+     * EL3.xで評価する
+     * @param expression
+     * @param values
+     * @return
+     */
+    Object evaluateWithEL3(final String expression, final Map<String, ?> values) {
+        
         try {
-            final LocalELContext context = new LocalELContext();
+            final ELProcessor elProc = new ELProcessor();
+            elProc.getELManager().addELResolver(new RootELResolver(true));
             
             for (final Entry<String, ? > entry : values.entrySet()) {
                 if(isFormatter(entry.getKey(), entry.getValue())) {
                     // Formatterの場合は、ラップクラスを設定する。
-                    ValueExpression exp =  expressionFactory.createValueExpression(
-                            new FormatterWrapper((Formatter) entry.getValue()),
-                            FormatterWrapper.class);
-                    context.setVariable(entry.getKey(), exp);
+                    elProc.defineBean(entry.getKey(), new FormatterWrapper((Formatter) entry.getValue()));
                 } else {
-                    ValueExpression exp =  expressionFactory.createValueExpression(entry.getValue(), Object.class);
-                    context.setVariable(entry.getKey(), exp);
+                    elProc.defineBean(entry.getKey(), entry.getValue());
                 }
             }
             
@@ -60,12 +78,41 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
                 logger.debug("Evaluating EL expression: {}", expression);
             }
             
-            final ValueExpression resultExp = expressionFactory.createValueExpression(context, bracket(expression), Object.class);
-            return resultExp.getValue(context);
+            return elProc.eval(expression);
         
         } catch (final ELException ex){
             throw new ExpressionEvaluationException(String.format("Evaluating [%s] script with EL failed.", expression), ex);
         }
+    }
+    
+    /**
+     * EL2.xで評価する
+     * @param expression
+     * @param values
+     * @return
+     */
+    Object evaluateWithEL2(final String expression, final Map<String, ?> values) {
+        
+        try {
+            final com.gh.mygreen.xlsmapper.expression.el.ELProcessor elProc = new com.gh.mygreen.xlsmapper.expression.el.ELProcessor();
+            
+            for (final Entry<String, ? > entry : values.entrySet()) {
+                if(isFormatter(entry.getKey(), entry.getValue())) {
+                    elProc.setVariable(entry.getKey(), new FormatterWrapper((Formatter) entry.getValue()));
+                } else {
+                    elProc.setVariable(entry.getKey(), entry.getValue());
+                }
+            }
+            
+            if(logger.isDebugEnabled()) {
+                logger.debug("Evaluating EL expression: {}", expression);
+            }
+            
+            return elProc.eval(expression);        
+        } catch (final ELException ex){
+            throw new ExpressionEvaluationException(String.format("Evaluating [%s] script with EL failed.", expression), ex);
+        }
+        
     }
     
     /**
@@ -84,15 +131,6 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
         }
         
         return false;
-    }
-    
-    /**
-     * EL式の形式の括弧'${...}'で囲む。
-     * @param value
-     * @return
-     */
-    private String bracket(final String value) {
-        return "${" + value + "}";
     }
     
 }

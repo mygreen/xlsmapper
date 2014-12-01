@@ -153,7 +153,7 @@ public class FieldAdaptor {
         this.targetGetter = method;
         this.targetClass = method.getReturnType();
         
-        final String fieldName = Utils.uncapitalize(method.getName().substring(3));
+        final String fieldName = Utils.uncapitalize(method.getName().substring(2));
         this.name = fieldName;
         this.targetField = Utils.getField(clazz, fieldName);
         this.targetSetter = Utils.getSetter(clazz, fieldName, method.getReturnType());

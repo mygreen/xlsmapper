@@ -94,7 +94,7 @@ public class LocalELContext extends ELContext {
      * @param localName 名称
      * @param method 関数の実態
      */
-    public void setFunction(final String prefix, final String localName, final Method method) {
+    public void mapFunction(final String prefix, final String localName, final Method method) {
         functionMapper.setFunction(prefix, localName, method);
     }
 }

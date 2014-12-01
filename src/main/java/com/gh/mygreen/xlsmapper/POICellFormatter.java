@@ -4,44 +4,32 @@ import java.text.DecimalFormat;
 import java.util.Date;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
- * POIのセルの値をフォーマットするクラス。
+ * シンプルなセルフォーマッター
  *
+ * 参考URL
+ * <ul>
+ *   <li><a href="http://www.ne.jp/asahi/hishidama/home/tech/apache/poi/cell.html"></a></li>
+ *   <li><a href="http://shin-kawara.seesaa.net/article/159663314.html">POIでセルの値をとるのは大変　日付編</a></li>
+ *
+ * @version 0.2.3
  * @author T.TSUCHIE
  *
  */
 public class POICellFormatter {
     
-    /** 
-     * 日本語固有日付表現
-     * この数値の日付データ地域に依存するがPOIで正しく取得できず、
-     * 欧米フォーマットで表現されるため固定の変換処理を行う.
-     */
-    private static short[] jaDate = {
-            14, 15, 16, 17, 18, 19, 
-            20, 21, 22, 27, 28, 29, 
-            30, 31, 32, 33, 34, 35, 36, 
-            45, 46, 47, 
-            50, 51, 52, 53, 54, 55, 56, 57, 58
-    };
-    
-    /**
-     * POIで正しく取得することが出来ない日付フォーマット
-     * バージョンがあがり対応できない場合などはここに追加.
-     */
-    private static String[] extDateFormat = {
-            "yyyy/m/d\\ h:mm\\ AM/PM",  // 0
-            "m/d",                      // 1
-            "mm/dd/yy",                 // 2
-            "dd\\-mmm\\-yy",            // 3
-            "mmmm\\-yy",                // 4
-            "mmmmm",                    // 5
-            "mmmmm\\-yy",               // 6
-            "yyyy/m/d\\ h:mm\\ AM/PM",  // 7
-    };
+    private static Logger logger = LoggerFactory.getLogger(POICellFormatter.class);
     
     /**
      * セルの値を文字列として取得する
@@ -52,7 +40,94 @@ public class POICellFormatter {
     public String format(final Cell cell) {
         ArgUtils.notNull(cell, "cell");
         
-        // データフォーマッターの補正
+        switch(cell.getCellType()) {
+            case Cell.CELL_TYPE_BLANK:
+                // 結合しているセルの場合、左上のセル以外に値が設定されている場合がある。
+                return getMergedCellValue(cell);
+                
+            case Cell.CELL_TYPE_BOOLEAN:
+                return Boolean.toString(cell.getBooleanCellValue());
+                
+            case Cell.CELL_TYPE_STRING:
+                return cell.getRichStringCellValue().toString();
+                
+            case Cell.CELL_TYPE_NUMERIC:
+                return getNumericCellValue(cell);
+                
+            case Cell.CELL_TYPE_FORMULA:
+                return getFormulaCellValue(cell);
+                
+            case Cell.CELL_TYPE_ERROR:
+                return "";
+                
+            default:
+                return "";
+        }
+    }
+    
+    /**
+     * 式が設定されているセルの値を評価する。
+     * @param cell
+     * @return
+     */
+    private String getFormulaCellValue(final Cell cell) {
+        
+        final int cellType = cell.getCellType();
+        if(cellType != Cell.CELL_TYPE_FORMULA) {
+            throw new IllegalArgumentException(String.format("cell type should be FORMULA, but %d.", cellType));
+        }
+        
+        final Workbook workbook = cell.getSheet().getWorkbook();
+        final CreationHelper helper = workbook.getCreationHelper();
+        final FormulaEvaluator evaluator = helper.createFormulaEvaluator();
+        
+        // 再帰的に処理する
+        final Cell evalCell = evaluator.evaluateInCell(cell);
+        return format(evalCell);
+        
+    }
+    
+    /**
+     * 結合されているセルの値の取得。
+     * <p>通常は左上のセルに値が設定されているが、結合されているときは左上以外のセルの値を取得する。
+     * <p>左上以外のセルに値が設定されている場合は、CellTypeがCELL_TYPE_BLANKになるため注意が必要。
+     * @param cell
+     * @return
+     */
+    private String getMergedCellValue(final Cell cell) {
+        
+        final int rowIndex = cell.getRowIndex();
+        final int columnIndex = cell.getColumnIndex();
+        
+        final Sheet sheet = cell.getSheet();
+        final int size = sheet.getNumMergedRegions();
+        
+        for(int i=0; i < size; i++) {
+            final CellRangeAddress range = sheet.getMergedRegion(i);
+            if(range.isInRange(rowIndex, columnIndex)) {
+                final Cell firstCell = POIUtils.getCell(sheet, range.getFirstColumn(), range.getFirstRow());
+                return format(firstCell);
+            }
+        }
+        
+        return "";
+    }
+    
+    /**
+     * 数値型のセルの値を取得する。
+     * <p>書式付きの数字か日付のどちらかの場合がある。
+     * @param cell
+     * @return
+     */
+    private String getNumericCellValue(final Cell cell) {
+        
+        final int cellType = cell.getCellType();
+        if(cellType != Cell.CELL_TYPE_NUMERIC) {
+            throw new IllegalArgumentException(String.format("cell type should be FORMULA, but %d.", cellType));
+        }
+        
+        // セルの書式の取得。
+        // 補正したりする
         short formatIndex = cell.getCellStyle().getDataFormat();
         switch(formatIndex) {
         case 55:
@@ -71,7 +146,7 @@ public class POICellFormatter {
             break;
         }
         
-        DataFormat dataFormat = cell.getSheet().getWorkbook().createDataFormat();
+        final DataFormat dataFormat = cell.getSheet().getWorkbook().createDataFormat();
         String formatStr = null;
         try {
             formatStr = dataFormat.getFormat(formatIndex);
@@ -79,314 +154,66 @@ public class POICellFormatter {
             formatStr = "";
         }
         
-        switch(cell.getCellType()) {
-        case Cell.CELL_TYPE_BLANK:
-            return "";
+        if(isSpecialDateFormat(formatStr)) {
+            // POIで処理できない日付の形式
+            return formatSpecialDate(cell.getDateCellValue(), formatStr);
             
-        case Cell.CELL_TYPE_BOOLEAN:
-            return String.valueOf(cell.getBooleanCellValue());
-            
-        case Cell.CELL_TYPE_ERROR:
-            return String.valueOf(cell.getCellFormula());
-            
-        case Cell.CELL_TYPE_FORMULA:
-            return getCellValueOfFormula(cell, formatIndex, formatStr);
-            
-        case Cell.CELL_TYPE_NUMERIC:
-            return getCellValueOfNumeric(cell, formatIndex, formatStr);
-            
-        case Cell.CELL_TYPE_STRING:
-            return getCellValueOfString(cell);
-            
-        default:
-            // 不明な種類のセルの場合
-            return "";
-        }
-        
-    }
-    
-    private String getCellValueOfFormula(Cell cell, short formatIndex, String formatStr) {
-        
-        // 書式のフォーマット
-        String value = null;
-        DecimalFormat decimalFormat = new DecimalFormat();
-        switch(formatIndex) {
-        case 0:
-            decimalFormat.applyPattern("0.##########");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-        case 5:
-            decimalFormat.applyPattern("\\#,##0;\\-#,##0");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-        case 6:
-            //formatter.applyPattern("\u00A5#,##0;\u00A5#,##0");
-            decimalFormat.applyPattern("\\#,##0;\\-#,##0");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-        case 7:
-            //formatter.applyPattern("\u00A5#,##0.00;\u00A5#,##0.00");
-            decimalFormat.applyPattern("\\#,##0.00;\\-#,##0.00");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-        case 8:
-            //formatter.applyPattern("\u00A5#,##0.00;\u00A5#,##0.00");
-            decimalFormat.applyPattern("\\#,##0.00;\\-#,##0.00");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-        case 12: // fraction
-            // 分数はシンプルなフォーマットに変換
-            decimalFormat.applyPattern("0.#");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-        case 13: // fraction
-            // 分数はシンプルなフォーマットに変換
-            decimalFormat.applyPattern("0.#");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-        case 25:
-            // US locale
-            //formatter.applyPattern("($#,##0);($#,##0)");
-            decimalFormat.applyPattern("$#,##0.00;($#,##0.00)");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-        case 26:
-            // US locale
-            //formatter.applyPattern("($#,##0);($#,##0)");
-            decimalFormat.applyPattern("$#,##0.00;($#,##0.00)");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-        case 41: //会計
-            
-            decimalFormat.applyPattern("\\\t\t#,##0;\\-#,##0");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-            
-        case 42: //会計
-            decimalFormat.applyPattern("\\\t\t#,##0;\\-#,##0");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-            
-        case 43: //会計
-            decimalFormat.applyPattern("\\\t\t#,##0;\\-#,##0");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-            
-        case 44: //会計
-            decimalFormat.applyPattern("\\\t\t#,##0;\\-#,##0");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-            
-        // 2007/3/28 gp301014 文字列指定でも数値のみ入力された場合はnumericとして取得されるため
-        // formatNumeric内で処理する.
-        case 49: //文字列
-            decimalFormat.applyPattern("0.##########");
-            value = decimalFormat.format(cell.getNumericCellValue());
-            break;
-            
-        default:
-            
-            // その他ユーザ定義のデータフォーマットなど
-            if(formatStr.indexOf("[DBNum") >= 0) {
-                
-                try {
-                    
-                    if(formatStr.startsWith("[DBNum1]General")) {
-                        formatStr = convetFormulaFormat(formatStr);
-                        formatStr = formatStr.replaceAll("General", "0.#");
-                        decimalFormat.applyPattern(formatStr);
-                        value = decimalFormat.format(cell.getNumericCellValue());
-                        
-                    } else if(formatStr.startsWith("[DBNum1]")) {
-                        // 四捨五入
-                        formatStr = convetFormulaFormat(formatStr);
-                        decimalFormat.applyPattern(formatStr);
-                        value = decimalFormat.format(cell.getNumericCellValue());
-                        
-                    } else if(formatStr.startsWith("[DBNum2]General")) {
-                        formatStr = convetFormulaFormat(formatStr);
-                        formatStr = formatStr.replaceAll("General", "0.#");
-                        decimalFormat.applyPattern(formatStr);
-                        value = decimalFormat.format(cell.getNumericCellValue());
-                        
-                    } else if(formatStr.startsWith("[DBNum2]")) {
-                        // 四捨五入
-                        formatStr = convetFormulaFormat(formatStr);
-                        decimalFormat.applyPattern(formatStr);
-                        value = decimalFormat.format(cell.getNumericCellValue());
-                        
-                    } else if(formatStr.startsWith("[DBNum3]General")) {
-                        formatStr = convetFormulaFormat(formatStr);
-                        formatStr = formatStr.replaceAll("General", "0.#");
-                        decimalFormat.applyPattern(formatStr);
-                        value = decimalFormat.format(cell.getNumericCellValue());
-                        
-                    } else if(formatStr.startsWith("[DBNum3]")) {
-                        // 四捨五入
-                        formatStr = convetFormulaFormat(formatStr);
-                        decimalFormat.applyPattern(formatStr);
-                        value = decimalFormat.format(cell.getNumericCellValue());
-                        
-                    } else {
-                        formatStr = convetFormulaFormat(formatStr);
-                        decimalFormat.applyPattern(formatStr);
-                        value = decimalFormat.format(cell.getNumericCellValue());
-                    }
-                    
-                    
-                } catch (Exception e) {
-                    value = Double.toString(cell.getNumericCellValue());
-                }
-            } else {
-                // POI独特なExcelフォーマットを補正する.
-                formatStr = convetFormulaFormat(formatStr);
-                
-                // 分数対策
-                if(formatStr.indexOf("/") >= 0) {
-                    //System.out.println("[TableConvert] 分数は正しく表示できません");
-                    formatStr = "0.#";
-                }
-                
-                try {
-                    decimalFormat.applyPattern(formatStr);
-                    value = decimalFormat.format(cell.getNumericCellValue());
-                    value = value.replaceAll("E", "E+");
-                } catch (Exception e) {
-                    value = Double.toString(cell.getNumericCellValue());
-                }
-            }
-            break;
-            
-        }
-        
-        // 最後の整形
-        value = value
-            .replaceAll(" +$", "")  // 終端の半角スペースの削除
-            .replaceAll("\u00A5", "\\\\");  // 「\」を変換
-        
-        return value;
-    }
-    
-    /**
-     * 数式用の書式を変換する。
-     * @param format
-     * @return
-     */
-    private String convetFormulaFormat(String format) {
-        format = format.replaceAll(";\\@", "");
-        format = format.replaceAll("\\@_", "");
-        format = format.replaceAll("\\@", "");
-        format = format.replaceAll("^\\(", "");
-        format = format.replaceAll("0_\\)", "0");
-        format = format.replaceAll("0_", "0");
-        format = format.replaceAll("0\\\\", "0");
-        format = format.replaceAll("\\[[竄ｬ<>=\\$\\-\\w]+\\]", " ");
-        format = format.replaceAll("\\\\\\$", "\\$");
-        format = format.replaceAll("\\\"", "");
-        format = format.replaceAll("\\\\\\(", "\\(");
-        format = format.replaceAll("\\\\-", "-");
-        format = format.replaceAll("\\+00", "00");
-        return format;
-    }
-    
-    /**
-     * セルのタイプが数値の場合の値を取得する。
-     * @param cell
-     * @return
-     */
-    private String getCellValueOfNumeric(final Cell cell, short formatIndex, String formatStr) {
-        
-        if(formatStr == null) {
-            System.out.println(Utils.formatCellAddress(cell));
-        }
-        
-        // 日付 or 数値の判別がつかないデータを出力
-        if(existDateFormat(formatStr)) {
-            // index、formatともに正しく取得できない日付フォーマットを先に出力する.
-            return formatExistDate(formatIndex, formatStr, cell.getDateCellValue());
-            
-        } else if(isDateTime(formatIndex) || DateUtil.isCellDateFormatted(cell)) {
-            // 日付 (or 時刻)
-            return formatDate(formatIndex, formatStr, cell.getDateCellValue());
+        } else if(isJaDate(formatIndex) || DateUtil.isCellDateFormatted(cell)) {
+            // 日本語固有の日付フォーマットの場合
+            return formatJaDate(cell.getDateCellValue(), formatIndex);
             
         } else if(formatStr.endsWith(";@") || formatStr.startsWith("[$-") || formatStr.indexOf("yyyy") > 0) {
-            // Excel XP, 2003対応 フォーマット文字列が";@"で終わっている、もしくは[$-409],[$-411],[$-F800]で始まっている場合は日付文字列のユーザ定義型.
-            return format2003Date(formatIndex, formatStr, cell.getDateCellValue());
+            /* Excel XP, 2003対応 フォーマット文字列が";@"で終わっている、
+             * もしくは[$-409],[$-411],[$-F800]で始まっている場合は、日付文字列のユーザ定義型。 
+             */
+            return format2003Date(cell.getDateCellValue(), formatStr);
             
-        }else {
-            return getCellValueOfFormula(cell, formatIndex, formatStr);
-            
-        }
-    }
-    
-    private boolean isDateTime(short s) {
-        for(int i=0; i<jaDate.length; i++) {
-            if(jaDate[i] == s)
-                return true;
-        }
-        return false;
-    }
-    
-    private boolean existDateFormat(final String format) {
-        for(int i=0; i < extDateFormat.length; i++) {
-            if(extDateFormat[i].equals(format))
-                return true;
-        }
-        return false;
-    }
-    
-    /**
-     * 日付をExcel書式にフォーマットした文字列を返す.
-     * 
-     * @param format 書式
-     * @param date 日付 or 時間
-     * @return フォーマット変更された文字列
-     */
-    private String formatExistDate(short s, String format, Date date) {
-        
-        JaCalendar cal = new JaCalendar(date);
-        String str = "";
-        
-        // short値が取得できず、フォーマットが取得できた場合
-        if(format.equals(extDateFormat[0])) {
-            // yyyy/m/d\\ h:mm\\ AM/PM
-            str = cal.getYYYY() + "/" + cal.getMM() + "/" + cal.getDD() + 
-            " " + cal.getHourH() + ":" + cal.getMinuteMM() + " " + cal.getAMPM();
-        } else if(format.equals(extDateFormat[1])) {
-            str = cal.getM() + "/" + cal.getD();
-        } else if(format.equals(extDateFormat[2])) {
-            str = cal.getMM() + "/" + cal.getDD() + "/" + cal.getYY();
-        } else if(format.equals(extDateFormat[3])) {
-            str = cal.getDD() + "-" + cal.getMMM()+ "-" + cal.getYY();
-        } else if(format.equals(extDateFormat[4])) {
-            str = cal.getMMMM()+ "-" + cal.getYY();
-        } else if(format.equals(extDateFormat[5])) {
-            str = cal.getMMMMM();
-        } else if(format.equals(extDateFormat[6])) {
-            str = cal.getMMMMM()+ "-" + cal.getYY();
-        } else if(format.equals(extDateFormat[7])) {
-            str = cal.getYYYY() + "/" + cal.getM() + "/" + cal.getD() + " " + cal.getHourH() + ":" + cal.getMinuteMM() + " " + cal.getAMPM();
         } else {
-            System.out.println("[TableConvert] 想定外の日付フォーマットのため変換できません.");
-            str = cal.getYYYY() + "/" + cal.getMM() + "/" + cal.getDD();
+            // 数値として処理する
+            return formatNumeric(cell.getNumericCellValue(), formatIndex, formatStr);
         }
-        return str;
         
     }
     
-    /**
-     * 日付をExcel書式にフォーマットした文字列を返す.
-     * 
-     * @param s 
-     * @param format 書式
-     * @param date 日付 or 時間
-     * @return フォーマット変更された文字列
+    /** 
+     * 日本語固有日付表現
+     * この数値の日付データ地域に依存するがPOIで正しく取得できず、
+     * 欧米フォーマットで表現されるため固定の変換処理を行う.
      */
-    private String formatDate(short s, String format, Date date) {
+    private static short[] jaDate = {
+            14, 15, 16, 17, 18, 19, 
+            20, 21, 22, 27, 28, 29, 
+            30, 31, 32, 33, 34, 35, 36, 
+            45, 46, 47, 
+            50, 51, 52, 53, 54, 55, 56, 57, 58
+    };
+    
+    /**
+     * 日本語固有の日付のインデックスの場合
+     * @param formatIndex
+     * @return
+     */
+    private boolean isJaDate(short formatIndex) {
+        for(int i=0; i < jaDate.length; i++) {
+            if(jaDate[i] == formatIndex) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * 日本語固有の日付をフォーマットする
+     * @param date
+     * @param formatIndex
+     * @return
+     */
+    private String formatJaDate(final Date date, final short formatIndex) {
         
-        JaCalendar cal = new JaCalendar(date);
-        String str = "";
-        switch (s) {
+        final JaCalendar cal = new JaCalendar(date);
+        final String str;
+        
+        switch (formatIndex) {
         case 14:
             // YYYY/MM/DD
             str = cal.getYYYY() + "/" + cal.getM() + "/" + cal.getD(); 
@@ -506,13 +333,93 @@ public class POICellFormatter {
             str = cal.getYYYY() + "/" + cal.getMM() + "/" + cal.getDD();
             break;
         }
+        
         return str;
         
     }
     
+    /**
+     * POIで正しく取得することが出来ない日付フォーマット
+     * バージョンがあがり対応できない場合などはここに追加.
+     */
+    private static String[] specailDateFormat = {
+            "yyyy/m/d\\ h:mm\\ AM/PM",  // 0
+            "m/d",                      // 1
+            "mm/dd/yy",                 // 2
+            "dd\\-mmm\\-yy",            // 3
+            "mmmm\\-yy",                // 4
+            "mmmmm",                    // 5
+            "mmmmm\\-yy",               // 6
+            "yyyy/m/d\\ h:mm\\ AM/PM",  // 7
+    };
     
-    private String format2003Date(short s, String fs, Date date) {
-        JaCalendar cal = new JaCalendar(date);
+    /**
+     * POIで正しく取得することができない日付フォーマットか判定する。
+     * @param formatStr
+     * @return
+     */
+    private boolean isSpecialDateFormat(final String formatStr) {
+        for(String str : specailDateFormat) {
+            if(str.equals(formatStr)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * POIで処理できない特別な形式の日時型のフォーマット
+     * @param date
+     * @param format
+     * @return
+     */
+    private String formatSpecialDate(final Date date, final String format) {
+        final JaCalendar cal = new JaCalendar(date);
+        
+        final String str;
+        
+        // short値が取得できず、フォーマットが取得できた場合
+        if(format.equals(specailDateFormat[0])) {
+            // yyyy/m/d\\ h:mm\\ AM/PM
+            str = cal.getYYYY() + "/" + cal.getMM() + "/" + cal.getDD() + 
+                    " " + cal.getHourH() + ":" + cal.getMinuteMM() + " " + cal.getAMPM();
+        } else if(format.equals(specailDateFormat[1])) {
+            str = cal.getM() + "/" + cal.getD();
+        } else if(format.equals(specailDateFormat[2])) {
+            str = cal.getMM() + "/" + cal.getDD() + "/" + cal.getYY();
+        } else if(format.equals(specailDateFormat[3])) {
+            str = cal.getDD() + "-" + cal.getMMM()+ "-" + cal.getYY();
+        } else if(format.equals(specailDateFormat[4])) {
+            str = cal.getMMMM()+ "-" + cal.getYY();
+        } else if(format.equals(specailDateFormat[5])) {
+            str = cal.getMMMMM();
+        } else if(format.equals(specailDateFormat[6])) {
+            str = cal.getMMMMM()+ "-" + cal.getYY();
+        } else if(format.equals(specailDateFormat[7])) {
+            str = cal.getYYYY() + "/" + cal.getM() + "/" + cal.getD() + " " + cal.getHourH() + ":" + cal.getMinuteMM() + " " + cal.getAMPM();
+        } else {
+            if(logger.isDebugEnabled()) {
+                logger.debug("想定外の日付フォーマットのため変換できません。{}", format);
+            }
+            str = cal.getYYYY() + "/" + cal.getMM() + "/" + cal.getDD();
+        }
+        
+        return str;
+    }
+    
+    /**
+     * Excel2003/XP形式の場合の日付のフォーマット
+     * @param fs
+     * @param date
+     * @return
+     */
+    private String format2003Date(final Date date, final String formatStr) {
+        
+        final JaCalendar cal = new JaCalendar(date);
+        
+        // 書式を変更する
+        String fs = formatStr;
         
         // 日付埋め込み
         fs = fs.replaceAll("yyyy", cal.getYYYY());
@@ -572,25 +479,203 @@ public class POICellFormatter {
         fs = fs.replaceAll("\\\\\\$", "\\$");
         fs = fs.replaceAll("\\\"", "");
         fs = fs.replaceAll("\\\\\\(", "\\(");
+        
         return fs;
     }
     
     /**
-     * セルのタイプが文字列の場合の値を取得する。
-     * @param cell
-     * @return 値が設定されていない場合、空文字を返す。
+     * 書式付きの数値をフォーマットする
+     * 
+     * @param numeric
+     * @param formatIndex
+     * @param formatStr
+     * @return
      */
-    private String getCellValueOfString(final Cell cell) {
+    private String formatNumeric(final double numeric, final short formatIndex, final String formatStr) {
         
-        String value = cell.getRichStringCellValue().getString();
-        if((value == null)) {
-            return "";
+        String value = "";
+        final DecimalFormat decimalFormat = new DecimalFormat();
+        switch(formatIndex) {
+        case 0:
+            decimalFormat.applyPattern("0.##########");
+            value = decimalFormat.format(numeric);
+            break;
+        case 5:
+            decimalFormat.applyPattern("\\#,##0;\\-#,##0");
+            value = decimalFormat.format(numeric);
+            break;
+        case 6:
+            //formatter.applyPattern("\u00A5#,##0;\u00A5#,##0");
+            decimalFormat.applyPattern("\\#,##0;\\-#,##0");
+            value = decimalFormat.format(numeric);
+            break;
+        case 7:
+            //formatter.applyPattern("\u00A5#,##0.00;\u00A5#,##0.00");
+            decimalFormat.applyPattern("\\#,##0.00;\\-#,##0.00");
+            value = decimalFormat.format(numeric);
+            break;
+        case 8:
+            //formatter.applyPattern("\u00A5#,##0.00;\u00A5#,##0.00");
+            decimalFormat.applyPattern("\\#,##0.00;\\-#,##0.00");
+            value = decimalFormat.format(numeric);
+            break;
+        case 12: // fraction
+            // 分数はシンプルなフォーマットに変換
+            decimalFormat.applyPattern("0.#");
+            value = decimalFormat.format(numeric);
+            break;
+        case 13: // fraction
+            // 分数はシンプルなフォーマットに変換
+            decimalFormat.applyPattern("0.#");
+            value = decimalFormat.format(numeric);
+            break;
+        case 25:
+            // US locale
+            //formatter.applyPattern("($#,##0);($#,##0)");
+            decimalFormat.applyPattern("$#,##0.00;($#,##0.00)");
+            value = decimalFormat.format(numeric);
+            break;
+        case 26:
+            // US locale
+            //formatter.applyPattern("($#,##0);($#,##0)");
+            decimalFormat.applyPattern("$#,##0.00;($#,##0.00)");
+            value = decimalFormat.format(numeric);
+            break;
+        case 41: //会計
             
-        } 
+            decimalFormat.applyPattern("\\\t\t#,##0;\\-#,##0");
+            value = decimalFormat.format(numeric);
+            break;
+            
+        case 42: //会計
+            decimalFormat.applyPattern("\\\t\t#,##0;\\-#,##0");
+            value = decimalFormat.format(numeric);
+            break;
+            
+        case 43: //会計
+            decimalFormat.applyPattern("\\\t\t#,##0;\\-#,##0");
+            value = decimalFormat.format(numeric);
+            break;
+            
+        case 44: //会計
+            decimalFormat.applyPattern("\\\t\t#,##0;\\-#,##0");
+            value = decimalFormat.format(numeric);
+            break;
+            
+        // 2007/3/28 gp301014 文字列指定でも数値のみ入力された場合はnumericとして取得されるため
+        // formatNumeric内で処理する.
+        case 49: //文字列
+            decimalFormat.applyPattern("0.##########");
+            value = decimalFormat.format(numeric);
+            break;
+            
+        default:
+            
+            // その他ユーザ定義のデータフォーマットなど
+            if(formatStr.indexOf("[DBNum") >= 0) {
+                
+                try {
+                    
+                    if(formatStr.startsWith("[DBNum1]General")) {
+                        String fs = convetNumericFormat(formatStr);
+                        fs = fs.replaceAll("General", "0.#");
+                        decimalFormat.applyPattern(fs);
+                        value = decimalFormat.format(numeric);
+                        
+                    } else if(formatStr.startsWith("[DBNum1]")) {
+                        // 四捨五入
+                        String fs = convetNumericFormat(formatStr);
+                        decimalFormat.applyPattern(fs);
+                        value = decimalFormat.format(numeric);
+                        
+                    } else if(formatStr.startsWith("[DBNum2]General")) {
+                        String fs = convetNumericFormat(formatStr);
+                        fs = formatStr.replaceAll("General", "0.#");
+                        decimalFormat.applyPattern(fs);
+                        value = decimalFormat.format(numeric);
+                        
+                    } else if(formatStr.startsWith("[DBNum2]")) {
+                        // 四捨五入
+                        String fs = convetNumericFormat(formatStr);
+                        decimalFormat.applyPattern(fs);
+                        value = decimalFormat.format(numeric);
+                        
+                    } else if(formatStr.startsWith("[DBNum3]General")) {
+                        String fs = convetNumericFormat(formatStr);
+                        fs = formatStr.replaceAll("General", "0.#");
+                        decimalFormat.applyPattern(fs);
+                        value = decimalFormat.format(numeric);
+                        
+                    } else if(formatStr.startsWith("[DBNum3]")) {
+                        // 四捨五入
+                        String fs = convetNumericFormat(formatStr);
+                        decimalFormat.applyPattern(fs);
+                        value = decimalFormat.format(numeric);
+                        
+                    } else {
+                        String fs = convetNumericFormat(formatStr);
+                        decimalFormat.applyPattern(fs);
+                        value = decimalFormat.format(numeric);
+                    }
+                    
+                    
+                } catch (Exception e) {
+                    value = Double.toString(numeric);
+                }
+            } else {
+                // POI独特なExcelフォーマットを補正する.
+                String fs = convetNumericFormat(formatStr);
+                
+                // 分数対策
+                if(fs.indexOf("/") >= 0) {
+                    //System.out.println("[TableConvert] 分数は正しく表示できません");
+                    fs = "0.#";
+                }
+                
+                try {
+                    decimalFormat.applyPattern(fs);
+                    value = decimalFormat.format(numeric);
+                    value = value.replaceAll("E", "E+");
+                } catch (Exception e) {
+                    value = Double.toString(numeric);
+                }
+            }
+            break;
+            
+        }
         
-        // 文字列の最後の半角スペースを削除する
-//        return value.replaceAll(" +$", "");
+        // 最後の整形
+        value = value
+            .replaceAll(" +$", "")  // 終端の半角スペースの削除
+            .replaceAll("\u00A5", "\\\\");  // 「\」を変換
+        
         return value;
         
     }
+    
+    /**
+     * 数式用の書式を変換する。
+     * @param formatStr
+     * @return
+     */
+    private String convetNumericFormat(final String formatStr) {
+        
+        String fs = formatStr;
+        fs = fs.replaceAll(";\\@", "");
+        fs = fs.replaceAll("\\@_", "");
+        fs = fs.replaceAll("\\@", "");
+        fs = fs.replaceAll("^\\(", "");
+        fs = fs.replaceAll("0_\\)", "0");
+        fs = fs.replaceAll("0_", "0");
+        fs = fs.replaceAll("0\\\\", "0");
+        fs = fs.replaceAll("\\[[竄ｬ<>=\\$\\-\\w]+\\]", " ");
+        fs = fs.replaceAll("\\\\\\$", "\\$");
+        fs = fs.replaceAll("\\\"", "");
+        fs = fs.replaceAll("\\\\\\(", "\\(");
+        fs = fs.replaceAll("\\\\-", "-");
+        fs = fs.replaceAll("\\+00", "00");
+        
+        return fs;
+    }
+    
 }

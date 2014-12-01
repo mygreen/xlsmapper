@@ -5,7 +5,7 @@
 	<groupId>com.github.mygreen</groupId>
 	<artifactId>xlsmapper</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.1</version>
+	<version>0.2.2</version>
 	<name>XlsMapper</name>
 	<url>http://mygreen.github.io/xlsmapper/</url>
 	<description><![CDATA[
@@ -61,7 +61,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 	</developers>
 	
 	<properties>
-		<poi.version>3.5-FINAL</poi.version>
+		<poi.version>3.7</poi.version>
 		<slf4j.version>1.7.1</slf4j.version>
 	</properties>
 	<build>
@@ -242,9 +242,6 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
 			<version>3.0.0</version>
-			<!-- 
-			<scope>provided</scope>
-			 -->
 		</dependency>
 		
 		<!-- Bean Validation 1.1 系を利用する -->
