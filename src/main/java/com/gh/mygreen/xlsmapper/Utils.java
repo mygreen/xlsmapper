@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,34 +47,13 @@ public class Utils {
      * @param arrays
      * @param separator
      * @param ignoreEmptyItem
+     * @param trim
      * @return
      */
-    public static String join(final Object[] arrays, final String separator, final boolean ignoreEmptyItem) {
+    public static String join(final Object[] arrays, final String separator,
+            final boolean ignoreEmptyItem, final boolean trim) {
         
-        if(!ignoreEmptyItem) {
-            return join(arrays, separator);
-        }
-        
-        final List<Object> list = new ArrayList<Object>();
-        for(Object item : arrays) {
-            if(item == null) {
-                continue;
-            }
-            
-            if(item instanceof String && isEmpty((String) item)) {
-                continue;
-                
-            } else if(item instanceof Character && isEmpty(item.toString())) {
-                continue;
-                
-            } else if(char.class.isAssignableFrom(item.getClass()) && isEmpty(item.toString())) {
-                continue;
-            }
-            
-            list.add(item);
-        }
-        
-        return join(list, separator);
+        return join(Arrays.asList(arrays), separator, ignoreEmptyItem, trim);
         
     }
     
@@ -82,13 +62,11 @@ public class Utils {
      * @param col
      * @param separator
      * @param ignoreEmptyItem
+     * @param trim
      * @return
      */
-    public static String join(final Collection<?> col, final String separator, final boolean ignoreEmptyItem) {
-        
-        if(!ignoreEmptyItem) {
-            return join(col, separator);
-        }
+    public static String join(final Collection<?> col, final String separator,
+            final boolean ignoreEmptyItem, final boolean trim) {
         
         final List<Object> list = new ArrayList<Object>();
         for(Object item : col) {
@@ -96,17 +74,38 @@ public class Utils {
                 continue;
             }
             
-            if(item instanceof String && isEmpty((String) item)) {
-                continue;
+            Object value = item;
+            
+            if(item instanceof String) {
+                String str = (String) item;
+                if(ignoreEmptyItem && isEmpty(str)) {
+                    continue;
+                    
+                } else if(trim) {
+                    value = str.trim();
+                }
                 
             } else if(item instanceof Character && isEmpty(item.toString())) {
-                continue;
+                String str = item.toString();
+                if(ignoreEmptyItem && isEmpty(str)) {
+                    continue;
+                    
+                } else if(trim) {
+                    value = str.trim().charAt(0);
+                }
                 
-            } else if(char.class.isAssignableFrom(item.getClass()) && isEmpty(item.toString())) {
-                continue;
+            } else if(char.class.isAssignableFrom(item.getClass())) {
+                String str = item.toString();
+                if(ignoreEmptyItem && isEmpty(str)) {
+                    continue;
+                    
+                } else if(trim) {
+                    value = str.trim().charAt(0);
+                }
             }
             
-            list.add(item);
+            list.add(value);
+            
         }
         
         return join(list, separator);

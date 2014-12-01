@@ -263,8 +263,9 @@ public class MessageInterpolator {
             
             if(values.containsKey(varName)) {
                 // 該当するキーが存在する場合
-                final String eval = values.get(varName).toString();
-                if(recursive) {
+                final Object value = values.get(varName);
+                final String eval = value == null ? "" : value.toString();
+                if(!eval.isEmpty() && recursive) {
                     return parse(eval, values, recursive, messageResolver);
                 } else {
                     return eval;

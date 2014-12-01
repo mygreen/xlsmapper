@@ -89,7 +89,8 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
         }
         
         if(Utils.isNotEmpty(value)) {
-            final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem());
+            final boolean trim = (converterAnno == null ? false : converterAnno.trim()); 
+            final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trim);
             cell.setCellValue(cellValue);
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);
