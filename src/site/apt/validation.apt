@@ -41,7 +41,7 @@ xlsMapper.getConig().setSkipTypeBindFailure(true);
 SheetBindingErrors errors = new SheetBindingErrors(Employer.class);
 
 // エラー情報を読み込み時に渡し、読み込み処理を実行します。
-Employer bean = loader.load(xlsIn, Employer.class, errors);
+Employer bean = xlsMapper.load(xlsIn, Employer.class, errors);
 
 // BeanのValidatorを実行します。
 EmployerValidator validator = new EmployerValidator();

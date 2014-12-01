@@ -13,6 +13,7 @@
 			<item name="XLSBeansとの違い" href="diff_xlsbeans.html" />
 			<item name="ダウンロード" href="download.html" />
 			<item name="リリースノート" href="release.html" />
+			<item name="Javadoc" href="./apidocs/index.html" />
 		</menu>
 		<menu ref="reports" />
 	</body>
