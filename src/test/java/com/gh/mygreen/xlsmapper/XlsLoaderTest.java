@@ -35,6 +35,7 @@ public class XlsLoaderTest {
             System.out.printf("Sheet name : %s.\n", bean.getMethodSheetName());
             
             System.out.println(bean.getCellValue());
+            System.out.printf("formulaValue=%d\n", bean.formulaValue1);
             System.out.printf("LabelledCell=%s\n", bean.labelledCell);
             System.out.printf("intValue=%s\n", bean.intValue);
             System.out.printf("DateValue=%s\n", bean.dateValue);

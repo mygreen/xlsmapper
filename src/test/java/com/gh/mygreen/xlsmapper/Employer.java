@@ -59,6 +59,9 @@ public class Employer {
     
     public String methodSheetName;
     
+    @XlsCell(address="A2")
+    public int formulaValue1;
+    
 //    @XlsCell(column=1, row=1)
     @XlsCell(address="B2")
     @Size(max=2)
