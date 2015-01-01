@@ -7,13 +7,32 @@
 
 リリースノート
 
+* {0.2.3 - 2015-01-01}
+
+  * 下記の不良を修正、または改善。
+ 
+   * {{{https://github.com/mygreen/xlsmapper/issues/7}#7}} - Excel関数が設定されているセルを読み込んだときに例外が発生する事象を修正。
+ 
+   * {{{https://github.com/mygreen/xlsmapper/issues/8}#8}} - 書き込み時のセルの「縮小して表示」の処理を効率化。
+   
+   * {{{https://github.com/mygreen/xlsmapper/issues/9}#9}} - CellFieldクラスで属性エラーがある場合でも必須チェックが実行される事象を修正。
+   
+   * {{{https://github.com/mygreen/xlsmapper/issues/10}#10}} - 列挙型に対して入力値検証する際にエラーコード「typeMismatch.java.lang.Enum」を追加。
+   
+   * {{{https://github.com/mygreen/xlsmapper/issues/11}#11}} - isから始まるboolean型のgetterメソッドにアノテーションを付与しても無視される事象を修正。
+   
+   * {{{https://github.com/mygreen/xlsmapper/issues/12}#12}} - EL3.0で追加されたラムダ式を利用できるよう改善。
+   
+ []
+
+
 * {0.2.2 - 2014-12-01}
  
  * 下記の不良を修正。
  
-   * {{{https://github.com/mygreen/xlsmapper/issues/1}#5}} - 書き込み時に、リストのトリムが有効にならない。
+   * {{{https://github.com/mygreen/xlsmapper/issues/5}#5}} - 書き込み時に、リストのトリムが有効にならない。
  
-   * {{{https://github.com/mygreen/xlsmapper/issues/2}#6}} - 入力値検証の際に変数の値がnullにしているとNPEが発生する。
+   * {{{https://github.com/mygreen/xlsmapper/issues/6}#6}} - 入力値検証の際に変数の値がnullにしているとNPEが発生する。
  
  []
 
