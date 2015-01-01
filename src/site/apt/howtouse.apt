@@ -562,14 +562,19 @@ public class UnitUser {
 --------
 public class UnitUser {
   @XlsHorizontalRecords(tableLabel="ユーザ一覧")
-  @XlsHint(order=2)
+  @XlsHint(order=1)
   private List<User> users;
   
   @XlsLabelledCell(label="更新日", type=LabelledCellType.Right)
-  @XlsHint(order=1)
+  @XlsHint(order=2)
   private String updateTime;
+
 }
 --------
+
+ [Note] ソースコード上で定義した順番は、実行時には保証されないため、@XlsHintで順番を指定する必要があります。
+
+
 
 ** {@XlsIsEmpty}
 
@@ -682,7 +687,7 @@ public class UnitUser {
 }
 --------
 
- \
+ 
  [Note]Excelの仕様上、設定「折り返して全体を表示する」と「縮小して全体を表示する」は、二者択一であるため、両方の設定を有効にすることはできません。
       もし、属性forceWrapTextとforceShrinkToFitの値をtrueに設定した場合、forceShrinkToFitの設定が優先され、「縮小して全体を表示する」が有効になります。
 
@@ -759,7 +764,7 @@ public class UnitUser {
    
    * 言語コードと国コードを指定する場合、'ja _JP'のようにアンダーバーで区切り指定します。
    
- * 属性currentcyで通貨コード（ISO-4217コード）を指定します。
+ * 属性currencyで通貨コード（ISO-4217コード）を指定します。
  
    * Javaのクラスjava.util.Currencyで解釈可能なコードを指定します。
  
@@ -768,7 +773,7 @@ public class UnitUser {
 --------
 public class UnitUser {
   
-  @XlsNumberConverter(pattern="#,##0.0000", locale="ja_JP", currentcy="USD")
+  @XlsNumberConverter(pattern="#,##0.0000", locale="ja_JP", currency="USD")
   private double salary;
 
 }
@@ -1085,11 +1090,11 @@ public Employee {
    @XlsHorizontalRecords(tableLabel="履歴", terminal=RecordTerminal.Border,
       overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete // データによって行の追加、削除する設定
    )
-   @XlsHint(order=2) // プロパティの処理順序を指定します。
+   @XlsHint(order=1) // プロパティの処理順序を指定します。
    private List<EmployeeHistory> histories;
    
    @XlsLabelledCell(label="名前")
-   @XlsHint(order=1) // プロパティの処理順序を指定します。
+   @XlsHint(order=2) // プロパティの処理順序を指定します。
    private String name;
    
 }
