@@ -21,7 +21,7 @@ public class TypeBindException extends XlsMapperException {
     private static final long serialVersionUID = -5571437827158347334L;
     
     /** バインド先の クラスタイプ*/
-    private final Class<?> bindClass;
+    private Class<?> bindClass;
     
     /** バインド対象の値 */
     private final Object targetValue;
@@ -34,6 +34,10 @@ public class TypeBindException extends XlsMapperException {
         this.bindClass = bindClass;
         this.targetValue = targetValue;
         this.messageVars = new LinkedHashMap<String, Object>();
+    }
+    
+    public void setBindClass(Class<?> bindClass) {
+        this.bindClass = bindClass;
     }
     
     public Class<?> getBindClass() {

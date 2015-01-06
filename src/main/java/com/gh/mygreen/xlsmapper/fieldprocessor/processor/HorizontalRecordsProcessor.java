@@ -12,9 +12,18 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
@@ -53,6 +62,8 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
  *
  */
 public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizontalRecords> {
+    
+    private static Logger logger = LoggerFactory.getLogger(HorizontalRecordsProcessor.class);
     
     @Override
     public void loadProcess(final Sheet sheet, final Object obj, final XlsHorizontalRecords anno, final FieldAdaptor adaptor,
@@ -376,6 +387,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         final Object value = converter.toObject(cell, property, config);
                         map.put(headerInfo.getHeaderLabel(), value);
                     } catch(TypeBindException e) {
+                        e.setBindClass(itemClass);  // マップの項目のタイプに変更
                         work.addTypeBindError(e, cell, String.format("%s[%s]", property.getName(), headerInfo.getHeaderLabel()), headerInfo.getHeaderLabel());
                         if(!config.isSkipTypeBindFailure()) {
                             throw e;
@@ -519,6 +531,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // 結合したセルの情報
         final List<CellRangeAddress> mergedRanges = new ArrayList<CellRangeAddress>();
         
+        // 書き込んだセルの範囲などの情報
+        final RecordOperation recordOperation = new RecordOperation();
+        
         // get records
         hRow++;
         for(int r=0; r < POIUtils.getRows(sheet); r++) {
@@ -624,20 +639,18 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                                 valueCell.setCellStyle(style);
                                 valueCell.setCellType(Cell.CELL_TYPE_BLANK);
                                 
+                                recordOperation.incrementCopyRecord();
+                                
                             } else if(anno.overRecord().equals(OverRecordOperate.Insert)) {
                                 // すでに他の列の処理に対して行を追加している場合は行の追加は行わない。
                                 if(!insertRows) {
                                     // 行を下に追加する
                                     POIUtils.insertRow(sheet, valueCell.getRowIndex()+1);
-                                  insertRows = true;
-                                    
-    //                                    //挿入した文セルの位置がずれるので調整する
-    //                                    if(preIndex != valueCell.getRowIndex()) {
-    //                                        System.out.printf("insert preIndex=%d, currentIndex\n", preIndex, valueCell.getRowIndex());
-    //                                        valueCell = POIUtils.getCell(sheet,
-    //                                                valueCell.getColumnIndex(),
-    //                                                valueCell.getRowIndex()-(valueCell.getRowIndex()-preIndex));
-    //                                    }
+                                    insertRows = true;
+                                    recordOperation.incrementInsertRecord();
+                                    if(logger.isDebugEnabled()) {
+                                        logger.debug("insert row : sheet name=[{}], row index=[{}]", sheet.getSheetName(), valueCell.getRowIndex()+1);
+                                    }
                                 }
                                 
                                 // １つ上のセルの書式をコピーする
@@ -660,6 +673,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                                 throw e;
                             }   
                         }
+                        
+                        recordOperation.setupCellPositoin(valueCell);
+                        
                         // セルをマージする
                         if(column.merged() && (r > 0) && config.isMergeCellOnSave()) {
                             processSavingMergedCell(valueCell, sheet, mergedRanges, config);
@@ -671,7 +687,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                  * 残りの行の操作
                  *  行の追加やコピー処理をしていないときのみ実行する
                  */
-                if(record == null && emptyFlag == false) {
+                if(record == null && emptyFlag == false && recordOperation.isNotExecuteOverRecordOperation()) {
                     if(anno.remainedRecord().equals(RemainedRecordOperate.None)) {
                         // なにもしない
                         
@@ -684,11 +700,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                             // 1行目は残しておき、値をクリアする
                             final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
                             clearCell.setCellType(Cell.CELL_TYPE_BLANK);
-                            
                         } else {
                             final Row row = sheet.getRow(hRow);
                             if(row != null) {
                                 sheet.removeRow(row);
+                                if(logger.isDebugEnabled()) {
+                                    logger.debug("delete row : sheet name=[{}], row index=[{}]", sheet.getSheetName(), hRow);
+                                }
+                                recordOperation.incrementDeleteRecord();
                             }
                         }
                     }
@@ -699,7 +718,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             // マップ形式のカラムを出力する
             if(record != null) {
-                saveMapColumn(sheet, headers, initColumn, hRow, record, terminal, anno, config, work);
+                saveMapColumn(sheet, headers, initColumn, hRow, record, terminal, anno, config, work, recordOperation);
             }
             
             // パスの位置の変更
@@ -711,6 +730,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 // セルが空で、書き込むデータがない場合。
                 break;
             }
+        }
+        
+        if(config.isCorrectCellDataValidationOnSave()) {
+            correctDataValidation(sheet, recordOperation);
+        }
+        
+        if(config.isCorrectNameRangeOnSave()) {
+            correctNameRange(sheet, recordOperation);
         }
         
     }
@@ -776,7 +803,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     
     private void saveMapColumn(Sheet sheet, List<RecordHeader> headerInfos, 
             int begin, int row, Object record, RecordTerminal terminal,
-            XlsHorizontalRecords anno, XlsMapperConfig config, SavingWorkObject work) throws XlsMapperException {
+            XlsHorizontalRecords anno, XlsMapperConfig config, SavingWorkObject work,
+            RecordOperation recordOperation) throws XlsMapperException {
         
         final List<FieldAdaptor> properties = Utils.getSavingMapColumnProperties(record.getClass(), work.getAnnoReader());
         for(FieldAdaptor property : properties) {
@@ -855,10 +883,139 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                             throw e;
                         }
                     }
+                    
+                    recordOperation.setupCellPositoin(cell);
                 }
                 
                 begin = begin + headerInfo.getHeaderRange() + 1;
             }
+        }
+        
+    }
+    
+    /**
+     * セルの入力規則の範囲を修正する。
+     * @param sheet
+     * @param recordOperation
+     */
+    private void correctDataValidation(final Sheet sheet, final RecordOperation recordOperation) {
+        
+        if(!POIUtils.AVAILABLE_METHOD_SHEET_DAVA_VALIDATION) {
+            return;
+        }
+        
+        if(recordOperation.isNotExecuteRecordOperation()) {
+            return;
+        }
+        
+        //TODO: セルの結合も考慮する
+        
+        // 操作をしていないセルの範囲の取得
+        final CellRangeAddress notOperateRange = new CellRangeAddress(
+                recordOperation.getTopLeftPoisitoin().y,
+                recordOperation.getBottomRightPosition().y - recordOperation.getCountInsertRecord(),
+                recordOperation.getTopLeftPoisitoin().x,
+                recordOperation.getBottomRightPosition().x
+                );
+        
+        final DataValidationHelper helper = sheet.getDataValidationHelper();
+        final List<? extends DataValidation> list = sheet.getDataValidations();
+        for(DataValidation validation : list) {
+            
+            final CellRangeAddressList region = validation.getRegions();
+            boolean changedRange = false;
+            for(CellRangeAddress range : region.getCellRangeAddresses()) {
+                
+                if(notOperateRange.isInRange(range.getFirstRow(), range.getFirstColumn())) {
+                    // 自身のセルの範囲の場合は、行の範囲を広げる
+                    range.setLastRow(recordOperation.getBottomRightPosition().y);
+                    changedRange = true;
+                } else if(notOperateRange.getLastRow() < range.getFirstRow()) {
+                    // 自身のセルノ範囲より下方にあるセルの範囲の場合、行の挿入や削除に影響を受けているので修正する。
+                    if(recordOperation.isInsertRecord()) {
+                        range.setFirstRow(range.getFirstRow() + recordOperation.getCountInsertRecord());
+                        range.setLastRow(range.getLastRow() + recordOperation.getCountInsertRecord());
+                        
+                    } else if(recordOperation.isDeleteRecord()) {
+                        range.setFirstRow(range.getFirstRow() - recordOperation.getCountDeleteRecord());
+                        range.setLastRow(range.getLastRow() - recordOperation.getCountDeleteRecord());
+                        
+                    }
+                    changedRange = true;
+                }
+                
+            }
+            
+            // 修正した規則を、再度シートに追加する
+            if(changedRange) {
+                sheet.addValidationData(helper.createValidation(validation.getValidationConstraint(), region));
+            }
+        }
+        
+    }
+    
+    /**
+     * 名前の定義の範囲を修正する。
+     * @param sheet
+     * @param recordOperation
+     */
+    private void correctNameRange(final Sheet sheet, final RecordOperation recordOperation) {
+        
+        if(recordOperation.isNotExecuteRecordOperation()) {
+            return;
+        }
+        
+        final Workbook workbook = sheet.getWorkbook();
+        final int numName = workbook.getNumberOfNames();
+        if(numName == 0) {
+            return;
+        }
+        
+        // 操作をしていないセルの範囲の取得
+        final CellRangeAddress notOperateRange = new CellRangeAddress(
+                recordOperation.getTopLeftPoisitoin().y,
+                recordOperation.getBottomRightPosition().y - recordOperation.getCountInsertRecord(),
+                recordOperation.getTopLeftPoisitoin().x,
+                recordOperation.getBottomRightPosition().x
+                );
+        
+        for(int i=0; i < numName; i++) {
+            final Name name = workbook.getNameAt(i);
+            
+            if(name.isDeleted() || name.isFunctionName()) {
+                // 削除されている場合、関数の場合はスキップ
+                continue;
+            }
+            
+            if(!sheet.getSheetName().equals(name.getSheetName())) {
+                // 自身のシートでない名前は、修正しない。
+                continue;
+            }
+            
+            AreaReference areaRef = new AreaReference(name.getRefersToFormula());
+            CellReference firstCellRef = areaRef.getFirstCell();
+            CellReference lastCellRef = areaRef.getLastCell();
+            
+            if(notOperateRange.isInRange(firstCellRef.getRow(), firstCellRef.getCol())) {
+                // 自身のセルの範囲の場合は、行の範囲を広げる。
+                
+                lastCellRef= new CellReference(
+                        lastCellRef.getSheetName(),
+                        recordOperation.getBottomRightPosition().y, lastCellRef.getCol(),
+                        lastCellRef.isRowAbsolute(), lastCellRef.isColAbsolute());
+                areaRef = new AreaReference(firstCellRef, lastCellRef);
+                
+                // 修正した範囲を再設定する
+                name.setRefersToFormula(areaRef.formatAsString());
+                
+            } else if(notOperateRange.getLastRow() < firstCellRef.getRow()) {
+                /*
+                 * 名前の定義の場合、自身のセルノ範囲より下方にあるセルの範囲の場合、
+                 * 自動的に修正されるため、修正は必要なし。
+                 */
+                
+            }
+            
         }
         
     }

@@ -53,6 +53,7 @@ public class MinValidator<T extends Comparable<T>> extends AbstractFieldValidato
         vars.put("formattedValidatedValue", formatValue(value, getPattern()));
         vars.put("min", getMin());
         vars.put("formattedMin", formatValue(getMin(), getPattern()));
+        vars.put("pattern", getPattern());
         return vars;
     }
     

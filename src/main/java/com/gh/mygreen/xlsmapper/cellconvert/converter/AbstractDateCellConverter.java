@@ -5,7 +5,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -51,7 +53,8 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
                 try {
                     resultValue = parseDate(defaultValue, createDateFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(cell, adaptor, defaultValue);
+                    throw newTypeBindException(cell, adaptor, defaultValue)
+                        .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
             
@@ -66,7 +69,8 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
                 try {
                     resultValue = parseDate(cellValue,  createDateFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(cell, adaptor, cellValue);
+                    throw newTypeBindException(cell, adaptor, cellValue)
+                        .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
         }
@@ -105,6 +109,18 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         
         return format;
         
+    }
+    
+    /**
+     * 型変換エラー時のメッセージ変数の作成
+     */
+    private Map<String, Object> createTypeErrorMessageVars(final XlsDateConverter anno) {
+        
+        final Map<String, Object> vars = new LinkedHashMap<>();
+        vars.put("pattern", anno.pattern());
+        vars.put("lenient", anno.lenient());
+        vars.put("locale", anno.locale());
+        return vars;
     }
     
     /**

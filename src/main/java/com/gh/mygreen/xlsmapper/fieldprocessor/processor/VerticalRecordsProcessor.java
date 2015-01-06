@@ -12,8 +12,15 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellReference;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
@@ -380,6 +387,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         final Object value = converter.toObject(cell, property, config);
                         map.put(headerInfo.getHeaderLabel(), value);
                     } catch(TypeBindException e) {
+                        e.setBindClass(itemClass);  // マップの項目のタイプに変更
                         work.addTypeBindError(e, cell, String.format("%s[%s]", property.getName(), headerInfo.getHeaderLabel()), headerInfo.getHeaderLabel());     
                         if(!config.isSkipTypeBindFailure()) {
                             throw e;
@@ -524,6 +532,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // 結合したセルの情報
         final List<CellRangeAddress> mergedRanges = new ArrayList<CellRangeAddress>();
         
+        // 書き込んだセルの範囲などの情報
+        final RecordOperation recordOperation = new RecordOperation();
+        
         // get records
         hColumn++;
         for(int r=0; r < POIUtils.getColumns(sheet); r++) {
@@ -627,6 +638,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                                 valueCell.setCellStyle(style);
                                 valueCell.setCellType(Cell.CELL_TYPE_BLANK);
                                 
+                                recordOperation.incrementCopyRecord();
+                                
                             } else if(anno.overRecord().equals(OverRecordOperate.Insert)) {
                                 // POIは列の追加をサポートしていないので非対応。
                                 throw new AnnotationInvalidException("XlsVerticalRecoreds#overRecord not supported 'OverRecordOperate.Insert'.", anno);
@@ -647,6 +660,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                             }
                         }
                         
+                        recordOperation.setupCellPositoin(valueCell);
+                        
                         // セルをマージする
                         if(column.merged() && (r > 0) && config.isMergeCellOnSave()) {
                             processSavingMergedCell(valueCell, sheet, mergedRanges, config);
@@ -658,7 +673,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                  * 残りの行の操作
                  *  行の追加やコピー処理をしていないときのみ実行する
                  */
-                if(record == null && emptyFlag == false) {
+                if(record == null && emptyFlag == false && recordOperation.isNotExecuteOverRecordOperation()) {
                     if(anno.remainedRecord().equals(RemainedRecordOperate.None)) {
                         // なにもしない
                         
@@ -688,6 +703,14 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 // セルが空で、書き込むデータがない場合。
                 break;
             }
+        }
+        
+        if(config.isCorrectCellDataValidationOnSave()) {
+            correctDataValidation(sheet, recordOperation);
+        }
+        
+        if(config.isCorrectNameRangeOnSave()) {
+            correctNameRange(sheet, recordOperation);
         }
         
     }
@@ -832,4 +855,125 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         }
         
     }
+    
+    /**
+     * セルの入力規則の範囲を修正する。
+     * @param sheet
+     * @param recordOperation
+     */
+    private void correctDataValidation(final Sheet sheet, final RecordOperation recordOperation) {
+        
+        if(!POIUtils.AVAILABLE_METHOD_SHEET_DAVA_VALIDATION) {
+            return;
+        }
+        
+        if(recordOperation.isNotExecuteRecordOperation()) {
+            return;
+        }
+        
+        //TODO: セルの結合も考慮する
+        
+        // 操作をしていないセルの範囲の取得
+        final CellRangeAddress notOperateRange = new CellRangeAddress(
+                recordOperation.getTopLeftPoisitoin().y,
+                recordOperation.getBottomRightPosition().y,
+                recordOperation.getTopLeftPoisitoin().x,
+                recordOperation.getBottomRightPosition().x - recordOperation.getCountInsertRecord()
+                );
+        
+        final DataValidationHelper helper = sheet.getDataValidationHelper();
+        final List<? extends DataValidation> list = sheet.getDataValidations();
+        for(DataValidation validation : list) {
+            
+            final CellRangeAddressList region = validation.getRegions();
+            boolean changedRange = false;
+            for(CellRangeAddress range : region.getCellRangeAddresses()) {
+                
+                if(notOperateRange.isInRange(range.getFirstRow(), range.getFirstColumn())) {
+                    // 自身のセルの範囲の場合は、行の範囲を広げる
+                    range.setLastColumn(recordOperation.getBottomRightPosition().x);
+                    changedRange = true;
+                    
+                } else if(notOperateRange.getLastColumn() < range.getFirstColumn()) {
+                    /*
+                     * VerticalRecordsの場合は、挿入・削除はないので、自身以外の範囲は修正しない。
+                     */
+                }
+                
+            }
+            
+            // 修正した規則を、再度シートに追加する
+            if(changedRange) {
+                sheet.addValidationData(helper.createValidation(validation.getValidationConstraint(), region));
+            }
+        }
+        
+    }
+    
+    /**
+     * 名前の定義の範囲を修正する。
+     * @param sheet
+     * @param recordOperation
+     */
+    private void correctNameRange(final Sheet sheet, final RecordOperation recordOperation) {
+        
+        if(recordOperation.isNotExecuteRecordOperation()) {
+            return;
+        }
+        
+        final Workbook workbook = sheet.getWorkbook();
+        final int numName = workbook.getNumberOfNames();
+        if(numName == 0) {
+            return;
+        }
+        
+        // 操作をしていないセルの範囲の取得
+        final CellRangeAddress notOperateRange = new CellRangeAddress(
+                recordOperation.getTopLeftPoisitoin().y,
+                recordOperation.getBottomRightPosition().y,
+                recordOperation.getTopLeftPoisitoin().x,
+                recordOperation.getBottomRightPosition().x - recordOperation.getCountInsertRecord()
+                );
+        
+        for(int i=0; i < numName; i++) {
+            final Name name = workbook.getNameAt(i);
+            
+            if(name.isDeleted() || name.isFunctionName()) {
+                // 削除されている場合、関数の場合はスキップ
+                continue;
+            }
+            
+            if(!sheet.getSheetName().equals(name.getSheetName())) {
+                // 自身のシートでない名前は、修正しない。
+                continue;
+            }
+            
+            AreaReference areaRef = new AreaReference(name.getRefersToFormula());
+            CellReference firstCellRef = areaRef.getFirstCell();
+            CellReference lastCellRef = areaRef.getLastCell();
+            
+            if(notOperateRange.isInRange(firstCellRef.getRow(), firstCellRef.getCol())) {
+                // 自身のセルの範囲の場合は、行の範囲を広げる。
+                
+                lastCellRef= new CellReference(
+                        lastCellRef.getSheetName(),
+                        lastCellRef.getRow(), recordOperation.getBottomRightPosition().x,
+                        lastCellRef.isRowAbsolute(), lastCellRef.isColAbsolute());
+                areaRef = new AreaReference(firstCellRef, lastCellRef);
+                
+                // 修正した範囲を再設定する
+                name.setRefersToFormula(areaRef.formatAsString());
+                
+            } else if(notOperateRange.getLastColumn() < firstCellRef.getCol()) {
+                /*
+                 * 名前の定義の場合、自身のセルノ範囲より右方にあるセルの範囲の場合、
+                 * 自動的に修正されるため、修正は必要なし。
+                 */
+                
+            }
+            
+        }
+        
+    }
+    
 }

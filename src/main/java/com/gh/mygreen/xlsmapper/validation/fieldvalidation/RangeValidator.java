@@ -63,6 +63,7 @@ public class RangeValidator<T extends Comparable<T>> extends AbstractFieldValida
         vars.put("formattedMin", formatValue(getMin(), getPattern()));
         vars.put("max", getMax());
         vars.put("formattedMax", formatValue(getMax(), getPattern()));
+        vars.put("pattern", getPattern());
         return vars;
     }
     
