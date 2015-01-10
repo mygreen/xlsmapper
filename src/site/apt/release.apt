@@ -12,6 +12,8 @@
   * 下記の機能を追加または改善。
  
    * {{{https://github.com/mygreen/xlsmapper/issues/4}#4}} - 書き込み時にレコードの追加・削除を行った際に入力規則と名前の定義を自動的に修正する機能を追加。
+     XlsMapperConfigのプロパティとして、「correctNameRangeOnSave」「correctCellDataValidationOnSave」を追加。
+     ただし、データの入力規則を自動的に修正する機能を利用する場合は、POI-3.11が必要となります。
  
    * {{{https://github.com/mygreen/xlsmapper/issues/13}#13}} - 読み込み時のエラーメッセージの改善。型変換時エラー時にセルの値'validatedValue'を追加。
      さらに、CellFieldを使用した値の検証のエラーメッセージの候補に、クラスタイプを指定できるよう改善。
