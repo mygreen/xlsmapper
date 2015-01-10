@@ -86,7 +86,7 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T>, Ce
             return true;
         }
         
-        errors.rejectValue(fieldName, getMessageKey(), getMessageVars(value));
+        errors.rejectValue(fieldName, value, value.getClass(), getMessageKey(), getMessageVars(value));
         
         return false;
     }
@@ -99,7 +99,7 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T>, Ce
         }
         
         final Map<String, Object> messageVars = getMessageVars(value);
-        errors.rejectSheetValue(fieldName, cellAddress, getMessageKey(), messageVars);
+        errors.rejectSheetValue(fieldName, value, value.getClass(), cellAddress, getMessageKey(), messageVars);
         
         return false;
     }

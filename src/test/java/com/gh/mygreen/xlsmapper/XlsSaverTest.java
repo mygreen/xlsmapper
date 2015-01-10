@@ -41,10 +41,10 @@ public class XlsSaverTest {
             employer.dateValue = new Date();
             
             List<EmployerHistory> historyList = new ArrayList<EmployerHistory>();
-            historyList.add(new EmployerHistory(1, Timestamp.valueOf("2010-01-01 00:00:00.000"), "Value1"));
-            historyList.add(new EmployerHistory(2, Timestamp.valueOf("2010-02-01 00:00:00.000"), "Value2"));
-            historyList.add(new EmployerHistory(3, Timestamp.valueOf("2010-03-01 00:00:00.000"), "Value3"));
-            historyList.add(new EmployerHistory(4, Timestamp.valueOf("2010-04-01 00:00:00.000"), "Value3"));
+            historyList.add(new EmployerHistory(1, Timestamp.valueOf("2010-01-01 00:00:00.000"), "Value1", true));
+            historyList.add(new EmployerHistory(2, Timestamp.valueOf("2010-02-01 00:00:00.000"), "Value2", false));
+            historyList.add(new EmployerHistory(3, Timestamp.valueOf("2010-03-01 00:00:00.000"), "Value3", true));
+            historyList.add(new EmployerHistory(4, Timestamp.valueOf("2010-04-01 00:00:00.000"), "Value3", false));
             employer.setHistory(historyList);
             
             Map<String, Date> attended1 = new HashMap<String, Date>();
@@ -92,6 +92,8 @@ public class XlsSaverTest {
             FileOutputStream outFile = new FileOutputStream("./emploery_out.xlsx");
             XlsSaver saver = new XlsSaver();
 //            saver.getConfig().setMergeCellOnSave(true);
+            saver.getConfig().setCorrectCellDataValidationOnSave(true);
+            saver.getConfig().setCorrectNameRangeOnSave(true);
             saver.save(templateXlsIn, outFile, employer);
             
         } catch(Exception e) {

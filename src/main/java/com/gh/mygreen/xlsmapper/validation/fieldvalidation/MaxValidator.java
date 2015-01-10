@@ -53,6 +53,7 @@ public class MaxValidator<T extends Comparable<T>> extends AbstractFieldValidato
         vars.put("formattedValidatedValue", formatValue(value, getPattern()));
         vars.put("max", getMax());
         vars.put("formattedMax", formatValue(getMax(), getPattern()));
+        vars.put("pattern", getPattern());
         return vars;
     }
     

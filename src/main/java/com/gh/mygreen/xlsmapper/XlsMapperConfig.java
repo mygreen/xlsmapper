@@ -7,6 +7,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegstry;
 /**
  * マッピングする際の設定などを保持するクラス。
  * 
+ * @version 0.3
  * @author T.TSUCHIE
  *
  */
@@ -20,6 +21,12 @@ public class XlsMapperConfig {
     
     /** 保存時にセルの結合を行うかどうか */
     private boolean mergeCellOnSave = false;
+    
+    /** 書き込み時に名前の定義範囲を修正するかどうか */
+    private boolean correctNameRangeOnSave = false;
+    
+    /** 書き込み時に名前のセルの入力規則を修正するかどうか */
+    private boolean correctCellDataValidationOnSave = false;
     
     /** POIのセルの値のフォーマッター */
     private POICellFormatter cellFormatter = new POICellFormatter();
@@ -56,8 +63,8 @@ public class XlsMapperConfig {
     }
     
     /**
-     * シートが見つからなくても無視するかどうか
-     * @return
+     * シートが見つからなくても無視するかどうか。
+     * @return　初期値は、'false'です。
      */
     public boolean isIgnoreSheetNotFound() {
         return ignoreSheetNotFound;
@@ -65,7 +72,7 @@ public class XlsMapperConfig {
     
     /**
      * シートが見つからなくても無視するかどうか設定します。
-     * @param ignoreSheetNotFound
+     * @param ignoreSheetNotFound 初期値は、'false'です。
      * @return
      */
     public XlsMapperConfig setIgnoreSheetNotFound(boolean ignoreSheetNotFound) {
@@ -74,8 +81,8 @@ public class XlsMapperConfig {
     }
     
     /**
-     * 型変換エラーが発生しても処理を続けるかどうか
-     * @return
+     * 型変換エラーが発生しても処理を続けるかどうか。
+     * @return 初期値は、'false'です。
      */
     public boolean isSkipTypeBindFailure() {
         return skipTypeBindFailure;
@@ -83,7 +90,7 @@ public class XlsMapperConfig {
     
     /**
      * 型変換エラーが発生しても処理を続けるかどうか設定します。
-     * @param skipTypeBindFailure
+     * @param skipTypeBindFailure 初期値は、'false'です。
      * @return
      */
     public XlsMapperConfig setSkipTypeBindFailure(boolean skipTypeBindFailure) {
@@ -93,7 +100,7 @@ public class XlsMapperConfig {
     
     /**
      * 保存時にセルの結合を行うかどうか
-     * @return
+     * @return 初期値は、'false'です。
      */
     public boolean isMergeCellOnSave() {
         return mergeCellOnSave;
@@ -101,12 +108,51 @@ public class XlsMapperConfig {
     
     /**
      * 保存時にセルの結合を行うかどうか設定します。
-     * @param mergeCellOnSave
+     * @param mergeCellOnSave 初期値は、'false'です。
      * @return
      */
     public XlsMapperConfig setMergeCellOnSave(boolean mergeCellOnSave) {
         this.mergeCellOnSave = mergeCellOnSave;
         return this;
+    }
+    
+    /**
+     * 書き込み時に名前の定義範囲を修正するかどうか
+     * @since 0.3
+     * @return 初期値は、'false'です。
+     */
+    public boolean isCorrectNameRangeOnSave() {
+        return correctNameRangeOnSave;
+    }
+    
+    /**
+     * 書き込み時に名前の定義範囲を修正するかどうか設定します。
+     * @since 0.3
+     * @param correctNameRangeOnSave 初期値は、'false'です。
+     * @return
+     */
+    public XlsMapperConfig setCorrectNameRangeOnSave(boolean correctNameRangeOnSave) {
+        this.correctNameRangeOnSave = correctNameRangeOnSave;
+        return this;
+    }
+    
+    /**
+     * 書き込み時に名前のセルの入力規則を修正するかどうか。
+     * @since 0.3
+     * @return 初期値は、'false'です。
+     */
+    public boolean isCorrectCellDataValidationOnSave() {
+        return correctCellDataValidationOnSave;
+    }
+    
+    /**
+     * 書き込み時に名前のセルの入力規則を修正するかどうか設定します。
+     * <p>trueの場合（修正する場合）、POI-3.11以上が必要になります。
+     * <p>POI-3.10以前の場合、データの修正は行われません。
+     * @param correctCellDataValidationOnSave 初期値は、'false'です。
+     */
+    public void setCorrectCellDataValidationOnSave(boolean correctCellDataValidationOnSave) {
+        this.correctCellDataValidationOnSave = correctCellDataValidationOnSave;
     }
     
     /**
@@ -170,5 +216,4 @@ public class XlsMapperConfig {
         this.beanFactory = beanFactory;
         return this;
     }
-    
 }

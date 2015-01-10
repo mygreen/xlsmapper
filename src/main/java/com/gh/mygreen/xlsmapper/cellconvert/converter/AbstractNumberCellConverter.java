@@ -8,7 +8,9 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Currency;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -51,7 +53,8 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
                 try {
                     resultValue = parseNumber(defaultValue, createNumberFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(cell, adaptor, defaultValue);
+                    throw newTypeBindException(cell, adaptor, defaultValue)
+                        .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
             
@@ -66,7 +69,8 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
                 try {
                     resultValue = parseNumber(cellValue, createNumberFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(cell, adaptor, cellValue);
+                    throw newTypeBindException(cell, adaptor, cellValue)
+                        .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
         }
@@ -109,6 +113,18 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         
         return format;
         
+    }
+    
+    /**
+     * 型変換エラー時のメッセージ変数の作成
+     */
+    private Map<String, Object> createTypeErrorMessageVars(final XlsNumberConverter anno) {
+        
+        final Map<String, Object> vars = new LinkedHashMap<>();
+        vars.put("pattern", anno.pattern());
+        vars.put("currency", anno.currency());
+        vars.put("locale", anno.locale());
+        return vars;
     }
     
     /**

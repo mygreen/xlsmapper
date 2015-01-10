@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
@@ -39,6 +40,7 @@ public class POIUtils {
     /**
      * セルの「縮小して表示する」のメソッドが利用可能かどうか。
      * POI-3.10以上の場合、trueとなる。
+     * @since 0.2.3
      */
     public static final boolean AVAILABLE_METHOD_CELL_SHRINK_TO_FIT;
     static {
@@ -53,6 +55,26 @@ public class POIUtils {
         } 
         
         AVAILABLE_METHOD_CELL_SHRINK_TO_FIT = available;
+    }
+    
+    /**
+     * セルの入力規則の取得のメソッドが利用可能かどうか。
+     * POI-3.11以上の場合、trueとなる。
+     * @since 0.3
+     */
+    public static final boolean AVAILABLE_METHOD_SHEET_DAVA_VALIDATION;
+    static {
+        boolean available = false;
+        try {
+            // POI-3.11移行
+            final Method method = Sheet.class.getMethod("getDataValidations");
+            method.setAccessible(true);
+            available = true;
+        } catch(Exception e) {
+            available = false;
+        }
+        
+        AVAILABLE_METHOD_SHEET_DAVA_VALIDATION = available;
     }
     
     /**
@@ -587,8 +609,8 @@ public class POIUtils {
             nameObj.setNameName(name);
         }
         
-        final String nameFormula = buildNameFormula(sheet.getSheetName(), startPosition, endPosition);
-        nameObj.setRefersToFormula(nameFormula);
+        final AreaReference areaRef = buildNameArea(sheet.getSheetName(), startPosition, endPosition);
+        nameObj.setRefersToFormula(areaRef.formatAsString());
         
         return nameObj;
         
@@ -596,31 +618,23 @@ public class POIUtils {
     
     /**
      * 名前の範囲の形式を組み立てる。
-     * <p>POI-3.7以上が必要。
      * <code>シート名!$A$1:$A:$5</code>
      * @param sheetName シート名
      * @param startPosition 設定するセルの開始位置
      * @param endPosition 設定するセルの終了位置
      * @return
      */
-    public static String buildNameFormula(final String sheetName,
+    public static AreaReference buildNameArea(final String sheetName,
             final Point startPosition, final Point endPosition) {
         
         ArgUtils.notEmpty(sheetName, "sheetName");
         ArgUtils.notNull(startPosition, "startPosition");
         ArgUtils.notNull(endPosition, "endPosition");
         
-        StringBuilder refs = new StringBuilder();
-        refs.append(sheetName)
-            .append("!")
-            .append("$").append(CellReference.convertNumToColString(startPosition.x))
-            .append("$").append(startPosition.y+1)
-            .append(":")
-            .append("$").append(CellReference.convertNumToColString(endPosition.x))
-            .append("$").append(endPosition.y+1);
-        return refs.toString();
+        final CellReference firstRefs = new CellReference(sheetName, startPosition.y, startPosition.x, true, true);
+        final CellReference lastRefs = new CellReference(sheetName, endPosition.y, endPosition.x, true, true);
         
+        return new AreaReference(firstRefs, lastRefs);
     }
-  
     
 }

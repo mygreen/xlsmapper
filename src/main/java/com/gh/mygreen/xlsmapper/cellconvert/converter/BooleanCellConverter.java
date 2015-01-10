@@ -3,7 +3,9 @@ package com.gh.mygreen.xlsmapper.cellconvert.converter;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -44,10 +46,8 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
             final Boolean result = convertFromString(cellValue, anno);
             if(result == null && Utils.isNotEmpty(cellValue)) {
                 // 値が入っていて変換できない場合
-                final String candidateValues = Utils.join(getLoadingAvailableValue(anno), ", ");
-                
                 throw newTypeBindException(cell, adaptor, cellValue)
-                    .addMessageVar("candidateValues", candidateValues);
+                    .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
             
             if(result != null) {
@@ -64,6 +64,23 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
         }
         
         return null;
+    }
+    
+    /**
+     * 型変換エラー時のメッセージ変数の作成
+     */
+    private Map<String, Object> createTypeErrorMessageVars(final XlsBooleanConverter anno) {
+        
+        final Map<String, Object> vars = new LinkedHashMap<>();
+        vars.put("candidateValues", Utils.join(getLoadingAvailableValue(anno), ", "));
+        vars.put("loadForTrue", Utils.join(anno.loadForTrue(), ", "));
+        vars.put("loadForFalse", Utils.join(anno.loadForFalse(), ", "));
+        vars.put("saveAsTrue", anno.saveAsTrue());
+        vars.put("saveAsFalse", anno.saveAsFalse());
+        vars.put("ignoreCase", anno.ignoreCase());
+        vars.put("failToFalse", anno.failToFalse());
+        
+        return vars;
     }
     
     private XlsBooleanConverter getDefaultBooleanConverterAnnotation() {

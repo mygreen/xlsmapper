@@ -63,13 +63,24 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
         Enum<?> resultValue = convertToObject(cellValue, taretClass, anno);
         if(resultValue == null && Utils.isNotEmpty(cellValue)) {
             // 値があり変換できない場合
-            final String candidateValues = Utils.join(getLoadingAvailableValue(taretClass, anno), ", ");
-            
             throw newTypeBindException(cell, adaptor, cellValue)
-                .addMessageVar("candidateValues", candidateValues);
+                .addAllMessageVars(createTypeErrorMessageVars(taretClass, anno));
         }
         
         return resultValue;
+    }
+    
+    /**
+     * 型変換エラー時のメッセージ変数の作成
+     * @throws ConversionException 
+     */
+    private Map<String, Object> createTypeErrorMessageVars(final Class<Enum> taretClass, final XlsEnumConverter anno) throws ConversionException {
+        
+        final Map<String, Object> vars = new LinkedHashMap<>();
+        vars.put("candidateValues", Utils.join(getLoadingAvailableValue(taretClass, anno), ", "));
+        vars.put("ignoreCase", anno.ignoreCase());
+        
+        return vars;
     }
     
     private XlsEnumConverter getDefaultEnumConverterAnnotation() {
