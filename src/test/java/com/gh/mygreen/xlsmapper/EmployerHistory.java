@@ -16,6 +16,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
+import com.gh.mygreen.xlsmapper.annotation.converter.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsNumberConverter;
 
@@ -44,7 +45,11 @@ public class EmployerHistory {
 	@XlsColumn(columnName="項目", merged=true)
 	private String comment;
 	
-	@XlsMapColumns(previousColumnName="項目"/*, itemClass=Date.class*/)
+	@XlsColumn(columnName="使用有無")
+	@XlsBooleanConverter(loadForTrue="○", loadForFalse={"×", "-"}, saveAsTrue="○", saveAsFalse="", failToFalse=true)
+	private boolean used;
+	
+	@XlsMapColumns(previousColumnName="使用有無"/*, itemClass=Date.class*/)
 	@XlsDateConverter(pattern="(yyyy)-MM-dd")
 	private Map<String, Date> attended;
 	
@@ -52,10 +57,11 @@ public class EmployerHistory {
 		
 	}
 	
-	public EmployerHistory(int index, Date historyDate, String comment) {
+	public EmployerHistory(int index, Date historyDate, String comment, boolean used) {
 		this.index = index;
 		this.historyDate = historyDate;
 		this.comment = comment;
+        this.used = used;
 	}
 	
 	@XlsPreLoad
@@ -93,6 +99,14 @@ public class EmployerHistory {
         this.comment = comment;
     }
     
+    public boolean isUsed() {
+        return used;
+    }
+    
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+    
     public Map<String, Date> getAttended() {
         return attended;
     }
@@ -100,4 +114,5 @@ public class EmployerHistory {
     public void setAttended(Map<String, Date> attended) {
         this.attended = attended;
     }
+    
 }
