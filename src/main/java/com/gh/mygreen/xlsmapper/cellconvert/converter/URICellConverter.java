@@ -100,6 +100,10 @@ public class URICellConverter extends AbstractCellConverter<URI>{
         }
         
         if(value != null) {
+            // 既存のハイパーリンクを削除
+            // 削除しないと、Excelの見た目上はリンクは変わっているが、データ上は2重にリンクが設定されている。
+            POIUtils.removeHyperlink(cell);
+            
             final CreationHelper helper = sheet.getWorkbook().getCreationHelper();
             final Hyperlink link = helper.createHyperlink(Hyperlink.LINK_URL);
             link.setAddress(value.toString());
@@ -108,6 +112,10 @@ public class URICellConverter extends AbstractCellConverter<URI>{
             cell.setCellValue(value.toString());
             
         } else {
+            // 既存のハイパーリンクを削除
+            // 削除しないと、Excelの見た目上はリンクは変わっているが、データ上は2重にリンクが設定されている。
+            POIUtils.removeHyperlink(cell);
+            
             cell.setCellType(Cell.CELL_TYPE_BLANK);
         }
         

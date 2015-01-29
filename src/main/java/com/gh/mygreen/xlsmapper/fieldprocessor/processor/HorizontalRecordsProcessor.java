@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.CellCommentStore;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.POIUtils;
@@ -534,6 +535,15 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // 書き込んだセルの範囲などの情報
         final RecordOperation recordOperation = new RecordOperation();
         
+        // コメントの補完
+        final List<CellCommentStore> commentStoreList;
+        if(config.isCorrectCellCommentOnSave()
+                && (anno.overRecord().equals(OverRecordOperate.Insert) || anno.remainedRecord().equals(RemainedRecordOperate.Delete))) {
+            commentStoreList = loadCommentAndRemove(sheet);
+        } else {
+            commentStoreList = new ArrayList<>();
+        }
+        
         // get records
         hRow++;
         for(int r=0; r < POIUtils.getRows(sheet); r++) {
@@ -740,6 +750,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             correctNameRange(sheet, recordOperation);
         }
         
+        if(config.isCorrectCellCommentOnSave()) {
+            correctComment(sheet, recordOperation, commentStoreList);
+        }
+        
     }
     
     /**
@@ -931,7 +945,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     range.setLastRow(recordOperation.getBottomRightPosition().y);
                     changedRange = true;
                 } else if(notOperateRange.getLastRow() < range.getFirstRow()) {
-                    // 自身のセルノ範囲より下方にあるセルの範囲の場合、行の挿入や削除に影響を受けているので修正する。
+                    // 自身のセルの範囲より下方にあるセルの範囲の場合、行の挿入や削除に影響を受けているので修正する。
                     if(recordOperation.isInsertRecord()) {
                         range.setFirstRow(range.getFirstRow() + recordOperation.getCountInsertRecord());
                         range.setLastRow(range.getLastRow() + recordOperation.getCountInsertRecord());
@@ -1010,7 +1024,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
             } else if(notOperateRange.getLastRow() < firstCellRef.getRow()) {
                 /*
-                 * 名前の定義の場合、自身のセルノ範囲より下方にあるセルの範囲の場合、
+                 * 名前の定義の場合、自身のセルの範囲より下方にあるセルの範囲の場合、
                  * 自動的に修正されるため、修正は必要なし。
                  */
                 
@@ -1020,4 +1034,87 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
     }
     
+    /**
+     * セルのコメントを全て取得する。その際に、セルからコメントを削除する。
+     * @param sheet
+     * @return
+     */
+    private List<CellCommentStore> loadCommentAndRemove(final Sheet sheet) {
+        
+        final List<CellCommentStore> list = new ArrayList<>();
+        
+        final int maxRow = POIUtils.getRows(sheet);
+        for(int rowIndex=0; rowIndex < maxRow; rowIndex++) {
+            final Row row = sheet.getRow(rowIndex);
+            if(row == null) {
+                continue;
+            }
+            
+            final short maxCol = row.getLastCellNum();
+            for(short colIndex=0; colIndex < maxCol; colIndex++) {
+                
+                final Cell cell = row.getCell(colIndex);
+                if(cell == null) {
+                    continue;
+                }
+                
+                CellCommentStore commentStore = CellCommentStore.getAndRemove(cell);
+                if(commentStore != null) {
+                    list.add(commentStore);
+                }
+            }
+            
+        }
+        
+        return list;
+    }
+    
+    /**
+     * セルのコメントを再設定する。
+     * @param sheet
+     * @param recordOperation
+     * @param commentStoreList
+     */
+    private void correctComment(final Sheet sheet, final RecordOperation recordOperation,
+            final List<CellCommentStore> commentStoreList) {
+        
+        if(commentStoreList.isEmpty()) {
+            return;
+        }
+        
+        if(!recordOperation.isInsertRecord() && !recordOperation.isDeleteRecord()) {
+            return;
+        }
+        
+        // 操作をしていないセルの範囲の取得
+        final CellRangeAddress notOperateRange = new CellRangeAddress(
+                recordOperation.getTopLeftPoisitoin().y,
+                recordOperation.getBottomRightPosition().y - recordOperation.getCountInsertRecord(),
+                recordOperation.getTopLeftPoisitoin().x,
+                recordOperation.getBottomRightPosition().x
+                );
+        
+        for(CellCommentStore commentStore : commentStoreList) {
+            
+            if(notOperateRange.getLastRow() >= commentStore.getRow()) {
+                // 行の追加・削除をしていない範囲の場合
+                commentStore.set(sheet);
+                
+            } else {
+                // 自身のセルの範囲より下方にあるセルの範囲の場合、行の挿入や削除に影響を受けているので修正する。
+                if(recordOperation.isInsertRecord()) {
+                    commentStore.addRow(recordOperation.getCountInsertRecord());
+                    commentStore.set(sheet);
+                    
+                } else if(recordOperation.isDeleteRecord()) {
+                    commentStore.addRow(-recordOperation.getCountDeleteRecord());
+                    commentStore.set(sheet);
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
 }

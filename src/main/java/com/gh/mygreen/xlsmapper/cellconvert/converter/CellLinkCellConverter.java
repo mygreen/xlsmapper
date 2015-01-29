@@ -89,6 +89,11 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink>{
         }
         
         if(value != null && Utils.isNotEmpty(value.getLink())) {
+            
+            // 既存のハイパーリンクを削除
+            // 削除しないと、Excelの見た目上はリンクは変わっているが、データ上は2重にリンクが設定されている。
+            POIUtils.removeHyperlink(cell);
+            
             final CreationHelper helper = sheet.getWorkbook().getCreationHelper();
             final LinkType type = POIUtils.judgeLinkType(value.getLink());
             final Hyperlink link = helper.createHyperlink(type.poiType());
@@ -102,6 +107,10 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink>{
             cell.setCellValue(value.getLabel());
             
         } else {
+            // 既存のハイパーリンクを削除
+            // 削除しないと、Excelの見た目上はリンクは変わっているが、データ上は2重にリンクが設定されている。
+            POIUtils.removeHyperlink(cell);
+            
             cell.setCellType(Cell.CELL_TYPE_BLANK);
         }
         

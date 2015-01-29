@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -29,13 +30,14 @@ import com.gh.mygreen.xlsmapper.cellconvert.LinkType;
 /**
  * Apache POIとJExcel APIの差を埋めるユーティリティクラス。
  * 
+ * @version 0.4
  * @author T.TSUCHIE
  *
  */
 public class POIUtils {
     
     /** 標準のセルフォーマッター */
-    private static POICellFormatter defaultCellFormatter = new POICellFormatter();
+    private static CellFormatter defaultCellFormatter = new CellFormatter();
     
     /**
      * セルの「縮小して表示する」のメソッドが利用可能かどうか。
@@ -75,6 +77,26 @@ public class POIUtils {
         }
         
         AVAILABLE_METHOD_SHEET_DAVA_VALIDATION = available;
+    }
+    
+    /**
+     * セルのハイパーリンクの削除メソッドが利用可能かどうか。
+     * POI-3.11以上の場合、trueとなる。
+     * @since 0.4
+     */
+    public static final boolean AVAILABLE_METHOD_CELL_REMOVE_HYPERLINK;
+    static {
+        boolean available = false;
+        try {
+            //POI-3.11以降
+            final Method method = Cell.class.getMethod("removeHyperlink", boolean.class);
+            method.setAccessible(true);
+            available = true;
+        } catch(Exception e) {
+            available = false;
+        }
+        
+        AVAILABLE_METHOD_CELL_REMOVE_HYPERLINK = available;
     }
     
     /**
@@ -205,7 +227,7 @@ public class POIUtils {
      * @param cellFormatter 
      * @return
      */
-    public static String getCellContents(final Cell cell, final POICellFormatter cellFormatter) {
+    public static String getCellContents(final Cell cell, final CellFormatter cellFormatter) {
         ArgUtils.notNull(cell, "cell");
         ArgUtils.notNull(cellFormatter, "cellFormatter");
         
@@ -230,7 +252,7 @@ public class POIUtils {
      * @param cellFormatter
      * @return
      */
-    public static boolean isEmptyCellContents(final Cell cell, final POICellFormatter cellFormatter) {
+    public static boolean isEmptyCellContents(final Cell cell, final CellFormatter cellFormatter) {
         ArgUtils.notNull(cell, "cell");
         ArgUtils.notNull(cellFormatter, "cellFormatter");
         
@@ -318,9 +340,10 @@ public class POIUtils {
     }
     
     /**
-     * 行をN行追加する
-     * @param rowIndex
-     * @return
+     * 指定した行の下に行を1行追加する
+     * @param sheet
+     * @param rowIndex 追加する行数
+     * @return 追加した行を返す。
      */
     public static Row insertRow(final Sheet sheet, final int rowIndex) {
         
@@ -329,6 +352,10 @@ public class POIUtils {
         
         // 最終行を取得する
         int lastRow = sheet.getLastRowNum();
+        if(lastRow < rowIndex) {
+            // データが定義されている範囲害の場合は、行を新たに作成して返す。
+            return sheet.createRow(rowIndex);
+        }
         
         sheet.shiftRows(rowIndex, lastRow+1, 1);
         return sheet.createRow(rowIndex);
@@ -635,6 +662,35 @@ public class POIUtils {
         final CellReference lastRefs = new CellReference(sheetName, endPosition.y, endPosition.x, true, true);
         
         return new AreaReference(firstRefs, lastRefs);
+    }
+    
+    /**
+     * セルに設定されているハイパーリンクを削除する。
+     * <p>POIのバージョンによって、{@link Cell#removeHyperlink()}のネイティブのメソッドを呼び出す。
+     * @since 0.4
+     * @param cell
+     * @return true: ハイパーリンクが設定されており削除できた場合。false:ハイパーリンクが設定されていない場合。
+     * @throws IllegalArgumentException cell == null.
+     */
+    public static boolean removeHyperlink(final Cell cell) {
+        
+        ArgUtils.notNull(cell, "cell");
+        
+        final Hyperlink link = cell.getHyperlink();
+        if(link == null) {
+            return false;
+        }
+        
+        if(AVAILABLE_METHOD_CELL_REMOVE_HYPERLINK) {
+            cell.removeHyperlink();
+            return true;
+        } else {
+            // 既存のハイパーリンクのURLをクリアし、再設定する。
+            link.setAddress("");
+            cell.setHyperlink(link);
+            return true;
+        }
+        
     }
     
 }

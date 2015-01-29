@@ -7,7 +7,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegstry;
 /**
  * マッピングする際の設定などを保持するクラス。
  * 
- * @version 0.3
+ * @version 0.4
  * @author T.TSUCHIE
  *
  */
@@ -28,8 +28,11 @@ public class XlsMapperConfig {
     /** 書き込み時に名前のセルの入力規則を修正するかどうか */
     private boolean correctCellDataValidationOnSave = false;
     
+    /** 書き込み時にセルのコメントを修正するかどうか */
+    private boolean correctCellCommentOnSave = false;
+    
     /** POIのセルの値のフォーマッター */
-    private POICellFormatter cellFormatter = new POICellFormatter();
+    private CellFormatter cellFormatter = new CellFormatter();
     
     private FieldProcessorRegstry fieldProcessorRegistry = new FieldProcessorRegstry();
     
@@ -156,10 +159,33 @@ public class XlsMapperConfig {
     }
     
     /**
+     * 書き込み時にセルノコメントを修正するかどうか設定します。
+     * <p>POI-3.10以上の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
+     * <p>アノテーションXlsHorizontalRecordsで行の追加などを行うときに補正します。
+     * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
+     * @return 初期値は、'false'です。
+     */
+    public boolean isCorrectCellCommentOnSave() {
+        return correctCellCommentOnSave;
+    }
+    
+    /**
+     * 書き込み時にセルノコメントを修正するかどうか設定します。
+     * <p>'true'の場合、修正します。
+     * <p>POI-3.10以上の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
+     * <p>アノテーションXlsHorizontalRecordsで行の追加などを行うときに補正します。
+     * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
+     * @param correctCellCommentOnSave
+     */
+    public void setCorrectCellCommentOnSave(boolean correctCellCommentOnSave) {
+        this.correctCellCommentOnSave = correctCellCommentOnSave;
+    }
+    
+    /**
      * POIのセルのフォーマッターを取得します。
      * @return
      */
-    public POICellFormatter getCellFormatter() {
+    public CellFormatter getCellFormatter() {
         return cellFormatter;
     }
     
@@ -168,7 +194,7 @@ public class XlsMapperConfig {
      * @param cellFormatter
      * @return
      */
-    public XlsMapperConfig setCellFormatter(POICellFormatter cellFormatter) {
+    public XlsMapperConfig setCellFormatter(CellFormatter cellFormatter) {
         this.cellFormatter = cellFormatter;
         return this;
     }
@@ -216,4 +242,5 @@ public class XlsMapperConfig {
         this.beanFactory = beanFactory;
         return this;
     }
+    
 }
