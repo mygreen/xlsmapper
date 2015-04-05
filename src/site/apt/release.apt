@@ -7,6 +7,20 @@
 
 リリースノート
 
+* {0.4 - 2015-04-05}
+
+  * 下記の機能を追加または改善。
+  
+    * {{{https://github.com/mygreen/xlsmapper/issues/15}#15}} - セルの値を取得する方法を別ライブラリ「excel-cellformatter」を利用するよう変更。
+      XlsConfigのプロパティ「POICellFormatter」のクラス名を「CellFormatter」に変更。
+      この対策により、{{{https://github.com/mygreen/xlsmapper/issues/19}#19}}も改善される
+    
+    * {{{https://github.com/mygreen/xlsmapper/issues/17}#17}} - ハイパーリンクを書き込む処理を改善し、内部的に二重にリンクが設定される事象を修正。
+    
+    * {{{https://github.com/mygreen/xlsmapper/issues/18}#18}} - コメントを含むシートをテンプレートして出力し、それをExcelで開くと警告メッセージが表示される事象を修正。
+      これは、POI-3.11の不良であり、POI-3.10～POI-3.11のみで発生する。
+      この事象を回避するために、 XlsMapperConfigのプロパティとして、「correctCellCommentOnSave」を追加。
+
 * {0.3 - 2015-01-11}
 
   * 下記の機能を追加または改善。
