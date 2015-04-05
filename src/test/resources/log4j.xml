@@ -10,9 +10,14 @@
 		</layout>
 	</appender>
 	
+	<category name="com.gh.mygreen.xlsmapper" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="debugAppender" />
+	</category>
+	
 	<!-- 全てのログ -->
 	<root>
-		<level value="DEBUG" />
+		<level value="WARN" />
 		<appender-ref ref="debugAppender" />
 	</root>
 
