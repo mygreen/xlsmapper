@@ -8,7 +8,7 @@
 
 Mavenを使用する場合は *pom.xml* に以下の記述を追加してください。
 
-.. sourcecode:: java
+.. sourcecode:: xml
     
     <dependency>
         <groupId>com.github.mygreen</groupId>

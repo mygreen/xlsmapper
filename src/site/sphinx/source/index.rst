@@ -17,6 +17,8 @@ ExcelとPOJOをマッピングするJavaライブラリです。
    annotation
    otheruse
    validation
-..   customize
-..   release
+   extension
+   diff_xlsbeans
+   release
+
 
