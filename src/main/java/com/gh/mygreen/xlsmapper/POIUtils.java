@@ -37,7 +37,7 @@ import com.gh.mygreen.xlsmapper.cellconvert.LinkType;
 public class POIUtils {
     
     /** 標準のセルフォーマッター */
-    private static CellFormatter defaultCellFormatter = new CellFormatter();
+    private static CellFormatter defaultCellFormatter = new DefaultCellFormatter();
     
     /**
      * セルの「縮小して表示する」のメソッドが利用可能かどうか。

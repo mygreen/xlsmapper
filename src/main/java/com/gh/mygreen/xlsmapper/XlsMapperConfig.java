@@ -32,7 +32,7 @@ public class XlsMapperConfig {
     private boolean correctCellCommentOnSave = false;
     
     /** POIのセルの値のフォーマッター */
-    private CellFormatter cellFormatter = new CellFormatter();
+    private CellFormatter cellFormatter = new DefaultCellFormatter();
     
     private FieldProcessorRegstry fieldProcessorRegistry = new FieldProcessorRegstry();
     
