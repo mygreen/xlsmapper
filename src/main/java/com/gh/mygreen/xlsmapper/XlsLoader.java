@@ -24,8 +24,8 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
-import com.gh.mygreen.xlsmapper.xml.XMLInfo;
-import com.gh.mygreen.xlsmapper.xml.XMLLoader;
+import com.gh.mygreen.xlsmapper.xml.XmlLoader;
+import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 
 /**
@@ -123,9 +123,9 @@ public class XlsLoader {
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notNull(clazz, "clazz");
         
-        XMLInfo xmlInfo = null;
+        XmlInfo xmlInfo = null;
         if(xmlIn != null) {
-            xmlInfo = XMLLoader.load(xmlIn);
+            xmlInfo = XmlLoader.load(xmlIn);
         }
         
         final LoadingWorkObject work = new LoadingWorkObject();
@@ -230,9 +230,9 @@ public class XlsLoader {
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notNull(clazz, "clazz");
         
-        XMLInfo xmlInfo = null;
+        XmlInfo xmlInfo = null;
         if(xmlIn != null) {
-            xmlInfo = XMLLoader.load(xmlIn);
+            xmlInfo = XmlLoader.load(xmlIn);
         }
         
         final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
@@ -315,9 +315,9 @@ public class XlsLoader {
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notEmpty(classes, "clazz");
         
-        XMLInfo xmlInfo = null;
+        XmlInfo xmlInfo = null;
         if(xmlIn != null) {
-            xmlInfo = XMLLoader.load(xmlIn);
+            xmlInfo = XmlLoader.load(xmlIn);
         }
         
         final AnnotationReader annoReader = new AnnotationReader(xmlInfo);

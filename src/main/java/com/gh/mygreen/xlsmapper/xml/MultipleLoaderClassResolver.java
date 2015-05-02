@@ -27,7 +27,7 @@ public class MultipleLoaderClassResolver implements ClassResolver {
      * @param loaderMap map -- that has VALUES ClassLoader (KEYS are arbitary).
      * @return loaded class from ClassLoader defined loaderMap.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public Class classForName(String className, Map loaderMap)
             throws ClassNotFoundException {
         Collection<ClassLoader> loaders = null;

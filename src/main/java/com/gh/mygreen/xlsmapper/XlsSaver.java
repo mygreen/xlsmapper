@@ -26,8 +26,8 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.SavingFieldProcessor;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReadException;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
-import com.gh.mygreen.xlsmapper.xml.XMLInfo;
-import com.gh.mygreen.xlsmapper.xml.XMLLoader;
+import com.gh.mygreen.xlsmapper.xml.XmlLoader;
+import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 
 /**
@@ -84,9 +84,9 @@ public class XlsSaver {
         ArgUtils.notNull(beanObj, "beanObj");
         
         // Xmls情報の出力
-        XMLInfo xmlInfo = null;
+        XmlInfo xmlInfo = null;
         if(xmlIn != null) {
-            xmlInfo = XMLLoader.load(xmlIn);
+            xmlInfo = XmlLoader.load(xmlIn);
         }
         
         final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
@@ -158,9 +158,9 @@ public class XlsSaver {
         ArgUtils.notEmpty(beanObjs, "beanObjs");
         
         // Xmls情報の出力
-        XMLInfo xmlInfo = null;
+        XmlInfo xmlInfo = null;
         if(xmlIn != null) {
-            xmlInfo = XMLLoader.load(xmlIn);
+            xmlInfo = XmlLoader.load(xmlIn);
         }
         
         final SheetBindingErrorsContainer errorsContainer = new SheetBindingErrorsContainer(getObjectNames(beanObjs));

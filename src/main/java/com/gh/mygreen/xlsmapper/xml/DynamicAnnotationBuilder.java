@@ -7,91 +7,108 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
+
+import ognl.DefaultMemberAccess;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
 
+
 /**
- * Creates {@link java.lang.annotation.Annotation} instances
- * dynamically using Javassist.
- *
+ * Javassitを利用して、{@link Annotation}のインスタンスを動的に作成するクラス。
+ * <p>独自のClassLoaderを設定することが可能。
+ * <p>このクラスはシングルトンです。
+ * 
+ * @version 0.5
  * @author Naoki Takezoe
+ * @author T.TSUCHIE
+ *
  */
 public class DynamicAnnotationBuilder {
-
-    private static ClassLoader loader;
-
-    private static OgnlContext ognlContext = null;
-
+    
     /**
-     * Sets class loader that uses Annotation defined by XLSBeans.
-     *
-     * @param loader ClassLoader used to find Annotation.
+     * シングルトンのインスタンス。
      */
-    public static void setClassLoader(ClassLoader loader){
-        DynamicAnnotationBuilder.loader = loader;
-        DynamicAnnotationBuilder.ognlContext = null;
+    private static DynamicAnnotationBuilder INSTANCE = new DynamicAnnotationBuilder();
+    
+    private ClassLoader classLoader;
+    
+    private OgnlContext ognlContext;
+    
+    private DynamicAnnotationBuilder() {
+        this.ognlContext = new OgnlContext();
+        this.ognlContext.setMemberAccess(new DefaultMemberAccess(true));
+        
     }
-
+    
     /**
-     * Set class loader that uses Annotation defined by XLSBeans,
-     * and that uses JavaBeans type in defined dynamic-annotation by users.
-     *
-     * @param loader ClassLoader used to find Annotation.
-     * @param propertyLoaders used to find JavaBeans type.
+     * インスタンスを取得する。
+     * @return
      */
-    public static void setClassLoader(ClassLoader loader, ClassLoader[] propertyLoaders) {
-        DynamicAnnotationBuilder.loader = loader;
-        if (propertyLoaders != null && propertyLoaders.length != 0) {
-            Map<Integer, ClassLoader> loaderMap = new HashMap<Integer, ClassLoader>();
-            for (ClassLoader propertyLoader : propertyLoaders) {
+    public static DynamicAnnotationBuilder getInstance() {
+        return INSTANCE;
+    }
+    
+    /**
+     * アノテーションが定義された{@link ClassLoader}を設定する。
+     * <p>nullの場合、標準のClassLoaderが使用される。
+     * @param classLoader
+     */
+    public static void init(final ClassLoader classLoader) {
+        getInstance().classLoader = classLoader;
+    }
+    
+    /**
+     * アノテーションが定義されたClassLoaderとJavaBeansを定義したClassLoaderを設定する。
+     * @param classLoader アノテーションを見つけるために使用するClassLoader
+     * @param propertyLoaders JavaBeansを見つけるために使用するClassLoader
+     */
+    public static void init(final ClassLoader classLoader, final ClassLoader[] propertyLoaders) {
+        getInstance().classLoader = classLoader;
+        
+        if(propertyLoaders != null && propertyLoaders.length != 0) {
+            Map<Integer, ClassLoader> loaderMap = new HashMap<>();
+            for(ClassLoader propertyLoader : propertyLoaders) {
                 loaderMap.put(propertyLoader.hashCode(), propertyLoader);
             }
-            DynamicAnnotationBuilder.ognlContext = new OgnlContext(loaderMap);
-            DynamicAnnotationBuilder.ognlContext.setClassResolver(new MultipleLoaderClassResolver());
-        } else {
-            DynamicAnnotationBuilder.ognlContext = null;
+            
+            getInstance().ognlContext = new OgnlContext(loaderMap);
+            getInstance().ognlContext.setMemberAccess(new DefaultMemberAccess(true));
+            getInstance().ognlContext.setClassResolver(new MultipleLoaderClassResolver());
+            
         }
     }
-
-    /**
-     * Creates the annotation instance dynamically using Javaassist.
-     * @throws AnnotationReadException 
-     */
-    public static Annotation buildAnnotation(final Class<?> ann, AnnotationInfo info) throws AnnotationReadException {
-
-        final Map<String, Object> defaultValues = new HashMap<String, Object>();
-        for(Method method : ann.getMethods()){
+    
+    public Annotation buildAnnotation(final Class<?> ann, final AnnotationInfo info) throws AnnotationReadException {
+        
+        final Map<String, Object> defaultValues = new HashMap<>();
+        for(Method method : ann.getMethods()) {
             Object defaultValue = method.getDefaultValue();
-            if(defaultValue!=null){
+            if(defaultValue != null) {
                 defaultValues.put(method.getName(), defaultValue);
             }
         }
         
-        final Map<String, Object> xmlValues = new HashMap<String, Object>();
-        for(String key : info.getAnnotationAttributeKeys()){
+        final Map<String, Object> xmlValues = new HashMap<>();
+        for(String key : info.getAnnotationAttributeKeys()) {
             try {
-                Object value = null;
-                if (ognlContext == null) {
-                    value = Ognl.getValue(info.getAnnotationAttribute(key),new Object());
-                } else {
-                    value = Ognl.getValue(info.getAnnotationAttribute(key), ognlContext, new Object());
-                }
+                Object value = Ognl.getValue(info.getAnnotationAttribute(key), ognlContext, new Object());
                 xmlValues.put(key, value);
             } catch(OgnlException e) {
                 throw new AnnotationReadException(String.format("fail annotation attribute %s with ognl.", key), e);
             }
         }
-
-        ClassLoader loader = DynamicAnnotationBuilder.loader;
+        
+        ClassLoader loader = classLoader;
         if(loader == null){
             loader = Thread.currentThread().getContextClassLoader();
         }
         
         Object obj = Proxy.newProxyInstance(loader, new Class[]{ann},
-                new InvocationHandler(){
-                    public Object invoke(Object proxy, Method method,
-                            Object[] args) throws Throwable {
+                new InvocationHandler() {
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                         String name = method.getName();
                         if (name.equals("annotationType")) {
                             return ann;
@@ -102,8 +119,8 @@ public class DynamicAnnotationBuilder {
                         }
                     }
         });
-
-        return (Annotation)obj;
+        
+        return (Annotation) obj;
     }
-
+    
 }

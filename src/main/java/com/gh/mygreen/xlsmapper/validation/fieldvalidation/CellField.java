@@ -2,16 +2,14 @@ package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.validation.Errors;
 
 import com.gh.mygreen.xlsmapper.ArgUtils;
 import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguage;
-import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageMVELImpl;
+import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageOGNLImpl;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -21,13 +19,18 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * <p>型変換などにおけるバインドエラーなどはシートの読み込み時に行われます。
  * <p>必須エラーのメッセージキーは、「fieldError.required」。
  * 
+ * @version 0.5
  * @author T.TSUCHIE
  * @param <T> チェック対象の値のタイプ
  *
  */
 public class CellField<T> {
     
-    private static final ExpressionLanguage expressionLanguage = new ExpressionLanguageMVELImpl();
+    /**
+     * プロパティにアクセスするための式言語。
+     * ・OGNLを利用し、private/protectedなどのフィールドにもアクセス可能にする。
+     */
+    private static final ExpressionLanguage expressionLanguage = new ExpressionLanguageOGNLImpl(true);
     
     /** フィールド名（チェック対象のプロパティ名） */
     final private String name;
@@ -76,27 +79,14 @@ public class CellField<T> {
         ArgUtils.notEmpty(fieldName, "fieldName");
         
         this.name = fieldName;
-        final T fieldValue = (T) getProperyValue(targetObj, fieldName);
+        @SuppressWarnings("unchecked")
+        final T fieldValue = (T) expressionLanguage.getProperty(fieldName, targetObj);
         setValue(fieldValue);
         
         setCellAddress(Utils.getPosition(targetObj, fieldName));
         setLabel(Utils.getLabel(targetObj, fieldName));
         
         this.validators = new ArrayList<FieldValidator<T>>();
-    }
-    
-    @SuppressWarnings("unchecked")
-    protected T getProperyValue(final Object targetObj, final String fieldName) {
-        
-        try {
-            final Map<String, Object> vars = new HashMap<>();
-            vars.put("targetObj", targetObj);
-            return (T) expressionLanguage.evaluate("targetObj." + fieldName, vars);
-            
-        } catch(Exception e) {
-            throw new RuntimeException(
-                    String.format("fail get field value : '%s#%s'.", targetObj.getClass().getName(), fieldName));
-        }
     }
     
     /**
