@@ -6,7 +6,7 @@ import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
-import javax.el.ELResolver;
+import javax.el.FunctionMapper;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
@@ -36,7 +36,7 @@ public class LocalELContext extends ELContext {
     /**
      * FunctionMapperの実装
      */
-    private final MapBasedFunctionMapper functionMapper;
+    private final FunctionMapper functionMapper;
     
     /**
      * VariableMapperの実装
@@ -46,7 +46,7 @@ public class LocalELContext extends ELContext {
     /**
      * ELResolverの実装
      */
-    private final ELResolver resolver;
+    private final CompositeELResolver resolver;
     
     public LocalELContext() {
         this.functionMapper = new MapBasedFunctionMapper();
@@ -54,11 +54,21 @@ public class LocalELContext extends ELContext {
         this.resolver = DEFAULT_RESOLVER;
     }
     
+    public LocalELContext(final ELContext context) {
+        this.functionMapper = context.getFunctionMapper();
+        this.variableMapper = context.getVariableMapper();
+        
+        CompositeELResolver elr = DEFAULT_RESOLVER;
+        elr.add(context.getELResolver());
+        this.resolver = elr;
+        
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public ELResolver getELResolver() {
+    public CompositeELResolver getELResolver() {
         return resolver;
     }
     
@@ -66,7 +76,7 @@ public class LocalELContext extends ELContext {
      * {@inheritDoc}
      */
     @Override
-    public MapBasedFunctionMapper getFunctionMapper() {
+    public FunctionMapper getFunctionMapper() {
         return functionMapper;
     }
     
@@ -95,6 +105,13 @@ public class LocalELContext extends ELContext {
      * @param method 関数の実態
      */
     public void mapFunction(final String prefix, final String localName, final Method method) {
-        functionMapper.setFunction(prefix, localName, method);
+        
+        if(functionMapper instanceof MapBasedFunctionMapper) {
+            ((MapBasedFunctionMapper) functionMapper).mapFunction(prefix, localName, method);
+        } else {
+            throw new IllegalStateException(
+                    String.format("functionMapper instance should be '%s'.", MapBasedFunctionMapper.class.getName()));
+        }
+        
     }
 }

@@ -69,7 +69,7 @@ public class RootELResolver extends ELResolver {
     
     @Override
     public Class<?> getType(final ELContext context, final Object base, final Object property) {
-        // nulの場合、次のELResolverへ
+        // nullの場合、次のELResolverへ
         return resolve(context, base, property) ? Object.class : null;
     }
     

@@ -16,7 +16,7 @@ import com.gh.mygreen.xlsmapper.ArgUtils;
  * @author T.TSUCHIE
  *
  */
-public class ExpressionLanguageMVELImpl implements ExpressionLanguage {
+public class ExpressionLanguageMVELImpl extends ExpressionLanguage {
     
     private static final Logger logger = LoggerFactory.getLogger(ExpressionLanguageMVELImpl.class);
     
@@ -42,5 +42,7 @@ public class ExpressionLanguageMVELImpl implements ExpressionLanguage {
         } catch(Exception ex) {
             throw new ExpressionEvaluationException(String.format("Evaluating [%s] script with MVEL failed.", expression), ex);
         }
+        
     }
+    
 }

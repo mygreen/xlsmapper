@@ -21,7 +21,7 @@ import com.gh.mygreen.xlsmapper.expression.el.RootELResolver;
  * <p>利用する際には、ELのライブラリが必要です。
  * 
  */
-public class ExpressionLanguageELImpl implements ExpressionLanguage {
+public class ExpressionLanguageELImpl extends ExpressionLanguage {
     
     private static final Logger logger = LoggerFactory.getLogger(ExpressionLanguageELImpl.class);
     

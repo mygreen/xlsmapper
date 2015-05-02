@@ -3,6 +3,7 @@ package com.gh.mygreen.xlsmapper.expression.el;
 import java.lang.reflect.Method;
 
 import javax.el.ELContext;
+import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 
@@ -35,6 +36,24 @@ public class ELManager {
         }
         
         return elContext;
+    }
+    
+    /**
+     * 基準となる{@link ELContext}を指定してELContextを指定する。
+     * @param context
+     * @return
+     */
+    public ELContext setELContext(final ELContext context) {
+        this.elContext = new LocalELContext(context);
+        return elContext;
+    }
+    
+    /**
+     * {@link ELResolver}を追加する。
+     * @param elResolver
+     */
+    public void addELResolver(ELResolver elResolver) {
+        getELContext().getELResolver().add(elResolver);
     }
     
     /**

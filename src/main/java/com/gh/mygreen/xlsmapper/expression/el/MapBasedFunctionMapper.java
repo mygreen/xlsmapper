@@ -1,7 +1,6 @@
 package com.gh.mygreen.xlsmapper.expression.el;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,18 +18,21 @@ public class MapBasedFunctionMapper extends FunctionMapper {
     
     private static final String FUNCTION_NAME_SEPARATOR = ":";
     
-    private Map<String, Method> functionMap = Collections.emptyMap();
+    private Map<String, Method> functionMap = new HashMap<String, Method>();
     
     @Override
     public Method resolveFunction(final String prefix, final String localName) {
         return functionMap.get(createKey(prefix, localName));
     }
     
-    public void setFunction(final String prefix, final String localName, final Method method) {
-        if(functionMap.isEmpty()) {
-            functionMap = new HashMap<String, Method>();
-        }
-        functionMap.put(FUNCTION_NAME_SEPARATOR, method);
+    /**
+     * EL関数を登録する。
+     * @param prefix
+     * @param localName
+     * @param method
+     */
+    public void mapFunction(final String prefix, final String localName, final Method method) {
+        functionMap.put(createKey(prefix, localName), method);
     }
     
     private String createKey(final String prefix, final String localName) {

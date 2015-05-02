@@ -1,10 +1,11 @@
 package com.gh.mygreen.xlsmapper.expression.el;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -15,9 +16,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageELImpl;
-import com.gh.mygreen.xlsmapper.expression.el.FormatterWrapper;
-import com.gh.mygreen.xlsmapper.expression.el.LocalELContext;
+import com.github.mygreen.expression.el.FormatterWrapper;
+import com.github.mygreen.expression.el.LocalELContext;
 
 /**
  * EL式のテスタ
@@ -36,13 +36,11 @@ public class LocalELContextTest {
     @Test
     public void testNormal() {
         
-        String message = "{validatedValue} は、{min}～{max}の範囲で入力してください。";
-        
-        int validatedValue = 3;
+        Date date = Timestamp.valueOf("2015-04-15 10:20:30.000");
         
         Map<String, Object> vars = new HashMap<>();
-        vars.put("validatedValue", validatedValue);
-        vars.put("currentDate", new Date());
+        vars.put("validatedValue", 3);
+        vars.put("currentDate", date);
         vars.put("min", 1);
         vars.put("max", 10);
 //        vars.put("formatter", new FormatterWrapper(Locale.getDefault()));
@@ -66,13 +64,15 @@ public class LocalELContextTest {
             context.setVariable("formatter", expFormatter);
             
             ValueExpression exp2 = expressionFactory.createValueExpression(context, "${min + max}", Object.class);
-            System.out.println(exp2.getValue(context));
+            long result2 = (long) exp2.getValue(context);
+            assertThat(result2, is(11L));
+//            System.out.println(result);
             
-            ValueExpression exp3 = expressionFactory.createValueExpression(context, "${formatter.format('%1$tY/%1$tm/%1$td%n', currentDate)}", String.class);
-            System.out.println(exp3.getValue(context));
+            ValueExpression exp3 = expressionFactory.createValueExpression(context, "${formatter.format('%1$tY/%1$tm/%1$td', currentDate)}", String.class);
+            String result3 = (String) exp3.getValue(context);
+            assertThat(result3, is("2015/04/15"));
+//            System.out.println(result3);
             
-            ValueExpression exp4 = expressionFactory.createValueExpression(context, message, String.class);
-            System.out.println(exp4.getValue(context));
             
         } catch(Throwable e) {
             e.printStackTrace();
@@ -83,13 +83,11 @@ public class LocalELContextTest {
     @Test
     public void testNormal2() {
         
-        String message = "{validatedValue} は、{min}～{max}の範囲で入力してください。";
-        
-        int validatedValue = 3;
+        Date date = Timestamp.valueOf("2015-04-15 10:20:30.000");
         
         Map<String, Object> vars = new HashMap<>();
-        vars.put("validatedValue", validatedValue);
-        vars.put("currentDate", new Date());
+        vars.put("validatedValue", 3);
+        vars.put("currentDate", date);
         vars.put("min", 1);
         vars.put("max", 10);
         vars.put("formatter", new FormatterWrapper(Locale.getDefault()));
@@ -105,13 +103,14 @@ public class LocalELContextTest {
             }
             
             ValueExpression exp2 = expressionFactory.createValueExpression(context, "${min + max}", Object.class);
-            System.out.println(exp2.getValue(context));
+            long result2 = (long) exp2.getValue(context);
+            assertThat(result2, is(11L));
+//            System.out.println(result2);
             
-            ValueExpression exp3 = expressionFactory.createValueExpression(context, "${formatter.format('%1$tY/%1$tm/%1$td%n', currentDate)}", String.class);
-            System.out.println(exp3.getValue(context));
-            
-            ValueExpression exp4 = expressionFactory.createValueExpression(context, message, String.class);
-            System.out.println(exp4.getValue(context));
+            ValueExpression exp3 = expressionFactory.createValueExpression(context, "${formatter.format('%1$tY/%1$tm/%1$td', currentDate)}", String.class);
+            String result3 = (String) exp3.getValue(context);
+            assertThat(result3, is("2015/04/15"));
+//            System.out.println(result3);
             
         } catch(Throwable e) {
             e.printStackTrace();
