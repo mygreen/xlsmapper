@@ -1,5 +1,7 @@
 package com.gh.mygreen.xlsmapper;
 
+import java.lang.reflect.Constructor;
+
 import com.gh.mygreen.xlsmapper.cellconvert.CellConverterRegistry;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegstry;
 
@@ -44,8 +46,10 @@ public class XlsMapperConfig {
         @Override
         public Object create(final Class<?> clazz) {
             try {
-                return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                Constructor<?> cons = clazz.getDeclaredConstructor();
+                cons.setAccessible(true);
+                return cons.newInstance();
+            } catch (ReflectiveOperationException  e) {
                 throw new RuntimeException(String.format("fail create Bean instance of '%s'", clazz.getName()), e);
             }
         }

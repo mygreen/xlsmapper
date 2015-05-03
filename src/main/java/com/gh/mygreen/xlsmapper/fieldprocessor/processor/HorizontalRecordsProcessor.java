@@ -420,7 +420,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             }
             
             try {
-                return (boolean) method.invoke(record, null);
+                method.setAccessible(true);
+                return (boolean) method.invoke(record);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 throw new AnnotationInvalidException(
                         String.format("@XlsIsEmpty should be appended method that no args and returning boolean type."),
