@@ -46,14 +46,17 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
             
             if(Utils.hasNotDefaultValue(converterAnno)) {
-//                return null;
+                // デフォルト値を持たない場合
+                if(adaptor.getTargetClass().isPrimitive()) {
+                    resultValue = getZeroValue();
+                }
                 
             } else if(Utils.isNotEmpty(anno.pattern())) {
                 final String defaultValue = converterAnno.defaultValue();
                 try {
                     resultValue = parseNumber(defaultValue, createNumberFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(cell, adaptor, defaultValue)
+                    throw newTypeBindException(e, cell, adaptor, defaultValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
@@ -69,7 +72,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
                 try {
                     resultValue = parseNumber(cellValue, createNumberFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(cell, adaptor, cellValue)
+                    throw newTypeBindException(e, cell, adaptor, cellValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }

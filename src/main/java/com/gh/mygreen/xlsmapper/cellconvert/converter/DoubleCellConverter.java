@@ -38,7 +38,7 @@ public class DoubleCellConverter extends AbstractNumberCellConverter<Double> {
     
     @Override
     protected double getMinValue() {
-        return Double.MIN_VALUE;
+        return -Double.MAX_VALUE;
     }
     
     

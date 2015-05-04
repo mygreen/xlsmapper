@@ -40,7 +40,7 @@ public class BigDecimalCellConverter extends AbstractNumberCellConverter<BigDeci
     
     @Override
     protected double getMinValue() {
-        return Double.MIN_NORMAL;
+        return -Double.MAX_VALUE;
     }
     
 }

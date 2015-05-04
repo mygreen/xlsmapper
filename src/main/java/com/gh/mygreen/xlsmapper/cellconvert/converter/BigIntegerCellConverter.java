@@ -41,7 +41,7 @@ public class BigIntegerCellConverter extends AbstractNumberCellConverter<BigInte
     
     @Override
     protected double getMinValue() {
-        return Double.MIN_VALUE;
+        return -Double.MAX_VALUE;
     }
     
 }

@@ -38,7 +38,7 @@ public class FloatCellConverter extends AbstractNumberCellConverter<Float> {
     
     @Override
     protected double getMinValue() {
-        return Float.MIN_VALUE;
+        return -Float.MAX_VALUE;
     }
     
 }
