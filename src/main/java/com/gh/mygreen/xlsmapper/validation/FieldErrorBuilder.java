@@ -116,6 +116,11 @@ public class FieldErrorBuilder {
         return this;
     }
     
+    public FieldErrorBuilder typeBindFailure(final boolean typeBindFailure) {
+        this.typeBindFailure = typeBindFailure;
+        return this;
+    }
+    
     public FieldErrorBuilder codes(String[] codes) {
         this.codes = codes;
         return this;

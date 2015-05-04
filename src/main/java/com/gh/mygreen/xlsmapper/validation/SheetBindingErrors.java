@@ -982,6 +982,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
+                .typeBindFailure(true)
                 .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), field, fieldType), errorVars)
                 .build());
     }
@@ -1000,6 +1001,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
+                .typeBindFailure(true)
                 .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), field, fieldType), errorVars)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .label(label)
@@ -1016,6 +1018,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
+                .typeBindFailure(true)
                 .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), field, fieldType))
                 .build());
     }
@@ -1030,9 +1033,10 @@ public class SheetBindingErrors {
      */
     public void rejectSheetTypeBind(final String field, final Object fieldValue, final Class<?> fieldType,
             final Point cellAddress, final String label) {
-        addError(FieldErrorBuilder.create()
+            addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
+                .typeBindFailure(true)
                 .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), field, fieldType))
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .label(label)

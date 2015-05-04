@@ -1,6 +1,7 @@
 package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 
 /**
@@ -13,7 +14,10 @@ public class LongCellConverter extends AbstractNumberCellConverter<Long> {
     
     @Override
     protected Long convertNumber(double value) {
-        return new BigDecimal(value).longValue();
+        // 少数以下を四捨五入
+        BigDecimal decimal = new BigDecimal(value);
+        decimal = decimal.setScale(0, RoundingMode.HALF_UP);
+        return decimal.longValueExact();
     }
     
     @Override
@@ -23,7 +27,9 @@ public class LongCellConverter extends AbstractNumberCellConverter<Long> {
     
     @Override
     protected Long convertNumber(final BigDecimal value) {
-        return value.longValue();
+        // 少数以下を四捨五入
+        BigDecimal decimal = value.setScale(0, RoundingMode.HALF_UP);
+        return decimal.longValueExact();
     }
     
     @Override

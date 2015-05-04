@@ -29,6 +29,13 @@ public class TypeBindException extends XlsMapperException {
     /** validation時のメッセージの変数に使用する */
     private final Map<String, Object> messageVars;
     
+    public TypeBindException(final Exception e, final String message, final Class<?> bindClass, final Object targetValue) {
+        super(message, e);
+        this.bindClass = bindClass;
+        this.targetValue = targetValue;
+        this.messageVars = new LinkedHashMap<String, Object>();
+    }
+    
     public TypeBindException(final String message, final Class<?> bindClass, final Object targetValue) {
         super(message);
         this.bindClass = bindClass;
