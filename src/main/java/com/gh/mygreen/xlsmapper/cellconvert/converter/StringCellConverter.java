@@ -25,13 +25,21 @@ public class StringCellConverter extends AbstractCellConverter<String> {
         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         
-        if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
-            return Utils.getDefaultValueIfEmpty(null, converterAnno);
-        }
-        
         String resultValue = POIUtils.getCellContents(cell, config.getCellFormatter());
         resultValue = Utils.trim(resultValue, converterAnno);
-        resultValue = Utils.getDefaultValueIfEmpty(resultValue, converterAnno);
+        
+        if(resultValue.isEmpty()) {
+            if(Utils.hasDefaultValue(converterAnno)) {
+                resultValue = converterAnno.defaultValue();
+                
+            } else if(Utils.getTrimValue(converterAnno)) {
+                // trimが有効な場合、空文字を設定する。
+                resultValue = "";
+                
+            } else {
+                resultValue = null;
+            }
+        }
         
         return resultValue;
     }

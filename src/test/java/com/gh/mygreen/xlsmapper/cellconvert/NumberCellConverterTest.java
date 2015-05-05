@@ -289,6 +289,15 @@ public class NumberCellConverterTest {
             
 //            assertThat(record.f, is(Float.valueOf("-3.40282346638528E38")));
 //            assertThat(record.d, is(Double.valueOf("-1.7976931348623158E308")));
+            
+        } else if(record.no == 22) {
+            // 数式
+            assertThat(record.s, is((short)3));
+            assertThat(record.i, is((int)12));
+            assertThat(record.l, is((long)2.4));
+            assertThat(record.f, is(Float.valueOf("5.8")));
+            assertThat(record.d, is(Double.valueOf("23.2")));
+            
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
         }

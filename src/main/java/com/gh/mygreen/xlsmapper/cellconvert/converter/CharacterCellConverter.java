@@ -24,14 +24,17 @@ public class CharacterCellConverter extends AbstractCellConverter<Character> {
         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         
-        final String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
+        String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
+        cellValue = Utils.trim(cellValue, converterAnno);
+        
         Character resultValue = null;
-        if(Utils.isNotEmpty(cellValue)) {
+        if(Utils.isEmpty(cellValue)) {
+            if(Utils.hasDefaultValue(converterAnno)) {
+                resultValue = converterAnno.defaultValue().charAt(0);
+            }
+            
+        } else {
             resultValue = cellValue.charAt(0);
-            
-        } else if(Utils.hasDefaultValue(converterAnno)) {
-            resultValue = converterAnno.defaultValue().charAt(0);
-            
         }
         
         if(resultValue == null && adaptor.getTargetClass().isPrimitive()) {
