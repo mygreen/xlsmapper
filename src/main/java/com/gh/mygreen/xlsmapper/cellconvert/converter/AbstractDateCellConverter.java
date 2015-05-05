@@ -10,7 +10,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
@@ -57,7 +56,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
                 }
             }
             
-        } else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted(cell)) {
+        } else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
             // セルのタイプが日付型の場合はそのまま取得する
             resultValue = convertDate(cell.getDateCellValue());
             

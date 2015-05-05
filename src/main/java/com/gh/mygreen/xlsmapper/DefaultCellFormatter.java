@@ -19,23 +19,11 @@ public class DefaultCellFormatter implements CellFormatter {
     
     private POICellFormatter poiCellFormatter = new POICellFormatter();
     
-    /**
-     * セルの値を文字列として取得する
-     * @param cell 取得対象の
-     * @return フォーマットした文字列
-     */
     @Override
     public String format(final Cell cell) {
         return format(cell, Locale.getDefault());
     }
     
-    /**
-     * ロケールを指定してセルの値を文字列として取得する。
-     * @since 0.4
-     * @param cell
-     * @param locale
-     * @return
-     */
     @Override
     public String format(final Cell cell, final Locale locale) {
         return poiCellFormatter.formatAsString(cell, locale);
