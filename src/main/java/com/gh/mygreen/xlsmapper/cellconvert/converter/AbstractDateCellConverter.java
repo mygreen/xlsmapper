@@ -28,13 +28,12 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 /**
  * 日時型のConverterの抽象クラス。
  * <p>{@link Date}を継承している<code>javax.sql.Time/Date/Timestamp</code>はこのクラスを継承して作成します。
- *
+ * 
+ * @version 0.5
  * @author T.TSUCHIE
  *
  */
 public abstract class AbstractDateCellConverter<T extends Date> extends AbstractCellConverter<T> {
-    
-    public static String DEFAULT_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
     
     @Override
     public T toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config) throws XlsMapperException {
@@ -53,7 +52,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
                 try {
                     resultValue = parseDate(defaultValue, createDateFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(cell, adaptor, defaultValue)
+                    throw newTypeBindException(e, cell, adaptor, defaultValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
@@ -69,7 +68,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
                 try {
                     resultValue = parseDate(cellValue,  createDateFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(cell, adaptor, cellValue)
+                    throw newTypeBindException(e, cell, adaptor, cellValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
@@ -91,12 +90,6 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
      */
     protected DateFormat createDateFormat(final XlsDateConverter anno) throws AnnotationInvalidException {
         
-        if(anno.pattern().isEmpty()) {
-            throw new AnnotationInvalidException(
-                    String.format("Anotation '@%s' attribute 'pattern' should be not empty.", XlsDateConverter.class.getSigners()),
-                    anno);
-        }
-        
         final Locale locale;
         if(anno.locale().isEmpty()) {
             locale = Locale.getDefault();
@@ -104,7 +97,8 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             locale = Utils.getLocale(anno.locale());
         }
         
-        final DateFormat format = new SimpleDateFormat(anno.pattern(), locale);
+        final String pattern = anno.pattern().isEmpty() ? getDefaultPattern() : anno.pattern();
+        final DateFormat format = new SimpleDateFormat(pattern, locale);
         format.setLenient(anno.lenient());
         
         return format;
@@ -131,6 +125,13 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     abstract protected T convertDate(final Date value);
     
     /**
+     * その型における標準の書式を返す。
+     * @since 0.5
+     * @return {@link SimpleDateFormat}で処理可能な形式。
+     */
+    abstract protected String getDefaultPattern();
+    
+    /**
      * 文字列をその型における日付型を返す。
      * <p>アノテーション{@link XlsDateConverter}でフォーマットが与えられている場合は、パースして返す。
      * @param value
@@ -152,7 +153,8 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             
             @Override
             public String pattern() {
-                return "";
+                // 各タイプごとの標準の書式を取得する。
+                return getDefaultPattern();
             }
             
             @Override
