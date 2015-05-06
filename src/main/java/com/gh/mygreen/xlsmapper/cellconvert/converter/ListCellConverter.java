@@ -2,7 +2,9 @@ package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -42,8 +44,13 @@ public class ListCellConverter extends AbstractCellConverter<List> {
             itemClass = adaptor.getLoadingGenericClassType();
         }
         
-        final List list = convertList(cellValue, itemClass, converterAnno, anno);
-        return list;
+        try {
+            final List list = convertList(cellValue, itemClass, converterAnno, anno);
+            return list;
+        } catch(NumberFormatException e) {
+            throw newTypeBindException(e, cell, adaptor, cellValue)
+                .addAllMessageVars(createTypeErrorMessageVars(anno));
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -57,13 +64,12 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         
         for(String item : split) {
             
-            if(anno.ignoreEmptyItem() && Utils.isEmpty(item)) {
+            String strVal = Utils.trim(item, converterAnno);
+            if(anno.ignoreEmptyItem() && Utils.isEmpty(strVal)) {
                 continue;
             }
             
-            String strVal = Utils.trim(item, converterAnno);
             list.add(Utils.convertToObject(strVal, itemClass));
-            
         }
         return list;
         
@@ -93,6 +99,17 @@ public class ListCellConverter extends AbstractCellConverter<List> {
             }
             
         };
+    }
+    
+    /**
+     * 型変換エラー時のメッセージ変数の作成
+     */
+    private Map<String, Object> createTypeErrorMessageVars(final XlsArrayConverter anno) {
+        
+        final Map<String, Object> vars = new LinkedHashMap<>();
+        vars.put("separator", anno.separator());
+        vars.put("ignoreEmptyItem", anno.ignoreEmptyItem());
+        return vars;
     }
     
     protected XlsArrayConverter getLoadingAnnotation(final FieldAdaptor adaptor) {
