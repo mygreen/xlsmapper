@@ -42,13 +42,16 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink>{
         } else if(cell.getHyperlink() != null) {
             // リンクが設定されているセルは、リンクの内容を値とする
             final String address = Utils.trim(cell.getHyperlink().getAddress(), converterAnno);
-            final String label = Utils.trim(cell.getHyperlink().getLabel(), converterAnno);
+            final String label = Utils.trim(POIUtils.getCellContents(cell, config.getCellFormatter()), converterAnno);
             
             return new CellLink(address, label);
             
         } else {
             // リンクがないセルは、セルの文字列を値とする
             final String label = Utils.trim(POIUtils.getCellContents(cell, config.getCellFormatter()), converterAnno);
+            if(Utils.isEmpty(label)) {
+                return null;
+            }
             return new CellLink(null, label);
             
         }

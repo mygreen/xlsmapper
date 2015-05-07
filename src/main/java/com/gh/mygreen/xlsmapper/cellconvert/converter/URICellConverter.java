@@ -40,7 +40,7 @@ public class URICellConverter extends AbstractCellConverter<URI>{
                 try {
                     return new URI(defaultValue);
                 } catch (URISyntaxException e) {
-                    throw newTypeBindException(cell, adaptor, defaultValue);
+                    throw newTypeBindException(e, cell, adaptor, defaultValue);
                 }
             }
             
@@ -50,12 +50,16 @@ public class URICellConverter extends AbstractCellConverter<URI>{
             try {
                 return new URI(address);
             } catch (URISyntaxException e) {
-                throw newTypeBindException(cell, adaptor, address);
+                throw newTypeBindException(e, cell, adaptor, address);
             }
             
         } else {
             // リンクがないセルは、セルの文字列を値とする
             final String str = Utils.trim(POIUtils.getCellContents(cell, config.getCellFormatter()), converterAnno);
+            if(Utils.isEmpty(str)) {
+                return null;
+            }
+            
             try {
                 return new URI(str);
             } catch (URISyntaxException e) {
