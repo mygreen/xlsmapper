@@ -24,11 +24,12 @@ import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
+import com.gh.mygreen.xlsmapper.cellconvert.converter.BooleanCellConverter;
 import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 /**
- * Boolen型の変換のテスト
+ * {@link BooleanCellConverter}のテスタ
  * @version 0.5
  * @author T.TSUCHIE
  *

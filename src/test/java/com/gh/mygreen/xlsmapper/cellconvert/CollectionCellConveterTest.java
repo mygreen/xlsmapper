@@ -1,7 +1,6 @@
 package com.gh.mygreen.xlsmapper.cellconvert;
 
 import static org.junit.Assert.*;
-//import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.*;
 
 import java.awt.Point;
