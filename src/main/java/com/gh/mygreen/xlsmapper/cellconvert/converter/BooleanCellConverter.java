@@ -55,10 +55,6 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
             }
         }
         
-        if(anno.failToFalse()) {
-            return Boolean.FALSE;
-        }
-        
         if(adaptor.getTargetClass().isPrimitive()) {
             return Boolean.FALSE;
         }
