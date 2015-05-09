@@ -33,6 +33,13 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             final FieldAdaptor adaptor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
         final FindInfo info = findCell(sheet, anno, config);
+        if(info == null) {
+            /*
+             * ラベル用のセルが見つからない場合
+             * optional=falseの場合は、例外がスローされここには到達しない。
+             */
+            return;
+        }
         Utils.setPosition(info.position.x, info.position.y, beansObj, adaptor.getName());
         Utils.setLabel(info.label, beansObj, adaptor.getName());
         
