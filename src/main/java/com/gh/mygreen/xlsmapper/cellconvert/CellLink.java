@@ -5,7 +5,8 @@ import java.io.Serializable;
 
 /**
  * セルのリンクを表現するクラス
- *
+ * 
+ * @version 0.5
  * @author T.TSUCHIE
  *
  */
@@ -32,6 +33,55 @@ public class CellLink implements Serializable {
     public CellLink(final String link, final String label) {
         setLink(link);
         setLabel(label);
+    }
+    
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((label == null) ? 0 : label.hashCode());
+        result = prime * result + ((link == null) ? 0 : link.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(obj == null) {
+            return false;
+        }
+        if(getClass() != obj.getClass()) {
+            return false;
+        }
+        CellLink other = (CellLink) obj;
+        if(label == null) {
+            if(other.label != null) {
+                return false;
+            }
+        } else if(!label.equals(other.label)) {
+            return false;
+        }
+        if(link == null) {
+            if(other.link != null) {
+                return false;
+            }
+        } else if(!link.equals(other.link)) {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public String toString() {
+        return "CellLink"
+                + "@" + super.toString()
+                + "["
+                + "link=" + link
+                + ", label=" + label
+                + "]";
     }
     
     /**
