@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellReference;
 
@@ -1016,6 +1017,68 @@ public class Utils {
     }
     
     /**
+     * 指定したラベル（値を持つ）セルを検索し、取得する。
+     * 
+     * @since 0.5
+     * @param sheet 検索対象のシート。
+     * @param label 検索するセルの値
+     * @param fromCol 検索開始位置の列のインデックス
+     * @param fromRow 検索開始位置の行のインデックス
+     * @param throwableWhenNotFound セルが見つからない場合例外をスローするかどうか。falseの場合、nullを返す。
+     * @return 引数labelで指定した値を持つセル。見つからに場合は、nullを返す。
+     * @throws CellNotFoundException シート中に引数'label'を持つセルが存在しない場合。
+     */
+    public static Cell getCell(final Sheet sheet, final String label, final int fromCol, final int fromRow,
+            final XlsMapperConfig config) throws CellNotFoundException {
+        return getCell(sheet, label, fromCol, fromRow, true, config);
+    }
+    
+    /**
+     * 指定したラベル（値を持つ）セルを検索し、取得する。
+     * 
+     * @since 0.5
+     * @param sheet 検索対象のシート。
+     * @param label 検索するセルの値
+     * @param fromCol 検索開始位置の列のインデックス
+     * @param fromRow 検索開始位置の行のインデックス
+     * @param throwableWhenNotFound セルが見つからない場合例外をスローするかどうか。falseの場合、nullを返す。
+     * @return 引数labelで指定した値を持つセル。見つからに場合は、nullを返す。
+     * @throws CellNotFoundException シート中に引数'label'を持つセルが存在しない場合。ただし、引数throwableWhenNotFound=trueの場合のみ。
+     */
+    public static Cell getCell(final Sheet sheet, final String label, final int fromCol, final int fromRow,
+            final boolean throwableWhenNotFound, final XlsMapperConfig config) throws CellNotFoundException {
+        
+        ArgUtils.notNull(sheet, "sheet");
+        ArgUtils.notEmpty(label, "label");
+        ArgUtils.notMin(fromCol, 0, "fromCol");
+        ArgUtils.notMin(fromRow, 0, "fromRow");
+        ArgUtils.notNull(config, "config");
+        
+        final int maxRow = POIUtils.getRows(sheet);
+        for(int i=fromRow; i < maxRow; i++) {
+            final Row row = sheet.getRow(i);
+            if(row == null) {
+                continue;
+            }
+            
+            final int maxCol = row.getLastCellNum();;
+            for(int j=fromCol; j < maxCol; j++) {
+                final Cell cell = row.getCell(j, Row.CREATE_NULL_AS_BLANK);
+                final String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
+                if(cellValue.equals(label)) {
+                    return cell;
+                }
+            }
+        }
+        
+        if(throwableWhenNotFound) {
+            throw new CellNotFoundException(sheet.getSheetName(), label);
+        }
+        
+        return null;
+    }
+    
+    /**
      * Return cell object by using first argument sheet.
      * This cell will be found by label name in Excel sheet.
      *
@@ -1059,33 +1122,19 @@ public class Utils {
         
         if (after == null) {
             // Call XLSBeans#getCell() - method if third argument is null.
-            return Utils.getCell(sheet, label, 0, throwableWhenNotFound, config);
+            return Utils.getCell(sheet, label, 0, 0, throwableWhenNotFound, config);
         }
         
         //[TO POI]
         int columnStart = after.getColumnIndex();
         int rowStart = after.getRowIndex();
+        if(!includeAfter) {
+            // 指定したセルを含まない場合は、+1する。
+            columnStart++;
+            rowStart++;
+        }
         
-        //[TO POI]
-        for (int col = columnStart; col < POIUtils.getColumns(sheet); col++) {
-            // getting cells each columns
-            Cell[] columns = POIUtils.getColumn(sheet, col);
-            for (int row = rowStart; row < columns.length; row++) {
-                // except first cell if "includeAfter" is false.
-                if (col == columnStart && row == rowStart && !includeAfter) {
-                    continue;
-                }
-                if (POIUtils.getCellContents(columns[row], config.getCellFormatter()).equals(label)) {
-                    return columns[row];
-                }
-            }
-        }
-        if (throwableWhenNotFound) {
-            // can't find cell
-            throw new CellNotFoundException(sheet.getSheetName(), label);
-        } else {
-            return null;
-        }
+        return getCell(sheet, label, columnStart, rowStart, throwableWhenNotFound, config);
     }
     
     /**

@@ -12,6 +12,7 @@ import com.gh.mygreen.xlsmapper.SavingWorkObject;
 import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.cellconvert.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
@@ -64,51 +65,50 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     private FindInfo findCell(final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config)
             throws XlsMapperException {
         
-        Cell targetCell = null;
-        
         final Point labelPosition = getLabelPosition(sheet, anno, config);
         if(labelPosition == null) {
             return null;
         }
-        int column = labelPosition.x;
-        int row = labelPosition.y;
         
+        final int column = labelPosition.x;
+        final int row = labelPosition.y;
         
         int range = anno.range();
         if(range < 1){
             range = 1;
         }
         
-        for(int i=anno.skip(); i < range; i++){
-            switch(anno.type()){
-            case Left:
-                targetCell = POIUtils.getCell(sheet, column - (1 * (i + 1)), row);
-                break;
-            case Right:
-                targetCell = POIUtils.getCell(sheet, column + (1 * (i + 1)), row);
-                break;
-            case Bottom:
-                targetCell = POIUtils.getCell(sheet, column, row + (1 * (i + 1)));
-                break;
-            default:
-                throw new AnnotationInvalidException(
-                        String.format("@XlsLabelledCell atrribute 'type' is invalid. : %s", anno.type().name()), anno);
+        // 値が設定されているセルを検索する。
+        Point targetPosition = new Point();
+        Cell targetCell = null;
+        for(int i=0; i < range; i++){
+            final int index = anno.skip() + i +1;
+            if(anno.type() == LabelledCellType.Left) {
+                targetPosition.x = column - index;
+                targetPosition.y = row;
+                targetCell = POIUtils.getCell(sheet, targetPosition);
+                
+            } else if(anno.type() == LabelledCellType.Right) {
+                targetPosition.x = column + index;
+                targetPosition.y = row;
+                targetCell = POIUtils.getCell(sheet, targetPosition);
+                
+            } else if(anno.type() == LabelledCellType.Bottom) {
+                targetPosition.x = column;
+                targetPosition.y = row + index;
+                targetCell = POIUtils.getCell(sheet, targetPosition);
+                
             }
             
-            if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length()>0){
+            if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length() > 0){
                 break;
             }
         }
         
         final FindInfo info = new FindInfo();
         info.targetCell = targetCell;
+        info.position = targetPosition;
         info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());
-        
-        if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length() > 0) {
-            info.position = new Point(targetCell.getColumnIndex(), targetCell.getRowIndex());
-        } else {
-            info.position = new Point(column, row);
-        }
         
         return info;
     }
@@ -126,8 +126,8 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         } else if(Utils.isNotEmpty(anno.label())) {
             try {
                 if(Utils.isNotEmpty(anno.headerLabel())){
-                    Cell headerCell = Utils.getCell(sheet, anno.headerLabel(), 0, config);
-                    Cell labelCell = Utils.getCell(sheet, anno.label(), headerCell.getRowIndex() + 1, config);
+                    Cell headerCell = Utils.getCell(sheet, anno.headerLabel(), 0, 0, config);
+                    Cell labelCell = Utils.getCell(sheet, anno.label(), headerCell.getColumnIndex(), headerCell.getRowIndex() + 1, config);
                     int column = labelCell.getColumnIndex();
                     int row = labelCell.getRowIndex();
                     return new Point(column, row);
