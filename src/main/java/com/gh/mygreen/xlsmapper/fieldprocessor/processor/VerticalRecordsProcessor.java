@@ -155,6 +155,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 hRow = hRow + rangeCount;
                 rangeCount = 1;
                 
+                // 結合しているセルの場合は、はじめのセルだけ取得して、後は結合分スキップする。
+                CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+                if(mergedRange != null) {
+                    hRow = hRow + (mergedRange.getLastRow() - mergedRange.getFirstRow());
+                }
+                
             } catch(ArrayIndexOutOfBoundsException ex){
                 break;
             }
@@ -512,6 +518,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 headers.add(new RecordHeader(POIUtils.getCellContents(cell, config.getCellFormatter()), rangeCount - 1));
                 hRow = hRow + rangeCount;
                 rangeCount = 1;
+                
+                // 結合しているセルの場合は、はじめのセルだけ取得して、後は結合分スキップする。
+                CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+                if(mergedRange != null) {
+                    hRow = hRow + (mergedRange.getLastRow() - mergedRange.getFirstRow());
+                }
                 
             } catch(ArrayIndexOutOfBoundsException ex) {
                 break;

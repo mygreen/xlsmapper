@@ -146,13 +146,20 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     rangeCount++;
                 }
                 
-                if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){
+                final String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
+                if(Utils.isEmpty(cellValue)){
                     break;
                 }
                 
-                headers.add(new RecordHeader(POIUtils.getCellContents(cell, config.getCellFormatter()), rangeCount - 1));
+                headers.add(new RecordHeader(cellValue, rangeCount - 1));
                 hColumn = hColumn + rangeCount;
                 rangeCount = 1;
+                
+                // 結合しているセルの場合は、はじめのセルだけ取得して、後は結合分スキップする。
+                CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+                if(mergedRange != null) {
+                    hColumn = hColumn + (mergedRange.getLastColumn() - mergedRange.getFirstColumn());
+                }
                 
             } catch(ArrayIndexOutOfBoundsException ex) {
                 break;
@@ -324,7 +331,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
+                Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0, 0, config);
                 int initColumn = labelCell.getColumnIndex();
                 int initRow = labelCell.getRowIndex() + anno.bottom();
                 
@@ -505,13 +512,20 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     rangeCount++;
                 }
                 
-                if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){
+                String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
+                if(Utils.isEmpty(cellValue)){
                     break;
                 }
                 
-                headers.add(new RecordHeader(POIUtils.getCellContents(cell, config.getCellFormatter()), rangeCount - 1));
+                headers.add(new RecordHeader(cellValue, rangeCount - 1));
                 hColumn = hColumn + rangeCount;
                 rangeCount = 1;
+                
+                // 結合しているセルの場合は、はじめのセルだけ取得して、後は結合分スキップする。
+                CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+                if(mergedRange != null) {
+                    hColumn = hColumn + (mergedRange.getLastColumn() - mergedRange.getFirstColumn());
+                }
                 
             } catch(ArrayIndexOutOfBoundsException ex) {
                 break;

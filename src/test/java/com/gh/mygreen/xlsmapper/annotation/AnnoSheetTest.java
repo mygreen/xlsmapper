@@ -47,7 +47,7 @@ public class AnnoSheetTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_sheet.xlsx")) {
+        try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NamedSheet.class);
             
             NamedSheet sheet = mapper.load(in, NamedSheet.class, errors);

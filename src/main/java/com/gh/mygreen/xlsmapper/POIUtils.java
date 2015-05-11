@@ -140,6 +140,19 @@ public class POIUtils {
     
     /**
      * シートから任意のセルを取得する。
+     * @since 0.5
+     * @param sheet シートオブジェクト
+     * @param address アドレス（Point.x=column, Point.y=row）
+     * @return 
+     */
+    public static Cell getCell(final Sheet sheet, final Point address) {
+        ArgUtils.notNull(sheet, "sheet");
+        ArgUtils.notNull(address, "address");
+        return getCell(sheet, address.x, address.y);
+    }
+    
+    /**
+     * シートから任意のセルを取得する。
      * 
      * @see jxl.Sheet.getCell(int column, int row)
      * @param sheet
@@ -315,6 +328,28 @@ public class POIUtils {
         final CellRangeAddress range = new CellRangeAddress(startRow, endRow, startCol, endCol);
         sheet.addMergedRegion(range);
         return range;
+    }
+    
+    /**
+     * 指定したセルのアドレスの結合情報を取得する。
+     * @since 0.5
+     * @param sheet
+     * @param rowIdx
+     * @param colIdx
+     * @return 結合していない場合nullを返す。
+     */
+    public static CellRangeAddress getMergedRegion(final Sheet sheet, final int rowIdx, final int colIdx) {
+        ArgUtils.notNull(sheet, "sheet");
+        
+        final int num = sheet.getNumMergedRegions();
+        for(int i=0; i < num; i ++) {
+            final CellRangeAddress range = sheet.getMergedRegion(i);
+            if(range.isInRange(rowIdx, colIdx)) {
+                return range;
+            }
+        }
+        
+        return null;
     }
     
     /**
