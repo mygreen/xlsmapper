@@ -314,11 +314,13 @@ public class XlsSaver {
             }
             return new org.apache.poi.ss.usermodel.Sheet[]{ xlsSheet };
             
-        } else if(sheetAnno.number() != -1) {
+        } else if(sheetAnno.number() >= 0) {
             // シート番号から取得する
             if(sheetAnno.number() >= book.getNumberOfSheets()) {
                 throw new SheetNotFoundException(sheetAnno.number(), book.getNumberOfSheets());
             }
+            
+            return new org.apache.poi.ss.usermodel.Sheet[]{ book.getSheetAt(sheetAnno.number()) };
             
         } else if(sheetAnno.regex().length() > 0) {
             // シート名（正規表現）をもとにして、取得する。
