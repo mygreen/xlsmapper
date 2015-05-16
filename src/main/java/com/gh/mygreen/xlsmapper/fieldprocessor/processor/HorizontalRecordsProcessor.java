@@ -58,6 +58,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * アノテーション{@link XlsHorizontalRecords}を処理するクラス。
  * 
+ * @version 0.5
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *

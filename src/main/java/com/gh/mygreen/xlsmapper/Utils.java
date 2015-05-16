@@ -1128,13 +1128,34 @@ public class Utils {
         //[TO POI]
         int columnStart = after.getColumnIndex();
         int rowStart = after.getRowIndex();
-        if(!includeAfter) {
-            // 指定したセルを含まない場合は、+1する。
-            columnStart++;
-            rowStart++;
+        
+        final int maxRow = POIUtils.getRows(sheet);
+        for(int i=rowStart; i < maxRow; i++) {
+            final Row row = sheet.getRow(i);
+            if(row == null) {
+                continue;
+            }
+            
+            final int maxCol = row.getLastCellNum();;
+            for(int j=columnStart; j < maxCol; j++) {
+                
+                if(!includeAfter && i == rowStart && j == columnStart) {
+                    continue;
+                }
+                
+                final Cell cell = row.getCell(j, Row.CREATE_NULL_AS_BLANK);
+                final String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
+                if(cellValue.equals(label)) {
+                    return cell;
+                }
+            }
         }
         
-        return getCell(sheet, label, columnStart, rowStart, throwableWhenNotFound, config);
+        if(throwableWhenNotFound) {
+            throw new CellNotFoundException(sheet.getSheetName(), label);
+        }
+        
+        return null;
     }
     
     /**
