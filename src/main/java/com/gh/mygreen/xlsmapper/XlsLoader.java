@@ -141,7 +141,7 @@ public class XlsLoader {
         
         final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
         if(sheetAnno == null) {
-            throw new AnnotationInvalidException("Cannot finld annoation '@Sheet'", sheetAnno);
+            throw new AnnotationInvalidException("Cannot finld annoation '@XlsSheet'", sheetAnno);
         }
         
         final Workbook book;
@@ -341,7 +341,7 @@ public class XlsLoader {
         for(Class<?> clazz : classes) {
             final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
             if(sheetAnno == null) {
-                throw new AnnotationInvalidException("Cannot finld annoation '@Sheet'", sheetAnno);
+                throw new AnnotationInvalidException("Cannot finld annoation '@XlsSheet'", sheetAnno);
             }
             
             try {

@@ -354,7 +354,7 @@ public class XlsSaver {
             return matches.toArray(new org.apache.poi.ss.usermodel.Sheet[matches.size()]);
         }
         
-        throw new AnnotationInvalidException("@Sheet requires name or number or regex parameter.", sheetAnno);
+        throw new AnnotationInvalidException("@XlsSheet requires name or number or regex parameter.", sheetAnno);
         
     }
     
