@@ -132,6 +132,29 @@ public class AnnoIterateTablesTest {
         }
     }
     
+    /**
+     * 連結した表
+     */
+    @Test
+    public void test_concat_table() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(ConcatTableSheet.class);
+            
+            ConcatTableSheet sheet = mapper.load(in, ConcatTableSheet.class, errors);
+            
+            if(sheet.classeTables != null) {
+                assertThat(sheet.classeTables, hasSize(2));
+                for(ConcatClassTable table : sheet.classeTables) {
+                    assertTable(table, errors);
+                }
+            }
+        }
+    }
+    
     private void assertTable(final ClassTable table, final SheetBindingErrors errors) {
         
         if(table.name.equals("1年2組")) {
@@ -226,6 +249,102 @@ public class AnnoIterateTablesTest {
         }
     }
     
+    private void assertTable(final ConcatClassTable table, final SheetBindingErrors errors) {
+        
+        if(table.name.equals("1年2組")) {
+            
+            assertThat(table.name, is("1年2組"));
+            
+            assertThat(table.persons, hasSize(2));
+            for(PersonRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("阿部一郎"));
+                    assertThat(record.birthday, is(utilDate(timestamp("2000-04-01 00:00:00.000"))));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("泉太郎"));
+                    assertThat(record.birthday, is(utilDate(timestamp("2000-04-02 00:00:00.000"))));
+                    
+                }
+                
+            }
+            
+            assertThat(table.results, hasSize(3));
+            for(ResultRecord record : table.results) {
+                if(record.no == 1) {
+                    assertThat(record.sansu, is(90));
+                    assertThat(record.kokugo, is(70));
+                    assertThat(record.sum, is(160));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.sansu, is(80));
+                    assertThat(record.kokugo, is(90));
+                    assertThat(record.sum, is(170));
+                    
+                } else if(record.no == 0) {
+                    // デフォルト値（合計）
+                    assertThat(record.sansu, is(85));
+                    assertThat(record.kokugo, is(80));
+                    assertThat(record.sum, is(165));
+                }
+                
+            }
+            
+        } else if(table.name.equals("2年3組")) {
+            
+            assertThat(table.name, is("2年3組"));
+            
+            assertThat(table.persons, hasSize(3));
+            for(PersonRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("鈴木一郎"));
+                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-01 00:00:00.000"))));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("林次郎"));
+                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-02 00:00:00.000"))));
+                    
+                } else if(record.no == 3) {
+                    assertThat(record.name, is("山田太郎"));
+                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-03 00:00:00.000"))));
+                    
+                }
+                
+            }
+            
+            assertThat(table.results, hasSize(4));
+            for(ResultRecord record : table.results) {
+                if(record.no == 1) {
+                    assertThat(record.sansu, is(90));
+                    assertThat(record.kokugo, is(70));
+                    assertThat(record.sum, is(160));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.sansu, is(80));
+                    assertThat(record.kokugo, is(90));
+                    assertThat(record.sum, is(170));
+                    
+                } else if(record.no == 3) {
+                    assertThat(record.sansu, is(70));
+                    assertThat(record.kokugo, is(60));
+                    assertThat(record.sum, is(130));
+                    
+                } else if(record.no == 0) {
+                    // デフォルト値（合計）
+                    assertThat(record.sansu, is(80));
+                    assertThat(record.kokugo, is(73));
+                    assertThat(record.sum, is(153));
+                }
+                
+            }
+            
+            
+        }
+        
+    }
+    
     @XlsSheet(name="通常の表")
     private static class NormalSheet {
         
@@ -307,7 +426,7 @@ public class AnnoIterateTablesTest {
     /**
      * ラベルと表がオプション設定の場合
      */
-    @XlsSheet(name="見出しセルがない2")
+    @XlsSheet(name="見出しセルがない")
     private static class OptionalCellSheet {
         
         private Map<String, Point> positions;
@@ -337,6 +456,55 @@ public class AnnoIterateTablesTest {
         
     }
     
+    @XlsSheet(name="連結した表")
+    private static class ConcatTableSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsIterateTables(tableLabel="クラス情報", bottom=2)
+        private List<ConcatClassTable> classeTables;
+        
+    }
+    /**
+     * 連結したテーブルの定義
+     */
+    private static class ConcatClassTable {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
+        private String name;
+        
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, bottom=2, headerLimit=3)
+        private List<PersonRecord> persons;
+        
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, bottom=2, range=4)
+        private List<ResultRecord> results;
+        
+    }
     
+    private static class ResultRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="算数")
+        private int sansu;
+        
+        @XlsColumn(columnName="国語")
+        private int kokugo;
+        
+        @XlsColumn(columnName="合計")
+        private int sum;
+        
+    }
     
 }
