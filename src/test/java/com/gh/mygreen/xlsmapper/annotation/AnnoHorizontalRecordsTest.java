@@ -1,8 +1,8 @@
 package com.gh.mygreen.xlsmapper.annotation;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.awt.Point;
 import java.io.FileInputStream;
@@ -22,7 +22,6 @@ import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsDateConverter;
-import com.gh.mygreen.xlsmapper.annotation.converter.XlsNumberConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.processor.HorizontalRecordsProcessor;
