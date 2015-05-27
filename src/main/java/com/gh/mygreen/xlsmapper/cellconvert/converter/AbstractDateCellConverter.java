@@ -10,7 +10,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.POIUtils;
@@ -20,7 +23,6 @@ import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 
 
@@ -57,8 +59,23 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             }
             
         } else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-            // セルのタイプが日付型の場合はそのまま取得する
+            // セルのタイプが数値型の場合は、強制的に取得する
             resultValue = convertDate(cell.getDateCellValue());
+            
+        } else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+            // 式を評価して再帰的に処理する。
+            final Workbook workbook = cell.getSheet().getWorkbook();
+            final CreationHelper helper = workbook.getCreationHelper();
+            final FormulaEvaluator evaluator = helper.createFormulaEvaluator();
+            try {
+                // 再帰的に処理する
+                final Cell evalCell = evaluator.evaluateInCell(cell);
+                return toObject(evalCell, adaptor, config);
+                
+            } catch(Exception e) {
+                throw newTypeBindException(e, cell, adaptor, cell)
+                    .addAllMessageVars(createTypeErrorMessageVars(anno));
+            }
             
         } else {
             String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
@@ -228,7 +245,9 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
                 try {
                     value = parseDate(defaultValue, createDateFormat(anno));
                 } catch (ParseException e) {
-                    throw new ConversionException(String.format("Cannot convert string to Object [%s].", adaptor.getTargetClass()), adaptor.getTargetClass());
+//                    throw new ConversionException(String.format("Cannot convert string to Object [%s].", adaptor.getTargetClass()), adaptor.getTargetClass());
+                    throw newTypeBindException(e, cell, adaptor, defaultValue)
+                        .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             } else {
                 value = (Date) Utils.convertToObject(defaultValue, adaptor.getTargetClass());

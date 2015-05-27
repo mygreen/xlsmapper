@@ -858,6 +858,10 @@ public class Utils {
             return true;
         }
         
+        if(str.length() == 1) {
+            return str.charAt(0) == '\u0000';
+        }
+        
         return false;
     }
     

@@ -38,7 +38,7 @@ public class CharacterCellConverter extends AbstractCellConverter<Character> {
         }
         
         if(resultValue == null && adaptor.getTargetClass().isPrimitive()) {
-            resultValue = 0;
+            resultValue = '\u0000';
         }
         
         return resultValue;
@@ -79,6 +79,10 @@ public class CharacterCellConverter extends AbstractCellConverter<Character> {
         }
         String cellValue = Utils.trim(value, converterAnno);
         cellValue = Utils.getDefaultValueIfEmpty(cellValue, converterAnno);
+        if(cellValue.length() >= 1) {
+            cellValue = cellValue.substring(0, 1);
+        }
+        
         if(Utils.isNotEmpty(cellValue)) {
             cell.setCellValue(cellValue);
         } else {
