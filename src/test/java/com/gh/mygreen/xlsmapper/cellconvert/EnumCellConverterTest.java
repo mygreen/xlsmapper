@@ -1,11 +1,16 @@
 package com.gh.mygreen.xlsmapper.cellconvert;
 
-import static org.junit.Assert.*;
+import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,17 +20,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
-import com.gh.mygreen.xlsmapper.POIUtils;
 import com.gh.mygreen.xlsmapper.XlsMapper;
+import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
+import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsEnumConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.EnumCellConverter;
-import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 
@@ -81,22 +86,6 @@ public class EnumCellConverterTest {
         }
     }
     
-    /**
-     * セルのアドレスを指定してエラーを取得する。
-     * @param errors
-     * @param address
-     * @return 見つからない場合はnullを返す。
-     */
-    private CellFieldError getCellFieldError(final SheetBindingErrors errors, final String address) {
-        for(CellFieldError error : errors.getCellFieldErrors()) {
-            if(error.getFormattedCellAddress().equalsIgnoreCase(address)) {
-                return error;
-            }
-        }
-        
-        return null;
-    }
-    
     private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) {
         if(record.no == 1) {
             // 空文字
@@ -110,18 +99,18 @@ public class EnumCellConverterTest {
             
         } else if(record.no == 3) {
             // 不正な値
-            assertThat(getCellFieldError(errors, POIUtils.formatCellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
-            assertThat(getCellFieldError(errors, POIUtils.formatCellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
             
         } else if(record.no == 4) {
             // 小文字
-            assertThat(getCellFieldError(errors, POIUtils.formatCellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
-            assertThat(getCellFieldError(errors, POIUtils.formatCellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
             
         } else if(record.no == 5) {
             // 空白
-            assertThat(getCellFieldError(errors, POIUtils.formatCellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
-            assertThat(getCellFieldError(errors, POIUtils.formatCellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
@@ -142,8 +131,8 @@ public class EnumCellConverterTest {
             
         } else if(record.no == 3) {
             // 不正な値
-            assertThat(getCellFieldError(errors, POIUtils.formatCellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
-            assertThat(getCellFieldError(errors, POIUtils.formatCellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
             
         } else if(record.no == 4) {
             // 小文字
@@ -159,6 +148,112 @@ public class EnumCellConverterTest {
             fail(String.format("not support test case. No=%d.", record.no));
         }
         
+    }
+    
+    /**
+     * 列挙型の書き込みテスト
+     */
+    @Test
+    public void test_save_enum() throws Exception {
+        
+        // テストデータの作成
+        final EnumSheet outSheet = new EnumSheet();
+        
+        // アノテーションなしのデータ作成
+        outSheet.add(new SimpleRecord()
+                .comment("空文字"));
+        
+        outSheet.add(new SimpleRecord()
+                .color(Color.Green)
+                .operate(Operate.Edit)
+                .comment("値"));
+        
+        // アノテーションありのデータ作成
+        outSheet.add(new FormattedRecord()
+                .comment("空文字"));
+        
+        outSheet.add(new FormattedRecord()
+                .color(Color.Green)
+                .operate(Operate.Edit)
+                .comment("値"));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/convert_enum.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(EnumSheet.class);
+            
+            EnumSheet sheet = mapper.load(in, EnumSheet.class, errors);
+            
+            if(sheet.simpleRecords != null) {
+                assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
+                
+                for(int i=0; i < sheet.simpleRecords.size(); i++) {
+                    assertRecord(sheet.simpleRecords.get(i), outSheet.simpleRecords.get(i), errors);
+                }
+            }
+            
+            if(sheet.formattedRecords != null) {
+                assertThat(sheet.formattedRecords, hasSize(outSheet.formattedRecords.size()));
+                
+                for(int i=0; i < sheet.formattedRecords.size(); i++) {
+                    assertRecord(sheet.formattedRecords.get(i), outSheet.formattedRecords.get(i), errors);
+                }
+            }
+            
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.color, is(outRecord.color));
+        assertThat(inRecord.operate, is(outRecord.operate));
+        assertThat(inRecord.comment, is(outRecord.comment));
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.color, is(Color.Red));
+            assertThat(inRecord.operate, is(Operate.Refer));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.color, is(outRecord.color));
+            assertThat(inRecord.operate, is(outRecord.operate));
+            assertThat(inRecord.comment, is(outRecord.comment));
+        }
     }
     
     /**
@@ -195,12 +290,43 @@ public class EnumCellConverterTest {
     @XlsSheet(name="列挙型")
     private static class EnumSheet {
         
-        @XlsHorizontalRecords(tableLabel="列挙型（アノテーションなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        @XlsHint(order=1)
+        @XlsHorizontalRecords(tableLabel="列挙型（アノテーションなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
-        @XlsHorizontalRecords(tableLabel="列挙型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="列挙型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public EnumSheet add(SimpleRecord record) {
+            if(simpleRecords == null) {
+                this.simpleRecords = new ArrayList<>();
+            }
+            this.simpleRecords.add(record);
+            record.no(simpleRecords.size());
+            return this;
+        }
+        
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public EnumSheet add(FormattedRecord record) {
+            if(formattedRecords == null) {
+                this.formattedRecords = new ArrayList<>();
+            }
+            this.formattedRecords.add(record);
+            record.no(formattedRecords.size());
+            return this;
+        }
     }
     
     /**
@@ -228,6 +354,26 @@ public class EnumCellConverterTest {
         @XlsIsEmpty
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public SimpleRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public SimpleRecord color(Color color) {
+            this.color = color;
+            return this;
+        }
+        
+        public SimpleRecord operate(Operate operate) {
+            this.operate = operate;
+            return this;
+        }
+        
+        public SimpleRecord comment(String comment) {
+            this.comment = comment;
+            return this;
         }
     }
     
@@ -260,6 +406,26 @@ public class EnumCellConverterTest {
         @XlsIsEmpty
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public FormattedRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public FormattedRecord color(Color color) {
+            this.color = color;
+            return this;
+        }
+        
+        public FormattedRecord operate(Operate operate) {
+            this.operate = operate;
+            return this;
+        }
+        
+        public FormattedRecord comment(String comment) {
+            this.comment = comment;
+            return this;
         }
         
     }

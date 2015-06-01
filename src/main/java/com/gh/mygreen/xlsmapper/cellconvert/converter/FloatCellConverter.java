@@ -1,23 +1,25 @@
 package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 
 /**
  * float/Float型を処理するConverter.
  *
+ * @version 0.5
  * @author T.TSUCHIE
  *
  */
 public class FloatCellConverter extends AbstractNumberCellConverter<Float> {
     
     @Override
-    protected Float convertNumber(double value) {
-        return new BigDecimal(value).floatValue();
+    protected Float convertNumber(final double value, final MathContext context) {
+        return new BigDecimal(value, context).floatValue();
     }
     
     @Override
-    protected Float convertNumber(final Number value) {
+    protected Float convertNumber(final Number value, final MathContext context) {
         return value.floatValue();
     }
     

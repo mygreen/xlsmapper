@@ -485,7 +485,7 @@ public class FieldAdaptor {
                 return (Class<?>) type.getActualTypeArguments()[0];
             }
             
-        } else if(List.class.isAssignableFrom(targetClass)) {
+        } else if(Set.class.isAssignableFrom(targetClass)) {
             if(withField) {
                 ParameterizedType type = (ParameterizedType) targetField.getGenericType();
                 return (Class<?>) type.getActualTypeArguments()[0];

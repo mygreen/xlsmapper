@@ -1,27 +1,29 @@
 package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 
 /**
  * byte/Byte型を処理するConverter.
- *
+ * 
+ * @version 0.5
  * @author T.TSUCHIE
  *
  */
 public class ByteCellConverter extends AbstractNumberCellConverter<Byte> {
     
     @Override
-    protected Byte convertNumber(double value) {
+    protected Byte convertNumber(double value, final MathContext context) {
         // 少数以下を四捨五入
-        BigDecimal decimal = new BigDecimal(value);
+        BigDecimal decimal = new BigDecimal(value, context);
         decimal = decimal.setScale(0, RoundingMode.HALF_UP);
         return decimal.byteValueExact();
     }
     
     @Override
-    protected Byte convertNumber(final Number value) {
+    protected Byte convertNumber(final Number value, final MathContext context) {
         return value.byteValue();
     }
     

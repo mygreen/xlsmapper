@@ -180,7 +180,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // get records
         hColumn++;
-        System.out.printf("sheetColumns=%d\n", POIUtils.getColumns(sheet));
+//        System.out.printf("sheetColumns=%d\n", POIUtils.getColumns(sheet));
         while(hColumn < POIUtils.getColumns(sheet)){
             
             hRow = initRow;
@@ -323,7 +323,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     private Point getHeaderPosition(final Sheet sheet, final XlsVerticalRecords anno,
             final XlsMapperConfig config) throws XlsMapperException {
         
-        if(Utils.isNotEmpty(anno.tableAddress())) {
+        if(Utils.isNotEmpty(anno.headerAddress())) {
             Point address = Utils.parseCellAddress(anno.headerAddress());
             if(address == null) {
                 throw new AnnotationInvalidException(

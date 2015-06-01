@@ -12,7 +12,8 @@ import java.util.Currency;
 
 /**
  * 数値型に対するConverter。
- *
+ * 
+ * @version 0.5
  * @author T.TSUCHIE
  *
  */
@@ -40,4 +41,12 @@ public @interface XlsNumberConverter {
      */
     String locale() default "";
     
+    /**
+     * 有効桁数を指定します。
+     * <p>Excelの場合、有効桁数は15桁であるため、デフォルト値は15です。
+     * <p>0以下の値を設定すると、桁数の指定を省略したことになります。
+     * @since 0.5
+     * @return
+     */
+    int precision() default 15;    
 }

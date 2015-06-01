@@ -1,6 +1,7 @@
 package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 
@@ -13,15 +14,15 @@ import java.math.RoundingMode;
 public class IntegerCellConverter extends AbstractNumberCellConverter<Integer> {
     
     @Override
-    protected Integer convertNumber(double value) {
+    protected Integer convertNumber(final double value, final MathContext context) {
         // 少数以下を四捨五入
-        BigDecimal decimal = new BigDecimal(value);
+        BigDecimal decimal = new BigDecimal(value, context);
         decimal = decimal.setScale(0, RoundingMode.HALF_UP);
         return decimal.intValueExact();
     }
     
     @Override
-    protected Integer convertNumber(final Number value) {
+    protected Integer convertNumber(final Number value, final MathContext context) {
         return value.intValue();
     }
     

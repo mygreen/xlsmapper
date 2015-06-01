@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
 import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -57,7 +58,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             } else {
                 String defaultValue = converterAnno.defaultValue();
                 try {
-                    resultValue = parseNumber(defaultValue, createNumberFormat(anno));
+                    resultValue = parseNumber(defaultValue, createNumberFormat(anno), createMathContext(anno));
                 } catch(ParseException e) {
                     throw newTypeBindException(e, cell, adaptor, defaultValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
@@ -67,7 +68,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         } else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
             // セルのタイプが数値型の場合はそのまま取得する。
             try {
-                resultValue = convertNumber(cell.getNumericCellValue());
+                resultValue = convertNumber(cell.getNumericCellValue(), createMathContext(anno));
             } catch(ArithmeticException e) {
                 throw newTypeBindException(e, cell, adaptor, cell)
                     .addAllMessageVars(createTypeErrorMessageVars(anno));
@@ -93,7 +94,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             cellValue = Utils.trim(cellValue, converterAnno);
             if(Utils.isNotEmpty(cellValue)) {
                 try {
-                    resultValue = parseNumber(cellValue, createNumberFormat(anno));
+                    resultValue = parseNumber(cellValue, createNumberFormat(anno), createMathContext(anno));
                 } catch(ParseException | ArithmeticException e) {
                     throw newTypeBindException(e, cell, adaptor, cellValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
@@ -157,22 +158,43 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         vars.put("pattern", anno.pattern());
         vars.put("currency", anno.currency());
         vars.put("locale", anno.locale());
+        vars.put("precision", anno.precision());
         return vars;
+    }
+    
+    /**
+     * アノテーションを元に、{@link MathContext}のインスタンスを取得する。
+     * <p>有効桁数、丸め方法を設定したものを返す。
+     * <p>有効桁数は、デフォルトではExcelに仕様に合わせて15桁。
+     * <p>丸め方法は、Excelに合わせて、{@link RoundingMode#HALF_UP}で固定。
+     * @param XlsNumberConcerter
+     * @return
+     */
+    protected MathContext createMathContext(final XlsNumberConverter anno) {
+        
+        if(anno.precision() > 0) {
+            return new MathContext(anno.precision(), RoundingMode.HALF_UP);
+        } else {
+            return new MathContext(15, RoundingMode.HALF_UP);
+        }
+        
     }
     
     /**
      * その型における数値型を返す。
      * @param value
+     * @param context
      * @return
      */
-    protected abstract T convertNumber(double value);
+    protected abstract T convertNumber(double value, MathContext context);
     
     /**
      * その型における数値型を返す。
      * @param value
+     * @param context
      * @return
      */
-    protected abstract T convertNumber(Number value);
+    protected abstract T convertNumber(Number value, MathContext context);
     
     /**
      * その型における数値型を返す。
@@ -186,14 +208,16 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
      * <p>アノテーション{@link XlsNumberConverter}でフォーマットが与えられている場合は、パースして返す。
      * @param value
      * @param format フォーマットが指定されていない場合はnullが渡される
+     * @param context 数値変換する際の設定
      * @return
      * @throws ParseException 
      */
-    protected T parseNumber(final String value, final NumberFormat format) throws ParseException {
+    protected T parseNumber(final String value, final NumberFormat format, final MathContext context) throws ParseException {
         
         if(format == null) {
             final BigDecimal bg;
             try {
+                // 文字列の時は、精度指定しない。
                 bg = new BigDecimal(value);
             } catch(NumberFormatException e) {
                 throw new ParseException(String.format("Cannot parse '%s'", value), 0);
@@ -230,7 +254,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             // NumberFormatのインスタンスを作成する際に、DecimalFormat#setParseBigDecimal(true)としているため、戻り値がBigDecimalになる。
             return convertNumber((BigDecimal) result);
         } else {
-            return convertNumber(result);
+            return convertNumber(result, context);
         }
     }
     
@@ -274,6 +298,12 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             public String currency() {
                 return "";
             }
+            
+            @Override
+            public int precision() {
+                return 15;
+            }
+            
         };
     }
     
@@ -337,9 +367,8 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             final String defaultValue = converterAnno.defaultValue();
             if(Utils.isNotEmpty(anno.pattern())) {
                 try {
-                    value = parseNumber(defaultValue, createNumberFormat(anno));
+                    value = parseNumber(defaultValue, createNumberFormat(anno), createMathContext(anno));
                 } catch (ParseException e) {
-//                    throw new ConversionException(String.format("Cannot convert string to Object [%s].", adaptor.getTargetClass()), adaptor.getTargetClass());
                     throw newTypeBindException(e, cell, adaptor, defaultValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }

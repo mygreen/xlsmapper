@@ -2,11 +2,13 @@ package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 
 
 /**
  * 数値の{@link BigInteger}のConverter。
- *
+ * 
+ * @version 0.5
  * @author T.TSUCHIE
  *
  */
@@ -15,13 +17,13 @@ public class BigIntegerCellConverter extends AbstractNumberCellConverter<BigInte
     private static final BigInteger ZERO = new BigDecimal(0).toBigInteger();
     
     @Override
-    protected BigInteger convertNumber(double value) {
-        return new BigDecimal(value).toBigInteger();
+    protected BigInteger convertNumber(final double value, final MathContext context) {
+        return new BigDecimal(value, context).toBigInteger();
     }
     
     @Override
-    protected BigInteger convertNumber(final Number value) {
-        return new BigInteger(value.toString());
+    protected BigInteger convertNumber(final Number value, final MathContext context) {
+        return new BigDecimal(value.toString(), context).toBigInteger();
     }
     
     @Override

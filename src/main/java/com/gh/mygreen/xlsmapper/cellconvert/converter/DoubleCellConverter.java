@@ -1,23 +1,25 @@
 package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 
 /**
  * double/Double型を処理するConverter.
- *
+ * 
+ * @version 0.5
  * @author T.TSUCHIE
  *
  */
 public class DoubleCellConverter extends AbstractNumberCellConverter<Double> {
     
     @Override
-    protected Double convertNumber(double value) {
-        return new BigDecimal(value).doubleValue();
+    protected Double convertNumber(final double value, final MathContext context) {
+        return new BigDecimal(value, context).doubleValue();
     }
     
     @Override
-    protected Double convertNumber(final Number value) {
+    protected Double convertNumber(final Number value, final MathContext context) {
         return value.doubleValue();
     }
     

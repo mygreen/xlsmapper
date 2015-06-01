@@ -271,6 +271,7 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         final XlsEnumConverter anno = getSavingAnnotation(adaptor);
         
+        final Class<Enum> taretClass = (Class<Enum>) adaptor.getTargetClass();
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
         // セルの書式設定
@@ -289,6 +290,12 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {
             value = convertToObject(Utils.getDefaultValue(converterAnno), (Class<Enum>) adaptor.getTargetClass(), anno);
+            
+            // 初期値が設定されているが、変換できないような時はエラーとする
+            if(value == null) {
+                throw newTypeBindException(cell, adaptor, Utils.getDefaultValue(converterAnno))
+                        .addAllMessageVars(createTypeErrorMessageVars(taretClass, anno));
+            }
         }
         
         if(value != null) {

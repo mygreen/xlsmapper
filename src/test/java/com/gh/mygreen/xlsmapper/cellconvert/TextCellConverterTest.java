@@ -2,10 +2,15 @@ package com.gh.mygreen.xlsmapper.cellconvert;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +21,10 @@ import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.XlsMapper;
+import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
+import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
@@ -48,7 +55,6 @@ public class TextCellConverterTest {
     
     /**
      * 文字列型の読み込みテスト
-     * ・変換用アノテーションなし。
      */
     @Test
     public void test_load_text() throws Exception {
@@ -73,22 +79,6 @@ public class TextCellConverterTest {
             e.printStackTrace();
             fail();
         }
-    }
-    
-    /**
-     * セルのアドレスを指定してエラーを取得する。
-     * @param errors
-     * @param address
-     * @return 見つからない場合はnullを返す。
-     */
-    private CellFieldError getCellFieldError(final SheetBindingErrors errors, final String address) {
-        for(CellFieldError error : errors.getCellFieldErrors()) {
-            if(error.getFormattedCellAddress().equalsIgnoreCase(address)) {
-                return error;
-            }
-        }
-        
-        return null;
     }
     
     private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) {
@@ -159,15 +149,190 @@ public class TextCellConverterTest {
         
     }
     
+    /**
+     * 文字列型の書き込みテスト
+     */
+    @Test
+    public void test_save_text() throws Exception {
+        
+        // テストデータの作成
+        final TextSheet outSheet = new TextSheet();
+        
+        // アノテーションなしのデータ作成
+        outSheet.add(new SimpleRecord()
+                .comment("空文字"));
+        
+        outSheet.add(new SimpleRecord()
+                .t("こんにちは")
+                .c1("あ".charAt(0))
+                .c2("か".charAt(0))
+                .comment("通常の文字"));
+        
+        outSheet.add(new SimpleRecord()
+                .t("こんにちは\n今日はいい天気ですね。")
+                .c1("\n".charAt(0))
+                .c2("\n".charAt(0))
+                .comment("改行"));
+        
+        // アノテーションありのデータ作成
+        outSheet.add(new FormattedRecord()
+                .comment("空文字"));
+        
+        outSheet.add(new FormattedRecord()
+                .t1("こんにちは")
+                .t2("こんばんは")
+                .c1("あ".charAt(0))
+                .c2("か".charAt(0))
+                .comment("通常の文字"));
+        
+        outSheet.add(new FormattedRecord()
+                .t1("\n\nこんにちは\n今日はいい天気ですね。   ")
+                .t2(" こんばんは\n今日はいい星空ですね。\n")
+                .c1(" ".charAt(0))
+                .c2("\n".charAt(0))
+                .comment("改行＋前後に空白"));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/convert_text.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(TextSheet.class);
+            
+            TextSheet sheet = mapper.load(in, TextSheet.class, errors);
+            
+            if(sheet.simpleRecords != null) {
+                assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
+                
+                for(int i=0; i < sheet.simpleRecords.size(); i++) {
+                    assertRecord(sheet.simpleRecords.get(i), outSheet.simpleRecords.get(i), errors);
+                }
+            }
+            
+            if(sheet.formattedRecords != null) {
+                assertThat(sheet.formattedRecords, hasSize(outSheet.formattedRecords.size()));
+                
+                for(int i=0; i < sheet.formattedRecords.size(); i++) {
+                    assertRecord(sheet.formattedRecords.get(i), outSheet.formattedRecords.get(i), errors);
+                }
+            }
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
+        
+//        System.out.printf("[%d] c1=%s, c2=%s\n", inRecord.no, toUnicode(inRecord.c1), toUnicode(outRecord.c1));
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.t, is(outRecord.t));
+        assertThat(inRecord.c1, is(outRecord.c1));
+        assertThat(inRecord.c2, is(outRecord.c2));
+        assertThat(inRecord.comment, is(outRecord.comment));
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+        
+        if(inRecord.no == 1) {
+            // 初期値の確認
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.t1, is("Hello"));
+            assertThat(inRecord.t2, is(""));
+            assertThat(inRecord.c1, is("abc".charAt(0)));
+            assertThat(inRecord.c2, is("def".charAt(0)));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 2) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.t1, is(outRecord.t1));
+            assertThat(inRecord.t2, is(outRecord.t2));
+            assertThat(inRecord.c1, is("あ".charAt(0)));
+            assertThat(inRecord.c2, is("か".charAt(0)));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 3) {
+            // トリムの確認
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.t1, is(outRecord.t1));
+            assertThat(inRecord.t2, is(outRecord.t2.trim()));
+            assertThat(inRecord.c1, is("abc".charAt(0)));
+            assertThat(inRecord.c2, is("def".charAt(0)));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.t1, is(outRecord.t1));
+            assertThat(inRecord.t2, is(outRecord.t2));
+            assertThat(inRecord.c1, is(outRecord.c1));
+            assertThat(inRecord.c2, is(outRecord.c2));
+            assertThat(inRecord.comment, is(outRecord.comment));
+        }
+        
+        
+    }
+    
     @XlsSheet(name="文字列型")
     private static class TextSheet {
         
-        @XlsHorizontalRecords(tableLabel="文字列型（アノテーションなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        @XlsHint(order=1)
+        @XlsHorizontalRecords(tableLabel="文字列型（アノテーションなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
-        @XlsHorizontalRecords(tableLabel="文字列型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="文字列型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public TextSheet add(SimpleRecord record) {
+            if(simpleRecords == null) {
+                this.simpleRecords = new ArrayList<>();
+            }
+            this.simpleRecords.add(record);
+            record.no(simpleRecords.size());
+            return this;
+        }
+        
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public TextSheet add(FormattedRecord record) {
+            if(formattedRecords == null) {
+                this.formattedRecords = new ArrayList<>();
+            }
+            this.formattedRecords.add(record);
+            record.no(formattedRecords.size());
+            return this;
+        }
     }
     
     /**
@@ -198,6 +363,31 @@ public class TextCellConverterTest {
         @XlsIsEmpty
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public SimpleRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public SimpleRecord t(String t) {
+            this.t = t;
+            return this;
+        }
+        
+        public SimpleRecord c1(char c1) {
+            this.c1 = c1;
+            return this;
+        }
+        
+        public SimpleRecord c2(Character c2) {
+            this.c2 = c2;
+            return this;
+        }
+        
+        public SimpleRecord comment(String comment) {
+            this.comment = comment;
+            return this;
         }
         
     }
@@ -236,6 +426,36 @@ public class TextCellConverterTest {
         @XlsIsEmpty
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public FormattedRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public FormattedRecord t1(String t1) {
+            this.t1 = t1;
+            return this;
+        }
+        
+        public FormattedRecord t2(String t2) {
+            this.t2 = t2;
+            return this;
+        }
+        
+        public FormattedRecord c1(char c1) {
+            this.c1 = c1;
+            return this;
+        }
+        
+        public FormattedRecord c2(Character c2) {
+            this.c2 = c2;
+            return this;
+        }
+        
+        public FormattedRecord comment(String comment) {
+            this.comment = comment;
+            return this;
         }
         
     }

@@ -180,20 +180,20 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
     
     @Override
     public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config) {
+            final XlsMapperConfig config) throws TypeBindException {
         
         return toCell(adaptor, targetObj, sheet, column, row, config, null);
     }
     
     @Override
     public Cell toCellWithMap(final FieldAdaptor adaptor, final String key, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config) {
+            final XlsMapperConfig config) throws TypeBindException {
         
         return toCell(adaptor, targetObj, sheet, column, row, config, key);
     }
     
     private Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config, final String mapKey) {
+            final XlsMapperConfig config, final String mapKey) throws TypeBindException {
         
         final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final XlsBooleanConverter anno = getSavingAnnotation(adaptor);
@@ -216,6 +216,12 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {
             value = convertFromString(Utils.getDefaultValue(converterAnno), anno);
+            
+            // 初期値が設定されているが、変換できないような時はエラーとする
+            if(value == null) {
+                throw newTypeBindException(cell, adaptor, Utils.getDefaultValue(converterAnno))
+                        .addAllMessageVars(createTypeErrorMessageVars(anno));
+            }
         }
         
         if(value != null) {

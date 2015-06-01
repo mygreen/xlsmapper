@@ -245,7 +245,6 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
                 try {
                     value = parseDate(defaultValue, createDateFormat(anno));
                 } catch (ParseException e) {
-//                    throw new ConversionException(String.format("Cannot convert string to Object [%s].", adaptor.getTargetClass()), adaptor.getTargetClass());
                     throw newTypeBindException(e, cell, adaptor, defaultValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
