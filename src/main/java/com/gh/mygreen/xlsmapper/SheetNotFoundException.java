@@ -25,7 +25,18 @@ public class SheetNotFoundException extends XlsMapperException {
      * @param sheetName シート名
      */
     public SheetNotFoundException(final String sheetName) {
-        super(String.format("Cannot find sheet '%s'.", sheetName));
+        this(sheetName, String.format("Cannot find sheet '%s'.", sheetName));
+        
+    }
+    
+    /**
+     * 指定したシート名が見つからない場合に、そのシート名を指定するコンストラクタ。
+     * @param sheetName シート名
+     * @param message メッセージ
+     * @since 0.5
+     */
+    public SheetNotFoundException(final String sheetName, final String message) {
+        super(message);
         this.sheetName = sheetName;
     }
     

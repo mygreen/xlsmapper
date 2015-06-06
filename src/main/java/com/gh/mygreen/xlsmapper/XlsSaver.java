@@ -114,7 +114,7 @@ public class XlsSaver {
             saveSheet(xlsSheet[0], beanObj, work);
         } catch(SheetNotFoundException e) {
             if(config.isIgnoreSheetNotFound()){
-                logger.warn("skip loading by not-found sheet.", e);
+                logger.warn("skip saving by not-found sheet.", e);
                 return;
             } else {
                 throw e;
@@ -324,12 +324,10 @@ public class XlsSaver {
             
         } else if(sheetAnno.regex().length() > 0) {
             // シート名（正規表現）をもとにして、取得する。
-            final String sheetNameValue;
+            String sheetNameValue = null;
             FieldAdaptor sheetNameField = getSheetNameField(obj, annoReader);
-            if(sheetNameField != null) {
+            if(sheetNameField != null && sheetNameField.getValue(obj) != null) {
                 sheetNameValue = sheetNameField.getValue(obj).toString();
-            } else {
-                throw new SheetNotFoundException(sheetAnno.regex());
             }
             
             final Pattern pattern = Pattern.compile(sheetAnno.regex());
@@ -340,18 +338,34 @@ public class XlsSaver {
                     
                     // オブジェクト中の@XslSheetNameで値が設定されている場合、Excelファイル中の一致するシートを元にする比較する
                     if(Utils.isNotEmpty(sheetNameValue) && xlsSheet.getSheetName().equals(sheetNameValue)) {
-                        matches.add(xlsSheet);
-                    } else {
-                        matches.add(xlsSheet);
+                        return new org.apache.poi.ss.usermodel.Sheet[]{ xlsSheet };
+                        
                     }
+                    
+                    matches.add(xlsSheet);
                 }
             }
             
-            if(matches.isEmpty()) {
+            if(sheetNameValue != null && !matches.isEmpty()) {
+                // シート名が直接指定の場合
+                throw new SheetNotFoundException(sheetNameValue);
+                
+            } else if(matches.isEmpty()) {
                 throw new SheetNotFoundException(sheetAnno.regex());
+                
+            } else if(matches.size() == 1) {
+                // １つのシートに絞り込めた場合
+                return new org.apache.poi.ss.usermodel.Sheet[]{ matches.get(0) };
+                
+            } else {
+                // 複数のシートがヒットした場合
+                List<String> names = new ArrayList<>();
+                for(org.apache.poi.ss.usermodel.Sheet sheet : matches) {
+                    names.add(sheet.getSheetName());
+                }
+                throw new SheetNotFoundException(sheetAnno.regex(),
+                        String.format("found multiple sheet : %s.", Utils.join(names, ",")));
             }
-            
-            return matches.toArray(new org.apache.poi.ss.usermodel.Sheet[matches.size()]);
         }
         
         throw new AnnotationInvalidException("@XlsSheet requires name or number or regex parameter.", sheetAnno);
