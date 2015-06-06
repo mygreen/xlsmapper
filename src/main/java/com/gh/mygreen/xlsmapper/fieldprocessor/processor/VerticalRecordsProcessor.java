@@ -173,9 +173,16 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // Check for columns
         RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader());
         
+        /*
+         * 書き込む時には終了位置の判定は、Borderで固定する必要がある。
+         * ・Emptyの場合だと、テンプレート用のシートなので必ずデータ用のセルが、空なので書き込まれなくなる。
+         * ・Emptyの場合、Borderに補正して書き込む。
+         */
         RecordTerminal terminal = anno.terminal();
-        if(terminal == null){
-            terminal = RecordTerminal.Empty;
+        if(terminal == RecordTerminal.Empty) {
+            terminal = RecordTerminal.Border;
+        } else if(terminal == null){
+            terminal = RecordTerminal.Border;
         }
         
         // get records

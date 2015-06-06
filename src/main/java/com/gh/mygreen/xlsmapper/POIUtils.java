@@ -362,10 +362,13 @@ public class POIUtils {
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notNull(mergedRange, "mergedRange");
         
+        final String mergedAddress = mergedRange.formatAsString(sheet.getSheetName(), true);
+        
         final int num = sheet.getNumMergedRegions();
         for(int i=0; i < num; i ++) {
             final CellRangeAddress range = sheet.getMergedRegion(i);
-            if(range.equals(mergedRange)) {
+            final String rangeAddress = range.formatAsString(sheet.getSheetName(), true);
+            if(rangeAddress.equals(mergedAddress)) {
                 sheet.removeMergedRegion(i);
                 return true;
             }

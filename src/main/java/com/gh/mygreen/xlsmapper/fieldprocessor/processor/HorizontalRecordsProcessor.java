@@ -540,9 +540,16 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // Check for columns
         RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader());
         
+        /*
+         * 書き込む時には終了位置の判定は、Borderで固定する必要がある。
+         * ・Emptyの場合だと、テンプレート用のシートなので必ずデータ用のセルが、空なので書き込まれなくなる。
+         * ・Emptyの場合、Borderに補正して書き込む。
+         */
         RecordTerminal terminal = anno.terminal();
-        if(terminal == null){
-            terminal = RecordTerminal.Empty;
+        if(terminal == RecordTerminal.Empty) {
+            terminal = RecordTerminal.Border;
+        } else if(terminal == null){
+            terminal = RecordTerminal.Border;
         }
         
         // 結合したセルの情報
@@ -595,7 +602,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 final RecordHeader headerInfo = headers.get(i);
                 hColumn = hColumn + headerInfo.getHeaderRange();
                 final Cell cell = POIUtils.getCell(sheet, hColumn, hRow);
-//                    System.out.printf("cell=[%s], value=%s\n", Utils.formatCellAddress(cell), POIUtils.getCellContents(cell));
+                
                 // find end of the table
                 if(!POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){
                     emptyFlag = false;
