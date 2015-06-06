@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,9 +94,6 @@ public class NumberCellConverterTest {
                 }
             }
             
-        } catch(Throwable e) {
-            e.printStackTrace();
-            fail();
         }
         
     }
@@ -106,6 +104,9 @@ public class NumberCellConverterTest {
      * @param errors
      */
     private void assertRecord(final PrimitiveRecord record, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
         
         if(record.no == 1) {
             // 空文字
@@ -287,8 +288,8 @@ public class NumberCellConverterTest {
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isTypeBindFailure(), is(true));
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isTypeBindFailure(), is(true));
             
-//            assertThat(record.f, is(Float.valueOf("3.4028234663852887E38")));
-//            assertThat(record.d, is(Double.valueOf("1.7976931348623158E308")));
+            assertThat(record.f, is(Float.valueOf("9.99999999999999E307")));
+            assertThat(record.d, is(Double.valueOf("9.99999999999999E307")));
             
         } else if(record.no == 21) {
             // 最小置-1（数値型）
@@ -297,8 +298,8 @@ public class NumberCellConverterTest {
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isTypeBindFailure(), is(true));
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isTypeBindFailure(), is(true));
             
-//            assertThat(record.f, is(Float.valueOf("-3.40282346638528E38")));
-//            assertThat(record.d, is(Double.valueOf("-1.7976931348623158E308")));
+            assertThat(record.f, is(Float.valueOf("-9.99999999999999E307")));
+            assertThat(record.d, is(Double.valueOf("-9.99999999999999E307")));
             
         } else if(record.no == 22) {
             // 数式
@@ -321,6 +322,9 @@ public class NumberCellConverterTest {
      * @param errors
      */
     private void assertRecord(final WrapperRecord record, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
         
         if(record.no == 1) {
             // 空文字
@@ -460,6 +464,10 @@ public class NumberCellConverterTest {
      * @param errors
      */
     private void assertRecord(final OtherRecord record, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
+        
         if(record.no == 1) {
             // 空文字
             assertThat(record.bd, is(nullValue()));
@@ -482,7 +490,7 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 5) {
             // 小数
-            assertThat(record.bd, is(new BigDecimal(Double.valueOf("12.345"))));
+            assertThat(record.bd, is(new BigDecimal(Double.parseDouble("12.345"), new MathContext(15))));
             assertThat(record.bi, is(new BigInteger("12")));
             
         } else if(record.no == 6) {
@@ -502,6 +510,10 @@ public class NumberCellConverterTest {
      * @param errors
      */
     private void assertRecord(final FormattedRecord record, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
+        
         if(record.no == 1) {
             // 空文字
             assertThat(record.b, is((byte)1));
@@ -591,6 +603,13 @@ public class NumberCellConverterTest {
     final long MIN_LONG = -999999999999999L;
     
     /**
+     * Excelで処理可能な最大値は、数式で処理できる数よりも小さいので注意
+     * ・有効桁数15桁になる
+     */
+    final double MAX_DOUBLE = 9.99999999999999E+307;
+    final double MIN_DOUBLE = -9.99999999999999E+307;
+    
+    /**
      * 数値型の書き込みテスト
      */
     @Test
@@ -636,7 +655,7 @@ public class NumberCellConverterTest {
             .i(Integer.MAX_VALUE)
             .l(MAX_LONG)
             .f(Float.MAX_VALUE)
-            .d(Double.MAX_VALUE)
+            .d(MAX_DOUBLE)
             .comment("最大値"));
         
         outSheet.add(new PrimitiveRecord()
@@ -645,7 +664,7 @@ public class NumberCellConverterTest {
             .i(Integer.MIN_VALUE)
             .l(MIN_LONG)
             .f(-Float.MAX_VALUE)
-            .d(-Double.MAX_VALUE)
+            .d(MIN_DOUBLE)
             .comment("最小値"));
         
         // ラッパークラス
@@ -685,7 +704,7 @@ public class NumberCellConverterTest {
             .i(Integer.MAX_VALUE)
             .l(MAX_LONG)
             .f(Float.MAX_VALUE)
-            .d(Double.MAX_VALUE)
+            .d(MAX_DOUBLE)
             .comment("最大値"));
         
         outSheet.add(new WrapperRecord()
@@ -694,7 +713,7 @@ public class NumberCellConverterTest {
             .i(Integer.MIN_VALUE)
             .l(MIN_LONG)
             .f(-Float.MAX_VALUE)
-            .d(-Double.MAX_VALUE)
+            .d(MIN_DOUBLE)
             .comment("最小値"));
         
         // その他のクラス
@@ -707,12 +726,12 @@ public class NumberCellConverterTest {
             .comment("ゼロ"));
         
         outSheet.add(new OtherRecord()
-            .bd(BigDecimal.valueOf(12.3))
+            .bd(new BigDecimal(12.3, new MathContext(15, RoundingMode.HALF_UP)))
             .bi(BigInteger.valueOf(12))
             .comment("正の数"));
         
         outSheet.add(new OtherRecord()
-            .bd(BigDecimal.valueOf(-12.3))
+            .bd(new BigDecimal(-12.3, new MathContext(15, RoundingMode.HALF_UP)))
             .bi(BigInteger.valueOf(-12))
             .comment("負の数"));
         
@@ -744,7 +763,7 @@ public class NumberCellConverterTest {
             .i(Integer.MAX_VALUE)
             .l(MAX_LONG)
             .f(Float.MAX_VALUE)
-            .d(Double.MAX_VALUE)
+            .d(MAX_DOUBLE)
             .comment("最大値"));
         
         outSheet.add(new FormattedRecord()
@@ -753,7 +772,7 @@ public class NumberCellConverterTest {
             .i(Integer.MIN_VALUE)
             .l(MIN_LONG)
             .f(-Float.MAX_VALUE)
-            .d(-Double.MAX_VALUE)
+            .d(MIN_DOUBLE)
             .comment("最小値"));
         
         // ファイルへの書き込み
@@ -817,6 +836,9 @@ public class NumberCellConverterTest {
      */
     private void assertRecord(final PrimitiveRecord inRecord, final PrimitiveRecord outRecord, final SheetBindingErrors errors) {
         
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.b, is(outRecord.b));
         assertThat(inRecord.s, is(outRecord.s));
@@ -835,6 +857,9 @@ public class NumberCellConverterTest {
      * @param errors
      */
     private void assertRecord(final WrapperRecord inRecord, final WrapperRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
         
         if(inRecord.no == 1) {
             assertThat(inRecord.no, is(outRecord.no));
@@ -868,6 +893,9 @@ public class NumberCellConverterTest {
      */
     private void assertRecord(final OtherRecord inRecord, final OtherRecord outRecord, final SheetBindingErrors errors) {
         
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
         if(inRecord.no == 1) {
             assertThat(inRecord.no, is(outRecord.no));
             assertThat(inRecord.bd, is(nullValue()));
@@ -890,6 +918,9 @@ public class NumberCellConverterTest {
      * @param errors
      */
     private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
         
         if(inRecord.no == 1) {
             assertThat(inRecord.no, is(outRecord.no));
