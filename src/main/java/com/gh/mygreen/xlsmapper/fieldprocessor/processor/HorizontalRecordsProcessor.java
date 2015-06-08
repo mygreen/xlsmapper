@@ -474,7 +474,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 recordClass = adaptor.getLoadingGenericClassType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList(result));
+            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
             saveRecords(sheet, anno, adaptor, recordClass, list, config, work);
             
         } else {

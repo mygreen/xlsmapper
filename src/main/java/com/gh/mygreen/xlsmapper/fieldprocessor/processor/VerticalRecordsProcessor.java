@@ -478,7 +478,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 recordClass = adaptor.getLoadingGenericClassType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList(result));
+            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
             saveRecords(sheet, anno, adaptor, recordClass, list, config, work);
             
         } else {
