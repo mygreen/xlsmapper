@@ -4,8 +4,11 @@ import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -41,6 +44,9 @@ public class AnnoSheetTest {
     public void tearDown() throws Exception {
     }
     
+    /**
+     * 読み込みのテスト - シート名の指定
+     */
     @Test
     public void test_load_sheet_name() throws Exception {
         
@@ -59,12 +65,12 @@ public class AnnoSheetTest {
     }
     
     @Test(expected=SheetNotFoundException.class)
-    public void test_load_sheet_name_nofFound() throws Exception {
+    public void test_load_sheet_name_notFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_sheet.xlsx")) {
+        try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NamedSheet2.class);
             
             NamedSheet2 sheet = mapper.load(in, NamedSheet2.class, errors);
@@ -86,7 +92,7 @@ public class AnnoSheetTest {
         mapper.getConig().setSkipTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_sheet.xlsx")) {
+        try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NamedSheet2.class);
             
             NamedSheet2 sheet = mapper.load(in, NamedSheet2.class, errors);
@@ -103,7 +109,7 @@ public class AnnoSheetTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_sheet.xlsx")) {
+        try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(IndexedSheet.class);
             
             IndexedSheet sheet = mapper.load(in, IndexedSheet.class, errors);
@@ -120,7 +126,7 @@ public class AnnoSheetTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_sheet.xlsx")) {
+        try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(IndexedSheet2.class);
             
             IndexedSheet2 sheet = mapper.load(in, IndexedSheet2.class, errors);
@@ -140,7 +146,7 @@ public class AnnoSheetTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_sheet.xlsx")) {
+        try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             
             SheetBindingErrors errors = new SheetBindingErrors(IndexedSheet.class);
             
@@ -161,7 +167,7 @@ public class AnnoSheetTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_sheet.xlsx")) {
+        try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             
             SheetBindingErrors errors = new SheetBindingErrors(RegexpSheet2.class);
             
@@ -182,7 +188,7 @@ public class AnnoSheetTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_sheet.xlsx")) {
+        try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             
             SheetBindingErrorsContainer errorsContainer = new SheetBindingErrorsContainer(RegexpSheet.class);
             
@@ -204,13 +210,269 @@ public class AnnoSheetTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_sheet.xlsx")) {
+        try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NoSettingSheet.class);
             
             NoSettingSheet sheet = mapper.load(in, NoSettingSheet.class, errors);
             
             fail();
             
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - シート名の指定
+     */
+    @Test
+    public void test_save_sheet_name() throws Exception {
+        
+        // テストデータの作成
+        final NamedSheet outSheet = new NamedSheet();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(NamedSheet.class);
+            
+            NamedSheet sheet = mapper.load(in, NamedSheet.class, errors);
+            
+            assertThat(sheet.sheetName, is(outSheet.sheetName));
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - シート名の指定：指定したシートが存在しない。
+     */
+    @Test(expected=SheetNotFoundException.class)
+    public void test_save_sheet_name_nofFound() throws Exception {
+        
+        // テストデータの作成
+        final NamedSheet2 outSheet = new NamedSheet2();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+            fail();
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - シートが見つからなくてもスキップする設定
+     */
+    @Test
+    public void test_save_sheet_skip_notFound() throws Exception {
+        
+        // テストデータの作成
+        final NamedSheet2 outSheet = new NamedSheet2();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true)
+            .setIgnoreSheetNotFound(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+            
+            assertThat(outSheet.sheetName, is(nullValue()));
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - インデックス指定
+     */
+    @Test
+    public void test_save_sheet_indexed() throws Exception {
+        
+        // テストデータの作成
+        final IndexedSheet outSheet = new IndexedSheet();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true)
+            .setIgnoreSheetNotFound(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+            
+            assertThat(outSheet.sheetName, is("あいう"));
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - インデックス指定。シートが見つからない場合
+     */
+    @Test(expected=SheetNotFoundException.class)
+    public void test_save_sheet_indexed_notFound() throws Exception {
+        
+        // テストデータの作成
+        final IndexedSheet2 outSheet = new IndexedSheet2();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+            
+            fail();
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 正規表現の指定。シートが1つ。
+     */
+    @Test
+    public void test_save_sheet_regexp_single() throws Exception {
+        
+        // テストデータの作成
+        final RegexpSheet outSheet = new RegexpSheet();
+        outSheet.sheetName = "編集条件（1）";
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+            
+            assertThat(outSheet.sheetName, is("編集条件（1）"));
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 正規表現の指定。シートが見つからない場合
+     */
+    @Test(expected=SheetNotFoundException.class)
+    public void test_save_sheet_regexp_single_notFound() throws Exception {
+        
+        // テストデータの作成
+        final RegexpSheet2 outSheet = new RegexpSheet2();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+            
+            fail();
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 正規表現の指定。複数のシートがヒットした場合。
+     */
+    @Test(expected=SheetNotFoundException.class)
+    public void test_save_sheet_regexp_single_notFound2() throws Exception {
+        
+        // テストデータの作成
+        final RegexpSheet outSheet = new RegexpSheet();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+            
+            fail();
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 正規表現の指定。シートが2つ。
+     */
+    @Test
+    public void test_save_sheetName_regexp_multiple() throws Exception {
+        
+        // テストデータの作成
+        final RegexpSheet outSheet1 = new RegexpSheet();
+        outSheet1.sheetName = "編集条件（1）";
+        
+        final RegexpSheet outSheet2 = new RegexpSheet();
+        outSheet2.sheetName = "編集条件（2）";
+
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.saveMultiple(template, out, new Object[]{outSheet1, outSheet2});
+            
+            assertThat(outSheet1.sheetName, is("編集条件（1）"));
+            assertThat(outSheet2.sheetName, is("編集条件（2）"));
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - アノテーションにシートの指定がない場合
+     */
+    @Test(expected=AnnotationInvalidException.class)
+    public void test_save_sheet_noSetting() throws Exception {
+        
+        // テストデータの作成
+        final NoSettingSheet outSheet = new NoSettingSheet();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+            
+            fail();
         }
         
     }

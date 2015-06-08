@@ -29,16 +29,9 @@ public @interface XlsVerticalRecords {
     
     /**
      * 表の見出し（タイトル）ラベル。値を指定した場合、ラベルと一致するセルを起点に走査を行う。
-     * <p>属性{@link #tableAddress()}のどちらか一方を指定可能。
+     * <p>属性{@link #headerAddress()}のどちらか一方を指定可能。
      */
     String tableLabel() default "";
-    
-    /**
-     * 表の見出し（タイトル）が存在するセルのアドレス。値を指定した場合、指定したアドレスを起点に走査を行う。
-     * <p>属性{@link #tableLabel()()}のどちらか一方を指定可能。
-     * <p>'A1'などのようにシートのアドレスで指定する。
-     */
-    String tableAddress() default "";
     
     /**
      * テーブルが他のテーブルと連続しておりterminal属性でBorder、Emptyのいずれを指定しても終端を検出できない場合があります。 

@@ -597,6 +597,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             // レコードの各列処理で既に行を追加したかどうかのフラグ。
             boolean insertRows = false;
             
+            // レコードの各列処理で既に行を削除したかどうかのフラグ。
+            boolean deleteRows = false;
+            
             // hRowという上限がない
             for(int i=0; i < headers.size(); i++) {
                 final RecordHeader headerInfo = headers.get(i);
@@ -733,10 +736,12 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                             // 1行目は残しておき、値をクリアする
                             final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
                             clearCell.setCellType(Cell.CELL_TYPE_BLANK);
-                        } else {
-                            final Row row = sheet.getRow(hRow);
+                            
+                        } else if(!deleteRows) {
+                            // すでに他の列の処理に対して行を追加している場合は行の追加は行わない。
+                            final Row row = POIUtils.removeRow(sheet, hRow);
+                            deleteRows = true;
                             if(row != null) {
-                                sheet.removeRow(row);
                                 if(logger.isDebugEnabled()) {
                                     logger.debug("delete row : sheet name=[{}], row index=[{}]", sheet.getSheetName(), hRow);
                                 }
@@ -757,7 +762,13 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             // パスの位置の変更
             work.getErrors().popNestedPath();
             
-            hRow++;
+            /*
+             * 行が削除されていない場合は、次の行に進む。
+             * ・行が削除されていると、現在の行数は変わらない。
+             */
+            if(!deleteRows) {
+                hRow++;
+            }
             
             if(emptyFlag == true && (r > result.size())) {
                 // セルが空で、書き込むデータがない場合。
@@ -955,11 +966,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 recordOperation.getBottomRightPosition().x
                 );
         
-        final DataValidationHelper helper = sheet.getDataValidationHelper();
         final List<? extends DataValidation> list = sheet.getDataValidations();
         for(DataValidation validation : list) {
             
-            final CellRangeAddressList region = validation.getRegions();
+            final CellRangeAddressList region = validation.getRegions().copy();
             boolean changedRange = false;
             for(CellRangeAddress range : region.getCellRangeAddresses()) {
                 
@@ -967,6 +977,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     // 自身のセルの範囲の場合は、行の範囲を広げる
                     range.setLastRow(recordOperation.getBottomRightPosition().y);
                     changedRange = true;
+                    
                 } else if(notOperateRange.getLastRow() < range.getFirstRow()) {
                     // 自身のセルの範囲より下方にあるセルの範囲の場合、行の挿入や削除に影響を受けているので修正する。
                     if(recordOperation.isInsertRecord()) {
@@ -983,9 +994,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
             }
             
-            // 修正した規則を、再度シートに追加する
+            // 修正した規則を、更新する。
             if(changedRange) {
-                sheet.addValidationData(helper.createValidation(validation.getValidationConstraint(), region));
+                POIUtils.updateDataValidationRegion(sheet, validation.getRegions(), region);
             }
         }
         

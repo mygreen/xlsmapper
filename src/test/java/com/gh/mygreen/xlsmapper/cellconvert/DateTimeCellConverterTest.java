@@ -244,6 +244,9 @@ public class DateTimeCellConverterTest {
      */
     private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
         
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.utilDate, is(outRecord.utilDate));
         assertThat(inRecord.sqlDate, is(outRecord.sqlDate));
@@ -260,6 +263,9 @@ public class DateTimeCellConverterTest {
      * @param errors
      */
     private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
         
         if(inRecord.no == 1) {
             assertThat(inRecord.no, is(outRecord.no));

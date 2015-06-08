@@ -158,8 +158,9 @@ public class XlsMapperConfig {
      * <p>POI-3.10以前の場合、データの修正は行われません。
      * @param correctCellDataValidationOnSave 初期値は、'false'です。
      */
-    public void setCorrectCellDataValidationOnSave(boolean correctCellDataValidationOnSave) {
+    public XlsMapperConfig setCorrectCellDataValidationOnSave(boolean correctCellDataValidationOnSave) {
         this.correctCellDataValidationOnSave = correctCellDataValidationOnSave;
+        return this;
     }
     
     /**
@@ -181,8 +182,9 @@ public class XlsMapperConfig {
      * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
      * @param correctCellCommentOnSave
      */
-    public void setCorrectCellCommentOnSave(boolean correctCellCommentOnSave) {
+    public XlsMapperConfig setCorrectCellCommentOnSave(boolean correctCellCommentOnSave) {
         this.correctCellCommentOnSave = correctCellCommentOnSave;
+        return this;
     }
     
     /**

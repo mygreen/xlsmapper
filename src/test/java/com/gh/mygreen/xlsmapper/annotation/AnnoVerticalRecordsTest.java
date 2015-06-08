@@ -424,7 +424,7 @@ public class AnnoVerticalRecordsTest {
             
         } else if(record.no == 2) {
             assertThat(record.name, is("鈴木次郎"));
-            assertThat(record.birthday, is(utilDate(timestamp("1990-02-28 00:00:00.000"))));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("age"))).isTypeBindFailure(), is(true));
             
         }
@@ -469,15 +469,15 @@ private void assertRecord(final MapRecord record, final SheetBindingErrors error
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
-            assertThat(record.birthday, is(utilDate(timestamp("1989-01-02 00:00:00.000"))));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("1989-01-02 00:00:00.000"))));
             
         } else if(record.no == 2) {
             assertThat(record.name, is("鈴木次郎"));
-            assertThat(record.birthday, is(utilDate(timestamp("1990-02-28 00:00:00.000"))));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
             
         } else if(record.no == 4) {
             assertThat(record.name, is("林三郎"));
-            assertThat(record.birthday, is(utilDate(timestamp("1992-04-14 00:00:00.000"))));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("1992-04-14 00:00:00.000"))));
         }
         
     }

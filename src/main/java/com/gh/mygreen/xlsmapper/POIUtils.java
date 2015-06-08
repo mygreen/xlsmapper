@@ -2,11 +2,25 @@ package com.gh.mygreen.xlsmapper;
 
 import java.awt.Point;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.poi.hssf.model.InternalSheet;
+import org.apache.poi.hssf.record.DVRecord;
 import org.apache.poi.hssf.record.ExtendedFormatRecord;
+import org.apache.poi.hssf.record.Record;
+import org.apache.poi.hssf.record.aggregates.DataValidityTable;
+import org.apache.poi.hssf.record.aggregates.RecordAggregate.RecordVisitor;
+import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataValidation;
@@ -22,8 +36,13 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.extensions.XSSFCellAlignment;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCellAlignment;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDataValidation;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDataValidations;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 
 import com.gh.mygreen.xlsmapper.cellconvert.LinkType;
 
@@ -400,6 +419,34 @@ public class POIUtils {
     }
     
     /**
+     * 指定した行を削除する。
+     * <p>削除した行は上に詰める。
+     * @since 0.5
+     * @param sheet
+     * @param rowIndex 削除する行数
+     * @return 削除した行
+     */
+    public static Row removeRow(final Sheet sheet, final int rowIndex) {
+        
+        ArgUtils.notNull(sheet, "cell");
+        ArgUtils.notMin(rowIndex, 0, "rowIndex");
+        
+        final Row row = sheet.getRow(rowIndex);
+        if(row == null) {
+            // 削除対象の行にデータが何もない場合
+            return row;
+        }
+        
+        sheet.removeRow(row);
+        
+        // 上に1つ行をずらす
+        int lastRow = sheet.getLastRowNum();
+        sheet.shiftRows(rowIndex+1, lastRow, -1);
+        
+        return row;
+    }
+    
+    /**
      * セルの折り返し設定を有効にする
      * @param cell
      * @param forceWrapText trueの場合有効にする。falseの場合は変更しない。
@@ -559,6 +606,260 @@ public class POIUtils {
         }
         
     }
+    
+    /**
+     * 入力規則の範囲を更新する。
+     * @since 0.5
+     * @param sheet シート
+     * @param oldRegion 更新対象の範囲。
+     * @param newRegion 新しい範囲。
+     * @return true:更新完了。false:指定した範囲を持つ入力規則が見つからなかった場合。
+     */
+    public static boolean updateDataValidationRegion(final Sheet sheet,
+            final CellRangeAddressList oldRegion, final CellRangeAddressList newRegion) {
+        
+        ArgUtils.notNull(sheet, "sheet");
+        ArgUtils.notNull(oldRegion, "oldRegion");
+        ArgUtils.notNull(newRegion, "newRegion");
+        
+        if(sheet instanceof XSSFSheet) {
+            
+            final List<String> oldSqref = convertSqref(oldRegion);
+            
+            try {
+                final XSSFSheet xssfSheet = (XSSFSheet) sheet;
+                Field fWorksheet = XSSFSheet.class.getDeclaredField("worksheet");
+                fWorksheet.setAccessible(true);
+                CTWorksheet worksheet = (CTWorksheet) fWorksheet.get(xssfSheet);
+                
+                CTDataValidations dataValidations = worksheet.getDataValidations();
+                if(dataValidations == null) {
+                    return false;
+                }
+                
+                for(int i=0; i < dataValidations.getCount(); i++) {
+                    CTDataValidation dv = dataValidations.getDataValidationArray(i);
+                    
+                    // 規則の範囲を比較し、同じならば範囲を書き換える。
+                    @SuppressWarnings("unchecked")
+                    List<String> sqref = new ArrayList<>(dv.getSqref());
+                    if(equalsSqref(sqref, oldSqref)) {
+                        List<String> newSqref = convertSqref(newRegion);
+                        dv.setSqref(newSqref);
+                        return true;
+                    }
+                    
+                    // 設定し直す
+                    dataValidations.setDataValidationArray(i, dv);
+                    
+                }
+                
+                return false;
+                
+            } catch(Exception e) {
+                throw new RuntimeException("fail update DataValidation's Regsion.", e);
+            }
+            
+        } else if(sheet instanceof HSSFSheet) {
+            
+            final HSSFSheet hssfSheet = (HSSFSheet) sheet;
+            try {
+                Field fWorksheet = HSSFSheet.class.getDeclaredField("_sheet");
+                fWorksheet.setAccessible(true);
+                InternalSheet worksheet = (InternalSheet) fWorksheet.get(hssfSheet);
+                
+                DataValidityTable dvt = worksheet.getOrCreateDataValidityTable();
+                
+                // シート内の入力規則のデータを検索して、一致するものがあれば書き換える。
+                final AtomicBoolean updated = new AtomicBoolean(false);
+                RecordVisitor visitor = new RecordVisitor() {
+                    
+                    @Override
+                    public void visitRecord(final Record r) {
+                        if (!(r instanceof DVRecord)) {
+                            return;
+                        }
+                        
+                        final DVRecord dvRecord = (DVRecord) r;
+                        final CellRangeAddressList region = dvRecord.getCellRangeAddress();
+                        if(equalsRegion(region, oldRegion)) {
+                            
+                            // 一旦既存の範囲を削除する。
+                            while(region.countRanges() != 0) {
+                                region.remove(0);
+                            }
+                            
+                            // 新しい範囲を追加する。
+                            for(CellRangeAddress newRange : newRegion.getCellRangeAddresses()) {
+                                region.addCellRangeAddress(newRange);
+                            }
+                            
+                            updated.set(true);
+                            return;
+                        }
+                    }
+                };
+                
+                dvt.visitContainedRecords(visitor);
+                
+                return updated.get();
+                
+            } catch(Exception e) {
+                throw new RuntimeException("fail update DataValidation's Regsion.", e);
+            }
+        } else {
+            throw new UnsupportedOperationException("not supported update dava validation's region for type " + sheet.getClass().getName());
+        }
+        
+    }
+    
+    /**
+     * CellRangeAddressを文字列形式のリストに変換する。
+     * @since 0.5
+     * @param region
+     * @return
+     */
+    private static List<String> convertSqref(final CellRangeAddressList region) {
+        
+        List<String> sqref = new ArrayList<>();
+        for(CellRangeAddress range : region.getCellRangeAddresses()) {
+            sqref.add(range.formatAsString());
+        }
+        
+        return sqref;
+        
+    }
+    
+    /**
+     * 文字列形式のセルの範囲が同じかどうか比較する。
+     * @since 0.5
+     * @param sqref1
+     * @param sqref2
+     * @return
+     */
+    public static boolean equalsSqref(final List<String> sqref1, final List<String> sqref2) {
+        
+        if(sqref1.size() != sqref2.size()) {
+            return false;
+        }
+        
+        Collections.sort(sqref1);
+        Collections.sort(sqref2);
+        
+        final int size = sqref1.size();
+        for(int i=0; i < size; i++) {
+            if(!sqref1.get(i).equals(sqref2.get(i))) {
+                return false;
+            }
+        }
+        
+        return true;
+        
+    }
+    
+    /**
+     * 文字列形式のセルの範囲が同じかどうか比較する。
+     * @since 0.5
+     * @param region1
+     * @param region2
+     * @return
+     */
+    public static boolean equalsRegion(final CellRangeAddressList region1, final CellRangeAddressList region2) {
+        
+        return equalsSqref(convertSqref(region1), convertSqref(region2));
+        
+    }
+    
+//    public static boolean removeDataValidation(final Sheet sheet, final DataValidation dataValidation) {
+//        ArgUtils.notNull(sheet, "sheet");
+//        ArgUtils.notNull(dataValidation, "dataValidation");
+//        
+//        if(sheet instanceof XSSFSheet) {
+//            final XSSFSheet xssfSheet = (XSSFSheet) sheet;
+//            final XSSFDataValidation xssfDataValidation = (XSSFDataValidation) dataValidation;
+//            
+//            try {
+//                final Field fWorksheet = XSSFSheet.class.getDeclaredField("worksheet");
+//                fWorksheet.setAccessible(true);
+//                CTWorksheet worksheet = (CTWorksheet) fWorksheet.get(xssfSheet);
+//                
+//                // 既存の入力規則の取得
+//                CTDataValidations dataValidations = worksheet.getDataValidations();
+//                if(dataValidations == null) {
+//                    return false;
+//                }
+//                
+//                final Method mCtVal = XSSFDataValidation.class.getDeclaredMethod("getCtDdataValidation");
+//                mCtVal.setAccessible(true);
+//                
+//                CTDataValidation removeVal = (CTDataValidation) mCtVal.invoke(xssfDataValidation);
+//                
+//                List<CTDataValidation> newList = new ArrayList<>();
+//                for(int i=0; i < dataValidations.getCount(); i++) {
+//                    CTDataValidation itemVal = dataValidations.getDataValidationArray(i);
+//                    if(!itemVal.equals(removeVal)) {
+//                        newList.add(itemVal);
+//                    }
+//                    
+//                }
+//                
+//                // 削除された（サイズが変わった）場合に、入力規則を設定し直す。
+//                if(newList.size() != dataValidations.getCount()) {
+//                    dataValidations.setDataValidationArray(newList.toArray(new CTDataValidation[newList.size()]));
+//                    return true;
+//                }
+//                
+//                return false;
+//                
+//            } catch (Exception e) {
+//                throw new RuntimeException("fail remove sheet validation rule.", e);
+//            }
+//            
+//        } else if(sheet instanceof HSSFSheet) {
+//            
+//            final HSSFSheet hssfSheet = (HSSFSheet) sheet;
+//            final HSSFDataValidation hssfDataValidation = (HSSFDataValidation) dataValidation;
+//            try {
+//                
+//                Field fWorksheet = HSSFSheet.class.getDeclaredField("_sheet");
+//                fWorksheet.setAccessible(true);
+//                InternalSheet worksheet = (InternalSheet) fWorksheet.get(hssfSheet);
+//                
+//                DataValidityTable dvt = worksheet.getOrCreateDataValidityTable();
+//                final CellRangeAddressList removeRegion = hssfDataValidation.getRegions();
+//                
+//                // シート内の入力規則のデータを検索して、一致するものがあれば書き換える。
+//                final AtomicBoolean removed = new AtomicBoolean(false);
+//                RecordVisitor visitor = new RecordVisitor() {
+//                    
+//                    @Override
+//                    public void visitRecord(final Record r) {
+//                        if (!(r instanceof DVRecord)) {
+//                            return;
+//                        }
+//                        
+//                        final DVRecord dvRecord = (DVRecord) r;
+//                        final CellRangeAddressList region = dvRecord.getCellRangeAddress();
+//                        if(equalsRegion(region, removeRegion)) {
+//                            //TODO:
+//                            
+//                        }
+//                        
+//                    }
+//                };
+//                
+//                dvt.visitContainedRecords(visitor);
+//                
+//                return removed.get();
+//                
+//            } catch (Exception e) {
+//                throw new RuntimeException("fail remove sheet validation rule.", e);
+//            }
+//            
+//        } else {
+//            throw new UnsupportedOperationException("not supported remove dava validation's region for type " + sheet.getClass().getName());
+//        }
+//    }
     
     /**
      * テンプレートの入力規則の制約「リスト」を追加する。

@@ -4,8 +4,11 @@ import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -53,6 +56,39 @@ public class AnnoSheetNameTest {
             NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
             
             assertThat(sheet.sheetName, is("シート名（１）"));
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 通常のデータ
+     */
+    @Test
+    public void test_save_sheetName_name() throws Exception {
+        
+        // テストデータの作成
+        final NormalSheet outSheet = new NormalSheet();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_SheetName_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_SheetName_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            
+            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            
+            assertThat(sheet.sheetName, is(outSheet.sheetName));
             
         }
         

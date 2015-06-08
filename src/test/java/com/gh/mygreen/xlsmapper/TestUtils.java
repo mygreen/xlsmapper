@@ -3,7 +3,11 @@ package com.gh.mygreen.xlsmapper;
 import java.awt.Point;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -59,7 +63,7 @@ public class TestUtils {
      * @param value
      * @return
      */
-    public static  Timestamp timestamp(String value) {
+    public static  Timestamp toTimestamp(String value) {
         return Timestamp.valueOf(value);
     }
     
@@ -68,7 +72,7 @@ public class TestUtils {
      * @param timestamp
      * @return
      */
-    public static  Date utilDate(Timestamp timestamp) {
+    public static  Date toUtilDate(Timestamp timestamp) {
         return new Date(timestamp.getTime());
     }
     
@@ -77,7 +81,7 @@ public class TestUtils {
      * @param timestamp
      * @return
      */
-    public static  java.sql.Date sqlDate(Timestamp timestamp) {
+    public static  java.sql.Date toSqlDate(Timestamp timestamp) {
         return new java.sql.Date(timestamp.getTime());
     }
     
@@ -86,7 +90,7 @@ public class TestUtils {
      * @param timestamp
      * @return
      */
-    public static  java.sql.Time sqlTime(Timestamp timestamp) {
+    public static  java.sql.Time toSqlTime(Timestamp timestamp) {
         return new java.sql.Time(timestamp.getTime());
     }
     
@@ -107,5 +111,76 @@ public class TestUtils {
             return str1.equals(str2);
         }
         
+    }
+    
+    /**
+     * ユニコードに変換する
+     * @param original
+     * @return
+     */
+    public static String toUnicode(char c) {
+        return toUnicode(String.valueOf(c));
+    }
+    
+    /**
+     * ユニコードに変換する
+     * @param original
+     * @return
+     */
+    public static String toUnicode(String original) {
+        if(original == null) {
+            return "";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < original.length(); i++) {
+            sb.append(String.format("\\u%04X", Character.codePointAt(original, i)));
+        }
+        String unicode = sb.toString();
+        return unicode;
+    }
+    
+    /**
+     * リストを作成する。
+     * @param items
+     * @return
+     */
+    public static <T> List<T> toList(T... items) {
+        return Arrays.asList(items);
+        
+    }
+    
+    /**
+     * 配列を作成する。
+     * @param items
+     * @return
+     */
+    public static <T> T[] toArray(T... items) {
+        return items;
+        
+    }
+    
+    /**
+     * 集合を作成する。
+     * @param items
+     * @return
+     */
+    public static <T> Set<T> toSet(T... items) {
+        return new LinkedHashSet<T>(toList(items));
+        
+    }
+    
+    /**
+     * 値をトリムする。
+     * 引数がnullの場合は、空文字を返す。
+     * @param value
+     */
+    public static String trim(String value) {
+        
+        if(value == null) {
+            return "";
+        } else {
+            return value.trim();
+        }
     }
 }

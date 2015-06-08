@@ -5,8 +5,11 @@ import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.Map;
 
@@ -70,9 +73,9 @@ public class AnnoLabelledCellTest {
             
             assertThat(cellFieldError(errors, cellAddress(sheet.positions.get("wrongFormat"))).isTypeBindFailure(), is(true));
             
-            assertThat(sheet.header, is(utilDate(timestamp("2015-05-09 00:00:00.000"))));
-            assertThat(sheet.headerSkip, is(utilDate(timestamp("2015-04-02 00:00:00.000"))));
-            assertThat(sheet.headerRange, is(utilDate(timestamp("2015-06-13 00:00:00.000"))));
+            assertThat(sheet.header, is(toUtilDate(toTimestamp("2015-05-09 00:00:00.000"))));
+            assertThat(sheet.headerSkip, is(toUtilDate(toTimestamp("2015-04-02 00:00:00.000"))));
+            assertThat(sheet.headerRange, is(toUtilDate(toTimestamp("2015-06-13 00:00:00.000"))));
             
             assertThat(sheet.address1,is("右側の値です。"));
             assertThat(sheet.address2,is("下側の値です。"));
@@ -161,6 +164,69 @@ public class AnnoLabelledCellTest {
         
     }
     
+    /**
+     * 読み込みのテスト - 通常のデータ
+     */
+    @Test
+    public void test_save_labelled_cell_normal() throws Exception {
+        
+        // テストデータの作成
+        final NormalSheet outSheet = new NormalSheet();
+        
+        outSheet.posRight("右側です。")
+            .posLeft("左側の値です。")
+            .posBottom("下側の値です。")
+            .foundNo(123)
+            .wrongFormat(123.456)
+            .header(toUtilDate(toTimestamp("2015-06-07 08:09:10.000")))
+            .headerSkip(toUtilDate(toTimestamp("2012-03-04 05:06:07.000")))
+            .headerRange(toUtilDate(toTimestamp("2011-02-03 04:05:06.000")))
+            .address1("アドレス指定です。\n右側。")
+            .address2("アドレス指定です。\n左側。")
+            ;
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_LabelledCell.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            
+            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            
+            assertThat(sheet.positions, is(outSheet.positions));
+            assertThat(sheet.labels, is(outSheet.labels));
+            
+            assertThat(sheet.posRight, is(outSheet.posRight));
+            assertThat(sheet.posLeft, is(outSheet.posLeft));
+            assertThat(sheet.posBottom, is(outSheet.posBottom));
+            
+            assertThat(sheet.foundNo,is(nullValue()));
+            assertThat(sheet.wrongFormat, is(outSheet.wrongFormat));
+            
+            assertThat(sheet.header, is(outSheet.header));
+            assertThat(sheet.headerSkip, is(outSheet.headerSkip));
+            assertThat(sheet.headerRange, is(outSheet.headerRange));
+            
+            assertThat(sheet.address1, is(outSheet.address1));
+            assertThat(sheet.address2, is(outSheet.address2));
+            
+            assertThat(sheet.blank, is(outSheet.blank));
+            
+            
+        }
+        
+    }
+    
     @XlsSheet(name="LabelledCell(通常)")
     private static class NormalSheet {
         
@@ -228,9 +294,66 @@ public class AnnoLabelledCellTest {
         @XlsLabelledCell(labelColumn=1, labelRow=25, type=LabelledCellType.Bottom)
         private String address2;
         
+        /**
+         * 値が空の場合
+         */
         @XlsLabelledCell(label="値が空の場合", type=LabelledCellType.Right)
         private String blank;
         
+        public NormalSheet posRight(String posRight) {
+            this.posRight = posRight;
+            return this;
+        }
+        
+        public NormalSheet posLeft(String posLeft) {
+            this.posLeft = posLeft;
+            return this;
+        }
+        
+        public NormalSheet posBottom(String posBottom) {
+            this.posBottom = posBottom;
+            return this;
+        }
+        
+        public NormalSheet foundNo(Integer foundNo) {
+            this.foundNo = foundNo;
+            return this;
+        }
+        
+        public NormalSheet wrongFormat(Double wrongFormat) {
+            this.wrongFormat = wrongFormat;
+            return this;
+        }
+        
+        public NormalSheet header(Date header) {
+            this.header = header;
+            return this;
+        }
+        
+        public NormalSheet headerSkip(Date headerSkip) {
+            this.headerSkip = headerSkip;
+            return this;
+        }
+        
+        public NormalSheet headerRange(Date headerRange) {
+            this.headerRange = headerRange;
+            return this;
+        }
+        
+        public NormalSheet address1(String address1) {
+            this.address1 = address1;
+            return this;
+        }
+        
+        public NormalSheet address2(String address2) {
+            this.address2 = address2;
+            return this;
+        }
+        
+        public NormalSheet blank(String blank) {
+            this.blank = blank;
+            return this;
+        }
     }
     
     /**

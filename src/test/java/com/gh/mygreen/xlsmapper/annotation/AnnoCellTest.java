@@ -5,8 +5,11 @@ import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.Map;
 
@@ -48,7 +51,7 @@ public class AnnoCellTest {
      * 読み込みのテスト - 通常のデータ
      */
     @Test
-    public void test_load_cell_normal() {
+    public void test_load_cell_normal() throws Exception {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
@@ -59,12 +62,9 @@ public class AnnoCellTest {
             
             assertThat(sheet.c1,is("文字列です。\n改行あり。"));
             assertThat(sheet.c2,is(12.345));
-            assertThat(sheet.c3,is(utilDate(timestamp("2015-05-09 14:20:00.000"))));
+            assertThat(sheet.c3,is(toUtilDate(toTimestamp("2015-05-09 14:20:00.000"))));
             assertThat(cellFieldError(errors, cellAddress(sheet.positions.get("c4"))).isTypeBindFailure(), is(true));
             
-        } catch(Throwable e) {
-            e.printStackTrace();
-            fail();
         }
     }
     
@@ -123,6 +123,50 @@ public class AnnoCellTest {
         }
     }
     
+    /**
+     * 書き込みのテスト - 通常のデータ
+     */
+    @Test
+    public void test_save_cell_normal() throws Exception {
+        
+        // テストデータの作成
+        final NormalSheet outSheet = new NormalSheet();
+        
+        outSheet.c1("文字列です。改行あり")
+                .c2(12.345)
+                .c3(toUtilDate(toTimestamp("2015-06-06 10:12:13.000")))
+                .c4(-12345);
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Cell_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            
+            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            
+            assertThat(sheet.positions, is(outSheet.positions));
+            assertThat(sheet.labels, is(outSheet.labels));
+            
+            assertThat(sheet.c1, is(outSheet.c1));
+            assertThat(sheet.c2, is(outSheet.c2));
+            assertThat(sheet.c3, is(outSheet.c3));
+            assertThat(sheet.c4, is(outSheet.c4));
+            
+        }
+        
+    }
+    
     @XlsSheet(name="Cell(通常)")
     private static class NormalSheet {
         
@@ -154,6 +198,25 @@ public class AnnoCellTest {
         @XlsCell(address="D12")
         private Integer c4;
         
+        public NormalSheet c1(String c1) {
+            this.c1 = c1;
+            return this;
+        }
+        
+        public NormalSheet c2(Double c2) {
+            this.c2 = c2;
+            return this;
+        }
+        
+        public NormalSheet c3(Date c3) {
+            this.c3 = c3;
+            return this;
+        }
+        
+        public NormalSheet c4(Integer c4) {
+            this.c4 = c4;
+            return this;
+        }
     }
     
     /**

@@ -280,6 +280,9 @@ public class BooleanCellConverterTest {
      */
     private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
         
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.b1, is(outRecord.b1));
         assertThat(inRecord.b2, is(outRecord.b2));
@@ -293,6 +296,9 @@ public class BooleanCellConverterTest {
      * @param errors
      */
     private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
         
         if(inRecord.no == 1) {
             assertThat(inRecord.no, is(outRecord.no));

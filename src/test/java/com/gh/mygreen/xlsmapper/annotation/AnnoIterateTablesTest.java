@@ -166,11 +166,11 @@ public class AnnoIterateTablesTest {
                 
                 if(record.no == 1) {
                     assertThat(record.name, is("阿部一郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("2000-04-01 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))));
                     
                 } else if(record.no == 2) {
                     assertThat(record.name, is("泉太郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("2000-04-02 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))));
                     
                 }
                 
@@ -185,15 +185,15 @@ public class AnnoIterateTablesTest {
                 
                 if(record.no == 1) {
                     assertThat(record.name, is("鈴木一郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-01 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))));
                     
                 } else if(record.no == 2) {
                     assertThat(record.name, is("林次郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-02 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))));
                     
                 } else if(record.no == 3) {
                     assertThat(record.name, is("山田太郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-03 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))));
                     
                 }
                 
@@ -214,11 +214,11 @@ public class AnnoIterateTablesTest {
                 
                 if(record.no == 1) {
                     assertThat(record.name, is("阿部一郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("2000-04-01 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))));
                     
                 } else if(record.no == 2) {
                     assertThat(record.name, is("泉太郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("2000-04-02 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))));
                     
                 }
                 
@@ -233,15 +233,15 @@ public class AnnoIterateTablesTest {
                 
                 if(record.no == 1) {
                     assertThat(record.name, is("鈴木一郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-01 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))));
                     
                 } else if(record.no == 2) {
                     assertThat(record.name, is("林次郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-02 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))));
                     
                 } else if(record.no == 3) {
                     assertThat(record.name, is("山田太郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-03 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))));
                     
                 }
                 
@@ -260,11 +260,11 @@ public class AnnoIterateTablesTest {
                 
                 if(record.no == 1) {
                     assertThat(record.name, is("阿部一郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("2000-04-01 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))));
                     
                 } else if(record.no == 2) {
                     assertThat(record.name, is("泉太郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("2000-04-02 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))));
                     
                 }
                 
@@ -300,15 +300,15 @@ public class AnnoIterateTablesTest {
                 
                 if(record.no == 1) {
                     assertThat(record.name, is("鈴木一郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-01 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))));
                     
                 } else if(record.no == 2) {
                     assertThat(record.name, is("林次郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-02 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))));
                     
                 } else if(record.no == 3) {
                     assertThat(record.name, is("山田太郎"));
-                    assertThat(record.birthday, is(utilDate(timestamp("1999-04-03 00:00:00.000"))));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))));
                     
                 }
                 

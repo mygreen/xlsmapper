@@ -173,16 +173,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // Check for columns
         RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader());
         
-        /*
-         * 書き込む時には終了位置の判定は、Borderで固定する必要がある。
-         * ・Emptyの場合だと、テンプレート用のシートなので必ずデータ用のセルが、空なので書き込まれなくなる。
-         * ・Emptyの場合、Borderに補正して書き込む。
-         */
         RecordTerminal terminal = anno.terminal();
-        if(terminal == RecordTerminal.Empty) {
-            terminal = RecordTerminal.Border;
-        } else if(terminal == null){
-            terminal = RecordTerminal.Border;
+        if(terminal == null){
+            terminal = RecordTerminal.Empty;
         }
         
         // get records
@@ -544,9 +537,16 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // Check for columns
         RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader());
         
+        /*
+         * 書き込む時には終了位置の判定は、Borderで固定する必要がある。
+         * ・Emptyの場合だと、テンプレート用のシートなので必ずデータ用のセルが、空なので書き込まれなくなる。
+         * ・Emptyの場合、Borderに補正して書き込む。
+         */
         RecordTerminal terminal = anno.terminal();
-        if(terminal == null){
-            terminal = RecordTerminal.Empty;
+        if(terminal == RecordTerminal.Empty) {
+            terminal = RecordTerminal.Border;
+        } else if(terminal == null){
+            terminal = RecordTerminal.Border;
         }
         
         // 結合したセルの情報
@@ -901,7 +901,6 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 recordOperation.getBottomRightPosition().x - recordOperation.getCountInsertRecord()
                 );
         
-        final DataValidationHelper helper = sheet.getDataValidationHelper();
         final List<? extends DataValidation> list = sheet.getDataValidations();
         for(DataValidation validation : list) {
             
@@ -924,7 +923,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             // 修正した規則を、再度シートに追加する
             if(changedRange) {
-                sheet.addValidationData(helper.createValidation(validation.getValidationConstraint(), region));
+                POIUtils.updateDataValidationRegion(sheet, validation.getRegions(), region);
             }
         }
         

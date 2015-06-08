@@ -238,7 +238,9 @@ public class TextCellConverterTest {
      */
     private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
         
-//        System.out.printf("[%d] c1=%s, c2=%s\n", inRecord.no, toUnicode(inRecord.c1), toUnicode(outRecord.c1));
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.t, is(outRecord.t));
         assertThat(inRecord.c1, is(outRecord.c1));
@@ -254,6 +256,9 @@ public class TextCellConverterTest {
      * @param errors
      */
     private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
         
         if(inRecord.no == 1) {
             // 初期値の確認
