@@ -13,7 +13,6 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -554,6 +553,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // 書き込んだセルの範囲などの情報
         final RecordOperation recordOperation = new RecordOperation();
+        recordOperation.setupCellPositoin(initRow, hColumn+1);
         
         // get records
         hColumn++;
@@ -583,6 +583,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
 //            // レコードの各列処理で既に行を追加したかどうかのフラグ。
 //            boolean insertRows = false;
+            
+//            // レコードの各列処理で既に行を削除したかどうかのフラグ。
+//            boolean deleteRows = false;
             
             // hRowという上限がない
             for(int i=0; i < headers.size(); i++) {
@@ -711,7 +714,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             // マップ形式のカラムを出力する
             if(record != null) {
-                saveMapColumn(sheet, headers, initRow, hColumn, record, terminal, anno, config, work);
+                saveMapColumn(sheet, headers, initRow, hColumn, record, terminal, anno, config, work, recordOperation);
             }
             
             // パスの位置の変更
@@ -723,6 +726,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 // セルが空で、書き込むデータがない場合。
                 break;
             }
+        }
+        
+        // 書き込むデータがない場合は、1行目の終端を操作範囲とする。
+        if(result.isEmpty()) {
+            recordOperation.setupCellPositoin(hRow-1, hColumn-2);
         }
         
         if(config.isCorrectCellDataValidationOnSave()) {
@@ -794,7 +802,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     
     private void saveMapColumn(Sheet sheet, List<RecordHeader> headerInfos, 
             int begin, int column, Object record, RecordTerminal terminal,
-            XlsVerticalRecords anno, XlsMapperConfig config, SavingWorkObject work) throws XlsMapperException {
+            XlsVerticalRecords anno, XlsMapperConfig config, SavingWorkObject work,
+            RecordOperation recordOperation) throws XlsMapperException {
         
         final List<FieldAdaptor> properties = Utils.getSavingMapColumnProperties(record.getClass(), work.getAnnoReader());
         for(FieldAdaptor property : properties) {
@@ -868,6 +877,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                             throw e;
                         }
                     }
+                    
+                    recordOperation.setupCellPositoin(cell);
                 }
                 
                 begin = begin + headerInfo.getHeaderRange() + 1;
@@ -904,7 +915,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final List<? extends DataValidation> list = sheet.getDataValidations();
         for(DataValidation validation : list) {
             
-            final CellRangeAddressList region = validation.getRegions();
+            final CellRangeAddressList region = validation.getRegions().copy();
             boolean changedRange = false;
             for(CellRangeAddress range : region.getCellRangeAddresses()) {
                 
@@ -923,7 +934,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             // 修正した規則を、再度シートに追加する
             if(changedRange) {
-                POIUtils.updateDataValidationRegion(sheet, validation.getRegions(), region);
+                boolean updated = POIUtils.updateDataValidationRegion(sheet, validation.getRegions(), region);
+                assert updated == true;
             }
         }
         

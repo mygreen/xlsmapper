@@ -441,6 +441,10 @@ public class POIUtils {
         
         // 上に1つ行をずらす
         int lastRow = sheet.getLastRowNum();
+        if(rowIndex +1 > lastRow) {
+            return row;
+        }
+        
         sheet.shiftRows(rowIndex+1, lastRow, -1);
         
         return row;
@@ -646,11 +650,11 @@ public class POIUtils {
                     if(equalsSqref(sqref, oldSqref)) {
                         List<String> newSqref = convertSqref(newRegion);
                         dv.setSqref(newSqref);
+                        
+                        // 設定し直す
+                        dataValidations.setDataValidationArray(i, dv);
                         return true;
                     }
-                    
-                    // 設定し直す
-                    dataValidations.setDataValidationArray(i, dv);
                     
                 }
                 

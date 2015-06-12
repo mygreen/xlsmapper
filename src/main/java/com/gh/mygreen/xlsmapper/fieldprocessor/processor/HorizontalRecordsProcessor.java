@@ -13,7 +13,6 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -557,6 +556,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         // 書き込んだセルの範囲などの情報
         final RecordOperation recordOperation = new RecordOperation();
+        recordOperation.setupCellPositoin(hRow+1, initColumn);
         
         // コメントの補完
         final List<CellCommentStore> commentStoreList;
@@ -750,6 +750,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         }
                     }
                 }
+                
+                //TODO
 //                    System.out.printf("hColumn=%d\n", hColumn);
                 hColumn++;
             }
@@ -774,6 +776,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 // セルが空で、書き込むデータがない場合。
                 break;
             }
+        }
+        
+        // 書き込むデータがない場合は、1行目の終端を操作範囲とする。
+        if(result.isEmpty()) {
+            recordOperation.setupCellPositoin(hRow-2, hColumn-1);
         }
         
         if(config.isCorrectCellDataValidationOnSave()) {
@@ -996,7 +1003,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             // 修正した規則を、更新する。
             if(changedRange) {
-                POIUtils.updateDataValidationRegion(sheet, validation.getRegions(), region);
+                boolean updated = POIUtils.updateDataValidationRegion(sheet, validation.getRegions(), region);
+                assert updated;
             }
         }
         
