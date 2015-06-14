@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.IsEmptyComparator;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
@@ -32,6 +33,7 @@ import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.processor.HorizontalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.github.mygreen.cellformatter.lang.Utils;
 
 /**
  * {@link HorizontalRecordsProcessor}のテスタ
@@ -1038,8 +1040,313 @@ public class AnnoHorizontalRecordsTest {
                 
             }
             
+        }
+    }
+    
+    /**
+     * 書き込みのテスト - 余分なレコード／足りないレコードの制御
+     */
+    @Test
+    public void test_save_hr_over_remained_record() throws Exception {
+        
+        // テストデータの作成
+        final RemainedOverSheet outSheet = new RemainedOverSheet();
+        
+        // 足りないレコード（Break）
+        outSheet.addOverBreak(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addOverBreak(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        outSheet.addOverBreak(new RemainedOverRecord().name("山本花子").addDateAttended("A", "×").addDateAttended("B", "レ"));
+        
+        // 足りないレコード（Inert）
+        outSheet.addOverInsert(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addOverInsert(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        outSheet.addOverInsert(new RemainedOverRecord().name("山本花子").addDateAttended("A", "×").addDateAttended("B", "レ"));
+        
+        // 足りないレコード（Copy）
+        outSheet.addOverCopy(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addOverCopy(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        outSheet.addOverCopy(new RemainedOverRecord().name("山本花子").addDateAttended("A", "×").addDateAttended("B", "レ"));
+        
+        // 余分なレコード（None）
+        outSheet.addRemainedNone(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addRemainedNone(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        
+        // 余分なレコード（Clear）
+        outSheet.addRemainedClear(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addRemainedClear(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        
+        // 余分なレコード（Delete）
+        outSheet.addRemainedDelete1(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addRemainedDelete1(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        
+        // 余分なレコード（Delete）(データなし)
+        outSheet.remainedDeleteRecrods2 = new ArrayList<>();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true)
+            .setCorrectCellDataValidationOnSave(true)
+            .setCorrectNameRangeOnSave(true);
+        
+        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(RemainedOverSheet.class);
+            
+            RemainedOverSheet sheet = mapper.load(in, RemainedOverSheet.class, errors);
+            
+            if(sheet.overBreakRecrods != null) {
+                assertThat(sheet.overBreakRecrods, hasSize(2));
+                
+                for(int i=0; i < sheet.overBreakRecrods.size(); i++) {
+                    assertRecord(sheet.overBreakRecrods.get(i), outSheet.overBreakRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.overInsertRecrods != null) {
+                assertThat(sheet.overInsertRecrods, hasSize(outSheet.overInsertRecrods.size()));
+                
+                for(int i=0; i < sheet.overInsertRecrods.size(); i++) {
+                    assertRecord(sheet.overInsertRecrods.get(i), outSheet.overInsertRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.overCopyRecrods != null) {
+                assertThat(sheet.overCopyRecrods, hasSize(outSheet.overCopyRecrods.size()));
+                
+                for(int i=0; i < sheet.overCopyRecrods.size(); i++) {
+                    assertRecord(sheet.overCopyRecrods.get(i), outSheet.overCopyRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.remainedNoneRecrods != null) {
+                assertThat(sheet.remainedNoneRecrods, hasSize(outSheet.remainedNoneRecrods.size()));
+                
+                for(int i=0; i < sheet.remainedNoneRecrods.size(); i++) {
+                    assertRecord(sheet.remainedNoneRecrods.get(i), outSheet.remainedNoneRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.remainedClearRecrods != null) {
+                assertThat(sheet.remainedClearRecrods, hasSize(outSheet.remainedClearRecrods.size()));
+                
+                for(int i=0; i < sheet.remainedClearRecrods.size(); i++) {
+                    assertRecord(sheet.remainedClearRecrods.get(i), outSheet.remainedClearRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.remainedDeleteRecrods1 != null) {
+                assertThat(sheet.remainedDeleteRecrods1, hasSize(outSheet.remainedDeleteRecrods1.size()));
+                
+                for(int i=0; i < sheet.remainedDeleteRecrods1.size(); i++) {
+                    assertRecord(sheet.remainedDeleteRecrods1.get(i), outSheet.remainedDeleteRecrods1.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.remainedDeleteRecrods2 != null) {
+                assertThat(sheet.remainedDeleteRecrods2, hasSize(outSheet.remainedDeleteRecrods2.size()));
+                
+                for(int i=0; i < sheet.remainedDeleteRecrods2.size(); i++) {
+                    assertRecord(sheet.remainedDeleteRecrods2.get(i), outSheet.remainedDeleteRecrods2.get(i), errors);
+                }
+                
+            }
             
         }
+    }
+    
+    /**
+     * 書き込みのテスト - 入力規則
+     */
+    @Test
+    public void test_save_hr_option_dataValidation() throws Exception {
+        
+        // テストデータの作成
+        final ValidationRuleSheet outSheet = new ValidationRuleSheet();
+        
+        // 入力規則（レコードの挿入）
+        outSheet.addInsert(new DataValidationRecord().selectRule(true).refRule("ユーザ管理").addCategory("A", true).addCategory("B", false));
+        outSheet.addInsert(new DataValidationRecord().selectRule(false).refRule("ファイルアップロード").addCategory("A", null).addCategory("B", true));
+        outSheet.addInsert(new DataValidationRecord());
+        
+        // 名前の定義
+        outSheet.add(new NameDefRecord().functionName("ユーザ管理"));
+        outSheet.add(new NameDefRecord().functionName("ファイルアップロード"));
+        outSheet.add(new NameDefRecord().functionName("データ管理"));
+        outSheet.add(new NameDefRecord().functionName("帳票出力"));
+        outSheet.add(new NameDefRecord());
+        
+        // 入力規則（レコードの削除）
+        outSheet.addDelete(new DataValidationRecord().selectRule(true).refRule("作成").addCategory("A", true).addCategory("B", true));
+        outSheet.addDelete(new DataValidationRecord().selectRule(false).refRule("削除").addCategory("A", null).addCategory("B", false));
+        outSheet.addDelete(new DataValidationRecord());
+        
+        // 入力規則（レコードの削除）（データなし）
+        outSheet.nonDeleteValidationRecrods = new ArrayList<>();
+        
+        // 入力規則（レコードのコピー）
+        outSheet.addCopy(new DataValidationRecord().selectRule(true).refRule("参照").addCategory("A", null).addCategory("B", null));
+        outSheet.addCopy(new DataValidationRecord().selectRule(false).refRule("更新").addCategory("A", true).addCategory("B", true));
+        outSheet.addCopy(new DataValidationRecord());
+        
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true)
+            .setCorrectCellDataValidationOnSave(true)
+            .setCorrectNameRangeOnSave(true);
+        
+        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(ValidationRuleSheet.class);
+            
+            ValidationRuleSheet sheet = mapper.load(in, ValidationRuleSheet.class, errors);
+            
+            if(sheet.insertValidationRecrods != null) {
+                assertThat(sheet.insertValidationRecrods, hasSize(outSheet.insertValidationRecrods.size()-1));
+                
+                for(int i=0; i < sheet.insertValidationRecrods.size(); i++) {
+                    assertRecord(sheet.insertValidationRecrods.get(i), outSheet.insertValidationRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.nameRecords != null) {
+                assertThat(sheet.nameRecords, hasSize(outSheet.nameRecords.size()));
+                
+                for(int i=0; i < sheet.nameRecords.size(); i++) {
+                    assertRecord(sheet.nameRecords.get(i), outSheet.nameRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.deleteValidationRecrods != null) {
+                assertThat(sheet.deleteValidationRecrods, hasSize(1));
+                
+                for(int i=0; i < sheet.deleteValidationRecrods.size(); i++) {
+                    assertRecord(sheet.deleteValidationRecrods.get(i), outSheet.deleteValidationRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.nonDeleteValidationRecrods != null) {
+                assertThat(sheet.nonDeleteValidationRecrods, hasSize(outSheet.nonDeleteValidationRecrods.size()));
+                
+                for(int i=0; i < sheet.nonDeleteValidationRecrods.size(); i++) {
+                    assertRecord(sheet.nonDeleteValidationRecrods.get(i), outSheet.nonDeleteValidationRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.copyValidationRecrods != null) {
+                assertThat(sheet.copyValidationRecrods, hasSize(outSheet.copyValidationRecrods.size()-1));
+                
+                for(int i=0; i < sheet.copyValidationRecrods.size(); i++) {
+                    assertRecord(sheet.copyValidationRecrods.get(i), outSheet.copyValidationRecrods.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - コメント
+     */
+    @Test
+    public void test_save_hr_option_comment() throws Exception {
+        
+        // テストデータの作成
+        final CommentSheet outSheet = new CommentSheet();
+        
+        // 文字装飾のコメント
+        outSheet.value1 = "今日はいい天気ですね。\n明日も晴れるといいですね。";
+        
+        // コメントがある表（行の追加）
+        outSheet.addInsert(new CommentRecord().name("リンゴ").value(100.0));
+        outSheet.addInsert(new CommentRecord().name("みかん").value(200.0));
+        outSheet.addInsert(new CommentRecord().name("バナナ").value(300.0));
+        
+        // コメントがある表（行の追加）
+        outSheet.addDelete(new CommentRecord().name("きゅうり").value(10.0));
+        outSheet.addDelete(new CommentRecord().name("トマト").value(20.0));
+        outSheet.addDelete(new CommentRecord().name("キャベツ").value(30.0));
+        
+        // コメントがある表（行のコピー）
+        outSheet.addCopy(new CommentRecord().name("ジュース").value(1000.0));
+        outSheet.addCopy(new CommentRecord().name("日本酒").value(2000.0));
+        outSheet.addCopy(new CommentRecord().name("梅酒").value(3000.0));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true)
+            .setCorrectCellCommentOnSave(true);
+        
+        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(CommentSheet.class);
+            
+            CommentSheet sheet = mapper.load(in, CommentSheet.class, errors);
+            
+            if(sheet.insertRecords != null) {
+                assertThat(sheet.insertRecords, hasSize(outSheet.insertRecords.size()));
+                
+                for(int i=0; i < sheet.insertRecords.size(); i++) {
+                    assertRecord(sheet.insertRecords.get(i), outSheet.insertRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.deleteRecords != null) {
+                assertThat(sheet.deleteRecords, hasSize(outSheet.deleteRecords.size()));
+                
+                for(int i=0; i < sheet.deleteRecords.size(); i++) {
+                    assertRecord(sheet.deleteRecords.get(i), outSheet.deleteRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.copyRecords != null) {
+                assertThat(sheet.copyRecords, hasSize(outSheet.copyRecords.size()));
+                
+                for(int i=0; i < sheet.copyRecords.size(); i++) {
+                    assertRecord(sheet.copyRecords.get(i), outSheet.copyRecords.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
     }
     
     /**
@@ -1203,6 +1510,77 @@ public class AnnoHorizontalRecordsTest {
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.name, is(trim(outRecord.name)));
         assertThat(inRecord.birthday, is(outRecord.birthday));
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final RemainedOverRecord inRecord, final RemainedOverRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.dateAttended, is(outRecord.dateAttended));
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final DataValidationRecord inRecord, final DataValidationRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        if(inRecord.no == 3) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.selectRule, is(false));
+            assertThat(inRecord.refRule, is(outRecord.refRule));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.selectRule, is(outRecord.selectRule));
+            assertThat(inRecord.refRule, is(outRecord.refRule));
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final NameDefRecord inRecord, final NameDefRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.functionName, is(outRecord.functionName));
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final CommentRecord inRecord, final CommentRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        assertThat(inRecord.value, is(outRecord.value));
+        assertThat(inRecord.comment, is(outRecord.comment));
     }
     
     /**
@@ -1402,15 +1780,19 @@ public class AnnoHorizontalRecordsTest {
     @XlsSheet(name="終了位置の指定")
     private static class EndPositionSheet {
         
+        @XlsHint(order=1)
         @XlsHorizontalRecords(tableLabel="終端レコードの指定（Empty）", terminal=RecordTerminal.Empty)
         private List<NormalRecord> normalRecords1;
         
+        @XlsHint(order=2)
         @XlsHorizontalRecords(tableLabel="終端レコードの指定（Border）", terminal=RecordTerminal.Border)
         private List<NormalRecord> normalRecords2;
         
+        @XlsHint(order=3)
         @XlsHorizontalRecords(tableLabel="終端セルの指定", terminal=RecordTerminal.Border, terminateLabel="合計")
         private List<NormalRecord> normalRecords3;
         
+        @XlsHint(order=4)
         @XlsHorizontalRecords(tableLabel="見出しセルの個数指定", terminal=RecordTerminal.Border, headerLimit=3)
         private List<NormalRecord> normalRecords4;
         
@@ -2033,6 +2415,571 @@ public class AnnoHorizontalRecordsTest {
             this.birthday = birthday;
             return this;
         }
+    }
+    
+    /**
+     * 余分／不足なレコード制御用のシート
+     *
+     */
+    @XlsSheet(name="余分なレコードの制御")
+    private static class RemainedOverSheet {
+        
+        @XlsHint(order=1)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Break)
+        private List<RemainedOverRecord> overBreakRecrods;
+        
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<RemainedOverRecord> overInsertRecrods;
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Copy)
+        private List<RemainedOverRecord> overCopyRecrods;
+        
+        @XlsHint(order=4)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.None)
+        private List<RemainedOverRecord> remainedNoneRecrods;
+        
+        @XlsHint(order=5)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.Clear)
+        private List<RemainedOverRecord> remainedClearRecrods;
+        
+        @XlsHint(order=6)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.Delete)
+        private List<RemainedOverRecord> remainedDeleteRecrods1;
+        
+        @XlsHint(order=7)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.Delete)
+        private List<RemainedOverRecord> remainedDeleteRecrods2;
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverSheet addOverBreak(RemainedOverRecord record) {
+            if(overBreakRecrods == null) {
+                this.overBreakRecrods = new ArrayList<>();
+            }
+            
+            this.overBreakRecrods.add(record);
+            record.no(overBreakRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverSheet addOverInsert(RemainedOverRecord record) {
+            if(overInsertRecrods == null) {
+                this.overInsertRecrods = new ArrayList<>();
+            }
+            
+            this.overInsertRecrods.add(record);
+            record.no(overInsertRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverSheet addOverCopy(RemainedOverRecord record) {
+            if(overCopyRecrods == null) {
+                this.overCopyRecrods = new ArrayList<>();
+            }
+            
+            this.overCopyRecrods.add(record);
+            record.no(overCopyRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverSheet addRemainedNone(RemainedOverRecord record) {
+            if(remainedNoneRecrods == null) {
+                this.remainedNoneRecrods = new ArrayList<>();
+            }
+            
+            this.remainedNoneRecrods.add(record);
+            record.no(remainedNoneRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverSheet addRemainedClear(RemainedOverRecord record) {
+            if(remainedClearRecrods == null) {
+                this.remainedClearRecrods = new ArrayList<>();
+            }
+            
+            this.remainedClearRecrods.add(record);
+            record.no(remainedClearRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverSheet addRemainedDelete1(RemainedOverRecord record) {
+            if(remainedDeleteRecrods1 == null) {
+                this.remainedDeleteRecrods1 = new ArrayList<>();
+            }
+            
+            this.remainedDeleteRecrods1.add(record);
+            record.no(remainedDeleteRecrods1.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverSheet addRemmainedDelete2(RemainedOverRecord record) {
+            if(remainedDeleteRecrods2 == null) {
+                this.remainedDeleteRecrods2 = new ArrayList<>();
+            }
+            
+            this.remainedDeleteRecrods2.add(record);
+            record.no(remainedDeleteRecrods2.size());
+            
+            return this;
+        }
+    }
+    
+    private static class RemainedOverRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="氏名")
+        private String name;
+        
+        @XlsMapColumns(previousColumnName="氏名")
+        private Map<String, String> dateAttended;
+        
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            IsEmptyBuilder builder = new IsEmptyBuilder(true);
+            builder.append(name);
+            builder.compare(new IsEmptyComparator() {
+                
+                @Override
+                public boolean isEmpty() {
+                    if(dateAttended == null || dateAttended.isEmpty()) {
+                        return true;
+                    }
+                    
+                    for(String value : dateAttended.values()) {
+                        if(Utils.isNotEmpty(value)) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                }
+            });
+            
+            return builder.isEmpty();
+        }
+        
+        public RemainedOverRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public RemainedOverRecord name(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public RemainedOverRecord dateAttended(Map<String, String> dateAttended) {
+            this.dateAttended = dateAttended;
+            return this;
+        }
+        
+        public RemainedOverRecord addDateAttended(final String key, final String value) {
+            if(dateAttended == null) {
+                this.dateAttended = new LinkedHashMap<>();
+            }
+            
+            this.dateAttended.put(key, value);
+            
+            return this;
+        }
+        
+    }
+    
+    /**
+     * 入力規則用のシート
+     */
+    @XlsSheet(name="オプション設定（入力規則）")
+    private static class ValidationRuleSheet {
+        
+        /**
+         * 入力定義が設定されてた表（挿入用）
+         */
+        @XlsHint(order=1)
+        @XlsHorizontalRecords(tableLabel="入力規則（レコードの挿入）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<DataValidationRecord> insertValidationRecrods;
+        
+        /**
+         * 名前の定義用の表
+         */
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="名前の定義", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<NameDefRecord> nameRecords;
+        
+        /**
+         * 入力定義が設定されてた表（削除用）
+         */
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="入力規則（レコードの削除）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Break, remainedRecord=RemainedRecordOperate.Delete)
+        private List<DataValidationRecord> deleteValidationRecrods;
+        
+        /**
+         * 入力定義が設定されてた表（削除用）（データなし）
+         */
+        @XlsHint(order=4)
+        @XlsHorizontalRecords(tableLabel="入力規則（レコードの削除）（データなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Break, remainedRecord=RemainedRecordOperate.Delete)
+        private List<DataValidationRecord> nonDeleteValidationRecrods;
+        
+        /**
+         * 入力定義が設定されてた表（コピー用）
+         */
+        @XlsHint(order=5)
+        @XlsHorizontalRecords(tableLabel="入力規則（レコードのコピー）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Delete)
+        private List<DataValidationRecord> copyValidationRecrods;
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public ValidationRuleSheet addInsert(DataValidationRecord record) {
+            if(insertValidationRecrods == null) {
+                this.insertValidationRecrods = new ArrayList<>();
+            }
+            
+            this.insertValidationRecrods.add(record);
+            record.no(insertValidationRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public ValidationRuleSheet addDelete(DataValidationRecord record) {
+            if(deleteValidationRecrods == null) {
+                this.deleteValidationRecrods = new ArrayList<>();
+            }
+            
+            this.deleteValidationRecrods.add(record);
+            record.no(deleteValidationRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public ValidationRuleSheet addCopy(DataValidationRecord record) {
+            if(copyValidationRecrods == null) {
+                this.copyValidationRecrods = new ArrayList<>();
+            }
+            
+            this.copyValidationRecrods.add(record);
+            record.no(copyValidationRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public ValidationRuleSheet add(NameDefRecord record) {
+            if(nameRecords == null) {
+                this.nameRecords = new ArrayList<>();
+            }
+            
+            this.nameRecords.add(record);
+            record.no(nameRecords.size());
+            
+            return this;
+        }
+    }
+    
+    /**
+     * 入力規則を設定されたレコード
+     *
+     */
+    private static class DataValidationRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsBooleanConverter(loadForTrue="○", loadForFalse={"×", "-", ""}, saveAsTrue="○", saveAsFalse="×")
+        @XlsColumn(columnName="リスト形式")
+        private Boolean selectRule;
+        
+        @XlsColumn(columnName="参照形式")
+        private String refRule;
+        
+        @XlsBooleanConverter(loadForTrue="レ", loadForFalse={"-", ""}, saveAsTrue="レ", saveAsFalse="-")
+        @XlsMapColumns(previousColumnName="参照形式")
+        private Map<String, Boolean> category;
+        
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            IsEmptyBuilder builder = new IsEmptyBuilder(true);
+            builder.append(selectRule);
+            builder.compare(new IsEmptyComparator() {
+                
+                @Override
+                public boolean isEmpty() {
+                    if(category == null || category.isEmpty()) {
+                        return true;
+                    }
+                    
+                    for(Boolean value : category.values()) {
+                        if(value != null && value == true) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                }
+            });
+            
+            return builder.isEmpty();
+        }
+        
+        public DataValidationRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public DataValidationRecord selectRule(Boolean selectRule) {
+            this.selectRule = selectRule;
+            return this;
+        }
+        
+        public DataValidationRecord refRule(String refRule) {
+            this.refRule = refRule;
+            return this;
+        }
+        
+        public DataValidationRecord category(Map<String, Boolean> category) {
+            this.category = category;
+            return this;
+        }
+        
+        public DataValidationRecord addCategory(final String key, final Boolean value) {
+            if(category == null) {
+                this.category = new LinkedHashMap<>();
+            }
+            
+            this.category.put(key, value);
+            
+            return this;
+        }
+        
+    }
+    
+    /**
+     * 名前の定義用のレコード
+     *
+     */
+    private static class NameDefRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="機能名")
+        private String functionName;
+        
+        public NameDefRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public NameDefRecord functionName(String functionName) {
+            this.functionName = functionName;
+            return this;
+        }
+        
+    }
+    
+    /**
+     * コメント付きのシート
+     */
+    @XlsSheet(name="オプション指定（コメント）")
+    private static class CommentSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsHint(order=1)
+        @XlsConverter(forceWrapText=true)
+        @XlsLabelledCell(label="文字装飾のコメント", type=LabelledCellType.Right)
+        private String value1;
+        
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="コメントがある表（行の追加）", terminal=RecordTerminal.Border,
+                overRecord=OverRecordOperate.Insert)
+        private List<CommentRecord> insertRecords;
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="コメントがある表（行の削除）", terminal=RecordTerminal.Border,
+                overRecord=OverRecordOperate.Break, remainedRecord=RemainedRecordOperate.Delete)
+        private List<CommentRecord> deleteRecords;
+        
+        @XlsHint(order=4)
+        @XlsHorizontalRecords(tableLabel="コメントがある表（行のコピー）", terminal=RecordTerminal.Border,
+                overRecord=OverRecordOperate.Copy)
+        private List<CommentRecord> copyRecords;
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public CommentSheet addInsert(CommentRecord record) {
+            if(insertRecords == null) {
+                this.insertRecords = new ArrayList<>();
+            }
+            
+            this.insertRecords.add(record);
+            record.no(insertRecords.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public CommentSheet addDelete(CommentRecord record) {
+            if(deleteRecords == null) {
+                this.deleteRecords = new ArrayList<>();
+            }
+            
+            this.deleteRecords.add(record);
+            record.no(deleteRecords.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public CommentSheet addCopy(CommentRecord record) {
+            if(copyRecords == null) {
+                this.copyRecords = new ArrayList<>();
+            }
+            
+            this.copyRecords.add(record);
+            record.no(copyRecords.size());
+            
+            return this;
+        }
+    
+    }
+    
+    /**
+     * 見出しにコメントが付与されているレコード
+     */
+    private static class CommentRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="項目")
+        private String name;
+        
+        @XlsColumn(columnName="値")
+        private Double value;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
+        public CommentRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public CommentRecord name(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public CommentRecord value(Double value) {
+            this.value = value;
+            return this;
+        }
+        
+        public CommentRecord comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+        
     }
     
 }
