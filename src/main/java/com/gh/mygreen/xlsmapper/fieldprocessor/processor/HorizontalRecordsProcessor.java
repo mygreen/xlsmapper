@@ -178,6 +178,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             terminal = RecordTerminal.Empty;
         }
         
+        final int startHeaderIndex = getStartHeaderIndex(headers, recordClass, work);
+        
         // get records
         hRow++;
         while(hRow < POIUtils.getRows(sheet)){
@@ -209,7 +211,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     emptyFlag = false;
                 }
                 
-                if(terminal == RecordTerminal.Border && i==0){
+                if(terminal == RecordTerminal.Border && i==startHeaderIndex){
                     final CellStyle format = cell.getCellStyle();
                     if(format != null && !(format.getBorderLeft() == CellStyle.BORDER_NONE)){
                         emptyFlag = false;
@@ -358,6 +360,33 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
     }
     
+    /**
+     * 表の見出しから、レコードのJavaクラスの定義にあるカラムの定義で初めて見つかるリストのインデックスを取得する。
+     * ・カラムの定義とは、アノテーション「@XlsColumn」が付与されたもの。
+     * @param headers
+     * @param recordClass
+     * @param work
+     * @return
+     */
+    private int getStartHeaderIndex(List<RecordHeader> headers, Class<?> recordClass, LoadingWorkObject work) {
+        
+        // レコードクラスが不明の場合、0を返す。
+        if((recordClass == null || recordClass.equals(Object.class))) {
+            return 0;
+        }
+        
+        for(int i=0; i < headers.size(); i++) {
+            RecordHeader headerInfo = headers.get(i);
+            final List<FieldAdaptor> propeties = Utils.getLoadingColumnProperties(recordClass, headerInfo.getHeaderLabel(), work.getAnnoReader());
+            if(!propeties.isEmpty()) {
+                return i;
+            }
+        }
+        
+        return 0;
+        
+    }
+    
     private void loadMapColumns(Sheet sheet, List<RecordHeader> headerInfos, 
             int begin, int row, Object record, XlsMapperConfig config, LoadingWorkObject work) throws XlsMapperException {
         
@@ -485,7 +514,35 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
     }
     
-    private void saveRecords(final Sheet sheet, XlsHorizontalRecords anno, final FieldAdaptor adaptor, 
+    /**
+     * 表の見出しから、レコードのJavaクラスの定義にあるカラムの定義で初めて見つかるリストのインデックスを取得する。
+     * ・カラムの定義とは、アノテーション「@XlsColumn」が付与されたもの。
+     * @param headers
+     * @param recordClass
+     * @param work
+     * @return
+     */
+    private int getStartHeaderIndex(List<RecordHeader> headers, final List<Object> result, Class<?> recordClass, SavingWorkObject work) {
+        
+        // レコードクラスが不明の場合、実際のリストオブジェクトの要素から取得する
+        if((recordClass == null || recordClass.equals(Object.class)) && !result.isEmpty()) {
+            recordClass = result.get(0).getClass();
+           
+        }
+        
+        for(int i=0; i < headers.size(); i++) {
+            RecordHeader headerInfo = headers.get(i);
+            final List<FieldAdaptor> propeties = Utils.getSavingColumnProperties(recordClass, headerInfo.getHeaderLabel(), work.getAnnoReader());
+            if(!propeties.isEmpty()) {
+                return i;
+            }
+        }
+        
+        return 0;
+        
+    }
+    
+    private void saveRecords(final Sheet sheet, final XlsHorizontalRecords anno, final FieldAdaptor adaptor, 
             final Class<?> recordClass, final List<Object> result, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
         final List<RecordHeader> headers = new ArrayList<>();
@@ -567,6 +624,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             commentStoreList = new ArrayList<>();
         }
         
+        final int startHeaderIndex = getStartHeaderIndex(headers, result, recordClass, work);
+        
         // get records
         hRow++;
         for(int r=0; r < POIUtils.getRows(sheet); r++) {
@@ -611,7 +670,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     emptyFlag = false;
                 }
                 
-                if(terminal == RecordTerminal.Border && i==0){
+                if(terminal == RecordTerminal.Border && i==startHeaderIndex){
                     final CellStyle format = cell.getCellStyle();
                     if(format != null && !(format.getBorderLeft() == CellStyle.BORDER_NONE)){
                         emptyFlag = false;

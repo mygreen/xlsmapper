@@ -4,12 +4,15 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.FieldAdaptorProxy;
+import com.gh.mygreen.xlsmapper.HintOrderComparator;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
@@ -152,7 +155,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     protected void loadSingleLabelledCell(final Sheet sheet, final Object tableObj, 
             final Cell headerCell, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final LabelledCellProcessor labelledCellProcessor = new LabelledCellProcessor();
+        final LabelledCellProcessor labelledCellProcessor = 
+                (LabelledCellProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsLabelledCell.class);
         final List<FieldAdaptor> properties = Utils.getLoadingPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class);
         
@@ -190,20 +194,26 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             headerRow += iterateTablesAnno.bottom();
         }
         
-        final HorizontalRecordsProcessor processor = new HorizontalRecordsProcessor();
+        final HorizontalRecordsProcessor processor = 
+                (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsHorizontalRecords.class);
         final List<FieldAdaptor> properties = Utils.getLoadingPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class);
         
+        final List<FieldAdaptorProxy> adaptorProxies = new ArrayList<>();
         for(FieldAdaptor property : properties) {
-            final XlsHorizontalRecords ann = property.getLoadingAnnotation(XlsHorizontalRecords.class);
+            final XlsHorizontalRecords anno = property.getLoadingAnnotation(XlsHorizontalRecords.class);
             
-            if(iterateTablesAnno.tableLabel().equals(ann.tableLabel())) {
+            if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {
                 
-                final XlsHorizontalRecords records = new XlsHorizontalRecordsForIterateTables(ann, headerColumn, headerRow);
-                
-                // horizontal record-mapping
-                processor.loadProcess(sheet, tableObj, records, property, config, work);
+                final XlsHorizontalRecords recordsAnno = new XlsHorizontalRecordsForIterateTables(anno, headerColumn, headerRow);
+                adaptorProxies.add(new FieldAdaptorProxy(recordsAnno, processor, property));
             }
+        }
+        
+        // 順番を並び替えて保存処理を実行する
+        Collections.sort(adaptorProxies, HintOrderComparator.createForSaving());
+        for(FieldAdaptorProxy adaptorProxy : adaptorProxies) {
+            adaptorProxy.loadProcess(sheet, tableObj, config, work);
         }
         
     }
@@ -263,7 +273,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 tableClass = adaptor.getSavingGenericClassType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList(result));
+            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
             saveTables(sheet, anno, adaptor, tableClass, list, config, work);
             
         } else {
@@ -335,7 +345,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     protected void saveSingleLabelledCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        final LabelledCellProcessor labelledCellProcessor = new LabelledCellProcessor();
+        final LabelledCellProcessor labelledCellProcessor = 
+                (LabelledCellProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsLabelledCell.class);
         final List<FieldAdaptor> properties = Utils.getSavingPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class);
         
@@ -374,20 +385,28 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             headerRow += iterateTables.bottom();
         }
         
-        final HorizontalRecordsProcessor processor = new HorizontalRecordsProcessor();
+        final HorizontalRecordsProcessor processor = (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsHorizontalRecords.class);
         final List<FieldAdaptor> properties = Utils.getSavingPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class);
         
+        final List<FieldAdaptorProxy> adaptorProxies = new ArrayList<>();
         for(FieldAdaptor property : properties) {
             
             final XlsHorizontalRecords anno = property.getSavingAnnotation(XlsHorizontalRecords.class);
             
-            if (iterateTables.tableLabel().equals(anno.tableLabel())) {
-                // 処理対象と同じテーブルラベルのとき、マッピングを実行する。
+            // 処理対象と同じテーブルラベルのとき、マッピングを実行する。
+            if(iterateTables.tableLabel().equals(anno.tableLabel())) {
                 final XlsHorizontalRecords recordsAnno = new XlsHorizontalRecordsForIterateTables(anno, headerColumn, headerRow);
-                processor.saveProcess(sheet, tableObj, recordsAnno, property, config, work);
+                adaptorProxies.add(new FieldAdaptorProxy(recordsAnno, processor, property));
+                
             }
             
+        }
+        
+        // 順番を並び替えて保存処理を実行する
+        Collections.sort(adaptorProxies, HintOrderComparator.createForSaving());
+        for(FieldAdaptorProxy adaptorProxy : adaptorProxies) {
+            adaptorProxy.saveProcess(sheet, tableObj, config, work);
         }
         
     }
