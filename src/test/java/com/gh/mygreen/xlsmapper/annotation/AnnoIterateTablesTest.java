@@ -5,8 +5,13 @@ import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +21,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
@@ -47,7 +53,7 @@ public class AnnoIterateTablesTest {
      * 通常の表のテスト
      */
     @Test
-    public void test_load_normal() throws Exception {
+    public void test_load_it_normal() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
@@ -71,7 +77,7 @@ public class AnnoIterateTablesTest {
      * ・配列型による定義
      */
     @Test
-    public void test_load_normal_array() throws Exception {
+    public void test_load_it_normal_array() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
@@ -94,7 +100,7 @@ public class AnnoIterateTablesTest {
      * 見出し用セルが見つからない
      */
     @Test(expected=CellNotFoundException.class)
-    public void test_load_not_found_cell() throws Exception {
+    public void test_load_it_not_found_cell() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
@@ -113,7 +119,7 @@ public class AnnoIterateTablesTest {
      * ・見出し用セルなどがオプション指定の場合
      */
     @Test
-    public void test_load_optional() throws Exception {
+    public void test_load_it_optional() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
@@ -136,7 +142,7 @@ public class AnnoIterateTablesTest {
      * 連結した表
      */
     @Test
-    public void test_concat_table() throws Exception {
+    public void test_load_it_concat_table() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
@@ -159,6 +165,7 @@ public class AnnoIterateTablesTest {
         
         if(table.name.equals("1年2組")) {
             
+            assertThat(table.no, is(1));
             assertThat(table.name, is("1年2組"));
             
             assertThat(table.persons, hasSize(2));
@@ -178,6 +185,7 @@ public class AnnoIterateTablesTest {
             
         } else if(table.name.equals("2年3組")) {
             
+            assertThat(table.no, is(2));
             assertThat(table.name, is("2年3組"));
             
             assertThat(table.persons, hasSize(3));
@@ -207,6 +215,7 @@ public class AnnoIterateTablesTest {
         
         if(equalsStr(table.name, "1年2組")) {
             
+            assertThat(table.no, is(1));
             assertThat(table.name, is("1年2組"));
             
             assertThat(table.persons, hasSize(2));
@@ -226,6 +235,7 @@ public class AnnoIterateTablesTest {
             
         } else if(equalsStr(table.name, null)) {
             
+            assertThat(table.no, is(2));
             assertThat(table.name, is(nullValue()));
             
             assertThat(table.persons, hasSize(3));
@@ -253,6 +263,7 @@ public class AnnoIterateTablesTest {
         
         if(table.name.equals("1年2組")) {
             
+            assertThat(table.no, is(1));
             assertThat(table.name, is("1年2組"));
             
             assertThat(table.persons, hasSize(2));
@@ -271,18 +282,21 @@ public class AnnoIterateTablesTest {
             }
             
             assertThat(table.results, hasSize(3));
-            for(ResultRecord record : table.results) {
-                if(record.no == 1) {
+            for(int i=0; i < table.results.size(); i++) {
+                ResultRecord record = table.results.get(i);
+                int index = i+1;
+                
+                if(index == 1) {
                     assertThat(record.sansu, is(90));
                     assertThat(record.kokugo, is(70));
                     assertThat(record.sum, is(160));
                     
-                } else if(record.no == 2) {
+                } else if(index == 2) {
                     assertThat(record.sansu, is(80));
                     assertThat(record.kokugo, is(90));
                     assertThat(record.sum, is(170));
                     
-                } else if(record.no == 0) {
+                } else if(index == 3) {
                     // デフォルト値（合計）
                     assertThat(record.sansu, is(85));
                     assertThat(record.kokugo, is(80));
@@ -293,6 +307,7 @@ public class AnnoIterateTablesTest {
             
         } else if(table.name.equals("2年3組")) {
             
+            assertThat(table.no, is(2));
             assertThat(table.name, is("2年3組"));
             
             assertThat(table.persons, hasSize(3));
@@ -315,23 +330,26 @@ public class AnnoIterateTablesTest {
             }
             
             assertThat(table.results, hasSize(4));
-            for(ResultRecord record : table.results) {
-                if(record.no == 1) {
+            for(int i=0; i < table.results.size(); i++) {
+                ResultRecord record = table.results.get(i);
+                int index = i+1;
+                
+                if(index == 1) {
                     assertThat(record.sansu, is(90));
                     assertThat(record.kokugo, is(70));
                     assertThat(record.sum, is(160));
                     
-                } else if(record.no == 2) {
+                } else if(index == 2) {
                     assertThat(record.sansu, is(80));
                     assertThat(record.kokugo, is(90));
                     assertThat(record.sum, is(170));
                     
-                } else if(record.no == 3) {
+                } else if(index == 3) {
                     assertThat(record.sansu, is(70));
                     assertThat(record.kokugo, is(60));
                     assertThat(record.sum, is(130));
                     
-                } else if(record.no == 0) {
+                } else if(index == 4) {
                     // デフォルト値（合計）
                     assertThat(record.sansu, is(80));
                     assertThat(record.kokugo, is(73));
@@ -345,6 +363,382 @@ public class AnnoIterateTablesTest {
         
     }
     
+    /**
+     * 書き込みのテスト - 通常の表のテスト
+     */
+    @Test
+    public void test_save_it_normal() throws Exception {
+        
+        // テストデータの作成
+        NormalSheet outSheet = new NormalSheet();
+        
+        outSheet.add(new ClassTable().name("1年2組")
+                .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
+        );
+        
+        outSheet.add(new ClassTable().name("2年3組")
+                .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
+        );
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            
+            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            
+            if(sheet.classeTables != null) {
+                assertThat(sheet.classeTables, hasSize(outSheet.classeTables.size()));
+                
+                for(int i=0; i < sheet.classeTables.size(); i++) {
+                    assertRecord(sheet.classeTables.get(i), outSheet.classeTables.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 通常の表のテスト(配列形式)
+     */
+    @Test
+    public void test_save_it_normal_array() throws Exception {
+        
+        // テストデータの作成
+        NormalArraySheet outSheet = new NormalArraySheet();
+        
+        outSheet.add(new ClassTable().name("1年2組")
+                .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
+        );
+        
+        outSheet.add(new ClassTable().name("2年3組")
+                .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
+        );
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(NormalArraySheet.class);
+            
+            NormalArraySheet sheet = mapper.load(in, NormalArraySheet.class, errors);
+            
+            if(sheet.classeTables != null) {
+                assertThat(sheet.classeTables, arrayWithSize(outSheet.classeTables.length));
+                
+                for(int i=0; i < sheet.classeTables.length; i++) {
+                    assertRecord(sheet.classeTables[i], outSheet.classeTables[i], errors);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
+     * 書き出しのテスト - 見出し用セルが見つからない
+     */
+    @Test(expected=CellNotFoundException.class)
+    public void test_save_it_not_found_cell() throws Exception {
+        
+        // テストデータの作成
+        NotFoundCellSheet outSheet = new NotFoundCellSheet();
+        
+        outSheet.add(new ClassTable().name("1年2組")
+                .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
+        );
+        
+        
+        outSheet.add(new ClassTable().name("2年3組")
+                .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
+        );
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+            
+            fail();
+        }
+    }
+    
+    /**
+     * 書き出しのテスト - 見出しセルがない2
+     * ・見出し用セルなどがオプション指定の場合
+     */
+    @Test
+    public void test_save_it_optional() throws Exception {
+        
+        // テストデータの作成
+        OptionalCellSheet outSheet = new OptionalCellSheet();
+        
+        outSheet.add(new OptionalClassTable().name("1年2組")
+                .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
+        );
+        
+        
+        outSheet.add(new OptionalClassTable().name("2年3組")
+                .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
+        );
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(OptionalCellSheet.class);
+            
+            OptionalCellSheet sheet = mapper.load(in, OptionalCellSheet.class, errors);
+            
+            if(sheet.classeTables != null) {
+                assertThat(sheet.classeTables, hasSize(outSheet.classeTables.size()));
+                
+                for(int i=0; i < sheet.classeTables.size(); i++) {
+                    assertRecord(sheet.classeTables.get(i), outSheet.classeTables.get(i), errors);
+                }
+                
+            }
+            
+        }
+    }
+    
+    /**
+     * 書き込みのテスト - 連結した表
+     */
+    @Test
+    public void test_save_it_concat_table() throws Exception {
+        
+        // テストデータの作成
+        ConcatTableSheet outSheet = new ConcatTableSheet();
+        
+        outSheet.add(new ConcatClassTable().name("1年2組")
+                .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
+                
+                .add(new ResultRecord().sansu(90).kokugo(70).setupSum())
+                .add(new ResultRecord().sansu(80).kokugo(90).setupSum())
+                .add(new ResultRecord().sansu(85).kokugo(80).setupSum())
+
+        );
+        
+        outSheet.add(new ConcatClassTable().name("2年3組")
+                .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
+                
+                .add(new ResultRecord().sansu(90).kokugo(70).setupSum())
+                .add(new ResultRecord().sansu(80).kokugo(90).setupSum())
+                .add(new ResultRecord().sansu(70).kokugo(50).setupSum())
+                .add(new ResultRecord().sansu(80).kokugo(73).setupSum())
+        );
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(ConcatTableSheet.class);
+            
+            ConcatTableSheet sheet = mapper.load(in, ConcatTableSheet.class, errors);
+            
+            if(sheet.classeTables != null) {
+                assertThat(sheet.classeTables, hasSize(outSheet.classeTables.size()));
+                
+                for(int i=0; i < sheet.classeTables.size(); i++) {
+                    assertRecord(sheet.classeTables.get(i), outSheet.classeTables.get(i), errors);
+                }
+                
+            }
+            
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final ClassTable inRecord, final ClassTable outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        
+        if(inRecord.persons != null) {
+            assertThat(inRecord.persons, hasSize(outRecord.persons.size()));
+            
+            for(int i=0; i < inRecord.persons.size(); i++) {
+                assertRecord(inRecord.persons.get(i), outRecord.persons.get(i), errors);
+            }
+            
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final OptionalClassTable inRecord, final OptionalClassTable outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        
+        if(inRecord.no == 2) {
+            assertThat(inRecord.name, is(nullValue()));
+        } else {
+            assertThat(inRecord.name, is(outRecord.name));
+            
+        }
+        
+        if(inRecord.persons != null) {
+            assertThat(inRecord.persons, hasSize(outRecord.persons.size()));
+            
+            for(int i=0; i < inRecord.persons.size(); i++) {
+                assertRecord(inRecord.persons.get(i), outRecord.persons.get(i), errors);
+            }
+            
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final ConcatClassTable inRecord, final ConcatClassTable outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        
+        if(inRecord.persons != null) {
+            assertThat(inRecord.persons, hasSize(outRecord.persons.size()));
+            
+            for(int i=0; i < inRecord.persons.size(); i++) {
+                assertRecord(inRecord.persons.get(i), outRecord.persons.get(i), errors);
+            }
+            
+        }
+        
+        if(inRecord.results != null) {
+            assertThat(inRecord.results, hasSize(outRecord.results.size()));
+            
+            for(int i=0; i < inRecord.results.size(); i++) {
+                assertRecord(inRecord.results.get(i), outRecord.results.get(i), errors);
+            }
+            
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final PersonRecord inRecord, final PersonRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        assertThat(inRecord.birthday, is(outRecord.birthday));
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final ResultRecord inRecord, final ResultRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+//        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.sansu, is(outRecord.sansu));
+        assertThat(inRecord.kokugo, is(outRecord.kokugo));
+        assertThat(inRecord.sum, is(outRecord.sum));
+        
+        
+    }
+    
     @XlsSheet(name="通常の表")
     private static class NormalSheet {
         
@@ -352,8 +746,20 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
-        @XlsIterateTables(tableLabel="クラス情報", bottom=2)
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
         private List<ClassTable> classeTables;
+        
+        public NormalSheet add(ClassTable table) {
+            
+            if(classeTables == null) {
+                this.classeTables = new ArrayList<>();
+            }
+            
+            this.classeTables.add(table);
+            table.no(classeTables.size());
+            
+            return this;
+        }
         
     }
     
@@ -368,8 +774,30 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
-        @XlsIterateTables(tableLabel="クラス情報", bottom=2)
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
         private ClassTable[] classeTables;
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public NormalArraySheet add(ClassTable table) {
+            
+            final List<ClassTable> list;
+            if(classeTables == null) {
+                list = new ArrayList<>();
+            } else {
+                list = new ArrayList<>(Arrays.asList(classeTables));
+            }
+            
+            list.add(table);
+            table.no(list.size());
+            
+            this.classeTables = list.toArray(new ClassTable[list.size()]);
+            
+            return this;
+        }
         
     }
     
@@ -380,8 +808,20 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
-        @XlsIterateTables(tableLabel="クラス情報", bottom=2)
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
         private List<ClassTable> classeTables;
+        
+        public NotFoundCellSheet add(ClassTable table) {
+            
+            if(classeTables == null) {
+                this.classeTables = new ArrayList<>();
+            }
+            
+            this.classeTables.add(table);
+            table.no(classeTables.size());
+            
+            return this;
+        }
         
     }
     
@@ -394,11 +834,40 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
+        @XlsHint(order=1)
+        @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+        private int no;
+        
+        @XlsHint(order=2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
         
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
         private List<PersonRecord> persons;
+        
+        public ClassTable no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public ClassTable name(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public ClassTable add(PersonRecord record) {
+            
+            if(persons == null) {
+                this.persons = new ArrayList<>();
+            }
+            
+            this.persons.add(record);
+            record.no(persons.size());
+            
+            return this;
+        }
         
     }
     
@@ -421,6 +890,26 @@ public class AnnoIterateTablesTest {
         @XlsColumn(columnName="誕生日")
         private Date birthday;
         
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public PersonRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public PersonRecord name(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public PersonRecord birthday(Date birthday) {
+            this.birthday = birthday;
+            return this;
+        }
+        
     }
     
     /**
@@ -433,9 +922,20 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
-        @XlsIterateTables(tableLabel="クラス情報", bottom=2)
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
         private List<OptionalClassTable> classeTables;
         
+        public OptionalCellSheet add(OptionalClassTable table) {
+            
+            if(classeTables == null) {
+                this.classeTables = new ArrayList<>();
+            }
+            
+            this.classeTables.add(table);
+            table.no(classeTables.size());
+            
+            return this;
+        }
     }
     
     /**
@@ -448,11 +948,40 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
+        @XlsHint(order=1)
+        @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+        private int no;
+        
+        @XlsHint(order=2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, optional=true)
         private String name;
         
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, optional=true)
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
         private List<PersonRecord> persons;
+        
+        public OptionalClassTable no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public OptionalClassTable name(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public OptionalClassTable add(PersonRecord record) {
+            
+            if(persons == null) {
+                this.persons = new ArrayList<>();
+            }
+            
+            this.persons.add(record);
+            record.no(persons.size());
+            
+            return this;
+        }
         
     }
     
@@ -463,9 +992,20 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
-        @XlsIterateTables(tableLabel="クラス情報", bottom=2)
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
         private List<ConcatClassTable> classeTables;
         
+        public ConcatTableSheet add(ConcatClassTable table) {
+            
+            if(classeTables == null) {
+                this.classeTables = new ArrayList<>();
+            }
+            
+            this.classeTables.add(table);
+            table.no(classeTables.size());
+            
+            return this;
+        }
     }
     /**
      * 連結したテーブルの定義
@@ -476,14 +1016,57 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
+//        @XlsHint(order=1)
+        @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+        private int no;
+        
+//        @XlsHint(order=2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
         
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, bottom=2, headerLimit=3)
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
         private List<PersonRecord> persons;
         
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, bottom=2, range=4)
+        @XlsHint(order=4)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Clear)
         private List<ResultRecord> results;
+        
+        public ConcatClassTable no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public ConcatClassTable name(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public ConcatClassTable add(PersonRecord record) {
+            
+            if(persons == null) {
+                this.persons = new ArrayList<>();
+            }
+            
+            this.persons.add(record);
+            record.no(persons.size());
+            
+            return this;
+        }
+        
+        public ConcatClassTable add(ResultRecord record) {
+            
+            if(results == null) {
+                this.results = new ArrayList<>();
+            }
+            
+            this.results.add(record);
+            record.no(results.size());
+            
+            return this;
+        }
         
     }
     
@@ -493,7 +1076,7 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
-        @XlsColumn(columnName="No.")
+//        @XlsColumn(columnName="index", optional=true)
         private int no;
         
         @XlsColumn(columnName="算数")
@@ -504,6 +1087,36 @@ public class AnnoIterateTablesTest {
         
         @XlsColumn(columnName="合計")
         private int sum;
+        
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public ResultRecord setupSum() {
+            this.sum = sansu + kokugo;
+            return this;
+        }
+        
+        public ResultRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public ResultRecord sansu(int sansu) {
+            this.sansu = sansu;
+            return this;
+        }
+        
+        public ResultRecord kokugo(int kokugo) {
+            this.kokugo = kokugo;
+            return this;
+        }
+        
+        public ResultRecord sum(int sum) {
+            this.sum = sum;
+            return this;
+        }
         
     }
     
