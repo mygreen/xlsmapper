@@ -36,6 +36,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
+import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
@@ -773,6 +774,16 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             // マップ形式のカラムを出力する
             if(record != null) {
                 saveMapColumn(sheet, headers, initRow, hColumn, record, terminal, anno, config, work, recordOperation);
+            }
+            
+            if(record != null) {
+                // set PostProcess method
+                for(Method method : record.getClass().getMethods()) {
+                    final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(record.getClass(), method, XlsPostSave.class);
+                    if(postProcessAnno != null) {
+                        work.addNeedPostProcess(new NeedProcess(record, method));
+                    }
+                }
             }
             
             // パスの位置の変更

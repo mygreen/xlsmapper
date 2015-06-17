@@ -151,6 +151,18 @@ public class FieldProcessorRegstry {
     }
     
     /**
+     * アノテーションに対する{@link LoadingFieldProcessor}を取得する。
+     * @param annoClass
+     * @return 見つからない場合はnullを返す。
+     */
+    @SuppressWarnings("unchecked")
+    public <A extends Annotation> LoadingFieldProcessor<A> getLoadingProcessor(final Class<A> annoClass) {
+        ArgUtils.notNull(annoClass, "annoClass");
+        
+        return (LoadingFieldProcessor<A>) loadingPocessorMap.get(annoClass);
+    }
+    
+    /**
      * アノテーションに対する{@link SavingFieldProcessor}を取得する。
      * @param anno
      * @return 見つからない場合はnullを返す。
@@ -159,7 +171,19 @@ public class FieldProcessorRegstry {
     public <A extends Annotation> SavingFieldProcessor<A> getSavingProcessor(final Annotation anno) {
         ArgUtils.notNull(anno, "anno");
         
-        return (SavingFieldProcessor<A>) savingPocessorMap.get(anno.annotationType());
+        return (SavingFieldProcessor<A>) getSavingProcessor(anno.annotationType());
+    }
+    
+    /**
+     * アノテーションに対する{@link SavingFieldProcessor}を取得する。
+     * @param annoClass
+     * @return 見つからない場合はnullを返す。
+     */
+    @SuppressWarnings("unchecked")
+    public <A extends Annotation> SavingFieldProcessor<A> getSavingProcessor(final Class<A> annoClass) {
+        ArgUtils.notNull(annoClass, "annoClass");
+        
+        return (SavingFieldProcessor<A>) savingPocessorMap.get(annoClass);
     }
     
     /**

@@ -16,11 +16,25 @@ public class RecordHeader {
         this.headerRange = headerRange;
     }
     
+    @Override
+    public String toString() {
+        return "RecordHeader [headerLabel=" + headerLabel + ", headerRange=" + headerRange + "]";
+    }
+    
+    /**
+     * ヘッダーの見出しの取得
+     * @return
+     */
     public String getHeaderLabel() {
         return headerLabel;
     }
     
+    /**
+     * このヘッダーの見出しが定義されている位置が、表の開始位置から離れている距離。
+     * @return
+     */
     public int getHeaderRange() {
         return headerRange;
     }
+    
 }

@@ -1927,6 +1927,7 @@ public class Utils {
         }
         
         try {
+            method.setAccessible(true);
             method.invoke(object, paramValues);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             Throwable t = e.getCause() == null ? e : e.getCause();
