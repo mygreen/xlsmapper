@@ -1,14 +1,20 @@
 package com.gh.mygreen.xlsmapper.expression;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.github.mygreen.expression.el.FormatterWrapper;
 
 
 public class ExpresionLanguageTest {
@@ -34,6 +40,32 @@ public class ExpresionLanguageTest {
             String eval = (String) el.evaluateWithEL3(expression, vars);
             assertEquals("空です", eval);
 //            System.out.println(eval);
+            
+        } catch(Throwable e) {
+            e.printStackTrace();
+            fail();
+        }
+        
+    }
+    
+    @Test
+    public void testEL3_format() {
+        
+        try {
+            ExpressionLanguageELImpl el = new ExpressionLanguageELImpl();
+            
+            Date date = Timestamp.valueOf("2015-04-15 10:20:30.000");
+
+            String expression = "formatter.format('%1$tY/%1$tm/%1$td', currentDate)";
+            
+            Map<String, Object> vars = new HashMap<>();
+            vars.put("currentDate", date);
+            vars.put("formatter", new FormatterWrapper(Locale.getDefault()));
+//            vars.put("formatter", new Formatter());
+            
+            String eval = (String) el.evaluateWithEL3(expression, vars);
+            assertThat(eval, is("2015/04/15"));
+            System.out.println(eval);
             
         } catch(Throwable e) {
             e.printStackTrace();
