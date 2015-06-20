@@ -111,7 +111,7 @@ public class MessageInterpolator {
                 if(!stack.isEmpty()) {
                     pushConsiderEscape(stack, c);
                     
-                } if(stack.isEmpty() && notEqualsBufferLast(sb, '\\')) {
+                } else if(stack.isEmpty() && notEqualsBufferLast(sb, '\\')) {
                     stack.push(c);
                     
                 } else {
