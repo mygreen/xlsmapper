@@ -13,6 +13,7 @@ import com.gh.mygreen.xlsmapper.Utils;
 /**
  * シートのエラー情報を処理するためのクラス。
  * 
+ * @version 0.5
  * @author T.TSUCHIE
  *
  */
@@ -189,6 +190,14 @@ public class SheetBindingErrors {
         } else {
             return Utils.join(new String[]{getCurrentPath(), fieldName}, PATH_SEPARATOR);
         }
+    }
+    
+    /**
+     * 全てのエラーをリセットする。
+     * @since 0.5
+     */
+    public void clearAllErrors() {
+        this.errors.clear();
     }
     
     /**
@@ -380,8 +389,9 @@ public class SheetBindingErrors {
      * @return エラーがない場合は空のリストを返す
      */
     public FieldError getFirstFieldError(final String path) {
+        final String fullPath = buildFieldPath(path);
         for(ObjectError item : this.errors) {
-            if(item instanceof FieldError && isMatchingFieldError(path, (FieldError) item)) {
+            if(item instanceof FieldError && isMatchingFieldError(fullPath, (FieldError) item)) {
                 return (FieldError) item;
             }
         }
@@ -472,11 +482,12 @@ public class SheetBindingErrors {
     /**
      * パスを指定して先頭のセルフィールドエラーを取得する
      * @param path 最後に'*'を付けるとワイルドカードが指定可能。
-     * @return エラーがない場合は空のリストを返す
+     * @return エラーがない場合はnullを返す。
      */
     public CellFieldError getFirstCellFieldError(final String path) {
+        final String fullPath = buildFieldPath(path);
         for(ObjectError item : this.errors) {
-            if(item instanceof CellFieldError && isMatchingFieldError(path, (CellFieldError) item)) {
+            if(item instanceof CellFieldError && isMatchingFieldError(fullPath, (CellFieldError) item)) {
                 return (CellFieldError) item;
             }
         }
