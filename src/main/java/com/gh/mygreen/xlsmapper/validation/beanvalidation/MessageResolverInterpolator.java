@@ -15,6 +15,7 @@ import com.gh.mygreen.xlsmapper.validation.MessageResolver;
 
 /**
  * {@code MessageResolver}からメッセージを取得する {@link MessageInterpolator}。
+ * <p>BeanValidatorのメッセージの取得先をXlsMapper用の{@link MessageResolver}から取得するよう変更する場合に使用する。
  *
  * @author T.TSUCHIE
  *
