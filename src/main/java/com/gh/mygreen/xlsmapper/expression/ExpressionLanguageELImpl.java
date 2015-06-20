@@ -1,9 +1,11 @@
 package com.gh.mygreen.xlsmapper.expression;
 
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.el.BeanNameResolver;
 import javax.el.ELException;
 import javax.el.ELProcessor;
 
@@ -13,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.ArgUtils;
 import com.gh.mygreen.xlsmapper.expression.el.FormatterWrapper;
-import com.gh.mygreen.xlsmapper.expression.el.RootELResolver;
 
 
 /**
@@ -63,16 +64,18 @@ public class ExpressionLanguageELImpl extends ExpressionLanguage {
         
         try {
             final ELProcessor elProc = new ELProcessor();
-            elProc.getELManager().addELResolver(new RootELResolver(true));
             
+            final Map<String, Object> beans = new HashMap<String, Object>();
             for (final Entry<String, ? > entry : values.entrySet()) {
                 if(isFormatter(entry.getKey(), entry.getValue())) {
                     // Formatterの場合は、ラップクラスを設定する。
-                    elProc.defineBean(entry.getKey(), new FormatterWrapper((Formatter) entry.getValue()));
+                    beans.put(entry.getKey(), new FormatterWrapper((Formatter) entry.getValue()));
                 } else {
-                    elProc.defineBean(entry.getKey(), entry.getValue());
+                    beans.put(entry.getKey(), entry.getValue());
                 }
             }
+            
+            elProc.getELManager().addBeanNameResolver(new LocalBeanNameResolver(beans));
             
             if(logger.isDebugEnabled()) {
                 logger.debug("Evaluating EL expression: {}", expression);
@@ -131,6 +134,37 @@ public class ExpressionLanguageELImpl extends ExpressionLanguage {
         }
         
         return false;
+    }
+    
+    /**
+     * EL3.0用の式中の変数のResolver。
+     * ・存在しない場合はnullを返す。
+     *
+     */
+    private class LocalBeanNameResolver extends BeanNameResolver {
+        
+        private final Map<String, Object> map;
+        
+        public LocalBeanNameResolver(final Map<String, ?> map) {
+            this.map = new HashMap<>(map);
+        }
+        
+        @Override
+        public boolean isNameResolved(final String beanName){
+            // 存在しない場合はnullを返すように、必ずtrueを設定する。
+            return true;
+        }
+        
+        @Override
+        public Object getBean(final String beanName){
+            return map.get( beanName );
+        }
+        
+        @Override
+        public void setBeanValue(String beanName, Object value){
+            map.put(beanName, value );
+        }
+
     }
     
 }
