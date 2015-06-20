@@ -136,13 +136,15 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 
                 // 実際の値を取得する
                 final Object fieldValue = violation.getInvalidValue();
-                if(errorVars.containsKey("validatedValue")) {
+                if(!errorVars.containsKey("validatedValue")) {
                     errorVars.put("validatedValue", fieldValue);
                 }
                 
+                Class<?> fieldType = fieldValue != null ? fieldValue.getClass() : null;
+                
                 errors.addError(FieldErrorBuilder.create()
                         .objectName(errors.getObjectName()).fieldPath(errors.buildFieldPath(field))
-                        .codes(errors.generateMessageCodes(errorCode, field), errorVars)
+                        .codes(errors.generateMessageCodes(errorCode, field, fieldType), errorVars)
                         .sheetName(errors.getSheetName()).cellAddress(cellAddress)
                         .label(label)
                         .defaultMessage(violation.getMessage())
