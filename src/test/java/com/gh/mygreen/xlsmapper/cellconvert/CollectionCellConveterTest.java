@@ -60,7 +60,7 @@ public class CollectionCellConveterTest {
      * リスト、集合、配列型の読み込みテスト
      */
     @Test
-    public void test_load_collection() {
+    public void test_load_collection() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
@@ -82,11 +82,7 @@ public class CollectionCellConveterTest {
                 }
             }
             
-        } catch(Throwable e) {
-            e.printStackTrace();
-            fail();
         }
-        
     }
     
     private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) {

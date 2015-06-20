@@ -57,7 +57,7 @@ public class BooleanCellConverterTest {
      * boolean/Boolen型の読み込みテスト
      */
     @Test
-    public void test_load_boolean() {
+    public void test_load_boolean() throws Exception {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
         
@@ -78,9 +78,6 @@ public class BooleanCellConverterTest {
                 }
             }
             
-        } catch(Throwable e) {
-            e.printStackTrace();
-            fail();
         }
     }
     

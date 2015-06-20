@@ -57,7 +57,7 @@ public class DateTimeCellConverterTest {
     }
     
     @Test
-    public void test_load_date_time() {
+    public void test_load_date_time() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
@@ -75,9 +75,6 @@ public class DateTimeCellConverterTest {
                 assertRecord(record, errors);
             }
             
-        } catch(Throwable e) {
-            e.printStackTrace();
-            fail();
         }
         
     }

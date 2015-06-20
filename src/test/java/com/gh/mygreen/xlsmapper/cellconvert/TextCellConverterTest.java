@@ -75,9 +75,6 @@ public class TextCellConverterTest {
                 assertRecord(record, errors);
             }
             
-        } catch(Throwable e) {
-            e.printStackTrace();
-            fail();
         }
     }
     
