@@ -105,7 +105,6 @@ public class SheetBeanValidatorTest {
         SheetBeanValidator sheetValidator = new SheetBeanValidator(getBeanValidator());
         sheetValidator.validate(sheet, errors);
         
-        
         assertThat(errors.getAllErrors(), hasSize(0));
         
     }
