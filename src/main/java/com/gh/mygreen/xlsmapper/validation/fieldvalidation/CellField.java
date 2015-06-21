@@ -2,7 +2,9 @@ package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.validation.Errors;
 
@@ -186,7 +188,9 @@ public class CellField<T> {
         if(isInputEmpty()) {
             // 必須エラーチェックを行う場合
             if(isRequired()) {
-                errors.rejectSheetValue(getName(), getCellAddress(), getMessageKeyRequired());
+                Map<String, Object> vars = new LinkedHashMap<>();
+                vars.put("validatedValue", getValue());
+                errors.rejectSheetValue(getName(), getCellAddress(), getMessageKeyRequired(), vars);
                 return false;
             }
             
