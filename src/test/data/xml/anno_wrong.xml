@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- フィールド定義 -->
+<annotations>
+	<class name="">
+		<annotation name="com.gh.mygreen.xlsmapper.annotation.XlsSheet">
+			<attribute name="name">'単純なシート'</attribute>
+		</annotation>
+		
+		<field name="sheetName">
+			<annotation name="com.gh.mygreen.xlsmapper.annotation.XlsSheetName" />
+		</field>
+		
+	</class>
+	
+	
+	
+</annotations>
