@@ -288,13 +288,6 @@ public class Utils {
         
         final String methodName = "is" + capitalize(fieldName);
         
-        // public method
-        try {
-            final Method method = clazz.getMethod(methodName, Void.class);
-            return method;
-        } catch (SecurityException | NoSuchMethodException e) {
-        }
-        
         // private / protected method
         try {
             final Method method = clazz.getDeclaredMethod(methodName, Void.class);
@@ -317,13 +310,6 @@ public class Utils {
         
         final String methodName = "set" + capitalize(fieldName);
         
-        // public method
-        try {
-            final Method method = clazz.getMethod(methodName, fieldClass);
-            return method;
-        } catch (SecurityException | NoSuchMethodException e) {
-        }
-        
         // private / protected method
         try {
             final Method method = clazz.getDeclaredMethod(methodName, fieldClass);
@@ -342,13 +328,6 @@ public class Utils {
      * @return 見つからない場合はnullを返す。
      */
     public static Field getField(final Class<?> clazz, final String fieldName) {
-        
-        try {
-            final Field field = clazz.getField(fieldName);
-            return field;
-        } catch (NoSuchFieldException | SecurityException e) {
-            
-        }
         
         try {
             final Field field = clazz.getDeclaredField(fieldName);
