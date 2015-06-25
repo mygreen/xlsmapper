@@ -44,17 +44,21 @@ public class SheetBindingErrors {
         return objectName;
     }
     
+    /**
+     * オブジェクト名を指定しするコンストラクタ。
+     * <p>エラーメッセージを組み立てる際に、パスのルートとなる。
+     * @param objectName オブジェクト名
+     */
     public SheetBindingErrors(final String objectName) {
         this.objectName = objectName;
     }
     
     /**
-     * クラス名をオブジェクト名として設定します。
-     * @param clazz
-     * @return
+     * クラス名をオブジェクト名とするコンストラクタ。
+     * @param clazz クラス名
      */
     public SheetBindingErrors(final Class<?> clazz) {
-        this.objectName = clazz.getCanonicalName();
+        this(clazz.getCanonicalName());
     }
     
     /**
@@ -65,7 +69,9 @@ public class SheetBindingErrors {
     public void setNestedPath(final String nestedPath) {
         final String canonicalPath = getCanonicalPath(nestedPath);
         this.nestedPathStack.clear();
-        if(!canonicalPath.isEmpty()) {
+        if(canonicalPath.isEmpty()) {
+            this.currentPath = buildPath();
+        } else {
             pushNestedPath(canonicalPath);
         }
     }
@@ -86,7 +92,7 @@ public class SheetBindingErrors {
      * @param subPath
      * @return
      */
-    private String getCanonicalPath(String subPath) {
+    private String getCanonicalPath(final String subPath) {
         if(subPath == null) {
             return "";
         }
@@ -251,7 +257,7 @@ public class SheetBindingErrors {
      * 先頭のグローバルエラーを取得する。
      * @return 存在しない場合は、nullを返す。
      */
-    public ObjectError getFistGlobalError() {
+    public ObjectError getFirstGlobalError() {
         for(ObjectError item : this.errors) {
             if(!(item instanceof FieldError)) {
                 return item;
@@ -297,7 +303,7 @@ public class SheetBindingErrors {
      * @param sheetName シート名
      * @return 存在しない場合は、nullを返す。
      */
-    public SheetObjectError getFistSheetGlobalError() {
+    public SheetObjectError getFirstSheetGlobalError() {
         for(SheetObjectError item : getSheetGlobalErrors()) {
             return (SheetObjectError)item;
         }
