@@ -44,6 +44,28 @@ public class XmlLoader {
     }
     
     /**
+     * XMLを読み込み、{@link XmlInfo}として取得する。
+     * @since 0.5
+     * @param reader
+     * @return
+     * @throws XmlLoadException XMLの読み込みに失敗した場合。
+     * @throws IllegalArgumentException in is null.
+     */
+    public static XmlInfo load(final Reader reader) throws XmlLoadException {
+        ArgUtils.notNull(reader, "reader");
+        
+        final XmlInfo xmlInfo;
+        
+        try {
+            xmlInfo = JAXB.unmarshal(reader, XmlInfo.class);
+        } catch (DataBindingException e) {
+            throw new XmlLoadException("fail load xml with JAXB.", e);
+        }
+        
+        return xmlInfo;
+    }
+    
+    /**
      * XMLファイルを読み込み、{@link XmlInfo}として取得する。
      * @param file 読み込むファイル
      * @param encoding 読み込むファイルの文字コード
@@ -58,12 +80,10 @@ public class XmlLoader {
         final XmlInfo xmlInfo;
         
         try(Reader reader = new InputStreamReader(new FileInputStream(file), encoding)) {
-            xmlInfo = JAXB.unmarshal(reader, XmlInfo.class);
+            xmlInfo = load(reader);
             
         } catch (IOException e) {
             throw new XmlLoadException(String.format("fail load xml file '%s'.", file.getPath()), e);
-        } catch (DataBindingException e) {
-            throw new XmlLoadException("fail load xml with JAXB.", e);
         }
         
         return xmlInfo;

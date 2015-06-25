@@ -80,10 +80,17 @@ public class DynamicAnnotationBuilder {
         }
     }
     
-    public Annotation buildAnnotation(final Class<?> ann, final AnnotationInfo info) throws AnnotationReadException {
+    /**
+     * 指定したアノテーションのクラス情報から、アノテーションのインスタンスを組み立てる。
+     * @param annoClass アノテーションのクラス
+     * @param info アノテーションの情報
+     * @return アノテーションのインスタンス。
+     * @throws AnnotationReadException
+     */
+    public Annotation buildAnnotation(final Class<?> annoClass, final AnnotationInfo info) throws AnnotationReadException {
         
         final Map<String, Object> defaultValues = new HashMap<>();
-        for(Method method : ann.getMethods()) {
+        for(Method method : annoClass.getMethods()) {
             Object defaultValue = method.getDefaultValue();
             if(defaultValue != null) {
                 defaultValues.put(method.getName(), defaultValue);
@@ -105,13 +112,13 @@ public class DynamicAnnotationBuilder {
             loader = Thread.currentThread().getContextClassLoader();
         }
         
-        Object obj = Proxy.newProxyInstance(loader, new Class[]{ann},
+        Object obj = Proxy.newProxyInstance(loader, new Class[]{annoClass},
                 new InvocationHandler() {
                     @Override
-                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
                         String name = method.getName();
                         if (name.equals("annotationType")) {
-                            return ann;
+                            return annoClass;
                         } else if(xmlValues.containsKey(name)){
                             return xmlValues.get(name);
                         } else {

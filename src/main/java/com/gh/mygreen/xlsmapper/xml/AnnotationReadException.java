@@ -4,8 +4,9 @@ import com.gh.mygreen.xlsmapper.XlsMapperException;
 
 
 /**
+ * アノテーションをXMLから読み込み込む際に失敗した場合にスローする例外。
  *
- *
+ * @since 0.5
  * @author T.TSUCHIE
  *
  */

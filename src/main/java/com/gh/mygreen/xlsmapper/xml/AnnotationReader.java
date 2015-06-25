@@ -28,7 +28,7 @@ public class AnnotationReader {
      * XMLで定義した情報。
      * nullでもよい。
      */
-    private XmlInfo xmlInfo;
+    private final XmlInfo xmlInfo;
     
     /**
      * アノテーションを動的に組み立てるクラス。
