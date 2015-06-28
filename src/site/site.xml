@@ -19,12 +19,13 @@
 			</script>
 		</head>
 		<menu name="ドキュメント">
-			<item name="基本的な使い方" href="howtouse.html" />
-			<item name="シートの値の入力値検証" href="validation.html" />
-			<item name="拡張方法" href="extension.html" />
-			<item name="XLSBeansとの違い" href="diff_xlsbeans.html" />
-			<item name="ダウンロード" href="download.html" />
-			<item name="リリースノート" href="release.html" />
+			<item name="基本的な使い方" href="sphinx/howtouse.html" />
+			<item name="アノテーションの使用方法" href="sphinx/annotation.html" />
+			<item name="その他の機能" href="sphinx/otheruse.html" />
+			<item name="読み込んだ値の入力値検証" href="sphinx/validation.html" />
+			<item name="拡張方法" href="sphinx/extension.html" />
+			<item name="XLSBeansとの違い" href="sphinx/diff_xlsbeans.html" />
+			<item name="リリースノート" href="sphinx/release.html" />
 			<item name="Javadoc" href="./apidocs/index.html" />
 		</menu>
 		<menu ref="reports" />
