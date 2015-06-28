@@ -1,0 +1,397 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7. リリースノート &mdash; XlsMapper 0.5 ドキュメント</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="XlsMapper 0.5 ドキュメント" href="index.html" />
+    <link rel="prev" title="6. XLSBeansとの違い" href="diff_xlsbeans.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="diff_xlsbeans.html" title="6. XLSBeansとの違い"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div id="toc" class="sidebarRow">
+<h3><a href="../index.html">プロジェクト情報</a></h3>
+<ul>
+	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">Javadoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../project-info.html">プロジェクト情報</a></li>
+</ul>
+
+<h3><a href="index.html">目次</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id3">1.2. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 書き込み方</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id4">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id6">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xlsmapperconfig">3.1. XlsMapperConfigによる動作のカスタマイズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id2">3.2. シート上の位置情報の取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id4">3.3. シート上の見出しの取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xml">3.4. XMLファイルによるマッピング</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="validation.html">4. 読み込んだ値の入力値検証</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id2">4.1. 入力値検証の基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id3">4.2. 独自の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id4">4.3. フィールド（プロパティ）の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id5">4.4. メッセージファイルの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id6">4.5. メッセージファイルの読み込み方法の変更</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#el">4.6. EL式のカスタマイズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#bean-validation">4.7. Bean Validationを使用した入力値検証</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension.html">5. 拡張方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfacetory">5.4. BeanFacetoryの拡張</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="diff_xlsbeans.html">6. XLSBeansとの違い</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id1">6.1. 改善機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id2">6.2. 追加機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id3">6.3. 削除機能</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">7. リリースノート</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-5-2015-06-29">7.1. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-4-2015-04-05">7.2. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-3-2015-01-11">7.3. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-3-2015-01-01">7.4. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2-2014-12-01">7.5. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-1-2014-11-25">7.6. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2014-11-24">7.7. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-1-2014-10-30">7.8. ver.0.1 - 2014-10-30</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="diff_xlsbeans.html"
+                        title="前の章へ">6. XLSBeansとの違い</a></p>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/release.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>クイック検索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="検索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    モジュール、クラス、または関数名を入力してください
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>7. リリースノート<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="ver-0-5-2015-06-29">
+<h2>7.1. ver.0.5 - 2015-06-29<a class="headerlink" href="#ver-0-5-2015-06-29" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>下記の機能を追加または改善</p>
+<ul>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/21">#21</a> : セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.4に対応しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/22">#22</a> : 内部クラス定義にてクラス定義がprivateなどの非公開の場合ににも対応しました。読み込み時にインスタンスの生成に失敗する事象を改善しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/23">#23</a> : 読み込み時に、文字列形式のセルをdoubleなどの数値型のクラスにマッピングする際にエラーが発生する事象を改善しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/24">#24</a> : 読み込み時に、Javaクラスの表現可能な値よりも大きい数値をマッピングする際に、オーバーフローではなく、エラーとするよう動作を改善しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/25">#25</a> : 日時型をマッピングする際に、日時の型変換用アノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code> で書式を指定しないとエラーが発生する事象を改善しました。アノテーションを指定しない場合、Javaの各タイプごとにデフォルトの書式が設定されます。</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.sql.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.sql.Time</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss.SSS</cite> の書式が適用されます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/26">#26</a> : 空セル（ブランクセル）をString型に読み込む時、型変換世のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を付与してトリムを有効としている場合、空文字を設定するように改善しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>トリムが無効な場合は、nullが設定されます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/27">#27</a> : 空の項目を無視するリスト型の型変換用アノテーション <code class="docutils literal"><span class="pre">&#64;XlsArrayConverter(ignoreEmptyItem=true)</span></code> と、トリムを有効にするアノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を組み合わせた場合、トリム処理が無視される事象を改善しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>トリム処理により空の項目となり、空の項目を無視する設定をしている場合、その項目は読み込み、書き込みの対象外となります。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/28">#28</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsLabelledCell(label=&quot;XXXX&quot;,</span> <span class="pre">optional=true)</span></code> と設定し、指定したラベルのセルが見つからない場合に、NullPointerExceptionが発生する事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/31">#31</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsLabelledCell</span></code> の属性 range、skip、headerLabelを指定した場合の処理を改善しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>属性headerLabelを指定した場合、Excelのシート上のheaderLabelで指定したセルを取得した後、labelで指定したセルを検索する際に、検索の開始位置が常に0行目から検索し直してしまい、違うセルがヒットしてしまう事象を修正しました。</li>
+<li>属性skipとrangeを指定していると、NullPointerExceptionが発生する事象を修正しました。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/32">#32</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsLabelledCell</span></code> でセルの値を読み込む時に、<code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">Position&gt;</span> <span class="pre">positions</span></code> フィールドにてを定義していても、セルのアドレスが正しく取得できない事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/33">#33</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsSheet(number=2)</span></code> で読み込み／書き込みするシートをシート番号で指定している場合、例外 <code class="docutils literal"><span class="pre">SheetNotFoundException</span></code> がスローされる事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/34">#34</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> レコードをマッピングする場合、見出しセルを結合していると正しく、セルの値が取得できない事象を修正しました。<code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> も同様に修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/38">#38</a> : 数値型をマッピングする場合、Excelの仕様に合わせて有効桁数を指定するように機能追加しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>有効桁数は、数値の型変換用アノテーション <code class="docutils literal"><span class="pre">&#64;XlsNumberConverter(precision=15)</span></code> で変更可能です。</li>
+<li>デフォルトでは、有効桁数はExcelの仕様と同じ15桁です。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/39">#39</a> : 型変換用アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(defaultValue=&quot;aaaa&quot;)</span></code> デフォルト値を指定しているが、その値自体が不正な場合、ConverterExceptionをスローしているが、その子クラスのTypeBindExceptionをスローするように修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/40">#40</a> : char型を書き込む時に初期値&#8217;u000&#8217;を設定し書き込むとExcel上で文字化けする事象を修正しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>char型を書き込む時に、’u000’は、空白と判断して、空セルとして書き込むよう修正。</li>
+<li>char型の場合、書き込む時にデフォト値が2文字以上あってもそのまま書き込まれるため、先頭の1文字のみ書き込むよう修正。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/41">#41</a> : Javaクラス <code class="docutils literal"><span class="pre">java.util.Set</span></code> を書き込む場合、値をnullとしていると、NullPointerExceptionが発生する事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/42">#42</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> で属性headerAddressを指定していても反映されない事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/44">#44</a> : アノテーション <code class="docutils literal"><span class="pre">XlsSheet(regexp=&quot;Sheet.+&quot;)</span></code> 正規表現にてシート名を指定し、書き込む際の改善をしました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>正規表現で指定しても、一致するシートが1つの場合は、エラーとしないで、そのシートに書き込む。</li>
+<li>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsSheetName</span></code> を付与しているフィールドを指定し、その値に一致しなくても、正規表現に一致するシートが1つ一致すれば、そのシートに書き込む。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/45">#45</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords(terminal=RecordTerminal.Empty)</span></code> を設定している場合、レコードを設定していても、書き込まれない事象を修正しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>読み込み時には表の終端を判定する際に、セルの値が空であることに意味があるが、書き込む際にはテンプレート用のセルは空を設定しているため、処理が終了してしまう。そのため、書き込む時に、terminalの値がRecordTerminal.Emptyのとき強制的にRecordTerminal.Borderに補正して処理する。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/46">#46</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHoritonralRecords</span></code> で書き込む場合、レコードのフィールドにアノテーション <cite>&#64;XlsColumn(merged=true)</cite> を付与し、同じ値のセルを結合する設定をしていると、Excelファイルが壊れる事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/47">#47</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与しているフィールド型が配列型の場合、書き込むときにレコードが出力されない事象を修正しました。
+同様に、<code class="docutils literal"><span class="pre">&#64;XlsVertiacalRecords</span></code>、<code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> の処理も修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/48">#48</a> : アノテ－ション <a href="#id24"><span class="problematic" id="id25">``</span></a>&#64;XlsHorizontalRecords(remainedRecord=RemainedRecordOperate.Delete) `` を付与し、書き込む先に余分な行を削除するときに、1回多く削除してしまう事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/49">#49</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与し、書き込む際にレコードが追加、削除されるときに、Excelの入力規則の範囲修正が正しくできない事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/51">#51</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> を付与し、連結した表を書き込む時に、はみ出したセルがあると、属性orverRecordOperateの処理が実行されない事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/52">#52</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与したクラスに、ライフサイクルコールバック用のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsPostSave</span></code> を付与したメソッドが実行されない事象を修正しました。 `` &#64;XlsVerticalRecords`` の場合も同様に修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/54">#54</a> : メッセージ中などの式言語の処理としてEL2.Xを利用する場合、実装を外部ライブラリ <a class="reference external" href="https://github.com/mygreen/standalone-el/">standalone-el</a> に変更しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/57">#57</a> : メッセージ中などの式言語の処理としてEL3.Xを利用している場合、formatterを利用しているとエラーが発生する事象を修正しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>EL3.xのライブラリのバージョンを3.0から3.0.1-b08に変更しました。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">アノテーション <code class="docutils literal"><span class="pre">&#64;XlsIsEmpty</span></code> を付与してレコードが空かどうか判定するメソッドの実装を容易にするためのクラス <code class="docutils literal"><span class="pre">IsEmptyBuilder</span></code> を追加しました。</p>
+</li>
+<li><p class="first">XMLファイルによるマッピング機能において、XMLのパースをJAXPから、JAXBへ変更しました。</p>
+</li>
+</ul>
+</div>
+<div class="section" id="ver-0-4-2015-04-05">
+<h2>7.2. ver.0.4 - 2015-04-05<a class="headerlink" href="#ver-0-4-2015-04-05" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>下記の機能を追加または改善</p>
+<ul>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/15">#15</a> : セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> を利用するよう変更。</p>
+<blockquote>
+<div><ul class="simple">
+<li>XlsConfigのプロパティ <code class="docutils literal"><span class="pre">POICellFormatter</span></code> のクラス名を <code class="docutils literal"><span class="pre">CellFormatter</span></code> に変更。</li>
+<li>この対策により、<a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/19">#19</a> も改善される</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/17">#17</a> : ハイパーリンクを書き込む処理を改善し、内部的に二重にリンクが設定される事象を修正。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/18">#18</a> : コメントを含むシートをテンプレートして出力し、それをExcelで開くと警告メッセージが表示される事象を修正。</p>
+<blockquote>
+<div><ul class="simple">
+<li>これは、POI-3.11の不良であり、POI-3.10～POI-3.11のみで発生する。</li>
+<li>この事象を回避するために、 XlsMapperConfigのプロパティとして、「correctCellCommentOnSave」を追加。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="ver-0-3-2015-01-11">
+<h2>7.3. ver.0.3 - 2015-01-11<a class="headerlink" href="#ver-0-3-2015-01-11" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>下記の機能を追加または改善</p>
+<ul>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/4">#4</a> : 書き込み時にレコードの追加・削除を行った際に入力規則と名前の定義を自動的に修正する機能を追加。</p>
+<blockquote>
+<div><ul class="simple">
+<li>XlsMapperConfigのプロパティとして、「correctNameRangeOnSave」「correctCellDataValidationOnSave」を追加。</li>
+<li>ただし、データの入力規則を自動的に修正する機能を利用する場合は、POI-3.11が必要となります。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/13">#13</a>: 読み込み時のエラーメッセージの改善。型変換時エラー時にセルの値&#8217;validatedValue&#8217;を追加。</p>
+<blockquote>
+<div><ul class="simple">
+<li>さらに、CellFieldを使用した値の検証のエラーメッセージの候補に、クラスタイプを指定できるよう改善。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="ver-0-2-3-2015-01-01">
+<h2>7.4. ver.0.2.3 - 2015-01-01<a class="headerlink" href="#ver-0-2-3-2015-01-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>下記の機能を追加または改善</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/7">#7</a> : Excel関数が設定されているセルを読み込んだときに例外が発生する事象を修正。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/8">#8</a> : 書き込み時のセルの「縮小して表示」の処理を効率化。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/9">#9</a> : CellFieldクラスで属性エラーがある場合でも必須チェックが実行される事象を修正。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/10">#10</a> : 列挙型に対して入力値検証する際にエラーコード「typeMismatch.java.lang.Enum」を追加。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/11">#11</a> : isから始まるboolean型のgetterメソッドにアノテーションを付与しても無視される事象を修正。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/12">#12</a> : EL3.0で追加されたラムダ式を利用できるよう改善。</li>
+</ul>
+</div>
+<div class="section" id="ver-0-2-2-2014-12-01">
+<h2>7.5. ver.0.2.2 - 2014-12-01<a class="headerlink" href="#ver-0-2-2-2014-12-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>下記の不良を修正。</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/5">#5</a>  : 書き込み時に、リストのトリムが有効にならない。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/6">#6</a>  : 入力値検証の際に変数の値がnullにしているとNPEが発生する。</li>
+</ul>
+</div>
+<div class="section" id="ver-0-2-1-2014-11-25">
+<h2>7.6. ver.0.2.1 - 2014-11-25<a class="headerlink" href="#ver-0-2-1-2014-11-25" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>下記の不良を修正。</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/1">#1</a> - &#64;XlsHorizontalRecordsに、Set型を使用すると例外が発生する。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/2">#2</a> - ExpressionLanguageELImplが、Spring-expression依存になっている。</li>
+</ul>
+</div>
+<div class="section" id="ver-0-2-2014-11-24">
+<h2>7.7. ver.0.2 - 2014-11-24<a class="headerlink" href="#ver-0-2-2014-11-24" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul>
+<li><p class="first">アノテーション &#64;XlsIsEmptyを追加しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> 、<code class="docutils literal"><span class="pre">&#64;XlsVertialRecords</span></code> の属性skipEmptyRecordで&#8217;true&#8217;を指定した場合、レコードが空の場合、そのレコードの読み込みをスキップします。</li>
+<li>アノテーション &#64;XlsIsEmptyは、引数なしで、戻り値がtrueのメソッドに付与する必要がります。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">MessageInterpolator</span></code> を改善し、メッセージ中に定義した変数をメッセージコードとして処理する機能を追加しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>メッセージをフォーマットする際に、引数で渡した変数用オブジェクトに存在しない変数名がメッセージに存在する場合、MessageResolverから値を取得します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">SheetBindingErrors中のフィールドエラーにアクセスするメソッドにおいて、現在の位置を考慮するように改善しました。</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">&#64;XlsHorzontalRecords(remainedRecord=RemainedRecordOperate.Clear)</span></code> を指定指示に書き込んだ場合、書き込むレコードの件数が0件の場合、出力したシートがヘッダーのスタイルになる現象を修正しました。</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">&#64;XlsHorzontalRecords(remainedRecord=RemainedRecordOperate.Delete)</span></code> を指定指示に書き込んだ場合、書き込むレコードの件数が0件の場合、見出し行を除く行が全て削除される現象を改善しまいた。1件のみ残すよう修正しました。</p>
+</li>
+</ul>
+</div>
+<div class="section" id="ver-0-1-2014-10-30">
+<h2>7.8. ver.0.1 - 2014-10-30<a class="headerlink" href="#ver-0-1-2014-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>初期リリース。</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="diff_xlsbeans.html" title="6. XLSBeansとの違い"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, T.TSUCHIE.
+      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1 で生成しました。
+    </div>
+  </body>
+</html>

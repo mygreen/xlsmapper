@@ -1,0 +1,249 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. XLSBeansとの違い &mdash; XlsMapper 0.5 ドキュメント</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="XlsMapper 0.5 ドキュメント" href="index.html" />
+    <link rel="next" title="7. リリースノート" href="release.html" />
+    <link rel="prev" title="5. 拡張方法" href="extension.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="release.html" title="7. リリースノート"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="extension.html" title="5. 拡張方法"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div id="toc" class="sidebarRow">
+<h3><a href="../index.html">プロジェクト情報</a></h3>
+<ul>
+	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">Javadoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../project-info.html">プロジェクト情報</a></li>
+</ul>
+
+<h3><a href="index.html">目次</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id3">1.2. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 書き込み方</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id4">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id6">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xlsmapperconfig">3.1. XlsMapperConfigによる動作のカスタマイズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id2">3.2. シート上の位置情報の取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id4">3.3. シート上の見出しの取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xml">3.4. XMLファイルによるマッピング</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="validation.html">4. 読み込んだ値の入力値検証</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id2">4.1. 入力値検証の基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id3">4.2. 独自の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id4">4.3. フィールド（プロパティ）の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id5">4.4. メッセージファイルの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id6">4.5. メッセージファイルの読み込み方法の変更</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#el">4.6. EL式のカスタマイズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#bean-validation">4.7. Bean Validationを使用した入力値検証</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension.html">5. 拡張方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfacetory">5.4. BeanFacetoryの拡張</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">6. XLSBeansとの違い</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">6.1. 改善機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">6.2. 追加機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">6.3. 削除機能</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.1. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.2. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.3. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.4. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.5. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.6. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.7. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.8. ver.0.1 - 2014-10-30</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="extension.html"
+                        title="前の章へ">5. 拡張方法</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="release.html"
+                        title="次の章へ">7. リリースノート</a></p>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/diff_xlsbeans.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>クイック検索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="検索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    モジュール、クラス、または関数名を入力してください
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="xlsbeans">
+<h1>6. XLSBeansとの違い<a class="headerlink" href="#xlsbeans" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>XlsMapperは、XLSBeans ver.1.1 のソースを元に開発を行っています。</p>
+<p>そのため、仕様、特にアノテーションの使い方はXLSBeansと共通しています。
+XLSBeansとの違いを以下に示します。</p>
+<div class="section" id="id1">
+<h2>6.1. 改善機能<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul>
+<li><p class="first">アノテーションの名称を&#8221;&#64;Xls～&#8221;として、他のライブラリのアノテーションと区別がつきやすいようにしています。</p>
+<blockquote>
+<div><ul class="simple">
+<li>セルの座標を指定する属性addressが使用できます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">エラーメッセージの内容を詳細に表示し、設定間違いの対応をしやすくしています。</p>
+</li>
+<li><p class="first">Generics対応として、<code class="docutils literal"><span class="pre">&#64;XlsMapColums、&#64;XlsIterateTables</span></code> にも対応しており、マッピング先のClassを指定する必要がありません。</p>
+</li>
+<li><p class="first">シートの座標位置の取得が、&#64;XlsMapColumnを付与したフィールドにも対応しています。</p>
+</li>
+<li><p class="first">アノテーションを付与するフィールドの修飾子として、public以外のprivate/protectedにも対応しています。</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>6.2. 追加機能<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul>
+<li><p class="first">書き込み機能があります。</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords/&#64;XlsVerticalRecords</span></code> に書き込み用の属性を追加し、行が余ったときや足りないときの動作をカスタマイズできます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">読み込み時、書き込み時のコールバック用メソッドを定義するためのアノテーション``&#64;XlsPreLoad/&#64;XlsPostLoad/&#64;XlsPreSave/&#64;XlsPostLoad`` が使用できます。</p>
+</li>
+<li><p class="first">型変換機能として、専用のアノテーションを利用して各フィールドごとに細かく設定できます。</p>
+</li>
+<li><p class="first">読み込んだシートの内容をチェックするValidation機能があります。</p>
+<blockquote>
+<div><ul class="simple">
+<li>独自にValidatorを実装する方式の他、Bean Validation 1.0/1.1に対応しています。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">セルの座標位置のように、マッピング対象の見出し名を取得するこができます。</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>6.3. 削除機能<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul>
+<li><p class="first">コードをシンプルにするため、jExcel API対応を排除し、Apache POIのみに対応しています。</p>
+</li>
+<li><p class="first">アノテーション``&#64;PostProcessor`` を削除しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>代わりに、<code class="docutils literal"><span class="pre">&#64;XlsPreLoad/&#64;XlsPostLoad/&#64;XlsPreSave/&#64;XlsPostLoad</span></code> が使用できます。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="release.html" title="7. リリースノート"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="extension.html" title="5. 拡張方法"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, T.TSUCHIE.
+      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1 で生成しました。
+    </div>
+  </body>
+</html>

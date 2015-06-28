@@ -1,0 +1,1209 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. アノテーションの使用方法 &mdash; XlsMapper 0.5 ドキュメント</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="XlsMapper 0.5 ドキュメント" href="index.html" />
+    <link rel="next" title="3. その他の機能" href="otheruse.html" />
+    <link rel="prev" title="1. 基本的な使い方" href="howtouse.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="otheruse.html" title="3. その他の機能"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="howtouse.html" title="1. 基本的な使い方"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div id="toc" class="sidebarRow">
+<h3><a href="../index.html">プロジェクト情報</a></h3>
+<ul>
+	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">Javadoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../project-info.html">プロジェクト情報</a></li>
+</ul>
+
+<h3><a href="index.html">目次</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id3">1.2. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 書き込み方</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">2. アノテーションの使用方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">2.2. アノテーションの定義位置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">2.3. マッピング用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xlsmapperconfig">3.1. XlsMapperConfigによる動作のカスタマイズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id2">3.2. シート上の位置情報の取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id4">3.3. シート上の見出しの取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xml">3.4. XMLファイルによるマッピング</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="validation.html">4. 読み込んだ値の入力値検証</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id2">4.1. 入力値検証の基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id3">4.2. 独自の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id4">4.3. フィールド（プロパティ）の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id5">4.4. メッセージファイルの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id6">4.5. メッセージファイルの読み込み方法の変更</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#el">4.6. EL式のカスタマイズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#bean-validation">4.7. Bean Validationを使用した入力値検証</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension.html">5. 拡張方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfacetory">5.4. BeanFacetoryの拡張</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="diff_xlsbeans.html">6. XLSBeansとの違い</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id1">6.1. 改善機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id2">6.2. 追加機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id3">6.3. 削除機能</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.1. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.2. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.3. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.4. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.5. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.6. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.7. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.8. ver.0.1 - 2014-10-30</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="howtouse.html"
+                        title="前の章へ">1. 基本的な使い方</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="otheruse.html"
+                        title="次の章へ">3. その他の機能</a></p>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/annotation.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>クイック検索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="検索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    モジュール、クラス、または関数名を入力してください
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>2. アノテーションの使用方法<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>本ライブラリでは、アノテーションは「マッピング用」「型変換用」「ライフサイクル・コールバック用」の3種類が存在します。</p>
+<ul class="simple">
+<li>マッピング用は、Excelのシート中の表とJavaクラスのプロパティとを関連づけるために使用します。</li>
+<li>型変換用は、Excelのシート中のセルの値をJavaのクラスに設定する際に、変換処理が必要な場合に使用します。</li>
+<li>ライフサイクルコールバック用は、読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。</li>
+</ul>
+<div class="section" id="exceljava">
+<h2>2.1. ExcelとJava間で数値をマッピングする際の注意事項<a class="headerlink" href="#exceljava" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>ExcelとJavaとでは表現可能な数値の有効桁数がなどが異なるため、桁落ちなどのため注意が必要です。</p>
+<ul>
+<li><p class="first">文字列型のセルの値をJavaの数値型にマッピングする場合、Javaで表現可能な最大値/最小値を超えてマッピングした場合、エラーとなります。</p>
+<blockquote>
+<div><ul class="simple">
+<li>ver0.5以降の場合、<code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.cellconvert.TypeBindException</span></code> が発生します。</li>
+<li>ver0.4以前の場合、オーバーフローを起こして読み込まれます。
+例えば、shortに最大値+1(32768)がセルに設定されている場合、ーバーフローを起こして、<code class="docutils literal"><span class="pre">-32768</span></code> として読み込まれます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Excelでは有効桁数が15桁であるため、Javaのlong型など15桁を超える表現が可能な数値を書き込んだ場合、数値が丸められます。</p>
+<blockquote>
+<div><ul class="simple">
+<li>例えば、long型の19桁の数値 <code class="docutils literal"><span class="pre">1234567890123456789</span></code> を書き込んだ場合、16桁以降の値が丸められ <code class="docutils literal"><span class="pre">1234567890123450000</span></code> として書き込まれます。</li>
+<li>Excelの仕様については、<a class="reference external" href="https://support.office.com/ja-jp/article/Excel-%E3%81%AE%E4%BB%95%E6%A7%98%E3%81%A8%E5%88%B6%E9%99%90-1672b34d-7043-467e-8e27-269d656771c3?ui=ja-JP&amp;rs=ja-JP&amp;ad=JP">Excel の仕様と制限</a> を参照してください。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>2.2. アノテーションの定義位置<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>XlsMapperでは、フィールドとメソッドの両方にアノテーションを付与することができます。
+アノテーションは、フィールドまたはフィールドに対するアクセッサメソッドに定義可能です。
+読み込みと書き込みの両方を行うならば、フィールドに定義することをお薦めします。</p>
+<ul>
+<li><p class="first">クラスの場合、全てのアクセスレベル（public/protected/private/なし）に付与したアノテーションが有効になります。</p>
+<blockquote>
+<div><ul class="simple">
+<li>ただし、継承元の親クラスに定義されたものは無効です。</li>
+<li>内部クラスとして定義する場合、静的な <code class="docutils literal"><span class="pre">static</span> <span class="pre">class</span></code> で定義する必要があります。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">フィールドの場合、全てのアクセスレベル（public/protected/privte/なし）に付与したアノテーションが有効になります。</p>
+</li>
+<li><p class="first">メソッドの場合、publicのみ有効になります。</p>
+<blockquote>
+<div><ul class="simple">
+<li>メソッドに付与した場合、読み込み時はsetterに付与したアノテーションを用います。
+書き込み時は、getterに付与したアノテーションを用います。</li>
+<li>フィールドと対応するメソッド（getter/setter）の両方にアノテーションを付与した場合、メソッドに付与したアノテーションが優先されます。</li>
+<li>読み込み時と書き込み時の両方を行うことを考慮すると、フィールドにアノテーションを付与することをお薦めします。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">アクセッサメソッドを動的に生成する <a class="reference external" href="http://projectlombok.org/">Lombok</a> を利用する場合は、フィールドに定義してください。</p>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>2.3. マッピング用のアノテーション<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="xlssheet">
+<h3>2.3.1. <code class="docutils literal"><span class="pre">&#64;XlsSheet</span></code><a class="headerlink" href="#xlssheet" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>読み込むシートをシート番号、シート名、シート名に対する正規表現のいずれかで指定します。</p>
+<p>クラスに付与します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="cm">/** シート番号で指定する場合 */</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">number</span><span class="o">=</span><span class="mi">0</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span class="cm">/** シート名で指定する場合 */</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>正規表現で指定する場合は、 <code class="docutils literal"><span class="pre">XlsMapper#loadMultiple(...)</span></code> メソッドを用いることでマッチしたシートの情報を一度に取得することができます。</p>
+<p>書き込み時は、複数のシートが一致する可能性があり、1つに特定できない場合があるため注意が必要です。</p>
+<blockquote>
+<div><ul class="simple">
+<li>正規表現に一致するシートが1つしかない場合は、そのまま書き込みます。<cite>[ver0.5+]</cite></li>
+<li>正規表現に一致するシートが複数ある場合、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsSheetName</span></code> を付与したフィールドの値元に決定します。
+そのため、予めフィールドに設定しておく必要があります。</li>
+<li>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsSheetName</span></code> を付与しているフィールドを指定し、その値に一致しなくても、正規表現に一致するシートが1つ一致すれば、そのシートに書き込まれます。<cite>[ver0.5+]</cite></li>
+</ul>
+</div></blockquote>
+<div class="highlight-java"><div class="highlight"><pre><span class="cm">/** 正規表現で指定する場合 */</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">regex</span><span class="o">=</span><span class="s">&quot;Sheet_[0-9]+&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xlscell">
+<h3>2.3.2. <code class="docutils literal"><span class="pre">&#64;XlsCell</span></code><a class="headerlink" href="#xlscell" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>セルの列、行を指定してBeanのプロパティにマッピングします。</p>
+<p>フィールドまたはメソッドに対して付与します。</p>
+<ul>
+<li><p class="first">属性column、rowで座標を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>columnは列番号で、0から始まります。</li>
+<li>rowは行番号で、0から始まります。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">属性addressで、 &#8216;A1&#8217;のようにシートのアドレス形式で指定もできます。</p>
+<blockquote>
+<div><ul class="simple">
+<li>属性addressを指定する場合は、column, rowは指定しないでください。</li>
+<li>属性addressの両方を指定した場合、addressの値が優先されます。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+
+    <span class="c1">// インデックス形式で指定する場合</span>
+    <span class="nd">@XlsCell</span><span class="o">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">title</span><span class="o">;</span>
+
+    <span class="c1">// アドレス形式で指定する場合</span>
+    <span class="nd">@XlsCell</span><span class="o">(</span><span class="n">address</span><span class="o">=</span><span class="s">&quot;B3&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xlslabelledcell">
+<h3>2.3.3. <code class="docutils literal"><span class="pre">&#64;XlsLabelledCell</span></code><a class="headerlink" href="#xlslabelledcell" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>セルの文字列を指定し、その左右もしくは下側のセルの値をマッピングします。</p>
+<p>フィールドまたはメソッドに対して付与します。</p>
+<ul>
+<li><p class="first">属性labelで、見出しとなるセルの値を指定します。</p>
+</li>
+<li><p class="first">属性typeで、見出しセルから見て値が設定されている位置を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>列挙型 <code class="docutils literal"><span class="pre">LabelledCellType</span></code> で、左右もしくは下側のセルを指定できます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">属性optionalで、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。</p>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+
+<span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Title&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">title</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>range属性を指定すると、type属性の方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルの値を取得します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Title&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">,</span> <span class="n">range</span><span class="o">=</span><span class="mi">3</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">title</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>同じラベルのセルが複数ある場合は、領域の見出しをheaderLabel属性で指定します。
+headerLabel属性で指定されたセルからlabel属性で指定されたセルを下方向に検索し、最初に見つかったセルをラベルセルとして使用します。</p>
+<div class="figure align-center" id="id7">
+<img alt="_images/LabelledCell_headerLabel.png" src="_images/LabelledCell_headerLabel.png" />
+<p class="caption"><span class="caption-text">LabelledCell</span></p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;クラス名&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">,</span> <span class="n">headerLabel</span><span class="o">=</span><span class="s">&quot;アクション&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">actionClassName</span><span class="o">;</span>
+
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;クラス名&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">,</span> <span class="n">headerLabel</span><span class="o">=</span><span class="s">&quot;アクションフォーム&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">formClassName</span><span class="o">;</span>
+
+  <span class="o">}</span>
+</pre></div>
+</div>
+<p>skip属性を指定することで、ラベルセルから指定したセル数分離れたセルの値をマッピングすることができます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+
+<span class="c1">// クラス名というセルから右側に2つ離れたセルの値をマッピング</span>
+<span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;クラス名&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">setActionClassName</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。</p>
+</div>
+</div>
+<div class="section" id="xlssheetname">
+<h3>2.3.4. <code class="docutils literal"><span class="pre">&#64;XlsSheetName</span></code><a class="headerlink" href="#xlssheetname" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>シート名をString型のプロパティにマッピングします。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+
+    <span class="nd">@XlsSheetName</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">sheetName</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">書き込み時で、シート名を正規表現で指定している場合は、 <code class="docutils literal"><span class="pre">&#64;XlsSheetName</span></code> を付与しているフィールドで書き込むシートを決定します。
+そのため書き込む前に、シート名を指定する必要があります。</p>
+</div>
+</div>
+<div class="section" id="xlshorizontalrecords">
+<h3>2.3.5. <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code><a class="headerlink" href="#xlshorizontalrecords" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>水平方向に連続する行をListまたは配列にマッピングします。表には最上部にテーブルの名称と列名を記述した行が必要になります。</p>
+<div class="figure align-center" id="id8">
+<img alt="_images/HorizontalRecord.png" src="_images/HorizontalRecord.png" />
+<p class="caption"><span class="caption-text">HorizontalRecords</span></p>
+</div>
+<p>tableLabel属性でテーブルの名称を指定します。List型または配列のフィールドに付与します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Record</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>デフォルトでは行に1つもデータが存在しない場合、そのテーブルの終端となります。
+行の一番左側の列のボーダーによってテーブルの終端を検出する方法もあります。
+この場合は <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecordsのterminal</span></code> 属性に <code class="docutils literal"><span class="pre">RecordTerminal.Border</span></code> を指定してください。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">,</span> <span class="n">terminal</span><span class="o">=</span><span class="n">RecordTerminal</span><span class="o">.</span><span class="na">Border</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Record</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">書き込む際にはテンプレート用のセルは空を設定しているため、属性 <code class="docutils literal"><span class="pre">terminal=RecordTermial.Empty</span></code> を指定していると処理が終了してしまうため、強制的に <code class="docutils literal"><span class="pre">terminal=RecordTerminal.Border</span></code> に補正して処理されます。<cite>[ver0.5+]</cite></p>
+</div>
+<p>テーブルが他のテーブルと連続しておりterminal属性でBorder、Emptyのいずれを指定しても終端を検出できない場合があります。
+このような場合はterminateLabel属性で終端を示すセルの文字列を指定します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">,</span> <span class="n">terminateLabel</span><span class="o">=</span><span class="s">&quot;Terminate&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Record</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>headerLimit属性を指定すると、テーブルのカラムが指定数見つかったタイミングでExcelシートの走査を終了します。
+主に無駄な走査を抑制したい場合にしますが、<code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> 使用時に、テーブルが隣接しており終端を検出できない場合などに
+カラム数を明示的に指定してテーブルの区切りを指定する場合にも使用できます。</p>
+<p>たとえば以下の例は、カラムのヘッダを4つ分検出したところでそのテーブルの終端と見なします。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">,</span> <span class="n">terminal</span><span class="o">=</span><span class="n">RecordTerminal</span><span class="o">.</span><span class="na">Border</span><span class="o">,</span> <span class="n">headerLimit</span><span class="o">=</span><span class="mi">4</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Record</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>なお、セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。</p>
+<p>テーブルの名称用のセルが存在しない場合、属性headerColumn, headerRowで表の開始位置（左上部の端）の座標を指定できます。
+また、座標はheaderAddressで&#8217;A1&#8217;のようにシートのアドレス形式で指定可能です。</p>
+<div class="highlight-java"><div class="highlight"><pre>   @XlsSheet(name=&quot;Users&quot;)
+   public class SheetObject {
+
+       @XlsHorizontalRecords(headerColumn=0, headerRow=1, terminal=RecordTerminal.Border)
+       private List&lt;Record&gt; records;
+
+       @XlsHorizontalRecords(headerAddress=&quot;B13&quot;, terminal=RecordTerminal.Border)
+       private List&lt;Record&gt; sample;
+
+   }
+
+
+overRecord、remainedRecord属性で、書き込み時のレコードの操作を指定することができます。
+</pre></div>
+</div>
+<ul>
+<li><p class="first">overRecored属性で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>Insertを指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。</li>
+<li>Copyを指定すると上部のセルを下部にコピーして値を設定します。</li>
+<li>Breakを指定すると、レコードの書き込みをその時点で止めます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">remainedRecord属性で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>Clearでセルの値をクリアします。</li>
+<li>Deleteで行を削除します。</li>
+<li>Noneは何もしません。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">,</span> <span class="n">overRecord</span><span class="o">=</span><span class="n">OverRecordOperate</span><span class="o">.</span><span class="na">Insert</span><span class="o">,</span> <span class="n">remainedRecord</span><span class="o">=</span><span class="n">RemainedRecordOperate</span><span class="o">.</span><span class="na">Clear</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Record</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>skipEmptyRecord属性で、読み込み時に空のレコードを読み飛ばすことができます。</p>
+<p>レコード用のクラスには、レコードを空と判定するためのメソッド用意し、アノテーション&#64;XlsIsEmptyを付与します。</p>
+<p>また、この属性は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// ルートのオブジェクト</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;シート名&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">,</span> <span class="n">skipEmptyRecord</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">users</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="c1">// レコードのオブジェクト</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="c1">// レコードが空と判定するためのメソッド</span>
+    <span class="nd">@XlsIsEmpty</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isEmpty</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="k">if</span><span class="o">(</span><span class="n">name</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="n">name</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xlsverticalrecords">
+<h3>2.3.6. <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code><a class="headerlink" href="#xlsverticalrecords" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>垂直方向に連続する列をListまたは配列にマッピングします。要するに <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を縦方向にしたものです。
+<code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> と同じくList型の引数を1つだけ取るsetterメソッドに対して付与します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="nd">@XlsVerticalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧(垂直方向)&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Record</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> と同じくterminal属性、およびoptional属性を指定することもできます。</p>
+</li>
+<li><p class="first">overRecord、remainedRecord属性で、書き込み時のレコードの操作を指定することができます。</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、overRecord=OverRecordOperate.Insertはサポートしていません。</li>
+<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、remainedRecord=RemainedRecordOperate.Deleteはサポートしていません。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="xlscolumn">
+<h3>2.3.7. <code class="docutils literal"><span class="pre">&#64;XlsColumn</span></code><a class="headerlink" href="#xlscolumn" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> または <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> で指定されたクラスのプロパティをカラム名にマッピングします。
+フィールドやメソッドに対して付与します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Record</span> <span class="o">{</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">id</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>同じ値がグループごとに結合されているカラムの場合はmerged属性をtrueに設定します。
+こうしておくと、前の列の値が引き継がれて設定されます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Record</span> <span class="o">{</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;Gender&quot;</span><span class="o">,</span> <span class="n">merged</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">id</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">書き込みにおいては、merged属性の値がtrueであっても、上部または左側のセルと値が同じでも結合は基本的に行いません。
+ただし、システム設定 <code class="docutils literal"><span class="pre">XlsMapperConfig</span></code> の項目「mergeCellOnSave」の値をtrueにすると結合されます。</p>
+</div>
+<p>見出し行が結合され、1つの見出しに対して複数の列が存在する場合はheaderMergedプロパティを使用します。
+headerMergedの値には列見出しから何セル分離れているかを指定します。</p>
+<div class="figure align-center" id="id9">
+<img alt="_images/Column_headerMerged.png" src="_images/Column_headerMerged.png" />
+<p class="caption"><span class="caption-text">Column</span></p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;連絡先&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">mailAddress</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;連絡先&quot;</span><span class="o">,</span> <span class="n">headerMerged</span><span class="o">=</span><span class="mi">1</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">mailAddress</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xlsmapcolumns">
+<h3>2.3.8. <code class="docutils literal"><span class="pre">&#64;XlsMapColumns</span></code><a class="headerlink" href="#xlsmapcolumns" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> もしくは <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> でカラム数が可変の場合に、
+それらのカラムをMapとして設定します。BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。</p>
+<div class="figure align-center" id="id10">
+<img alt="_images/MapColumns.png" src="_images/MapColumns.png" />
+<p class="caption"><span class="caption-text">ColuMapColumnsmn</span></p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+    <span class="nd">@XlsMapColumns</span><span class="o">(</span><span class="n">previousColumnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attributes</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>previousColumnName属性で指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。</p>
+<p><code class="docutils literal"><span class="pre">&#64;XlsConverter</span></code> などで型変換を適用するときは、マップの値が変換対象となります。
+マップのキーは必ずString型を指定してください。</p>
+</div>
+<div class="section" id="xlsiteratetables">
+<h3>2.3.9. <code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code><a class="headerlink" href="#xlsiteratetables" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>同一の構造の表がシート内で繰り返し出現する場合に使用します。</p>
+<p>tableLabelプロパティで繰り返し部分の見出しラベルを指定します。</p>
+<p>また、bottomプロパティは&#64;XlsIterateTables内で <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を使用する場合に、</p>
+<p>テーブルの開始位置が <code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> の見出しセルからどれだけ離れているかを指定します。</p>
+<div class="figure align-center" id="id11">
+<img alt="_images/IterateTables.png" src="_images/IterateTables.png" />
+<p class="caption"><span class="caption-text">IterateTables</span></p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;シート名&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SheetObject</span> <span class="o">{</span>
+    <span class="nd">@XlsIterateTables</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;部門情報&quot;</span><span class="o">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span> <span class="n">units</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>繰り返し部分に対応するJavaBeanでは以下のように <code class="docutils literal"><span class="pre">&#64;XlsLabelledCell</span></code> や <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> などのアノテーションを使用することができます。</p>
+<p><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を使用する場合、tableLabelプロパティには、<code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> のtableLabelプロパティで指定したラベルと同じラベルを指定する必要がある点に注意してください。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Unit</span> <span class="o">{</span>
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;部門名&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">deptName</span><span class="o">;</span>
+
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;部門情報&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">UnitUser</span><span class="o">&gt;</span> <span class="n">unitUsers</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>繰り返し部分に対応するJavaBeanで <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を使用した場合、通常の場合と同じく <code class="docutils literal"><span class="pre">&#64;XlsColumn</span></code> で列とのマッピングを行います。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">id</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xlshint">
+<h3>2.3.10. <code class="docutils literal"><span class="pre">&#64;XlsHint</span></code><a class="headerlink" href="#xlshint" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>書き込み時に、<code class="docutils literal"><span class="pre">&#64;XlsHoriontalRecords</span></code> を使用して行の挿入や削除を行う設定を行っている場合、
+フィールドの処理順序によって、<code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">Point&gt;</span> <span class="pre">positions</span></code> フィールドで座標がずれる場合があります。</p>
+<p>このようなときに、<code class="docutils literal"><span class="pre">&#64;XlsHint</span></code> で書き込む処理順序を指定し一定に保つことができます。</p>
+<p><code class="docutils literal"><span class="pre">&#64;XlsHint</span></code> を付与しないフィールドは、付与しているフィールドよりも後から処理が実行されます。
+order属性が同じ値を設定されているときは、 フィールド名の昇順で優先度を決めて処理されます。</p>
+<div class="figure align-center" id="id12">
+<img alt="_images/Hint.png" src="_images/Hint.png" />
+<p class="caption"><span class="caption-text">Hint</span></p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsHint</span><span class="o">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">users</span><span class="o">;</span>
+
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;更新日&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="nd">@XlsHint</span><span class="o">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+   <span class="kd">private</span> <span class="n">String</span> <span class="n">updateTime</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">ソースコード上で定義した順番は、実行時には保証されないため、<code class="docutils literal"><span class="pre">&#64;XlsHint</span></code> で順番を指定する必要があります。</p>
+</div>
+</div>
+<div class="section" id="xlsisempty">
+<h3>2.3.11. <code class="docutils literal"><span class="pre">&#64;XlsIsEmpty</span></code><a class="headerlink" href="#xlsisempty" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords/&#64;XlsVerticalRecords</span></code> を使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
+レコードが空と判定するためのメソッドに付与します。</p>
+<ul class="simple">
+<li>このアノテーションを使用する場合は、<code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> の属性「skipEmptyRecord=true」を設定する必要があります。</li>
+<li><code class="docutils literal"><span class="pre">&#64;XlsIsEmpty</span></code> を付与したメソッドは、publicかつ引数なしの戻り値がboolean形式の書式にする必要があります。</li>
+<li><code class="docutils literal"><span class="pre">&#64;XlsVertialRecords</span></code> でも同様に使用できます。</li>
+</ul>
+<p>また、この機能は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// ルートのオブジェクト</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;シート名&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">,</span> <span class="n">skipEmptyRecord</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">users</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// レコードのオブジェクト</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;No.&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">no</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;住所&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">address</span><span class="o">;</span>
+
+    <span class="c1">// レコードが空と判定するためのメソッド</span>
+    <span class="nd">@XlsIsEmpty</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isEmpty</span><span class="o">()</span> <span class="o">{</span>
+
+      <span class="k">if</span><span class="o">(</span><span class="n">name</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="n">name</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+      <span class="o">}</span>
+
+      <span class="k">if</span><span class="o">(</span><span class="n">address</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="n">address</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+      <span class="o">}</span>
+
+      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">IsEmptyBuilder</span></code> (ver.0.5から追加)を利用することで、より簡潔に記述することも可能です。</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">IsEmptyBuilder#reflectionIsEmpty(...)</span></code> を利用して判定する場合、位置情報を保持するフィールド <code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">Point&gt;</span> <span class="pre">positions</span></code> などは除外対象とする必要があります。</li>
+<li>独自に判定する場合、<code class="docutils literal"><span class="pre">IsEmptyBuilder#append(...)</span></code> を利用します。</li>
+<li>さらに、 <code class="docutils literal"><span class="pre">IsEmptyBuilder#compare(IsEmptyComparator)</span></code> を利用することで独自の判定をすることができます。その際に、Lambda式を利用すると簡潔に記載できます。</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// ルートのオブジェクト</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;シート名&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">,</span> <span class="n">skipEmptyRecord</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">users</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// レコードのオブジェクト</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+
+    <span class="c1">// マッピングしたセルの位置情報を保持する。</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Point</span><span class="o">&gt;</span> <span class="n">positions</span><span class="o">;</span>
+
+    <span class="c1">// マッピングしたセルのラベル情報を保持する。</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">labels</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;No.&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">no</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;住所&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">address</span><span class="o">;</span>
+
+    <span class="c1">// レコードが空と判定するためのメソッド</span>
+    <span class="nd">@XlsIsEmpty</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isEmpty</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">IsEmptyBuilder</span><span class="o">.</span><span class="na">reflectionIsEmpty</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">&quot;positions&quot;</span><span class="o">,</span> <span class="s">&quot;labels&quot;</span><span class="o">);</span>
+
+    <span class="o">}</span>
+
+    <span class="c1">// 独自に判定する場合</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isEmpty2</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">IsEmptyBuilder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">name</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">compare</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">isBlank</span><span class="o">(</span><span class="n">address</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">isEmpty</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>2.4. 型変換用のアノテーション<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>数値や日時、列挙型にマッピングする際の変換規則の設定を行います。</p>
+<p>型変換用のアノテーションを付与しない場合は、アノテーションの初期値の設定を元に変換されます。</p>
+<div class="section" id="xlsconverter">
+<h3>2.4.1. <code class="docutils literal"><span class="pre">&#64;XlsConverter</span></code><a class="headerlink" href="#xlsconverter" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>値がnullや空のときの初期値の定義やトリム処理の設定を定義します。</p>
+<ul>
+<li><p class="first">属性defaultValueで読み込み時/書き込み時のデフォルト値を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>デフォルト値を指定しないでプリミティブ型に対して読み込む場合、数値型の場合は0や0.0、booleanの場合はfalseが設定されます。
+プリミティブのラッパークラスやオブジェクト型の場合は、nullが設定されます。</li>
+<li>指定したデフォルト値がマッピング先の型として不正な場合は、通常の型変換エラーと同様に、例外 <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.cellconvert.TypeBindException</span></code> がスローされます。<cite>[ver0.5]</cite></li>
+<li>char型にマッピングする場合、デフォルト値が2文字以上でも、先頭の一文字がマッピングされます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">属性trimの値をtruにすると、読み込み時と書き込み時にトリムを行います。</p>
+<blockquote>
+<div><ul class="simple">
+<li>シート上のセルのタイプ（分類）が数値などの文字列以外の場合は、トリム処理は行われません。
+ただし、シートのセルタイプが文字列型で、Javaの型がString型以外の数値型やDate型などの場合は、変換する前にトリム処理を行います。</li>
+<li>空セル（ブランクセル）をString型にマッピング設定しトリムを有効としている場合、読み込み時は空文字が設定されます。<cite>[ver0.5+]</cite></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="c1">// 読み込み時や書き込み時の初期値、トリム処理の有効を設定できます。</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">defaultValue</span><span class="o">=</span><span class="s">&quot;10&quot;</span><span class="o">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>書き込み時にセルの折り返し設定や縮小表示設定を強制的に行うこともできます。</p>
+<p>書き込み時はテンプレートとなるシートのセルの書式を基本的に使用するので、事前に折り返し設定が有効になって入れば書き込み時もそれらの設定が有効になります。</p>
+<ul>
+<li><p class="first">属性forceWrapTextの値がtrueの場合、強制的にセルの内の文字表示の設定「折り返して全体を表示する」が有効になります。</p>
+<blockquote>
+<div><ul class="simple">
+<li>falseの場合、テンプレートとなるセルの設定を引き継ぎます。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p class="first">属性forceShrinkToFitの値がtrueの場合、強制的にセル内の文字表示の設定「縮小して全体を表示する」が有効になります。</p>
+<blockquote>
+<div><ul class="simple">
+<li>falseの場合、テンプレートとなるセルの設定を引き継ぎます。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="c1">// 書き込み時のセルの文字表示の折り返し設定などが指定できます。</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">forceWrapText</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">forceShrinkToFit</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">Excelの仕様上、設定「折り返して全体を表示する」と「縮小して全体を表示する」は、二者択一であるため、両方の設定を有効にすることはできません。
+もし、属性forceWrapTextとforceShrinkToFitの値をtrueに設定した場合、forceShrinkToFitの設定が優先され、「縮小して全体を表示する」が有効になります。</p>
+</div>
+</div>
+<div class="section" id="xlsbooleanconverter">
+<h3>2.4.2. <code class="docutils literal"><span class="pre">&#64;XlsBooleanConverter</span></code><a class="headerlink" href="#xlsbooleanconverter" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>boolean、Boolean型の変換規則の設定を行います。</p>
+<p>単純に、「true、false」以外に、「○、×」とのマッピングも可能となります。</p>
+<ul>
+<li><p class="first">属性loadForTrue、loadForFalseで読み込み時のtrueまたはfalseと判断するの候補の値を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>属性loadForTrueとloadForFalseの値に重複がある場合、loadForTrueの定義が優先されまます。</li>
+<li>属性laodForTrueを指定しない場合、デフォルトで「&#8221;true&#8221;, &#8220;1&#8221;, &#8220;yes&#8221;, &#8220;on&#8221;, &#8220;y&#8221;, &#8220;t&#8221;」が設定されます。</li>
+<li>属性loadForFalseを指定しない場合、デフォルトで「&#8221;false&#8221;, &#8220;0&#8221;, &#8220;no&#8221;, &#8220;off&#8221;, &#8220;f&#8221;, &#8220;n&#8221;」が設定されます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">属性saveAsTrueとsaveAsFalseで書き込み時のtrueまたはfalse値に該当する文字を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>属性saveAsTrueを指定しない場合は、デフォルトで&#8221;true&#8221;が設定され、セルのタイプもBoolean型になります。</li>
+<li>属性saveAsFalseを指定しない場合は、デフォルトで&#8221;false&#8221;が設定され、セルのタイプもBoolean型になります。</li>
+<li>読み込みと書き込みの両方を行うプログラムの場合、loadForTrueとloadForFalseの値にsaveAsTrueとsaveAsFalseの値を含める必要があります。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">属性ignoreCaseの値をtrueにすると、読み込み時に大文字、小文字の区別なく候補の値と比較します。</p>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="c1">// boolean型の読み込み時と書き込み時のtrueとfalseの値の変換規則を指定します。</span>
+    <span class="nd">@XlsBooleanConverter</span><span class="o">(</span>
+      <span class="n">loadForTrue</span><span class="o">={</span><span class="s">&quot;○&quot;</span><span class="o">,</span> <span class="s">&quot;有効&quot;</span><span class="o">,</span> <span class="s">&quot;レ&quot;</span><span class="o">},</span> <span class="n">loadForFalse</span><span class="o">={</span><span class="s">&quot;×&quot;</span><span class="o">,</span> <span class="s">&quot;無効&quot;</span><span class="o">,</span> <span class="s">&quot;-&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">},</span>
+      <span class="n">saveAsTrue</span><span class="o">=</span><span class="s">&quot;○&quot;</span><span class="o">,</span> <span class="n">saveAsFalse</span><span class="o">=</span><span class="s">&quot;-&quot;</span><span class="o">,</span>
+      <span class="n">ignoreCase</span><span class="o">=</span><span class="kc">true</span>
+    <span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">availale</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>読み込み時にtrueまたはfalseに変換できない場合、例外TypeBindExceptionが発生します。</p>
+<ul class="simple">
+<li>属性failToFalseをtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、例外を発生しなくできます。</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="c1">// 読み込み時に変換できない場合に、強制的に値をfalseとして読み込みます。</span>
+    <span class="nd">@XlsBooleanConverter</span><span class="o">(</span><span class="n">failToFalse</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">availale</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xlsnumberconverter">
+<h3>2.4.3. <code class="docutils literal"><span class="pre">&#64;XlsNumberConverter</span></code><a class="headerlink" href="#xlsnumberconverter" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>数値型（short、int、long、float、double、プリミティブのラッパークラス、BigDecimal、BigInteger）の書式などの設定を行います。</p>
+<ul>
+<li><p class="first">属性patternで書式を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>Javaのクラス <code class="docutils literal"><span class="pre">java.text.DecimalFormat</span></code> で解釈可能な書式を設定します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">属性localeでロケールを指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>言語コードのみを指定する場合、&#8217;ja&#8217;の2桁で指定します。</li>
+<li>言語コードと国コードを指定する場合、&#8217;ja _JP&#8217;のようにアンダーバーで区切り指定します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">属性currencyで通貨コード（ISO-4217コード）を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>Javaのクラス <code class="docutils literal"><span class="pre">java.util.Currency</span></code> で解釈可能なコードを指定します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">属性precisionで有効桁数を指定します。<cite>[ver0.5+]</cite></p>
+<blockquote>
+<div><ul class="simple">
+<li>Excelの仕様上、有効桁数は15桁であるため、デフォルト値は15です。</li>
+<li>0以下の値を設定すると、桁数の指定を省略したことになります。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="nd">@XlsNumberConverter</span><span class="o">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;#,##0.0000&quot;</span><span class="o">,</span> <span class="n">locale</span><span class="o">=</span><span class="s">&quot;ja_JP&quot;</span><span class="o">,</span> <span class="n">currency</span><span class="o">=</span><span class="s">&quot;USD&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">double</span> <span class="n">salary</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p>Excelでは有効桁数が15桁であるため、Javaのlong型など15桁を超える表現が可能な数値を書き込んだ場合、数値が丸められるため注意してください。</p>
+<ul class="last simple">
+<li>例えば、long型の19桁の数値 <code class="docutils literal"><span class="pre">1234567890123456789</span></code> を書き込んだ場合、16桁以降の値が丸められ <code class="docutils literal"><span class="pre">1234567890123450000</span></code> として書き込まれます。</li>
+<li>Excelの仕様については、<a class="reference external" href="https://support.office.com/ja-jp/article/Excel-%E3%81%AE%E4%BB%95%E6%A7%98%E3%81%A8%E5%88%B6%E9%99%90-1672b34d-7043-467e-8e27-269d656771c3?ui=ja-JP&amp;rs=ja-JP&amp;ad=JP">Excel の仕様と制限</a> を参照してください。</li>
+</ul>
+</div>
+</div>
+<div class="section" id="xlsdateconverter">
+<h3>2.4.4. <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code><a class="headerlink" href="#xlsdateconverter" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>日付型（<code class="docutils literal"><span class="pre">java.util.Date</span></code> , <code class="docutils literal"><span class="pre">java.sql.Date</span></code> , <code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> , <code class="docutils literal"><span class="pre">java.sql.Time</span></code> ）の書式などの設定を行います。</p>
+<ul>
+<li><dl class="first docutils">
+<dt>属性patternで書式を指定します。</dt>
+<dd><ul class="first last simple">
+<li>Javaのクラス <code class="docutils literal"><span class="pre">java.util.SimpleDateFormat</span></code> で解釈可能な書式を指定します。</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">属性localeでロケールを指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>言語コードのみを指定する場合、&#8217;ja&#8217;の2桁で指定します。</li>
+<li>言語コードと国コードを指定する場合、&#8217;ja _JP&#8217;のようにアンダーバーで区切り指定します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">属性lenientで、日付/時刻の解析を厳密に行わないか指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>trueの厳密に解析を行いません。falseの場合厳密に解析を行います。</li>
+<li>読み込み時に書式に合わないセルの値を読み込んだ場合、例外TypeBindExceptionが発生します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">アノテーションを指定しない場合、Javaの各タイプごとにデフォルトの書式が設定されます。<cite>[ver0.5+]</cite></p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.sql.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.sql.Time</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss.SSS</cite> の書式が適用されます。</li>
+<li>読み込むセルに日時型の書式が設定されている場合は、書式を無視してJavaのクラスにマッピングされます。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="nd">@XlsDateConverter</span><span class="o">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;yyyy年MM月dd日 HH時mm分ss秒&quot;</span><span class="o">,</span> <span class="n">locale</span><span class="o">=</span><span class="s">&quot;ja_JP&quot;</span><span class="o">,</span> <span class="n">lenient</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Date</span> <span class="n">expired</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p>読み込み時のセルの値が属性patternで指定した書式に一致していなくても、セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
+セルの表示形式の分類が文字列の場合は、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter(pattern=&quot;&lt;書式&gt;&quot;)</span></code> で指定した書式に従い処理されます。</p>
+<p>ただし、型変換用のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code> を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.sql.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.sql.Time</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss.SSS</cite> の書式が適用されます。</li>
+</ul>
+</div>
+</div>
+<div class="section" id="xlsenumconverter">
+<h3>2.4.5. <code class="docutils literal"><span class="pre">&#64;XlsEnumConverter</span></code><a class="headerlink" href="#xlsenumconverter" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>列挙型の変換規則の設定を行います。</p>
+<ul>
+<li><p class="first">属性ignoreCaseの値をtrueにすると、読み込み時に大文字/小文字の区別なく変換します。</p>
+</li>
+<li><p class="first">属性valueMethodNameで列挙型の項目の値を取得するメソッド名を指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>指定しない場合、Enum#name()のメソッドの値が使用されます。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="c1">// 列挙型のマッピング</span>
+    <span class="nd">@XlsEnumConverter</span><span class="o">(</span><span class="n">ignoreCase</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">valueMethodName</span><span class="o">=</span><span class="s">&quot;localeName&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">RoleType</span> <span class="n">role</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 列挙型の定義</span>
+<span class="kd">public</span> <span class="kd">enum</span> <span class="n">RoleType</span> <span class="o">{</span>
+    <span class="n">Normal</span><span class="o">(</span><span class="s">&quot;一般権限&quot;</span><span class="o">),</span> <span class="n">Admin</span><span class="o">(</span><span class="s">&quot;管理者権限&quot;</span><span class="o">);</span>
+
+    <span class="c1">// 別名の設定</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">localeName</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nf">RoleType</span><span class="o">(</span><span class="n">String</span> <span class="n">localeName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">localeName</span> <span class="o">=</span> <span class="n">localeName</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// 別名の取得</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">localeName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">localeName</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xlsarrayconverter">
+<h3>2.4.6. <code class="docutils literal"><span class="pre">&#64;XlsArrayConverter</span></code><a class="headerlink" href="#xlsarrayconverter" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>配列またはCollection型（List, Set）の変換規則の設定を行います。</p>
+<p>配列またはCollectoinの要素のクラス型は、String型、プリミティブ型またはそのラッパークラスをとることができます。</p>
+<ul>
+<li><p class="first">属性separatorで区切り文字を指定します。</p>
+</li>
+<li><p class="first">属性ignoreEmptyItemで、区切った項目の値が空文字の場合、無視するか指定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>例えば、区切り文字&#8221;,&#8221;のとき、セルの値が&#8221;a,,b&#8221;の場合、trueを設定すると[&#8220;a&#8221;, &#8220;b&#8221;]として読み込みます。</li>
+<li>書き込み時も同様に、値が空またはnullの項目を無視します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">型変換アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を付与し、トリム処理を有効にしている設定の場合、区切った項目にもトリム処理が適用されます。 <cite>[ver0.5+]</cite></p>
+<blockquote>
+<div><ul class="simple">
+<li>属性ignoreEmptyItemの値をtrueに設定していると、トリム処理によって項目が空文字となった場合、その項目は無視されます。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">separator</span><span class="o">=</span><span class="s">&quot;,&quot;</span><span class="o">,</span> <span class="n">ignoreEmptyItem</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span><span class="o">[]</span> <span class="n">arrays</span><span class="o">;</span>
+
+    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">separator</span><span class="o">=</span><span class="s">&quot;;&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>読み込む際に各要素の値をトリミングしたい場合は、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を付与します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="c1">// 要素のトリム処理を指定する</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">trim</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">separator</span><span class="o">=</span><span class="s">&quot;;&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">set</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>基本的に、Genericsの型パラメータから要素のクラス型を自動的に判断しますが、属性itemClassで直接指定することもできます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+    <span class="c1">// 要素のクラス型を指定する</span>
+    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">itemClass</span><span class="o">=</span><span class="n">Integer</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span> <span class="n">list</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id6">
+<h2>2.5. ライフサイクル・コールバック用のアノテーション<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。</p>
+<p><strong>publicメソッドに付与</strong> する必要があります。</p>
+<table border="1" class="docutils" id="id13">
+<caption><span class="caption-text">ライフサイクル・コールバック用のアノテーション一覧</span><a class="headerlink" href="#id13" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">アノテーション</th>
+<th class="head">説明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&#64;XlsPreLoad</span></code></td>
+<td><div class="first last line-block">
+<div class="line">シートの値の読み込み直前に実行されます。</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&#64;XlsPostLoad</span></code></td>
+<td><div class="first last line-block">
+<div class="line">シートの値の読み込み後に実行されます。</div>
+<div class="line">シート内の全ての値の読み込み後に実行されます。</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&#64;XlsPreSave</span></code></td>
+<td>オブジェクトの書き込み直前に実行されます。</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&#64;XlsPostSave</span></code></td>
+<td><div class="first last line-block">
+<div class="line">オブジェクトの書き込み後に実行されます。</div>
+<div class="line">シート内の全ての値の書き込み後に実行されます。</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>また、特定の引数をとることができます。</p>
+<ul class="simple">
+<li>引数は、とらなくても可能です。</li>
+<li>引数の順番は任意で指定可能です。</li>
+</ul>
+<ul>
+<li><p class="first">読み込み前、書き込み前のフィールドの初期化。</p>
+</li>
+<li><p class="first">読み込み後の入力値の検証。</p>
+</li>
+<li><p class="first">書き込み後の本ライブラリで提供されない機能の補完。</p>
+<blockquote>
+<div><ul class="simple">
+<li>例えば、Excelファイル上の定義された名前の範囲の変更や入力規則の設定。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">Date</span> <span class="n">date</span><span class="o">;</span>
+
+    <span class="c1">// 読み込み前、書き込み前の処理</span>
+    <span class="nd">@XlsPreLoad</span>
+    <span class="nd">@XlsPreSave</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onInit</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// フィールドの初期化</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">date</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="c1">// 読み込み後の処理</span>
+    <span class="nd">@XlsPostLoad</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPostSave</span><span class="o">(</span><span class="n">Sheet</span> <span class="n">sheet</span><span class="o">,</span> <span class="n">XlsMapperConfig</span> <span class="n">config</span><span class="o">,</span> <span class="n">SheetBindingErrors</span> <span class="n">errors</span><span class="o">)</span> <span class="o">{</span>
+       <span class="c1">// 入力値チェックなどを行う。</span>
+    <span class="o">}</span>
+
+    <span class="c1">// 書き込み後の処理</span>
+    <span class="nd">@XlsPostSave</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPostSave</span><span class="o">(</span><span class="n">Sheet</span> <span class="n">sheet</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 提供されない機能の補完。</span>
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="otheruse.html" title="3. その他の機能"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="howtouse.html" title="1. 基本的な使い方"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, T.TSUCHIE.
+      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1 で生成しました。
+    </div>
+  </body>
+</html>

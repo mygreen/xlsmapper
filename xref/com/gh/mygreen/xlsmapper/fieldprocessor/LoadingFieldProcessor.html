@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>LoadingFieldProcessor xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../apidocs/com/gh/mygreen/xlsmapper/fieldprocessor/LoadingFieldProcessor.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> com.gh.mygreen.xlsmapper.fieldprocessor;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> java.lang.annotation.Annotation;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> org.apache.poi.ss.usermodel.Sheet;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.LoadingWorkObject;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.XlsMapperConfig;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.XlsMapperException;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * 各種アノテーションに対して、読み込み処理のインタフェース。</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> LoadingFieldProcessor&lt;A <strong class="jxr_keyword">extends</strong> Annotation&gt; <strong class="jxr_keyword">extends</strong> FieldProcessor&lt;A&gt; {
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>      
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">     * 読み込み時のアノテーションを処理する。</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">     * @param sheet Excelのシート</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment">     * @param beansObj マッピング対象のBean。</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">     * @param anno 処理対象のアノテーション。</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">     * @param adaptor マッピング対象のフィールド情報</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">     * @param config システム設定</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">     * @param work 一時オブジェクト</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">     * @throws XlsMapperException </em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">void</strong> loadProcess(Sheet sheet, Object beansObj, A anno, <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/FieldAdaptor.html">FieldAdaptor</a> adaptor, <a href="../../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> config, <a href="../../../../../com/gh/mygreen/xlsmapper/LoadingWorkObject.html">LoadingWorkObject</a> work) <strong class="jxr_keyword">throws</strong> XlsMapperException;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2015 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+</body>
+</html>

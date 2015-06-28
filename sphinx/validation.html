@@ -1,0 +1,523 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. 読み込んだ値の入力値検証 &mdash; XlsMapper 0.5 ドキュメント</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="XlsMapper 0.5 ドキュメント" href="index.html" />
+    <link rel="next" title="5. 拡張方法" href="extension.html" />
+    <link rel="prev" title="3. その他の機能" href="otheruse.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="extension.html" title="5. 拡張方法"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="otheruse.html" title="3. その他の機能"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div id="toc" class="sidebarRow">
+<h3><a href="../index.html">プロジェクト情報</a></h3>
+<ul>
+	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">Javadoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../project-info.html">プロジェクト情報</a></li>
+</ul>
+
+<h3><a href="index.html">目次</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id3">1.2. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 書き込み方</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id4">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id6">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xlsmapperconfig">3.1. XlsMapperConfigによる動作のカスタマイズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id2">3.2. シート上の位置情報の取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id4">3.3. シート上の見出しの取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xml">3.4. XMLファイルによるマッピング</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">4. 読み込んだ値の入力値検証</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">4.1. 入力値検証の基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">4.2. 独自の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">4.3. フィールド（プロパティ）の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">4.4. メッセージファイルの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">4.5. メッセージファイルの読み込み方法の変更</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#el">4.6. EL式のカスタマイズ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bean-validation">4.7. Bean Validationを使用した入力値検証</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension.html">5. 拡張方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfacetory">5.4. BeanFacetoryの拡張</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="diff_xlsbeans.html">6. XLSBeansとの違い</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id1">6.1. 改善機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id2">6.2. 追加機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id3">6.3. 削除機能</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.1. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.2. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.3. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.4. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.5. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.6. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.7. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.8. ver.0.1 - 2014-10-30</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="otheruse.html"
+                        title="前の章へ">3. その他の機能</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="extension.html"
+                        title="次の章へ">5. 拡張方法</a></p>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/validation.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>クイック検索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="検索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    モジュール、クラス、または関数名を入力してください
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>4. 読み込んだ値の入力値検証<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="id2">
+<h2>4.1. 入力値検証の基本<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<blockquote>
+<div>XlsMapperの入力値検証は、SpringFrameworkのValidation機構に似た方法をとります。</div></blockquote>
+<ul>
+<li><p class="first">エラー情報は、SheetBindingErrorsクラスに格納します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>SheetBindingErrorsのインスタンスを、読み込み時に引数として渡します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">セルの値をJavaオブジェクトに変換の失敗情報は、読み込み時に自動的に作成されます。</p>
+<blockquote>
+<div><ul class="simple">
+<li>1つのセルの型変換に失敗しても処理を続行するよう、システム設定XlsMapperConfigの項目「skipTypeBindFailure」を&#8217;true&#8217;に設定します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">別途用意したBeanに対するValidatorにより、値を検証します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>通常は、抽象クラス「AbstractObjectValidator」を継承して作成します。</li>
+<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> のようにネストしたBeanの場合、リストの要素のBeanのValidatorを別途用意します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">エラーがある場合、SheetMessageConverterを使用して、エラーオブジェクトを文字列に変換します。</p>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">XlsMapper</span> <span class="n">xlsMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
+
+<span class="c1">// 型変換エラーが起きても処理を続行するよう設定</span>
+<span class="n">xlsMapper</span><span class="o">.</span><span class="na">getConig</span><span class="o">().</span><span class="na">setSkipTypeBindFailure</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+<span class="c1">// エラー情報の管理クラスのインスタンスの作成。オブジェクト名をクラス名に設定します。</span>
+<span class="n">SheetBindingErrors</span> <span class="n">errors</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetBindingErrors</span><span class="o">(</span><span class="n">Employer</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="c1">// エラー情報を読み込み時に渡し、読み込み処理を実行します。</span>
+<span class="n">Employer</span> <span class="n">bean</span> <span class="o">=</span> <span class="n">xlsMapper</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="n">xlsIn</span><span class="o">,</span> <span class="n">Employer</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">errors</span><span class="o">);</span>
+
+<span class="c1">// BeanのValidatorを実行します。</span>
+<span class="n">EmployerValidator</span> <span class="n">validator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">EmployerValidator</span><span class="o">();</span>
+<span class="n">validator</span><span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="n">bean</span><span class="o">,</span> <span class="n">errors</span><span class="o">);</span>
+
+<span class="c1">// 値の検証結果を文字列に変換します。</span>
+<span class="k">if</span><span class="o">(</span><span class="n">errors</span><span class="o">.</span><span class="na">hasErrors</span><span class="o">())</span> <span class="o">{</span>
+    <span class="n">SheetMessageConverter</span> <span class="n">messageConverter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetMessageConverter</span><span class="o">();</span>
+    <span class="k">for</span><span class="o">(</span><span class="n">ObjectError</span> <span class="n">error</span> <span class="o">:</span> <span class="n">errors</span><span class="o">.</span><span class="na">getAllErrors</span><span class="o">())</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">messageConverter</span><span class="o">.</span><span class="na">convertMessage</span><span class="o">(</span><span class="n">error</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>4.2. 独自の入力値検証<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Validatorは、AbstractObjectValidatorを継承して作成します。</p>
+<ul>
+<li><p class="first">Genericsで検証対象のBeanクラスを指定し、validateメソッド内で検証処理の実装を行います。</p>
+</li>
+<li><p class="first">検証対象のフィールドにエラーがあるかどうかは、SheetBindingErrors#hasFieldErrorsでチェックできます。</p>
+<blockquote>
+<div><ul class="simple">
+<li>型変換エラーがある場合、Beanに値がマッピングされていないため、エラーがあるかどうかをチェックします。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">フィールドに対するエラーを設定する場合、<code class="docutils literal"><span class="pre">SheetBindingErrors#rejectValue(&quot;フィールド名&quot;,</span> <span class="pre">&quot;エラーコード&quot;,</span> <span class="pre">&quot;エラー引数&quot;)</span></code> で設定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>Map&lt;String, Points&gt;フィールドでセルのアドレスを保持している場合は、<code class="docutils literal"><span class="pre">SheetBindingErrors#rejectSheetValue(...)</span></code> でセルのアドレスを指定できます。</li>
+<li>エラー引数は、インデックス形式の配列型と名前付きのマップ型のどちらでも指定できます。名前付きのマップ型の利用をお勧めします。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EmployerValidator</span> <span class="kd">extends</span> <span class="n">AbstractObjectValidator</span><span class="o">&lt;</span><span class="n">Employer</span><span class="o">&gt;{</span>
+
+    <span class="c1">// ネストしたBeanのValidator</span>
+    <span class="kd">private</span> <span class="n">EmployerHistoryValidator</span> <span class="n">historyValidator</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">EmployerValidator</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">historyValidator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">EmployerHistoryValidator</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">validate</span><span class="o">(</span><span class="kd">final</span> <span class="n">Employer</span> <span class="n">targetObj</span><span class="o">,</span> <span class="kd">final</span> <span class="n">SheetBindingErrors</span> <span class="n">errors</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="c1">// 型変換などのエラーがない場合、文字長のチェックを行う</span>
+        <span class="c1">// チェック対象のフィールド名を指定します。</span>
+        <span class="k">if</span><span class="o">(!</span><span class="n">errors</span><span class="o">.</span><span class="na">hasFieldErrors</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">targetObj</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// インデックス形式のメッセージ引数の指定</span>
+                <span class="c1">//errors.rejectValue(&quot;name&quot;, &quot;error.maxLength&quot;, new Object[]{10});</span>
+
+                <span class="c1">// 名前付きの引数、セルのアドレスを渡す場合の指定</span>
+                <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">vars</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+                <span class="n">Point</span> <span class="n">address</span> <span class="o">=</span> <span class="n">targetObj</span><span class="o">.</span><span class="na">positions</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">);</span>
+                <span class="n">errors</span><span class="o">.</span><span class="na">rejectSheetValue</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="n">address</span><span class="o">,</span> <span class="s">&quot;error.maxLength&quot;</span><span class="o">,</span> <span class="n">vars</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">targetObj</span><span class="o">.</span><span class="na">getHistory</span><span class="o">().</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="c1">// ネストしたBeanの検証の実行</span>
+            <span class="c1">// パスをネストする。リストの場合はインデックスを指定する。</span>
+            <span class="n">errors</span><span class="o">.</span><span class="na">pushNestedPath</span><span class="o">(</span><span class="s">&quot;history&quot;</span><span class="o">,</span> <span class="n">i</span><span class="o">);</span>
+            <span class="n">historyValidator</span><span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="n">targetObj</span><span class="o">.</span><span class="na">getHistory</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">),</span> <span class="n">errors</span><span class="o">);</span>
+            <span class="c1">// 検証後は、パスを戻す</span>
+            <span class="n">errors</span><span class="o">.</span><span class="na">popNestedPath</span><span class="o">();</span>
+
+            <span class="c1">// パスのネストと戻しは、invokeNestedValidatorで自動的にもできます。</span>
+            <span class="c1">// invokeNestedValidator(historyValidator, targetObj.getHistory().get(i), errors, &quot;history&quot;, i);</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>4.3. フィールド（プロパティ）の入力値検証<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>フィールドに対する値の検証は、CellFieldクラスを使用することでもできます。</p>
+<ul>
+<li><p class="first">フィールドに対する検証をCellField#add(...)で追加することで複数の検証を設定できます。</p>
+</li>
+<li><p class="first">値の件所を行う場合は、CellField#validate(errors)で実行します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>SheetBindingErrorsに対してエラーオブジェクトが自動的に設定されます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">フィールドに対してエラーがある場合、CellField#hasErrors(...)/hasNotErrors(...)で検証できます。</p>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EmployerHistoryValidator</span> <span class="kd">extends</span> <span class="n">AbstractObjectValidator</span><span class="o">&lt;</span><span class="n">EmployerHistory</span><span class="o">&gt;{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">validate</span><span class="o">(</span><span class="kd">final</span> <span class="n">EmployerHistory</span> <span class="n">targetObj</span><span class="o">,</span> <span class="kd">final</span> <span class="n">SheetBindingErrors</span> <span class="n">errors</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="kd">final</span> <span class="n">CellField</span><span class="o">&lt;</span><span class="n">Date</span><span class="o">&gt;</span> <span class="n">historyDateField</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CellField</span><span class="o">&lt;</span><span class="n">Date</span><span class="o">&gt;(</span><span class="n">targetObj</span><span class="o">,</span> <span class="s">&quot;historyDate&quot;</span><span class="o">);</span>
+        <span class="n">historyDateField</span><span class="o">.</span><span class="na">setRequired</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">MinValidator</span><span class="o">&lt;</span><span class="n">Date</span><span class="o">&gt;(</span><span class="k">new</span> <span class="n">Date</span><span class="o">(),</span> <span class="s">&quot;yyyy-MM-dd&quot;</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="n">errors</span><span class="o">);</span>
+
+
+        <span class="kd">final</span> <span class="n">CellField</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">commentField</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CellField</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;(</span><span class="n">targetObj</span><span class="o">,</span> <span class="s">&quot;comment&quot;</span><span class="o">);</span>
+        <span class="n">commentField</span><span class="o">.</span><span class="na">setRequired</span><span class="o">(</span><span class="kc">false</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">StringValidator</span><span class="o">.</span><span class="na">maxLength</span><span class="o">(</span><span class="mi">5</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="n">errors</span><span class="o">);</span>
+
+        <span class="k">if</span><span class="o">(</span><span class="n">historyDateField</span><span class="o">.</span><span class="na">hasNotErrors</span><span class="o">(</span><span class="n">errors</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">commentField</span><span class="o">.</span><span class="na">hasNotErrors</span><span class="o">(</span><span class="n">errors</span><span class="o">))</span> <span class="o">{</span>
+            <span class="c1">// 項目間のチェックなど</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">commentField</span><span class="o">.</span><span class="na">isInputEmpty</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">errors</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="s">&quot;error.01&quot;</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>4.4. メッセージファイルの定義<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>メッセージファイルは、クラスパスのルートに「SheetValidationMessages.properties」というプロパティファイルを配置しておくと、自動的に読み込まれます。</p>
+<ul>
+<li><p class="first">型変換エラーは、読み込み時に自動的にチェックされ、エラーコードは、「cellTypeMismatch」と決まっています。</p>
+<blockquote>
+<div><ul class="simple">
+<li>フィールドのクラスタイプごとに、メッセージを指定することもでき、「cellTypeMismatch.&lt;クラス名&gt;」で定義します。</li>
+<li>さらに、フィールド名でも指定することができ、「cellTypeMismatch.&lt;フィールド名&gt;」で定義します。</li>
+<li>クラスタイプよりもフィールド名で指定する方が優先されます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">メッセージ中ではEL式を利用することができます。</p>
+</li>
+<li><p class="first">メッセージ中の通常の変数は、{変数名}で定義し、EL式は${EL式}で定義します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>ただし、EL式のライブラリを依存関係に追加しておく必要があります。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h2>4.5. メッセージファイルの読み込み方法の変更<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>メッセージファイルは、ResourceBundleやProperties、またSpringのMessageSourceからも取得できます。
+設定する場合、<code class="docutils literal"><span class="pre">SheetMessageConverter#setMessageResolver(...)</span></code> で対応するクラスを設定します。</p>
+<table border="1" class="docutils" id="id7">
+<caption><span class="caption-text">メッセージファイルのブリッジ用クラス</span><a class="headerlink" href="#id7" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">XlsMapper提供のクラス</th>
+<th class="head">メッセージ取得元のクラス</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>com.gh.mygreen.xlsmapper.validation.ResourceBundleMessageResolver</td>
+<td>java.util.ResourceBundle</td>
+</tr>
+<tr class="row-odd"><td>com.gh.mygreen.xlsmapper.validation.PropertiesMessageResolver</td>
+<td>java.util.Prperties</td>
+</tr>
+<tr class="row-even"><td>com.gh.mygreen.xlsmapper.validation.SpringMessageResolver</td>
+<td>org.springframework.context.MessageSource</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// SpringのMessageSourceからメッセージを取得する場合</span>
+<span class="n">MessageSource</span> <span class="n">messageSource</span> <span class="o">=</span> <span class="cm">/*...*/</span><span class="o">;</span>
+
+<span class="n">SheetMessageConverter</span> <span class="n">messageConverter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetMessageConverter</span><span class="o">();</span>
+<span class="n">messageConverter</span><span class="o">.</span><span class="na">setMessageResolver</span><span class="o">(</span><span class="k">new</span> <span class="n">SpringMessageResolver</span><span class="o">(</span><span class="n">messageSource</span><span class="o">));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="el">
+<h2>4.6. EL式のカスタマイズ<a class="headerlink" href="#el" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>メッセージ中の式言語は、EL式以外も利用できます。</p>
+<p>EL式の他、MVEL、OGNL、SpEL(Spring Expresson Language)が利用できます。</p>
+<p>使用する式言語を変更する場合、<code class="docutils literal"><span class="pre">MessageInterapolator#setExpressionLanguage(...)</span></code> で式言語の実装を設定します。</p>
+<p>MVELやSpELを利用する場合、別途、ライブラリが必要になります。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">SheetMessageConverter</span> <span class="n">messageConverter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetMessageConverter</span><span class="o">();</span>
+
+<span class="c1">// EL式の管理クラスの作成</span>
+<span class="n">ExpressionLanguageRegistry</span> <span class="n">elRegistry</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ExpressionLanguageRegistry</span><span class="o">();</span>
+
+<span class="c1">// 式言語の設定</span>
+<span class="n">messageConverter</span><span class="o">.</span><span class="na">getMessageInterporlator</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">setExpressionLanguage</span><span class="o">(</span><span class="n">elRegistry</span><span class="o">.</span><span class="na">getExpressionLanguage</span><span class="o">(</span><span class="s">&quot;mvel&quot;</span><span class="o">));</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">式言語を変更した場合、メッセージ中の${EL式}を、言語特有のものに変更する必要があります。</p>
+</div>
+<div class="highlight-xml"><div class="highlight"><pre><span class="c">&lt;!-- ====================== 各式言語のライブラリ ===============--&gt;</span>
+<span class="c">&lt;!-- EL式を利用する場合 --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>javax.el<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>javax.el-api<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.glassfish<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>javax.el<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="c">&lt;!-- 式言語:OGNL --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>ognl<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>ognl<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.0.8<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="c">&lt;!-- 式言語:MVEL --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.mvel<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>mvel2<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>2.2.2.Final<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="c">&lt;!-- 式言語：Spring Expression Language --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>spring-expression<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.2.11.RELEASE<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="bean-validation">
+<h2>4.7. Bean Validationを使用した入力値検証<a class="headerlink" href="#bean-validation" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<blockquote>
+<div>BeanValidation JSR-303(ver.1.0)/JSR-349(ver.1.1)を利用する場合、ライブラリで用意されている「SheetBeanValidator」を使用します。</div></blockquote>
+<ul>
+<li><p class="first">BeanValidationの実装として、Hibernate Validatorが必要になるため、依存関係に追加します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>Hibernate Validatorを利用するため、メッセージをカスタマイズしたい場合は、クラスパスのルートに「ValidationMessages.properties」を配置します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">検証する際には、SheetBeanValidator#validate(...)を実行します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>Bean Validationの検証結果も、SheetBindingErrorsの形式に変換され格納されます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">メッセー時を出力する場合は、SheetMessageConverterを使用します。</p>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// シートの読み込み</span>
+<span class="n">SheetBindingErrors</span> <span class="n">errors</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetBindingErrors</span><span class="o">(</span><span class="n">Employer</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">Employer</span> <span class="n">beanObj</span> <span class="o">=</span> <span class="n">loadSheet</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;./src/test/data/employer.xlsx&quot;</span><span class="o">),</span> <span class="n">errors</span><span class="o">);</span>
+
+<span class="c1">// Bean Validationによる検証の実行</span>
+<span class="n">SheetBeanValidator</span> <span class="n">validatorAdaptor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetBeanValidator</span><span class="o">(</span><span class="n">validator</span><span class="o">);</span>
+<span class="n">validatorAdaptor</span><span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="n">beanObj</span><span class="o">,</span> <span class="n">errors</span><span class="o">);</span>
+
+<span class="c1">// 値の検証結果を文字列に変換します。</span>
+<span class="k">if</span><span class="o">(</span><span class="n">errors</span><span class="o">.</span><span class="na">hasErrors</span><span class="o">())</span> <span class="o">{</span>
+    <span class="n">SheetMessageConverter</span> <span class="n">messageConverter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetMessageConverter</span><span class="o">();</span>
+    <span class="k">for</span><span class="o">(</span><span class="n">ObjectError</span> <span class="n">error</span> <span class="o">:</span> <span class="n">errors</span><span class="o">.</span><span class="na">getAllErrors</span><span class="o">())</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">messageConverter</span><span class="o">.</span><span class="na">convertMessage</span><span class="o">(</span><span class="n">error</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="highlight-xml"><div class="highlight"><pre><span class="c">&lt;!-- ====================== Bean Validationのライブラリ ===============--&gt;</span>
+<span class="c">&lt;!-- Bean Validation 1.1 系を利用する --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>javax.validation<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>validation-api<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.1.0.Final<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.hibernate<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>hibernate-validator<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>5.1.3.Final<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="extension.html" title="5. 拡張方法"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="otheruse.html" title="3. その他の機能"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, T.TSUCHIE.
+      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1 で生成しました。
+    </div>
+  </body>
+</html>
