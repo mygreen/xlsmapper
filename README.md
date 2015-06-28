@@ -18,5 +18,5 @@ Apache License verion 2.0
 ```
 
 # Document
-http://mygreen.github.io/xlsmapper/howtouse.html
+http://mygreen.github.io/xlsmapper/sphinx/howtouse.html
 
