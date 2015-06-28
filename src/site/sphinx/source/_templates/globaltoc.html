@@ -1,0 +1,14 @@
+<div id="toc" class="sidebarRow">
+<h3><a href="../index.html">プロジェクト情報</a></h3>
+<ul>
+	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">Javadoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../project-info.html">プロジェクト情報</a></li>
+</ul>
+
+<h3><a href="{{ pathto(master_doc) }}">{{ _('Table Of Contents') }}</a></h3>
+{%- if sphinx_version[:3] >= '1.2' %}
+{{ toctree (maxdepth=2, collapse=False, includehidden=True) }}
+{% else %}
+{{ toctree(maxdepth=2, collapse=False) }}
+{% endif %}
+</div>
