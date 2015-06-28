@@ -19,10 +19,16 @@
     * デフォルト値を指定しないでプリミティブ型に対して読み込む場合、数値型の場合は0や0.0、booleanの場合はfalseが設定されます。
       プリミティブのラッパークラスやオブジェクト型の場合は、nullが設定されます。
       
+    * 指定したデフォルト値がマッピング先の型として不正な場合は、通常の型変換エラーと同様に、例外 ``com.gh.mygreen.xlsmapper.cellconvert.TypeBindException`` がスローされます。`[ver0.5]`
+    
+    * char型にマッピングする場合、デフォルト値が2文字以上でも、先頭の一文字がマッピングされます。
+      
 * 属性trimの値をtruにすると、読み込み時と書き込み時にトリムを行います。
    
     * シート上のセルのタイプ（分類）が数値などの文字列以外の場合は、トリム処理は行われません。
       ただし、シートのセルタイプが文字列型で、Javaの型がString型以外の数値型やDate型などの場合は、変換する前にトリム処理を行います。
+      
+    * 空セル（ブランクセル）をString型にマッピング設定しトリムを有効としている場合、読み込み時は空文字が設定されます。`[ver0.5+]` 
 
 
 .. sourcecode:: java
@@ -135,7 +141,7 @@ boolean、Boolean型の変換規則の設定を行います。
  
 * 属性patternで書式を指定します。
     
-    * Javaのクラスjava.text.DecimalFormatで解釈可能な書式を設定します。
+    * Javaのクラス ``java.text.DecimalFormat`` で解釈可能な書式を設定します。
     
 * 属性localeでロケールを指定します。
     
@@ -144,8 +150,12 @@ boolean、Boolean型の変換規則の設定を行います。
     
 * 属性currencyで通貨コード（ISO-4217コード）を指定します。
     
-    * Javaのクラスjava.util.Currencyで解釈可能なコードを指定します。
+    * Javaのクラス ``java.util.Currency`` で解釈可能なコードを指定します。
 
+* 属性precisionで有効桁数を指定します。`[ver0.5+]`
+   
+   * Excelの仕様上、有効桁数は15桁であるため、デフォルト値は15です。
+   * 0以下の値を設定すると、桁数の指定を省略したことになります。
 
 .. sourcecode:: java
     
@@ -156,15 +166,22 @@ boolean、Boolean型の変換規則の設定を行います。
         
     }
 
+.. note::
+   
+   Excelでは有効桁数が15桁であるため、Javaのlong型など15桁を超える表現が可能な数値を書き込んだ場合、数値が丸められるため注意してください。
+   
+   * 例えば、long型の19桁の数値 ``1234567890123456789`` を書き込んだ場合、16桁以降の値が丸められ ``1234567890123450000`` として書き込まれます。
+   * Excelの仕様については、`Excel の仕様と制限 <https://support.office.com/ja-jp/article/Excel-%E3%81%AE%E4%BB%95%E6%A7%98%E3%81%A8%E5%88%B6%E9%99%90-1672b34d-7043-467e-8e27-269d656771c3?ui=ja-JP&rs=ja-JP&ad=JP>`_ を参照してください。
+
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``@XlsDateConverter``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-日付型（java.util.Date、java.sql.Date, java.sql.Timestamp, java.sql.Time）の書式などの設定を行います。
+日付型（``java.util.Date`` , ``java.sql.Date`` , ``java.sql.Timestamp`` , ``java.sql.Time`` ）の書式などの設定を行います。
 
 * 属性patternで書式を指定します。
-    * Javaのクラスjava.util.SimpleDateFormatで解釈可能な書式を指定します。
+    * Javaのクラス ``java.util.SimpleDateFormat`` で解釈可能な書式を指定します。
     
 * 属性localeでロケールを指定します。
     
@@ -176,6 +193,15 @@ boolean、Boolean型の変換規則の設定を行います。
     * trueの厳密に解析を行いません。falseの場合厳密に解析を行います。
     * 読み込み時に書式に合わないセルの値を読み込んだ場合、例外TypeBindExceptionが発生します。
     
+
+* アノテーションを指定しない場合、Javaの各タイプごとにデフォルトの書式が設定されます。`[ver0.5+]` 
+
+    * ``java.util.Date`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
+    * ``java.sql.Date`` の場合、デフォルトで `yyyy-MM-dd` の書式が適用されます。
+    * ``java.sql.Time`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
+    * ``java.sql.Timestamp`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss.SSS` の書式が適用されます。
+    * 読み込むセルに日時型の書式が設定されている場合は、書式を無視してJavaのクラスにマッピングされます。
+
 
 .. sourcecode:: java
     
@@ -189,7 +215,15 @@ boolean、Boolean型の変換規則の設定を行います。
 
 .. note::
     読み込み時のセルの値が属性patternで指定した書式に一致していなくても、セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
- 
+    セルの表示形式の分類が文字列の場合は、アノテーション ``@XlsDateConverter(pattern="<書式>")`` で指定した書式に従い処理されます。
+    
+    ただし、型変換用のアノテーション ``@XlsDateConverter`` を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。
+    
+    * ``java.util.Date`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
+    * ``java.sql.Date`` の場合、デフォルトで `yyyy-MM-dd` の書式が適用されます。
+    * ``java.sql.Time`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
+    * ``java.sql.Timestamp`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss.SSS` の書式が適用されます。
+
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -246,6 +280,10 @@ boolean、Boolean型の変換規則の設定を行います。
     
     * 例えば、区切り文字","のとき、セルの値が"a,,b"の場合、trueを設定すると\["a", "b"\]として読み込みます。
     * 書き込み時も同様に、値が空またはnullの項目を無視します。
+
+* 型変換アノテーション ``@XlsConverter(trim=true)`` を付与し、トリム処理を有効にしている設定の場合、区切った項目にもトリム処理が適用されます。 `[ver0.5+]` 
+
+    * 属性ignoreEmptyItemの値をtrueに設定していると、トリム処理によって項目が空文字となった場合、その項目は無視されます。
 
 
 .. sourcecode:: java

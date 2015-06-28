@@ -31,6 +31,14 @@
 
 正規表現で指定する場合は、 ``XlsMapper#loadMultiple(...)`` メソッドを用いることでマッチしたシートの情報を一度に取得することができます。
 
+書き込み時は、複数のシートが一致する可能性があり、1つに特定できない場合があるため注意が必要です。
+
+    * 正規表現に一致するシートが1つしかない場合は、そのまま書き込みます。`[ver0.5+]`
+    * 正規表現に一致するシートが複数ある場合、アノテーション ``@XlsSheetName`` を付与したフィールドの値元に決定します。
+      そのため、予めフィールドに設定しておく必要があります。
+    * アノテーション ``@XlsSheetName`` を付与しているフィールドを指定し、その値に一致しなくても、正規表現に一致するシートが1つ一致すれば、そのシートに書き込まれます。`[ver0.5+]`
+
+
 .. sourcecode:: java
     
     /** 正規表現で指定する場合 */
@@ -212,6 +220,10 @@ tableLabel属性でテーブルの名称を指定します。List型または配
         @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border)
         private List<Record> records;
     }
+
+.. note::
+    
+    書き込む際にはテンプレート用のセルは空を設定しているため、属性 ``terminal=RecordTermial.Empty`` を指定していると処理が終了してしまうため、強制的に ``terminal=RecordTerminal.Border`` に補正して処理されます。`[ver0.5+]`
 
 
 テーブルが他のテーブルと連続しておりterminal属性でBorder、Emptyのいずれを指定しても終端を検出できない場合があります。
@@ -401,7 +413,7 @@ headerMergedの値には列見出しから何セル分離れているかを指�
 ``@XlsMapColumns``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``@XlsHorozintalRecords`` もしくは ``@XlsVerticalRecords`` でカラム数が可変の場合に、
+``@XlsHorizontalRecords`` もしくは ``@XlsVerticalRecords`` でカラム数が可変の場合に、
 それらのカラムをMapとして設定します。BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。
 
 .. figure:: ./_static/MapColumns.png
@@ -458,7 +470,7 @@ tableLabelプロパティで繰り返し部分の見出しラベルを指定し�
     
     public class Unit {
         @XlsLabelledCell(label="部門名", type=LabelledCellType.Right)
-        private List<Unit> units;
+        private String deptName;
         
         @XlsHorizontalRecords(tableLabel="部門情報")
         private List<UnitUser> unitUsers;
@@ -518,14 +530,12 @@ order属性が同じ値を設定されているときは、 フィールド名�
 ``@XlsIsEmpty``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``@XlsHorizontalRecords`` を使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
+``@XlsHorizontalRecords/@XlsVerticalRecords`` を使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
 レコードが空と判定するためのメソッドに付与します。
 
-このアノテーションを使用する場合は、``@XlsVerticalRecords`` を使用して、属性「skipEmptyRecord=true」を設定する必要があります。
-
-``@XlsIsEmpty`` を付与したメソッドは、引数なしの戻り値がboolean形式の書式にする必要があります。
-
-``@XlsVertialRecords`` でも同様に使用できます。
+* このアノテーションを使用する場合は、``@XlsHorizontalRecords`` の属性「skipEmptyRecord=true」を設定する必要があります。
+* ``@XlsIsEmpty`` を付与したメソッドは、publicかつ引数なしの戻り値がboolean形式の書式にする必要があります。
+* ``@XlsVertialRecords`` でも同様に使用できます。
 
 また、この機能は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。
 
@@ -565,6 +575,59 @@ order属性が同じ値を設定されているときは、 フィールド名�
           }
           
           return true;
+        }
+    }
+
+
+
+``IsEmptyBuilder`` (ver.0.5から追加)を利用することで、より簡潔に記述することも可能です。
+
+* ``IsEmptyBuilder#reflectionIsEmpty(...)`` を利用して判定する場合、位置情報を保持するフィールド ``Map<String, Point> positions`` などは除外対象とする必要があります。
+* 独自に判定する場合、``IsEmptyBuilder#append(...)`` を利用します。
+* さらに、 ``IsEmptyBuilder#compare(IsEmptyComparator)`` を利用することで独自の判定をすることができます。その際に、Lambda式を利用すると簡潔に記載できます。
+
+.. sourcecode:: java
+    
+    // ルートのオブジェクト
+    @XlsSheet(name="シート名")
+    public class UnitUser {
+    
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧", skipEmptyRecord=true)
+        private List<User> users;
+        
+    }
+    
+    // レコードのオブジェクト
+    public class User {
+        
+        // マッピングしたセルの位置情報を保持する。
+        private Map<String, Point> positions;
+        
+        // マッピングしたセルのラベル情報を保持する。
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="名前")
+        private String name;
+        
+        @XlsColumn(columnName="住所")
+        private String address;
+        
+        // レコードが空と判定するためのメソッド
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
+            
+        }
+        
+        // 独自に判定する場合
+        public boolean isEmpty2() {
+            return new IsEmptyBuilder()
+                .append(name)
+                .compare(() -> StringUtils.isBlank(address))
+                .isEmpty();
         }
     }
 
