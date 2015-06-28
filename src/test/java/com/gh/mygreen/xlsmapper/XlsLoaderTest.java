@@ -1,6 +1,6 @@
 package com.gh.mygreen.xlsmapper;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.FileInputStream;
 import java.util.List;
@@ -8,10 +8,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.XlsLoader;
-import com.gh.mygreen.xlsmapper.XlsMapper;
-import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageRegistry;
-import com.gh.mygreen.xlsmapper.validation.EmployerValidator;
 import com.gh.mygreen.xlsmapper.validation.ObjectError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
@@ -66,41 +62,41 @@ public class XlsLoaderTest {
         
     }
     
-    @Test
-    public void testLoadValidate() {
-        
-        try {
-            XlsMapper xlsMapper = new XlsMapper();
-            xlsMapper.getConig().setSkipTypeBindFailure(true);
-            
-            FileInputStream xlsIn = new FileInputStream("./src/test/data/employer_bind_error.xlsx");
-            XlsLoader loader = new XlsLoader();
-            loader.getConfig().setSkipTypeBindFailure(true);
-            SheetBindingErrors errors = new SheetBindingErrors(Employer.class);
-            Employer bean = loader.load(xlsIn, Employer.class, errors);
-            
-            
-            EmployerValidator validator = new EmployerValidator();
-            validator.validate(bean, errors);
-            
-//            ExpressionLanguageRegistry elRegistry = new ExpressionLanguageRegistry();
-            SheetMessageConverter messageConverter = new SheetMessageConverter();
-//            messageConverter.getMessageInterporlator()
-//                .setExpressionLanguage(elRegistry.getExpressionLanguage("mvel"));
-            
-            if(errors.hasErrors()) {
-                System.out.println(" =========== has error ======");
-                for(ObjectError error : errors.getAllErrors()) {
-//                    System.out.println(error.toString());
-                    System.out.println(messageConverter.convertMessage(error));
-                }
-            }
-            
-//            System.out.printf("currentPath=%s\n", errors.getCurrentPath());
-            
-        } catch(Throwable e) {
-            e.printStackTrace();
-            fail();
-        }
-    }
+//    @Test
+//    public void testLoadValidate() {
+//        
+//        try {
+//            XlsMapper xlsMapper = new XlsMapper();
+//            xlsMapper.getConig().setSkipTypeBindFailure(true);
+//            
+//            FileInputStream xlsIn = new FileInputStream("./src/test/data/employer_bind_error.xlsx");
+//            XlsLoader loader = new XlsLoader();
+//            loader.getConfig().setSkipTypeBindFailure(true);
+//            SheetBindingErrors errors = new SheetBindingErrors(Employer.class);
+//            Employer bean = loader.load(xlsIn, Employer.class, errors);
+//            
+//            
+//            EmployerValidator validator = new EmployerValidator();
+//            validator.validate(bean, errors);
+//            
+////            ExpressionLanguageRegistry elRegistry = new ExpressionLanguageRegistry();
+//            SheetMessageConverter messageConverter = new SheetMessageConverter();
+////            messageConverter.getMessageInterporlator()
+////                .setExpressionLanguage(elRegistry.getExpressionLanguage("mvel"));
+//            
+//            if(errors.hasErrors()) {
+//                System.out.println(" =========== has error ======");
+//                for(ObjectError error : errors.getAllErrors()) {
+////                    System.out.println(error.toString());
+//                    System.out.println(messageConverter.convertMessage(error));
+//                }
+//            }
+//            
+////            System.out.printf("currentPath=%s\n", errors.getCurrentPath());
+//            
+//        } catch(Throwable e) {
+//            e.printStackTrace();
+//            fail();
+//        }
+//    }
 }

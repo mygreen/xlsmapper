@@ -4,10 +4,13 @@ import java.awt.Point;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.poi.ss.util.CellReference;
 
 import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -182,5 +185,33 @@ public class TestUtils {
         } else {
             return value.trim();
         }
+    }
+    
+    /**
+     * 文字列の形式のセルのアドレスを、Point形式に変換する。
+     * @param address
+     * @return
+     */
+    public static Point toPointAddress(final String address) {
+        ArgUtils.notEmpty(address, "address");
+        
+        CellReference ref = new CellReference(address);
+        return new Point(ref.getCol(), ref.getRow());
+    }
+    
+    /**
+     * 基準日を基準にして、daysを加算した日時を取得する。
+     * @param base
+     * @param days
+     */
+    public static Date getDateByDay(Date base, int days) {
+        
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(base);
+        
+        cal.add(Calendar.DAY_OF_MONTH, days);
+        
+        return cal.getTime();
+        
     }
 }
