@@ -3,16 +3,18 @@
 
 XlsMapper is Java Library for mapping Excel sheets to POJO.
 
+* Licensee
+
+Apache License verion 2.0
+
 # Setup
 
 ```xml
-<dependencies>
-  <dependency>
-    <groupId>com.github.mygreen</groupId>
-    <artifactId>xlsmapper</artifactId>
-    <version>0.4</version>
-  </dependency>
-</dependencies>
+<dependency>
+	<groupId>com.github.mygreen</groupId>
+	<artifactId>xlsmapper</artifactId>
+	<version>0.5</version>
+</dependency>
 ```
 
 # Document
