@@ -502,6 +502,20 @@ public class SheetBindingErrors {
     }
     
     /**
+     * 先頭のセルフィールドエラーを取得する
+     * @return エラーがない場合はnullを返す。
+     */
+    public CellFieldError getFirstCellFieldError() {
+        for(ObjectError item : this.errors) {
+            if(item instanceof CellFieldError) {
+                return (CellFieldError) item;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
      * 指定したパスのセルフィィールドエラーが存在するか確かめる。
      * @param path 最後に'*'を付けるとワイルドカードが指定可能。
      * @return true:エラーがある場合。
@@ -776,6 +790,21 @@ public class SheetBindingErrors {
     }
     
     /**
+     * エラーコードとメッセージ引数を指定してフィールドエラーを登録します。
+     * @param field フィールドパス。
+     * @param errorCode エラーコード。
+     * @param errorVars メッセージ変数。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
+    public void rejectValue(final String field, final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
+        addError(FieldErrorBuilder.create()
+                .objectName(getObjectName()).fieldPath(buildFieldPath(field))
+                .codes(generateMessageCodes(errorCode, field), errorVars)
+                .defaultMessage(defaultMessage)
+                .build());
+    }
+    
+    /**
      * エラーコードを指定してシートのフィールドエラーを登録します。
      * @param field フィールドパス。
      * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
@@ -821,6 +850,26 @@ public class SheetBindingErrors {
                 .fieldValue(fieldValue).fieldType(fieldType)
                 .codes(generateMessageCodes(errorCode, field, fieldType))
                 .sheetName(getSheetName()).cellAddress(cellAddress)
+                .build());
+    }
+    
+    /**
+     * エラーコードを指定してシートのフィールドエラーを登録します。
+     * @param field フィールドパス。
+     * @param fieldValue フィールドの値。
+     * @param fieldType フィールドのクラスタイプ。
+     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param errorCode メッセージコード。
+     * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
+     */
+    public void rejectSheetValue(final String field, final Object fieldValue, final Class<?> fieldType,
+            final Point cellAddress, final String errorCode, final String defaultMessage) {
+        addError(FieldErrorBuilder.create()
+                .objectName(getObjectName()).fieldPath(buildFieldPath(field))
+                .fieldValue(fieldValue).fieldType(fieldType)
+                .codes(generateMessageCodes(errorCode, field, fieldType))
+                .sheetName(getSheetName()).cellAddress(cellAddress)
+                .defaultMessage(defaultMessage)
                 .build());
     }
     
