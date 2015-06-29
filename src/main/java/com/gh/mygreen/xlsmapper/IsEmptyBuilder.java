@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -44,7 +45,7 @@ public class IsEmptyBuilder {
      * 現在までの判定結果を保持する。
      * true: 値が空かどうか。
      */
-    private boolean empty;
+    private final AtomicBoolean empty;
     
     /**
      * 数値の場合、0を空として扱うか。
@@ -52,20 +53,48 @@ public class IsEmptyBuilder {
     private boolean zeroAsEmpty;
     
     /**
-     * コンストラクタ。
-     * @param zeroAsEmpty 数値の場合、0を空として扱うか。
+     * 配列の場合、値も検証対象とするかどうか。
      */
-    public IsEmptyBuilder() {
-        this(true);
-    }
+    private boolean testArrayValue;
+    
+    /**
+     * Collectionの場合、値も検証対象とするかどうか。
+     */
+    private boolean testCollectionValue;
+    
+    /**
+     * Mapの場合、値も対象とするかどうか。
+     */
+    private boolean testMapValue;
+    
+    /**
+     * ransientが付与されたフィールドも対象とするかどうか。
+     */
+    private boolean testTransient;
     
     /**
      * コンストラクタ。
-     * @param zeroAsEmpty 数値の場合、0を空として扱うか。
      */
-    public IsEmptyBuilder(boolean zeroAsEmpty) {
-        this.empty = true;
-        this.zeroAsEmpty = zeroAsEmpty;
+    public IsEmptyBuilder() {
+        this(IsEmptyConfig.create());
+        
+    }
+    
+    /**
+     * {@link IsEmptyConfig}を指定するコンストラクタ。
+     * @param config 設定用クラス。
+     * @throws IllegalArgumentException config is null.
+     */
+    public IsEmptyBuilder(final IsEmptyConfig config) {
+        ArgUtils.notNull(config, "config");
+        
+        this.empty = new AtomicBoolean(true);
+        
+        this.zeroAsEmpty = config.isZeroAsEmpty();
+        this.testArrayValue = config.isTestArrayValue();
+        this.testCollectionValue = config.isTestCollectionValue();
+        this.testMapValue = config.isTestMapValue();
+        this.testTransient = config.isTestTransient();
     }
     
     /**
@@ -77,39 +106,38 @@ public class IsEmptyBuilder {
      * @return 引数で指定したobjがnullの場合、trueを返す。
      */
     public static boolean reflectionIsEmpty(final Object obj, final String... excludedFields) {
-        return reflectionIsEmpty(obj, false, true, Arrays.asList(excludedFields));
+        return reflectionIsEmpty(obj, IsEmptyConfig.create(), Arrays.asList(excludedFields));
     }
     
     /**
      * リフレクションを使用しフィールドの値を取得し判定する。
-     * <p>static修飾子を付与しているフィールドは、除外されます。
+     * @since 1.0
+     * @param 設定用クラス
      * @param obj 判定対象のオブジェクト。
-     * @param testTransient transientが付与されたフィールドも対象とするかどうか。trueの場合テスト対象となります。
+     * @param config 判定用の設定クラス。
      * @param excludedFields 除外対処のフィールド名。
      * @return 引数で指定したobjがnullの場合、trueを返す。
      */
-    public static boolean reflectionIsEmpty(final Object obj, final boolean testTransient,
-            final String... excludedFields) {
-        return reflectionIsEmpty(obj, testTransient, true, Arrays.asList(excludedFields));
+    public static boolean reflectionIsEmpty(final Object obj, final IsEmptyConfig config, final String... excludedFields) {
+        return reflectionIsEmpty(obj, config, Arrays.asList(excludedFields));
     }
     
     /**
      * リフレクションを使用しフィールドの値を取得し判定する。
-     * <p>static修飾子を付与しているフィールドは、除外されます。
+     * @since 1.0
+     * @param 設定用クラス
      * @param obj 判定対象のオブジェクト。
-     * @param testTransient transientが付与されたフィールドも対象とするかどうか。trueの場合テスト対象となります。
-     * @param zeroAsEmpty 数値の場合、0を空として扱うか。
+     * @param config 判定用の設定クラス。
      * @param excludedFields 除外対処のフィールド名。
      * @return 引数で指定したobjがnullの場合、trueを返す。
      */
-    public static boolean reflectionIsEmpty(final Object obj, final boolean testTransient, final boolean zeroAsEmpty,
-            final Collection<String> excludedFields) {
+    public static boolean reflectionIsEmpty(final Object obj, final IsEmptyConfig config, final Collection<String> excludedFields) {
         
         if(obj == null) {
             return true;
         }
         
-        final IsEmptyBuilder builder = new IsEmptyBuilder();
+        final IsEmptyBuilder builder = new IsEmptyBuilder(config);
         final Field[] fields = obj.getClass().getDeclaredFields();
         AccessibleObject.setAccessible(fields, true);
         
@@ -121,7 +149,7 @@ public class IsEmptyBuilder {
             }
             
             // transientのフィールドかどうか。
-            if(!testTransient && Modifier.isTransient(field.getModifiers())) {
+            if(!builder.testTransient && Modifier.isTransient(field.getModifiers())) {
                 continue;
             }
             
@@ -141,14 +169,13 @@ public class IsEmptyBuilder {
         }
         
         return builder.isEmpty();
-        
     }
     
     /**
      * 値が空でないことを設定する。
      */
     private void setNotEmpty() {
-        this.empty = false;
+        this.empty.set(false);
     }
     
     /**
@@ -186,7 +213,8 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(char value) {
-        return append(String.valueOf(value));
+        final String str = (value == '\u0000' ? "" : String.valueOf(value));
+        return append(str);
     }
     
     /**
@@ -196,7 +224,8 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(char value, boolean trim) {
-        return append(String.valueOf(value), trim);
+        final String str = (value == '\u0000' ? "" : String.valueOf(value));
+        return append(str, trim);
     }
     
     /**
@@ -387,9 +416,14 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(Object[] value) {
+    public IsEmptyBuilder append(final Object[] value) {
         
-        if(value != null && value.length != 0) {
+        if(value != null && isTestArrayValue()) {
+            for(Object o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && value.length != 0) {
             setNotEmpty();
         }
         
@@ -402,9 +436,14 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(boolean[] value) {
+    public IsEmptyBuilder append(final boolean[] value) {
         
-        if(value != null && value.length != 0) {
+        if(value != null && isTestArrayValue()) {
+            for(boolean o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && value.length != 0) {
             setNotEmpty();
         }
         
@@ -416,9 +455,14 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(char[] value) {
+    public IsEmptyBuilder append(final char[] value) {
         
-        if(value != null && value.length != 0) {
+        if(value != null && isTestArrayValue()) {
+            for(char o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && value.length != 0) {
             setNotEmpty();
         }
         
@@ -430,9 +474,14 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(byte[] value) {
+    public IsEmptyBuilder append(final byte[] value) {
         
-        if(value != null && value.length != 0) {
+        if(value != null && isTestArrayValue()) {
+            for(byte o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && value.length != 0) {
             setNotEmpty();
         }
         
@@ -444,9 +493,14 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(short[] value) {
+    public IsEmptyBuilder append(final short[] value) {
         
-        if(value != null && value.length != 0) {
+        if(value != null && isTestArrayValue()) {
+            for(short o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && value.length != 0) {
             setNotEmpty();
         }
         
@@ -458,9 +512,14 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(int[] value) {
+    public IsEmptyBuilder append(final int[] value) {
         
-        if(value != null && value.length != 0) {
+        if(value != null && isTestArrayValue()) {
+            for(int o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && value.length != 0) {
             setNotEmpty();
         }
         
@@ -472,9 +531,14 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(long[] value) {
+    public IsEmptyBuilder append(final long[] value) {
         
-        if(value != null && value.length != 0) {
+        if(value != null && isTestArrayValue()) {
+            for(long o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && value.length != 0) {
             setNotEmpty();
         }
         
@@ -486,9 +550,14 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(float[] value) {
+    public IsEmptyBuilder append(final float[] value) {
         
-        if(value != null && value.length != 0) {
+        if(value != null && isTestArrayValue()) {
+            for(float o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && value.length != 0) {
             setNotEmpty();
         }
         
@@ -500,9 +569,14 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(double[] value) {
+    public IsEmptyBuilder append(final double[] value) {
         
-        if(value != null && value.length != 0) {
+        if(value != null && isTestArrayValue()) {
+            for(double o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && value.length != 0) {
             setNotEmpty();
         }
         
@@ -514,9 +588,15 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(Collection<?> value) {
+    public IsEmptyBuilder append(final Collection<?> value) {
         
-        if(value != null && !value.isEmpty()) {
+        if(value != null && isTestCollectionValue()) {
+            // コレクションの値も検証する。
+            for(Object o : value) {
+                append(o);
+            }
+            
+        } else if(value != null && !value.isEmpty()) {
             setNotEmpty();
         }
         
@@ -529,10 +609,17 @@ public class IsEmptyBuilder {
      * @param value nullの場合、サイズが0の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(Map<?, ?> value) {
+    public IsEmptyBuilder append(final Map<?, ?> value) {
         
-        if(value != null && !value.isEmpty()) {
+        if(value != null && isTestMapValue()) {
+            // コレクションの値も検証する。
+            for(Object o : value.values()) {
+                append(o);
+            }
+            
+        } else if(value != null && !value.isEmpty()) {
             setNotEmpty();
+            
         }
         
         return this;
@@ -568,7 +655,7 @@ public class IsEmptyBuilder {
      * @return true:値が空。
      */
     public boolean isEmpty() {
-        return empty;
+        return empty.get();
     }
     
     /**
@@ -585,6 +672,30 @@ public class IsEmptyBuilder {
      */
     public boolean isZeroAsEmpty() {
         return zeroAsEmpty;
+    }
+    
+    /**
+     * Collectionの値も検証するかどうか。
+     * @return true:Collectionの値も検証する。
+     */
+    public boolean isTestArrayValue() {
+        return testArrayValue;
+    }
+    
+    /**
+     * Collectionの値も検証するかどうか。
+     * @return true:Collectionの値も検証する。
+     */
+    public boolean isTestCollectionValue() {
+        return testCollectionValue;
+    }
+    
+    /**
+     * Mapの値も検証するかどうか。
+     * @return true:Mapの値も検証する。
+     */
+    public boolean isTestMapValue() {
+        return testMapValue;
     }
     
 }
