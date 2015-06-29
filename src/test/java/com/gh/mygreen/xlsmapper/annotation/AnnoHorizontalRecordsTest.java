@@ -25,6 +25,7 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.IsEmptyComparator;
+import com.gh.mygreen.xlsmapper.IsEmptyConfig;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
@@ -2589,7 +2590,7 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsIsEmpty
         public boolean isEmpty() {
-            IsEmptyBuilder builder = new IsEmptyBuilder(true);
+            IsEmptyBuilder builder = new IsEmptyBuilder(IsEmptyConfig.create().withZeroAsEmpty(true));
             builder.append(name);
             builder.compare(new IsEmptyComparator() {
                 
@@ -2776,7 +2777,7 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsIsEmpty
         public boolean isEmpty() {
-            IsEmptyBuilder builder = new IsEmptyBuilder(true);
+            IsEmptyBuilder builder = new IsEmptyBuilder(IsEmptyConfig.create().withZeroAsEmpty(true));
             builder.append(selectRule);
             builder.compare(new IsEmptyComparator() {
                 
