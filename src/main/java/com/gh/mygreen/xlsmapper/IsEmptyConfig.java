@@ -19,17 +19,17 @@ public class IsEmptyConfig {
     /**
      * 配列の場合、値も対象とするかどうか。
      */
-    private boolean testArrayValue;
+    private boolean testArrayItem;
     
     /**
      * Collectionの場合、値も対象とするかどうか。
      */
-    private boolean testCollectionValue;
+    private boolean testCollectionItem;
     
     /**
      * Mapの場合、値も対象とするかどうか。
      */
-    private boolean testMapValue;
+    private boolean testMapItem;
     
     /**
      * ransientが付与されたフィールドも対象とするかどうか。
@@ -50,9 +50,9 @@ public class IsEmptyConfig {
     public IsEmptyConfig() {
         
         this.zeroAsEmpty = true;
-        this.testArrayValue = true;
-        this.testCollectionValue = true;
-        this.testMapValue = true;
+        this.testArrayItem = true;
+        this.testCollectionItem = true;
+        this.testMapItem = true;
         this.testTransient = false;
     }
     
@@ -79,17 +79,17 @@ public class IsEmptyConfig {
      * 配列の値も検証対象とするかどうか。
      * @return true:配列の値も検証対象とする。初期値はtrueです。
      */
-    public boolean isTestArrayValue() {
-        return testArrayValue;
+    public boolean isTestArrayItem() {
+        return testArrayItem;
     }
     
     /**
      * 配列の値も検証対象とするかどうかを設定します設定します。
-     * @param testArrayValue 配列の値も検証対象とするかどうか
+     * @param testArrayItem 配列の値も検証対象とするかどうか
      * @return 自身のインスタンス
      */
-    public IsEmptyConfig withTestArrayValue(boolean testArrayValue) {
-        this.testArrayValue = testArrayValue;
+    public IsEmptyConfig withTestArrayItem(boolean testArrayItem) {
+        this.testArrayItem = testArrayItem;
         return this;
     }
     
@@ -97,17 +97,17 @@ public class IsEmptyConfig {
      * Collectionの値も検証対象とするかどうか。
      * @return true:Collectionの値も検証対象とする。初期値はtrueです。
      */
-    public boolean isTestCollectionValue() {
-        return testCollectionValue;
+    public boolean isTestCollectionItem() {
+        return testCollectionItem;
     }
     
     /**
      * Collectionの値も検証対象とするかどうかを設定します設定します。
-     * @param testCollectionValue Collectionの値も検証対象とするかどうか
+     * @param testCollectionItem Collectionの値も検証対象とするかどうか
      * @return 自身のインスタンス
      */
-    public IsEmptyConfig withTestCollectionValue(boolean testCollectionValue) {
-        this.testCollectionValue = testCollectionValue;
+    public IsEmptyConfig withTestCollectionItem(boolean testCollectionItem) {
+        this.testCollectionItem = testCollectionItem;
         return this;
     }
     
@@ -115,17 +115,17 @@ public class IsEmptyConfig {
      * Mapの値も検証対象とするかどうか。
      * @return true:Mapの値も検証対象とする。初期値はtrueです。
      */
-    public boolean isTestMapValue() {
-        return testMapValue;
+    public boolean isTestMapItem() {
+        return testMapItem;
     }
     
     /**
      * Mapの値も検証対象とするかどうかを設定します設定します。
-     * @param testMapValue Mapの値も検証対象とするかどうか
+     * @param testMapItem Mapの値も検証対象とするかどうか
      * @return 自身のインスタンス
      */
-    public IsEmptyConfig withTestMapValue(boolean testMapValue) {
-        this.testMapValue = testMapValue;
+    public IsEmptyConfig withTestMapItem(boolean testMapItem) {
+        this.testMapItem = testMapItem;
         return this;
     }
     

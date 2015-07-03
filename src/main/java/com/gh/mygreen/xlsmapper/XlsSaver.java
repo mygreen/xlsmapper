@@ -384,7 +384,7 @@ public class XlsSaver {
         
         Class<?> clazz = obj.getClass();
         for(Method method : clazz.getMethods()) {
-//            method.setAccessible(true);
+            method.setAccessible(true);
             if(!Utils.isGetterMethod(method)) {
                 continue;
             }

@@ -15,7 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * <p>リフレクションを利用して判定する場合は、位置情報のフィールドpositions()、ラベル情報のフィールドを除外します。
  * <pre>
- * @XlsIsEmpty
+ * {@code // リフレクションを使用する場合}
+ * {@code @XlsIsEmpty}
  * public boolean isEmpty() {
  *     return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
  * }
@@ -23,14 +24,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * <p>フィールドを1つずつ判定する場合は、{@code append(...)}メソッドを利用します。
  * メソッド{@link #compare(IsEmptyComparator)}を利用することで、独自の実装も可能で、その際にLambda式を利用することもできます。
+ * 
  * <pre>
- * @XlsIsEmpty
+ * {@code // 独自に組み立てる場合}
+ * {@code @XlsIsEmpty}
  * public boolean isEmpty() {
  *     return new IsEmptyBuilder()
  *         .append(name)
  *         .append(age)
  *         .compare(() -> StringUtils.isBlank(address))
  *         .isEmpty();
+ * }
+ * </pre>
+ * 
+ * <p>オプションを指定して処理する場合、{@link IsEmptyConfig}を利用します。
+ * <pre>
+ * {@code // オプションを指定する場合}
+ * {@code @XlsIsEmpty}
+ * public boolean isEmpty() {
+ *     return IsEmptyBuilder.reflectionIsEmpty(this,
+ *         , IsEmptyConfig.create().withTestArrayItem(false).withTestCollectionItem(false)
+ *         , "positions", "labels");
  * }
  * </pre>
  * 
@@ -45,7 +59,7 @@ public class IsEmptyBuilder {
      * 現在までの判定結果を保持する。
      * true: 値が空かどうか。
      */
-    private final AtomicBoolean empty;
+    private final AtomicBoolean result;
     
     /**
      * 数値の場合、0を空として扱うか。
@@ -55,20 +69,20 @@ public class IsEmptyBuilder {
     /**
      * 配列の場合、値も検証対象とするかどうか。
      */
-    private boolean testArrayValue;
+    private boolean testArrayItem;
     
     /**
      * Collectionの場合、値も検証対象とするかどうか。
      */
-    private boolean testCollectionValue;
+    private boolean testCollectionItem;
     
     /**
      * Mapの場合、値も対象とするかどうか。
      */
-    private boolean testMapValue;
+    private boolean testMapItem;
     
     /**
-     * ransientが付与されたフィールドも対象とするかどうか。
+     * transientが付与されたフィールドも対象とするかどうか。
      */
     private boolean testTransient;
     
@@ -88,12 +102,12 @@ public class IsEmptyBuilder {
     public IsEmptyBuilder(final IsEmptyConfig config) {
         ArgUtils.notNull(config, "config");
         
-        this.empty = new AtomicBoolean(true);
+        this.result = new AtomicBoolean(true);
         
         this.zeroAsEmpty = config.isZeroAsEmpty();
-        this.testArrayValue = config.isTestArrayValue();
-        this.testCollectionValue = config.isTestCollectionValue();
-        this.testMapValue = config.isTestMapValue();
+        this.testArrayItem = config.isTestArrayItem();
+        this.testCollectionItem = config.isTestCollectionItem();
+        this.testMapItem = config.isTestMapItem();
         this.testTransient = config.isTestTransient();
     }
     
@@ -175,7 +189,7 @@ public class IsEmptyBuilder {
      * 値が空でないことを設定する。
      */
     private void setNotEmpty() {
-        this.empty.set(false);
+        this.result.set(false);
     }
     
     /**
@@ -183,7 +197,7 @@ public class IsEmptyBuilder {
      * @param value nullまたは空文字の場合、空と判断する。
      * @return this.
      */
-    public IsEmptyBuilder append(String value) {
+    public IsEmptyBuilder append(final String value) {
         return append(value, false);
     }
     
@@ -193,7 +207,11 @@ public class IsEmptyBuilder {
      * @param trim 引数valueをトリムした後空文字と判定するかどうか。
      * @return this.
      */
-    public IsEmptyBuilder append(String value, boolean trim) {
+    public IsEmptyBuilder append(final String value, final boolean trim) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         if(trim) {
             if(value != null && !value.trim().isEmpty()) {
                 setNotEmpty();
@@ -212,7 +230,11 @@ public class IsEmptyBuilder {
      * @param value 空文字の場合、空と判断する。
      * @return this
      */
-    public IsEmptyBuilder append(char value) {
+    public IsEmptyBuilder append(final char value) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         final String str = (value == '\u0000' ? "" : String.valueOf(value));
         return append(str);
     }
@@ -223,7 +245,11 @@ public class IsEmptyBuilder {
      * @param trim 引数valueをトリムした後空文字と判定するかどうか。
      * @return this
      */
-    public IsEmptyBuilder append(char value, boolean trim) {
+    public IsEmptyBuilder append(final char value, final boolean trim) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         final String str = (value == '\u0000' ? "" : String.valueOf(value));
         return append(str, trim);
     }
@@ -233,7 +259,11 @@ public class IsEmptyBuilder {
      * @param value false場合、空と判断する。
      * @return this.
      */
-    public IsEmptyBuilder append(boolean value) {
+    public IsEmptyBuilder append(final boolean value) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         if(value) {
             setNotEmpty();
         }
@@ -246,7 +276,11 @@ public class IsEmptyBuilder {
      * @param value {@link #isZeroAsEmpty()}がtrueの場合、0の値を空として扱う。
      * @return this
      */
-    public IsEmptyBuilder append(byte value) {
+    public IsEmptyBuilder append(final byte value) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         if(!(isZeroAsEmpty() && value == 0)) {
             setNotEmpty();
         }
@@ -259,7 +293,11 @@ public class IsEmptyBuilder {
      * @param value {@link #isZeroAsEmpty()}がtrueの場合、0の値を空として扱う。
      * @return this
      */
-    public IsEmptyBuilder append(short value) {
+    public IsEmptyBuilder append(final short value) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         if(!(isZeroAsEmpty() && value == 0)) {
             setNotEmpty();
         }
@@ -272,7 +310,11 @@ public class IsEmptyBuilder {
      * @param value {@link #isZeroAsEmpty()}がtrueの場合、0の値を空として扱う。
      * @return this
      */
-    public IsEmptyBuilder append(int value) {
+    public IsEmptyBuilder append(final int value) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         if(!(isZeroAsEmpty() && value == 0)) {
             setNotEmpty();
         }
@@ -285,7 +327,11 @@ public class IsEmptyBuilder {
      * @param value {@link #isZeroAsEmpty()}がtrueの場合、0の値を空として扱う。
      * @return this
      */
-    public IsEmptyBuilder append(long value) {
+    public IsEmptyBuilder append(final long value) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         if(!(isZeroAsEmpty() && value == 0L)) {
             setNotEmpty();
         }
@@ -298,7 +344,11 @@ public class IsEmptyBuilder {
      * @param value {@link #isZeroAsEmpty()}がtrueの場合、0.0の値を空として扱う。
      * @return this
      */
-    public IsEmptyBuilder append(float value) {
+    public IsEmptyBuilder append(final float value) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         if(!(isZeroAsEmpty() && value == 0.0)) {
             setNotEmpty();
         }
@@ -311,7 +361,11 @@ public class IsEmptyBuilder {
      * @param value {@link #isZeroAsEmpty()}がtrueの場合、0の値を空として扱う。
      * @return this
      */
-    public IsEmptyBuilder append(double value) {
+    public IsEmptyBuilder append(final double value) {
+        if(isNotEmpty()) {
+            return this;
+        }
+        
         if(!(isZeroAsEmpty() && value == 0.0)) {
             setNotEmpty();
         }
@@ -325,6 +379,9 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final Object value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
         if(value == null) {
             return this;
@@ -417,9 +474,16 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final Object[] value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestArrayValue()) {
+        if(value != null && isTestArrayItem()) {
             for(Object o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -437,9 +501,16 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final boolean[] value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestArrayValue()) {
+        if(value != null && isTestArrayItem()) {
             for(boolean o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -456,9 +527,16 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final char[] value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestArrayValue()) {
+        if(value != null && isTestArrayItem()) {
             for(char o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -475,9 +553,16 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final byte[] value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestArrayValue()) {
+        if(value != null && isTestArrayItem()) {
             for(byte o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -494,9 +579,16 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final short[] value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestArrayValue()) {
+        if(value != null && isTestArrayItem()) {
             for(short o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -513,9 +605,16 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final int[] value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestArrayValue()) {
+        if(value != null && isTestArrayItem()) {
             for(int o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -532,9 +631,16 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final long[] value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestArrayValue()) {
+        if(value != null && isTestArrayItem()) {
             for(long o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -551,9 +657,16 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final float[] value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestArrayValue()) {
+        if(value != null && isTestArrayItem()) {
             for(float o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -570,9 +683,16 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final double[] value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestArrayValue()) {
+        if(value != null && isTestArrayItem()) {
             for(double o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -589,10 +709,17 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final Collection<?> value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestCollectionValue()) {
+        if(value != null && isTestCollectionItem()) {
             // コレクションの値も検証する。
             for(Object o : value) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -610,10 +737,17 @@ public class IsEmptyBuilder {
      * @return this
      */
     public IsEmptyBuilder append(final Map<?, ?> value) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
-        if(value != null && isTestMapValue()) {
+        if(value != null && isTestMapItem()) {
             // コレクションの値も検証する。
             for(Object o : value.values()) {
+                if(isNotEmpty()) {
+                    return this;
+                }
+                
                 append(o);
             }
             
@@ -641,6 +775,9 @@ public class IsEmptyBuilder {
      * @return this.
      */
     public <T> IsEmptyBuilder compare(final IsEmptyComparator compare) {
+        if(isNotEmpty()) {
+            return this;
+        }
         
         if(!compare.isEmpty()) {
             setNotEmpty();
@@ -650,16 +787,16 @@ public class IsEmptyBuilder {
     }
     
     /**
-     * 値が空かどうか。
+     * 判定結果が空かどうか。
      * <p>{@code append(XXXX)}メソッドで何も追加されない場合、trueを返します。
      * @return true:値が空。
      */
     public boolean isEmpty() {
-        return empty.get();
+        return result.get();
     }
     
     /**
-     * 値が空出ないかどうか。
+     * 判定結果がが空でないかどうか。
      * @return true:値が空でない。
      */
     public boolean isNotEmpty() {
@@ -670,7 +807,7 @@ public class IsEmptyBuilder {
      * 数値の0を空として扱うかどうか。
      * @return true:0を空として扱う。
      */
-    public boolean isZeroAsEmpty() {
+    private boolean isZeroAsEmpty() {
         return zeroAsEmpty;
     }
     
@@ -678,24 +815,24 @@ public class IsEmptyBuilder {
      * Collectionの値も検証するかどうか。
      * @return true:Collectionの値も検証する。
      */
-    public boolean isTestArrayValue() {
-        return testArrayValue;
+    private boolean isTestArrayItem() {
+        return testArrayItem;
     }
     
     /**
      * Collectionの値も検証するかどうか。
      * @return true:Collectionの値も検証する。
      */
-    public boolean isTestCollectionValue() {
-        return testCollectionValue;
+    private boolean isTestCollectionItem() {
+        return testCollectionItem;
     }
     
     /**
      * Mapの値も検証するかどうか。
      * @return true:Mapの値も検証する。
      */
-    public boolean isTestMapValue() {
-        return testMapValue;
+    private boolean isTestMapItem() {
+        return testMapItem;
     }
     
 }
