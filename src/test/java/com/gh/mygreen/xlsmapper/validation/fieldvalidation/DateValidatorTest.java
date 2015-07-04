@@ -436,9 +436,5 @@ public class DateValidatorTest {
             return this;
         }
         
-        public Date getDate() {
-            return date;
-        }
-
     }
 }

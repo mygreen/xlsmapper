@@ -119,10 +119,6 @@ public class PatternValidatorTest {
             this.labels.put(field, label);
             return this;
         }
-        
-        public String getStr() {
-            return str;
-        }
 
     }
 }

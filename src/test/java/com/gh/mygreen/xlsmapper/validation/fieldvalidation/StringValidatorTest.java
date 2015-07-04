@@ -419,9 +419,5 @@ public class StringValidatorTest {
             return this;
         }
         
-        public String getStr() {
-            return str;
-        }
-
     }
 }

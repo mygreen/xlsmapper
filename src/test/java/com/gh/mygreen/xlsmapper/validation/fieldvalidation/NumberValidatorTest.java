@@ -801,13 +801,5 @@ public class NumberValidatorTest {
             return this;
         }
         
-        public Integer getNumI() {
-            return numI;
-        }
-        
-        public Double getNumD() {
-            return numD;
-        }
-
     }
 }
