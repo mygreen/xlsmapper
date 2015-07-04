@@ -9,9 +9,8 @@ import java.util.Map;
 import org.springframework.validation.Errors;
 
 import com.gh.mygreen.xlsmapper.ArgUtils;
+import com.gh.mygreen.xlsmapper.PropertyNavigator;
 import com.gh.mygreen.xlsmapper.Utils;
-import com.gh.mygreen.xlsmapper.expression.ExpressionLanguage;
-import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageOGNLImpl;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -32,7 +31,13 @@ public class CellField<T> {
      * プロパティにアクセスするための式言語。
      * ・OGNLを利用し、private/protectedなどのフィールドにもアクセス可能にする。
      */
-    private static final ExpressionLanguage expressionLanguage = new ExpressionLanguageOGNLImpl(true);
+    private static final PropertyNavigator propertyNavigator = new PropertyNavigator();
+    static {
+        propertyNavigator.setAllowPrivate(true);
+        propertyNavigator.setIgnoreNull(true);
+        propertyNavigator.setIgnoreNotFoundKey(true);
+        propertyNavigator.setCacheWithPath(true);
+    }
     
     /** フィールド名（チェック対象のプロパティ名） */
     final private String name;
@@ -82,7 +87,7 @@ public class CellField<T> {
         
         this.name = fieldName;
         @SuppressWarnings("unchecked")
-        final T fieldValue = (T) expressionLanguage.getProperty(fieldName, targetObj);
+        final T fieldValue = (T) propertyNavigator.getProperty(targetObj, fieldName);
         setValue(fieldValue);
         
         setCellAddress(Utils.getPosition(targetObj, fieldName));

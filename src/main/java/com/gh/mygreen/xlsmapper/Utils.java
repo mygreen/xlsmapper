@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1939,6 +1940,50 @@ public class Utils {
         } else {
             return new Locale(split[0], split[1], split[2]);
         }
+        
+    }
+    
+    /**
+     * エスケープ文字を除去した文字列を取得する。
+     * @param str
+     * @param escapeChar
+     * @return
+     */
+    public static String removeEscapeChar(final String str, final char escapeChar) {
+        
+        if(str == null || str.isEmpty()) {
+            return str;
+        }
+        
+        final String escapeStr = String.valueOf(escapeChar);
+        StringBuilder sb = new StringBuilder();
+        
+        LinkedList<String> stack = new LinkedList<String>();
+        
+        final int length = str.length();
+        for(int i=0; i < length; i++) {
+            final char c = str.charAt(i);
+            
+            if(StackUtils.equalsTopElement(stack, escapeStr)) {
+                // スタックの一番上がエスケープ文字の場合
+                StackUtils.popup(stack);
+                sb.append(c);
+                
+            } else if(c == escapeChar) {
+                // スタックに積む
+                stack.push(String.valueOf(c));
+                
+            } else {
+                sb.append(c);
+            }
+            
+        }
+        
+        if(!stack.isEmpty()) {
+            sb.append(StackUtils.popupAndConcat(stack));
+        }
+        
+        return sb.toString();
         
     }
 }
