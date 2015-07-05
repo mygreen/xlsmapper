@@ -78,5 +78,25 @@ public class ExpresionLanguageTest {
 //        System.out.println(val);
         
     }
+    
+    @Test
+    public void testEL3_escape() {
+        
+        ExpressionLanguageELImpl el = new ExpressionLanguageELImpl();
+        
+        Date date = Timestamp.valueOf("2015-04-15 10:20:30.000");
+
+        String expression = "'Helo World}' += formatter.format('%1.1f', validatedValue)";
+        
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("validatedValue", 12.34);
+        vars.put("formatter", new FormatterWrapper(Locale.getDefault()));
+        
+        String eval = (String) el.evaluateWithEL3(expression, vars);
+        assertThat(eval, is("Helo World}12.3"));
+//        System.out.println(eval);
+        
+        
+    }
 
 }

@@ -8,12 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.expression.ExpressionEvaluationException;
-import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
-import com.gh.mygreen.xlsmapper.validation.MessageParseException;
+import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageMVELImpl;
 
 /**
  * {@link MessageInterpolator}のテスタ
@@ -115,13 +112,12 @@ public class MessageInterporlatorTest {
     /**
      * EL式中にエスケープ文字あり
      */
-    @Ignore
     @Test
     public void testInterpolate_escape02() {
         
         MessageInterpolator interpolator = new MessageInterpolator();
         
-        String message = "${'Helo World\\}' + formatter.format('%1.1f', validatedValue)}は、{min}～${max}の範囲で入力してください。";
+        String message = "${'Helo World\\}' += formatter.format('%1.1f', validatedValue)}は、{min}～${max}の範囲で入力してください。";
         
         double validatedValue = 3;
         
@@ -136,5 +132,88 @@ public class MessageInterporlatorTest {
         
     }
     
+    /**
+     * メッセージ中の式が途中で終わる場合
+     */
+    @Test
+    public void testInterpolate_lack_end() {
+        
+        MessageInterpolator interpolator = new MessageInterpolator();
+        
+        String message = "${'Helo World\\}' += formatter.format('%1.1f', validatedValue)";
+        
+        double validatedValue = 3;
+        
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("validatedValue", validatedValue);
+        vars.put("min", 1);
+        vars.put("max", 10);
+        
+        String actual = interpolator.interpolate(message, vars);
+        
+        assertThat(actual, is("${'Helo World}' += formatter.format('%1.1f', validatedValue)"));
+    }
+    
+    /**
+     * 再起的にメッセージを評価する。
+     * 変数の再起
+     */
+    @Test
+    public void testInterpolate_recursive_vars() {
+        
+        MessageInterpolator interpolator = new MessageInterpolator();
+        
+        String message = "{abc} : {message}";
+        
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("message", "${1+2}");
+        
+        String actual = interpolator.interpolate(message, vars, true);
+        assertThat(actual, is("{abc} : 3"));
+        
+    }
+    
+    /**
+     * 再起的にメッセージを評価する。
+     * 式の再起
+     */
+    @Test
+    public void testInterpolate_recursive_el() {
+        
+        MessageInterpolator interpolator = new MessageInterpolator();
+        
+        String message = "{abc} : ${value}";
+        
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("value", "{min}");
+        vars.put("min", 3);
+        
+        String actual = interpolator.interpolate(message, vars, true);
+        assertThat(actual, is("{abc} : 3"));
+        
+    }
+    
+    /**
+     * MVELに切り替えて実行する
+     */
+    @Test
+    public void testInterpolate_mvel() {
+        
+        MessageInterpolator interpolator = new MessageInterpolator(new ExpressionLanguageMVELImpl());
+        assertThat(interpolator.getExpressionLanguage(), instanceOf(ExpressionLanguageMVELImpl.class));
+        
+        String message = "${formatter.format('%1.1f', validatedValue)}は、${min}～${max}の範囲で入力してください。";
+        
+        double validatedValue = 3;
+        
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("validatedValue", validatedValue);
+        vars.put("min", 1);
+        vars.put("max", 10);
+        
+        String actual = interpolator.interpolate(message, vars);
+        assertThat(actual, is("3.0は、1～10の範囲で入力してください。"));
+        
+    }
    
 }
