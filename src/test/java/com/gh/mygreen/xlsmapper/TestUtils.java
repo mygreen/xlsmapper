@@ -19,6 +19,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * テスト時のユーティリティクラス。
  * <p>staticインポートして利用する。
+ * @version 1.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -77,6 +78,18 @@ public class TestUtils {
      */
     public static  Date toUtilDate(Timestamp timestamp) {
         return new Date(timestamp.getTime());
+    }
+    
+    /**
+     * Timestampを{@link Calendar}に変換する
+     * @since 1.0
+     * @param timestamp
+     * @return
+     */
+    public static Calendar toCalendar(Timestamp timestamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(timestamp);
+        return cal;
     }
     
     /**
