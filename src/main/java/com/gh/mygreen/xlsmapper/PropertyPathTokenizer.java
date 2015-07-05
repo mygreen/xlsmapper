@@ -16,7 +16,7 @@ public class PropertyPathTokenizer {
     /**
      * エスケープ文字（バックスペース\\）
      */
-    public static final String STR_ESCAPE_CHAR = "\\";
+    private static final String STR_ESCAPE_CHAR = "\\";
     
     /**
      * プロパティのアクセス用の書式をトークンに分割する。
