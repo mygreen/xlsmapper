@@ -2,13 +2,15 @@ package com.gh.mygreen.xlsmapper.validation;
 
 import java.util.Formatter;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.ArgUtils;
+import com.gh.mygreen.xlsmapper.StackUtils;
+import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.expression.ExpressionEvaluationException;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguage;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageELImpl;
@@ -23,6 +25,7 @@ import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageELImpl;
  * <p>{@link MessageResolver}を指定した場合、メッセージ中の変数<code>{...}</code>をメッセージ定義コードとして解決する。
  *    ただし、メッセージ変数で指定されている変数が優先される。
  * 
+ * @version 1.0
  * @author T.TSUCHIE
  *
  */
@@ -99,172 +102,95 @@ public class MessageInterpolator {
          * 式の開始が現れたらスタックに積み、式の終了が現れたらスタックから全てを取り出す。
          * スタックに積まれるのは、1つ文の変数またはEL式。
          */
-        final Stack<Character> stack = new Stack<Character>();
+        final LinkedList<String> stack = new LinkedList<String>();
         
-        int pos = 0;
-        int end = message.length();
+        final int length = message.length();
         
-        while(pos < end ) {
+        for(int i=0; i < length; i++) {
+            final char c = message.charAt(i);
             
-            char c = message.charAt(pos);
-            if(c == '$') {
+            if(StackUtils.equalsTopElement(stack, "\\")) {
+                // 直前の文字がエスケープ文字の場合、エスケープ文字として結合する。
+                String escapedChar = StackUtils.popup(stack) + c;
+                
                 if(!stack.isEmpty()) {
-                    pushConsiderEscape(stack, c);
-                    
-                } else if(stack.isEmpty() && notEqualsBufferLast(sb, '\\')) {
-                    stack.push(c);
+                    // 取り出した後もスタックがある場合は、式の途中であるため、再度スタックに積む。
+                    stack.push(escapedChar);
                     
                 } else {
-                    appendCondiderEscape(sb, c);
+                    // 取り出した後にスタックがない場合は、エスケープを解除して通常の文字として積む。
+                    sb.append(c);
+                    
                 }
+                
+            } else if(c == '\\') {
+                // エスケープ文字の場合はスタックに積む。
+                stack.push(String.valueOf(c));
+                
+            } else if(c == '$') {
+                stack.push(String.valueOf(c));
                 
             } else if(c == '{') {
-                if(stack.isEmpty() && equalsBufferLast(sb, '\\')) {
-                    appendCondiderEscape(sb, c);
+                
+                if(!stack.isEmpty() && !StackUtils.equalsAnyBottomElement(stack, new String[]{"$", "{"})) {
+                    // スタックの先頭が式の開始形式でない場合
+                    throw new MessageParseException(message, "expression not start with '{' or '$'");
+                    
                 } else {
-                    if(!validateExpressionFormatWithStart(stack, c)) {
-                        throw new MessageParseException(message, "expression not start with '$'");
-                    }
-                    pushConsiderEscape(stack, c);
+                    stack.push(String.valueOf(c));
                 }
                 
+                
             } else if(c == '}') {
-                if(stack.isEmpty()) {
-                    sb.append(c);
-                } else {
-                    final boolean endExp = !stack.peek().equals('\\');
-                    pushConsiderEscape(stack, c);
+                
+                if(StackUtils.equalsAnyBottomElement(stack, new String[]{"{", "$"})) {
+                    // 式の終わりの場合は、式を取り出し評価する。
+                    String expression = StackUtils.popupAndConcat(stack) + c;
                     
-                    if(endExp) {
-                        // 式が終わりの場合、式を取り出し評価する。
-                        final String value = evaluate(stack, vars, recursive, messageResolver);
-                        sb.append(value);
-                        stack.clear();
-                    }
+                    // エスケープを解除する
+                    expression = Utils.removeEscapeChar(expression, '\\');
+                    
+                    String result = evaluate(expression, vars, recursive, messageResolver);
+                    sb.append(result);
+                    
+                } else {
+                    sb.append(c);
+                    
                 }
                 
             } else {
+                
                 if(stack.isEmpty()) {
                     sb.append(c);
+                    
                 } else {
-                    stack.push(c);
+                    stack.push(String.valueOf(c));
                 }
                 
             }
             
-            pos++;
         }
         
         if(!stack.isEmpty()) {
-            throw new MessageParseException(message, "not found '}'");
+            String val = StackUtils.popupAndConcat(stack);
+            val = Utils.removeEscapeChar(val, '\\');
+            sb.append(val);
         }
         
         return sb.toString();
     }
     
-    /**
-     * 評価中のメッセージの最後の文字が、引数で指定した値'value'かどうか検証する。
-     * <p>メッセージが0文字の場合は、falseを返す。
-     * @param sb
-     * @param value
-     * @return メッセージの最後の文字が引数'value'で指定した値と等しい場合。
-     */
-    private static boolean equalsBufferLast(final StringBuilder sb, final char value) {
-        if(sb.length() > 0) {
-            final int length = sb.length();
-            return sb.charAt(length -1) == value;
-            
-        } else {
-            return false;
-        }
-    }
-    
-    /**
-     * 評価中のメッセージの最後の文字が、引数で指定した値'value'でないかどうか検証する。
-     * {@link #equalsBufferLast(StringBuilder, char)}の否定。
-     * @param sb
-     * @param value
-     * @return メッセージの最後の文字が引数'value'で指定した値と異なる場合。
-     */
-    private static boolean notEqualsBufferLast(final StringBuilder sb, final char value) {
-        return !equalsBufferLast(sb, value);
-    }
-    
-    private static void appendCondiderEscape(final StringBuilder sb, final char value) {
-        
-        if(sb.length() == 0) {
-            sb.append(value);
-            
-        } else if(equalsBufferLast(sb, '\\')) {
-            
-            final int opt = sb.length() -1;
-            sb.setCharAt(opt, value);
-            
-        } else {
-            sb.append(value);
-        }
-        
-    }
-    
-    private static void pushConsiderEscape(final Stack<Character> stack, final char value) {
-        
-        if(stack.isEmpty()) {
-            stack.push(value);
-            
-        } else if(stack.peek().equals('\\')) {
-            stack.pop();
-            stack.push(value);
-        } else {
-            stack.push(value);
-        }
-        
-    }
-    
-    /**
-     * Stackに追加した、評価対象の式が正しいかチェックする。
-     * <p>文字列'$' or '{'で始まるかチェックする。
-     * @param stack
-     * @param value
-     * @return
-     */
-    private static boolean validateExpressionFormatWithStart(final Stack<Character> stack, final char value) {
-        if(stack.isEmpty()) {
-            return true;
-        }
-        
-        if(stack.size() == 1) {
-            final char first = stack.firstElement();
-            if(first != '$') {
-                return false;
-            } else if(value == '{') {
-                return true;
-            }
-            return false;
-        }
-        
-        return true;
-        
-    }
-    
-    /**
-     * メッセージ中の変数またはEL式を評価する。
-     * @param stack
-     * @param values
-     * @param recursive
-     * @param messageResolver
-     * @return
-     */
-    private String evaluate(final Stack<Character> stack, final Map<String, ?> values, final boolean recursive,
+    private String evaluate(final String expression, final Map<String, ?> values, final boolean recursive,
             final MessageResolver messageResolver) {
         
-        if(stack.firstElement().equals('{')) {
+        if(expression.startsWith("{")) {
             // 変数の置換の場合
-            final String varName = convertStackToString(stack, 1, stack.size() -1);
+            final String varName = expression.substring(1, expression.length()-1);
             
             if(values.containsKey(varName)) {
                 // 該当するキーが存在する場合
                 final Object value = values.get(varName);
-                final String eval = value == null ? "" : value.toString();
+                final String eval = (value == null) ? "" : value.toString();
                 if(!eval.isEmpty() && recursive) {
                     return parse(eval, values, recursive, messageResolver);
                 } else {
@@ -287,32 +213,22 @@ public class MessageInterpolator {
                 
             } else {
                 // 該当するキーが存在しない場合は、値をそのまま返す。
-                return String.format("{%s}", varName);
+                return expression.toString();
             }
             
-        } else if(stack.firstElement().equals('$')) {
+        } else if(expression.startsWith("${")) {
             // EL式で処理する
-            final String expr = convertStackToString(stack, 2, stack.size() -1);
+            final String expr = expression.substring(2, expression.length()-1);
             final String eval = evaluateExpression(expr, values);
             if(recursive) {
                 return parse(eval, values, recursive, messageResolver);
             } else {
                 return eval;
             }
+            
         }
         
-        throw new MessageParseException(stack.toString(), "not support expression.");
-        
-    }
-    
-    private String convertStackToString(Stack<Character> stack, final int beginIndex, final int endIndex) {
-        
-        final StringBuilder buff = new StringBuilder();
-        for(int i=beginIndex; i < endIndex; i++) {
-            buff.append(stack.get(i));
-        }
-        
-        return buff.toString();
+        throw new MessageParseException(expression, "not support expression.");
         
     }
     
