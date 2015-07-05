@@ -1,11 +1,6 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
 import java.awt.Point;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -102,35 +97,6 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T>, Ce
         errors.rejectSheetValue(fieldName, value, value.getClass(), cellAddress, getMessageKey(), messageVars);
         
         return false;
-    }
-    
-    /**
-     * クラスタイプに従いフォーマットする。
-     * @param value
-     * @param pattern
-     * @return
-     */
-    protected String formatValue(final T value, final String pattern) {
-        
-        if(value == null) {
-            return null;
-        }
-        
-        if(Utils.isEmpty(pattern)) {
-            return value.toString();
-        }
-        
-        if(value instanceof Number) {
-            final NumberFormat fomatter = new DecimalFormat(pattern);
-            return fomatter.format(value);
-            
-        } else if(value instanceof Date) {
-            final DateFormat formatter = new SimpleDateFormat(pattern);
-            return formatter.format(value);
-            
-        } else {
-            return value.toString();
-        }
     }
     
     /**
