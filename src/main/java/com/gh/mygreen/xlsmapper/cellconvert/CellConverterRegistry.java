@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import com.gh.mygreen.xlsmapper.cellconvert.converter.BigDecimalCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.BigIntegerCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.BooleanCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.ByteCellConverter;
+import com.gh.mygreen.xlsmapper.cellconvert.converter.CalendarCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.CellLinkCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.CharacterCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.DateCellConverter;
@@ -114,6 +116,8 @@ public class CellConverterRegistry {
         registerConverter(java.sql.Date.class, new SqlDateCellConverter());
         registerConverter(Timestamp.class, new SqlTimestampCellConverter());
         registerConverter(Time.class, new SqlTimeCellConverter());
+        
+        registerConverter(Calendar.class, new CalendarCellConverter());
         
         registerConverter(Enum.class, new EnumCellConverter());
         

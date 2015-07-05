@@ -124,7 +124,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     /**
      * 型変換エラー時のメッセージ変数の作成
      */
-    private Map<String, Object> createTypeErrorMessageVars(final XlsDateConverter anno) {
+    Map<String, Object> createTypeErrorMessageVars(final XlsDateConverter anno) {
         
         final Map<String, Object> vars = new LinkedHashMap<>();
         vars.put("pattern", anno.pattern());
@@ -185,7 +185,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         };
     }
     
-    private XlsDateConverter getLoadingAnnotation(final FieldAdaptor adaptor) {
+    XlsDateConverter getLoadingAnnotation(final FieldAdaptor adaptor) {
         XlsDateConverter anno = adaptor.getLoadingAnnotation(XlsDateConverter.class);
         if(anno == null) {
             anno = getDefaultDateConverterAnnotation();
@@ -194,7 +194,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         return anno;
     }
     
-    private XlsDateConverter getSavingAnnotation(final FieldAdaptor adaptor) {
+    XlsDateConverter getSavingAnnotation(final FieldAdaptor adaptor) {
         XlsDateConverter anno = adaptor.getSavingAnnotation(XlsDateConverter.class);
         if(anno == null) {
             anno = getDefaultDateConverterAnnotation();
@@ -202,7 +202,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         
         return anno;
     }
-
+    
     @Override
     public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row, 
             final XlsMapperConfig config) throws XlsMapperException {
