@@ -48,7 +48,7 @@ public class PatternValidator extends AbstractFieldValidator<String> {
     protected LinkedHashMap<String, Object> getMessageVars(final String value) {
         final LinkedHashMap<String, Object> vars = new LinkedHashMap<>();
         vars.put("validatedValue", value);
-        vars.put("pattern", pattern.pattern());
+        vars.put("pattern", getPattern().pattern());
         return vars;
     }
     
