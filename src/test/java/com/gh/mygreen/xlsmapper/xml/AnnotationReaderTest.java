@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
+import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
@@ -29,6 +30,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
  * {@link XmlLoader}、{@link AnnotationReader}のテスタ
+ * @version 1.0
  * 
  */
 public class AnnotationReaderTest {
@@ -137,6 +139,7 @@ public class AnnotationReaderTest {
     
     /**
      * クラスに定義されている定義の上書き
+     * ・XML中のoverride属性がfalseの場合。
      */
     @Test
     public void test_readAnnotation_override() throws Exception {
@@ -150,15 +153,77 @@ public class AnnotationReaderTest {
         assertThat(sheetAnno.regex(), is("リスト.+"));
         
         // フィールド定義の読み込み
-        Annotation[] nameAnnos = reader.getAnnotations(OrverrideSheet.class, SimpleSheet.class.getDeclaredField("name"));
+        Annotation[] nameAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredField("name"));
         
+        // フィールド - XMLに定義している
         XlsLabelledCell labeldCellAnno = select(nameAnnos, XlsLabelledCell.class);
         assertThat(labeldCellAnno.label(), is("クラス名"));
         assertThat(labeldCellAnno.type(), is(LabelledCellType.Bottom));
         
-        // XMLに定義していない
+        // フィールド - XMLに定義していない
         XlsConverter converterAnno = select(nameAnnos, XlsConverter.class);
         assertThat(converterAnno, is(nullValue()));
+        
+        XlsHint hintAnno1 = select(nameAnnos, XlsHint.class);
+        assertThat(hintAnno1, is(nullValue()));
+        
+        // メソッド定義の読み込み
+        Annotation[] recordsAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredMethod("setRecords", List.class));
+        
+        // メソッド - XMLに定義している
+        XlsHorizontalRecords horizontalRecordsAnno = select(recordsAnnos, XlsHorizontalRecords.class);
+        assertThat(horizontalRecordsAnno.tableLabel(), is("名簿一覧"));
+        assertThat(horizontalRecordsAnno.terminal(), is(RecordTerminal.Border));
+        
+        // メソッド - XMLに定義していない
+        XlsHint hintAnno2 = select(recordsAnnos, XlsHint.class);
+        assertThat(hintAnno2, is(nullValue()));
+        
+    }
+    
+    /**
+     * クラスに定義されている定義の上書き
+     * ・XML中のoverride属性がtrueの場合。
+     */
+    @Test
+    public void test_readAnnotation_override2() throws Exception {
+        
+        XmlInfo xmlInfo = XmlLoader.load(new File("src/test/data/xml/anno_override.xml"), "UTF-8");
+        AnnotationReader reader = new AnnotationReader(xmlInfo);
+        
+        // クラス定義の読み込み
+        XlsSheet sheetAnno = reader.getAnnotation(OrverrideSheet.class, XlsSheet.class);
+        assertThat(sheetAnno.name(), is(""));
+        assertThat(sheetAnno.regex(), is("リスト.+"));
+        
+        // フィールド定義の読み込み
+        Annotation[] nameAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredField("name"));
+        
+        // フィールド - XMLに定義している
+        XlsLabelledCell labeldCellAnno = select(nameAnnos, XlsLabelledCell.class);
+        assertThat(labeldCellAnno.label(), is("クラス名"));
+        assertThat(labeldCellAnno.type(), is(LabelledCellType.Bottom));
+        
+        // フィールド - XMLに定義していない
+        XlsConverter converterAnno = select(nameAnnos, XlsConverter.class);
+        assertThat(converterAnno.trim(), is(true));
+        assertThat(converterAnno.forceShrinkToFit(), is(true));
+        assertThat(converterAnno.defaultValue(), is("－"));
+        
+        XlsHint hintAnno1 = select(nameAnnos, XlsHint.class);
+        assertThat(hintAnno1.order(), is(1));
+        
+        // メソッド定義の読み込み
+        Annotation[] recordsAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredMethod("setRecords", List.class));
+        
+        // メソッド - XMLに定義している
+        XlsHorizontalRecords horizontalRecordsAnno = select(recordsAnnos, XlsHorizontalRecords.class);
+        assertThat(horizontalRecordsAnno.tableLabel(), is("名簿一覧"));
+        assertThat(horizontalRecordsAnno.terminal(), is(RecordTerminal.Border));
+        
+        // メソッド - XMLに定義していない
+        XlsHint hintAnno2 = select(recordsAnnos, XlsHint.class);
+        assertThat(hintAnno2.order(), is(2));
         
     }
     
@@ -213,6 +278,7 @@ public class AnnotationReaderTest {
         @XlsSheetName
         private String sheetName;
         
+        @XlsHint(order=1)
         @XlsConverter(trim=true, forceShrinkToFit=true, defaultValue="－")
         @XlsLabelledCell(label="名称", type=LabelledCellType.Right)
         private String name;
@@ -223,6 +289,8 @@ public class AnnotationReaderTest {
             return records;
         }
         
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="クラス名", terminal=RecordTerminal.Empty)
         public void setRecords(List<NormalRecord> records) {
             this.records = records;
         }

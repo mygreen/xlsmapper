@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- フィールド定義 -->
+<annotations>
+	
+	<class name="com.gh.mygreen.xlsmapper.xml.AnnotationReaderTest$OrverrideSheet" override="true">
+		<annotation name="com.gh.mygreen.xlsmapper.annotation.XlsSheet">
+			<attribute name="name">''</attribute>
+			<attribute name="regex">'リスト.+'</attribute>
+		</annotation>
+		
+		<field name="name" override="true">
+			<annotation name="com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell">
+				<attribute name="label">'クラス名'</attribute>
+				<attribute name="type">@com.gh.mygreen.xlsmapper.annotation.LabelledCellType@Bottom</attribute>
+			</annotation>
+		</field>
+		
+		<method name="setRecords" override="true">
+			<annotation name="com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords">
+				<attribute name="tableLabel">'名簿一覧'</attribute>
+				<attribute name="terminal">@com.gh.mygreen.xlsmapper.annotation.RecordTerminal@Border</attribute>
+			</annotation>
+		</method>
+		
+	</class>
+	
+</annotations>
