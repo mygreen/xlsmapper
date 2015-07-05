@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * 日付、時刻型のタイプのチェック
  * 
+ * @version 1.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -91,6 +93,7 @@ public class DateTimeCellConverterTest {
         } else if(record.no == 2) {
             // Excelの日時型
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2015-01-02 03:45:06.000"))));
+            assertThat(record.calendar, is(toCalendar(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlTime, is(toSqlTime(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.timestamp, is(toTimestamp("2015-01-02 03:45:06.000")));
@@ -98,6 +101,7 @@ public class DateTimeCellConverterTest {
         } else if(record.no == 3) {
             // 文字列型の場合
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2015-01-02 03:45:06.000"))));
+            assertThat(record.calendar, is(toCalendar(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2015-01-02 00:00:00.000"))));
             assertThat(record.sqlTime, is(toSqlTime(toTimestamp("1970-01-01 03:45:06.000"))));
             assertThat(record.timestamp, is(toTimestamp("2015-01-02 03:45:06.000")));
@@ -105,6 +109,7 @@ public class DateTimeCellConverterTest {
         } else if(record.no == 4) {
             // 文字列型の場合
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("utilDate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("calendar"))).isTypeBindFailure(), is(true));
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlDate"))).isTypeBindFailure(), is(true));
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isTypeBindFailure(), is(true));
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("timestamp"))).isTypeBindFailure(), is(true));
@@ -112,6 +117,7 @@ public class DateTimeCellConverterTest {
         } else if(record.no == 5) {
             // Excelの日時型（日本語）
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2015-01-02 03:45:06.000"))));
+            assertThat(record.calendar, is(toCalendar(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlTime, is(toSqlTime(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.timestamp, is(toTimestamp("2015-01-02 03:45:06.000")));
@@ -119,6 +125,7 @@ public class DateTimeCellConverterTest {
         } else if(record.no == 6) {
             // Excelの数値型
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2015-01-02 03:45:06.000"))));
+            assertThat(record.calendar, is(toCalendar(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlTime, is(toSqlTime(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.timestamp, is(toTimestamp("2015-01-02 03:45:06.000")));
@@ -126,6 +133,7 @@ public class DateTimeCellConverterTest {
         } else if(record.no == 7) {
             // Excelの関数型
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2015-01-02 03:45:06.000"))));
+            assertThat(record.calendar, is(toCalendar(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlTime, is(toSqlTime(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.timestamp, is(toTimestamp("2015-01-02 03:45:06.000")));
@@ -141,6 +149,7 @@ public class DateTimeCellConverterTest {
         if(record.no == 1) {
             // 空文字
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2000-12-31 03:41:12"))));
+            assertThat(record.calendar, is(toCalendar(toTimestamp("2000-12-31 03:41:12"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2000-12-31 00:00:00.000"))));
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isTypeBindFailure(), is(true));
             assertThat(record.timestamp, is(toTimestamp("1999-12-31 10:12:00.000")));
@@ -148,6 +157,7 @@ public class DateTimeCellConverterTest {
         } else if(record.no == 2) {
             // 文字列型の場合（正常）
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2015-01-02 03:45:06.000"))));
+            assertThat(record.calendar, is(toCalendar(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2015-12-31 00:00:00.000"))));
             assertThat(record.sqlTime, is(toSqlTime(toTimestamp("1970-01-01 12:03:00.000"))));
             assertThat(record.timestamp, is(toTimestamp("2015-01-02 03:45:00.000")));
@@ -155,6 +165,7 @@ public class DateTimeCellConverterTest {
         } else if(record.no == 3) {
             // 文字列型の場合（存在しない日付）
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("utilDate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("calendar"))).isTypeBindFailure(), is(true));
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlDate"))).isTypeBindFailure(), is(true));
             assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isTypeBindFailure(), is(true));
             assertThat(record.timestamp, is(toTimestamp("2016-01-02 03:45:00.000")));
@@ -180,6 +191,7 @@ public class DateTimeCellConverterTest {
         
         outSheet.add(new SimpleRecord()
             .utilDate(toUtilDate(toTimestamp("2015-01-02 03:45:06.000")))
+            .calendar(toCalendar(toTimestamp("2015-01-02 03:45:06.000")))
             .sqlDate(toSqlDate(toTimestamp("2015-01-02 03:45:06.000")))
             .sqlTime(toSqlTime(toTimestamp("2015-01-02 03:45:06.000")))
             .timestamp(toTimestamp("2015-01-02 03:45:06.000"))
@@ -191,6 +203,7 @@ public class DateTimeCellConverterTest {
         
         outSheet.add(new FormattedRecord()
                 .utilDate(toUtilDate(toTimestamp("2015-01-02 03:45:06.000")))
+                .calendar(toCalendar(toTimestamp("2015-01-02 03:45:06.000")))
                 .sqlDate(toSqlDate(toTimestamp("2015-01-02 03:45:06.000")))
                 .sqlTime(toSqlTime(toTimestamp("2015-01-02 03:45:06.000")))
                 .timestamp(toTimestamp("2015-01-02 03:45:06.000"))
@@ -246,6 +259,7 @@ public class DateTimeCellConverterTest {
         
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.utilDate, is(outRecord.utilDate));
+        assertThat(inRecord.calendar, is(outRecord.calendar));
         assertThat(inRecord.sqlDate, is(outRecord.sqlDate));
         assertThat(inRecord.sqlTime, is(outRecord.sqlTime));
         assertThat(inRecord.timestamp, is(outRecord.timestamp));
@@ -267,6 +281,7 @@ public class DateTimeCellConverterTest {
         if(inRecord.no == 1) {
             assertThat(inRecord.no, is(outRecord.no));
             assertThat(inRecord.utilDate, is(toUtilDate(toTimestamp("2000-12-31 03:41:12.000"))));
+            assertThat(inRecord.calendar, is(toCalendar(toTimestamp("2000-12-31 03:41:12.000"))));
             assertThat(inRecord.sqlDate, is(toSqlDate(toTimestamp("2000-12-31 00:00:00.000"))));
             assertThat(inRecord.sqlTime, is(nullValue()));
             assertThat(inRecord.timestamp, is(toTimestamp("1999-12-31 10:12:00.000")));
@@ -275,6 +290,7 @@ public class DateTimeCellConverterTest {
         } else {
             assertThat(inRecord.no, is(outRecord.no));
             assertThat(inRecord.utilDate, is(outRecord.utilDate));
+            assertThat(inRecord.calendar, is(outRecord.calendar));
             assertThat(inRecord.sqlDate, is(outRecord.sqlDate));
             assertThat(inRecord.sqlTime, is(outRecord.sqlTime));
             assertThat(inRecord.timestamp, is(outRecord.timestamp));
@@ -341,6 +357,9 @@ public class DateTimeCellConverterTest {
         @XlsColumn(columnName="Dateクラス(util)")
         private Date utilDate;
         
+        @XlsColumn(columnName="Calendarクラス")
+        private Calendar calendar;
+        
         @XlsColumn(columnName="Dateクラス(sql)")
         private java.sql.Date sqlDate;
         
@@ -365,6 +384,11 @@ public class DateTimeCellConverterTest {
         
         public SimpleRecord utilDate(Date utilDate) {
             this.utilDate = utilDate;
+            return this;
+        }
+        
+        public SimpleRecord calendar(Calendar calendar) {
+            this.calendar = calendar;
             return this;
         }
         
@@ -409,6 +433,10 @@ public class DateTimeCellConverterTest {
         @XlsColumn(columnName="Dateクラス(util)")
         private Date utilDate;
         
+        @XlsConverter(defaultValue="2000-12-31 03:41:12")
+        @XlsColumn(columnName="Calendarクラス")
+        private Calendar calendar;
+        
         /** トリム */
         @XlsConverter(defaultValue=" 2000-12-31 ", trim=true)
         @XlsColumn(columnName="Dateクラス(sql)")
@@ -441,6 +469,11 @@ public class DateTimeCellConverterTest {
         
         public FormattedRecord utilDate(Date utilDate) {
             this.utilDate = utilDate;
+            return this;
+        }
+        
+        public FormattedRecord calendar(Calendar calendar) {
+            this.calendar = calendar;
             return this;
         }
         
