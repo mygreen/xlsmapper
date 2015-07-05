@@ -16,7 +16,7 @@ import com.gh.mygreen.xlsmapper.ArgUtils;
  * @author T.TSUCHIE
  *
  */
-public class ExpressionLanguageMVELImpl extends ExpressionLanguage {
+public class ExpressionLanguageMVELImpl implements ExpressionLanguage {
     
     private static final Logger logger = LoggerFactory.getLogger(ExpressionLanguageMVELImpl.class);
     

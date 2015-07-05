@@ -22,7 +22,7 @@ import com.github.mygreen.expression.el.FormatterWrapper;
  * <p>利用する際には、ELのライブラリが必要です。
  * 
  */
-public class ExpressionLanguageELImpl extends ExpressionLanguage {
+public class ExpressionLanguageELImpl implements ExpressionLanguage {
     
     private static final Logger logger = LoggerFactory.getLogger(ExpressionLanguageELImpl.class);
     
