@@ -12,6 +12,7 @@ import com.gh.mygreen.xlsmapper.ArgUtils;
 
 /**
  * XMLのクラス情報を保持する。
+ * @version 1.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -22,6 +23,8 @@ public class ClassInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private String className;
+    
+    private boolean override;
     
     private Map<String, AnnotationInfo> annotationInfos = new LinkedHashMap<>();
     
@@ -34,7 +37,8 @@ public class ClassInfo implements Serializable {
         StringBuilder sb= new StringBuilder();
         
         sb.append("ClassInfo:")
-            .append(String.format(" [name=%s]", getClassName()));
+            .append(String.format(" [name=%s]", getClassName()))
+            .append(String.format(" [override=%b]", isOverride()));
         
         for(AnnotationInfo anno : annotationInfos.values()) {
             sb.append("  ").append(anno.toString());
@@ -53,7 +57,7 @@ public class ClassInfo implements Serializable {
     
     /**
      * クラス名を取得する。
-     * @return
+     * @return クラス名。
      */
     public String getClassName() {
         return className;
@@ -61,13 +65,34 @@ public class ClassInfo implements Serializable {
     
     /**
      * クラス名を設定する。
-     * @param className
+     * @param className クラス名。
      * @throws IllegalArgumentException className is empty.
      */
     @XmlAttribute(name="name", required=true)
     public void setClassName(final String className) {
         ArgUtils.notEmpty(className, "className");
         this.className = className;
+    }
+    
+    /**
+     * 既存のクラスに定義にあるアノテーションの設定をXMLの定義で上書きするかどうか。
+     * <p>ただし、XMLに定義していないアノテーションは、既存のクラスに定義にあるものを使用する。
+     * @since 1.0
+     * @return true:XMLの定義で上書きする。
+     */
+    public boolean isOverride() {
+        return override;
+    }
+    
+    /**
+     * 既存のクラスに定義にあるアノテーションの設定をXMLの定義で上書きするかどうか設定する。
+     * <p>ただし、XMLに定義していないアノテーションは、既存のクラスに定義にあるものを使用する。
+     * @since 1.0
+     * @param override true:XMLの定義で上書きする。
+     */
+    @XmlAttribute(name="override", required=false)
+    public void setOverride(boolean override) {
+        this.override = override;
     }
     
     /**
