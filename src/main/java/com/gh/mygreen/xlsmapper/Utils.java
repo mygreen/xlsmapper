@@ -550,7 +550,7 @@ public class Utils {
                     e);
         }
         
-        // メソッドの場合(引数が int, int, Stringの場合)
+        // メソッドの場合(引数が String, int, intの場合)
         final Method positionMethod1 = getSetter(clazz, positionFieldName, String.class, Integer.TYPE, Integer.TYPE);
         if(positionMethod1 != null) {
             try {
@@ -1350,7 +1350,7 @@ public class Utils {
         
         final List<FieldAdaptor> result = new ArrayList<>();
         for(Method method : clazz.getMethods()) {
-            if(isNotGetterMethod(method) || isNotBooleanGetterMethod(method)) {
+            if(isNotGetterMethod(method) && isNotBooleanGetterMethod(method)) {
                 continue;
             }
             
@@ -1601,7 +1601,7 @@ public class Utils {
         
         final List<FieldAdaptor> result = new ArrayList<>();
         for(Method method : clazz.getMethods()) {
-            if(isNotGetterMethod(method) || isNotBooleanGetterMethod(method)) {
+            if(isNotGetterMethod(method) && isNotBooleanGetterMethod(method)) {
                 continue;
             }
             

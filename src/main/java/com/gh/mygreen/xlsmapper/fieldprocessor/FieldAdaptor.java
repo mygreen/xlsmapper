@@ -503,7 +503,7 @@ public class FieldAdaptor {
                 final ParameterizedType type = (ParameterizedType) targetField.getGenericType();
                 return (Class<?>) type.getActualTypeArguments()[1];
             } else {
-                final ParameterizedType type = (ParameterizedType) targetGetter.getGenericParameterTypes()[0];
+                final ParameterizedType type = (ParameterizedType) targetGetter.getGenericReturnType();
                 return (Class<?>) type.getActualTypeArguments()[1];
             }
         }

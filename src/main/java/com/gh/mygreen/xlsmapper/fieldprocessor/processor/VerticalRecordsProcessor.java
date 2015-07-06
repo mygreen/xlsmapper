@@ -486,7 +486,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getLoadingGenericClassType();
+                recordClass = adaptor.getSavingGenericClassType();
             }
             
             final List<Object> list = (result == null ? new ArrayList<Object>() : (List<Object>) result);
@@ -496,7 +496,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getLoadingGenericClassType();
+                recordClass = adaptor.getSavingGenericClassType();
             }
             
             final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
