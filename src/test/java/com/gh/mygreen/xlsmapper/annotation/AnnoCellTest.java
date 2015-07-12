@@ -29,6 +29,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link CellProcessor}のテスタ。
  * アノテーション{@link XlsCell}のテスタ。
+ * @version 1.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -124,6 +125,28 @@ public class AnnoCellTest {
     }
     
     /**
+     * 読み込みのテスト - メソッドにアノテーションを付与
+     * @since 1.0
+     */
+    @Test
+    public void test_load_cell_methodAnno() throws Exception {
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            
+            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            
+            assertThat(sheet.c1,is("文字列です。\n改行あり。"));
+            assertThat(sheet.c2,is(12.345));
+            assertThat(sheet.c3,is(toUtilDate(toTimestamp("2015-05-09 14:20:00.000"))));
+            assertThat(cellFieldError(errors, cellAddress(sheet.c4Position)).isTypeBindFailure(), is(true));
+            
+        }
+    }
+    
+    /**
      * 書き込みのテスト - 通常のデータ
      */
     @Test
@@ -157,6 +180,58 @@ public class AnnoCellTest {
             
             assertThat(sheet.positions, is(outSheet.positions));
             assertThat(sheet.labels, is(outSheet.labels));
+            
+            assertThat(sheet.c1, is(outSheet.c1));
+            assertThat(sheet.c2, is(outSheet.c2));
+            assertThat(sheet.c3, is(outSheet.c3));
+            assertThat(sheet.c4, is(outSheet.c4));
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - メソッドにアノテーションを付与
+     * @since 1.0
+     */
+    @Test
+    public void test_save_cell_methodAnno() throws Exception {
+        
+        // テストデータの作成
+        final MethodAnnoSheet outSheet = new MethodAnnoSheet();
+        
+        outSheet.c1("文字列です。改行あり")
+                .c2(12.345)
+                .c3(toUtilDate(toTimestamp("2015-06-06 10:12:13.000")))
+                .c4(-12345);
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Cell_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            
+            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            
+            assertThat(sheet.c1Position, is(outSheet.c1Position));
+            assertThat(sheet.c2Position, is(outSheet.c2Position));
+            assertThat(sheet.c3Position, is(outSheet.c3Position));
+            assertThat(sheet.c4Position, is(outSheet.c4Position));
+            
+            assertThat(sheet.c1Label, is(outSheet.c1Label));
+            assertThat(sheet.c2Label, is(outSheet.c2Label));
+            assertThat(sheet.c3Label, is(outSheet.c3Label));
+            assertThat(sheet.c4Label, is(outSheet.c4Label));
             
             assertThat(sheet.c1, is(outSheet.c1));
             assertThat(sheet.c2, is(outSheet.c2));
@@ -241,5 +316,142 @@ public class AnnoCellTest {
         @XlsCell(address="あいう")
         private String c1;
         
+    }
+    
+    /**
+     * メソッドにアノテーションを付与
+     * @since 1.0
+     *
+     */
+    @XlsSheet(name="Cell(メソッドにアノテーションを付与)")
+    private static class MethodAnnoSheet {
+        
+        /**
+         * インデックス指定
+         */
+        private String c1;
+        
+        /**
+         * アドレス指定
+         */
+        private Double c2;
+        
+        /**
+         * 不正なフォーマット
+         */
+        private Integer c4;
+        
+        /**
+         * インデックス指定+アドレス指定
+         */
+        private Date c3;
+        
+        private Point c1Position;
+        
+        private Point c2Position;
+        
+        private Point c3Position;
+        
+        private Point c4Position;
+        
+        private String c1Label;
+        
+        private String c2Label;
+        
+        private String c3Label;
+        
+        private String c4Label;
+        
+        @XlsCell(column=1, row=3)
+        public String getC1() {
+            return c1;
+        }
+        
+        @XlsCell(column=1, row=3)
+        public void setC1(String c1) {
+            this.c1 = c1;
+        }
+        
+        @XlsCell(address="C7")
+        public Double getC2() {
+            return c2;
+        }
+        
+        @XlsCell(address="C7")
+        public void setC2(Double c2) {
+            this.c2 = c2;
+        }
+        
+        @XlsCell(column=0, row=0, address="B10")
+        public Date getC3() {
+            return c3;
+        }
+        
+        @XlsCell(column=0, row=0, address="B10")
+        public void setC3(Date c3) {
+            this.c3 = c3;
+        }
+        
+        @XlsCell(address="D12")
+        public Integer getC4() {
+            return c4;
+        }
+        
+        @XlsCell(address="D12")
+        public void setC4(Integer c4) {
+            this.c4 = c4;
+        }
+        
+        public void setC1Position(int x, int y) {
+            this.c1Position = new Point(x, y);
+        }
+        
+        public void setC2Position(int x, int y) {
+            this.c2Position = new Point(x, y);
+        }
+        
+        public void setC3Position(int x, int y) {
+            this.c3Position = new Point(x, y);
+        }
+        
+        public void setC4Position(int x, int y) {
+            this.c4Position = new Point(x, y);
+        }
+        
+        public MethodAnnoSheet c1(String c1) {
+            this.c1 = c1;
+            return this;
+        }
+        
+        public MethodAnnoSheet c2(Double c2) {
+            this.c2 = c2;
+            return this;
+        }
+        
+        public MethodAnnoSheet c3(Date c3) {
+            this.c3 = c3;
+            return this;
+        }
+        
+        public MethodAnnoSheet c4(Integer c4) {
+            this.c4 = c4;
+            return this;
+        }
+        
+        public void setC1Label(String c1Label) {
+            this.c1Label = c1Label;
+        }
+        
+        public void setC2Label(String c2Label) {
+            this.c2Label = c2Label;
+        }
+        
+        public void setC3Label(String c3Label) {
+            this.c3Label = c3Label;
+        }
+        
+        public void setC4Label(String c4Label) {
+            this.c4Label = c4Label;
+        }
     }
 }

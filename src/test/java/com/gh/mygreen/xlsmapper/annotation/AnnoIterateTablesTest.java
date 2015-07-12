@@ -31,6 +31,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link IterateTablesProcessor}のテスタ
  * アノテーション{@link XlsIterateTables}のテスタ。
+ * @version 1.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -63,9 +64,9 @@ public class AnnoIterateTablesTest {
             
             NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
             
-            if(sheet.classeTables != null) {
-                assertThat(sheet.classeTables, hasSize(2));
-                for(ClassTable table : sheet.classeTables) {
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(2));
+                for(ClassTable table : sheet.classTables) {
                     assertTable(table, errors);
                 }
             }
@@ -87,9 +88,9 @@ public class AnnoIterateTablesTest {
             
             NormalArraySheet sheet = mapper.load(in, NormalArraySheet.class, errors);
             
-            if(sheet.classeTables != null) {
-                assertThat(sheet.classeTables, arrayWithSize(2));
-                for(ClassTable table : sheet.classeTables) {
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, arrayWithSize(2));
+                for(ClassTable table : sheet.classTables) {
                     assertTable(table, errors);
                 }
             }
@@ -129,9 +130,9 @@ public class AnnoIterateTablesTest {
             
             OptionalCellSheet sheet = mapper.load(in, OptionalCellSheet.class, errors);
             
-            if(sheet.classeTables != null) {
-                assertThat(sheet.classeTables, hasSize(2));
-                for(OptionalClassTable table : sheet.classeTables) {
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(2));
+                for(OptionalClassTable table : sheet.classTables) {
                     assertTable(table, errors);
                 }
             }
@@ -152,13 +153,38 @@ public class AnnoIterateTablesTest {
             
             ConcatTableSheet sheet = mapper.load(in, ConcatTableSheet.class, errors);
             
-            if(sheet.classeTables != null) {
-                assertThat(sheet.classeTables, hasSize(2));
-                for(ConcatClassTable table : sheet.classeTables) {
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(2));
+                for(ConcatClassTable table : sheet.classTables) {
                     assertTable(table, errors);
                 }
             }
         }
+    }
+    
+    /**
+     * メソッドにアノテーションを付与
+     * @since 1.0
+     */
+    @Test
+    public void test_load_it_methodAnno() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            
+            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(2));
+                for(MethodAnnoTable table : sheet.classTables) {
+                    assertTable(table, errors);
+                }
+            }
+        }
+        
     }
     
     private void assertTable(final ClassTable table, final SheetBindingErrors errors) {
@@ -363,6 +389,56 @@ public class AnnoIterateTablesTest {
         
     }
     
+    private void assertTable(final MethodAnnoTable table, final SheetBindingErrors errors) {
+        
+        if(table.name.equals("1年2組")) {
+            
+            assertThat(table.no, is(1));
+            assertThat(table.name, is("1年2組"));
+            
+            assertThat(table.persons, hasSize(2));
+            for(PersonRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("阿部一郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("泉太郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))));
+                    
+                }
+                
+            }
+            
+        } else if(table.name.equals("2年3組")) {
+            
+            assertThat(table.no, is(2));
+            assertThat(table.name, is("2年3組"));
+            
+            assertThat(table.persons, hasSize(3));
+            for(PersonRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("鈴木一郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("林次郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))));
+                    
+                } else if(record.no == 3) {
+                    assertThat(record.name, is("山田太郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))));
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
     /**
      * 書き込みのテスト - 通常の表のテスト
      */
@@ -402,11 +478,11 @@ public class AnnoIterateTablesTest {
             
             NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
             
-            if(sheet.classeTables != null) {
-                assertThat(sheet.classeTables, hasSize(outSheet.classeTables.size()));
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
                 
-                for(int i=0; i < sheet.classeTables.size(); i++) {
-                    assertRecord(sheet.classeTables.get(i), outSheet.classeTables.get(i), errors);
+                for(int i=0; i < sheet.classTables.size(); i++) {
+                    assertRecord(sheet.classTables.get(i), outSheet.classTables.get(i), errors);
                 }
                 
             }
@@ -454,11 +530,11 @@ public class AnnoIterateTablesTest {
             
             NormalArraySheet sheet = mapper.load(in, NormalArraySheet.class, errors);
             
-            if(sheet.classeTables != null) {
-                assertThat(sheet.classeTables, arrayWithSize(outSheet.classeTables.length));
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, arrayWithSize(outSheet.classTables.length));
                 
-                for(int i=0; i < sheet.classeTables.length; i++) {
-                    assertRecord(sheet.classeTables[i], outSheet.classeTables[i], errors);
+                for(int i=0; i < sheet.classTables.length; i++) {
+                    assertRecord(sheet.classTables[i], outSheet.classTables[i], errors);
                 }
                 
             }
@@ -544,11 +620,11 @@ public class AnnoIterateTablesTest {
             
             OptionalCellSheet sheet = mapper.load(in, OptionalCellSheet.class, errors);
             
-            if(sheet.classeTables != null) {
-                assertThat(sheet.classeTables, hasSize(outSheet.classeTables.size()));
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
                 
-                for(int i=0; i < sheet.classeTables.size(); i++) {
-                    assertRecord(sheet.classeTables.get(i), outSheet.classeTables.get(i), errors);
+                for(int i=0; i < sheet.classTables.size(); i++) {
+                    assertRecord(sheet.classTables.get(i), outSheet.classTables.get(i), errors);
                 }
                 
             }
@@ -604,16 +680,69 @@ public class AnnoIterateTablesTest {
             
             ConcatTableSheet sheet = mapper.load(in, ConcatTableSheet.class, errors);
             
-            if(sheet.classeTables != null) {
-                assertThat(sheet.classeTables, hasSize(outSheet.classeTables.size()));
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
                 
-                for(int i=0; i < sheet.classeTables.size(); i++) {
-                    assertRecord(sheet.classeTables.get(i), outSheet.classeTables.get(i), errors);
+                for(int i=0; i < sheet.classTables.size(); i++) {
+                    assertRecord(sheet.classTables.get(i), outSheet.classTables.get(i), errors);
                 }
                 
             }
             
         }
+    }
+    
+    /**
+     * 書き込みのテスト - メソッドにアノテーションを付与
+     * @since 1.0
+     */
+    @Test
+    public void test_save_it_methodAnno() throws Exception {
+        
+        // テストデータの作成
+        MethodAnnoSheet outSheet = new MethodAnnoSheet();
+        
+        outSheet.add(new MethodAnnoTable().name("1年2組")
+                .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
+        );
+        
+        outSheet.add(new MethodAnnoTable().name("2年3組")
+                .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
+        );
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            
+            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
+                
+                for(int i=0; i < sheet.classTables.size(); i++) {
+                    assertRecord(sheet.classTables.get(i), outSheet.classTables.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
     }
     
     /**
@@ -739,6 +868,30 @@ public class AnnoIterateTablesTest {
         
     }
     
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final MethodAnnoTable inRecord, final MethodAnnoTable outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        
+        if(inRecord.persons != null) {
+            assertThat(inRecord.persons, hasSize(outRecord.persons.size()));
+            
+            for(int i=0; i < inRecord.persons.size(); i++) {
+                assertRecord(inRecord.persons.get(i), outRecord.persons.get(i), errors);
+            }
+            
+        }
+    }
+    
     @XlsSheet(name="通常の表")
     private static class NormalSheet {
         
@@ -747,16 +900,16 @@ public class AnnoIterateTablesTest {
         private Map<String, String> labels;
         
         @XlsIterateTables(tableLabel="クラス情報", bottom=3)
-        private List<ClassTable> classeTables;
+        private List<ClassTable> classTables;
         
         public NormalSheet add(ClassTable table) {
             
-            if(classeTables == null) {
-                this.classeTables = new ArrayList<>();
+            if(classTables == null) {
+                this.classTables = new ArrayList<>();
             }
             
-            this.classeTables.add(table);
-            table.no(classeTables.size());
+            this.classTables.add(table);
+            table.no(classTables.size());
             
             return this;
         }
@@ -775,7 +928,7 @@ public class AnnoIterateTablesTest {
         private Map<String, String> labels;
         
         @XlsIterateTables(tableLabel="クラス情報", bottom=3)
-        private ClassTable[] classeTables;
+        private ClassTable[] classTables;
         
         /**
          * noを自動的に付与する。
@@ -785,16 +938,16 @@ public class AnnoIterateTablesTest {
         public NormalArraySheet add(ClassTable table) {
             
             final List<ClassTable> list;
-            if(classeTables == null) {
+            if(classTables == null) {
                 list = new ArrayList<>();
             } else {
-                list = new ArrayList<>(Arrays.asList(classeTables));
+                list = new ArrayList<>(Arrays.asList(classTables));
             }
             
             list.add(table);
             table.no(list.size());
             
-            this.classeTables = list.toArray(new ClassTable[list.size()]);
+            this.classTables = list.toArray(new ClassTable[list.size()]);
             
             return this;
         }
@@ -809,16 +962,16 @@ public class AnnoIterateTablesTest {
         private Map<String, String> labels;
         
         @XlsIterateTables(tableLabel="クラス情報", bottom=3)
-        private List<ClassTable> classeTables;
+        private List<ClassTable> classTables;
         
         public NotFoundCellSheet add(ClassTable table) {
             
-            if(classeTables == null) {
-                this.classeTables = new ArrayList<>();
+            if(classTables == null) {
+                this.classTables = new ArrayList<>();
             }
             
-            this.classeTables.add(table);
-            table.no(classeTables.size());
+            this.classTables.add(table);
+            table.no(classTables.size());
             
             return this;
         }
@@ -923,16 +1076,16 @@ public class AnnoIterateTablesTest {
         private Map<String, String> labels;
         
         @XlsIterateTables(tableLabel="クラス情報", bottom=3)
-        private List<OptionalClassTable> classeTables;
+        private List<OptionalClassTable> classTables;
         
         public OptionalCellSheet add(OptionalClassTable table) {
             
-            if(classeTables == null) {
-                this.classeTables = new ArrayList<>();
+            if(classTables == null) {
+                this.classTables = new ArrayList<>();
             }
             
-            this.classeTables.add(table);
-            table.no(classeTables.size());
+            this.classTables.add(table);
+            table.no(classTables.size());
             
             return this;
         }
@@ -993,16 +1146,16 @@ public class AnnoIterateTablesTest {
         private Map<String, String> labels;
         
         @XlsIterateTables(tableLabel="クラス情報", bottom=3)
-        private List<ConcatClassTable> classeTables;
+        private List<ConcatClassTable> classTables;
         
         public ConcatTableSheet add(ConcatClassTable table) {
             
-            if(classeTables == null) {
-                this.classeTables = new ArrayList<>();
+            if(classTables == null) {
+                this.classTables = new ArrayList<>();
             }
             
-            this.classeTables.add(table);
-            table.no(classeTables.size());
+            this.classTables.add(table);
+            table.no(classTables.size());
             
             return this;
         }
@@ -1115,6 +1268,156 @@ public class AnnoIterateTablesTest {
         
         public ResultRecord sum(int sum) {
             this.sum = sum;
+            return this;
+        }
+        
+    }
+    
+    @XlsSheet(name="メソッドにアノテーションを付与")
+    private static class MethodAnnoSheet {
+        
+        private List<MethodAnnoTable> classTables;
+        
+        public MethodAnnoSheet add(MethodAnnoTable table) {
+            
+            if(classTables == null) {
+                this.classTables = new ArrayList<>();
+            }
+            
+            this.classTables.add(table);
+            table.no(classTables.size());
+            
+            return this;
+        }
+        
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
+        public List<MethodAnnoTable> getClassTables() {
+            return classTables;
+        }
+        
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
+        public void setClassTables(List<MethodAnnoTable> classTables) {
+            this.classTables = classTables;
+        }
+        
+        // 位置情報／ラベル情報
+        private Point classTablesPoint;
+        
+        private String classTablesLabel;
+        
+        public void setClassTablesPoint(Point classTablesPoint) {
+            this.classTablesPoint = classTablesPoint;
+        }
+        
+        public void setClassTablesLabel(String classTablesLabel) {
+            this.classTablesLabel = classTablesLabel;
+        }
+        
+        
+    }
+    
+    /**
+     * メソッドにアノテーションを付与したのテーブルの定義
+     */
+    private static class MethodAnnoTable {
+        
+        private int no;
+        
+        private String name;
+        
+        private List<PersonRecord> persons;
+        
+        @XlsHint(order=1)
+        @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+        public int getNo() {
+            return no;
+        }
+        
+        @XlsHint(order=1)
+        @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+        public void setNo(int no) {
+            this.no = no;
+        }
+        
+        @XlsHint(order=2)
+        @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
+        public String getName() {
+            return name;
+        }
+        
+        @XlsHint(order=2)
+        @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
+        public void setName(String name) {
+            this.name = name;
+        }
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
+        public List<PersonRecord> getPersons() {
+            return persons;
+        }
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        public void setPersons(List<PersonRecord> persons) {
+            this.persons = persons;
+        }
+        
+        // 位置、ラベル情報
+        private Point noPosition;
+        private Point namePosition;
+        private Point personsPosition;
+        
+        private String noLabel;
+        private String nameLabel;
+        private String personsLabel;
+        
+        public void setNoPosition(Point noPosition) {
+            this.noPosition = noPosition;
+        }
+        
+        public void setNamePosition(Point namePosition) {
+            this.namePosition = namePosition;
+        }
+        
+        public void setPersonsPosition(Point personsPosition) {
+            this.personsPosition = personsPosition;
+        }
+        
+        public void setNoLabel(String noLabel) {
+            this.noLabel = noLabel;
+        }
+        
+        public void setNameLabel(String nameLabel) {
+            this.nameLabel = nameLabel;
+        }
+        
+        public void setPersonsLabel(String personsLabel) {
+            this.personsLabel = personsLabel;
+        }
+        
+        // 値設定用のメソッド
+        
+        public MethodAnnoTable no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public MethodAnnoTable name(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public MethodAnnoTable add(PersonRecord record) {
+            
+            if(persons == null) {
+                this.persons = new ArrayList<>();
+            }
+            
+            this.persons.add(record);
+            record.no(persons.size());
+            
             return this;
         }
         

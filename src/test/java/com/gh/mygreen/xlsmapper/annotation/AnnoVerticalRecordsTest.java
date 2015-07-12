@@ -39,6 +39,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link VerticalRecordsProcessor}のテスタ
  * アノテーション{@link XlsVerticalRecords}のテスタ。
+ * @version 1.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -337,6 +338,38 @@ public class AnnoVerticalRecordsTest {
         }
     }
     
+    
+    /**
+     * 読み込み時のテスト - メソッドに付与したアノテーション
+     * @since 1.0
+     */
+    @Test
+    public void test_load_vr_annoMethod() throws Exception {
+         XlsMapper mapper = new XlsMapper();
+         mapper.getConig().setSkipTypeBindFailure(true);
+         
+         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+             SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+             
+             MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+             
+             if(sheet.records != null) {
+                 assertThat(sheet.records, hasSize(3));
+                 for(MethodAnnoRecord record : sheet.records) {
+                     assertRecord(record, errors);
+                 }
+             }
+             
+             if(sheet.mapRecords != null) {
+                 assertThat(sheet.mapRecords, arrayWithSize(2));
+                 for(MethodAnnoMapRecord record : sheet.mapRecords) {
+                     assertRecord(record, errors, false);
+                 }
+             }
+             
+         }
+    }
+    
     private void assertRecord(final NormalRecord record, final SheetBindingErrors errors) {
         
         if(record.no == 1) {
@@ -487,6 +520,40 @@ public class AnnoVerticalRecordsTest {
         } else if(record.no == 4) {
             assertThat(record.name, is("林三郎"));
             assertThat(record.birthday, is(toUtilDate(toTimestamp("1992-04-14 00:00:00.000"))));
+        }
+        
+    }
+    
+    private void assertRecord(final MethodAnnoRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("1989-01-02 00:00:00.000"))));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
+            
+        } else if(record.no == 4) {
+            assertThat(record.name, is("林三郎"));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("1992-04-14 00:00:00.000"))));
+        }
+        
+    }
+    
+    private void assertRecord(final MethodAnnoMapRecord record, final SheetBindingErrors errors, boolean hasCell) {
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.dateAttended.get("4月1日"), is(true));
+            assertThat(record.dateAttended.get("4月2日"), is(true));
+            assertThat(record.dateAttended.get("4月3日"), is(nullValue()));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.dateAttended.get("4月1日"), is(false));
+            assertThat(cellFieldError(errors, cellAddress(record.dateAttendedPosition.get("4月2日"))).isTypeBindFailure(), is(true));
+            assertThat(record.dateAttended.get("4月3日"), is(true));
         }
         
     }
@@ -1255,6 +1322,81 @@ public class AnnoVerticalRecordsTest {
     }
     
     /**
+     * 書き込みのテスト - メソッドにアノテーションを定義
+     * @since 1.0
+     */
+    @Test
+    public void test_save_vr_methodAnno() throws Exception {
+        
+        // テストデータの作成
+        final MethodAnnoSheet outSheet = new MethodAnnoSheet();
+        
+        // 名簿
+        outSheet.add(new MethodAnnoRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1989-01-02 00:00:00.000"))));
+        outSheet.add(new MethodAnnoRecord().name("鈴木次郎").birthday(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
+        outSheet.add(new MethodAnnoRecord());
+        outSheet.add(new MethodAnnoRecord().name("林三郎").birthday(toUtilDate(toTimestamp("1992-04-14 00:00:00.000"))));
+        outSheet.add(new MethodAnnoRecord());
+        
+        // 出欠
+        outSheet.add(new MethodAnnoMapRecord()
+                .name("山田太郎")
+                .addDateAttended("4月1日", true).addDateAttended("4月2日", true));
+        
+        outSheet.add(new MethodAnnoMapRecord()
+                .name("鈴木次郎")
+                .addDateAttended("4月1日", false).addDateAttended("4月2日", false).addDateAttended("4月3日", true));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            
+            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            
+            if(sheet.records != null) {
+                int emptyRecordCount = 0;
+                for(int i=0; i < outSheet.records.size(); i++) {
+                    if(outSheet.records.get(i).isEmpty()) {
+                        emptyRecordCount++;
+                        continue;
+                    }
+                    assertRecord(sheet.records.get(i - emptyRecordCount), outSheet.records.get(i), errors);
+                }
+                
+                assertThat(sheet.records, hasSize(outSheet.records.size() - emptyRecordCount));
+                
+            }
+            
+            if(sheet.mapRecords != null) {
+                int emptyRecordCount = 0;
+                for(int i=0; i < outSheet.mapRecords.length; i++) {
+                    if(outSheet.mapRecords[i].isEmpty()) {
+                        emptyRecordCount++;
+                        continue;
+                    }
+                    assertRecord(sheet.mapRecords[i - emptyRecordCount], outSheet.mapRecords[i], errors);
+                }
+                
+                assertThat(sheet.mapRecords, arrayWithSize(outSheet.mapRecords.length - emptyRecordCount));
+                
+            }
+            
+        }
+    }
+    
+    /**
      * 書き込んだレコードを検証するための
      * @param inRecord
      * @param outRecord
@@ -1469,6 +1611,51 @@ public class AnnoVerticalRecordsTest {
         
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.functionName, is(outRecord.functionName));
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final MethodAnnoRecord inRecord, final MethodAnnoRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.birthday, is(outRecord.birthday));
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final MethodAnnoMapRecord inRecord, final MethodAnnoMapRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.name, is(trim(outRecord.name)));
+            
+            Map<String, Boolean> expected = new LinkedHashMap<>();
+            expected.put("4月1日", true);
+            expected.put("4月2日", true);
+            expected.put("4月3日", null);
+            
+            assertThat(inRecord.dateAttended, is(expected));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.name, is(trim(outRecord.name)));
+            assertThat(inRecord.dateAttended, is(outRecord.dateAttended));
+        }
     }
     
     /**
@@ -2739,6 +2926,303 @@ public class AnnoVerticalRecordsTest {
        public NameDefRecord functionName(String functionName) {
            this.functionName = functionName;
            return this;
+       }
+       
+   }
+   
+   /**
+    * メソッドにアノテーションを付与するシート
+    * @since 1.0
+    *
+    */
+   @XlsSheet(name="メソッドにアノテーションを設定")
+   private static class MethodAnnoSheet {
+       
+       private Map<String, Point> positions;
+       
+       private Map<String, String> labels;
+       
+       private List<MethodAnnoRecord> records;
+       
+       private MethodAnnoMapRecord[] mapRecords;
+       
+       @XlsHint(order=1)
+       @XlsVerticalRecords(tableLabel="名簿", overRecord=OverRecordOperate.Copy)
+       public List<MethodAnnoRecord> getRecords() {
+           return records;
+       }
+       
+       @XlsVerticalRecords(tableLabel="名簿", skipEmptyRecord=true)
+       public void setRecords(List<MethodAnnoRecord> records) {
+           this.records = records;
+       }
+       
+       @XlsHint(order=2)
+       @XlsVerticalRecords(tableLabel="出欠", overRecord=OverRecordOperate.Copy)
+       public MethodAnnoMapRecord[] getMapRecords() {
+           return mapRecords;
+       }
+       
+       @XlsVerticalRecords(tableLabel="出欠", skipEmptyRecord=true)
+       public void setMapRecords(MethodAnnoMapRecord[] mapRecords) {
+           this.mapRecords = mapRecords;
+       }
+       
+       public MethodAnnoSheet add(MethodAnnoRecord record) {
+           if(records == null) {
+               this.records = new ArrayList<>();
+           }
+           
+           this.records.add(record);
+           record.no(records.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public MethodAnnoSheet add(MethodAnnoMapRecord record) {
+           
+           final List<MethodAnnoMapRecord> list;
+           if(mapRecords == null) {
+               list = new ArrayList<>();
+           } else {
+               list = new ArrayList<>(Arrays.asList(mapRecords));
+           }
+           
+           list.add(record);
+           record.no(list.size());
+           
+           this.mapRecords = list.toArray(new MethodAnnoMapRecord[list.size()]);
+           
+           return this;
+       }
+   }
+   
+   /**
+    * メソッドにアノテーションを付与したレコード
+    * @since 1.0
+    */
+   public static class MethodAnnoRecord {
+       
+       private int no;
+       
+       private String name;
+       
+       private Date birthday;
+       
+       private Point noPosition;
+       
+       private Point namePosition;
+       
+       private Point birthdayPosition;
+       
+       private String noLabel;
+       
+       private String nameLabel;
+       
+       private String birthdayLabel;
+       
+       @XlsColumn(columnName="No.")
+       public int getNo() {
+           return no;
+       }
+       
+       @XlsColumn(columnName="No.")
+       public void setNo(int no) {
+           this.no = no;
+       }
+       
+       @XlsColumn(columnName="氏名")
+       public String getName() {
+           return name;
+       }
+       
+       @XlsColumn(columnName="氏名")
+       public void setName(String name) {
+           this.name = name;
+       }
+       
+       @XlsColumn(columnName="生年月日")
+       public Date getBirthday() {
+           return birthday;
+       }
+       
+       @XlsDateConverter(pattern="yyyy年M月d日")
+       @XlsColumn(columnName="生年月日")
+       public void setBirthday(Date birthday) {
+           this.birthday = birthday;
+       }
+       
+       public void setNoPosition(int x, int y) {
+           this.noPosition = new Point(x, y);
+       }
+       
+       public void setNamePosition(int x, int y) {
+           this.namePosition = new Point(x, y);
+       }
+       
+       public void setBirthdayPosition(int x, int y) {
+           this.birthdayPosition = new Point(x, y);
+       }
+       
+       @XlsIsEmpty
+       public boolean isEmpty() {
+           return new IsEmptyBuilder()
+               .append(name)
+               .append(birthday)
+               .isEmpty();
+       }
+       
+       public MethodAnnoRecord no(int no) {
+           this.no = no;
+           return this;
+       }
+       
+       public MethodAnnoRecord name(String name) {
+           this.name = name;
+           return this;
+       }
+       
+       public MethodAnnoRecord birthday(Date birthday) {
+           this.birthday = birthday;
+           return this;
+       }
+       
+       public void setNoLabel(String noLabel) {
+           this.noLabel = noLabel;
+       }
+       
+       public void setNameLabel(String nameLabel) {
+           this.nameLabel = nameLabel;
+       }
+       
+       public void setBirthdayLabel(String birthdayLabel) {
+           this.birthdayLabel = birthdayLabel;
+       }
+       
+   }
+   
+   /**
+    * メソッドにアノテーションを付与したレコード - マップ
+    * @since 1.0
+    */
+   public static class MethodAnnoMapRecord {
+       
+       private int no;
+       
+       private String name;
+       
+       private Map<String, Boolean> dateAttended;
+       
+       private Point noPosition;
+       
+       private Point namePosition;
+       
+       private Map<String, Point> dateAttendedPosition;
+       
+       private String noLabel;
+       
+       private String nameLabel;
+       
+       private Map<String, String> dateAttendedLabel;
+       
+       @XlsColumn(columnName="No.")
+       public int getNo() {
+           return no;
+       }
+       
+       @XlsColumn(columnName="No.")
+       public void setNo(int no) {
+           this.no = no;
+       }
+       
+       @XlsColumn(columnName="氏名")
+       public String getName() {
+           return name;
+       }
+       
+       @XlsColumn(columnName="氏名")
+       public void setName(String name) {
+           this.name = name;
+       }
+       
+       @XlsBooleanConverter(saveAsTrue="出席", saveAsFalse="欠席")
+       @XlsMapColumns(previousColumnName="氏名")
+       public Map<String, Boolean> getDateAttended() {
+           return dateAttended;
+       }
+       
+       @XlsBooleanConverter(loadForTrue="出席", loadForFalse="欠席")
+       @XlsMapColumns(previousColumnName="氏名")
+       public void setDateAttended(Map<String, Boolean> dateAttended) {
+           this.dateAttended = dateAttended;
+       }
+       
+       @XlsIsEmpty
+       public boolean isEmpty() {
+           return new IsEmptyBuilder()
+               .append(name)
+               .append(dateAttended)
+               .isEmpty();
+       }
+       
+       public MethodAnnoMapRecord no(int no) {
+           this.no = no;
+           return this;
+       }
+       
+       public MethodAnnoMapRecord name(String name) {
+           this.name = name;
+           return this;
+       }
+       
+       public MethodAnnoMapRecord dateAttended(Map<String, Boolean> dateAttended) {
+           this.dateAttended = dateAttended;
+           return this;
+       }
+       
+       public MethodAnnoMapRecord addDateAttended(final String key, final Boolean value) {
+           if(dateAttended == null) {
+               this.dateAttended = new LinkedHashMap<>();
+           }
+           
+           this.dateAttended.put(key, value);
+           
+           return this;
+       }
+       
+       public void setNoPosition(int x, int y) {
+           this.noPosition = new Point(x, y);
+       }
+       
+       public void setNamePosition(int x, int y) {
+           this.namePosition = new Point(x, y);
+       }
+       
+       public void setDateAttendedPosition(String key, int x, int y) {
+           if(this.dateAttendedPosition == null) {
+               this.dateAttendedPosition = new LinkedHashMap<>();
+           }
+           this.dateAttendedPosition.put(key, new Point(x, y));
+       }
+       
+       public void setNoLabel(String noLabel) {
+           this.noLabel = noLabel;
+       }
+       
+       public void setNameLabel(String nameLabel) {
+           this.nameLabel = nameLabel;
+       }
+       
+       public void setDateAttendedLabel(String key, String label) {
+           if(this.dateAttendedLabel == null) {
+               this.dateAttendedLabel = new LinkedHashMap<>();
+           }
+           this.dateAttendedLabel.put(key, label);
        }
        
    }

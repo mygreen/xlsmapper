@@ -26,6 +26,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * {@link SheetNameProcessor}のテスタ
  * アノテーション{@link XlsSheetName}のテスタ。
  * 
+ * @version 1.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -44,6 +45,10 @@ public class AnnoSheetNameTest {
     public void tearDown() throws Exception {
     }
     
+    /**
+     * 読み込み時のテスト
+     * @since 1.0
+     */
     @Test
     public void test_load_sheetName_name() throws Exception {
         
@@ -56,6 +61,27 @@ public class AnnoSheetNameTest {
             NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
             
             assertThat(sheet.sheetName, is("シート名（１）"));
+            
+        }
+        
+    }
+    
+    /**
+     * 読み込み時のテスト - メソッドに付与したアノテーション
+     * @since 1.0
+     */
+    @Test
+    public void test_load_sheetName_methodAnno() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_SheetName.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            
+            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            
+            assertThat(sheet.sheetName, is("メソッドに付与したアノテーション"));
             
         }
         
@@ -88,6 +114,42 @@ public class AnnoSheetNameTest {
             
             NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
             
+            assertThat(outSheet.sheetName, is("シート名（１）"));
+            assertThat(sheet.sheetName, is(outSheet.sheetName));
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - メソッドに付与したアノテーション
+     * @since 1.0
+     */
+    @Test
+    public void test_save_sheetName_methodAnno() throws Exception {
+        
+        // テストデータの作成
+        final MethodAnnoSheet outSheet = new MethodAnnoSheet();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_SheetName_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_SheetName_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            
+            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            
+            assertThat(outSheet.sheetName, is("メソッドに付与したアノテーション"));
             assertThat(sheet.sheetName, is(outSheet.sheetName));
             
         }
@@ -106,5 +168,26 @@ public class AnnoSheetNameTest {
         
     }
     
+    /**
+     * メソッドにアノテーションを付与。
+     * @since 1.0
+     *
+     */
+    @XlsSheet(name="メソッドに付与したアノテーション")
+    private static class MethodAnnoSheet {
+        
+        private String sheetName;
+        
+        @XlsSheetName
+        public String getSheetName() {
+            return sheetName;
+        }
+        
+        @XlsSheetName
+        public void setSheetName(String sheetName) {
+            this.sheetName = sheetName;
+        }
+        
+    }
     
 }
