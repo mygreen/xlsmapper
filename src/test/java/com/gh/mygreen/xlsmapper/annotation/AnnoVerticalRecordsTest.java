@@ -370,6 +370,53 @@ public class AnnoVerticalRecordsTest {
          }
     }
     
+    /**
+     * 読み込み時のテスト - 表のタイトルの位置のテスト
+     * @since 1.0
+     */
+    @Test
+    public void test_load_vr_labelPosition() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(TableLabelSheet.class);
+            
+            TableLabelSheet sheet = mapper.load(in, TableLabelSheet.class, errors);
+            
+            if(sheet.leftRecords1 != null) {
+                assertThat(sheet.leftRecords1, hasSize(2));
+                for(NormalRecord record : sheet.leftRecords1) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.leftRecords2 != null) {
+                assertThat(sheet.leftRecords2, hasSize(2));
+                for(NormalRecord record : sheet.leftRecords2) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.aboveRecords1 != null) {
+                assertThat(sheet.aboveRecords1, hasSize(2));
+                for(NormalRecord record : sheet.aboveRecords1) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.aboveRecords2 != null) {
+                assertThat(sheet.aboveRecords2, hasSize(2));
+                for(NormalRecord record : sheet.aboveRecords2) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+        }
+        
+    }
+    
     private void assertRecord(final NormalRecord record, final SheetBindingErrors errors) {
         
         if(record.no == 1) {
@@ -1394,6 +1441,85 @@ public class AnnoVerticalRecordsTest {
             }
             
         }
+    }
+    
+    /**
+     * 書き込みのテスト - 表のタイトルの位置
+     */
+    @Test
+    public void test_save_vr_labelPosition() throws Exception {
+        
+        // テストデータの作成
+        TableLabelSheet outSheet = new TableLabelSheet();
+        
+        outSheet.addLeft1(new NormalRecord().name("1-名前1").value(12.345));
+        outSheet.addLeft1(new NormalRecord().name("1-名前2").value(-54.321));
+        
+        outSheet.addLeft2(new NormalRecord().name("2-名前1").value(12.345));
+        outSheet.addLeft2(new NormalRecord().name("2-名前2").value(-54.321));
+        
+        outSheet.addRight1(new NormalRecord().name("3-名前1").value(12.345));
+        outSheet.addRight1(new NormalRecord().name("3-名前2").value(-54.321));
+        
+        outSheet.addRight2(new NormalRecord().name("4-名前1").value(12.345));
+        outSheet.addRight2(new NormalRecord().name("4-名前2").value(-54.321));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(TableLabelSheet.class);
+            
+            TableLabelSheet sheet = mapper.load(in, TableLabelSheet.class, errors);
+            
+            if(sheet.leftRecords1 != null) {
+                assertThat(sheet.leftRecords1, hasSize(outSheet.leftRecords1.size()));
+                
+                for(int i=0; i < sheet.leftRecords1.size(); i++) {
+                    assertRecord(sheet.leftRecords1.get(i), outSheet.leftRecords1.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.leftRecords2 != null) {
+                assertThat(sheet.leftRecords2, hasSize(outSheet.leftRecords2.size()));
+                
+                for(int i=0; i < sheet.leftRecords2.size(); i++) {
+                    assertRecord(sheet.leftRecords2.get(i), outSheet.leftRecords2.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.aboveRecords1 != null) {
+                assertThat(sheet.aboveRecords1, hasSize(outSheet.aboveRecords1.size()));
+                
+                for(int i=0; i < sheet.aboveRecords1.size(); i++) {
+                    assertRecord(sheet.aboveRecords1.get(i), outSheet.aboveRecords1.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.aboveRecords2 != null) {
+                assertThat(sheet.aboveRecords2, hasSize(outSheet.aboveRecords2.size()));
+                
+                for(int i=0; i < sheet.aboveRecords2.size(); i++) {
+                    assertRecord(sheet.aboveRecords2.get(i), outSheet.aboveRecords2.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
     }
     
     /**
@@ -3223,6 +3349,96 @@ public class AnnoVerticalRecordsTest {
                this.dateAttendedLabel = new LinkedHashMap<>();
            }
            this.dateAttendedLabel.put(key, label);
+       }
+       
+   }
+   
+   /**
+    * 表のタイトルの位置の指定
+    * @since 1.0
+    *
+    */
+   @XlsSheet(name="ラベルの位置の指定")
+   private static class TableLabelSheet {
+       
+       @XlsHint(order=1)
+       @XlsVerticalRecords(tableLabel="タイトルが左", skipEmptyRecord=true, tableLabelAbove=false)
+       private List<NormalRecord> leftRecords1;
+       
+       @XlsHint(order=2)
+       @XlsVerticalRecords(tableLabel="タイトルが左（離れている）", skipEmptyRecord=true, tableLabelAbove=false, right=2)
+       private List<NormalRecord> leftRecords2;
+       
+       @XlsHint(order=3)
+       @XlsVerticalRecords(tableLabel="タイトルが上", skipEmptyRecord=true, tableLabelAbove=true)
+       private List<NormalRecord> aboveRecords1;
+       
+       @XlsHint(order=4)
+       @XlsVerticalRecords(tableLabel="タイトルが上（離れている）", skipEmptyRecord=true, tableLabelAbove=true, right=2)
+       private List<NormalRecord> aboveRecords2;
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public TableLabelSheet addLeft1(NormalRecord record) {
+           if(leftRecords1 == null) {
+               this.leftRecords1 = new ArrayList<>();
+           }
+           
+           this.leftRecords1.add(record);
+           record.no(leftRecords1.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public TableLabelSheet addLeft2(NormalRecord record) {
+           if(leftRecords2 == null) {
+               this.leftRecords2 = new ArrayList<>();
+           }
+           
+           this.leftRecords2.add(record);
+           record.no(leftRecords2.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public TableLabelSheet addRight1(NormalRecord record) {
+           if(aboveRecords1 == null) {
+               this.aboveRecords1 = new ArrayList<>();
+           }
+           
+           this.aboveRecords1.add(record);
+           record.no(aboveRecords1.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public TableLabelSheet addRight2(NormalRecord record) {
+           if(aboveRecords2 == null) {
+               this.aboveRecords2 = new ArrayList<>();
+           }
+           
+           this.aboveRecords2.add(record);
+           record.no(aboveRecords2.size());
+           
+           return this;
        }
        
    }
