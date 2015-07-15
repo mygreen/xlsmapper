@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,8 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 /**
  * アノテーション{@link XlsVerticalRecords}を処理するクラス。
- *
+ * 
+ * @version 1.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -75,7 +77,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         }
         
         final Class<?> clazz = adaptor.getTargetClass();
-        if(List.class.isAssignableFrom(clazz)) {
+        if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
@@ -84,7 +86,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             final List<?> value = loadRecords(sheet, anno, adaptor, recordClass, config, work);
             if(value != null) {
-                adaptor.setValue(obj, value);
+                @SuppressWarnings({"unchecked", "rawtypes"})
+                Collection<?> collection = Utils.convertListToCollection(value, (Class<Collection>)clazz, config.getBeanFactory());
+                adaptor.setValue(obj, collection);
             }
         } else if(clazz.isArray()) {
             
@@ -482,14 +486,15 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         final Class<?> clazz = adaptor.getTargetClass();
         final Object result = adaptor.getValue(obj);
-        if(List.class.isAssignableFrom(clazz)) {
+        if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
                 recordClass = adaptor.getSavingGenericClassType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : (List<Object>) result);
+            final Collection<Object> value = (result == null ? new ArrayList<Object>() : (Collection<Object>) result);
+            final List<Object> list = Utils.convertCollectionToList(value);
             saveRecords(sheet, anno, adaptor, recordClass, list, config, work);
             
         } else if(clazz.isArray()) {

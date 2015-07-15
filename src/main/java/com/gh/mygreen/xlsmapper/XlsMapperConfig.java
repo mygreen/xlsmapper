@@ -241,12 +241,21 @@ public class XlsMapperConfig {
     }
     
     /**
-     * BeanのFactoryクラスを設定します。
+     * Beanを生成するためのFactoryクラスを設定します。
      * @return
      */
     public XlsMapperConfig setBeanFactory(FactoryCallback<Class<?>, Object> beanFactory) {
         this.beanFactory = beanFactory;
         return this;
     }
+    
+    /**
+     * Beanを生成するためのFactoryクラスを取得します。
+     * @since 1.0
+     * @return
+     */
+    public FactoryCallback<Class<?>, Object> getBeanFactory() {
+        return beanFactory;
+    }    
     
 }

@@ -430,17 +430,7 @@ public class FieldAdaptor {
      */
     public Class<?> getLoadingGenericClassType() {
         
-        if(List.class.isAssignableFrom(targetClass)) {
-            if(withField) {
-                final ParameterizedType type = (ParameterizedType) targetField.getGenericType();
-                return (Class<?>) type.getActualTypeArguments()[0];
-                
-            } else {
-                final ParameterizedType type = (ParameterizedType) targetSetter.getGenericParameterTypes()[0];
-                return (Class<?>) type.getActualTypeArguments()[0];
-            }
-            
-        } else if(Set.class.isAssignableFrom(targetClass)) {
+        if(Collection.class.isAssignableFrom(targetClass)) {
             if(withField) {
                 final ParameterizedType type = (ParameterizedType) targetField.getGenericType();
                 return (Class<?>) type.getActualTypeArguments()[0];
@@ -475,17 +465,7 @@ public class FieldAdaptor {
      */
     public Class<?> getSavingGenericClassType() {
         
-        if(List.class.isAssignableFrom(targetClass)) {
-            if(withField) {
-                ParameterizedType type = (ParameterizedType) targetField.getGenericType();
-                return (Class<?>) type.getActualTypeArguments()[0];
-                        
-            } else {
-                ParameterizedType type = (ParameterizedType) targetGetter.getGenericReturnType();
-                return (Class<?>) type.getActualTypeArguments()[0];
-            }
-            
-        } else if(Set.class.isAssignableFrom(targetClass)) {
+        if(Collection.class.isAssignableFrom(targetClass)) {
             if(withField) {
                 ParameterizedType type = (ParameterizedType) targetField.getGenericType();
                 return (Class<?>) type.getActualTypeArguments()[0];

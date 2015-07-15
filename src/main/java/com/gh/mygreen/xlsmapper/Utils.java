@@ -12,10 +12,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1984,6 +1987,77 @@ public class Utils {
         }
         
         return sb.toString();
+        
+    }
+    
+    /**
+     * Listのインスタンスを他のCollectionのインスタンスに変換する。
+     * <p>ただし、変換先のクラスタイプがインタフェースの場合は変換しない。
+     * <p>変換元のクラスと変換先のクラスが同じ場合は、変換しない。
+     * 
+     * @since 1.0
+     * @param list 変換元のListのインスタンス
+     * @param toClass 変換先のCollectionのクラス
+     * @param config てインスタンス生成するために使用する。{@link XlsMapperConfig#g}
+     * @return 変換したコレクションのインスタンス
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static Collection convertListToCollection(final List list, final Class<Collection> toClass,
+            final FactoryCallback<Class<?>, Object> beanFactory) {
+        
+        if(list.getClass().equals(toClass)) {
+            return list;
+        }
+        
+        if(toClass.isInterface()) {
+            if(List.class.isAssignableFrom(toClass)) {
+                // 変換先がListの実態の場合はそのまま。
+                return list;
+                
+            } else if(Set.class.isAssignableFrom(toClass)) {
+                
+                Collection value = (Collection) beanFactory.create(LinkedHashSet.class);
+                value.addAll(list);
+                return value;
+                
+            } else if(Queue.class.isAssignableFrom(toClass)) {
+                
+                Collection value = (Collection) beanFactory.create(LinkedList.class);
+                value.addAll(list);
+                return value;
+                
+            } else if(Collection.class.isAssignableFrom(toClass)) {
+                Collection value = (Collection) beanFactory.create(ArrayList.class);
+                value.addAll(list);
+                return value;
+                
+            } else {
+                throw new IllegalArgumentException("not support class type:" + toClass.getName());
+            }
+            
+        }
+        
+        Collection value = (Collection) beanFactory.create(toClass);
+        value.addAll(list);
+        
+        return value;
+        
+    }
+    
+    /**
+     * CollectionのインスタンスをListに変換する。
+     * 
+     * @since 1.0
+     * @param collection 変換元のCollectionのインスタンス。
+     * @return 変換したListのインスタンス。
+     */
+    public static <T> List<T> convertCollectionToList(final Collection<T> collection) {
+        
+        if(List.class.isAssignableFrom(collection.getClass())) {
+            return (List<T>)collection;
+        }
+        
+        return new ArrayList<>(collection);
         
     }
 }
