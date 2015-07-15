@@ -339,10 +339,20 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
                 Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                int initColumn = labelCell.getColumnIndex() + 1;
-                int initRow = labelCell.getRowIndex();
                 
-                return new Point(initColumn, initRow);
+                if(anno.tableLabelAbove()) {
+                    // 表の見出しが上にある場合。HorizontalRecordsを同じ。
+                    int initColumn = labelCell.getColumnIndex();
+                    int initRow = labelCell.getRowIndex() + anno.right();
+                    return new Point(initColumn, initRow);
+                    
+                } else {
+                    
+                    int initColumn = labelCell.getColumnIndex() + anno.right();
+                    int initRow = labelCell.getRowIndex();
+                    return new Point(initColumn, initRow);
+                    
+                }
                 
             } catch(CellNotFoundException ex) {
                 if(anno.optional()) {

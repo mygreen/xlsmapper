@@ -13,7 +13,9 @@ import java.lang.annotation.Target;
  * 
  * TODO Is this necessary?
  * 
+ * @version 1.0
  * @author Naoki Takezoe
+ * @author T.TSUCHIE
  */
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -32,6 +34,12 @@ public @interface XlsVerticalRecords {
      * <p>属性{@link #headerAddress()}のどちらか一方を指定可能。
      */
     String tableLabel() default "";
+    
+    /**
+     * 表の見出し（タイトル）ラベルの位置が上方に位置するかどうか。
+     * @since 1.0
+     */
+    boolean tableLabelAbove() default false;
     
     /**
      * テーブルが他のテーブルと連続しておりterminal属性でBorder、Emptyのいずれを指定しても終端を検出できない場合があります。 
@@ -72,10 +80,19 @@ public @interface XlsVerticalRecords {
     RecordTerminal terminal() default RecordTerminal.Empty;
     
     /**
-     * 下方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルを見出しとします。
+     * 右方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルを見出しとします。
      * @return
      */
     int range() default 1;
+    
+    /**
+     * {@link #tableLabel()}で指定した表のタイトルから、実際の表の開始位置がどれだけ離れているか指定する。
+     * <p>右方向の列数を指定する。
+     * <p>{@link #tableLabelAbove()}の値がtrueの場合は、下方向に行数になる。
+     * @since 1.0
+     * @return
+     */
+    int right() default 1;
     
     /**
      * テーブルのカラムが指定数見つかったタイミングで Excelシートの走査を終了したい場合に指定します。
