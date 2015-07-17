@@ -309,6 +309,12 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 			<version>3.2.11.RELEASE</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>3.2.11.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
 		
 	</dependencies>
 	<reporting>
