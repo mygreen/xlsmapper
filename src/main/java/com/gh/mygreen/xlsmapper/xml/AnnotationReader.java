@@ -58,7 +58,7 @@ public class AnnotationReader {
             
             if(classInfo.isOverride()) {
                 for(Annotation ann : clazz.getAnnotations()) {
-                    map.put(ann.getClass().getName(), ann);
+                    map.put(ann.annotationType().getName(), ann);
                 }
             }
             
@@ -151,7 +151,7 @@ public class AnnotationReader {
                 
                 if(methodInfo.isOverride()) {
                     for(Annotation ann : method.getAnnotations()) {
-                        map.put(ann.getClass().getName(), ann);
+                        map.put(ann.annotationType().getName(), ann);
                     }
                 }
                 
@@ -215,7 +215,7 @@ public class AnnotationReader {
                 
                 if(fieldInfo.isOverride()) {
                     for(Annotation ann : field.getAnnotations()) {
-                        map.put(ann.getClass().getName(), ann);
+                        map.put(ann.annotationType().getName(), ann);
                     }
                 }
                 
