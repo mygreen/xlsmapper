@@ -11,6 +11,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 /**
  * Cellの値を変換するインタフェース。
  *
+ * @version 1.0
  * @author T.TSUCHIE
  * @param <T> 変換対象のJavaのオブジェクト
  */

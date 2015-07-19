@@ -330,7 +330,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
     public Cell toCell(final FieldAdaptor adaptor, final Number targetValue, final Sheet sheet, final int column, final int row, 
             final XlsMapperConfig config) throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
+        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final XlsNumberConverter anno = getSavingAnnotation(adaptor);
         
         final Cell cell = POIUtils.getCell(sheet, column, row);

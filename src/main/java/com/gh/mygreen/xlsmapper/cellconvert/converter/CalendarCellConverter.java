@@ -50,7 +50,7 @@ public class CalendarCellConverter extends AbstractCellConverter<Calendar> {
     public Cell toCell(final FieldAdaptor adaptor, final Calendar targetValue, final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
+        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final XlsDateConverter anno = dateConverter.getSavingAnnotation(adaptor);
         
         final Cell cell = POIUtils.getCell(sheet, column, row);

@@ -74,7 +74,7 @@ public class URICellConverter extends AbstractCellConverter<URI> {
     public Cell toCell(final FieldAdaptor adaptor, final URI targetValue, final Sheet sheet,
             final int column, final int row, final XlsMapperConfig config) {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
+        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         
         final Cell cell = POIUtils.getCell(sheet, column, row);
         

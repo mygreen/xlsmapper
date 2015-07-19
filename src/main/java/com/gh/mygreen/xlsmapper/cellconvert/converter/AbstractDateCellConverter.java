@@ -207,7 +207,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     public Cell toCell(final FieldAdaptor adaptor, final Date targetValue, final Sheet sheet, final int column, final int row, 
             final XlsMapperConfig config) throws XlsMapperException {
          
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
+        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final XlsDateConverter anno = getSavingAnnotation(adaptor);
         
         final Cell cell = POIUtils.getCell(sheet, column, row);

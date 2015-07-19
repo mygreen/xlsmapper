@@ -51,7 +51,7 @@ public class SetCellConverter extends AbstractCellConverter<Set> {
         
         final ListCellConverter converter = new ListCellConverter();
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
+        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final XlsArrayConverter anno = converter.getSavingAnnotation(adaptor);
         
         Class<?> itemClass = anno.itemClass();
