@@ -17,10 +17,10 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 public interface CellConverter<T> {
     
     /**
-     * Excel Cell => Javaオブジェクトに変換する。
-     * @param cell
-     * @param adaptor
-     * @param config
+     * シート読み込み時のExcel Cell => Javaオブジェクトに変換する。
+     * @param cell 読み込み対象のセル
+     * @param adaptor マッピング対象のフィールド情報。
+     * @param config 設定情報
      * @return 変換したJavaオブジェクト
      * @throws XlsMapperException
      */
@@ -28,32 +28,16 @@ public interface CellConverter<T> {
     
     
     /**
-     * Javaオブジェクト => Excel Cellに変換する。
-     * @param adaptor
-     * @param targetObj
-     * @param sheet
-     * @param column
-     * @param row
-     * @param config
-     * @param operate
-     * @return
+     * シート書き込み時のJavaオブジェクト => Excel Cellに変換する。
+     * @param adaptor  マッピング対象のフィールド情報。
+     * @param targetValue 書き込み対象のオブジェクト。
+     * @param sheet 書き込み先のシート
+     * @param column 書き込み先のセルの列番号。0から始まる。
+     * @param row 書き込み先のセルの行番号。0から始まる。
+     * @param config 設定情報
+     * @return  書き込んだセル
      * @throws XlsMapperException 
      */
-    Cell toCell(FieldAdaptor adaptor, Object targetObj, Sheet sheet, int column, int row, XlsMapperConfig config) throws XlsMapperException;
-    
-    /**
-     * Javaオブジェクト => Excel Cellに変換する。
-     * @param adaptor
-     * @param key マップのキー
-     * @param targetObj
-     * @param sheet
-     * @param column
-     * @param row
-     * @param config
-     * @param operate
-     * @return
-     * @throws XlsMapperException 
-     */
-    Cell toCellWithMap(FieldAdaptor adaptor, String key, Object targetObj, Sheet sheet, int column, int row, XlsMapperConfig config) throws XlsMapperException;
+    Cell toCell(FieldAdaptor adaptor, T targetValue, Sheet sheet, int column, int row, XlsMapperConfig config) throws XlsMapperException;
     
 }

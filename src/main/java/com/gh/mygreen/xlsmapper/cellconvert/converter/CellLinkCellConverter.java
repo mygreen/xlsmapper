@@ -22,7 +22,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
  * @author T.TSUCHIE
  *
  */
-public class CellLinkCellConverter extends AbstractCellConverter<CellLink>{
+public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
     
     @Override
     public CellLink toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config)
@@ -58,23 +58,10 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink>{
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet,
+    public Cell toCell(final FieldAdaptor adaptor, final CellLink targetValue, final Sheet sheet,
             final int column, final int row, final XlsMapperConfig config) {
         
-        return toCell(adaptor, targetObj, sheet, column, row, config, null);
-    }
-    
-    @Override
-    public Cell toCellWithMap(final FieldAdaptor adaptor, final String key, final Object targetObj, final Sheet sheet,
-            final int column, final int row, final XlsMapperConfig config) throws XlsMapperException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, key);
-    }
-    
-    private Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config, final String mapKey) {
-        
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
+        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
@@ -84,12 +71,7 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink>{
             POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
         }
         
-        final CellLink value;
-        if(mapKey == null) {
-            value = (CellLink)adaptor.getValue(targetObj);
-        } else {
-            value = (CellLink)adaptor.getValueOfMap(mapKey, targetObj);
-        }
+        final CellLink value = targetValue;
         
         if(value != null && Utils.isNotEmpty(value.getLink())) {
             

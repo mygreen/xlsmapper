@@ -45,21 +45,8 @@ public class CharacterCellConverter extends AbstractCellConverter<Character> {
     }
 
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
+    public Cell toCell(final FieldAdaptor adaptor, final Character targetValue, final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, null);
-    }
-    
-    @Override
-    public Cell toCellWithMap(final FieldAdaptor adaptor, final String key, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config) {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, key);
-    }
-    
-    private Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config, final String mapKey) {
         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         
@@ -71,12 +58,8 @@ public class CharacterCellConverter extends AbstractCellConverter<Character> {
             POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
         }
         
-        Character value;
-        if(mapKey == null) {
-            value = (Character)adaptor.getValue(targetObj);
-        } else {
-            value = (Character)adaptor.getValueOfMap(mapKey, targetObj);
-        }
+        Character value = targetValue;
+        
         String cellValue = Utils.trim(value, converterAnno);
         cellValue = Utils.getDefaultValueIfEmpty(cellValue, converterAnno);
         if(cellValue.length() >= 1) {

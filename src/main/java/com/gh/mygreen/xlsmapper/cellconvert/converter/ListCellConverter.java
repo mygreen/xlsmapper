@@ -129,21 +129,8 @@ public class ListCellConverter extends AbstractCellConverter<List> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
+    public Cell toCell(final FieldAdaptor adaptor, final List targetValue, final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) throws XlsMapperException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, null);
-    }
-    
-    @Override
-    public Cell toCellWithMap(final FieldAdaptor adaptor, final String key, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config) throws XlsMapperException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, key);
-    }
-    
-    private Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config, final String mapKey) throws XlsMapperException {
         
         final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final XlsArrayConverter anno = getSavingAnnotation(adaptor);
@@ -161,12 +148,8 @@ public class ListCellConverter extends AbstractCellConverter<List> {
             POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
         }
         
-        List value;
-        if(mapKey == null) {
-            value = (List) adaptor.getValue(targetObj);
-        } else {
-            value = (List) adaptor.getValueOfMap(mapKey, targetObj);
-        }
+        List value = targetValue;
+        
         // デフォルト値から値を設定する
         if(Utils.isEmpty(value) && Utils.hasDefaultValue(converterAnno)) {
             value = convertList(Utils.getDefaultValue(converterAnno), itemClass, converterAnno, anno);

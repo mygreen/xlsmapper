@@ -23,7 +23,8 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 
 /**
  * Boolean/boolean型を処理するConverter.
- *
+ * 
+ * @version 1.0
  * @author T.TSUCHIE
  *
  */
@@ -179,21 +180,8 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
+    public Cell toCell(final FieldAdaptor adaptor, final Boolean targetValue, final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) throws TypeBindException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, null);
-    }
-    
-    @Override
-    public Cell toCellWithMap(final FieldAdaptor adaptor, final String key, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config) throws TypeBindException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, key);
-    }
-    
-    private Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config, final String mapKey) throws TypeBindException {
         
         final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final XlsBooleanConverter anno = getSavingAnnotation(adaptor);
@@ -206,12 +194,7 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
             POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
         }
         
-        Boolean value;
-        if(mapKey == null) { 
-            value = (Boolean) adaptor.getValue(targetObj);
-        } else {
-            value = (Boolean) adaptor.getValueOfMap(mapKey, targetObj);
-        }
+        Boolean value = targetValue;
         
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {

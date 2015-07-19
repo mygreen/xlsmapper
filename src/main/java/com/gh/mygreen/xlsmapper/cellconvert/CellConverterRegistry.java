@@ -12,11 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.gh.mygreen.xlsmapper.ArgUtils;
-import com.gh.mygreen.xlsmapper.FactoryCallback;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.ArrayCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.BigDecimalCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.converter.BigIntegerCellConverter;
@@ -42,40 +38,31 @@ import com.gh.mygreen.xlsmapper.cellconvert.converter.URICellConverter;
 
 
 /**
- * ExcelのCell <=> Javaオブジェクト の相互変換をするConverterを管理するクラス。
- * 独自のConverterを登録したりする場合は、このクラスを経由する。
+ * ExcelのCell <=> Javaオブジェクト の相互変換をする{@link CellConverter}を管理するクラス。
+ * 独自の{@link CellConverter}を登録したりする場合は、このクラスを経由する。
  * 
+ * @version 1.0
  * @author T.TSUCHIE
  *
  */
 public class CellConverterRegistry {
     
-    private static Logger logger = LoggerFactory.getLogger(CellConverterRegistry.class);
-    
-    /** {@link CellConverter}のインスタンスを作成する */
-    private FactoryCallback<Class<CellConverter>, CellConverter> cellConverterFactory;
-    
-    //TODO: NamedConverterにする。
+    /**
+     * Conveterのクラスのキャッシュ情報
+     * ・key = 変換対象のJavaのクラスタイプ
+     * ・value = Converterクラスのインスタンス。
+     */
     private Map<Class<?>, CellConverter<?>> converterMap;
     
     public CellConverterRegistry() {
         init();
     }
     
+    /**
+     * 初期化を行います。
+     * <p>システム標準の{@link CellConverter}を登録などを行います。
+     */
     protected void init() {
-        
-        if(cellConverterFactory == null) {
-            this.cellConverterFactory = new FactoryCallback<Class<CellConverter>, CellConverter>() {
-                @Override
-                public CellConverter create(final Class<CellConverter> clazz) {
-                    try {
-                        return clazz.newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        throw new RuntimeException(String.format("fail create CellConverter instance of '%s'", clazz.getName()), e);
-                    }
-                }
-            };
-        }
         
         if(converterMap == null) {
             this.converterMap = new ConcurrentHashMap<>();
@@ -130,54 +117,9 @@ public class CellConverterRegistry {
         
     }
     
-    @SuppressWarnings("rawtypes")
-    public CellConverter createCellConverter(final Class<CellConverter> clazz) {
-        return cellConverterFactory.create(clazz);
-    }
-    
-    public void setCellConverterFactory(FactoryCallback<Class<CellConverter>, CellConverter> cellConverterFactory) {
-        this.cellConverterFactory = cellConverterFactory;
-    }
-    
-//    static {
-//        try {
-//            InputStream in = AutoTypeConverterFactory.class.getResourceAsStream(
-//                    "/xlsbeans-converter.properties");
-//            if(in != null){
-//                Properties props = new Properties();
-//                props.load(in);
-//                
-//                ClassLoader clsLoader = Thread.currentThread().getContextClassLoader();
-//                if (clsLoader == null) {
-//                    clsLoader = AutoTypeConverterFactory.class.getClassLoader();
-//                }
-//                
-//                for(Map.Entry<Object, Object> entry : props.entrySet()){
-//                    try {
-//                        Class<?> typeClazz
-//                            = clsLoader.loadClass((String)entry.getKey());
-//                        
-//                        Class<? extends AbstractTypeConverter> converterClazz = clsLoader.loadClass(
-//                                (String)entry.getValue()).asSubclass(AbstractTypeConverter.class);
-//                        
-//                        if(converters.containsKey(typeClazz)) {
-//                            converters.remove(typeClazz);
-//                        }
-//                        converters.put(typeClazz, converterClazz.newInstance());
-//                    } catch(Exception ex){
-//                        // TODO Logging or throw exception
-//                        ex.printStackTrace();
-//                    }
-//                }
-//            }
-//        } catch(Exception ex){
-//            // TODO Logging or throw exception
-//            ex.printStackTrace();
-//        }
-    
     /**
      * タイプに対する{@link CellConverter}を取得する。
-     * @param clazz
+     * @param clazz 取得対象の{@link CellConverter}のクラス。
      * @return 見つからない場合はnullを返す。
      */
     @SuppressWarnings("unchecked")
@@ -204,22 +146,14 @@ public class CellConverterRegistry {
     
     /**
      * タイプに対する{@link CellConverter}を登録する。
-     * @param clazz
-     * @param converter
+     * @param clazz 変換対象のJavaのクラスタイプ。
+     * @param converter 変換するConverterのインスタンス。
      */
     public <T> void registerConverter(final Class<T> clazz, final CellConverter<T> converter) {
         ArgUtils.notNull(clazz, "clazz");
         ArgUtils.notNull(converter, "converter");
         
         converterMap.put(clazz, converter);
-    }
-    
-    public Map<Class<?>, CellConverter<?>> getConverterMap() {
-        return converterMap;
-    }
-    
-    public void setConverterMap(Map<Class<?>, CellConverter<?>> converterMap) {
-        this.converterMap = converterMap;
     }
     
 }

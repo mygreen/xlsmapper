@@ -251,22 +251,8 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet,
+    public Cell toCell(final FieldAdaptor adaptor, final Enum targetValue, final Sheet sheet,
             final int column, final int row, final XlsMapperConfig config) throws XlsMapperException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, null);
-    }
-    
-    @Override
-    public Cell toCellWithMap(final FieldAdaptor adaptor, final String key, final Object targetObj, final Sheet sheet,
-            final int column, final int row, final XlsMapperConfig config) throws XlsMapperException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, key);
-    }
-    
-    @SuppressWarnings("unchecked")
-    private Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet,
-            final int column, final int row, final XlsMapperConfig config, final String mapKey) throws XlsMapperException {
         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         final XlsEnumConverter anno = getSavingAnnotation(adaptor);
@@ -280,12 +266,7 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
             POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
         }
         
-        Enum value;
-        if(mapKey == null) {
-            value = (Enum) adaptor.getValue(targetObj);
-        } else {
-            value = (Enum) adaptor.getValueOfMap(mapKey, targetObj);
-        }
+        Enum value = targetValue;
         
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {

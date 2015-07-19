@@ -46,22 +46,8 @@ public class SetCellConverter extends AbstractCellConverter<Set> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
+    public Cell toCell(final FieldAdaptor adaptor, final Set targetValue, final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) throws XlsMapperException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, null);
-    }
-    
-    @Override
-    public Cell toCellWithMap(FieldAdaptor adaptor, String key, Object targetObj, Sheet sheet,
-            int column, int row, XlsMapperConfig config)
-            throws XlsMapperException {
-        return toCell(adaptor, targetObj, sheet, column, row, config, key);
-    }
-    
-    @SuppressWarnings("unchecked")
-    private Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config, final String mapKey) throws XlsMapperException {
         
         final ListCellConverter converter = new ListCellConverter();
         
@@ -81,12 +67,7 @@ public class SetCellConverter extends AbstractCellConverter<Set> {
             POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
         }
         
-        Set value;
-        if(mapKey == null) {
-            value = (Set) adaptor.getValue(targetObj);
-        } else {
-            value = (Set) adaptor.getValueOfMap(mapKey, targetObj);
-        }
+        Set value = targetValue;
         
         // デフォルト値から値を設定する
         if(Utils.isEmpty(value) && Utils.hasDefaultValue(converterAnno)) {

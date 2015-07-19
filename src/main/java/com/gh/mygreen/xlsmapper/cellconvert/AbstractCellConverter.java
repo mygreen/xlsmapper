@@ -6,12 +6,11 @@ import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 
 
-
-
 /**
  * Converterの抽象クラス。
  * 通常は、このクラスを継承してConverterを作成する。
  * 
+ * @since 1.0
  * @author T.TSUCHIE
  *
  */

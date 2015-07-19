@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import java.lang.annotation.Annotation;
 
+import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.CellConverter;
@@ -14,6 +15,7 @@ import com.gh.mygreen.xlsmapper.cellconvert.DefaultCellConverter;
  * 各種アノテーションを処理するためのクラスの抽象クラス。
  * <p>通常はこのクラスを継承して作成する。
  * 
+ * @version 1.0
  * @author T.TSUCHIE
  *
  */
@@ -34,18 +36,21 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Lo
      * 読み込み時用のConveterを取得する。
      * <p>アノテーション「{@link XlsConverter#converterClass()}」が設定されていた場合を考慮した、個別のConverterを考慮する。
      * 
-     * @param adaptor
-     * @param converterResolver
+     * @param adaptor フィールド情報
+     * @param converterResolver Converterを登録しているクラス。
+     * @param config XlsMapperの設定クラス。Converterクラスのインスタンスを生成する際に利用する。
      * @return
      * @throws XlsMapperException Converterが見つからない場合。
      */
-    protected CellConverter<?> getLoadingCellConverter(final FieldAdaptor adaptor, final CellConverterRegistry converterResolver) throws XlsMapperException {
+    protected CellConverter<?> getLoadingCellConverter(final FieldAdaptor adaptor, final CellConverterRegistry converterResolver,
+            final XlsMapperConfig config) throws XlsMapperException {
         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         final CellConverter<?> converter;
         
         if(converterAnno != null && !converterAnno.converterClass().equals(DefaultCellConverter.class)) {
-            converter = converterResolver.createCellConverter((Class<CellConverter>) converterAnno.converterClass());
+            converter = config.createBean(converterAnno.converterClass());
+            
         } else {
             converter = converterResolver.getConverter(adaptor.getTargetClass());
             if(converter == null) {
@@ -60,23 +65,21 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Lo
      * 書き込み時用のConveterを取得する。
      * <p>アノテーション「{@link XlsConverter#converterClass()}」が設定されていた場合を考慮した、個別のConverterを考慮する。
      * 
-     * @param adaptor
-     * @param converterResolver
+     * @param adaptor フィールド情報
+     * @param converterResolver Converterを登録しているクラス。
+     * @param config XlsMapperの設定クラス。Converterクラスのインスタンスを生成する際に利用する。
      * @return
      * @throws XlsMapperException Converterが見つからない場合。
      */
-    protected CellConverter<?> getSavingCellConverter(final FieldAdaptor adaptor, final CellConverterRegistry converterResolver) throws XlsMapperException {
+    protected CellConverter<?> getSavingCellConverter(final FieldAdaptor adaptor, final CellConverterRegistry converterResolver,
+            final XlsMapperConfig config) throws XlsMapperException {
         
         final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final CellConverter<?> converter;
         
         if(converterAnno != null && !converterAnno.converterClass().equals(DefaultCellConverter.class)) {
-            try {
-                converter = converterAnno.converterClass().newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new XlsMapperException(String.format("fail create '%s' instance.", converterAnno.converterClass().getName()),
-                        e);
-            }
+            converter = config.createBean(converterAnno.converterClass());
+            
         } else {
             converter = converterResolver.getConverter(adaptor.getTargetClass());
             if(converter == null) {

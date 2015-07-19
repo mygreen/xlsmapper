@@ -30,7 +30,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
  * 日時型のConverterの抽象クラス。
  * <p>{@link Date}を継承している<code>javax.sql.Time/Date/Timestamp</code>はこのクラスを継承して作成します。
  * 
- * @version 0.5
+ * @version 1.0
  * @author T.TSUCHIE
  *
  */
@@ -204,22 +204,9 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row, 
+    public Cell toCell(final FieldAdaptor adaptor, final Date targetValue, final Sheet sheet, final int column, final int row, 
             final XlsMapperConfig config) throws XlsMapperException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, null);
-    }
-    
-    @Override
-    public Cell toCellWithMap(final FieldAdaptor adaptor, final String key, final Object targetObj, final Sheet sheet, final int column, final int row, 
-            final XlsMapperConfig config) throws XlsMapperException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, key);
-    }
-    
-    private Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row, 
-            final XlsMapperConfig config, final String mapKey) throws XlsMapperException {
-        
+         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         final XlsDateConverter anno = getSavingAnnotation(adaptor);
         
@@ -231,12 +218,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
         }
         
-        Date value;
-        if(mapKey == null) {
-            value = (Date) adaptor.getValue(targetObj);
-        } else {
-            value = (Date) adaptor.getValueOfMap(mapKey, targetObj);
-        }
+        Date value = targetValue;
         
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {

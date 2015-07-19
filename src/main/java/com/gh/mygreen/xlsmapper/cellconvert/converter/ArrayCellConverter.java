@@ -19,6 +19,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 /**
  * 配列型を変換するためのConverter。
  *
+ * @version 1.0
  * @author T.TSUCHIE
  *
  */
@@ -41,21 +42,8 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
+    public Cell toCell(final FieldAdaptor adaptor, final Object[] targetValue, final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) throws XlsMapperException {
-        
-        return toCell(adaptor, targetObj, sheet, column, row, config, null);
-    }
-    
-    @Override
-    public Cell toCellWithMap(FieldAdaptor adaptor, String key, Object targetObj, Sheet sheet,
-            int column, int row, XlsMapperConfig config)
-            throws XlsMapperException {
-        return toCell(adaptor, targetObj, sheet, column, row, config, key);
-    }
-    
-    private Cell toCell(final FieldAdaptor adaptor, final Object targetObj, final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config, final String mapKey) throws XlsMapperException {
         
         final ListCellConverter converter = new ListCellConverter();
         
@@ -75,13 +63,7 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
             POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
         }
         
-        Object[] value;
-        if(mapKey == null) {
-            value = (Object[]) adaptor.getValue(targetObj);
-        } else {
-            value = (Object[]) adaptor.getValueOfMap(mapKey, targetObj);
-        }
-        
+        Object[] value = targetValue;
         // デフォルト値から値を設定する
         if(Utils.isEmpty(value) && Utils.hasDefaultValue(converterAnno)) {
             final List<?> list = converter.convertList(Utils.getDefaultValue(converterAnno), itemClass, converterAnno, anno);

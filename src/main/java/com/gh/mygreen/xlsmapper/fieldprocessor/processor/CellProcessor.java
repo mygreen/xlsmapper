@@ -35,7 +35,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
         Utils.setPosition(cellPosition.x, cellPosition.y, beansObj, adaptor.getName());
         
         final Cell xlsCell = POIUtils.getCell(sheet, cellPosition.x, cellPosition.y);
-        final CellConverter<?> converter = getLoadingCellConverter(adaptor, config.getConverterRegistry());
+        final CellConverter<?> converter = getLoadingCellConverter(adaptor, config.getConverterRegistry(), config);
         
         try {
             final Object value = converter.toObject(xlsCell, adaptor, config);
@@ -82,9 +82,9 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
         final Point cellPosition = getCellPosition(anno);
         Utils.setPosition(cellPosition.x, cellPosition.y, targetObj, adaptor.getName());
         
-        final CellConverter<?> converter = getSavingCellConverter(adaptor, config.getConverterRegistry());
+        final CellConverter converter = getSavingCellConverter(adaptor, config.getConverterRegistry(), config);
         try {
-            final Cell xlsCell = converter.toCell(adaptor, targetObj, sheet, cellPosition.x, cellPosition.y, config);
+            converter.toCell(adaptor, adaptor.getValue(targetObj), sheet, cellPosition.x, cellPosition.y, config);
         } catch(TypeBindException e) {
             work.addTypeBindError(e, cellPosition, adaptor.getName(), null);
             if(!config.isSkipTypeBindFailure()) {

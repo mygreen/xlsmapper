@@ -44,7 +44,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         Utils.setPosition(info.position.x, info.position.y, beansObj, adaptor.getName());
         Utils.setLabel(info.label, beansObj, adaptor.getName());
         
-        final CellConverter<?> converter = getLoadingCellConverter(adaptor, config.getConverterRegistry());
+        final CellConverter<?> converter = getLoadingCellConverter(adaptor, config.getConverterRegistry(), config);
         try {
             final Object value = converter.toObject(info.targetCell, adaptor, config);
             adaptor.setValue(beansObj, value);
@@ -160,7 +160,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     }
     
     @Override
-    public void saveProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno, final FieldAdaptor adaptor,
+    public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledCell anno, final FieldAdaptor adaptor,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
         final FindInfo info = findCell(sheet, anno, config);
@@ -172,12 +172,12 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             return;
         }
         
-        Utils.setPosition(info.position.x, info.position.y, beansObj, adaptor.getName());
-        Utils.setLabel(info.label, beansObj, adaptor.getName());
+        Utils.setPosition(info.position.x, info.position.y, targetObj, adaptor.getName());
+        Utils.setLabel(info.label, targetObj, adaptor.getName());
         
-        final CellConverter<?> converter = getLoadingCellConverter(adaptor, config.getConverterRegistry());
+        final CellConverter converter = getLoadingCellConverter(adaptor, config.getConverterRegistry(), config);
         try {
-            final Cell xlsCell = converter.toCell(adaptor, beansObj, sheet, info.position.x, info.position.y, config);
+            final Cell xlsCell = converter.toCell(adaptor, adaptor.getValue(targetObj), sheet, info.position.x, info.position.y, config);
         } catch(TypeBindException e) {
             work.addTypeBindError(e, info.position, adaptor.getName(), info.label);
             if(!config.isSkipTypeBindFailure()) {

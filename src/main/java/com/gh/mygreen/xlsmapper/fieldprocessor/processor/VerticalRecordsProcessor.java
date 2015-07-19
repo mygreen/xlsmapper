@@ -273,7 +273,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     // set for value
                     Utils.setPosition(valueCell.getColumnIndex(), valueCell.getRowIndex(), record, property.getName());
                     Utils.setLabel(headerInfo.getHeaderLabel(), record, property.getName());
-                    final CellConverter<?> converter = getLoadingCellConverter(property, config.getConverterRegistry());
+                    final CellConverter<?> converter = getLoadingCellConverter(property, config.getConverterRegistry(), config);
                     try {
                         final Object value = converter.toObject(valueCell, property, config);
                         property.setValue(record, value);
@@ -747,9 +747,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         // set for cell value
                         Utils.setPosition(valueCell.getColumnIndex(), valueCell.getRowIndex(), record, property.getName());
                         Utils.setLabel(headerInfo.getHeaderLabel(), record, property.getName());
-                        final CellConverter<?> converter = getSavingCellConverter(property, config.getConverterRegistry());
+                        final CellConverter converter = getSavingCellConverter(property, config.getConverterRegistry(), config);
                         try {
-                            converter.toCell(property, record, sheet, valueCell.getColumnIndex(), valueCell.getRowIndex(), config);
+                            converter.toCell(property, property.getValue(record), sheet, valueCell.getColumnIndex(), valueCell.getRowIndex(), config);
                         } catch(TypeBindException e) {
                             work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getHeaderLabel());
                             if(!config.isSkipTypeBindFailure()) {
@@ -900,7 +900,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
             
             // get converter (map key class)
-            final CellConverter<?> converter = config.getConverterRegistry().getConverter(itemClass);
+            final CellConverter converter = config.getConverterRegistry().getConverter(itemClass);
             if(converter == null) {
                 throw newNotFoundConverterExpcetion(itemClass);
             }
@@ -954,7 +954,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     Utils.setPositionWithMapColumn(cell.getColumnIndex(), cell.getRowIndex(), record, property.getName(), headerInfo.getHeaderLabel());
                     Utils.setLabelWithMapColumn(headerInfo.getHeaderLabel(), record, property.getName(), headerInfo.getHeaderLabel());
                     try {
-                        converter.toCellWithMap(property, headerInfo.getHeaderLabel(), record, sheet, cell.getColumnIndex(), cell.getRowIndex(), config);
+                        Object itemValue = property.getValueOfMap(headerInfo.getHeaderLabel(), record);
+                        converter.toCell(property, itemValue, sheet, cell.getColumnIndex(), cell.getRowIndex(), config);
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, cell, String.format("%s[%s]", property.getName(), headerInfo.getHeaderLabel()), headerInfo.getHeaderLabel());
                         if(!config.isSkipTypeBindFailure()) {
