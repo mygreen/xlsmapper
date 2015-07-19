@@ -49,7 +49,7 @@ XLSBeansとの違いを以下に示します。
 
 * コードをシンプルにするため、jExcel API対応を排除し、Apache POIのみに対応しています。
       
-* アノテーション``@PostProcessor`` を削除しました。
+* アノテーション ``@PostProcessor`` を削除しました。
 
     * 代わりに、``@XlsPreLoad/@XlsPostLoad/@XlsPreSave/@XlsPostLoad`` が使用できます。
  

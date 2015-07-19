@@ -11,7 +11,7 @@ ExcelとPOJOをマッピングするJavaライブラリです。
 
 .. toctree::
    :numbered:
-   :maxdepth: 2
+   :maxdepth: 3
    
    howtouse
    annotation

@@ -3,6 +3,54 @@
 ======================================
 
 --------------------------------------------------------
+ver.1.0 - 2015-07-19
+--------------------------------------------------------
+
+下記の機能を追加または改善
+
+* `#14 <https://github.com/mygreen/xlsmapper/issues/14>`_ : メッセージ中で利用可能な式言語を EL2.0/3.0、MVELの2つにしました。
+    
+    * 入力値検証で利用する ``CellField`` クラスでプロパティを指定する際に、独自の実装PropertyNavigationに切り替えました。
+      それに伴い、非公開のフィールドへのアクセスも可能になりました。
+
+* `#28 <https://github.com/mygreen/xlsmapper/issues/28>`_ : クラス ``java.util.Calendar`` に対するCellConveterを追加しました。
+
+* `#35 <https://github.com/mygreen/xlsmapper/issues/35>`_ : アノテーション ``@XlsHorizontalRecords`` の付与可能なクラスタイプとして、``java.utils.Set`` を追加しました。
+
+    * 実装クラスを指定した場合は、その読み込み時には、インスタンスが設定されます。
+    * ``@XlsVerticalRecords`` も同様に修正しました。
+
+* `#37 <https://github.com/mygreen/xlsmapper/issues/37>`_ : アノテーション ``@XlsVerticalRecords`` でマッピングする際に、表のタイトル（ラベル）が上にある場合に対応しまいた。
+
+    * 属性 ``tableLabelAbove=true`` を付与すると、表のタイトルの位置が上にあると前提として処理を行います。
+    * さらに、表のタイトルから見出しがどれだけ離れているか指定する属性 ``right`` を追加しました。 ``XlsHorizontalRecords`` の属性 ``bottom`` に対応するものです。
+
+* `#50 <https://github.com/mygreen/xlsmapper/issues/50>`_ : クラス ``IsEmptyBuilder`` にて、検証対象のタイプがMap, Collection, 配列の場合、要素をチェックするように機能追加しました。要素の値が全てnullまたは空と判定できた場合は、そのオブジェクトの値が空と判定します。
+
+    * 設定用クラス ``IsEmptyConfig`` で、要素をチェックするかなどを変更することができます。
+
+* `#53 <https://github.com/mygreen/xlsmapper/issues/53>`_ : フィールドの入力値検証を行うためのFieldValidatorの実装である、「MaxValidator/MinValidator/RangeValidator」において、メッセージ表示用に値をフォーマットを``FieldFormatter`` で行うように機能追加しました。
+
+    * 標準では、``DefaultFieldFormatter`` が設定されていますが、独自の実装に切り替えることができます。
+
+* `#56 <https://github.com/mygreen/xlsmapper/issues/56>`_ : AnnotationReaderで読み込むXMLに属性 ``override=true`` を定義すると、JavaクラスとXMLファイルでそｚれぞれに定義しているアノテーションの差分を考慮するよう機能追加しました。
+
+* `#58 <https://github.com/mygreen/xlsmapper/issues/58>`_ : ドキュメント `拡張方法 <http://mygreen.github.io/xlsmapper/sphinx/extension.html>`_ を記載しました。
+
+* `#59 <https://github.com/mygreen/xlsmapper/issues/58>`_ : アノテーション ``@XlsVerticalRecords/XlsSheetName`` の書き込み時の処理に、読み込み用のアノテーションを取得していたため、getterメソッドにアノテーションを付与していても反映されない事象を修正しました。
+
+    * 各種CellConverterの処理時に、アノテーション ``@XlsConverter`` を付与していた場合も同様の事象を修正しました。
+
+* `#60 <https://github.com/mygreen/xlsmapper/issues/60>`_ : 入力値検証時にメッセージを処する際にエスケープ文字( ``\`` ) が正しく処理されない事象を修正しました。
+
+* `#61 <https://github.com/mygreen/xlsmapper/issues/61>`_ : インタフェース ``CellConverter`` 中の書き込み用のメソッドの使用を整理しました。
+
+    * ``@XlsMapColums`` を付与したフィールドの値を処理するためのメソッド ``toCellWithMap(...)`` を ``toCell()`` に統合しました。
+    * ``toCell(...)`` メソッドの第二引数として渡していた処理対象のオブジェクトを、Beanクラスではなく、書き込み対象の値を渡すように変更しました。
+    * CellConverterRegistry, FieldProcessorRegistryで使用していないメソッドを削除しました。
+
+
+--------------------------------------------------------
 ver.0.5 - 2015-06-29
 --------------------------------------------------------
 

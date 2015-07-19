@@ -13,7 +13,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
-        <version>0.5</version>
+        <version>1.0</version>
     </dependency>
 
 
@@ -144,15 +144,11 @@ Apache POIは、ver.3.5以上に対応しています。
         );
 
 
-アノテーション ``@XlsSheet(regexp="正規表現*")`` のようにシート名を正規表現で定義している場合、
-書き込み先のシート名はアノテーション@XlsSheetNameを付与したフィールドを元に決定します。
-
-テンプレートのExcelファイル中にシートが1つしかない場合、書き込む個数分コピーしておく必要があります。
-
-コピー処理はコール用関数を実装し、その中で定義することをお薦めします。
-
-.. sourcecode:: java
+.. note::
+    アノテーション ``@XlsSheet(regexp="正規表現*")`` のようにシート名を正規表現で定義している場合、
+    書き込み先のシート名はアノテーション@XlsSheetNameを付与したフィールドを元に決定します。
     
-    // TODO: 実装中
+テンプレートのExcelファイル中にシートが1つしかない場合、書き込む個数分コピーしておく必要があります。
+このような場合、書き込み対象のテンプレートファイルを事前に処理しておきます。
 
 

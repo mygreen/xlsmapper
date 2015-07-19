@@ -105,8 +105,7 @@
     public class SheetObject {
     
     @XlsLabelledCell(label="Title", type=LabelledCellType.Right)
-        private String title;
-    }
+    private String title;
 
 
 
@@ -116,6 +115,7 @@ range属性を指定すると、type属性の方向に向かって指定した�
     
     @XlsSheet(name="Users")
     public class SheetObject {
+        
         @XlsLabelledCell(label="Title", type=LabelledCellType.Right, range=3)
         private String title;
         
@@ -152,9 +152,9 @@ skip属性を指定することで、ラベルセルから指定したセル数�
     @XlsSheet(name="Users")
     public class SheetObject {
     
-    // クラス名というセルから右側に2つ離れたセルの値をマッピング
-    @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, skip=2)
-        private String setActionClassName;
+        // クラス名というセルから右側に2つ離れたセルの値をマッピング
+        @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, skip=2)
+        private String actionClassName;
         
     }
 
@@ -186,6 +186,52 @@ skip属性を指定することで、ラベルセルから指定したセル数�
     そのため書き込む前に、シート名を指定する必要があります。
 
 
+
+アノテーションをメソッドに付与する場合、書き込み時はgetterメソッドメソッドの付与が必要になります。
+さらに、アノテーションは付与しなくてもよいですが、setterメソッドの定義が必要になります。
+そのため、 ``@XlsSheetName`` を指定する際にはフィールドに付与することをお薦めします。
+
+.. sourcecode:: java
+    
+    // メソッドにアノテーションを付与する場合
+    // 読み込み時は、setterメソッドに付与する。
+    @XlsSheet(name="Users")
+    public class SheetObject {
+        
+        private String sheetName;
+        
+        // 読み込み時は、setterメソッドにアノテーションの付与が必要。
+        @XlsSheetName
+        public void setSheetName(String sheetName) {
+            return sheetName;
+        }
+        
+    }
+    
+.. sourcecode:: java
+    
+    // メソッドにアノテーションを付与する場合
+    // 書き込み時は、getterメソッドに付与し、かつsetterメソッドの定義が必要。
+    @XlsSheet(name="Users")
+    public class SheetObject {
+        
+        private String sheetName;
+        
+        // 書き込み時は、getterメソッドにアノテーションの付与が必要。
+        @XlsSheetName
+        public String getSheetName() {
+            return sheetName;
+        }
+        
+        // アノテーションの付与は必要ないが、定義が必要。
+        public void setSheetName(String sheetName) {
+            return sheetName;
+        }
+        
+    }
+
+
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``@XlsHorizontalRecords``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -198,15 +244,39 @@ skip属性を指定することで、ラベルセルから指定したセル数�
    HorizontalRecords
 
 
-tableLabel属性でテーブルの名称を指定します。List型または配列のフィールドに付与します。
+tableLabel属性でテーブルの名称を指定します。
+
+List型または配列のフィールドに付与します。
+
+List型などの場合、Genericsのタイプとして、マッピング先のBeanクラスを指定します。
+指定しない場合は、アノテーションの属性 ``recordClass`` でクラス型を指定します。
+
 
 .. sourcecode:: java
     
     @XlsSheet(name="Users")
     public class SheetObject {
+        
+        // 通常は、Genericsでクラス型を指定します。
         @XlsHorizontalRecords(tableLabel="ユーザ一覧")
         private List<Record> records;
+        
+        // Generics型を使用しない場合は、属性 recordClass で指定します。
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧", recordClass=Record.class)
+        private List record2;
     }
+
+.. note::
+    
+    * ver1.0から、Collection型(List型、Set型)にも対応しています。
+    * インタフェースの型を指定する場合、次の実装クラスのインスタンスが設定されます。
+    
+        * List型の場合、 ``java.util.ArrayList`` クラス。
+        * Set型の場合、 ``java.util.LinkedHashMap`` クラス。
+        * Collection型の場合、 ``java.util.ArrayList`` クラス。
+    
+    * 実装クラスを指定した場合、そのインスタンスが設定されます。
+
 
 
 デフォルトでは行に1つもデータが存在しない場合、そのテーブルの終端となります。
@@ -217,6 +287,7 @@ tableLabel属性でテーブルの名称を指定します。List型または配
     
     @XlsSheet(name="Users")
     public class SheetObject {
+        
         @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border)
         private List<Record> records;
     }
@@ -233,6 +304,7 @@ tableLabel属性でテーブルの名称を指定します。List型または配
     
     @XlsSheet(name="Users")
     public class SheetObject {
+        
         @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminateLabel="Terminate")
         private List<Record> records;
     }
@@ -247,6 +319,7 @@ headerLimit属性を指定すると、テーブルのカラムが指定数見つ
     
     @XlsSheet(name="Users")
     public class SheetObject {
+        
         @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border, headerLimit=4)
         private List<Record> records;
     }
@@ -336,14 +409,20 @@ skipEmptyRecord属性で、読み込み時に空のレコードを読み飛ば�
 ``@XlsVerticalRecords``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-垂直方向に連続する列をListまたは配列にマッピングします。要するに ``@XlsHorizontalRecords`` を縦方向にしたものです。
+垂直方向に連続する列をListまたは配列にマッピングします。
+要するに ``@XlsHorizontalRecords`` を縦方向にしたものです。
 ``@XlsHorizontalRecords`` と同じくList型の引数を1つだけ取るsetterメソッドに対して付与します。
+
+.. figure:: ./_static/VerticalRecord.png
+   :align: center
+   
+   VerticalRecords
 
 .. sourcecode:: java
     
     @XlsSheet(name="Users")
     public class SheetObject {
-        @XlsVerticalRecords(tableLabel="ユーザ一覧(垂直方向)")
+        @XlsVerticalRecords(tableLabel="ユーザ一覧")
         private List<Record> records;
     }
 
@@ -353,6 +432,24 @@ skipEmptyRecord属性で、読み込み時に空のレコードを読み飛ば�
    
    * ``@XlsHorizontalRecords`` では、overRecord=OverRecordOperate.Insertはサポートしていません。
    * ``@XlsHorizontalRecords`` では、remainedRecord=RemainedRecordOperate.Deleteはサポートしていません。
+
+
+
+実際に表を作る場合、垂直方向ですが、タイトルは上方に設定することが一般的です。
+その場合、属性 ``tableLabelAbove=true`` を付与すると表のタイトルが上方に位置するとして処理します。(ver1.0から使用可能)
+
+.. figure:: ./_static/VerticalRecord2.png
+   :align: center
+   
+   VerticalRecords（表のタイトルが上方の場合）
+
+.. sourcecode:: java
+    
+    @XlsSheet(name="Users")
+    public class SheetObject {
+        @XlsVerticalRecords(tableLabel="ユーザ一覧", tableLabelAbove=true)
+        private List<Record> records;
+    }
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -523,7 +620,10 @@ order属性が同じ値を設定されているときは、 フィールド名�
 
 
 .. note::
-    ソースコード上で定義した順番は、実行時には保証されないため、``@XlsHint`` で順番を指定する必要があります。
+    
+    ソースコード上で定義した順番は、実行時には保証されないため、``@XlsHint`` で順番を指定し、処理順序を一定にすることができます。
+    
+    ``@XlsHint`` を付与すると、書き込み時だけでなく読み込み時にも処理順序が一定になります。
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
