@@ -52,7 +52,7 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>          Utils.setPosition(info.position.x, info.position.y, beansObj, adaptor.getName());
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          Utils.setLabel(info.label, beansObj, adaptor.getName());
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>          <strong class="jxr_keyword">final</strong> CellConverter&lt;?&gt; converter = getLoadingCellConverter(adaptor, config.getConverterRegistry());
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          <strong class="jxr_keyword">final</strong> CellConverter&lt;?&gt; converter = getLoadingCellConverter(adaptor, config.getConverterRegistry(), config);
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>          <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>              <strong class="jxr_keyword">final</strong> Object value = converter.toObject(info.targetCell, adaptor, config);
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>              adaptor.setValue(beansObj, value);
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     }
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>     @Override
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> saveProcess(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> Object beansObj, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/annotation/XlsLabelledCell.html">XlsLabelledCell</a> anno, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/FieldAdaptor.html">FieldAdaptor</a> adaptor,
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> saveProcess(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> Object targetObj, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/annotation/XlsLabelledCell.html">XlsLabelledCell</a> anno, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/FieldAdaptor.html">FieldAdaptor</a> adaptor,
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> config, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/SavingWorkObject.html">SavingWorkObject</a> work) <strong class="jxr_keyword">throws</strong> XlsMapperException {
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/processor/LabelledCellProcessor.html">FindInfo</a> info = findCell(sheet, anno, config);
@@ -180,12 +180,12 @@
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>             <strong class="jxr_keyword">return</strong>;
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>         }
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>         
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>         Utils.setPosition(info.position.x, info.position.y, beansObj, adaptor.getName());
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>         Utils.setLabel(info.label, beansObj, adaptor.getName());
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>         Utils.setPosition(info.position.x, info.position.y, targetObj, adaptor.getName());
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>         Utils.setLabel(info.label, targetObj, adaptor.getName());
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>         <strong class="jxr_keyword">final</strong> CellConverter&lt;?&gt; converter = getLoadingCellConverter(adaptor, config.getConverterRegistry());
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/cellconvert/CellConverter.html">CellConverter</a> converter = getLoadingCellConverter(adaptor, config.getConverterRegistry(), config);
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <strong class="jxr_keyword">final</strong> Cell xlsCell = converter.toCell(adaptor, beansObj, sheet, info.position.x, info.position.y, config);
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <strong class="jxr_keyword">final</strong> Cell xlsCell = converter.toCell(adaptor, adaptor.getValue(targetObj), sheet, info.position.x, info.position.y, config);
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>         } <strong class="jxr_keyword">catch</strong>(<a href="../../../../../../com/gh/mygreen/xlsmapper/cellconvert/TypeBindException.html">TypeBindException</a> e) {
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>             work.addTypeBindError(e, info.position, adaptor.getName(), info.label);
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>             <strong class="jxr_keyword">if</strong>(!config.isSkipTypeBindFailure()) {

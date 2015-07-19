@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>型変換用のアノテーション &mdash; XlsMapper 0.5 ドキュメント</title>
+    <title>型変換用のアノテーション &mdash; XlsMapper 1.0 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5',
+        VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 0.5 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.0 ドキュメント" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -40,7 +40,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -88,7 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfacetory">5.4. BeanFacetoryの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfactory">5.4. BeanFactoryの拡張</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="diff_xlsbeans.html">6. XLSBeansとの違い</a><ul>
@@ -98,14 +98,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.1. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.2. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.3. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.4. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.5. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.6. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.7. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.8. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.1. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.2. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.3. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.4. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.5. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.6. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.7. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.8. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.9. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -491,7 +492,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

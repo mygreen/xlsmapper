@@ -2,6 +2,7 @@ com.gh.mygreen.xlsmapper
 com.gh.mygreen.xlsmapper.annotation
 com.gh.mygreen.xlsmapper.cellconvert
 com.gh.mygreen.xlsmapper.expression
+com.gh.mygreen.xlsmapper.spring
 com.gh.mygreen.xlsmapper.validation
 com.gh.mygreen.xlsmapper.validation.beanvalidation
 com.gh.mygreen.xlsmapper.validation.fieldvalidation

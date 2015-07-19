@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. 基本的な使い方 &mdash; XlsMapper 0.5 ドキュメント</title>
+    <title>1. 基本的な使い方 &mdash; XlsMapper 1.0 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5',
+        VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 0.5 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.0 ドキュメント" href="index.html" />
     <link rel="next" title="2. アノテーションの使用方法" href="annotation.html" />
     <link rel="prev" title="Welcome to XlsMapper" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to XlsMapper"
              accesskey="P">前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -96,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfacetory">5.4. BeanFacetoryの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfactory">5.4. BeanFactoryの拡張</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="diff_xlsbeans.html">6. XLSBeansとの違い</a><ul>
@@ -106,14 +106,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.1. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.2. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.3. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.4. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.5. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.6. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.7. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.8. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.1. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.2. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.3. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.4. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.5. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.6. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.7. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.8. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.9. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -162,7 +163,7 @@
 <div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>com.github.mygreen<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>xlsmapper<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>0.5<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 </div>
@@ -260,13 +261,13 @@
     <span class="o">);</span>
 </pre></div>
 </div>
-<p>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsSheet(regexp=&quot;正規表現*&quot;)</span></code> のようにシート名を正規表現で定義している場合、
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">アノテーション <code class="docutils literal"><span class="pre">&#64;XlsSheet(regexp=&quot;正規表現*&quot;)</span></code> のようにシート名を正規表現で定義している場合、
 書き込み先のシート名はアノテーション&#64;XlsSheetNameを付与したフィールドを元に決定します。</p>
-<p>テンプレートのExcelファイル中にシートが1つしかない場合、書き込む個数分コピーしておく必要があります。</p>
-<p>コピー処理はコール用関数を実装し、その中で定義することをお薦めします。</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="c1">// TODO: 実装中</span>
-</pre></div>
 </div>
+<p>テンプレートのExcelファイル中にシートが1つしかない場合、書き込む個数分コピーしておく必要があります。
+このような場合、書き込み対象のテンプレートファイルを事前に処理しておきます。</p>
 </div>
 </div>
 </div>
@@ -289,7 +290,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to XlsMapper"
              >前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

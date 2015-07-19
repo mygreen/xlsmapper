@@ -972,7 +972,7 @@
 <a class="jxr_linenumber" name="L964" href="#L964">964</a> <em class="jxr_javadoccomment">     * @param endPosition 設定するセルの終了位置</em>
 <a class="jxr_linenumber" name="L965" href="#L965">965</a> <em class="jxr_javadoccomment">     * @return</em>
 <a class="jxr_linenumber" name="L966" href="#L966">966</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L967" href="#L967">967</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Name defineName(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> String name,
+<a class="jxr_linenumber" name="L967" href="#L967">967</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../com/gh/mygreen/xlsmapper/PropertyPath.html">Name</a> defineName(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> String name,
 <a class="jxr_linenumber" name="L968" href="#L968">968</a>             <strong class="jxr_keyword">final</strong> Point startPosition, <strong class="jxr_keyword">final</strong> Point endPosition) {
 <a class="jxr_linenumber" name="L969" href="#L969">969</a>         
 <a class="jxr_linenumber" name="L970" href="#L970">970</a>         ArgUtils.notNull(sheet, <span class="jxr_string">"sheet"</span>);
@@ -981,7 +981,7 @@
 <a class="jxr_linenumber" name="L973" href="#L973">973</a>         ArgUtils.notNull(endPosition, <span class="jxr_string">"endPosition"</span>);
 <a class="jxr_linenumber" name="L974" href="#L974">974</a>         
 <a class="jxr_linenumber" name="L975" href="#L975">975</a>         <strong class="jxr_keyword">final</strong> Workbook workbook = sheet.getWorkbook();
-<a class="jxr_linenumber" name="L976" href="#L976">976</a>         Name nameObj = workbook.getName(name);
+<a class="jxr_linenumber" name="L976" href="#L976">976</a>         <a href="../../../../com/gh/mygreen/xlsmapper/PropertyPath.html">Name</a> nameObj = workbook.getName(name);
 <a class="jxr_linenumber" name="L977" href="#L977">977</a>         <strong class="jxr_keyword">if</strong>(nameObj == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L978" href="#L978">978</a>             nameObj = workbook.createName();
 <a class="jxr_linenumber" name="L979" href="#L979">979</a>             nameObj.setNameName(name);

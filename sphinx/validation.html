@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4. 読み込んだ値の入力値検証 &mdash; XlsMapper 0.5 ドキュメント</title>
+    <title>4. 読み込んだ値の入力値検証 &mdash; XlsMapper 1.0 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5',
+        VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 0.5 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.0 ドキュメント" href="index.html" />
     <link rel="next" title="5. 拡張方法" href="extension.html" />
     <link rel="prev" title="3. その他の機能" href="otheruse.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="otheruse.html" title="3. その他の機能"
              accesskey="P">前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -96,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfacetory">5.4. BeanFacetoryの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfactory">5.4. BeanFactoryの拡張</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="diff_xlsbeans.html">6. XLSBeansとの違い</a><ul>
@@ -106,14 +106,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.1. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.2. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.3. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.4. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.5. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.6. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.7. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.8. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.1. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.2. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.3. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.4. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.5. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.6. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.7. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.8. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.9. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -280,6 +281,14 @@
 <h2>4.3. フィールド（プロパティ）の入力値検証<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>フィールドに対する値の検証は、CellFieldクラスを使用することでもできます。</p>
 <ul>
+<li><p class="first">コンストラクタに検証対象のプロパティ名を指定します。プロパティ名には、ネストしたもの、配列・リストやマップの要素の指定もできます。</p>
+<ul class="simple">
+<li>ドット(.)で繋げることで、階層指定ができます（例: <code class="docutils literal"><span class="pre">person.name</span></code> ）。</li>
+<li>括弧([数値])を指定することで、配列またはリストの要素が指定できます(例: <code class="docutils literal"><span class="pre">list[0]</span></code> )。</li>
+<li>括弧([キー名])を指定することで、マップの値が指定できます(例: <code class="docutils literal"><span class="pre">map[abc]</span></code> )。</li>
+<li>組み合わせることもできます（例: <code class="docutils literal"><span class="pre">data[0][abc].name</span></code> ）。</li>
+</ul>
+</li>
 <li><p class="first">フィールドに対する検証をCellField#add(...)で追加することで複数の検証を設定できます。</p>
 </li>
 <li><p class="first">値の件所を行う場合は、CellField#validate(errors)で実行します。</p>
@@ -343,13 +352,38 @@
 </div></blockquote>
 </li>
 </ul>
+<div class="highlight-properties"><div class="highlight"><pre><span class="c">## メッセージの定義</span>
+<span class="c">## SheetValidationMessages.properties</span>
+
+<span class="c"># 共通変数</span>
+<span class="c"># {sheetName} : シート名</span>
+<span class="c"># {cellAddress} : セルのアドレス。&#39;A1&#39;などの形式。</span>
+<span class="c"># {label} : フィールドの見出し。</span>
+
+<span class="c"># 型変換エラー</span>
+<span class="na">cellTypeMismatch</span><span class="o">=</span><span class="s">[{sheetName}]:${empty label ? &#39;&#39; : label} - {cellAddress}の型変換に失敗しました。</span>
+
+<span class="c"># クラスタイプで指定する場合</span>
+<span class="na">cellTypeMismatch.int</span><span class="o">=</span><span class="s">[{sheetName}]:${empty label ? &#39;&#39; : label} - {cellAddress}は数値型で指定してください。</span>
+<span class="na">cellTypeMismatch.java.util.Date</span><span class="o">=</span><span class="s">[{sheetName}]:${empty label ? &#39;&#39; : label} - {cellAddress}は日付型で指定してください。</span>
+
+<span class="c"># フィールド名で指定する場合</span>
+<span class="na">cellTypeMismatch.updateTime</span><span class="o">=</span><span class="s">[{sheetName}]:${empty label ? &#39;&#39; : label} - {cellAddress}は&#39;yyyy/MM/dd&#39;の書式で指定してください。</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">メッセージ中で、セルのアドレス（変数{cellAddress}）、ラベル（変数{label}）を利用したい場合は、
+Beanクラスに位置情報を保持するフィールド <code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">Point&gt;</span> <span class="pre">positions</span></code> と
+ラベル情報を保持する <code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">labels</span></code> を定義しておく必要があります。</p>
+</div>
 </div>
 <div class="section" id="id6">
 <h2>4.5. メッセージファイルの読み込み方法の変更<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>メッセージファイルは、ResourceBundleやProperties、またSpringのMessageSourceからも取得できます。
 設定する場合、<code class="docutils literal"><span class="pre">SheetMessageConverter#setMessageResolver(...)</span></code> で対応するクラスを設定します。</p>
-<table border="1" class="docutils" id="id7">
-<caption><span class="caption-text">メッセージファイルのブリッジ用クラス</span><a class="headerlink" href="#id7" title="このテーブルへのパーマリンク">¶</a></caption>
+<table border="1" class="docutils" id="id8">
+<caption><span class="caption-text">メッセージファイルのブリッジ用クラス</span><a class="headerlink" href="#id8" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="50%" />
 <col width="50%" />
@@ -382,17 +416,17 @@
 <div class="section" id="el">
 <h2>4.6. EL式のカスタマイズ<a class="headerlink" href="#el" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>メッセージ中の式言語は、EL式以外も利用できます。</p>
-<p>EL式の他、MVEL、OGNL、SpEL(Spring Expresson Language)が利用できます。</p>
+<p>EL式の他、MVELが利用できます。</p>
 <p>使用する式言語を変更する場合、<code class="docutils literal"><span class="pre">MessageInterapolator#setExpressionLanguage(...)</span></code> で式言語の実装を設定します。</p>
-<p>MVELやSpELを利用する場合、別途、ライブラリが必要になります。</p>
+<p>MVELを利用する場合、別途、ライブラリが必要になります。</p>
 <div class="highlight-java"><div class="highlight"><pre><span class="n">SheetMessageConverter</span> <span class="n">messageConverter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetMessageConverter</span><span class="o">();</span>
 
 <span class="c1">// EL式の管理クラスの作成</span>
 <span class="n">ExpressionLanguageRegistry</span> <span class="n">elRegistry</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ExpressionLanguageRegistry</span><span class="o">();</span>
 
-<span class="c1">// 式言語の設定</span>
+<span class="c1">// 式言語の設定をMVELに切り替える場合</span>
 <span class="n">messageConverter</span><span class="o">.</span><span class="na">getMessageInterporlator</span><span class="o">()</span>
-    <span class="o">.</span><span class="na">setExpressionLanguage</span><span class="o">(</span><span class="n">elRegistry</span><span class="o">.</span><span class="na">getExpressionLanguage</span><span class="o">(</span><span class="s">&quot;mvel&quot;</span><span class="o">));</span>
+    <span class="o">.</span><span class="na">setExpressionLanguage</span><span class="o">(</span><span class="k">new</span> <span class="n">ExpressionLanguageMVELImpl</span><span class="o">());</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -402,22 +436,9 @@
 <div class="highlight-xml"><div class="highlight"><pre><span class="c">&lt;!-- ====================== 各式言語のライブラリ ===============--&gt;</span>
 <span class="c">&lt;!-- EL式を利用する場合 --&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>javax.el<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>javax.el-api<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>org.glassfish<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>javax.el<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
-    <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-
-<span class="c">&lt;!-- 式言語:OGNL --&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>ognl<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>ognl<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.0.8<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.0.1-b08<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 
 <span class="c">&lt;!-- 式言語:MVEL --&gt;</span>
@@ -426,15 +447,28 @@
     <span class="nt">&lt;artifactId&gt;</span>mvel2<span class="nt">&lt;/artifactId&gt;</span>
     <span class="nt">&lt;version&gt;</span>2.2.2.Final<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
-
-<span class="c">&lt;!-- 式言語：Spring Expression Language --&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>spring-expression<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.2.11.RELEASE<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 </div>
+<table border="1" class="docutils" id="id9">
+<caption><span class="caption-text">式言語の実装クラス</span><a class="headerlink" href="#id9" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">XlsMapper提供のクラス</th>
+<th class="head">説明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>com.gh.mygreen.xlsmapper.expression.ExpressionLanguageELImpl</td>
+<td>EL2.0/3.0を利用するためのクラス。利用可能なライブラリのバージョンによって自動的に判断します。</td>
+</tr>
+<tr class="row-odd"><td>com.gh.mygreen.xlsmapper.expression.ExpressionLanguageMVELImpl</td>
+<td>MVELを利用するためのクラス。ライブラリMVELが別途必要になります。</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="bean-validation">
 <h2>4.7. Bean Validationを使用した入力値検証<a class="headerlink" href="#bean-validation" title="このヘッドラインへのパーマリンク">¶</a></h2>
@@ -463,7 +497,7 @@
 <span class="n">Employer</span> <span class="n">beanObj</span> <span class="o">=</span> <span class="n">loadSheet</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;./src/test/data/employer.xlsx&quot;</span><span class="o">),</span> <span class="n">errors</span><span class="o">);</span>
 
 <span class="c1">// Bean Validationによる検証の実行</span>
-<span class="n">SheetBeanValidator</span> <span class="n">validatorAdaptor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetBeanValidator</span><span class="o">(</span><span class="n">validator</span><span class="o">);</span>
+<span class="n">SheetBeanValidator</span> <span class="n">validatorAdaptor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetBeanValidator</span><span class="o">();</span>
 <span class="n">validatorAdaptor</span><span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="n">beanObj</span><span class="o">,</span> <span class="n">errors</span><span class="o">);</span>
 
 <span class="c1">// 値の検証結果を文字列に変換します。</span>
@@ -491,6 +525,40 @@
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 </div>
+<div class="section" id="id7">
+<h3>4.7.1. Bean Validationのカスタマイズ<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>BeanValidationのメッセージファイルを他のファイルやSpringのMessageSourcesから取得することもできます。</p>
+<p>XlsMapperのクラス <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.validation.beanvalidation.MessageResolverInterpolator</span></code> を利用することで、BeanValidationのメッセージ処理クラスをブリッジすることができます。</p>
+<p>上記の「メッセージファイルのブリッジ用クラス」を渡すことができます。</p>
+<div class="highlight-java"><div class="highlight"><pre> <span class="c1">// BeanValidationのValidatorの定義</span>
+ <span class="n">ValidatorFactory</span> <span class="n">validatorFactory</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="na">buildDefaultValidatorFactory</span><span class="o">();</span>
+ <span class="n">Validator</span> <span class="n">validator</span> <span class="o">=</span> <span class="n">validatorFactory</span><span class="o">.</span><span class="na">usingContext</span><span class="o">()</span>
+         <span class="o">.</span><span class="na">messageInterpolator</span><span class="o">(</span><span class="k">new</span> <span class="n">MessageResolverInterpolator</span><span class="o">(</span><span class="k">new</span> <span class="n">ResourceBundleMessageResolver</span><span class="o">()))</span>
+         <span class="o">.</span><span class="na">getValidator</span><span class="o">();</span>
+
+<span class="c1">// BeanValidationのValidatorを渡す</span>
+<span class="n">SheetBeanValidator</span> <span class="n">sheetValidator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetBeanValidator</span><span class="o">(</span><span class="n">validator</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Bean Validation1.1から式中にEL式が利用できるようになりましたが、その参照実装であるHibernate Validator5.xでは、EL2.x系を利用し、EL3.xの書式は利用できません。
+EL式の処理系をXlsMapperのクラス <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.validation.MessageInterpolator</span></code> を利用することでEL式の処理系を変更することができます。</p>
+<p>XslMapperの <code class="docutils literal"><span class="pre">ExpressionLanguageELImpl</span></code> は、EL3.0のライブラリが読み込まれている場合、3.x系の処理に切り替えます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// BeanValidatorの式言語の実装を独自のものにする。</span>
+<span class="n">ValidatorFactory</span> <span class="n">validatorFactory</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="na">buildDefaultValidatorFactory</span><span class="o">();</span>
+<span class="n">Validator</span> <span class="n">beanValidator</span> <span class="o">=</span> <span class="n">validatorFactory</span><span class="o">.</span><span class="na">usingContext</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">messageInterpolator</span><span class="o">(</span><span class="k">new</span> <span class="n">MessageInterpolatorAdapter</span><span class="o">(</span>
+                <span class="c1">// メッセージリソースの取得方法を切り替える</span>
+                <span class="k">new</span> <span class="n">ResourceBundleMessageResolver</span><span class="o">(</span><span class="n">ResourceBundle</span><span class="o">.</span><span class="na">getBundle</span><span class="o">(</span><span class="s">&quot;message.OtherElMessages&quot;</span><span class="o">)),</span>
+
+                <span class="c1">// EL式の処理を切り替える</span>
+                <span class="k">new</span> <span class="n">MessageInterpolator</span><span class="o">(</span><span class="k">new</span> <span class="n">ExpressionLanguageELImpl</span><span class="o">())))</span>
+        <span class="o">.</span><span class="na">getValidator</span><span class="o">();</span>
+
+<span class="c1">// BeanValidationのValidatorを渡す</span>
+<span class="n">SheetBeanValidator</span> <span class="n">sheetValidator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetBeanValidator</span><span class="o">(</span><span class="n">validator</span><span class="o">);</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -512,7 +580,7 @@
         <li class="right" >
           <a href="otheruse.html" title="3. その他の機能"
              >前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

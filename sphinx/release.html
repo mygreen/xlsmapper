@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7. リリースノート &mdash; XlsMapper 0.5 ドキュメント</title>
+    <title>7. リリースノート &mdash; XlsMapper 1.0 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5',
+        VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 0.5 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.0 ドキュメント" href="index.html" />
     <link rel="prev" title="6. XLSBeansとの違い" href="diff_xlsbeans.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="diff_xlsbeans.html" title="6. XLSBeansとの違い"
              accesskey="P">前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -92,7 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfacetory">5.4. BeanFacetoryの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfactory">5.4. BeanFactoryの拡張</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="diff_xlsbeans.html">6. XLSBeansとの違い</a><ul>
@@ -102,14 +102,15 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">7. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-5-2015-06-29">7.1. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-4-2015-04-05">7.2. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-3-2015-01-11">7.3. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-3-2015-01-01">7.4. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2-2014-12-01">7.5. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-1-2014-11-25">7.6. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2014-11-24">7.7. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-1-2014-10-30">7.8. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-0-2015-07-19">7.1. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-5-2015-06-29">7.2. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-4-2015-04-05">7.3. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-3-2015-01-11">7.4. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-3-2015-01-01">7.5. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2-2014-12-01">7.6. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-1-2014-11-25">7.7. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2014-11-24">7.8. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-1-2014-10-30">7.9. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -149,8 +150,76 @@
             
   <div class="section" id="id1">
 <h1>7. リリースノート<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="ver-1-0-2015-07-19">
+<h2>7.1. ver.1.0 - 2015-07-19<a class="headerlink" href="#ver-1-0-2015-07-19" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>下記の機能を追加または改善</p>
+<ul>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/14">#14</a> : メッセージ中で利用可能な式言語を EL2.0/3.0、MVELの2つにしました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>入力値検証で利用する <code class="docutils literal"><span class="pre">CellField</span></code> クラスでプロパティを指定する際に、独自の実装PropertyNavigationに切り替えました。
+それに伴い、非公開のフィールドへのアクセスも可能になりました。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/28">#28</a> : クラス <code class="docutils literal"><span class="pre">java.util.Calendar</span></code> に対するCellConveterを追加しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/35">#35</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> の付与可能なクラスタイプとして、<code class="docutils literal"><span class="pre">java.utils.Set</span></code> を追加しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>実装クラスを指定した場合は、その読み込み時には、インスタンスが設定されます。</li>
+<li><code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> も同様に修正しました。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/37">#37</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> でマッピングする際に、表のタイトル（ラベル）が上にある場合に対応しまいた。</p>
+<blockquote>
+<div><ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">tableLabelAbove=true</span></code> を付与すると、表のタイトルの位置が上にあると前提として処理を行います。</li>
+<li>さらに、表のタイトルから見出しがどれだけ離れているか指定する属性 <code class="docutils literal"><span class="pre">right</span></code> を追加しました。 <code class="docutils literal"><span class="pre">XlsHorizontalRecords</span></code> の属性 <code class="docutils literal"><span class="pre">bottom</span></code> に対応するものです。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/50">#50</a> : クラス <code class="docutils literal"><span class="pre">IsEmptyBuilder</span></code> にて、検証対象のタイプがMap, Collection, 配列の場合、要素をチェックするように機能追加しました。要素の値が全てnullまたは空と判定できた場合は、そのオブジェクトの値が空と判定します。</p>
+<blockquote>
+<div><ul class="simple">
+<li>設定用クラス <code class="docutils literal"><span class="pre">IsEmptyConfig</span></code> で、要素をチェックするかなどを変更することができます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/53">#53</a> : フィールドの入力値検証を行うためのFieldValidatorの実装である、「MaxValidator/MinValidator/RangeValidator」において、メッセージ表示用に値をフォーマットを``FieldFormatter`` で行うように機能追加しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>標準では、<code class="docutils literal"><span class="pre">DefaultFieldFormatter</span></code> が設定されていますが、独自の実装に切り替えることができます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/56">#56</a> : AnnotationReaderで読み込むXMLに属性 <code class="docutils literal"><span class="pre">override=true</span></code> を定義すると、JavaクラスとXMLファイルでそｚれぞれに定義しているアノテーションの差分を考慮するよう機能追加しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/58">#58</a> : ドキュメント <a class="reference external" href="http://mygreen.github.io/xlsmapper/sphinx/extension.html">拡張方法</a> を記載しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/58">#59</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords/XlsSheetName</span></code> の書き込み時の処理に、読み込み用のアノテーションを取得していたため、getterメソッドにアノテーションを付与していても反映されない事象を修正しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>各種CellConverterの処理時に、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter</span></code> を付与していた場合も同様の事象を修正しました。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/60">#60</a> : 入力値検証時にメッセージを処する際にエスケープ文字( <code class="docutils literal"><span class="pre">\</span></code> ) が正しく処理されない事象を修正しました。</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/61">#61</a> : インタフェース <code class="docutils literal"><span class="pre">CellConverter</span></code> 中の書き込み用のメソッドの使用を整理しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">&#64;XlsMapColums</span></code> を付与したフィールドの値を処理するためのメソッド <code class="docutils literal"><span class="pre">toCellWithMap(...)</span></code> を <code class="docutils literal"><span class="pre">toCell()</span></code> に統合しました。</li>
+<li><code class="docutils literal"><span class="pre">toCell(...)</span></code> メソッドの第二引数として渡していた処理対象のオブジェクトを、Beanクラスではなく、書き込み対象の値を渡すように変更しました。</li>
+<li>CellConverterRegistry, FieldProcessorRegistryで使用していないメソッドを削除しました。</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
 <div class="section" id="ver-0-5-2015-06-29">
-<h2>7.1. ver.0.5 - 2015-06-29<a class="headerlink" href="#ver-0-5-2015-06-29" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>7.2. ver.0.5 - 2015-06-29<a class="headerlink" href="#ver-0-5-2015-06-29" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/21">#21</a> : セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.4に対応しました。</p>
@@ -243,7 +312,7 @@
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/47">#47</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与しているフィールド型が配列型の場合、書き込むときにレコードが出力されない事象を修正しました。
 同様に、<code class="docutils literal"><span class="pre">&#64;XlsVertiacalRecords</span></code>、<code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> の処理も修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/48">#48</a> : アノテ－ション <a href="#id24"><span class="problematic" id="id25">``</span></a>&#64;XlsHorizontalRecords(remainedRecord=RemainedRecordOperate.Delete) `` を付与し、書き込む先に余分な行を削除するときに、1回多く削除してしまう事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/48">#48</a> : アノテ－ション <a href="#id36"><span class="problematic" id="id37">``</span></a>&#64;XlsHorizontalRecords(remainedRecord=RemainedRecordOperate.Delete) `` を付与し、書き込む先に余分な行を削除するときに、1回多く削除してしまう事象を修正しました。</p>
 </li>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/49">#49</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与し、書き込む際にレコードが追加、削除されるときに、Excelの入力規則の範囲修正が正しくできない事象を修正しました。</p>
 </li>
@@ -267,7 +336,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-4-2015-04-05">
-<h2>7.2. ver.0.4 - 2015-04-05<a class="headerlink" href="#ver-0-4-2015-04-05" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>7.3. ver.0.4 - 2015-04-05<a class="headerlink" href="#ver-0-4-2015-04-05" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/15">#15</a> : セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> を利用するよう変更。</p>
@@ -291,7 +360,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-3-2015-01-11">
-<h2>7.3. ver.0.3 - 2015-01-11<a class="headerlink" href="#ver-0-3-2015-01-11" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>7.4. ver.0.3 - 2015-01-11<a class="headerlink" href="#ver-0-3-2015-01-11" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/4">#4</a> : 書き込み時にレコードの追加・削除を行った際に入力規則と名前の定義を自動的に修正する機能を追加。</p>
@@ -312,7 +381,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-3-2015-01-01">
-<h2>7.4. ver.0.2.3 - 2015-01-01<a class="headerlink" href="#ver-0-2-3-2015-01-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>7.5. ver.0.2.3 - 2015-01-01<a class="headerlink" href="#ver-0-2-3-2015-01-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/7">#7</a> : Excel関数が設定されているセルを読み込んだときに例外が発生する事象を修正。</li>
@@ -324,7 +393,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-2-2014-12-01">
-<h2>7.5. ver.0.2.2 - 2014-12-01<a class="headerlink" href="#ver-0-2-2-2014-12-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>7.6. ver.0.2.2 - 2014-12-01<a class="headerlink" href="#ver-0-2-2-2014-12-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の不良を修正。</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/5">#5</a>  : 書き込み時に、リストのトリムが有効にならない。</li>
@@ -332,7 +401,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-1-2014-11-25">
-<h2>7.6. ver.0.2.1 - 2014-11-25<a class="headerlink" href="#ver-0-2-1-2014-11-25" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>7.7. ver.0.2.1 - 2014-11-25<a class="headerlink" href="#ver-0-2-1-2014-11-25" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の不良を修正。</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/1">#1</a> - &#64;XlsHorizontalRecordsに、Set型を使用すると例外が発生する。</li>
@@ -340,7 +409,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-2014-11-24">
-<h2>7.7. ver.0.2 - 2014-11-24<a class="headerlink" href="#ver-0-2-2014-11-24" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>7.8. ver.0.2 - 2014-11-24<a class="headerlink" href="#ver-0-2-2014-11-24" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul>
 <li><p class="first">アノテーション &#64;XlsIsEmptyを追加しました。</p>
 <blockquote>
@@ -366,7 +435,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-1-2014-10-30">
-<h2>7.8. ver.0.1 - 2014-10-30<a class="headerlink" href="#ver-0-1-2014-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>7.9. ver.0.1 - 2014-10-30<a class="headerlink" href="#ver-0-1-2014-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>初期リリース。</p>
 </div>
 </div>
@@ -386,7 +455,7 @@
         <li class="right" >
           <a href="diff_xlsbeans.html" title="6. XLSBeansとの違い"
              >前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 0.5 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

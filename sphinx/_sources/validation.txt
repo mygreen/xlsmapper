@@ -120,6 +120,13 @@ Validatorは、AbstractObjectValidatorを継承して作成します。
 
 フィールドに対する値の検証は、CellFieldクラスを使用することでもできます。
 
+* コンストラクタに検証対象のプロパティ名を指定します。プロパティ名には、ネストしたもの、配列・リストやマップの要素の指定もできます。
+
+  * ドット(.)で繋げることで、階層指定ができます（例: ``person.name`` ）。
+  * 括弧([数値])を指定することで、配列またはリストの要素が指定できます(例: ``list[0]`` )。
+  * 括弧([キー名])を指定することで、マップの値が指定できます(例: ``map[abc]`` )。
+  * 組み合わせることもできます（例: ``data[0][abc].name`` ）。
+  
 * フィールドに対する検証をCellField#add(...)で追加することで複数の検証を設定できます。
 * 値の件所を行う場合は、CellField#validate(errors)で実行します。
 
@@ -176,7 +183,7 @@ Validatorは、AbstractObjectValidatorを継承して作成します。
    * ただし、EL式のライブラリを依存関係に追加しておく必要があります。
    
 
-.. sourcecode:: 
+.. sourcecode:: properties
     
     ## メッセージの定義
     ## SheetValidationMessages.properties
@@ -196,6 +203,12 @@ Validatorは、AbstractObjectValidatorを継承して作成します。
     # フィールド名で指定する場合
     cellTypeMismatch.updateTime=[{sheetName}]:${empty label ? '' : label} - {cellAddress}は'yyyy/MM/dd'の書式で指定してください。
 
+
+.. note::
+    
+    メッセージ中で、セルのアドレス（変数{cellAddress}）、ラベル（変数{label}）を利用したい場合は、
+    Beanクラスに位置情報を保持するフィールド ``Map<String, Point> positions`` と
+    ラベル情報を保持する ``Map<String, String> labels`` を定義しておく必要があります。
 
 --------------------------------------------------------
 メッセージファイルの読み込み方法の変更
@@ -237,11 +250,11 @@ EL式のカスタマイズ
 
 メッセージ中の式言語は、EL式以外も利用できます。
 
-EL式の他、MVEL、OGNL、SpEL(Spring Expresson Language)が利用できます。
+EL式の他、MVELが利用できます。
 
 使用する式言語を変更する場合、``MessageInterapolator#setExpressionLanguage(...)`` で式言語の実装を設定します。
 
-MVELやSpELを利用する場合、別途、ライブラリが必要になります。
+MVELを利用する場合、別途、ライブラリが必要になります。
 
 .. sourcecode:: java
     
@@ -250,9 +263,9 @@ MVELやSpELを利用する場合、別途、ライブラリが必要になりま
     // EL式の管理クラスの作成
     ExpressionLanguageRegistry elRegistry = new ExpressionLanguageRegistry();
     
-    // 式言語の設定
+    // 式言語の設定をMVELに切り替える場合
     messageConverter.getMessageInterporlator()
-        .setExpressionLanguage(elRegistry.getExpressionLanguage("mvel"));
+        .setExpressionLanguage(new ExpressionLanguageMVELImpl());
 
 
 .. note:: 
@@ -265,22 +278,9 @@ MVELやSpELを利用する場合、別途、ライブラリが必要になりま
     <!-- ====================== 各式言語のライブラリ ===============-->
     <!-- EL式を利用する場合 -->
     <dependency>
-        <groupId>javax.el</groupId>
-        <artifactId>javax.el-api</artifactId>
-        <version>3.0.0</version>
-    </dependency>
-    <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>javax.el</artifactId>
-        <version>3.0.0</version>
-        <scope>provided</scope>
-    </dependency>
-    
-    <!-- 式言語:OGNL -->
-    <dependency>
-        <groupId>ognl</groupId>
-        <artifactId>ognl</artifactId>
-        <version>3.0.8</version>
+        <version>3.0.1-b08</version>
     </dependency>
     
     <!-- 式言語:MVEL -->
@@ -289,14 +289,20 @@ MVELやSpELを利用する場合、別途、ライブラリが必要になりま
         <artifactId>mvel2</artifactId>
         <version>2.2.2.Final</version>
     </dependency>
-    
-    <!-- 式言語：Spring Expression Language -->
-    <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-expression</artifactId>
-        <version>3.2.11.RELEASE</version>
-    </dependency>
 
+
+.. list-table:: 式言語の実装クラス
+   :widths: 50 50
+   :header-rows: 1
+   
+   * - XlsMapper提供のクラス
+     - 説明
+   
+   * - com.gh.mygreen.xlsmapper.expression.ExpressionLanguageELImpl
+     - EL2.0/3.0を利用するためのクラス。利用可能なライブラリのバージョンによって自動的に判断します。
+   
+   * - com.gh.mygreen.xlsmapper.expression.ExpressionLanguageMVELImpl
+     - MVELを利用するためのクラス。ライブラリMVELが別途必要になります。
 
 --------------------------------------------------------
 Bean Validationを使用した入力値検証
@@ -322,7 +328,7 @@ Bean Validationを使用した入力値検証
     Employer beanObj = loadSheet(new File("./src/test/data/employer.xlsx"), errors);
     
     // Bean Validationによる検証の実行
-    SheetBeanValidator validatorAdaptor = new SheetBeanValidator(validator);
+    SheetBeanValidator validatorAdaptor = new SheetBeanValidator();
     validatorAdaptor.validate(beanObj, errors);
     
     // 値の検証結果を文字列に変換します。
@@ -332,8 +338,6 @@ Bean Validationを使用した入力値検証
             String message = messageConverter.convertMessage(error);
         }
     }
-
-
 
 .. sourcecode:: xml
     
@@ -353,8 +357,48 @@ Bean Validationを使用した入力値検証
     </dependency>
 
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Bean Validationのカスタマイズ
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+BeanValidationのメッセージファイルを他のファイルやSpringのMessageSourcesから取得することもできます。
+
+XlsMapperのクラス ``com.gh.mygreen.xlsmapper.validation.beanvalidation.MessageResolverInterpolator`` を利用することで、BeanValidationのメッセージ処理クラスをブリッジすることができます。
+
+上記の「メッセージファイルのブリッジ用クラス」を渡すことができます。
+
+.. sourcecode:: java
+    
+    // BeanValidationのValidatorの定義
+    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    Validator validator = validatorFactory.usingContext()
+            .messageInterpolator(new MessageResolverInterpolator(new ResourceBundleMessageResolver()))
+            .getValidator();
+   
+   // BeanValidationのValidatorを渡す
+   SheetBeanValidator sheetValidator = new SheetBeanValidator(validator);
+   
 
 
 
+Bean Validation1.1から式中にEL式が利用できるようになりましたが、その参照実装であるHibernate Validator5.xでは、EL2.x系を利用し、EL3.xの書式は利用できません。
+EL式の処理系をXlsMapperのクラス ``com.gh.mygreen.xlsmapper.validation.MessageInterpolator`` を利用することでEL式の処理系を変更することができます。
 
+XslMapperの ``ExpressionLanguageELImpl`` は、EL3.0のライブラリが読み込まれている場合、3.x系の処理に切り替えます。
+
+.. sourcecode:: java
+    
+    // BeanValidatorの式言語の実装を独自のものにする。
+    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    Validator beanValidator = validatorFactory.usingContext()
+            .messageInterpolator(new MessageInterpolatorAdapter(
+                    // メッセージリソースの取得方法を切り替える
+                    new ResourceBundleMessageResolver(ResourceBundle.getBundle("message.OtherElMessages")),
+                    
+                    // EL式の処理を切り替える
+                    new MessageInterpolator(new ExpressionLanguageELImpl())))
+            .getValidator();
+    
+    // BeanValidationのValidatorを渡す
+    SheetBeanValidator sheetValidator = new SheetBeanValidator(validator);
 

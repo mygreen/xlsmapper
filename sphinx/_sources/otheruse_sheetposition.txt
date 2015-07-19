@@ -36,6 +36,7 @@
         ...
     }
     
+    // 汎用的な位置定義
     public Map<String, Point> positions;
     
     // positionsフィールドが定義されている場合は、setter メソッドは必要ありません。
