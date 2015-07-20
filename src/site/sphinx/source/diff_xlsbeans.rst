@@ -32,7 +32,7 @@ XLSBeansとの違いを以下に示します。
   
     * ``@XlsHorizontalRecords/@XlsVerticalRecords`` に書き込み用の属性を追加し、行が余ったときや足りないときの動作をカスタマイズできます。
                 
-* 読み込み時、書き込み時のコールバック用メソッドを定義するためのアノテーション``@XlsPreLoad/@XlsPostLoad/@XlsPreSave/@XlsPostLoad`` が使用できます。
+* 読み込み時、書き込み時のコールバック用メソッドを定義するためのアノテーション ``@XlsPreLoad/@XlsPostLoad/@XlsPreSave/@XlsPostLoad`` が使用できます。
   
 * 型変換機能として、専用のアノテーションを利用して各フィールドごとに細かく設定できます。
 
@@ -53,5 +53,7 @@ XLSBeansとの違いを以下に示します。
 
     * 代わりに、``@XlsPreLoad/@XlsPostLoad/@XlsPreSave/@XlsPostLoad`` が使用できます。
  
+* 独自実装のProcessorを、プロパティファイル ``xlsbeans.properties`` で設定できる機能を削除しました。
 
+    * 代わりに、システム設定用の ``XlsMapperConfig#getConverterRegistry()#registerProcessor(...)`` から登録できます。
 
