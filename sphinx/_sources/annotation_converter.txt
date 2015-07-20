@@ -180,6 +180,8 @@ boolean、Boolean型の変換規則の設定を行います。
 
 日付型（``java.util.Date`` , ``java.sql.Date`` , ``java.sql.Timestamp`` , ``java.sql.Time`` ）の書式などの設定を行います。
 
+ver1.0から、 ``java.util.Calendar`` にも対応しています。
+
 * 属性patternで書式を指定します。
     * Javaのクラス ``java.util.SimpleDateFormat`` で解釈可能な書式を指定します。
     
@@ -193,15 +195,6 @@ boolean、Boolean型の変換規則の設定を行います。
     * trueの厳密に解析を行いません。falseの場合厳密に解析を行います。
     * 読み込み時に書式に合わないセルの値を読み込んだ場合、例外TypeBindExceptionが発生します。
     
-
-* アノテーションを指定しない場合、Javaの各タイプごとにデフォルトの書式が設定されます。`[ver0.5+]` 
-
-    * ``java.util.Date`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
-    * ``java.sql.Date`` の場合、デフォルトで `yyyy-MM-dd` の書式が適用されます。
-    * ``java.sql.Time`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
-    * ``java.sql.Timestamp`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss.SSS` の書式が適用されます。
-    * 読み込むセルに日時型の書式が設定されている場合は、書式を無視してJavaのクラスにマッピングされます。
-
 
 .. sourcecode:: java
     
@@ -217,12 +210,13 @@ boolean、Boolean型の変換規則の設定を行います。
     読み込み時のセルの値が属性patternで指定した書式に一致していなくても、セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
     セルの表示形式の分類が文字列の場合は、アノテーション ``@XlsDateConverter(pattern="<書式>")`` で指定した書式に従い処理されます。
     
-    ただし、型変換用のアノテーション ``@XlsDateConverter`` を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。
+    ただし、型変換用のアノテーション ``@XlsDateConverter`` を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。`[ver0.5+]` 
     
     * ``java.util.Date`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
     * ``java.sql.Date`` の場合、デフォルトで `yyyy-MM-dd` の書式が適用されます。
     * ``java.sql.Time`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
     * ``java.sql.Timestamp`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss.SSS` の書式が適用されます。
+    * ``java.util.Calendar`` の場合、デフォルトで、 `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
 
 
 

@@ -323,6 +323,7 @@
 <div class="section" id="xlsdateconverter">
 <h2><code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code><a class="headerlink" href="#xlsdateconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>日付型（<code class="docutils literal"><span class="pre">java.util.Date</span></code> , <code class="docutils literal"><span class="pre">java.sql.Date</span></code> , <code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> , <code class="docutils literal"><span class="pre">java.sql.Time</span></code> ）の書式などの設定を行います。</p>
+<p>ver1.0から、 <code class="docutils literal"><span class="pre">java.util.Calendar</span></code> にも対応しています。</p>
 <ul>
 <li><dl class="first docutils">
 <dt>属性patternで書式を指定します。</dt>
@@ -348,17 +349,6 @@
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first">アノテーションを指定しない場合、Javaの各タイプごとにデフォルトの書式が設定されます。<cite>[ver0.5+]</cite></p>
-<blockquote>
-<div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
-<li><code class="docutils literal"><span class="pre">java.sql.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd</cite> の書式が適用されます。</li>
-<li><code class="docutils literal"><span class="pre">java.sql.Time</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
-<li><code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss.SSS</cite> の書式が適用されます。</li>
-<li>読み込むセルに日時型の書式が設定されている場合は、書式を無視してJavaのクラスにマッピングされます。</li>
-</ul>
-</div></blockquote>
-</li>
 </ul>
 <div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
 
@@ -372,12 +362,13 @@
 <p class="first admonition-title">注釈</p>
 <p>読み込み時のセルの値が属性patternで指定した書式に一致していなくても、セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
 セルの表示形式の分類が文字列の場合は、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter(pattern=&quot;&lt;書式&gt;&quot;)</span></code> で指定した書式に従い処理されます。</p>
-<p>ただし、型変換用のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code> を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。</p>
+<p>ただし、型変換用のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code> を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。<cite>[ver0.5+]</cite></p>
 <ul class="last simple">
 <li><code class="docutils literal"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
 <li><code class="docutils literal"><span class="pre">java.sql.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd</cite> の書式が適用されます。</li>
 <li><code class="docutils literal"><span class="pre">java.sql.Time</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
 <li><code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss.SSS</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.util.Calendar</span></code> の場合、デフォルトで、 <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
 </ul>
 </div>
 </div>

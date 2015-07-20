@@ -349,15 +349,15 @@ headerLimit属性を指定すると、テーブルのカラムが指定数見つ
  
 * overRecored属性で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
     
-    * Insertを指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。
-    * Copyを指定すると上部のセルを下部にコピーして値を設定します。
-    * Breakを指定すると、レコードの書き込みをその時点で止めます。
+    * ``OverRecordOperate.Insert`` を指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。
+    * ``OverRecordOperate.Copy`` を指定すると上部のセルを下部にコピーして値を設定します。
+    * ``OverRecordOperate.Break`` を指定すると、レコードの書き込みをその時点で止めます。
     
 * remainedRecord属性で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
     
-     * Clearでセルの値をクリアします。
-     * Deleteで行を削除します。
-     * Noneは何もしません。
+     * ``RemainedRecordOperate.Clear`` でセルの値をクリアします。
+     * ``RemainedRecordOperate.Delete`` で行を削除します。
+     * ``RemainedRecordOperate.Noneは`` 何もしません。
 
 
 .. sourcecode:: java
@@ -430,8 +430,9 @@ skipEmptyRecord属性で、読み込み時に空のレコードを読み飛ば�
 * ``@XlsHorizontalRecords`` と同じくterminal属性、およびoptional属性を指定することもできます。
 * overRecord、remainedRecord属性で、書き込み時のレコードの操作を指定することができます。
    
-   * ``@XlsHorizontalRecords`` では、overRecord=OverRecordOperate.Insertはサポートしていません。
-   * ``@XlsHorizontalRecords`` では、remainedRecord=RemainedRecordOperate.Deleteはサポートしていません。
+   * ただし、 ``@XlsHorizontalRecords`` では、overRecord=OverRecordOperate.Insertはサポートしていません。
+   * ただし、 ``@XlsHorizontalRecords`` では、remainedRecord=RemainedRecordOperate.Deleteはサポートしていません。
+   * これらの操作をサポートしていない理由は、Apache POIが、一括で列の挿入、削除をサポートしていないためです。
 
 
 
@@ -516,7 +517,7 @@ headerMergedの値には列見出しから何セル分離れているかを指�
 .. figure:: ./_static/MapColumns.png
    :align: center
    
-   ColuMapColumnsmn
+   MapColumns
 
 .. sourcecode:: java
     

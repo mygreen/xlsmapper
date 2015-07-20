@@ -519,18 +519,18 @@ overRecord、remainedRecord属性で、書き込み時のレコードの操作�
 <li><p class="first">overRecored属性で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。</p>
 <blockquote>
 <div><ul class="simple">
-<li>Insertを指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。</li>
-<li>Copyを指定すると上部のセルを下部にコピーして値を設定します。</li>
-<li>Breakを指定すると、レコードの書き込みをその時点で止めます。</li>
+<li><code class="docutils literal"><span class="pre">OverRecordOperate.Insert</span></code> を指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。</li>
+<li><code class="docutils literal"><span class="pre">OverRecordOperate.Copy</span></code> を指定すると上部のセルを下部にコピーして値を設定します。</li>
+<li><code class="docutils literal"><span class="pre">OverRecordOperate.Break</span></code> を指定すると、レコードの書き込みをその時点で止めます。</li>
 </ul>
 </div></blockquote>
 </li>
 <li><p class="first">remainedRecord属性で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。</p>
 <blockquote>
 <div><ul class="simple">
-<li>Clearでセルの値をクリアします。</li>
-<li>Deleteで行を削除します。</li>
-<li>Noneは何もしません。</li>
+<li><code class="docutils literal"><span class="pre">RemainedRecordOperate.Clear</span></code> でセルの値をクリアします。</li>
+<li><code class="docutils literal"><span class="pre">RemainedRecordOperate.Delete</span></code> で行を削除します。</li>
+<li><code class="docutils literal"><span class="pre">RemainedRecordOperate.Noneは</span></code> 何もしません。</li>
 </ul>
 </div></blockquote>
 </li>
@@ -595,8 +595,9 @@ overRecord、remainedRecord属性で、書き込み時のレコードの操作�
 <li><p class="first">overRecord、remainedRecord属性で、書き込み時のレコードの操作を指定することができます。</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、overRecord=OverRecordOperate.Insertはサポートしていません。</li>
-<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、remainedRecord=RemainedRecordOperate.Deleteはサポートしていません。</li>
+<li>ただし、 <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、overRecord=OverRecordOperate.Insertはサポートしていません。</li>
+<li>ただし、 <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、remainedRecord=RemainedRecordOperate.Deleteはサポートしていません。</li>
+<li>これらの操作をサポートしていない理由は、Apache POIが、一括で列の挿入、削除をサポートしていないためです。</li>
 </ul>
 </div></blockquote>
 </li>
@@ -662,7 +663,7 @@ headerMergedの値には列見出しから何セル分離れているかを指�
 それらのカラムをMapとして設定します。BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。</p>
 <div class="figure align-center" id="id12">
 <img alt="_images/MapColumns.png" src="_images/MapColumns.png" />
-<p class="caption"><span class="caption-text">ColuMapColumnsmn</span></p>
+<p class="caption"><span class="caption-text">MapColumns</span></p>
 </div>
 <div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
     <span class="nd">@XlsMapColumns</span><span class="o">(</span><span class="n">previousColumnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
@@ -1024,6 +1025,7 @@ order属性が同じ値を設定されているときは、 フィールド名�
 <div class="section" id="xlsdateconverter">
 <h3>2.4.4. <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code><a class="headerlink" href="#xlsdateconverter" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>日付型（<code class="docutils literal"><span class="pre">java.util.Date</span></code> , <code class="docutils literal"><span class="pre">java.sql.Date</span></code> , <code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> , <code class="docutils literal"><span class="pre">java.sql.Time</span></code> ）の書式などの設定を行います。</p>
+<p>ver1.0から、 <code class="docutils literal"><span class="pre">java.util.Calendar</span></code> にも対応しています。</p>
 <ul>
 <li><dl class="first docutils">
 <dt>属性patternで書式を指定します。</dt>
@@ -1049,17 +1051,6 @@ order属性が同じ値を設定されているときは、 フィールド名�
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first">アノテーションを指定しない場合、Javaの各タイプごとにデフォルトの書式が設定されます。<cite>[ver0.5+]</cite></p>
-<blockquote>
-<div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
-<li><code class="docutils literal"><span class="pre">java.sql.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd</cite> の書式が適用されます。</li>
-<li><code class="docutils literal"><span class="pre">java.sql.Time</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
-<li><code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss.SSS</cite> の書式が適用されます。</li>
-<li>読み込むセルに日時型の書式が設定されている場合は、書式を無視してJavaのクラスにマッピングされます。</li>
-</ul>
-</div></blockquote>
-</li>
 </ul>
 <div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
 
@@ -1073,12 +1064,13 @@ order属性が同じ値を設定されているときは、 フィールド名�
 <p class="first admonition-title">注釈</p>
 <p>読み込み時のセルの値が属性patternで指定した書式に一致していなくても、セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
 セルの表示形式の分類が文字列の場合は、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter(pattern=&quot;&lt;書式&gt;&quot;)</span></code> で指定した書式に従い処理されます。</p>
-<p>ただし、型変換用のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code> を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。</p>
+<p>ただし、型変換用のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code> を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。<cite>[ver0.5+]</cite></p>
 <ul class="last simple">
 <li><code class="docutils literal"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
 <li><code class="docutils literal"><span class="pre">java.sql.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd</cite> の書式が適用されます。</li>
 <li><code class="docutils literal"><span class="pre">java.sql.Time</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
 <li><code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss.SSS</cite> の書式が適用されます。</li>
+<li><code class="docutils literal"><span class="pre">java.util.Calendar</span></code> の場合、デフォルトで、 <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
 </ul>
 </div>
 </div>
@@ -1182,8 +1174,8 @@ order属性が同じ値を設定されているときは、 フィールド名�
 </div>
 <div class="section" id="id6">
 <h2>2.5. ライフサイクル・コールバック用のアノテーション<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。</p>
-<p><strong>publicメソッドに付与</strong> する必要があります。</p>
+<p>読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。
+<strong>publicメソッドに付与</strong> する必要があります。</p>
 <table border="1" class="docutils" id="id15">
 <caption><span class="caption-text">ライフサイクル・コールバック用のアノテーション一覧</span><a class="headerlink" href="#id15" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
@@ -1226,6 +1218,40 @@ order属性が同じ値を設定されているときは、 フィールド名�
 <li>引数は、とらなくても可能です。</li>
 <li>引数の順番は任意で指定可能です。</li>
 </ul>
+<table border="1" class="docutils" id="id16">
+<caption><span class="caption-text">コールバック用アノテーションのメソッドに指定可能な引数一覧</span><a class="headerlink" href="#id16" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">指定可能な引数のタイプ</th>
+<th class="head">説明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">org.apache.poi.ss.usermodel.Sheet</span></code></td>
+<td><div class="first last line-block">
+<div class="line">処理対象のSheetオブジェクト。</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.XlsMapperConfig</span></code></td>
+<td><div class="first last line-block">
+<div class="line">XlsMapperの設定オブジェクト。</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.validation.SheetBindingErrors</span></code></td>
+<td><div class="first last line-block">
+<div class="line">シートのエラー情報を格納するオブジェクト。</div>
+<div class="line">読み込み時に引数で渡したオブジェクト。</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>以下のような時にライフサイクルコールバック関数を利用します。</p>
 <ul>
 <li><p class="first">読み込み前、書き込み前のフィールドの初期化。</p>
 </li>

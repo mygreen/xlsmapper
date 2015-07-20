@@ -442,18 +442,18 @@ overRecord、remainedRecord属性で、書き込み時のレコードの操作�
 <li><p class="first">overRecored属性で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。</p>
 <blockquote>
 <div><ul class="simple">
-<li>Insertを指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。</li>
-<li>Copyを指定すると上部のセルを下部にコピーして値を設定します。</li>
-<li>Breakを指定すると、レコードの書き込みをその時点で止めます。</li>
+<li><code class="docutils literal"><span class="pre">OverRecordOperate.Insert</span></code> を指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。</li>
+<li><code class="docutils literal"><span class="pre">OverRecordOperate.Copy</span></code> を指定すると上部のセルを下部にコピーして値を設定します。</li>
+<li><code class="docutils literal"><span class="pre">OverRecordOperate.Break</span></code> を指定すると、レコードの書き込みをその時点で止めます。</li>
 </ul>
 </div></blockquote>
 </li>
 <li><p class="first">remainedRecord属性で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。</p>
 <blockquote>
 <div><ul class="simple">
-<li>Clearでセルの値をクリアします。</li>
-<li>Deleteで行を削除します。</li>
-<li>Noneは何もしません。</li>
+<li><code class="docutils literal"><span class="pre">RemainedRecordOperate.Clear</span></code> でセルの値をクリアします。</li>
+<li><code class="docutils literal"><span class="pre">RemainedRecordOperate.Delete</span></code> で行を削除します。</li>
+<li><code class="docutils literal"><span class="pre">RemainedRecordOperate.Noneは</span></code> 何もしません。</li>
 </ul>
 </div></blockquote>
 </li>
@@ -518,8 +518,9 @@ overRecord、remainedRecord属性で、書き込み時のレコードの操作�
 <li><p class="first">overRecord、remainedRecord属性で、書き込み時のレコードの操作を指定することができます。</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、overRecord=OverRecordOperate.Insertはサポートしていません。</li>
-<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、remainedRecord=RemainedRecordOperate.Deleteはサポートしていません。</li>
+<li>ただし、 <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、overRecord=OverRecordOperate.Insertはサポートしていません。</li>
+<li>ただし、 <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> では、remainedRecord=RemainedRecordOperate.Deleteはサポートしていません。</li>
+<li>これらの操作をサポートしていない理由は、Apache POIが、一括で列の挿入、削除をサポートしていないためです。</li>
 </ul>
 </div></blockquote>
 </li>
@@ -585,7 +586,7 @@ headerMergedの値には列見出しから何セル分離れているかを指�
 それらのカラムをMapとして設定します。BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。</p>
 <div class="figure align-center" id="id7">
 <img alt="_images/MapColumns.png" src="_images/MapColumns.png" />
-<p class="caption"><span class="caption-text">ColuMapColumnsmn</span></p>
+<p class="caption"><span class="caption-text">MapColumns</span></p>
 </div>
 <div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
     <span class="nd">@XlsMapColumns</span><span class="o">(</span><span class="n">previousColumnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>

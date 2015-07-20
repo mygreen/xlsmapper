@@ -190,7 +190,7 @@ XLSBeansとの違いを以下に示します。</p>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first">読み込み時、書き込み時のコールバック用メソッドを定義するためのアノテーション``&#64;XlsPreLoad/&#64;XlsPostLoad/&#64;XlsPreSave/&#64;XlsPostLoad`` が使用できます。</p>
+<li><p class="first">読み込み時、書き込み時のコールバック用メソッドを定義するためのアノテーション <code class="docutils literal"><span class="pre">&#64;XlsPreLoad/&#64;XlsPostLoad/&#64;XlsPreSave/&#64;XlsPostLoad</span></code> が使用できます。</p>
 </li>
 <li><p class="first">型変換機能として、専用のアノテーションを利用して各フィールドごとに細かく設定できます。</p>
 </li>
@@ -214,6 +214,13 @@ XLSBeansとの違いを以下に示します。</p>
 <blockquote>
 <div><ul class="simple">
 <li>代わりに、<code class="docutils literal"><span class="pre">&#64;XlsPreLoad/&#64;XlsPostLoad/&#64;XlsPreSave/&#64;XlsPostLoad</span></code> が使用できます。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">独自実装のProcessorを、プロパティファイル <code class="docutils literal"><span class="pre">xlsbeans.properties</span></code> で設定できる機能を削除しました。</p>
+<blockquote>
+<div><ul class="simple">
+<li>代わりに、システム設定用の <code class="docutils literal"><span class="pre">XlsMapperConfig#getConverterRegistry()#registerProcessor(...)</span></code> から登録できます。</li>
 </ul>
 </div></blockquote>
 </li>
