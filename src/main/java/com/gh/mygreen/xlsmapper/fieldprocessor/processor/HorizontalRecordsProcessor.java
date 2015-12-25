@@ -331,7 +331,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             final Point address = Utils.parseCellAddress(anno.headerAddress());
             if(address == null) {
                 throw new AnnotationInvalidException(
-                        String.format("@XlsHorizontalRecors#headerAddress is wrong cell address '%s'.", anno.headerAddress()), anno);
+                        String.format("@XlsHorizontalRecords#headerAddress is wrong cell address '%s'.", anno.headerAddress()), anno);
             }
             
             return address;
@@ -356,7 +356,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             // column, rowのアドレスを直接指定の場合
             if(anno.headerColumn() < 0 || anno.headerRow() < 0) {
                 throw new AnnotationInvalidException(
-                        String.format("@XlsHorizontalRecors#headerColumn or headerRow soulde be greather than or equal zero. (headerColulmn=%d, headerRow=%d)",
+                        String.format("@XlsHorizontalRecords#headerColumn or headerRow should be greater than or equal zero. (headerColulmn=%d, headerRow=%d)",
                                 anno.headerColumn(), anno.headerRow()), anno);
             }
             

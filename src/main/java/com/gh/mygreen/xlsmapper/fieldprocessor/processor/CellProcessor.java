@@ -67,8 +67,8 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
         } else {
             if(anno.row() < 0 || anno.column() < 0) {
                 throw new AnnotationInvalidException(
-                        String.format("@XlsCell#column or row soulde be greather than or equal zero. (colunm=%d, row=%d)",
-                                anno.row(), anno.column()), anno);
+                        String.format("@XlsCell#column or row should be greater than or equal zero. (column=%d, row=%d)",
+                                anno.column(), anno.row()), anno);
             }
             return new Point(anno.column(), anno.row());
         }
