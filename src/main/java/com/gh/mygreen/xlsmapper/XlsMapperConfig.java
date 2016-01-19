@@ -1,5 +1,6 @@
 package com.gh.mygreen.xlsmapper;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.cellconvert.CellConverterRegistry;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegstry;
 
@@ -7,7 +8,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegstry;
 /**
  * マッピングする際の設定などを保持するクラス。
  * 
- * @version 0.4
+ * @version 1.1
  * @author T.TSUCHIE
  *
  */
@@ -40,6 +41,9 @@ public class XlsMapperConfig {
     
     /** 読み込み時のBeanのインスタンスの作成クラス */
     private FactoryCallback<Class<?>, Object> beanFactory = new DefaultBeanFactory();
+    
+    /** 処理対象のシートを取得するクラス */
+    private SheetFinder sheetFinder = new SheetFinder();
     
     public XlsMapperConfig() {
     }
@@ -241,6 +245,25 @@ public class XlsMapperConfig {
      */
     public FactoryCallback<Class<?>, Object> getBeanFactory() {
         return beanFactory;
-    }    
+    }
     
+    /**
+     * 処理対象のシートを取得するためのクラスを取得します。
+     * <p>アノテーション{@link XlsSheet} を処理します。
+     * @since 1.1
+     * @return
+     */
+    public SheetFinder getSheetFinder() {
+        return sheetFinder;
+    }
+    
+    /**
+     * 処理対象のシートを取得するためのクラスを設定します。
+     * <p>アノテーション{@link XlsSheet} を処理します。
+     * 
+     * @param sheetFinder
+     */
+    public void setSheetFinder(SheetFinder sheetFinder) {
+        this.sheetFinder = sheetFinder;
+    }
 }

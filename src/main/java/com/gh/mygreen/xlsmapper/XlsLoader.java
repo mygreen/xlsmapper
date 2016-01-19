@@ -9,9 +9,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
@@ -31,6 +31,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 /**
  * ExcelのシートをJavaBeanにマッピングするクラス。
  * 
+ * @version 1.1
  * @author T.TSUCHIE
  *
  */
@@ -153,7 +154,7 @@ public class XlsLoader {
         }
         
         try {
-            final org.apache.poi.ss.usermodel.Sheet[] xlsSheet = findSheet(book, sheetAnno);
+            final Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);
             return loadSheet(xlsSheet[0], clazz, work);
         } catch(SheetNotFoundException e) {
             if(config.isIgnoreSheetNotFound()){
@@ -263,7 +264,7 @@ public class XlsLoader {
             // 読み込むシートの条件が指定されていない場合、全て読み込む
             int sheetNum = book.getNumberOfSheets();
             for(int i=0; i < sheetNum; i++) {
-                final org.apache.poi.ss.usermodel.Sheet sheet = book.getSheetAt(i);
+                final Sheet sheet = book.getSheetAt(i);
                 
                 final LoadingWorkObject work = new LoadingWorkObject();
                 work.setAnnoReader(annoReader);
@@ -274,8 +275,8 @@ public class XlsLoader {
         } else {
             // 読み込むシートの条件が指定されている場合
             try {
-                final org.apache.poi.ss.usermodel.Sheet[] xlsSheet = findSheet(book, sheetAnno);
-                for(org.apache.poi.ss.usermodel.Sheet sheet : xlsSheet) {
+                final Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);
+                for(Sheet sheet : xlsSheet) {
                     
                     final LoadingWorkObject work = new LoadingWorkObject();
                     work.setAnnoReader(annoReader);
@@ -345,8 +346,8 @@ public class XlsLoader {
             }
             
             try {
-                final org.apache.poi.ss.usermodel.Sheet[] xlsSheet = findSheet(book, sheetAnno);
-                for(org.apache.poi.ss.usermodel.Sheet sheet: xlsSheet) {
+                final Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);
+                for(Sheet sheet : xlsSheet) {
                     
                     final LoadingWorkObject work = new LoadingWorkObject();
                     work.setAnnoReader(annoReader);
@@ -376,8 +377,7 @@ public class XlsLoader {
      * 
      */
     @SuppressWarnings({"rawtypes"})
-    private <P> P loadSheet(final org.apache.poi.ss.usermodel.Sheet sheet, final Class<P> clazz,
-            final LoadingWorkObject work) throws XlsMapperException {
+    private <P> P loadSheet(final Sheet sheet, final Class<P> clazz, final LoadingWorkObject work) throws XlsMapperException {
         
         // 値の読み込み対象のJavaBeanオブジェクトの作成
         final P beanObj = config.createBean(clazz);
@@ -448,54 +448,6 @@ public class XlsLoader {
         return beanObj;
     }
     
-    /**
-     * {@code @XlsSheet}の値をもとにして、シートを取得する。
-     * @param book Excelのワークブック。
-     * @param sheetAnno アノテーション{@link XlsSheet}
-     * @return Excelのシート情報。複数ヒットする場合は、該当するものを全て返す。
-     * @throws SheetNotFoundException
-     * @throws AnnotationInvalidException
-     */
-    private org.apache.poi.ss.usermodel.Sheet[] findSheet(final Workbook book, final XlsSheet sheetAnno) throws SheetNotFoundException, AnnotationInvalidException {
-        
-        if(sheetAnno.name().length() > 0) {
-            // シート名から取得する。
-            final org.apache.poi.ss.usermodel.Sheet xlsSheet = book.getSheet(sheetAnno.name());
-            if(xlsSheet == null) {
-                throw new SheetNotFoundException(sheetAnno.name());
-            }
-            return new org.apache.poi.ss.usermodel.Sheet[]{ xlsSheet };
-            
-        } else if(sheetAnno.number() >= 0) {
-            // シート番号から取得する
-            if(sheetAnno.number() >= book.getNumberOfSheets()) {
-                throw new SheetNotFoundException(sheetAnno.number(), book.getNumberOfSheets());
-            }
-            
-            return new org.apache.poi.ss.usermodel.Sheet[]{ book.getSheetAt(sheetAnno.number()) }; 
-            
-        } else if(sheetAnno.regex().length() > 0) {
-            // シート名（正規表現）をもとにして、取得する。
-            final Pattern pattern = Pattern.compile(sheetAnno.regex());
-            final List<org.apache.poi.ss.usermodel.Sheet> matches = new ArrayList<>();
-            for(int i=0; i < book.getNumberOfSheets(); i++) {
-                final org.apache.poi.ss.usermodel.Sheet xlsSheet = book.getSheetAt(i);
-                if(pattern.matcher(xlsSheet.getSheetName()).matches()) {
-                    matches.add(xlsSheet);
-                }
-            }
-            
-            if(matches.isEmpty()) {
-                throw new SheetNotFoundException(sheetAnno.regex());
-            }
-            
-            return matches.toArray(new org.apache.poi.ss.usermodel.Sheet[matches.size()]);
-        }
-        
-        throw new AnnotationInvalidException("@XlsSheet requires name or number or regex parameter.", sheetAnno);
-        
-    }
-    
     public XlsMapperConfig getConfig() {
         return config;
     }
@@ -503,4 +455,5 @@ public class XlsLoader {
     public void setConfig(XlsMapperConfig config) {
         this.config = config;
     }
+    
 }
