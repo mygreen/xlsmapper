@@ -44,8 +44,8 @@ public class DynamicAnnotationBuilderTest {
     public void test_buildAnnotation1() throws Exception {
         
         AnnotationInfo info = new AnnotationInfo();
-        info.addAnnotationAttribute("row", "10");
-        info.addAnnotationAttribute("column", "99");
+        info.addAttribute("row", "10");
+        info.addAttribute("column", "99");
         
         DynamicAnnotationBuilder builder = DynamicAnnotationBuilder.getInstance();
         Annotation ann = builder.buildAnnotation(XlsCell.class, info);

@@ -6,19 +6,20 @@ import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
 import java.awt.Point;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXB;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+
+import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
+
+
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
@@ -29,77 +30,54 @@ import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
-import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
-import com.gh.mygreen.xlsmapper.xml.bind.ClassInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
- * {@link XmlIO}、{@link AnnotationReader}のテスタ
- * @version 1.0
- * 
+ * {@link XmlBuilder}のテスタ
+ *
+ * @since 1.1
+ * @author T.TSUCHIE
+ *
  */
-public class AnnotationReaderTest {
-    
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-    
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
-    }
+public class XmlBuilderTest {
     
     /**
-     * XMLの読み込みテスト - 文字コード指定
+     * アノテーションがないクラスに設定する。
      */
     @Test
-    public void test_loadXml_success1() throws Exception {
+    public void test_simple() throws Exception {
         
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
-        assertThat(xmlInfo, is(not(nullValue())));
-    }
-    
-    /**
-     * XMLの読み込みテスト - ストリーム指定
-     */
-    @Test
-    public void test_loadXml_success2() throws Exception {
+        XmlInfo xmlInfo = createXml()
+                .classInfo(createClass(SimpleSheet.class)
+                        .annotation(createAnnotation(XlsSheet.class)
+                                .attribute("name", "単純なシート")
+                                .buildAnnotation())
+                        .field(createField("sheetName")
+                                .annotation(createAnnotation(XlsSheetName.class)
+                                        .buildAnnotation())
+                                .buildField())
+                        .field(createField("name")
+                                .annotation(createAnnotation(XlsLabelledCell.class)
+                                        .attribute("label", "名称")
+                                        .attribute("type", LabelledCellType.Right)
+                                        .buildAnnotation())
+                                .annotation(createAnnotation(XlsConverter.class)
+                                        .attribute("trim", true)
+                                        .attribute("defaultValue", "－")
+                                        .buildAnnotation())
+                                .buildField())
+                        .method(createMethod("setRecords")
+                                .annotation(createAnnotation(XlsHorizontalRecords.class)
+                                        .attribute("tableLabel", "名簿一覧")
+                                        .attribute("terminal", RecordTerminal.Border)
+                                        .buildAnnotation())
+                                .buildMethod())
+                        .buildClass())
+                .buildXml();
         
-        XmlInfo xmlInfo = XmlIO.load(AnnotationReaderTest.class.getResourceAsStream("anno_resource.xml"));
-        assertThat(xmlInfo, is(not(nullValue())));
-    }
-    
-    /**
-     * XMLの読み込みテスト - ファイルが存在しない
-     */
-    @Test(expected=XmlOperateException.class)
-    public void test_loadXml_error_notFile() throws Exception {
         
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test_notExist.xml"), "UTF-8");
-        fail();
-    }
-    
-    /**
-     * XMLの読み込みテスト - XMLが不正
-     */
-    @Test(expected=XmlOperateException.class)
-    public void test_loadXml_error_wrongFile() throws Exception {
+        System.out.println(xmlInfo.toXml());
         
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test_wrong.xml"), "UTF-8");
-        fail();
-    }
-    
-    /**
-     * XMLに定義されている単純な読み込み
-     * @throws Exception
-     */
-    @Test
-    public void test_readAnnotation_simple() throws Exception {
-        
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
         AnnotationReader reader = new AnnotationReader(xmlInfo);
         
         // クラス定義の読み込み
@@ -140,60 +118,43 @@ public class AnnotationReaderTest {
                 SimpleSheet.class.getDeclaredMethod("setRecords", List.class), XlsHorizontalRecords.class);
         assertThat(horizontalRecordsAnno.tableLabel(), is("名簿一覧"));
         assertThat(horizontalRecordsAnno.terminal(), is(RecordTerminal.Border));
+        
     }
     
     /**
      * クラスに定義されている定義の上書き
      * ・XML中のoverride属性がfalseの場合。
+     * @throws Exception
      */
     @Test
-    public void test_readAnnotation_override() throws Exception {
+    public void test_override() throws Exception {
         
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
-        AnnotationReader reader = new AnnotationReader(xmlInfo);
+        XmlInfo xmlInfo = createXml()
+                .classInfo(createClass(OrverrideSheet.class)
+                        .override(true)
+                        .annotation(createAnnotation(XlsSheet.class)
+                                .attribute("name", "")
+                                .attribute("regex", "リスト.+")
+                                .buildAnnotation())
+                        .field(createField("name")
+                                .override(true)
+                                .annotation(createAnnotation(XlsLabelledCell.class)
+                                        .attribute("label", "クラス名")
+                                        .attribute("type", LabelledCellType.Bottom)
+                                        .buildAnnotation())
+                                .buildField())
+                        .method(createMethod("setRecords")
+                                .override(true)
+                                .annotation(createAnnotation(XlsHorizontalRecords.class)
+                                        .attribute("tableLabel", "名簿一覧")
+                                        .attribute("terminal", RecordTerminal.Border)
+                                        .buildAnnotation())
+                                .buildMethod())
+                        .buildClass())
+                .buildXml();
         
-        // クラス定義の読み込み
-        XlsSheet sheetAnno = reader.getAnnotation(OrverrideSheet.class, XlsSheet.class);
-        assertThat(sheetAnno.name(), is(""));
-        assertThat(sheetAnno.regex(), is("リスト.+"));
+        System.out.println(xmlInfo.toXml());
         
-        // フィールド定義の読み込み
-        Annotation[] nameAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredField("name"));
-        
-        // フィールド - XMLに定義している
-        XlsLabelledCell labeldCellAnno = select(nameAnnos, XlsLabelledCell.class);
-        assertThat(labeldCellAnno.label(), is("クラス名"));
-        assertThat(labeldCellAnno.type(), is(LabelledCellType.Bottom));
-        
-        // フィールド - XMLに定義していない
-        XlsConverter converterAnno = select(nameAnnos, XlsConverter.class);
-        assertThat(converterAnno, is(nullValue()));
-        
-        XlsHint hintAnno1 = select(nameAnnos, XlsHint.class);
-        assertThat(hintAnno1, is(nullValue()));
-        
-        // メソッド定義の読み込み
-        Annotation[] recordsAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredMethod("setRecords", List.class));
-        
-        // メソッド - XMLに定義している
-        XlsHorizontalRecords horizontalRecordsAnno = select(recordsAnnos, XlsHorizontalRecords.class);
-        assertThat(horizontalRecordsAnno.tableLabel(), is("名簿一覧"));
-        assertThat(horizontalRecordsAnno.terminal(), is(RecordTerminal.Border));
-        
-        // メソッド - XMLに定義していない
-        XlsHint hintAnno2 = select(recordsAnnos, XlsHint.class);
-        assertThat(hintAnno2, is(nullValue()));
-        
-    }
-    
-    /**
-     * クラスに定義されている定義の上書き
-     * ・XML中のoverride属性がtrueの場合。
-     */
-    @Test
-    public void test_readAnnotation_override2() throws Exception {
-        
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_override.xml"), "UTF-8");
         AnnotationReader reader = new AnnotationReader(xmlInfo);
         
         // クラス定義の読み込み
@@ -229,38 +190,68 @@ public class AnnotationReaderTest {
         // メソッド - XMLに定義していない
         XlsHint hintAnno2 = select(recordsAnnos, XlsHint.class);
         assertThat(hintAnno2.order(), is(2));
+    }
+    
+    /**
+     * InputStreamを取得するためのサンプル。
+     */
+    @Test
+    public void test_sample() throws Exception {
+        
+        InputStream xmlIn = createXml()
+                .classInfo(createClass(SimpleSheet.class)
+                        .override(true)
+                        .annotation(createAnnotation(XlsSheet.class)
+                                .attribute("name", "サンプル")
+                                .buildAnnotation())
+                        .buildClass())
+                .buildXml()
+                .toInputStream();
+        
+//        System.out.println(xmlInfo.toXml());
         
     }
     
     /**
-     * クラスに定義されている定義の上書き
-     * ・XML中のoverride属性がtrueの場合。
-     * ・ただし、XMLはJavaオブジェクトから逆生成する。
-     * @throws Exception
+     * XMLの書き込みテスト
      */
     @Test
-    public void test_readAnnotation_ovverride_dynamicXml() throws Exception {
+    public void test_xml_io() throws Exception {
         
-        XmlInfo xmlInfo = new XmlInfo();
+        XmlInfo xmlInfo = createXml()
+                .classInfo(createClass(SimpleSheet.class)
+                        .annotation(createAnnotation(XlsSheet.class)
+                                .attribute("name", "単純なシート")
+                                .buildAnnotation())
+                        .field(createField("sheetName")
+                                .annotation(createAnnotation(XlsSheetName.class)
+                                        .buildAnnotation())
+                                .buildField())
+                        .field(createField("name")
+                                .annotation(createAnnotation(XlsLabelledCell.class)
+                                        .attribute("label", "名称")
+                                        .attribute("type", LabelledCellType.Right)
+                                        .buildAnnotation())
+                                .annotation(createAnnotation(XlsConverter.class)
+                                        .attribute("trim", true)
+                                        .attribute("defaultValue", "－")
+                                        .buildAnnotation())
+                                .buildField())
+                        .method(createMethod("setRecords")
+                                .annotation(createAnnotation(XlsHorizontalRecords.class)
+                                        .attribute("tableLabel", "名簿一覧")
+                                        .attribute("terminal", RecordTerminal.Border)
+                                        .buildAnnotation())
+                                .buildMethod())
+                        .buildClass())
+                .buildXml();
         
-        // クラス情報の組み立て
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassName(OrverrideSheet.class.getName());
-        classInfo.setOverride(true);
         
-        xmlInfo.addClassInfo(classInfo);
+        File file = new File("src/test/out/anno_test.xml");
+        XmlIO.save(xmlInfo, file, "Windows-31j");
         
-        // XlsSheetアノテーションの組み立て
-        AnnotationInfo sheetAnnoInfo = new AnnotationInfo();
-        sheetAnnoInfo.setClassName(XlsSheet.class.getName());
-        sheetAnnoInfo.addAttribute("name", "書き換えたシート");
-        classInfo.addAnnotationInfo(sheetAnnoInfo);
-        
-        
-        StringWriter writer = new StringWriter();
-        JAXB.marshal(classInfo, writer);
-        
-        System.out.println(writer.toString());
+        XmlInfo readInfo = XmlIO.load(file, "Windows-31j");
+        assertThat(readInfo, is(not(nullValue())));
         
     }
     
@@ -347,5 +338,4 @@ public class AnnotationReaderTest {
         private Date updateTime;
         
     }
-    
 }

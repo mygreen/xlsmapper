@@ -98,9 +98,9 @@ public class DynamicAnnotationBuilder {
         }
         
         final Map<String, Object> xmlValues = new HashMap<>();
-        for(String key : info.getAnnotationAttributeKeys()) {
+        for(String key : info.getAttributeKeys()) {
             try {
-                Object value = Ognl.getValue(info.getAnnotationAttribute(key), ognlContext, new Object());
+                Object value = Ognl.getValue(info.getAttribute(key), ognlContext, new Object());
                 xmlValues.put(key, value);
             } catch(OgnlException e) {
                 throw new AnnotationReadException(String.format("fail annotation attribute %s with ognl.", key), e);

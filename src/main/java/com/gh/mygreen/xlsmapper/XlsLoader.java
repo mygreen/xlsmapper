@@ -24,7 +24,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
-import com.gh.mygreen.xlsmapper.xml.XmlLoader;
+import com.gh.mygreen.xlsmapper.xml.XmlIO;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 
@@ -126,7 +126,7 @@ public class XlsLoader {
         
         XmlInfo xmlInfo = null;
         if(xmlIn != null) {
-            xmlInfo = XmlLoader.load(xmlIn);
+            xmlInfo = XmlIO.load(xmlIn);
         }
         
         final LoadingWorkObject work = new LoadingWorkObject();
@@ -233,7 +233,7 @@ public class XlsLoader {
         
         XmlInfo xmlInfo = null;
         if(xmlIn != null) {
-            xmlInfo = XmlLoader.load(xmlIn);
+            xmlInfo = XmlIO.load(xmlIn);
         }
         
         final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
@@ -318,7 +318,7 @@ public class XlsLoader {
         
         XmlInfo xmlInfo = null;
         if(xmlIn != null) {
-            xmlInfo = XmlLoader.load(xmlIn);
+            xmlInfo = XmlIO.load(xmlIn);
         }
         
         final AnnotationReader annoReader = new AnnotationReader(xmlInfo);

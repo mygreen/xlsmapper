@@ -37,7 +37,7 @@ public class AnnotationReader {
     
     /**
      * XMLで定義した情報を指定するコンストラクタ。
-     * @param xmlInfo XMLで定義したアノテーションの情報。{@link XmlLoader}で読み込んで取得した値。指定しない場合はnull。
+     * @param xmlInfo XMLで定義したアノテーションの情報。{@link XmlIO}で読み込んで取得した値。指定しない場合はnull。
      */
     public AnnotationReader(final XmlInfo xmlInfo) {
         this.xmlInfo = xmlInfo;
@@ -52,7 +52,7 @@ public class AnnotationReader {
      */
     public Annotation[] getAnnotations(final Class<?> clazz) throws AnnotationReadException {
         
-        if(xmlInfo != null && xmlInfo.getClassInfo(clazz.getName()) != null){
+        if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             final Map<String, Annotation> map = new HashMap<>();
             
@@ -62,12 +62,12 @@ public class AnnotationReader {
                 }
             }
             
-            for(AnnotationInfo annInfo: classInfo.getAnnotationInfos()){
+            for(AnnotationInfo annInfo: classInfo.getAnnotationInfos()) {
                 try {
-                    map.put(annInfo.getAnnotationClass(),
-                            annotationBuilder.buildAnnotation(Class.forName(annInfo.getAnnotationClass()), annInfo));
+                    map.put(annInfo.getClassName(),
+                            annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo));
                 } catch (ClassNotFoundException e) {
-                    throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getAnnotationClass()), e);
+                    throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getClassName()), e);
                 }
             }
             
@@ -88,15 +88,15 @@ public class AnnotationReader {
      */
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getAnnotation(final Class<?> clazz, final Class<A> annClass) throws AnnotationReadException {
-        if(xmlInfo != null && xmlInfo.getClassInfo(clazz.getName()) != null){
+        if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             
-            if(classInfo.getAnnotationInfo(annClass.getName()) != null){
+            if(classInfo.containsAnnotationInfo(annClass.getName())) {
                 AnnotationInfo annInfo = classInfo.getAnnotationInfo(annClass.getName());
                 try {
-                    return (A)annotationBuilder.buildAnnotation(Class.forName(annInfo.getAnnotationClass()), annInfo);
+                    return (A)annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo);
                 } catch (ClassNotFoundException e) {
-                    throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getAnnotationClass()), e);
+                    throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getClassName()), e);
                 }
             }
         }
@@ -115,17 +115,17 @@ public class AnnotationReader {
      */
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getAnnotation(final Class<?> clazz, final Method method, final Class<A> annClas) throws AnnotationReadException {
-        if(xmlInfo != null && xmlInfo.getClassInfo(clazz.getName()) != null){
+        if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             
-            if(classInfo.getMethodInfo(method.getName()) != null){
+            if(classInfo.containsMethodInfo(method.getName())) {
                 MethodInfo methodInfo = classInfo.getMethodInfo(method.getName());
-                if(methodInfo!=null && methodInfo.getAnnotationInfo(annClas.getName()) != null){
+                if(methodInfo != null && methodInfo.containsAnnotationInfo(annClas.getName())) {
                     AnnotationInfo annInfo = methodInfo.getAnnotationInfo(annClas.getName());
                     try {
-                        return (A)annotationBuilder.buildAnnotation(Class.forName(annInfo.getAnnotationClass()), annInfo);
+                        return (A)annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo);
                     } catch (ClassNotFoundException e) {
-                        throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getAnnotationClass()), e);
+                        throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getClassName()), e);
                     }
                 }
             }
@@ -142,10 +142,10 @@ public class AnnotationReader {
      * @throws AnnotationReadException
      */
     public Annotation[] getAnnotations(final Class<?> clazz, final Method method) throws AnnotationReadException {
-        if(xmlInfo != null && xmlInfo.getClassInfo(clazz.getName()) != null){
+        if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             
-            if(classInfo.getMethodInfo(method.getName()) != null){
+            if(classInfo.containsMethodInfo(method.getName())) {
                 final MethodInfo methodInfo = classInfo.getMethodInfo(method.getName());
                 final Map<String, Annotation> map = new HashMap<>();
                 
@@ -157,10 +157,10 @@ public class AnnotationReader {
                 
                 for(AnnotationInfo annInfo: methodInfo.getAnnotationInfos()){
                     try {
-                        map.put(annInfo.getAnnotationClass(),
-                                annotationBuilder.buildAnnotation(Class.forName(annInfo.getAnnotationClass()), annInfo));
+                        map.put(annInfo.getClassName(),
+                                annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo));
                     } catch (ClassNotFoundException e) {
-                        throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getAnnotationClass()), e);
+                        throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getClassName()), e);
                     }
                 }
                 
@@ -180,17 +180,17 @@ public class AnnotationReader {
      */
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getAnnotation(final Class<?> clazz, final Field field, final Class<A> annClass) throws AnnotationReadException {
-        if(xmlInfo != null && xmlInfo.getClassInfo(clazz.getName()) != null){
+        if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             
-            if(classInfo.getFieldInfo(field.getName()) != null){
+            if(classInfo.containsFieldInfo(field.getName())) {
                 FieldInfo fieldInfo = classInfo.getFieldInfo(field.getName());
-                if(fieldInfo != null && fieldInfo.getAnnotationInfo(annClass.getName()) != null){
+                if(fieldInfo != null && fieldInfo.containsAnnotationInfo(annClass.getName())){
                     AnnotationInfo annInfo = fieldInfo.getAnnotationInfo(annClass.getName());
                     try {
-                        return (A)annotationBuilder.buildAnnotation(Class.forName(annInfo.getAnnotationClass()), annInfo);
+                        return (A)annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo);
                     } catch (ClassNotFoundException e) {
-                        throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getAnnotationClass()), e);
+                        throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getClassName()), e);
                     }
                 }
             }
@@ -206,10 +206,10 @@ public class AnnotationReader {
      * @throws AnnotationReadException
      */
     public Annotation[] getAnnotations(final Class<?> clazz, final Field field) throws AnnotationReadException {
-        if(xmlInfo != null && xmlInfo.getClassInfo(clazz.getName()) != null){
+        if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             
-            if(classInfo.getFieldInfo(field.getName()) != null){
+            if(classInfo.containsFieldInfo(field.getName())) {
                 final FieldInfo fieldInfo = classInfo.getFieldInfo(field.getName());
                 final Map<String, Annotation> map = new HashMap<>();
                 
@@ -221,10 +221,10 @@ public class AnnotationReader {
                 
                 for(AnnotationInfo annInfo: fieldInfo.getAnnotationInfos()){
                     try {
-                        map.put(annInfo.getAnnotationClass(), 
-                                annotationBuilder.buildAnnotation(Class.forName(annInfo.getAnnotationClass()), annInfo));
+                        map.put(annInfo.getClassName(), 
+                                annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo));
                     } catch (ClassNotFoundException e) {
-                        throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getAnnotationClass()), e);
+                        throw new AnnotationReadException(String.format("not found class '%s'", annInfo.getClassName()), e);
                     }
                 }
                 return map.values().toArray(new Annotation[map.size()]);
