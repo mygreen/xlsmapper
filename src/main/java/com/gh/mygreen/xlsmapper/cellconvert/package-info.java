@@ -1,7 +1,6 @@
 /**
- * CellのConverterを格納するパッケージ。
- * @version 02-00
- * @since 01-00
+ * ExcelのセルとJavaクラスを相互に変換する機能を提供します。
+ * 
  * @author T.TSUCHIE
  * 
  */
