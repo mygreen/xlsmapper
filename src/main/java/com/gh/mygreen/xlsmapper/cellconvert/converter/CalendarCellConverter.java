@@ -66,7 +66,7 @@ public class CalendarCellConverter extends AbstractCellConverter<Calendar> {
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {
             final String defaultValue = converterAnno.defaultValue();
-            if(Utils.isNotEmpty(anno.pattern())) {
+            if(Utils.isNotEmpty(anno.javaPattern())) {
                 try {
                     Date date = dateConverter.parseDate(defaultValue, dateConverter.createDateFormat(anno));
                     Calendar cal = Calendar.getInstance();
@@ -83,8 +83,8 @@ public class CalendarCellConverter extends AbstractCellConverter<Calendar> {
         }
         
         // セルの書式の設定
-        if(Utils.isNotEmpty(anno.pattern())) {
-            cell.getCellStyle().setDataFormat(POIUtils.getDataFormatIndex(sheet, anno.pattern()));
+        if(Utils.isNotEmpty(anno.javaPattern())) {
+            cell.getCellStyle().setDataFormat(POIUtils.getDataFormatIndex(sheet, anno.javaPattern()));
         }
         
         if(value != null) {

@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -181,7 +182,7 @@ public class AnnoHorizontalRecordsTest {
             }
             
             if(sheet.normalRecords2 != null) {
-                assertThat(sheet.normalRecords2, hasSize(2));
+                assertThat(sheet.normalRecords2, hasSize(3));
                 for(NormalRecord record : sheet.normalRecords2) {
                     assertRecord(record, errors);
                 }
@@ -390,6 +391,43 @@ public class AnnoHorizontalRecordsTest {
         
     }
     
+    /**
+     * 連結した表のテスト
+     * @throws Exception
+     */
+    @Test
+    public void test_load_hr_concatTable() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(false);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(ConcatSheet.class);
+            
+            ConcatSheet sheet = mapper.load(in, ConcatSheet.class, errors);
+            
+            if(sheet.userRecords != null) {
+                
+                assertThat(sheet.userRecords, hasSize(2));
+                for(ConcatSheet.UserRecord record : sheet.userRecords) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+            
+            if(sheet.resultRecords != null) {
+                
+                assertThat(sheet.resultRecords, hasSize(3));
+                for(ConcatSheet.ResultRecord record : sheet.resultRecords) {
+                    assertRecord(record, errors);
+                }
+                
+                
+            }
+        }
+        
+    }
+    
     private void assertRecord(final NormalRecord record, final SheetBindingErrors errors) {
         
         if(record.no == 1) {
@@ -574,6 +612,41 @@ public class AnnoHorizontalRecordsTest {
             assertThat(record.dateAttended.get("4月1日"), is(false));
             assertThat(cellFieldError(errors, cellAddress(record.dateAttendedPosition.get("4月2日"))).isTypeBindFailure(), is(true));
             assertThat(record.dateAttended.get("4月3日"), is(true));
+        }
+        
+    }
+    
+    private void assertRecord(final ConcatSheet.UserRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.birthDady, is(toUtilDate(Timestamp.valueOf("2000-04-01 00:00:00.000"))));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.birthDady, is(toUtilDate(Timestamp.valueOf("2000-04-02 00:00:00.000"))));
+        }
+        
+    }
+    
+    private void assertRecord(final ConcatSheet.ResultRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.sansu, is(90));
+            assertThat(record.kokugo, is(70));
+            assertThat(record.sum, is(160));
+            
+        } else if(record.no == 2) {
+            assertThat(record.sansu, is(80));
+            assertThat(record.kokugo, is(90));
+            assertThat(record.sum, is(170));
+            
+        } else if(record.no == 99) {
+            // 平均
+            assertThat(record.sansu, is(85));
+            assertThat(record.kokugo, is(80));
+            assertThat(record.sum, is(165));
+            
         }
         
     }
@@ -3464,6 +3537,77 @@ public class AnnoHorizontalRecordsTest {
                 this.dateAttendedLabel = new LinkedHashMap<>();
             }
             this.dateAttendedLabel.put(key, label);
+        }
+        
+    }
+    
+    /**
+     * 連結した表
+     *
+     */
+    @XlsSheet(name="連結した表")
+    private static class ConcatSheet {
+        
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, terminateLabel="平均", headerLimit=3, skipEmptyRecord=true)
+        private List<UserRecord> userRecords;
+        
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, range=4, skipEmptyRecord=true)
+        private List<ResultRecord> resultRecords;
+        
+        
+        /**
+         * 名簿情報
+         */
+        private static class UserRecord {
+            
+            private Map<String, Point> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsColumn(columnName="No.", optional=true)
+            private int no;
+            
+            @XlsColumn(columnName="氏名")
+            private String name;
+            
+            @XlsColumn(columnName="生年月日")
+            @XlsDateConverter(pattern="yyyy年M月d日")
+            private Date birthDady;
+            
+            @XlsIsEmpty
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positoins", "labels", "no");
+            }
+        }
+        
+        /**
+         * テスト結果情報
+         *
+         */
+        private static class ResultRecord {
+            
+            private Map<String, Point> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsConverter(defaultValue="99")
+            @XlsColumn(columnName="No.", optional=true)
+            private int no;
+            
+            @XlsColumn(columnName="算数")
+            private int sansu;
+            
+            @XlsColumn(columnName="国語")
+            private int kokugo;
+            
+            @XlsColumn(columnName="合計")
+            private int sum;
+            
+            @XlsIsEmpty
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+            }
+            
         }
         
     }

@@ -6,9 +6,9 @@ import java.util.Date;
 
 /**
  * {@link java.sql.Timestamp}型を処理するためのConverter.
- * <p>標準の書式として{@code HH:mm:ss.SSS}で処理する。
+ * <p>標準の書式として{@code yyyy-MM-dd HH:mm:ss.SSS}で処理する。
  * 
- * @version 0.5
+ * @version 1.1
  * @author T.TSUCHIE
  *
  */
@@ -21,8 +21,13 @@ public class SqlTimestampCellConverter extends AbstractDateCellConverter<Timesta
     }
     
     @Override
-    protected String getDefaultPattern() {
+    protected String getDefaultJavaPattern() {
         return "yyyy-MM-dd HH:mm:ss.SSS";
+    }
+    
+    @Override
+    protected String getDefaultExcelPattern() {
+        return "yyyy-mm-dd hh:mm:ss.SSS";
     }
     
 }

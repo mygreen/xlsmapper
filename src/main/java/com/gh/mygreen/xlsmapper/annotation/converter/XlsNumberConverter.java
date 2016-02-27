@@ -5,9 +5,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.text.DecimalFormat;
-
-
 
 /**
  * 数値型に対する変換規則を指定するアノテーション。
@@ -19,19 +16,19 @@ import java.text.DecimalFormat;
  * 
  * <h3 class="description">読み込み時の書式の指定</h3>
  * <p>読み込み時にセルの種類が数値（通貨、会計、パーセンテージ、分数、指数）ではない場合、
- *    文字列として値を取得し、その値を属性{@link #pattern()}で指定した書式に従いパースし、Javaの数値型に変換します。
+ *    文字列として値を取得し、その値を属性{@link #javaPattern()}で指定した書式に従いパースし、Javaの数値型に変換します。
  * </p>
  * 
  * <ul>
- *   <li>属性{@link #pattern()}で書式を指定します。
- *       <br>Javaのクラス{@link DecimalFormat}で解釈可能な書式を指定します。
+ *   <li>属性{@link #javaPattern()}で書式を指定します。
+ *       <br>Javaのクラス{@link java.text.DecimalFormat}で解釈可能な書式を指定します。
  *   </li>
  *   <li>属性{@link #locale()}で、ロケールを指定します。
  *       <br>言語コードのみを指定する場合、'ja'の2桁で指定します。
  *       <br>言語コードと国コードを指定する場合、'ja _JP'のようにアンダーバーで区切り指定します。
  *   </li>
  *   <li>属性{@link #currency()}で、通貨コード（ISO-4217コード）を指定します。
- *       <br>Javaのクラス {@link Currency} で解釈可能なコードを指定します。
+ *       <br>Javaのクラス {@link java.util.Currency} で解釈可能なコードを指定します。
  *   </li>
  *   <li>書式に合わない値をパースした場合、例外{@link com.gh.mygreen.xlsmapper.cellconvert.TypeBindException}が発生します。</li>
  * </ul>
@@ -67,7 +64,39 @@ import java.text.DecimalFormat;
  * </ul>
  * 
  * 
- * @version 0.5
+ * <h3 class="description">書き込み時の書式の指定</h3>
+ * <p>書き込み時の書式は、基本的にテンプレートファイルに設定してある値を使用します。
+ *   <br>また、アノテーションでも直接指定することができます。
+ * </p>
+ * 
+ * <ul>
+ *   <li>属性{@link #excelPattern()}で書式を指定します。
+ *       <br>Excelの書式を指定する場合は、
+ *           <a href="http://mygreen.github.io/excel-cellformatter/sphinx/format_basic.html" target="_blank">ユーザ定義</a>
+ *           の形式で指定します。
+ *   </li>
+ * </ul>
+ * 
+ * <pre class="highlight"><code class="java">
+ * public class SampleRecord {
+ * 
+ *     {@literal @XlsColumn(name="給与")}
+ *     {@literal @XlsDateConverter(javaPattern="[$-411]\"￥\"#,##0.0000")}
+ *     private double salary;
+ * 
+ * }
+ * </code></pre>
+ * 
+ * 
+ * <h3 class="description">書き込み時の注意事項</h3>
+ * 
+ * <p>テンプレートファイルのセルの書式を「標準」に設定している場合に書き込むと、
+ *     書式が「標準」設定の全てのセルの書式が書き換わってしまいます。
+ *   <br>そのため、日付や数値などの書式が必要な場合は、テンプレートファイルで予め書式を設定しておくか、
+ *     アノテーションの属性excelPatternで書式を指定しておいてください。
+ * </p>
+ * 
+ * @version 1.1
  * @author T.TSUCHIE
  *
  */
@@ -78,14 +107,16 @@ public @interface XlsNumberConverter {
     
     /**
      * 数値の書式のパターン値を指定します。
-     * <p>{@link DecimalFormat}で指定可能な書式を指定します。</p>
+     * <p>{@link java.text.DecimalFormat}で指定可能な書式を指定します。</p>
+     * <p>読み込み時に、ExcelとJavaの型が一致しない場合に文字列としてパースする際に利用します。</p>
      * @return
      */
-    String pattern() default "";
+    String javaPattern() default "";
     
     /**
-     * 通過を指定します。
-     * <p>{@link Currency}で処理可能なコード(ISO 4217のコード)で指定します。</p>
+     * 通貨を指定します。
+     * <p>{@link java.util.Currency}で処理可能なコード(ISO 4217のコード)で指定します。</p>
+     * <p>属性{@link #javaPattern()}を設定した場合に有効になります。
      * @return
      */
     String currency() default "";
@@ -93,7 +124,8 @@ public @interface XlsNumberConverter {
     /**
      * ロケールの指定を行います。
      * <p>指定しない場合、デフォルトのロケールで処理されます。</p>
-     * <p>例. 'ja_JP', 'ja'
+     * <p>例. 'ja_JP', 'ja'</p>
+     * <p>属性{@link #javaPattern()}を設定した場合に有効になります。</p>
      */
     String locale() default "";
     
@@ -104,5 +136,14 @@ public @interface XlsNumberConverter {
      * @since 0.5
      * @return
      */
-    int precision() default 15;    
+    int precision() default 15;
+    
+    /**
+     * Excelの書式のパターン。
+     * <p>書き込み時に、セルの書式を直接設定したい場合に指定します。</p>
+     * <p>値を指定しない場合、テンプレートファイルに設定してある書式を利用します。</p>
+     * @since 1.1
+     */
+    String excelPattern() default "";
+    
 }

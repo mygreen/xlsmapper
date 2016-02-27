@@ -19,11 +19,11 @@ import java.text.SimpleDateFormat;
  * 
  * <h3 class="description">読み込み時の書式の指定</h3>
  * <p>読み込み時にセルの種類が日付、時刻ではない場合、
- *    文字列として値を取得し、その値を属性{@link #pattern()}で指定した書式に従いパースし、Javaの日時型に変換します。
+ *    文字列として値を取得し、その値を属性{@link #javaPattern()}で指定した書式に従いパースし、Javaの日時型に変換します。
  * </p>
  * 
  * <ul>
- *   <li>属性{@link #pattern()}で書式を指定します。
+ *   <li>属性{@link #javaPattern()}で書式を指定します。
  *       <br>Javaのクラス{@link SimpleDateFormat}で解釈可能な書式を指定します。
  *   </li>
  *   <li>属性{@link #locale()}で、ロケールを指定します。
@@ -40,7 +40,7 @@ import java.text.SimpleDateFormat;
  * public class SampleRecord {
  * 
  *     {@literal @XlsColumn(columnName="有効期限")}
- *     {@literal @XlsDateConverter(pattern="yyyy年MM月dd日 HH時mm分ss秒", locale="ja_JP", lenient=true)}
+ *     {@literal @XlsDateConverter(javaPattern="yyyy年MM月dd日 HH時mm分ss秒", locale="ja_JP", lenient=true)}
  *     private Date expired;
  * 
  * }
@@ -55,6 +55,39 @@ import java.text.SimpleDateFormat;
  *   <li>{@link java.util.Calendar}の場合、{@literal "yyyy-MM-dd HH:mm:ss"}</li>
  * </ul>
  * 
+ * <h3 class="description">書き込み時の書式の指定</h3>
+ * <p>書き込み時の書式は、基本的にテンプレートファイルに設定してある値を使用します。
+ *   <br>また、アノテーションでも直接指定することができます。
+ * </p>
+ * 
+ * <ul>
+ *   <li>属性{@link #excelPattern()}で書式を指定します。
+ *       <br>Excelの書式を指定する場合は、
+ *           <a href="http://mygreen.github.io/excel-cellformatter/sphinx/format_basic.html" target="_blank">ユーザ定義</a>
+ *           の形式で指定します。
+ *   </li>
+ * </ul>
+ * 
+ * <pre class="highlight"><code class="java">
+ * public class SampleRecord {
+ * 
+ *     {@literal @XlsColumn(columnName="有効期限")}
+ *     {@literal @XlsDateConverter(excelPattern="[$-411]yyyy\"年\"mm\"月\"dd\"日\" hh\"時\"mm\"分\"ss\"秒\"")}
+ *     private Date expired;
+ * 
+ * }
+ * </code></pre>
+ * 
+ * 
+ * <h3 class="description">書き込み時の注意事項</h3>
+ * 
+ * <p>テンプレートファイルのセルの書式を「標準」に設定している場合に書き込むと、
+ *     書式が「標準」設定の全てのセルの書式が書き換わってしまいます。
+ *   <br>そのため、日付や数値などの書式が必要な場合は、テンプレートファイルで予め書式を設定しておくか、
+ *     アノテーションの属性excelPatternで書式を指定しておいてください。
+ * </p>
+ * 
+ * @version 1.1
  * @author T.TSUCHIE
  *
  */
@@ -65,20 +98,33 @@ public @interface XlsDateConverter {
     
     /**
      * 日時の書式パターン。{@link java.text.SimpleDateFormat}の書式を指定します。
+     * <p>読み込み時に、ExcelとJavaの型が一致しない場合に文字列としてパースする際に利用します。</p>
+     * @since 1.1
      * @return
      */
-    String pattern();
+    String javaPattern() default "";
     
     /**
      * 日付／時刻の解析を厳密に行うか指定します。
+     * <p>属性{@link #javaPattern()}を設定した場合に有効になります。</p>
      * @return
      */
     boolean lenient() default false;
     
     /**
      * ロケールの指定を行います。指定しない場合、デフォルトのロケールで処理されます。
-     * <p>例. 'ja_JP', 'ja'
+     * <p>例. 'ja_JP', 'ja'</p>
+     * <p>属性{@link #javaPattern()}を設定した場合に有効になります。</p>
      * @return
      */
     String locale() default "";
+    
+    /**
+     * Excelの書式のパターン。
+     * <p>書き込み時に、セルの書式を直接設定したい場合に指定します。</p>
+     * <p>値を指定しない場合、テンプレートファイルに設定してある書式を利用します。</p>
+     * @since 1.1
+     */
+    String excelPattern() default "";
+    
 }

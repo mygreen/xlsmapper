@@ -7,7 +7,7 @@ import java.util.Date;
  * {@link java.sql.Date}型を処理するためのConverter.
  * <p>標準の書式として{@code yyyy-MM-dd}で処理する。
  * 
- * @version 0.5
+ * @version 1.1
  * @author T.TSUCHIE
  *
  */
@@ -19,7 +19,12 @@ public class SqlDateCellConverter extends AbstractDateCellConverter<java.sql.Dat
     }
     
     @Override
-    protected String getDefaultPattern() {
+    protected String getDefaultJavaPattern() {
         return "yyyy-MM-dd";
+    }
+    
+    @Override
+    protected String getDefaultExcelPattern() {
+        return "yyyy-mm-dd";
     }
 }

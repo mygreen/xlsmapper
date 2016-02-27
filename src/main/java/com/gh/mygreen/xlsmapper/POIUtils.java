@@ -40,6 +40,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDataValidations;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 
 import com.gh.mygreen.xlsmapper.cellconvert.LinkType;
+import com.github.mygreen.cellformatter.POICell;
 
 /**
  * Apache POIとJExcel APIの差を埋めるユーティリティクラス。
@@ -275,42 +276,54 @@ public class POIUtils {
     /**
      * フォーマッターを指定してセルの値が空かどうか判定する。
      * <p>ブランクセルなどの判定は優先的に行う。
-     * @param cell
+     * @param sheet シート
      * @param cellFormatter
+     * @throws IllegalArgumentException {@literal sheet == null.}
+     * @throws IllegalArgumentException {@literal cellFormatter == null.}
      * @return
      */
     public static boolean isEmptyCellContents(final Cell cell, final CellFormatter cellFormatter) {
         ArgUtils.notNull(cell, "cell");
         ArgUtils.notNull(cellFormatter, "cellFormatter");
         
-//        if(isBlankCell(cell)) {
-//            return true;
-//        }
         return getCellContents(cell, cellFormatter).isEmpty();
     }
     
-//    /**
-//     * セルの値が空かどうか。
-//     * @param cell
-//     * @return
-//     */
-//    public static boolean isBlankCell(final Cell cell) {
-//        ArgUtils.notNull(cell, "cell");
-//        
-//        return cell.getCellType() == Cell.CELL_TYPE_BLANK;
-//    }
-    
     /**
      * 指定した書式のインデックス番号を取得する。シートに存在しない場合は、新しく作成する。
-     * @param sheet
-     * @param pattern
-     * @return
+     * @param sheet シート
+     * @param pattern 作成する書式のパターン
+     * @return 書式のインデックス番号。
+     * @throws IllegalArgumentException {@literal sheet == null.}
+     * @throws IllegalArgumentException {@literal pattern == null || pattern.isEmpty().}
      */
     public static short getDataFormatIndex(final Sheet sheet, final String pattern) {
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(pattern, "pattern");
         
         return sheet.getWorkbook().getCreationHelper().createDataFormat().getFormat(pattern);
+        
+    }
+    
+    /**
+     * セルに設定されている書式を取得する。
+     * @since 1.1
+     * @param cell セルのインスタンス。
+     * @return 書式が設定されていない場合は、空文字を返す。
+     *         cellがnullの場合も空文字を返す。
+     *         標準の書式の場合も空文字を返す。
+     */
+    public static String getCellFormatPattern(final Cell cell) {
+        if(cell == null) {
+            return "";
+        }
+        
+        POICell poiCell = new POICell(cell);
+        if(poiCell.getFormatIndex() == 0) {
+            return "";
+        } else {
+            return poiCell.getFormatPattern();
+        }
         
     }
     

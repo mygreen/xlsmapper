@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -48,7 +49,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             if(Utils.hasNotDefaultValue(converterAnno)) {
                 return null;
                 
-            } else if(Utils.isNotEmpty(anno.pattern())) {
+            } else if(Utils.isNotEmpty(anno.javaPattern())) {
                 final String defaultValue = converterAnno.defaultValue();
                 try {
                     resultValue = parseDate(defaultValue, createDateFormat(anno));
@@ -113,7 +114,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             locale = Utils.getLocale(anno.locale());
         }
         
-        final String pattern = anno.pattern().isEmpty() ? getDefaultPattern() : anno.pattern();
+        final String pattern = anno.javaPattern().isEmpty() ? getDefaultJavaPattern() : anno.javaPattern();
         final DateFormat format = new SimpleDateFormat(pattern, locale);
         format.setLenient(anno.lenient());
         
@@ -127,7 +128,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     Map<String, Object> createTypeErrorMessageVars(final XlsDateConverter anno) {
         
         final Map<String, Object> vars = new LinkedHashMap<>();
-        vars.put("pattern", anno.pattern());
+        vars.put("pattern", anno.javaPattern());
         vars.put("lenient", anno.lenient());
         vars.put("locale", anno.locale());
         return vars;
@@ -141,11 +142,18 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     abstract protected T convertDate(final Date value);
     
     /**
-     * その型における標準の書式を返す。
+     * その型における標準のJavaの書式を返す。
      * @since 0.5
      * @return {@link SimpleDateFormat}で処理可能な形式。
      */
-    abstract protected String getDefaultPattern();
+    abstract protected String getDefaultJavaPattern();
+    
+    /**
+     * その型における標準のExcelの書式を返す。
+     * @since 1.1
+     * @return Excelの書式
+     */
+    abstract protected String getDefaultExcelPattern();
     
     /**
      * 文字列をその型における日付型を返す。
@@ -168,9 +176,9 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             }
             
             @Override
-            public String pattern() {
+            public String javaPattern() {
                 // 各タイプごとの標準の書式を取得する。
-                return getDefaultPattern();
+                return getDefaultJavaPattern();
             }
             
             @Override
@@ -181,6 +189,11 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             @Override
             public boolean lenient() {
                 return false;
+            }
+            
+            @Override
+            public String excelPattern() {
+                return "";
             }
         };
     }
@@ -223,7 +236,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {
             final String defaultValue = converterAnno.defaultValue();
-            if(Utils.isNotEmpty(anno.pattern())) {
+            if(Utils.isNotEmpty(anno.javaPattern())) {
                 try {
                     value = parseDate(defaultValue, createDateFormat(anno));
                 } catch (ParseException e) {
@@ -237,8 +250,23 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         }
         
         // セルの書式の設定
-        if(Utils.isNotEmpty(anno.pattern())) {
-            cell.getCellStyle().setDataFormat(POIUtils.getDataFormatIndex(sheet, anno.pattern()));
+        if(Utils.isNotEmpty(anno.excelPattern()) && !POIUtils.getCellFormatPattern(cell).equals(anno.excelPattern())) {
+            
+            // 既にCell中に書式が設定され、それが異なる場合
+            CellStyle style = sheet.getWorkbook().createCellStyle();
+            style.cloneStyleFrom(cell.getCellStyle());
+            style.setDataFormat(POIUtils.getDataFormatIndex(sheet, anno.excelPattern()));
+            cell.setCellStyle(style);
+            
+        } else if(Utils.isEmpty(anno.excelPattern()) && POIUtils.getCellFormatPattern(cell).isEmpty()) {
+            
+            // アノテーションの書式が指定されておらず、セルの書式が空の場合
+            // 標準の書式を設定する。
+            CellStyle style = sheet.getWorkbook().createCellStyle();
+            style.cloneStyleFrom(cell.getCellStyle());
+            style.setDataFormat(POIUtils.getDataFormatIndex(sheet, getDefaultExcelPattern()));
+            cell.setCellStyle(style);
+            
         }
         
         if(value != null) {

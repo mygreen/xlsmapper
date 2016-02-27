@@ -34,7 +34,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link LabelledCellProcessor}のテスタ
  * アノテーション{@link XlsLabelledCell}のテスタ。
- * @version 1.0
+ * @version 1.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -82,6 +82,8 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.address2,is("下側の値です。"));
             
             assertThat(sheet.blank, is(nullValue()));
+            
+            assertThat(sheet.mergedCell, is("結合先の値です。"));
             
         }
     }
@@ -217,6 +219,7 @@ public class AnnoLabelledCellTest {
             .headerRange(toUtilDate(toTimestamp("2011-02-03 04:05:06.000")))
             .address1("アドレス指定です。\n右側。")
             .address2("アドレス指定です。\n左側。")
+            .mergedCell("結合先の値です。");
             ;
         
         // ファイルへの書き込み
@@ -253,6 +256,8 @@ public class AnnoLabelledCellTest {
             
             assertThat(sheet.address1, is(outSheet.address1));
             assertThat(sheet.address2, is(outSheet.address2));
+            
+            assertThat(sheet.mergedCell, is(outSheet.mergedCell));
             
             assertThat(sheet.blank, is(outSheet.blank));
             
@@ -422,6 +427,12 @@ public class AnnoLabelledCellTest {
         @XlsLabelledCell(label="値が空の場合", type=LabelledCellType.Right)
         private String blank;
         
+        /**
+         * 結合しているセルの指定
+         */
+        @XlsLabelledCell(label="結合しているセル（ラベル名）", type=LabelledCellType.Right, skip=2)
+        private String mergedCell;
+        
         public NormalSheet posRight(String posRight) {
             this.posRight = posRight;
             return this;
@@ -474,6 +485,11 @@ public class AnnoLabelledCellTest {
         
         public NormalSheet blank(String blank) {
             this.blank = blank;
+            return this;
+        }
+        
+        public NormalSheet mergedCell(String mergedCell) {
+            this.mergedCell = mergedCell;
             return this;
         }
     }

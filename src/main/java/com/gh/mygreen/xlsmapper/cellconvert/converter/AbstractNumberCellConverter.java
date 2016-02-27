@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -35,7 +36,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
  * 数値型のConverterの抽象クラス。
  * <p>数値型のConverterは、基本的にこのクラスを継承して作成する。
  * 
- * @version 1.0
+ * @version 1.1
  * @author T.TSUCHIE
  *
  */
@@ -127,7 +128,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             locale = Utils.getLocale(anno.locale());
         }
         
-        if(anno.pattern().isEmpty()) {
+        if(anno.javaPattern().isEmpty()) {
             if(anno.currency().isEmpty()) {
                 return null;
             } else {
@@ -137,7 +138,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         }
         
         final DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-        final DecimalFormat format = new DecimalFormat(anno.pattern(), symbols);
+        final DecimalFormat format = new DecimalFormat(anno.javaPattern(), symbols);
         
         format.setRoundingMode(RoundingMode.HALF_UP);
         format.setParseBigDecimal(true);
@@ -156,7 +157,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
     private Map<String, Object> createTypeErrorMessageVars(final XlsNumberConverter anno) {
         
         final Map<String, Object> vars = new LinkedHashMap<>();
-        vars.put("pattern", anno.pattern());
+        vars.put("pattern", anno.javaPattern());
         vars.put("currency", anno.currency());
         vars.put("locale", anno.locale());
         vars.put("precision", anno.precision());
@@ -286,7 +287,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             }
             
             @Override
-            public String pattern() {
+            public String javaPattern() {
                 return "";
             }
             
@@ -303,6 +304,11 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             @Override
             public int precision() {
                 return 15;
+            }
+            
+            @Override
+            public String excelPattern() {
+                return "";
             }
             
         };
@@ -346,7 +352,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {
             final String defaultValue = converterAnno.defaultValue();
-            if(Utils.isNotEmpty(anno.pattern())) {
+            if(Utils.isNotEmpty(anno.javaPattern())) {
                 try {
                     value = parseNumber(defaultValue, createNumberFormat(anno), createMathContext(anno));
                 } catch (ParseException e) {
@@ -360,8 +366,14 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         }
         
         // セルの書式の設定
-        if(Utils.isNotEmpty(anno.pattern())) {
-            cell.getCellStyle().setDataFormat(POIUtils.getDataFormatIndex(sheet, anno.pattern()));
+        if(Utils.isNotEmpty(anno.excelPattern()) && !POIUtils.getCellFormatPattern(cell).equals(anno.excelPattern())) {
+            
+            // 既にCell中に書式が設定され、それが異なる場合
+            CellStyle style = sheet.getWorkbook().createCellStyle();
+            style.cloneStyleFrom(cell.getCellStyle());
+            style.setDataFormat(POIUtils.getDataFormatIndex(sheet, anno.excelPattern()));
+            cell.setCellStyle(style);
+            
         }
         
         if(value != null) {
