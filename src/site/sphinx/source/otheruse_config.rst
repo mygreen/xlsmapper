@@ -5,20 +5,35 @@ XlsMapperConfigによる動作のカスタマイズ
 
 読み込み時及び書き込み時の動作をXlsMapperConfigクラスでカスタマイズすることができます。
 
+.. sourcecode:: java
+    
+    // 設定用のオブジェクトXlsMapperConfigの作成
+    XlsMapperConfig config = new XlsMapperConfig();
+    
+    // シートが見つからない場合にエラーにしない。
+    config.setIgnoreSheetNotFound(true);
+    
+    // XlsMapperConfigクラスをXlsMapperに渡す。
+    XlsMapper xlsMapper = new XlsMapper();
+    xlsMapper.setConfig(config);
+    
+    // 設定を変更したXlsMapperでシートの読み込み
+    SheetObject sheet = xlsMapper.load(
+        new FileInputStream("example.xls"), SheetObject.class);
+
+
+XlsMapperConfigは、XlsMapperクラスのインスタンスを作成時にも持っているため、次のような変更もできます。
 
 .. sourcecode:: java
     
-    XlsMapper XlsMapper = new XlsMapper();
+    XlsMapper xlsMapper = new XlsMapper();
     
-    // シートが見つからない場合にエラーにしない。
-    XlsMapperConfig config = new XlsMapperConfig();
-    config.config.setIgnoreSheetNotFound(true);
+    // XlsMapperクラスから直接XlsMapperConfigのインスタンスを取得し変更する。
+    xlsMapper.getConfig().setIgnoreSheetNotFound(true);
     
-    XlsMapper.setConfig(config);
-    
-    SheetObject sheet = new XlsMapper.load(
+    // 設定を変更したXlsMapperでシートの読み込み
+    SheetObject sheet = xlsMapper.load(
         new FileInputStream("example.xls"), SheetObject.class);
-
 
 XlsMapperConfigでは以下の設定を行うことができます。
 
@@ -83,5 +98,8 @@ XlsMapperConfigでは以下の設定を行うことができます。
      - | 読み込み時などのJavaBeansオブジェクトのインスタンスを作成すためのコールバック用クラス。
        | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用することができます。
        
-   
+   * - ``sheetFinder``
+     - ``SheetFinder``
+     - | アノテーション :ref:`@XlsSheet <annotationXlsSheet>` に基づき処理対象のシートを抽出するクラス。
+       | **Ver.1.1以上** から利用可能です。
 

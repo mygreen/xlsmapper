@@ -3,6 +3,22 @@
 ======================================
 
 --------------------------------------------------------
+ver.1.1 - 2016-01-31
+--------------------------------------------------------
+
+* `#65 <https://github.com/mygreen/xlsmapper/issues/65>`_ : 例外時のメッセージのスペルミス、値の設定間違いを修正しました。
+
+* `#66 <https://github.com/mygreen/xlsmapper/issues/66>`_ : セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.6に対応しました。
+
+* `#70 <https://github.com/mygreen/xlsmapper/issues/70>`_ : アノテーションのXMLによるマッピング機能の機能追加として、:ref:`XMLをJavaオブジェクトで組み立てる機能 <xml-build>` を追加しました。
+  それに伴い、次の修正も行いました。
+
+  * XML読み込み用のクラス ``XmlLoader`` の名称を ``XmlIO`` に変更し、XMLの書き込み用メソッドを追加しました。
+  * 例外クラス ``XmlLoadException`` の名称を ``XmlOperateException`` に変更しました。
+  * 読み込み時/書き込み時の処理対象となるシートの抽出処理を、 ``SheetFinder`` クラスに分離しました。
+    :doc:`XlsMapperConfigのプロパティ「sheetFinder」<otheruse_config>` でカスタマイズすることができます。
+
+--------------------------------------------------------
 ver.1.0a - 2015-09-23
 --------------------------------------------------------
 
@@ -26,10 +42,10 @@ ver.1.0 - 2015-07-19
 
 * `#28 <https://github.com/mygreen/xlsmapper/issues/28>`_ : クラス ``java.util.Calendar`` に対するCellConveterを追加しました。
 
-* `#35 <https://github.com/mygreen/xlsmapper/issues/35>`_ : アノテーション ``@XlsHorizontalRecords`` の付与可能なクラスタイプとして、``java.utils.Set`` を追加しました。
+* `#35 <https://github.com/mygreen/xlsmapper/issues/35>`_ : アノテーション ``@XlsHorizontalRecords`` の付与可能なクラスタイプとして、``java.util.Set`` を追加しました。
 
     * 実装クラスを指定した場合は、その読み込み時には、インスタンスが設定されます。
-    * ``@XlsVerticalRecords`` も同様に修正しました。
+    * アノテーション ``@XlsVerticalRecords`` も同様に修正しました。
 
 * `#37 <https://github.com/mygreen/xlsmapper/issues/37>`_ : アノテーション ``@XlsVerticalRecords`` でマッピングする際に、表のタイトル（ラベル）が上にある場合に対応しまいた。
 
@@ -40,7 +56,7 @@ ver.1.0 - 2015-07-19
 
     * 設定用クラス ``IsEmptyConfig`` で、要素をチェックするかなどを変更することができます。
 
-* `#53 <https://github.com/mygreen/xlsmapper/issues/53>`_ : フィールドの入力値検証を行うためのFieldValidatorの実装である、「MaxValidator/MinValidator/RangeValidator」において、メッセージ表示用に値をフォーマットを``FieldFormatter`` で行うように機能追加しました。
+* `#53 <https://github.com/mygreen/xlsmapper/issues/53>`_ : フィールドの入力値検証を行うためのFieldValidatorの実装である、「MaxValidator/MinValidator/RangeValidator」において、メッセージ表示用に値をフォーマットを ``FieldFormatter`` で行うように機能追加しました。
 
     * 標準では、``DefaultFieldFormatter`` が設定されていますが、独自の実装に切り替えることができます。
 
@@ -48,7 +64,7 @@ ver.1.0 - 2015-07-19
 
 * `#58 <https://github.com/mygreen/xlsmapper/issues/58>`_ : ドキュメント `拡張方法 <http://mygreen.github.io/xlsmapper/sphinx/extension.html>`_ を記載しました。
 
-* `#59 <https://github.com/mygreen/xlsmapper/issues/58>`_ : アノテーション ``@XlsVerticalRecords/XlsSheetName`` の書き込み時の処理に、読み込み用のアノテーションを取得していたため、getterメソッドにアノテーションを付与していても反映されない事象を修正しました。
+* `#59 <https://github.com/mygreen/xlsmapper/issues/59>`_ : アノテーション ``@XlsVerticalRecords/XlsSheetName`` の書き込み時の処理に、読み込み用のアノテーションを取得していたため、getterメソッドにアノテーションを付与していても反映されない事象を修正しました。
 
     * 各種CellConverterの処理時に、アノテーション ``@XlsConverter`` を付与していた場合も同様の事象を修正しました。
 
@@ -134,13 +150,13 @@ ver.0.5 - 2015-06-29
 * `#47 <https://github.com/mygreen/xlsmapper/issues/47>`_ : アノテーション ``@XlsHorizontalRecords`` を付与しているフィールド型が配列型の場合、書き込むときにレコードが出力されない事象を修正しました。
   同様に、``@XlsVertiacalRecords``、``@XlsIterateTables`` の処理も修正しました。
 
-* `#48 <https://github.com/mygreen/xlsmapper/issues/48>`_ : アノテ－ション ``@XlsHorizontalRecords(remainedRecord=RemainedRecordOperate.Delete) `` を付与し、書き込む先に余分な行を削除するときに、1回多く削除してしまう事象を修正しました。
+* `#48 <https://github.com/mygreen/xlsmapper/issues/48>`_ : アノテ－ション ``@XlsHorizontalRecords(remainedRecord=RemainedRecordOperate.Delete)`` を付与し、書き込む先に余分な行を削除するときに、1回多く削除してしまう事象を修正しました。
 
 * `#49 <https://github.com/mygreen/xlsmapper/issues/49>`_ : アノテーション ``@XlsHorizontalRecords`` を付与し、書き込む際にレコードが追加、削除されるときに、Excelの入力規則の範囲修正が正しくできない事象を修正しました。
 
 * `#51 <https://github.com/mygreen/xlsmapper/issues/51>`_ : アノテーション ``@XlsIterateTables`` を付与し、連結した表を書き込む時に、はみ出したセルがあると、属性orverRecordOperateの処理が実行されない事象を修正しました。
 
-* `#52 <https://github.com/mygreen/xlsmapper/issues/52>`_ : アノテーション ``@XlsHorizontalRecords`` を付与したクラスに、ライフサイクルコールバック用のアノテーション ``@XlsPostSave`` を付与したメソッドが実行されない事象を修正しました。 `` @XlsVerticalRecords`` の場合も同様に修正しました。
+* `#52 <https://github.com/mygreen/xlsmapper/issues/52>`_ : アノテーション ``@XlsHorizontalRecords`` を付与したクラスに、ライフサイクルコールバック用のアノテーション ``@XlsPostSave`` を付与したメソッドが実行されない事象を修正しました。 ``@XlsVerticalRecords`` の場合も同様に修正しました。
 
 * `#54 <https://github.com/mygreen/xlsmapper/issues/54>`_ : メッセージ中などの式言語の処理としてEL2.Xを利用する場合、実装を外部ライブラリ `standalone-el <https://github.com/mygreen/standalone-el/>`_ に変更しました。
 

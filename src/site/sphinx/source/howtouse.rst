@@ -16,6 +16,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
         <version>1.0a</version>
     </dependency>
 
+.. _howtouseSheetLoad:
 
 ----------------------------
 読み込み方
@@ -26,16 +27,16 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 XlsMapperはアノテーションを付与してJavaBeansとExcelをマッピングするライブラリです。
-アノテーション ``@XlsSheet`` を付与したJavaBeanを作成したうえで以下のようにして読み込みを行います。
+アノテーション :ref:`@XlsSheet <annotationXlsSheet>` を付与したJavaBeanを作成したうえで以下のようにして読み込みを行います。
 
 .. sourcecode:: java
-    
-    SheetObject sheet = new XlsMapper().load(
+    XlsMapper xlsMapper = new XlsMapper();
+    SampleSheet sheet = xlsMapper.load(
         new FileInputStream("example.xls"), // 読み込むExcelファイル
-        SheetObject.class                   // アノテーションを付与したクラス。
+        SampleSheet.class                   // アノテーションを付与したクラス。
         );
 
-なお、``@XlsCell``、 ``@XlsLabelledCell``、 ``@XlsColumn`` アノテーションでマッピングするプロパティに関しては、
+なお、:ref:`@XlsCell <annotationXlsCell>`、 :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`、 :ref:`@XlsColumn <annotationXlsColumn>` アノテーションでマッピングするプロパティに関しては、
 現時点ではString型、プリミティブ型、プリミティブ型のラッパー型のいずれかである必要があります。
 
 より具体的な使用例はXlsMapperのディストリビューションに同梱されているテストケースのソースコードをご覧ください。
@@ -60,9 +61,10 @@ Apache POIは、ver.3.5以上に対応しています。
  
 .. sourcecode:: java
     
-    Object[] sheets = new XlsMapper().loadMultiple(
+    XlsMapper xlsMapper = new XlsMapper();
+    Object[] sheets = xlsMapper.loadMultiple(
         new FileInputStream("example.xls"),                  // 読み込むExcelファイル
-        new Class[]{SheetObject1.class, SheetObject2.class}  // アノテーションを付与したクラス。
+        new Class[]{SampleSheet1.class, SampleSheet2.class}  // アノテーションを付与したクラス。
         );
 
 アノテーション ``@XlsSheet(regex="正規表現+")`` のように、シート名を正規表現で指定した場合、
@@ -71,10 +73,13 @@ Apache POIは、ver.3.5以上に対応しています。
 
 .. sourcecode:: java
     
-    SheetObject[] sheets = new XlsMapper().loadMultiple(
+    XlsMapper xlsMapper = new XlsMapper();
+    SampleSheet[] sheets = new XlsMapper().loadMultiple(
         new FileInputStream("example.xls"),  // 読み込むExcelファイル
-        SheetObject.class                    // アノテーションを付与したクラス。
+        SampleSheet.class                    // アノテーションを付与したクラス。
         );
+
+.. _howtouseSheetSave:
 
 ----------------------------
 書き込み方
@@ -84,13 +89,15 @@ Apache POIは、ver.3.5以上に対応しています。
 単一のシートの書き込む場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-書き込む際には、``@XlsSheet`` アノテーションを付与したJavaBeansのクラスのインスタンスを渡します。
+書き込む際には、:ref:`@XlsSheet <annotationXlsSheet>` アノテーションを付与したJavaBeansのクラスのインスタンスを渡します。
 また、雛形となるテンプレートのシートを記述しているExcelファイルを引数に渡します。
 
 .. sourcecode:: java
     
-    SheetObject sheet = //... POJOのインスタンス。
-    new XlsMapper().save(
+    SampleSheet sheet = //... POJOのインスタンス。
+    
+    XlsMapper xlsMapper = new XlsMapper();
+    xlsMapper.save(
         new FileInputStream("template.xls"), // テンプレートのExcelファイル
         new FileOutputStream("example.xls"), // 書き込むExcelファイル
         sheet                                // JavaBeansのインスタンス
@@ -110,18 +117,19 @@ Apache POIは、ver.3.5以上に対応しています。
     
     /** 正規表現で指定する場合 */
     @XlsSheet(regex="Sheet_[0-9]+")
-    public class SheetObject {
+    public class SampleSheet {
       @XlsSheetName
       public String sheetName;
     }
     
-    SheetObject1 sheet = //... POJOのインスタンス。
+    SampleSheet sheet = //... POJOのインスタンス。
     sheet.sheetName = "Sheet_1"; // 予めシート名を設定しておく必要があります。
     
-    new XlsMapper().save(
+    XlsMapper xlsMapper = new XlsMapper();
+    xlsMapper.save(
         new FileInputStream("template.xls"), // テンプレートのExcelファイル
         new FileOutputStream("example.xls"), // 書き込むExcelファイル
-        sheet         // JavaBeansのインスタンスの配列
+        sheet         // JavaBeansのインスタンス
         );
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -129,13 +137,13 @@ Apache POIは、ver.3.5以上に対応しています。
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 複数のシートを読み込む場合、``XlsMapper#saveMultplue(...)`` を使用します。
-書き込むJavaBeansのクラスのインスタンスは、アノテーション ``@XlsSheet`` を付与する必要があります。
+書き込むJavaBeansのクラスのインスタンスは、アノテーション :ref:`@XlsSheet <annotationXlsSheet>` を付与する必要があります。
 シートのオブジェクトは配列として渡します。
 
 .. sourcecode:: java
     
-    SheetObject1 sheet1 = //... POJOのインスタンス。
-    SheetObject2 sheet2 = //... POJOのインスタンス。
+    SheetSheet1 sheet1 = //... POJOのインスタンス。
+    SheetSheet2 sheet2 = //... POJOのインスタンス。
     
     new XlsMapper().saveMultiple(
         new FileInputStream("template.xls"), // テンプレートのExcelファイル
@@ -150,5 +158,37 @@ Apache POIは、ver.3.5以上に対応しています。
     
 テンプレートのExcelファイル中にシートが1つしかない場合、書き込む個数分コピーしておく必要があります。
 このような場合、書き込み対象のテンプレートファイルを事前に処理しておきます。
+
+.. sourcecode:: java
+    
+    // 正規表現で指定する場合
+    @XlsSheet(regex="Sheet_[0-9]+")
+    public class SampleSheet {
+        
+        // シート名をマッピングするフィールド
+        @XlsSheetName
+        private String sheetName;
+        ...
+    }
+    
+    
+    // 正規表現による複数のシートを出力する場合。
+    // 書き込み時に、シート名を設定して、一意に関連づけます。
+    SampleSheet sheet1 = new SampleSheet();
+    sheet1.sheetName = "Sheet_1"; // シート名の設定
+    
+    SampleSheet sheet2 = new SampleSheet();
+    sheet2.sheetName = "Sheet_2"; // シート名の設定
+    
+    SampleSheet sheet3 = new SampleSheet();
+    sheet3.sheetName = "Sheet_3"; // シート名の設定
+    
+    // 複数のシートの書き込み
+    XlsMapper xlsMapper = new XlsMapper();
+    xlsMapper.saveMultiple(new FileInputStream("template.xls"),
+        new FileOutputStream("out.xls"),
+        new Object[]{sheet1, sheet2, sheet3}
+    );
+
 
 
