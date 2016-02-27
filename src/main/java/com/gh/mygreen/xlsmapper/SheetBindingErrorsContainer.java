@@ -79,9 +79,10 @@ public class SheetBindingErrorsContainer {
     
     /**
      * シート名を指定してエラー情報を取得する。
-     * @param sheetName
+     * @param sheetName  シート名
      * @return
-     * @throws IllegalArgumentException sheetName が空文字または、存在しない場合。
+     * @throws IllegalArgumentException {@literal sheetName == null || sheetName.isEmpty() == true}
+     * @throws IllegalArgumentException {@literal sheetName not contain.}
      */
     public SheetBindingErrors getBindingResult(final String sheetName) {
         ArgUtils.notEmpty(sheetName, "sheetName");
@@ -97,9 +98,10 @@ public class SheetBindingErrorsContainer {
     
     /**
      * 指定したシート名の情報が存在するかチェックする。
-     * @param sheetName
+     * @param sheetName シート名
      * @return true: 存在する場合
-     * @throws IllegalArgumentException sheetNameが空文字の場合。
+     * @throws IllegalArgumentException {@literal sheetName == null || sheetName.isEmpty() == true}
+     * @throws IllegalArgumentException {@literal sheetName not contain.}
      */
     public boolean containsBindingResult(final String sheetName) {
         ArgUtils.notEmpty(sheetName, "sheetName");
@@ -114,10 +116,11 @@ public class SheetBindingErrorsContainer {
     }
     
     /**
-     * シート名を指定してエラー情報を取得する。
-     * @param sheetName
-     * @return
-     * @throws IllegalArgumentException indexが0より小さい場合
+     * シート番号を指定してエラー情報を取得する。
+     * @param index シートのインデックス番号(0から始まる)。
+     * @return エラー情報。
+     * @throws IllegalArgumentException {@literal index < 0}.
+     * @throws IllegalArgumentException {@literal index not contain.}
      */
     public SheetBindingErrors getBindingResult(final int index) {
         ArgUtils.notMin(index, 0, "index");
@@ -129,10 +132,11 @@ public class SheetBindingErrorsContainer {
     }
     
     /**
-     * 指定したシート名の情報が存在するかチェックする。
-     * @param sheetName
+     * 指定したシート番号の情報が存在するかチェックする。
+     * @param index シートのインデックス番号(0から始まる)。
      * @return true: 存在する場合
-     * @throws IllegalArgumentException sheetNameが空文字の場合。
+     * @throws IllegalArgumentException {@literal index < 0}.
+     * @throws IllegalArgumentException {@literal index not contain.}
      */
     public boolean containsBindingResult(final int index) {
         ArgUtils.notMin(index, 0, "index");

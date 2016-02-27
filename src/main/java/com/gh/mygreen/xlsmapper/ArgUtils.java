@@ -16,7 +16,7 @@ public class ArgUtils {
      * 値がnullでないかどうか検証する。
      * @param arg 検証対象の値
      * @param name 検証対象の引数の名前
-     * @throws IllegalArgumentException if arg == null.
+     * @throws IllegalArgumentException {@literal arg == null.}
      */
     public static void notNull(final Object arg, final String name) {
         if(arg == null) {
@@ -28,7 +28,7 @@ public class ArgUtils {
      * 文字列が空 or nullでないかどうか検証する。
      * @param arg 検証対象の値
      * @param name 検証対象の引数の名前
-     * @throws IllegalArgumentException if arg == null or arg == "".
+     * @throws IllegalArgumentException {@literal arg == null || arg.isEmpty() ==true}
      */
     public static void notEmpty(final String arg, final String name) {
         if(arg == null || arg.isEmpty()) {
@@ -38,9 +38,9 @@ public class ArgUtils {
     
     /**
      * 配列のサイズが0または、nullでないかどうか検証する。
-     * @param arg
-     * @param name
-     * @throws IllegalArgumentException if arg == null or arg.length == "".
+     * @param arg 検証対象の値
+     * @param name 検証対象の引数の名前
+     * @throws IllegalArgumentException {@literal arg == null || arg.length == 0.}
      */
     public static void notEmpty(final Object[] arg, final String name) {
         if(arg == null || arg.length == 0) {
@@ -52,7 +52,7 @@ public class ArgUtils {
      * Collection(リスト、セット)のサイズが0または、nullでないかどうか検証する。
      * @param arg 検証対象の値
      * @param name 検証対象の引数の名前
-     * @throws IllegalArgumentException if arg == null or arg.size() == 0.
+     * @throws IllegalArgumentException {@literal arg == null || arg.size() == 0.}
      */
     public static void notEmpty(final Collection<?> arg, final String name) {
         if(arg == null || arg.isEmpty()) {
@@ -64,7 +64,7 @@ public class ArgUtils {
      * マップのサイズが0または、nullでないかどうか検証する。
      * @param arg 検証対象の値
      * @param name 検証対象の引数の名前
-     * @throws IllegalArgumentException if arg == null or arg.size() == 0.
+     * @throws IllegalArgumentException {@literal arg == null || arg.size() == 0.}
      */
     public static void notEmpty(final Map<?, ?> arg, final String name) {
         if(arg == null || arg.isEmpty()) {
@@ -73,12 +73,11 @@ public class ArgUtils {
     }
     
     /**
-     * 引数が'arg' > 'min' の関係か検証する。
+     * 引数が {@literal 'arg' > 'min'} の関係か検証する。
      * @param arg 検証対象の値
      * @param min 最小値
      * @param name 検証対象の引数の名前
-     * @throws IllegalArgumentException if arg == null
-     * @throws IllegalArgumentException if arg < min.
+     * @throws IllegalArgumentException {@literal arg == null || arg < min.}
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T extends Comparable> void notMin(final T arg, final T min, final String name) {
@@ -94,12 +93,11 @@ public class ArgUtils {
     }
     
     /**
-     * 引数が'arg' < 'max' の関係か検証する。
+     * 引数が {@literal 'arg' < 'max'} の関係か検証する。
      * @param arg 検証対象の値
      * @param max 最大値
      * @param name 検証対象の引数の名前
-     * @throws IllegalArgumentException if arg == null
-     * @throws IllegalArgumentException if arg > max.
+     * @throws IllegalArgumentException {@literal arg == null || arg > max.}
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T extends Comparable> void notMax(final T arg, final T max, final String name) {

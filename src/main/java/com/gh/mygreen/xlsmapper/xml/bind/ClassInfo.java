@@ -188,7 +188,7 @@ public class ClassInfo implements Serializable {
     
     /**
      * フィールド名を指定してフィールド情報を取得する。
-     * @param methodName フィールド名。
+     * @param fieldName フィールド名。
      * @return 指定したフィールド名が存在しない場合は、nullを返す。
      */
     public FieldInfo getFieldInfo(String fieldName){
@@ -197,11 +197,11 @@ public class ClassInfo implements Serializable {
     
     /**
      * 指定したフィールド情報を含むかどうか。
-     * @param methodName フィールド名。
+     * @param fieldName フィールド名。
      * @return true: 指定したフィールド名が存在する場合。
      */
-    public boolean containsFieldInfo(final String fielddName) {
-        return this.fieldInfos.containsKey(fielddName);
+    public boolean containsFieldInfo(final String fieldName) {
+        return this.fieldInfos.containsKey(fieldName);
     }
     
     /**
@@ -316,7 +316,7 @@ public class ClassInfo implements Serializable {
         
         /**
          * クラス名を設定する。
-         * @param className FQCN（完全限定クラス名）を設定します。
+         * @param className クラス名。FQCN（完全限定クラス名）を設定します。
          * @return
          * @throws IllegalArgumentException calssName is empty.
          */

@@ -109,8 +109,7 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T>, Ce
     /**
      * メッセージ中の変数を取得する。
      * @param value 検証対象の値
-     * @param editor 検証対象の値のプロパティエディタ。nullの場合もある。
-     * @return
+     * @return メッセージ中の変数のマップ。
      */
     protected abstract LinkedHashMap<String, Object> getMessageVars(T value);
     

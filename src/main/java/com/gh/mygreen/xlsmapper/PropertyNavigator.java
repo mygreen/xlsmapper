@@ -12,44 +12,45 @@ import com.gh.mygreen.xlsmapper.PropertyPath.Token;
 
 /**
  * プロパティにアクセスするためのクラス。
- * <p>プロパティは式言語の形式に似た形式をとることが可能で、フィールドにもアクセスできる。
+ * <p>プロパティは式言語の形式に似た形式をとることが可能で、フィールドにもアクセスできます。
  * 
- * <pre>
- * {@code // 基本的な使い方}
+ * <h3 class="description">基本的な使い方</h3>
+ * 
+ * <pre class="highlight"><code class="java"> 
+ * // Beanのインスタンスの生成
  * Person taregetObj = ...;
  * 
- * {@code // 名前を指定してプロパティにアクセスする場合}
+ * // 名前を指定してプロパティにアクセスする場合
  * String name = PropertyNavigator.getProperty(targetObj, "name");
  * 
- * {@code // ネストしたプロパティにアクセスする場合、ピリオド（.)で繋げます。}
+ * // ネストしたプロパティにアクセスする場合、ピリオド（.)で繋げます。
  * String code = PropertyNavigator.getProperty(targetObj, "county.code");
  * 
- * {@code // リストまたは配列にアクセスする場合、括弧[インデックス番号]でインデックスを指定します。}
+ * // リストまたは配列にアクセスする場合、括弧[インデックス番号]でインデックスを指定します。
  * String title = PropertyNavigator.getProperty(targetObj, "books[0].title");
  *
- * {@code // マップにアクセスする場合、括弧[キー]でキーを指定します。}
+ * // マップにアクセスする場合、括弧[キー]でキーを指定します。
  * String motherName = PropertyNavigator.getProperty(targetObj, "family[mother].name");
+ * </code></pre>
  * 
- * </pre>
+ * <h3 class="description">オプションの指定</h3>
+ * <p>オプションを指定する場合は、PropertyNavigatorのインスタンスを生成し、設定します。
  * 
- * <pre>
- * {@code // オプションを指定する場合は、PropertyNavigatorのインスタンスを生成し、設定します。}
- * 
+ * <pre class="highlight"><code class="java">
  * PropertyNavigator navigator = new PropertyNavigator();
  * 
- * {@code // 非公開のプロパティにアクセス可能かどうか}
+ * // 非公開のプロパティにアクセス可能かどうか
  * navigator.setAllowPrivate(true);
  * 
- * {@code // 値がnullの場合に例外をスローしないでその時点で処理を終了するかどうか。}
+ * // 値がnullの場合に例外をスローしないでその時点で処理を終了するかどうか。
  * navigator.setIgnoreNull(true);
  * 
- * {@code // 配列/Collection/Mapにアクセスする際に指定したキーの要素が存在しない場合に処理を終了するかどうか。}
+ * // 配列/Collection/Mapにアクセスする際に指定したキーの要素が存在しない場合に処理を終了するかどうか。
  * navigator.setIgnoreNotFoundKey(true);
  * 
- * {@code // プロパティの解析結果をキャッシュするかどうか。途中の解析結果をキャッシュして、処理を高速化します。}
+ * // プロパティの解析結果をキャッシュするかどうか。途中の解析結果をキャッシュして、処理を高速化します。
  * navigator.setCacheWithPath(true);
- * 
- * </pre>
+ * </code></pre>
  * 
  * @since 1.0
  * @author T.TSUCHIE

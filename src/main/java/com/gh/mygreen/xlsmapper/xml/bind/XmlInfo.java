@@ -108,12 +108,12 @@ public class XmlInfo implements Serializable {
      * <p>XMLの読み込み時に呼ばれます。
      * <p>既存の情報はクリアされます。
      * @since 1.1
-     * @param classInfos
+     * @param classInfos クラス情報
      */
     @XmlElement(name="class")
-    public void setClassInfos(List<ClassInfo> list) {
+    public void setClassInfos(List<ClassInfo> classInfos) {
         this.classInfos.clear();
-        for(ClassInfo item : list) {
+        for(ClassInfo item : classInfos) {
             addClassInfo(item);
         }
     }

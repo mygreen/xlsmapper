@@ -348,8 +348,8 @@ public class Utils {
      * セルの位置を設定する。
      * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。
      * <p>フィールド「Map<String, Point> positions」に、設定する。
-     * @param column 列
-     * @param row 行
+     * @param x 列のインデックス番号
+     * @param y 行のインデックス番号
      * @param obj メソッドが定義されているオブジェクト
      * @param fieldName フィールド名
      */
@@ -515,8 +515,8 @@ public class Utils {
      * MapColumn形式の場合のセルの位置を設定する。
      * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。
      * <p>フィールド「Map<String, Point> positions」に、設定する。
-     * @param column 列
-     * @param row 行
+     * @param x 列のインデックス
+     * @param y 行のインデックス
      * @param obj メソッドが定義されているオブジェクト
      * @param fieldName フィールド名
      * @param key
@@ -677,9 +677,9 @@ public class Utils {
      * セルの見出しを取得する。
      * <p>「get + 'フィールド名' + Label」のgetterか「'フィールド名' + Label」というフィールド名で決める。
      * <p>フィールド「Map<String, String> labels」に、設定する。
-     * @param label 設定する見出し
      * @param obj メソッドが定義されているオブジェクト
      * @param fieldName フィールド名
+     * @return セルの見出し。
      */
     @SuppressWarnings("unchecked")
     public static String getLabel(final Object obj, final String fieldName) {
@@ -859,7 +859,7 @@ public class Utils {
     
     /**
      * コレクションが空か判定する。
-     * @param str
+     * @param collection
      * @return nullまたはサイズが0のときにtrueを返す。
      */
     public static boolean isEmpty(final Collection<?> collection) {
@@ -930,7 +930,7 @@ public class Utils {
     
     /**
      * 座標をExcelのアドレス形式'A1'になどに変換する。
-     * @param address
+     * @param cellAddress
      * @return
      * @throws IllegalArgumentException address == null.
      */
@@ -954,7 +954,7 @@ public class Utils {
      * @param label 検索するセルの値
      * @param from 検索開始位置の列
      * @param config システム設定
-     * @return  引数labelで指定した値を持つセル。
+     * @return 引数labelで指定した値を持つセル。
      * @throws CellNotFoundException シート中に引数'label'を持つセルが存在しない場合。
      */
     public static Cell getCell(final Sheet sheet, final String label, final int from,
@@ -1011,7 +1011,6 @@ public class Utils {
      * @param label 検索するセルの値
      * @param fromCol 検索開始位置の列のインデックス
      * @param fromRow 検索開始位置の行のインデックス
-     * @param throwableWhenNotFound セルが見つからない場合例外をスローするかどうか。falseの場合、nullを返す。
      * @return 引数labelで指定した値を持つセル。見つからに場合は、nullを返す。
      * @throws CellNotFoundException シート中に引数'label'を持つセルが存在しない場合。
      */
@@ -1075,7 +1074,7 @@ public class Utils {
      * @param sheet JExcel Api sheet object.
      * @param label Target cell label.
      * @param after A lower right cell is scanned from the cell object.
-     * @param includeingAfter Is the third argument cell object scanned?
+     * @param includeAfter Is the third argument cell object scanned?
      *
      * @return Target JExcel Api cell object.
      * @throws CellNotFoundException This occures when the cell is not found.
@@ -1095,7 +1094,7 @@ public class Utils {
      * @param sheet JExcel Api sheet object.
      * @param label Target cell label.
      * @param after A lower right cell is scanned from the cell object.
-     * @param includeingAfter Is the third argument cell object scanned?
+     * @param includeAfter Is the third argument cell object scanned?
      * @param throwableWhenNotFound If this argument is true, throws XLSBeansException when we can't find target cell.
      *
      * @return Target JExcel Api cell object.
@@ -1241,7 +1240,7 @@ public class Utils {
      * 
      * @param clazz
      * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
-     * @param annoReader
+     * @param reader
      * @return
      */
     public static List<FieldAdaptor> getLoadingColumnProperties(final Class<?> clazz, final String name, final AnnotationReader reader) {
@@ -1272,7 +1271,7 @@ public class Utils {
      * 
      * @param clazz
      * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
-     * @param annoReader
+     * @param reader
      * @return
      */
     public static List<FieldAdaptor> getSavingColumnProperties(final Class<?> clazz, final String name, final AnnotationReader reader) {
@@ -1412,11 +1411,11 @@ public class Utils {
     }
     
     /**
-     * アノテーション{@link MapXlsColumn}が付与されている読み込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
+     * アノテーション{@link XlsMapColumns}が付与されている読み込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
      * <p>フィールドは、public以外の全てのメソッドを対象とする。
      * 
      * @param clazz
-     * @param annoReader
+     * @param reader
      * @return
      */
     public static List<FieldAdaptor> getLoadingMapColumnProperties(final Class<?> clazz, final AnnotationReader reader) {
@@ -1442,11 +1441,11 @@ public class Utils {
     }
     
     /**
-     * アノテーション{@link MapXlsColumn}が付与されている読み込み系の指定したオブジェクトのメソッド（Getter）とフィールド情報を取得する。
+     * アノテーション{@link XlsMapColumns}が付与されている読み込み系の指定したオブジェクトのメソッド（Getter）とフィールド情報を取得する。
      * <p>フィールドは、public以外の全てのメソッドを対象とする。
      * 
      * @param clazz
-     * @param annoReader
+     * @param reader
      * @return
      */
     public static List<FieldAdaptor> getSavingMapColumnProperties(final Class<?> clazz, final AnnotationReader reader) {
@@ -1494,7 +1493,7 @@ public class Utils {
     }
     
     /**
-     * アノテーション{@link MapXlsColumn}が付与されているフィールドを取得する。
+     * アノテーション{@link XlsMapColumns}が付与されているフィールドを取得する。
      * <p>publicメソッド以外も対象とする。
      * @param clazz
      * @param reader
@@ -1998,7 +1997,7 @@ public class Utils {
      * @since 1.0
      * @param list 変換元のListのインスタンス
      * @param toClass 変換先のCollectionのクラス
-     * @param config てインスタンス生成するために使用する。{@link XlsMapperConfig#g}
+     * @param beanFactory てインスタンスを生成するファクトリクラス。
      * @return 変換したコレクションのインスタンス
      */
     @SuppressWarnings({"rawtypes", "unchecked"})

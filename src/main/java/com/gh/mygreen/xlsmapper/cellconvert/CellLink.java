@@ -27,8 +27,8 @@ public class CellLink implements Serializable {
     
     /**
      * リンクのアドレスと見出しを指定してリンクをこうしくします。
-     * @param address リンクのアドレス
-     * @param text リンクの見出し。
+     * @param link リンクのアドレス
+     * @param label リンクの見出し。
      */
     public CellLink(final String link, final String label) {
         setLink(link);
@@ -108,7 +108,6 @@ public class CellLink implements Serializable {
     
     /**
      * リンクの見出しを設定する
-     * @return
      */
     public void setLabel(String label) {
         this.label = label;

@@ -49,7 +49,6 @@ public class MessageCodeGenerator {
     /**
      * オブジェクト名のキーの候補を生成する。
      * @param objectName
-     * @param field
      * @return
      */
     public String[] generateObjectNameCodes(final String objectName) {
@@ -161,7 +160,7 @@ public class MessageCodeGenerator {
      * フィールドのパスを分解して、パスの候補を作成する。
      * <p>インデックスを示す'[0]'を除いたりして組み立てる。
      * @param field
-     * @return
+     * @param fieldList
      */
     protected void buildFieldList(final String field, final List<String> fieldList) {
         

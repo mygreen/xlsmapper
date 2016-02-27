@@ -7,12 +7,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
+import com.gh.mygreen.xlsmapper.fieldprocessor.processor.HorizontalRecordsProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.processor.VerticalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 
 /**
- * Provides generic utility methods for {@link HorizontalRecordsProcessor} and 
- * {@link VerticalRecordsProcessor}.
+ * Provides generic utility methods for {@link HorizontalRecordsProcessor} and {@link VerticalRecordsProcessor}.
  * 
  * @author Naoki Takezoe
  */

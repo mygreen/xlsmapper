@@ -2,7 +2,6 @@ package com.gh.mygreen.xlsmapper;
 
 import java.awt.Point;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,10 +15,7 @@ import org.apache.poi.hssf.record.ExtendedFormatRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.record.aggregates.DataValidityTable;
 import org.apache.poi.hssf.record.aggregates.RecordAggregate.RecordVisitor;
-import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataValidation;
-import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -36,7 +32,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.extensions.XSSFCellAlignment;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCellAlignment;
@@ -561,7 +556,7 @@ public class POIUtils {
     
     /**
      * 座標をExcelのアドレス形式'A1'になどに変換する。
-     * @param address
+     * @param cellAddress セルの位置情報
      * @return
      * @throws IllegalArgumentException address == null.
      */
@@ -572,7 +567,7 @@ public class POIUtils {
     
     /**
      * セルのアドレス'A1'を取得する。
-     * @param cell
+     * @param cell セル情報
      * @return IllegalArgumentException cell == null.
      */
     public static String formatCellAddress(final Cell cell) {
@@ -582,7 +577,7 @@ public class POIUtils {
     
     /**
      * リンクのアドレスを判定する。
-     * @param linkAddress
+     * @param linkAddress リンクのアドレス（URL）
      * @return 不明な場合は{@link LinkType#UNKNOWN}を返す。
      * @throws IllegalArgumentException linkAddress が空文字の場合。
      */
@@ -869,7 +864,7 @@ public class POIUtils {
      * テンプレートの入力規則の制約「リスト」を追加する。
      * <p>POI-3.7以上が必要。
      * @param sheet シート
-     * @param constaints 制約とするコレクションの中身
+     * @param constraints 制約とするコレクションの中身
      * @param startPosition 開始位置
      * @param endPosition 終了位置
      */
@@ -889,7 +884,7 @@ public class POIUtils {
      * テンプレートの入力規則の制約「リスト」を追加する。
      * <p>POI-3.7以上が必要。
      * @param sheet シート
-     * @param constaints 制約とするリストの中身
+     * @param constraints 制約とするリストの中身
      * @param startPosition 開始位置
      * @param endPosition 終了位置
      */

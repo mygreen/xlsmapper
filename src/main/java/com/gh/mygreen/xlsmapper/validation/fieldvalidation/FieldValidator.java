@@ -16,7 +16,6 @@ public interface FieldValidator<T> {
      * @param fieldName フィールド名
      * @param value フィールドの値
      * @param errors 入力値チェックした結果
-     * @param messageSource メッセージソース
      * @return true: チェックを実行した結果、エラーがない場合。
      */
     public boolean validate(String fieldName, T value, SheetBindingErrors errors);

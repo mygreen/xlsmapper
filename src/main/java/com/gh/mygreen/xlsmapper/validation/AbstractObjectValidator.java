@@ -18,15 +18,15 @@ public abstract class AbstractObjectValidator<T> implements ObjectValidator<T> {
      * @param errors
      * @param subPath ネストするパス
      */
-    protected <S> void invokeNestedValidator(final ObjectValidator<S> validator, final S targetObj,
+    protected <S> void invokeNestedValidator(final ObjectValidator<S> validator, final S targetObject,
             final SheetBindingErrors errors, final String subPath) {
         ArgUtils.notNull(validator, "validator");
-        ArgUtils.notNull(targetObj, "targetObject");
+        ArgUtils.notNull(targetObject, "targetObject");
         ArgUtils.notNull(errors, "errors");
         
         errors.pushNestedPath(subPath);
         try {
-            validator.validate(targetObj, errors);
+            validator.validate(targetObject, errors);
         } finally {
             errors.popNestedPath();
         }
@@ -40,15 +40,15 @@ public abstract class AbstractObjectValidator<T> implements ObjectValidator<T> {
      * @param subPath ネストするパス
      * @param index インデックス
      */
-    protected <S> void invokeNestedValidator(final ObjectValidator<S> validator, final S targetObj,
+    protected <S> void invokeNestedValidator(final ObjectValidator<S> validator, final S targetObject,
             final SheetBindingErrors errors, final String subPath, final int index) {
         ArgUtils.notNull(validator, "validator");
-        ArgUtils.notNull(targetObj, "targetObject");
+        ArgUtils.notNull(targetObject, "targetObject");
         ArgUtils.notNull(errors, "errors");
         
         errors.pushNestedPath(subPath, index);
         try {
-            validator.validate(targetObj, errors);
+            validator.validate(targetObject, errors);
         } finally {
             errors.popNestedPath();
         }
@@ -62,15 +62,15 @@ public abstract class AbstractObjectValidator<T> implements ObjectValidator<T> {
      * @param subPath ネストするパス
      * @param key インデックス
      */
-    protected <S> void invokeNestedValidator(final ObjectValidator<S> validator, final S targetObj,
+    protected <S> void invokeNestedValidator(final ObjectValidator<S> validator, final S targetObject,
             final SheetBindingErrors errors, final String subPath, final String key) {
         ArgUtils.notNull(validator, "validator");
-        ArgUtils.notNull(targetObj, "targetObject");
+        ArgUtils.notNull(targetObject, "targetObject");
         ArgUtils.notNull(errors, "errors");
         
         errors.pushNestedPath(subPath, key);
         try {
-            validator.validate(targetObj, errors);
+            validator.validate(targetObject, errors);
         } finally {
             errors.popNestedPath();
         }

@@ -13,21 +13,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 値が全て空かどかチェックするためのクラス。
  * <p>アノテーション{@link com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty}を付与したメソッドの実装に利用します。
  * 
- * <p>リフレクションを利用して判定する場合は、位置情報のフィールドpositions()、ラベル情報のフィールドを除外します。
- * <pre>
- * {@code // リフレクションを使用する場合}
- * {@code @XlsIsEmpty}
+ * <p>リフレクションを利用して判定する場合は、位置情報のフィールドpositions、ラベル情報のフィールドlabelsを除外します。
+ * <pre class="highlight"><code class="java">
+ * // リフレクションを使用する場合
+ * {@literal @XlsIsEmpty}
  * public boolean isEmpty() {
  *     return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
  * }
- * </pre>
+ * </code></pre>
  * 
  * <p>フィールドを1つずつ判定する場合は、{@code append(...)}メソッドを利用します。
  * メソッド{@link #compare(IsEmptyComparator)}を利用することで、独自の実装も可能で、その際にLambda式を利用することもできます。
  * 
- * <pre>
- * {@code // 独自に組み立てる場合}
- * {@code @XlsIsEmpty}
+ * <pre class="highlight"><code class="java">
+ * // 独自に組み立てる場合
+ * {@literal @XlsIsEmpty}
  * public boolean isEmpty() {
  *     return new IsEmptyBuilder()
  *         .append(name)
@@ -35,18 +35,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *         .compare(() -> StringUtils.isBlank(address))
  *         .isEmpty();
  * }
- * </pre>
+ * </code></pre>
  * 
  * <p>オプションを指定して処理する場合、{@link IsEmptyConfig}を利用します。
- * <pre>
- * {@code // オプションを指定する場合}
- * {@code @XlsIsEmpty}
+ * <pre class="highlight"><code class="java">
+ * // オプションを指定する場合
+ * {@literal @XlsIsEmpty}
  * public boolean isEmpty() {
- *     return IsEmptyBuilder.reflectionIsEmpty(this,
+ *     return IsEmptyBuilder.reflectionIsEmpty(this
  *         , IsEmptyConfig.create().withTestArrayItem(false).withTestCollectionItem(false)
  *         , "positions", "labels");
  * }
- * </pre>
+ * </code></pre>
  * 
  * 
  * @since 0.5
@@ -126,7 +126,6 @@ public class IsEmptyBuilder {
     /**
      * リフレクションを使用しフィールドの値を取得し判定する。
      * @since 1.0
-     * @param 設定用クラス
      * @param obj 判定対象のオブジェクト。
      * @param config 判定用の設定クラス。
      * @param excludedFields 除外対処のフィールド名。
@@ -139,7 +138,6 @@ public class IsEmptyBuilder {
     /**
      * リフレクションを使用しフィールドの値を取得し判定する。
      * @since 1.0
-     * @param 設定用クラス
      * @param obj 判定対象のオブジェクト。
      * @param config 判定用の設定クラス。
      * @param excludedFields 除外対処のフィールド名。
@@ -763,15 +761,16 @@ public class IsEmptyBuilder {
     /**
      * 独自の実装で値を空かどうか判定する。
      * <p>Java8のLambda式を利用すると簡潔に書ける。
-     * <pre>
+     * <pre class="highlight"><code class="java">
      * public boolean isEmpty() {
      *      return new IsEmptyBuilder()
      *          .append(age)
      *          .compare(() -> StringUtils.isBlank(address))
      *          .isEmpty();
      *  }
-     * </pre>
-     * @param appender {@link IsEmptyComparator}のインスタンス。
+     * </code></pre>
+     * 
+     * @param compare {@link IsEmptyComparator}のインスタンス。
      * @return this.
      */
     public <T> IsEmptyBuilder compare(final IsEmptyComparator compare) {

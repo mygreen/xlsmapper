@@ -117,7 +117,6 @@ public class SheetBindingErrors {
     /**
      * パスを１つ下位に移動します。
      * @param subPath
-     * @return 
      * @throws IllegalArgumentException subPath is empty.
      */
     public void pushNestedPath(final String subPath) {
@@ -133,7 +132,6 @@ public class SheetBindingErrors {
      * インデックス付きのパスを１つ下位に移動します。
      * @param subPath
      * @param index
-     * @return 
      * @throws IllegalArgumentException subPath is empty.
      */
     public void pushNestedPath(final String subPath, final int index) {
@@ -144,7 +142,6 @@ public class SheetBindingErrors {
      * キー付きのパスを１つ下位に移動します。
      * @param subPath
      * @param key
-     * @return 
      * @throws IllegalArgumentException subPath is empty.
      */
     public void pushNestedPath(final String subPath, final String key) {
@@ -300,7 +297,6 @@ public class SheetBindingErrors {
     
     /**
      * 先頭のグローバルエラーを取得する。
-     * @param sheetName シート名
      * @return 存在しない場合は、nullを返す。
      */
     public SheetObjectError getFirstSheetGlobalError() {

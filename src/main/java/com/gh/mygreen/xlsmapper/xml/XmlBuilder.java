@@ -10,19 +10,18 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
  * アノテーション用のXMLのオブジェクト（{@link XmlInfo}）を組み立てるためのヘルパークラス。
- * <pre>
- * {@code //}使い方。
  * 
- * {@code //} static import をすると使いやすくなります。
+ * <pre class="highlight"><code class="java">
+ * // static import をすると使いやすくなります。
  * import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
  * 
  * public void sample() {
  *     XmlInfo xmlInfo = createXml()
  *               .classInfo(createClass(SimpleSheet.class)
- *                       .annotation(createAnnotationBuilder(XlsSheet.class)
+ *                       .annotation(createAnnotationBuilder(XlsSheet.class) // クラスに対するアノテーションの定義
  *                               .attribute("name", "単純なシート")
  *                               .buildAnnotation())
- *                       .field(createField("sheetName")
+ *                       .field(createField("sheetName") // フィールドに対するアノテーションの定義
  *                               .annotation(createAnnotation(XlsSheetName.class)
  *                                       .buildAnnotation())
  *                               .buildField())
@@ -36,7 +35,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  *                                       .attribute("defaultValue", "－")
  *                                       .buildAnnotation())
  *                               .buildField())
- *                       .method(createMethod("setRecords")
+ *                       .method(createMethod("setRecords") // メソッドに対するアノテーションの定義
  *                               .annotation(createAnnotation(XlsHorizontalRecords.class)
  *                                       .attribute("tableLabel", "名簿一覧")
  *                                       .attribute("terminal", RecordTerminal.Border)
@@ -44,8 +43,18 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  *                               .buildMethod())
  *                       .buildClass())
  *               .buildXml();
+ *     
+ *     // ファイルへの保存
+ *     XmlIO.save(xmlInfo, new File("anno_simple.xml"), "UTF-8");
+ *     
+ *     // XmlMapperクラスへ渡す。
+ *     SimpleSheet sheet = new XlsMapper().load(
+ *             new FileInputStream("example.xls"),
+ *             SimpleSheet.class,
+ *             xmlInfo.toInputStream();
+ *     
  * }
- * </pre>
+ * </code></pre>
  * @since 1.1
  * @author T.TSUCHIE
  *

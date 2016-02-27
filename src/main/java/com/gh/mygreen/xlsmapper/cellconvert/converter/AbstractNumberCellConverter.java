@@ -168,7 +168,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
      * <p>有効桁数、丸め方法を設定したものを返す。
      * <p>有効桁数は、デフォルトではExcelに仕様に合わせて15桁。
      * <p>丸め方法は、Excelに合わせて、{@link RoundingMode#HALF_UP}で固定。
-     * @param XlsNumberConcerter
+     * @param anno
      * @return
      */
     protected MathContext createMathContext(final XlsNumberConverter anno) {

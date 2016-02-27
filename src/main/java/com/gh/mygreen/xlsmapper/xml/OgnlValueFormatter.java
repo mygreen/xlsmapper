@@ -2,9 +2,11 @@ package com.gh.mygreen.xlsmapper.xml;
 
 /**
  * Javaのオブジェクトを<a href="http://s2container.seasar.org/2.4/ja/ognl.html" target="_blank">OGNL形式</a>の文字列に変換します。
- * <p>このクラスは、{@link XmlBuilder}でアノテーション定義用のXMLを組み立てるために利用します。
- * <p>アノテーションで利用可能な属性の型（プリミティブ型/String/Class/列挙型、それらの一次元配列）に対応しています。
- * <p>プリミティブ型のラッパークラスは、プリミティブ型に変換され出力されます。
+ * <ul>
+ *  <li>このクラスは、{@link XmlBuilder}でアノテーション定義用のXMLを組み立てるために利用します。</li>
+ *  <li>アノテーションで利用可能な属性の型（プリミティブ型/String/Class/列挙型、それらの一次元配列）に対応しています。</li>
+ *  <li>プリミティブ型のラッパークラスは、プリミティブ型の形式に変換して処理されます。</li>
+ * </ul>
  * 
  * @since 1.1
  * @author T.TSUCHIE
@@ -24,7 +26,7 @@ public class OgnlValueFormatter {
             return "null";
         }
         
-        Class<?> clazz = value.getClass();
+        final Class<?> clazz = value.getClass();
         if(clazz.isPrimitive()) {
             if(clazz.equals(Boolean.TYPE)) {
                 return format((boolean) value);

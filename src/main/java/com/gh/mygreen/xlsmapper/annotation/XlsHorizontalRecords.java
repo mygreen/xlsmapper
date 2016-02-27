@@ -7,11 +7,248 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 水平方向に連続する行をListまたは配列にマッピングする際に指定します。
- * <p>表には最上部にテーブルの名称と列名を記述した行が必要になります。
- * An annotation for the property which is mapped to the horizontal table records.
+ * 水平方向に連続する行をCollection(List, Set)または配列にマッピングする際に指定します。
+ * 
+ * <h3 class="description">基本的な使い方</h3>
+ * <p>表名を、属性{@link #tableLabel()}で指定します。</p>
+ * <p>レコード用クラスは、列の定義をアノテーション{@link XlsColumn}で指定します。</p>
+ * 
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
+ *     private {@literal List<UserRecord>} records;
+ * }
+ * 
+ * // レコード用クラス
+ * public class UserRecord {
+ * 
+ *     {@literal @XlsColumn(columnName="ID")}
+ *     private int id;
+ *     
+ *     {@literal @XlsColumn(columnName="名前")}
+ *     private String name;
+ * 
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord.png">
+ *    <p>基本的な使い方</p>
+ * </div>
+ * 
+ *
+ * <h3 class="description">表の開始位置を指定する場合（表の名称がない場合）</h3>
+ * <p>表の名称がない場合、属性{@link #headerColumn()}、{@link #headerColumn()}や{@link #headerAddress()}で表の開始位置をセルのアドレスで指定します。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     // インデックス形式で表の開始位置を指定する
+ *     {@literal @XlsHorizontalRecords(headerColumn=0, headerRow=1)}
+ *     private {@literal List<UserRecord>} records1;
+ *     
+ *     // アドレス形式で表の開始位置を指定する場合
+ *     {@literal @XlsHorizontalRecords(headerAddress="A2")}
+ *     private {@literal List<UserRecord>} records2;
+ * }
+ * </code></pre>
+ * 
+ * <h3 class="description">表の名称から開始位置が離れた場所にある場合</h3>
+ * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #bottom()}で表の開始位置がどれだけ離れているか指定します。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧", bottom=3)}
+ *     private {@literal List<UserRecord>} records;
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord_bottom.png">
+ *    <p>表の名称から離れている際の開始位置の指定</p>
+ * </div>
+ * 
+ * 
+ * <h3 class="description">表の終端を指定する場合（属性{@link #terminal()}）</h3>
+ * デフォルトでは行に1つもデータが存在しない場合、その表の終端となります。
+ * 行の一番左側の列の罫線によって表の終端を検出する方法もあります。
+ * この場合は 属性{@link #terminal()}に {@link RecordTerminal#Border} を指定してください。
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧"), terminal=RecordTerminal.Border)}
+ *     private {@literal List<UserRecord>} records;
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord_terminal.png">
+ *    <p>表の終端の指定</p>
+ * </div>
+ * 
+ *
+ * <h3 class="description">空のレコードを読み飛ばす条件を指定する場合</h3>
+ * <p>空のレコードが存在すると無駄なレコードをとなり、読み込んだ後に除外する処理をわざわざ行う必要があります。
+ *   <br>そのような場合、属性{@link #skipEmptyRecord()}を'true'に設定することで、予め空のレコードを読み飛ばしておく方法もあります。
+ * </p>
+ * <p>レコード用クラスには、空を判定するメソッドを用意し、アノテーション {@link XlsIsEmpty}を付与します。
+ *    <br>publicかつ引数なしの戻り値がboolean形式の書式にする必要があります。
+ * </p>
+ * <p>ただし、書き込み時にはこの設定は無効で、空のレコードも出力されます。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     // レコードの読み飛ばしを有効にします。
+ *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧"), terminal=RecordTerminal.Border,
+ *             skipEmptyRecord=true)}
+ *     private {@literal List<UserRecord>} records;
+ *     
+ * }
+ * 
+ * // レコード用クラス
+ * public class UserRecord {
+ * 
+ *     {@literal @XlsColumn(columnName="ID")}
+ *     private int id;
+ *     
+ *     {@literal @XlsColumn(columnName="名前")}
+ *     private String name;
+ *     
+ *     {@literal @XlsColumn(columnName="住所")}
+ *     private String address;
+ *     
+ *     // レコードが空と判定するためのメソッド
+ *     // 列「ID」は空の判定には含まない。
+ *     {@literal @XlsIsEmpty}
+ *     public boolean isEmpty() {
+ *         if(name != null || !name.isEmpty()) {
+ *             return false;
+ *         }
+ *         
+ *         if(address != null || !address.isEmpty()) {
+ *             return false;
+ *         } 
+ *     }
+ * }
+ * </code></pre>
+ * 
+ * 
+ * アノテーション{@link XlsIsEmpty}を付与したメソッドの実装において、{@link com.gh.mygreen.xlsmapper.IsEmptyBuilder}を使用すると、
+ * より簡潔に記述することができます。
+ * 
+ * <pre class="highlight"><code class="java">
+ * // レコード用クラス
+ * public class UserRecord {
+ * 
+ *     {@literal @XlsColumn(columnName="ID")}
+ *     private int id;
+ *     
+ *     {@literal @XlsColumn(columnName="名前")}
+ *     private String name;
+ *     
+ *     {@literal @XlsColumn(columnName="住所")}
+ *     private String address;
+ *     
+ *     // レコードが空と判定するためのメソッド
+ *     {@literal @XlsIsEmpty}
+ *     public boolean isEmpty() {
+ *         // 列「ID」は空の判定には含まないよう除外する。
+ *         return IsEmptyBuilder.reflectionIsEmpty(this, "id");
+ *     }
+ * }
+ * </code></pre>
+ * 
+ * <h3 class="description">表の終端セルを指定する場合（属性{@link #terminateLabel()}）</h3>
+ * 表が他の表と連続しており属性{@link #terminal()}で{@link RecordTerminal#Border}、{@link RecordTerminal#Empty}のいずれを指定しても終端を検出できない場合があります。
+ * このような場合は属性{@link #terminateLabel()}で終端を示すセルの文字列を指定します。
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     // レコードの読み飛ばしを有効にします。
+ *     {@literal @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border,
+ *             terminateLabel="平均")}
+ *     private {@literal List<UserRecord>} records;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord_terminateLabel.png">
+ *    <p>表の終端セルの指定</p>
+ * </div>
+ * 
+ * <h3 class="description">表の見出しの走査の終了条件の指定</h3>
+ * <p>属性{@link #headerLimit()}を指定すると、テーブルの見出し用の列が指定数見つかったタイミングでExcelシートの走査を終了します。</p>
+ * <p>表が隣接しており、無駄な列のセルを読み込みを行わない場合などに使用します。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     // レコードの読み飛ばしを有効にします。
+ *     {@literal @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border,
+ *             headerLimit=3)}
+ *     private {@literal List<UserRecord>} records;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord_headerLimit.png">
+ *    <p>表の見出しの走査の終了条件の指定</p>
+ * </div>
+ * 
+ * 
+ * <h3 class="description">書き込み時にレコードが不足、余分である場合の操作の指定</h3>
+ * <p>属性{@link #overRecord()}で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
+ *    <br>値は、{@link OverRecordOperate}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
+ *    <br>デフォルトでは何もしません。
+ * </p>
+ * 
+ * <p>属性{@link #remainedRecord()}で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
+ *   <br>値は、{@link RemainedRecordOperate}で指定し、行の値のクリアや、行の削除を指定することができます。
+ *   <br>デフォルトでは何もしません。
+ * </p>
+ * 
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     // レコードの読み飛ばしを有効にします。
+ *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧",
+ *             overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Clear)}
+ *     private {@literal List<UserRecord>} records;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord_overRecordpng.png">
+ *    <p>表の書き込み時の不足・余分なレコードの操作の指定</p>
+ * </div>
+ * 
+ * 
  * 
  * @author Naoki Takezoe
+ * @author T.TSUCHIE
  */
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -84,8 +321,11 @@ public @interface XlsHorizontalRecords {
     
     /**
      * テーブルのカラムが指定数見つかったタイミングで Excelシートの走査を終了したい場合に指定します。
-     * <p>主に無駄な走査を抑制したい場合にしますが、 {@link XlsIterateTables}使用時に、
-     * テーブルが隣接しており終端を検出できない場合などに カラム数を明示的に指定してテーブルの区切りを指定する場合にも使用できます。 
+     * <p>主に無駄な走査を抑制したい場合にします。
+     * </p>
+     * <p>テーブルが隣接しており終端を検出できない場合などに、
+     *   見出し用セルのカラム数を明示的に指定してテーブルの区切りを指定する場合に使用できます。 
+     * </p>
      * @return
      */
     int headerLimit() default 0;

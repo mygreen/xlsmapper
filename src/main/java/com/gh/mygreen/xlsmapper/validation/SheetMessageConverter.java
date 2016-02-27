@@ -203,7 +203,7 @@ public class SheetMessageConverter {
     /**
      * 指定した引数の候補からメッセージを取得する。
      * @param codes メッセージコードの候補
-     * @param メッセージコードが見つからない場合のメッセージ
+     * @param defaultMessage メッセージコードが見つからない場合のメッセージ
      * @return
      */
     public String getMessage(final String[] codes, final String defaultMessage) {

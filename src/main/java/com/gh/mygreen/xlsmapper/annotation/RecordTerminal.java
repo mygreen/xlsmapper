@@ -1,7 +1,8 @@
 package com.gh.mygreen.xlsmapper.annotation;
 
 /**
- * {@link XlsHorizontalRecords}などで表を走査する際の基準となる、表の終端の種類を定義します。
+ * アノテーション{@link XlsHorizontalRecords}や{@link XlsVerticalRecords}などで表を走査する際の基準となる、
+ * 表の終端の種類を定義します。
  * 
  * @author Naoki Takezoe
  */

@@ -184,7 +184,7 @@ public class AnnotationInfo implements Serializable {
      * <p>XMLの読み込み時に呼ばれます。
      * <p>既存の情報はクリアされます。
      * @since 1.1
-     * @param attribute
+     * @param attributeInfos アノテーションの属性情報。
      */
     @XmlElement(name="attribute")
     public void setAttributeInfos(List<AtttributeInfo> attributeInfos) {
@@ -249,7 +249,7 @@ public class AnnotationInfo implements Serializable {
         
         /**
          * アノテーションのクラス名を設定する。
-         * @param className アノテーションのクラス名
+         * @param className アノテーションのクラス名。FQCN（完全限定クラス名）を指定します。
          * @return
          * @throws IllegalArgumentException className is empty.
          */

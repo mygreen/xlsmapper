@@ -7,11 +7,93 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 垂直方向に連続する列をListまたは配列にマッピングする際に指定します。
- * <p>表には最左部にテーブルの名称と列名を記述した行が必要になります。
- * An annotation for the property which is mapped to the vertical table records.
+ * 垂直方向に連続する列をCollection(List, Set)または配列にマッピングする際に指定します。
+ * <p>アノテーション{@link XlsHorizontalRecords}を垂直方向にしたものであり、使い方はほとんど同じです。
+ * <p>ここでは、アノテーション{@link XlsHorizontalRecords}と異なる部分を説明します。
+ *    <br>詳細は、アノテーション{@link XlsHorizontalRecords}の説明を参照してください。
+ * </p>
  * 
- * TODO Is this necessary?
+ * <h3 class="description">基本的な使い方</h3>
+ * <p>表名を、属性{@link #tableLabel()}で指定します。</p>
+ * <p>レコード用クラスは、列の定義をアノテーション{@link XlsColumn}で指定します。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Weather")}
+ * public class SampleSheet {
+ *     
+ *     {@literal @XlsVerticalRecords(tableLabel="天気情報")}
+ *     private {@literal List<WeatherRecord>} records;
+ * }
+ * 
+ * // レコード用クラス
+ * public class WeatherRecord {
+ * 
+ *     {@literal @XlsColumn(columnName="時間")}
+ *     private String time;
+ *     
+ *     {@literal @XlsColumn(columnName="降水")}
+ *     private double precipitation;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/VerticalRecord.png">
+ *    <p>基本的な使い方</p>
+ * </div>
+ *
+ *
+ * <h3 class="description">表の名称の位置の指定</h3>
+ * <p>実際に表を作る場合、垂直方向ですが表の名称は上方に設定することが一般的です。</p>
+ * <p>そのような場合、属性 {@link #tableLabelAbove()} の値を'true' に設定すると表のタイトルが上方に位置するとして処理します。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Weather")}
+ * public class SampleSheet {
+ *     
+ *     {@literal @XlsVerticalRecords(tableLabel="天気情報", tableLabelAbove=true)}
+ *     private {@literal List<WeatherRecord>} records;
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/VerticalRecord_tableLabelAbove.png">
+ *    <p>表の名称が上方にある場合</p>
+ * </div>
+ * 
+ * 
+ * <h3 class="description">表の名称から開始位置が離れた場所にある場合</h3>
+ * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #right()}で表の開始位置がどれだけ離れているか指定します。</p>
+ * <p>{@link XlsHorizontalRecords#bottom()} と同じような意味になります。</p>
+ * <p>さらに、属性 {@link #tableLabelAbove()} と組み合わせると、下方向にどれだけ離れているかの意味になります。
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     {@literal @XlsHorizontalRecords(tableLabel="天気情報", right=3)}
+ *     private {@literal List<WeatherRecord>} records;
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/VerticalRecord_right.png">
+ *    <p>表の名称から離れている際の開始位置の指定</p>
+ * </div>
+ * 
+ * 
+ * <h3 class="description">書き込み時にレコードが不足、余分である場合の操作の指定</h3>
+ * <p>属性{@link #overRecord()}、属性{@link #remainedRecord()}で、書き込み時のレコードの操作を指定することができますが、
+ *    {@link XlsHorizontalRecords}の場合は一部の設定が使用できません。
+ * </p>
+ * 
+ * <p>{@link XlsVerticalRecords#overRecord()} の場合、列の挿入を行う{@link OverRecordOperate#Insert}は使用できません。
+ *   <br>また、{@link XlsVerticalRecords#remainedRecord()} の場合、列の削除を行う{@link RemainedRecordOperate#Delete}は使用できません。
+ *   <br>これは、Apache POIが一括で列の挿入や削除の処理を行うことをサポートしていないためです。
+ *</p>
+ * 
  * 
  * @version 1.0
  * @author Naoki Takezoe

@@ -7,7 +7,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 読み込んだシート名を設定するメソッド、またはフィールドに付与します。
+ * 処理対象のシート名をマッピングするメソッド、またはフィールドに付与します。
+ * <p>付与するフィートのクラスタイプは、{@link String}型にする必要があります。
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(number=1)}
+ * public class SampleSheet {
+ *    
+ *    // シート名をマッピングするフィールド
+ *    {@literal @XlsSheetName}
+ *    private String sheetName;
+ *    ・・・
+ * 
+ * }
+ * </code></pre>
  * 
  * @author Naoki Takezoe
  */

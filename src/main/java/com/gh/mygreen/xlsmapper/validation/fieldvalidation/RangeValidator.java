@@ -7,8 +7,15 @@ import com.gh.mygreen.xlsmapper.ArgUtils;
 
 /**
  * 値が指定した範囲内かどうかチェックする。
- * <ul>
- *  <li>メッセージキーは、「cellFieldError.range」。
+ * <pメッセージキーは、「cellFieldError.range」。
+ * <p>メッセージ中で利用可能な変数は次の通り。
+ *   <ul>
+ *    <li>「validatedValue」：検証対象の値のオブジェクト。
+ *    <li>「formattedValidatedValue」：{@link FieldFormatter}により、文字列にフォーマットした検証対象の値。
+ *    <li>「min」：下限値となる最小値。
+ *    <li>「formattedMin」：{@link FieldFormatter}により、文字列にフォーマットした上限値となる最大値。
+ *    <li>「max」：上限値となる最大値。
+ *    <li>「formattedMax」：{@link FieldFormatter}により、文字列にフォーマットした上限値となる最大値。
  * 
  * @version 1.0
  * @author T.TSUCHIE
@@ -25,6 +32,7 @@ public class RangeValidator<T extends Comparable<T>> extends AbstractFieldValida
     
     /**
      * 値の範囲となる最小値と最大値を指定するコンストラクタ
+     * <p>値のフォーマットは、{@link DefaultFieldFormatter} を利用します。
      * @param min 下限値となる最小値
      * @param max 上限値となる最大値
      */
@@ -34,6 +42,7 @@ public class RangeValidator<T extends Comparable<T>> extends AbstractFieldValida
     
     /**
      * 値のフォーマットするための書式を指定するコンストラクタ
+     * <p>値のフォーマットは、{@link DefaultFieldFormatter} を利用します。
      * @param min 下限値となる最小値
      * @param max 上限値となる最大値
      * @param pattern メッセージ中に表示するための値をフォーマットする際の書式。

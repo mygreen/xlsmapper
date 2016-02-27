@@ -9,9 +9,75 @@ import java.lang.annotation.Target;
 
 /**
  * シートのマッピング対象のルートクラス（JavaBeans）に付与するアノテーション。
- * <p>マッピング対象のシート名を属性を使って指定します。
+ * <p>マッピング対象のシートをシート番号、シート名、シート名に対する正規表現のいずれかで指定します。</p>
+ * 
+ * <h3 class="description">シート番号で指定する場合</h3>
+ * <p>シート番号で指定する場合、属性{@link #number()}で指定します。</p>
+ * シート番号は0から始まります。
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(number=0)}
+ * public class SampleSheet {
+ *   ...
+ * }
+ * </code></pre>
+ * 
+ * <h3 class="description">シート名で指定する場合</h3>
+ * <p>シート名で指定する場合、属性{@link #name()}で指定します。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *   ...
+ * }
+ * </code></pre>
+ * 
+ * <h3 class="description">正規表現で指定する場合</h3>
+ * <p>シート名を正規表現で指定する場合、属性{@link #regex()}で指定します。
+ *    同じ形式の複数のシートをマッピングすることができます。</p>
+ *    
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(regex="Sheet_[0-9]+")}
+ * public class SampleSheet {
+ *    ・・・
+ * }
+ * </code></pre>
+ * 
+ * <p>書き込み時に正規表現によるマッピングを行う際には、アノテーション{@link XlsSheetName}を利用して、
+ *    一意に関連づける必要があります。</p>
+ * <pre class="highlight"><code class="java">
+ * // マッピング用クラスの定義
+ * {@literal @XlsSheet(regex="Sheet_[0-9]+")}
+ * public class SampleSheet {
+ *    
+ *    // シート名をマッピングするフィールド
+ *    {@literal @XlsSheetName}
+ *    private String sheetName;
+ *    ・・・
+ * 
+ * }
+ * 
+ * // 書き込み時に、シート名を設定して、一意に関連づけます。
+ * SampleSheet sheet1 = new SampleSheet();
+ * sheet1.sheetName = "Sheet_1"; // シート名の設定
+ * 
+ * SampleSheet sheet2 = new SampleSheet();
+ * sheet2.sheetName = "Sheet_2"; // シート名の設定
+ * 
+ * SampleSheet sheet3 = new SampleSheet();
+ * sheet3.sheetName = "Sheet_3"; // シート名の設定
+ * 
+ * // 複数のシートの書き込み
+ * XlsMapper xlsMapper = new XlsMapper();
+ * xlsMapper.saveMultiple(new FileInputStream("template.xls"),
+ *   new FileOutputStream("out.xls"),
+ *   new Object[]{sheet1, sheet2, sheet3}
+ * );
+ * </code></pre>
+ *
  * 
  * @author Naoki Takezoe
+ * @author T.TSUCHIE
  *
  */
 @Target({ElementType.TYPE})
@@ -21,26 +87,25 @@ public @interface XlsSheet {
     
     /**
      * シート名を指定します。
-     * Returns the mapped sheet name.
      * 
-     * @return the sheet name
+     * @return シート名
      */
     String name() default "";
     
     /**
      * シート名を正規表現で指定します。
-     * <p>書き込み時は、{@link XlsSheetName}を付与したフィールドでシート名を指定します。
-     * Returns the regular expression to map sheet name.
+     * <p>同じ形式の複数のシートを同時にマッピングする際に指定します。
+     * <p>ただし、書き込み時は、{@link XlsSheetName}を付与したフィールドでシート名を指定します。
      * 
-     * @return the regular expression
+     * @return シート名の正規表現
      */
     String regex() default "";
     
     /**
-     * マッピング対象のシートを番号で指定します。'0'から始まります。
-     * Returns the mapped sheet number.
+     * マッピング対象のシートを番号で指定します。
+     * '0'から始まります。
      * 
-     * @return the sheet number
+     * @return シート番号
      */
     int number() default -1;
     

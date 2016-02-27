@@ -1,7 +1,7 @@
 package com.gh.mygreen.xlsmapper.annotation;
 
 /**
- * アノテーション{@link LabelledCellType}にて、見出しセルにから見て値が設定されているセルの位置・方向を指定します。
+ * アノテーション{@link XlsLabelledCell}にて、見出しセルにから見て値が設定されているセルの位置・方向を指定します。
  * @author Naoki Takezoe
  */
 public enum LabelledCellType {

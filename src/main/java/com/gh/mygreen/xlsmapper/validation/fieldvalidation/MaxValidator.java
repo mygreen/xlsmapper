@@ -6,8 +6,13 @@ import com.gh.mygreen.xlsmapper.ArgUtils;
 
 /**
  * 値が指定した値以下かどうかの最大値のチェックする。
- * <ul>
- *  <li>メッセージキーは、「cellFieldError.max」。
+ * <p>メッセージキーは、「cellFieldError.max」。
+ * <p>メッセージ中で利用可能な変数は次の通り。
+ *   <ul>
+ *    <li>「validatedValue」：検証対象の値のオブジェクト。
+ *    <li>「formattedValidatedValue」：{@link FieldFormatter}により、文字列にフォーマットした検証対象の値。
+ *    <li>「max」：上限値となる最大値。
+ *    <li>「formattedMax」：{@link FieldFormatter}により、文字列にフォーマットした上限値となる最大値。
  * 
  * @version 1.0
  * @author T.TSUCHIE
@@ -22,6 +27,8 @@ public class MaxValidator<T extends Comparable<T>> extends AbstractFieldValidato
     
     /**
      * 最大値を指定するコンストラクタ
+     * <p>値のフォーマットは、{@link DefaultFieldFormatter} を利用します。
+     * 
      * @param max 上限値となる最大値
      */
     public MaxValidator(final T max) {
@@ -29,7 +36,9 @@ public class MaxValidator<T extends Comparable<T>> extends AbstractFieldValidato
     }
     
     /**
-     * 値のフォーマットするための書式を指定するコンストラクタ
+     * 値のフォーマットするための書式を指定するコンストラクタ。
+     * <p>値のフォーマットは、{@link DefaultFieldFormatter} を利用します。
+     * 
      * @param max 上限値となる最大値
      * @param pattern メッセージ中に表示するための値をフォーマットする際の書式。
      */
@@ -43,7 +52,7 @@ public class MaxValidator<T extends Comparable<T>> extends AbstractFieldValidato
      * @since 1.0
      * @param max 上限値となる最大値
      * @param formatter エラーメッセージ中のための値のフォーマッタ
-     * @throws IllegalArgumentException formatter is null.
+     * @throws IllegalArgumentException max or formatter is null.
      */
     public MaxValidator(final T max, final FieldFormatter<T> formatter) {
         super();
