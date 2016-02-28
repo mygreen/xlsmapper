@@ -200,7 +200,7 @@ public class ObjectValidatorTest {
         @XlsColumn(columnName="メールアドレス")
         private String email;
         
-        @XlsDateConverter(lenient=true, pattern="yyyy年M月d日")
+        @XlsDateConverter(lenient=true, javaPattern="yyyy年M月d日")
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         

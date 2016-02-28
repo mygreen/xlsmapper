@@ -1261,24 +1261,24 @@ public class NumberCellConverterTest {
         private Short s;
         
         /** 通貨 */
-        @XlsNumberConverter(pattern="", currency="JPY", locale="ja_JP")
+        @XlsNumberConverter(javaPattern="", currency="JPY", locale="ja_JP")
         @XlsColumn(columnName="int型")
         private Integer i;
         
         /** トリム */
         @XlsConverter(defaultValue="-1", trim=true)
-        @XlsNumberConverter(pattern="#,###,##0")
+        @XlsNumberConverter(javaPattern="#,###,##0")
         @XlsColumn(columnName="long型")
         private Long l;
         
         /** パーセント */
-        @XlsNumberConverter(pattern="##.00%")
+        @XlsNumberConverter(javaPattern="##.00%", excelPattern="##.00%")
         @XlsColumn(columnName="float型")
         private Float f;
         
         /** 正と負の数 */
         @XlsConverter(defaultValue="10,000.00")
-        @XlsNumberConverter(pattern="#,##0.00;(#,##0.00)")
+        @XlsNumberConverter(javaPattern="#,##0.00;(#,##0.00)", excelPattern="#,##0.00;(#,##0.00)")
         @XlsColumn(columnName="double型")
         private Double d;
         

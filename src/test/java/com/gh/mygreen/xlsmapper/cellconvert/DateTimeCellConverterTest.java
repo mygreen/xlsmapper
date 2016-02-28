@@ -444,13 +444,13 @@ public class DateTimeCellConverterTest {
         
         /** 書式付き（初期値のフォーマットが不正） */
         @XlsConverter(defaultValue="abc")
-        @XlsDateConverter(pattern="H時m分")
+        @XlsDateConverter(javaPattern="H時m分")
         @XlsColumn(columnName="Timeクラス(sql)")
         private Time sqlTime;
         
         /** 書式付き(lenient=true) */
         @XlsConverter(defaultValue="1999/12/31 10:12")
-        @XlsDateConverter(pattern="yyyy/M/d H:mm", lenient=true, locale="ja_JP")
+        @XlsDateConverter(javaPattern="yyyy/M/d H:mm", lenient=true, locale="ja_JP", excelPattern="yyyy/m/d h:mm")
         @XlsColumn(columnName="Timesamp(sql)")
         private Timestamp timestamp;
         

@@ -376,7 +376,7 @@ public class SheetBeanValidatorTest {
         
         @NotNull
         @Past
-        @XlsDateConverter(lenient=true, pattern="yyyy年M月d日")
+        @XlsDateConverter(lenient=true, javaPattern="yyyy年M月d日")
         @XlsLabelledCell(label="更新日時", type=LabelledCellType.Right)
         private Date updateTime;
         
@@ -419,7 +419,7 @@ public class SheetBeanValidatorTest {
         
         @NotNull
         @Past
-        @XlsDateConverter(lenient=true, pattern="yyyy年M月d日")
+        @XlsDateConverter(lenient=true, javaPattern="yyyy年M月d日")
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
