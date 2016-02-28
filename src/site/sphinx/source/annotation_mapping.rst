@@ -419,6 +419,58 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
     }
 
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+表の見出しが縦に結合されデータレコードの開始位置が離れた場所にある場合
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+表の見出しセルが縦に結合され、データレコードの開始位置が離れている場合、属性headerBottomでデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1]`
+
+下記の例の場合、見出しの「テスト結果」は横に結合されているため :ref:`@XlsColumn(headerMerged=N) <annotationXlsColumnHeaderMerged>` と組み合わせて利用します。
+
+
+.. figure:: ./_static/HorizontalRecord_headerBottom.png
+   :align: center
+   
+   HorizontalRecords(headerBottom)
+
+
+.. sourcecode:: java
+    
+    // シート用クラス
+    @XlsSheet(name="Users")
+    public class SampleSheet {
+        
+        // 見出しが縦に結合され、データのレコードの開始位置が離れている場合
+        @XlsHorizontalRecords(tableLabel="クラス情報", headerBottom=2)
+        private List<SampleRecord> records;
+    
+    }
+    
+    // レコード用クラス
+    public class SampleRecord {
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="名前")
+        private String name;
+        
+        // セル「国語」のマッピング
+        @XlsColumn(columnName="テスト結果")
+        private int sansu;
+        
+        // セル「算数」のマッピング
+        // 結合されている見出しから離れている数を指定する
+        @XlsColumn(columnName="テスト結果", headerMerged=1)
+        private int kokugo;
+        
+        // セル「合計」のマッピング
+        // 結合されている見出しから離れている数を指定する
+        @XlsColumn(columnName="テスト結果", headerMerged=2)
+        private int sum;
+        
+    }
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 表の終端の指定（属性terminal）
@@ -672,14 +724,65 @@ skipEmptyRecord属性で、読み込み時に空のレコードを読み飛ば�
     }
 
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+表の見出しが横に結合されデータレコードの開始位置が離れた場所にある場合
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+表の見出しセルが横に結合され、データレコードの開始位置が離れている場合、属性headerRightでデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1]`
+
+下記の例の場合、見出しの「テスト結果」は横に結合されているため :ref:`@XlsColumn(headerMerged=N) <annotationXlsColumnHeaderMerged>` と組み合わせて利用します。
+
+
+.. figure:: ./_static/VerticalRecord_headerRight.png
+   :align: center
+   
+   VerticalRecords(headerRight)
+
+
+.. sourcecode:: java
+    
+    // シート用クラス
+    @XlsSheet(name="Weather")
+    public class SampleSheet {
+        
+        // 見出しが横に結合され、データのレコードの開始位置が離れている場合
+        @XlsVerticalRecords(tableLabel="天気情報", headerRight=2)
+        private List<SampleRecord> records;
+    
+    }
+    
+    // レコード用クラス
+    public class SampleRecord {
+        
+        @XlsColumn(columnName="時間")
+        private String time;
+        
+        // セル「降水」のマッピング
+        @XlsColumn(columnName="測定結果")
+        private double precipitation;
+        
+        // セル「気温」のマッピング
+        // 結合されている見出しから離れている数を指定する
+        @XlsColumn(columnName="測定結果", headerMerged=1)
+        private int temperature;
+        
+        // セル「天気」のマッピング
+        // 結合されている見出しから離れている数を指定する
+        @XlsColumn(columnName="測定結果", headerMerged=2)
+        private String wather;
+        
+    }
+
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 書き込み時にレコードが不足、余分である場合の操作の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 属性overRecord、remainedRecordで、書き込み時のレコードの操作を指定することができますが、 ``@XlsVerticalRecords`` 場合は **一部の設定が使用できません** 。
 
-* ``@XlsVerticalRecords``の場合、属性``overRecord`` では、列の挿入を行う ``OverRecordOperate.Insert`` は使用できません。
-* ``@XlsVerticalRecords``の場合、属性``@XlsVerticalRecords`` では、列の削除を行う ``RemainedRecordOperate.Delete`` は使用できません。
+* ``@XlsVerticalRecords`` の場合、属性 ``overRecord`` では、列の挿入を行う ``OverRecordOperate.Insert`` は使用できません。
+* ``@XlsVerticalRecords`` の場合、属性 ``remaindRecord`` では、列の削除を行う ``RemainedRecordOperate.Delete`` は使用できません。
 
 これらの操作をサポートしていない理由は、Apache POIが、一括で列の挿入、削除をサポートしていないためです。
 
@@ -758,6 +861,8 @@ skipEmptyRecord属性で、読み込み時に空のレコードを読み飛ば�
     書き込みに時では、属性mergedの値が ``true`` であっても、上部または左側のセルと値が同じでも結合は基本的に行いません。
     ただし、システム設定 ``XlsMapperConfig`` の項目「mergeCellOnSave」の値をtrueにすると結合されます。
  
+
+.. _annotationXlsColumnHeaderMerged:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 見出し行が結合されている場合
@@ -839,7 +944,7 @@ BeanにはMapを引数に取るフィールドまたはメソッドを用意し�
 型変換する場合
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-アノテーション :ref:`@XlsConverter <annoXlsConverter>` などで型変換を適用するときは、Mapの値が変換対象となります。
+アノテーション :ref:`@XlsConverter <annotationXlsConverter>` などで型変換を適用するときは、Mapの値が変換対象となります。
 マップのキーは必ずString型を指定してください。
 
 .. sourcecode:: java

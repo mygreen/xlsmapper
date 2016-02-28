@@ -10,6 +10,10 @@ ver.1.1 - 2016-01-31
 
 * `#66 <https://github.com/mygreen/xlsmapper/issues/66>`_ : セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.6に対応しました。
 
+* `#67 <https://github.com/mygreen/xlsmapper/issues/67>`_ : アノテーション :ref:`@XlsNumberConverter <annotationXlsNumberConverter>` 、 :ref:`@XlsDateConverter <annotationXlsDateConverter>` の属性patternを廃止し、
+  読み込み用の書式の属性javaPatternと書き込み用の書式の属性excelPatternを追加しました。
+
+
 * `#70 <https://github.com/mygreen/xlsmapper/issues/70>`_ : アノテーションのXMLによるマッピング機能の機能追加として、:ref:`XMLをJavaオブジェクトで組み立てる機能 <xml-build>` を追加しました。
   それに伴い、次の修正も行いました。
 
@@ -17,6 +21,13 @@ ver.1.1 - 2016-01-31
   * 例外クラス ``XmlLoadException`` の名称を ``XmlOperateException`` に変更しました。
   * 読み込み時/書き込み時の処理対象となるシートの抽出処理を、 ``SheetFinder`` クラスに分離しました。
     :doc:`XlsMapperConfigのプロパティ「sheetFinder」<otheruse_config>` でカスタマイズすることができます。
+
+* `#73 <https://github.com/mygreen/xlsmapper/issues/73>`_ : 見出し結合されている場合の属性を追加しました。
+
+  * :ref:`@XlsHorizonalRecords(headerBottom) <annotationXlsHorizontalRecords>` を追加しました。
+
+  * :ref:`@XlsVerticalRecords(headerRight) <annotationXlsVerticalRecords>` を追加しました。
+
 
 --------------------------------------------------------
 ver.1.0a - 2015-09-23

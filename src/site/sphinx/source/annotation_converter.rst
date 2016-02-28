@@ -61,7 +61,7 @@
 
 
 
-.. _annoXlsConverter:
+.. _annotationXlsConverter:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``@XlsConverter``
@@ -220,6 +220,7 @@ Converterクラスは、インタフェース ``com.gh.mygreen.xlsmapper.cellcon
     }
 
 
+.. _annotationXlsBooleanConverter:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``@XlsBooleanConverter``
@@ -320,6 +321,8 @@ Excelのセルの種類が「ブール型」以外の場合に、Javaの「boole
     }
 
 
+
+.. _annotationXlsNumberConverter:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``@XlsNumberConverter``
@@ -424,6 +427,7 @@ Excel内部とJavaの数値は、表現可能な有効桁数が異なります�
    * Excelの仕様については、`Excel の仕様と制限 <https://support.office.com/ja-jp/article/Excel-%E3%81%AE%E4%BB%95%E6%A7%98%E3%81%A8%E5%88%B6%E9%99%90-1672b34d-7043-467e-8e27-269d656771c3?ui=ja-JP&rs=ja-JP&ad=JP>`_ を参照してください。
 
 
+.. _annotationXlsDateConverter:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``@XlsDateConverter``
@@ -522,6 +526,7 @@ Excel内部とJavaの数値は、表現可能な有効桁数が異なります�
 
 
 
+.. _annotationXlsEnumConverter:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``@XlsEnumConverter``
@@ -592,6 +597,7 @@ Excel内部とJavaの数値は、表現可能な有効桁数が異なります�
     }
 
 
+.. _annotationXlsArrayConverter:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``@XlsArrayConverter``
