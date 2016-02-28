@@ -15,6 +15,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.converter.XlsItemConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
@@ -96,6 +97,11 @@ public class ListCellConverter extends AbstractCellConverter<List> {
             @Override
             public boolean ignoreEmptyItem() {
                 return false;
+            }
+
+            @Override
+            public XlsItemConverter[] itemConverter() {
+                return new XlsItemConverter[]{};
             }
             
         };

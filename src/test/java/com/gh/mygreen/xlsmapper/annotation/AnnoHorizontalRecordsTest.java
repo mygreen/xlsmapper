@@ -2410,7 +2410,7 @@ public class AnnoHorizontalRecordsTest {
         @XlsColumn(columnName="氏名")
         private String name;
         
-        @XlsDateConverter(pattern="yyyy年M月d日", lenient=true)
+        @XlsDateConverter(javaPattern="yyyy年M月d日", lenient=true)
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
@@ -2654,7 +2654,7 @@ public class AnnoHorizontalRecordsTest {
         @XlsColumn(columnName="氏名")
         private String name;
         
-        @XlsDateConverter(pattern="yyyy年M月d日")
+        @XlsDateConverter(javaPattern="yyyy年M月d日")
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
@@ -3365,7 +3365,7 @@ public class AnnoHorizontalRecordsTest {
             return birthday;
         }
         
-        @XlsDateConverter(pattern="yyyy年M月d日")
+        @XlsDateConverter(javaPattern="yyyy年M月d日")
         @XlsColumn(columnName="生年月日")
         public void setBirthday(Date birthday) {
             this.birthday = birthday;
@@ -3571,7 +3571,7 @@ public class AnnoHorizontalRecordsTest {
             private String name;
             
             @XlsColumn(columnName="生年月日")
-            @XlsDateConverter(pattern="yyyy年M月d日")
+            @XlsDateConverter(javaPattern="yyyy年M月d日")
             private Date birthDady;
             
             @XlsIsEmpty

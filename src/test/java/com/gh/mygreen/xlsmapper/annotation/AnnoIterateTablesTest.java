@@ -1039,7 +1039,7 @@ public class AnnoIterateTablesTest {
         @XlsColumn(columnName="氏名")
         private String name;
         
-        @XlsDateConverter(pattern="yyyy年M月d日")
+        @XlsDateConverter(javaPattern="yyyy年M月d日")
         @XlsColumn(columnName="誕生日")
         private Date birthday;
         

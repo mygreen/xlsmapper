@@ -18,7 +18,7 @@ import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
  * <p>初期値を設定する場合、属性{@link #defaultValue()}で指定します。</p>
  * 
  * <ul>
- *   <li>日付などの書式がある場合、専用のアノテーションで指定した書式{@link XlsDateConverter#pattern()}を元に、
+ *   <li>日付などの書式がある場合、専用のアノテーションで指定した書式{@link XlsDateConverter#javaPattern()}を元に、
  *       文字列をそのオブジェクトに変換し処理します。
  *   </li>
  *   <li>指定したデフォルト値がマッピング先の型として不正な場合は、
