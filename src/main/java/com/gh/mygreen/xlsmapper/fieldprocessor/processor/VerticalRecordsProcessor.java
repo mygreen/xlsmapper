@@ -55,7 +55,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * アノテーション{@link XlsVerticalRecords}を処理するクラス。
  * 
- * @version 1.0
+ * @version 1.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -184,8 +184,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         final int startHeaderIndex = getStartHeaderIndex(headers, recordClass, work);
         
+        // データ行の開始位置の調整
+        hColumn += anno.headerRight();
+        
         // get records
-        hColumn++;
         while(hColumn < POIUtils.getColumns(sheet)){
             
             hRow = initRow;
@@ -629,8 +631,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         final int startHeaderIndex = getStartHeaderIndex(headers, result, recordClass, work);
         
+        // データ行の開始位置の調整
+        hColumn += anno.headerRight();
+        
         // get records
-        hColumn++;
         for(int r=0; r < POIUtils.getColumns(sheet); r++) {
             
             hRow = initRow;

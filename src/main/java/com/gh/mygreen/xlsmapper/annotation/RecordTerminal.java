@@ -11,6 +11,6 @@ public enum RecordTerminal {
     /** 表の値が空の場合 */
     Empty,
     
-    /** 一番左がの列に罫線がある場合 */
+    /** 終端のセルに罫線がある場合 */
     Border,;
 }

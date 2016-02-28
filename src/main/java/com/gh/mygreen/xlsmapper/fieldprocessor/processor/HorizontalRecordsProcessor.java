@@ -59,7 +59,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * アノテーション{@link XlsHorizontalRecords}を処理するクラス。
  * 
- * @version 1.0
+ * @version 1.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -185,8 +185,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         final int startHeaderIndex = getStartHeaderIndex(headers, recordClass, work);
         
+        // データ行の開始位置の調整
+        hRow += anno.headerBottom();
+        
         // get records
-        hRow++;
         while(hRow < POIUtils.getRows(sheet)){
             hColumn = initColumn;
             boolean emptyFlag = true;
@@ -632,8 +634,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         final int startHeaderIndex = getStartHeaderIndex(headers, result, recordClass, work);
         
+        // データ行の開始位置の調整
+        hRow += anno.headerBottom();
+        
         // get records
-        hRow++;
         for(int r=0; r < POIUtils.getRows(sheet); r++) {
             
             hColumn = initColumn;

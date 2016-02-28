@@ -118,9 +118,9 @@ public @interface XlsColumn {
     boolean merged() default false;
     
     /**
-     * 見出し行が結合され、1つの見出しに対して複数の列が存在する場合はheaderMergedプロパティを使用します。
-     * <p>headerMergedの値には、列見出しから何セル分離れているかを指定します。 
-     * @return
+     * 見出し行が結合され、1つの見出しに対して複数の列が存在する場合に指定します。
+     * <p>{@link #headerMerged()}の値には、列見出しから何セル分離れているかを指定します。 
+     * @return 値は0から始まり、指定しない場合は0を指定します。
      */
     int headerMerged() default 0;
     

@@ -84,6 +84,70 @@ import java.lang.annotation.Target;
  * </div>
  * 
  * 
+ * <h3 class="description">表の名称から開始位置が離れた場所にある場合</h3>
+ * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #bottom()}で表の開始位置がどれだけ離れているか指定します。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧", bottom=3)}
+ *     private {@literal List<UserRecord>} records;
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord_bottom.png">
+ *    <p>表の名称から離れている際の開始位置の指定</p>
+ * </div>
+ * 
+ * 
+ * <h3 class="description">表の見出しが横に結合されデータレコードの開始位置が離れた場所にある場合</h3>
+ * <p>表の見出しセルが横に結合され、データレコードの開始位置が離れている場合、属性{@link #headerRight()}でデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1]`</p>
+ * <p>下記の例の場合、見出しの「測定結果」は縦に結合されているため {@link XlsColumn#headerMerged()}と組み合わせて利用します。
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Weather")}
+ * public class SampleSheet {
+ *     
+ *     // 見出しが横に結合され、データのレコードの開始位置が離れている場合
+ *     {@literal XlsVerticalRecords(tableLabel="クラス情報", headerRight=2)}
+ *         private {@literal List<SampleRecord>} records;
+ *     
+ *     }
+ * }
+ *   
+ * // レコード用クラス
+ * public class SampleRecord {
+ *     
+ *     {@literal @XlsColumn(columnName="時間")}
+ *     private String name;
+ *     
+ *     // セル「降水」のマッピング
+ *     {@literal @XlsColumn(columnName="測定結果")}
+ *     private double precipitation;
+ *     
+ *     // セル「気温」のマッピング
+ *     // 結合されている見出しから離れている数を指定する
+ *     {@literal @XlsColumn(columnName="測定結果", headerMerged=1)}
+ *     private int temperature;
+ *     
+ *     / セル「天気」のマッピング
+ *     // 結合されている見出しから離れている数を指定する
+ *     {@literal @XlsColumn(columnName="測定結果", headerMerged=2)}
+ *     private String wather;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/VerticalRecord_headerRight.png">
+ *    <p>表の見出しからデータレコードが離れているときの指定</p>
+ * </div>
+ * 
+ *  
+ * 
  * <h3 class="description">書き込み時にレコードが不足、余分である場合の操作の指定</h3>
  * <p>属性{@link #overRecord()}、属性{@link #remainedRecord()}で、書き込み時のレコードの操作を指定することができますが、
  *    {@link XlsHorizontalRecords}の場合は一部の設定が使用できません。
@@ -95,7 +159,7 @@ import java.lang.annotation.Target;
  *</p>
  * 
  * 
- * @version 1.0
+ * @version 1.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  */
@@ -105,9 +169,8 @@ import java.lang.annotation.Target;
 public @interface XlsVerticalRecords {
     
     /**
-     * レコードが見つからない場合に、エラーとしないで、無視して処理を続行させてい場合trueを指定します。
-     * 
-     * @return
+     * レコードが見つからない場合に、エラーとしないで、無視して処理を続行するかどうかを指定します。
+     * @return trueの場合、無視して処理を続行します。
      */
     boolean optional() default false;
     
@@ -118,8 +181,9 @@ public @interface XlsVerticalRecords {
     String tableLabel() default "";
     
     /**
-     * 表の見出し（タイトル）ラベルの位置が上方に位置するかどうか。
+     * 表の名称（タイトル）ラベルの位置が上方に位置するかどうか指定します。
      * @since 1.0
+     * @return trueの場合、表の名称（タイトル）が上方にあるとして処理をします。
      */
     boolean tableLabelAbove() default false;
     
@@ -132,21 +196,20 @@ public @interface XlsVerticalRecords {
     
     /**
      * 表の開始位置（見出し列）セルの行番号を指定する。
-     * <p>値は'0'から始まる。
-     * @return
+     * @return 値は0から始まり、指定しない場合は-1を指定します。
      */
     int headerColumn() default -1;
     
     /**
      * 表の開始位置（見出し行）セルの行番号を指定する。
-     * <p>値は'0'から始まる。
-     * @return
+     * @return 値は0から始まり、指定しない場合は-1を指定します。
      */
     int headerRow() default -1;
     
     /**
      * 表の開始位置のセルのアドレスを'A1'などのように指定します。値を指定した場合、指定したアドレスを起点に走査を行います
-     * <p>属性{@link #headerRow()},{@link #headerColumn()}のどちらか一方を指定可能です
+     * <p>属性{@link #headerRow()},{@link #headerColumn()}のどちらか一方を指定可能です。
+     * @return 
      */
     String headerAddress() default "";
     
@@ -157,13 +220,15 @@ public @interface XlsVerticalRecords {
     Class<?> recordClass() default Object.class;
     
     /** 
-     * 表の終端の種類を指定します
+     * 表の終端の種類を指定します。
+     * return {@link RecordTerminal#Empty}の場合、空のレコードがあると処理を終了します。
      */
     RecordTerminal terminal() default RecordTerminal.Empty;
     
     /**
      * 右方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルを見出しとします。
-     * @return
+     * 
+     * @return 値は1から始まり、指定しない場合は1を指定します。
      */
     int range() default 1;
     
@@ -172,7 +237,7 @@ public @interface XlsVerticalRecords {
      * <p>右方向の列数を指定する。
      * <p>{@link #tableLabelAbove()}の値がtrueの場合は、下方向に行数になる。
      * @since 1.0
-     * @return
+     * @return 値は1から始まり、指定しない場合は1を指定します。
      */
     int right() default 1;
     
@@ -180,29 +245,39 @@ public @interface XlsVerticalRecords {
      * テーブルのカラムが指定数見つかったタイミングで Excelシートの走査を終了したい場合に指定します。
      * <p>主に無駄な走査を抑制したい場合にしますが、 {@link XlsIterateTables}使用時に、
      * テーブルが隣接しており終端を検出できない場合などに カラム数を明示的に指定してテーブルの区切りを指定する場合にも使用できます。 
-     * @return
+     * 
+     * @return 値は0から始まり、指定しない場合は0を指定します。
      */
     int headerLimit() default 0;
     
     /**
+     * 見出し用セルから、データ行の開始位置がどれだけ離れているかを指定します。
+     * <p>右方向の列数を指定します。</p>
+     * <p>見出しが横に結合されているような場合に指定します。</p>
+     * @since 1.1
+     * @return 値は1から始まり、指定しない場合は1を指定します。
+     */
+    int headerRight() default 1;
+    
+    /**
      * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
      * {@link XlsVerticalRecords}の場合、{@link OverRecordOperate#Insert}は対応していません。
-     * @return
+     * @return {@link OverRecordOperate#Break}の場合、足りないレコードがあるとそこで処理を終了します。
      */
     OverRecordOperate overRecord() default OverRecordOperate.Break;
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
      * {@link XlsVerticalRecords}の場合、{@link RemainedRecordOperate#Delete}は対応していません。
-     * @return
+     * @return {@link RemainedRecordOperate#None}の場合、余っているレコードがあっても何もしません。
      */
     RemainedRecordOperate remainedRecord() default RemainedRecordOperate.None; 
     
     /**
      * 空のレコードの場合、処理をスキップするかどうか。
      * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsEmpty}を付与する必要があります。
-     * @return
      * @since 0.2
+     * @return trueの場合、空のレコードをスキップします。
      */
     boolean skipEmptyRecord() default false;
 }

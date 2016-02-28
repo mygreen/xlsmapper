@@ -76,6 +76,54 @@ import java.lang.annotation.Target;
  * </div>
  * 
  * 
+ * <h3 class="description">表の見出しが縦に結合されデータレコードの開始位置が離れた場所にある場合</h3>
+ * <p>表の見出しセルが縦に結合され、データレコードの開始位置が離れている場合、属性{@link #headerBottom()}でデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1]`</p>
+ * <p>下記の例の場合、見出しの「テスト結果」は横に結合されているため {@link XlsColumn#headerMerged()}と組み合わせて利用します。
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     // 見出しが縦に結合され、データのレコードの開始位置が離れている場合
+ *     {@literal @XlsHorizontalRecords(tableLabel="クラス情報", headerBottom=2)}
+ *         private {@literal List<SampleRecord>} records;
+ *     
+ *     }
+ * }
+ *   
+ * // レコード用クラス
+ * public class SampleRecord {
+ *     
+ *     {@literal @XlsColumn(columnName="No.")}
+ *     private int no;
+ *     
+ *     {@literal @XlsColumn(columnName="名前")}
+ *     private String name;
+ *     
+ *     // セル「国語」のマッピング
+ *     {@literal @XlsColumn(columnName="テスト結果")}
+ *     private int sansu;
+ *     
+ *     // セル「算数」のマッピング
+ *     // 結合されている見出しから離れている数を指定する
+ *     {@literal @XlsColumn(columnName="テスト結果", headerMerged=1)}
+ *     private int kokugo;
+ *     
+ *     / セル「合計」のマッピング
+ *     // 結合されている見出しから離れている数を指定する
+ *     {@literal @XlsColumn(columnName="テスト結果", headerMerged=2)}
+ *     private int sum;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord_headerBottom.png">
+ *    <p>表の見出しからデータレコードが離れているときの指定</p>
+ * </div>
+ * 
+ * 
  * <h3 class="description">表の終端を指定する場合（属性{@link #terminal()}）</h3>
  * デフォルトでは行に1つもデータが存在しない場合、その表の終端となります。
  * 行の一番左側の列の罫線によって表の終端を検出する方法もあります。
@@ -246,7 +294,7 @@ import java.lang.annotation.Target;
  * </div>
  * 
  * 
- * 
+ * @version 1.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  */
@@ -256,14 +304,15 @@ import java.lang.annotation.Target;
 public @interface XlsHorizontalRecords {
     
     /**
-     * レコードが見つからない場合に、エラーとしないで、無視して処理を続行させてい場合trueを指定します。
-     * @return
+     * レコードが見つからない場合に、エラーとしないで、無視して処理を続行するかどうかを指定します。
+     * @return trueの場合、無視しして処理を続行します。
      */
     boolean optional() default false;
     
     /**
      * 表の見出し（タイトル）ラベル。値を指定した場合、ラベルと一致するセルを起点に走査を行います。
      * <p>属性{@link #headerRow()},{@link #headerColumn()}{@link #headerAddress()}のどちらか一方を指定可能です。
+     * @return 
      */
     String tableLabel() default "";
     
@@ -277,20 +326,20 @@ public @interface XlsHorizontalRecords {
     /**
      * 表の開始位置（見出し行）セルの行番号を指定します。{@link #headerColumn()}属性とセットで指定します。
      * <p>値は'0'から始まる。
-     * @return
+     * @return 値は0から始まり、指定しない場合は-1を指定します。
      */
     int headerRow() default -1;
     
     /**
      * 表の開始位置（見出し列）セルの行番号を指定します。{@link #headerRow()}属性とセットで指定します。
-     * <p>値は'0'から始まる。
-     * @return
+     * @return 値は0から始まり、指定しない場合は-1を指定します。
      */
     int headerColumn() default -1;
     
     /**
      * 表の開始位置のセルのアドレスを'A1'などのように指定します。値を指定した場合、指定したアドレスを起点に走査を行います
      * <p>属性{@link #headerRow()},{@link #headerColumn()}のどちらか一方を指定可能です
+     * @return 
      */
     String headerAddress() default "";
     
@@ -303,50 +352,59 @@ public @interface XlsHorizontalRecords {
     
     /** 
      * 表の終端の種類を指定します
+     * @return {@link RecordTerminal#Empty}の場合、空のレコードがあると処理を終了します。
      */
     RecordTerminal terminal() default RecordTerminal.Empty;
     
     /**
      * 右方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルを見出しとします。
-     * @return
+     * @return 値は1から始まり、指定しない場合は1を指定します。
      */
     int range() default 1;
     
     /**
-     * {@link #tableLabel()}で指定した表のタイトルから、実際の表の開始位置がどれだけ離れているか指定する。
-     * <p>下方向の行数を指定する。
-     * @return
+     * {@link #tableLabel()}で指定した表のタイトルから、実際の表の開始位置がどれだけ離れているか指定します。
+     * <p>下方向の行数を指定する。</p>
+     * @return 値は1から始まり、指定しない場合は1を指定します。
      */
     int bottom() default 1;
     
     /**
      * テーブルのカラムが指定数見つかったタイミングで Excelシートの走査を終了したい場合に指定します。
-     * <p>主に無駄な走査を抑制したい場合にします。
-     * </p>
+     * <p>主に無駄な走査を抑制したい場合にします。</p>
      * <p>テーブルが隣接しており終端を検出できない場合などに、
      *   見出し用セルのカラム数を明示的に指定してテーブルの区切りを指定する場合に使用できます。 
      * </p>
-     * @return
+     * @return 値は0から始まり、指定しない場合は0を指定します。
      */
     int headerLimit() default 0;
     
     /**
+     * 見出し用セルから、データ行の開始位置がどれだけ離れているかを指定します。
+     * <p>下方向の行数を指定します。</p>
+     * <p>見出しが縦に結合されているような場合に指定します。</p>
+     * @since 1.1
+     * @return 値は1から始まり、指定しない場合は1を指定します。
+     */
+    int headerBottom() default 1;
+    
+    /**
      * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
-     * @return
+     * @return {@link OverRecordOperate#Break}の場合、足りないレコードがあるとそこで処理を終了します。
      */
     OverRecordOperate overRecord() default OverRecordOperate.Break;
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
-     * @return
+     * @return {@link RemainedRecordOperate#None}の場合、余っているレコードがあっても何もしません。
      */
     RemainedRecordOperate remainedRecord() default RemainedRecordOperate.None;
     
     /**
      * 空のレコードの場合、処理をスキップするかどうか。
      * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsEmpty}を付与する必要があります。
-     * @return
      * @since 0.2
+     * @return trueの場合、空のレコードをスキップします。
      */
     boolean skipEmptyRecord() default false;
 }
