@@ -366,7 +366,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         }
         
         // セルの書式の設定
-        if(Utils.isNotEmpty(anno.excelPattern()) && !POIUtils.getCellFormatPattern(cell).equals(anno.excelPattern())) {
+        if(Utils.isNotEmpty(anno.excelPattern()) && !POIUtils.getCellFormatPattern(cell).equalsIgnoreCase(anno.excelPattern())) {
             
             // 既にCell中に書式が設定され、それが異なる場合
             CellStyle style = sheet.getWorkbook().createCellStyle();
