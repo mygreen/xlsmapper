@@ -39,7 +39,8 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link VerticalRecordsProcessor}のテスタ
  * アノテーション{@link XlsVerticalRecords}のテスタ。
- * @version 1.0
+ * 
+ * @version 1.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -601,6 +602,42 @@ public class AnnoVerticalRecordsTest {
             assertThat(record.dateAttended.get("4月1日"), is(false));
             assertThat(cellFieldError(errors, cellAddress(record.dateAttendedPosition.get("4月2日"))).isTypeBindFailure(), is(true));
             assertThat(record.dateAttended.get("4月3日"), is(true));
+        }
+        
+    }
+    
+    private void assertRecord(final StartedDataPositionSheet.DistantRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.sansu, is(90));
+            assertThat(record.kokugo, is(70));
+            assertThat(record.sum, is(160));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.sansu, is(80));
+            assertThat(record.kokugo, is(90));
+            assertThat(record.sum, is(170));
+            
+        }
+        
+    }
+    
+    private void assertRecord(final StartedDataPositionSheet.HeaderMergedRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.sansu, is(90));
+            assertThat(record.kokugo, is(70));
+            assertThat(record.sum, is(160));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.sansu, is(80));
+            assertThat(record.kokugo, is(90));
+            assertThat(record.sum, is(170));
+            
         }
         
     }
@@ -1523,6 +1560,119 @@ public class AnnoVerticalRecordsTest {
     }
     
     /**
+     * データの開始位置の指定のテスト
+     * @since 1.1
+     */
+    @Test
+    public void test_load_vr_startedDataPosition() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(false);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(StartedDataPositionSheet.class);
+            
+            StartedDataPositionSheet sheet = mapper.load(in, StartedDataPositionSheet.class, errors);
+            
+            if(sheet.distantRecords != null) {
+                
+                assertThat(sheet.distantRecords, hasSize(2));
+                for(StartedDataPositionSheet.DistantRecord record : sheet.distantRecords) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+            
+            if(sheet.headerMergedRecords1 != null) {
+                
+                assertThat(sheet.headerMergedRecords1, hasSize(2));
+                for(StartedDataPositionSheet.HeaderMergedRecord record : sheet.headerMergedRecords1) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+            
+            if(sheet.headerMergedRecords2 != null) {
+                
+                assertThat(sheet.headerMergedRecords2, hasSize(2));
+                for(StartedDataPositionSheet.HeaderMergedRecord record : sheet.headerMergedRecords2) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - データ行の開始位置の判定
+     * @since 1.1
+     */
+    @Test
+    public void test_save_vr_startedDataPositoin() throws Exception {
+        // テストデータの作成
+        StartedDataPositionSheet outSheet = new StartedDataPositionSheet();
+        
+        outSheet.addDistantRecord(new StartedDataPositionSheet.DistantRecord().name("山田太郎").sansu(90).kokugo(70).sum(160));
+        outSheet.addDistantRecord(new StartedDataPositionSheet.DistantRecord().name("鈴木次郎").sansu(80).kokugo(90).sum(170));
+        
+        outSheet.addHeaderMergedRecord1(new StartedDataPositionSheet.HeaderMergedRecord().name("山田太郎").sansu(90).kokugo(70).sum(160));
+        outSheet.addHeaderMergedRecord1(new StartedDataPositionSheet.HeaderMergedRecord().name("鈴木次郎").sansu(80).kokugo(90).sum(170));
+        
+        outSheet.addHeaderMergedRecord2(new StartedDataPositionSheet.HeaderMergedRecord().name("山田太郎").sansu(90).kokugo(70).sum(160));
+        outSheet.addHeaderMergedRecord2(new StartedDataPositionSheet.HeaderMergedRecord().name("鈴木次郎").sansu(80).kokugo(90).sum(170));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(StartedDataPositionSheet.class);
+            
+            StartedDataPositionSheet sheet = mapper.load(in, StartedDataPositionSheet.class, errors);
+            
+            if(sheet.distantRecords != null) {
+                assertThat(sheet.distantRecords, hasSize(outSheet.distantRecords.size()));
+                
+                for(int i=0; i < sheet.distantRecords.size(); i++) {
+                    assertRecord(sheet.distantRecords.get(i), outSheet.distantRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.headerMergedRecords1 != null) {
+                assertThat(sheet.headerMergedRecords1, hasSize(outSheet.headerMergedRecords1.size()));
+                
+                for(int i=0; i < sheet.headerMergedRecords1.size(); i++) {
+                    assertRecord(sheet.headerMergedRecords1.get(i), outSheet.headerMergedRecords1.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.headerMergedRecords2 != null) {
+                assertThat(sheet.headerMergedRecords2, hasSize(outSheet.headerMergedRecords2.size()));
+                
+                for(int i=0; i < sheet.headerMergedRecords2.size(); i++) {
+                    assertRecord(sheet.headerMergedRecords2.get(i), outSheet.headerMergedRecords2.get(i), errors);
+                }
+                
+            }
+            
+            
+        }
+        
+    }
+    
+    /**
      * 書き込んだレコードを検証するための
      * @param inRecord
      * @param outRecord
@@ -1782,6 +1932,46 @@ public class AnnoVerticalRecordsTest {
             assertThat(inRecord.name, is(trim(outRecord.name)));
             assertThat(inRecord.dateAttended, is(outRecord.dateAttended));
         }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 1.1
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final StartedDataPositionSheet.DistantRecord inRecord, final StartedDataPositionSheet.DistantRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.sansu, is(outRecord.sansu));
+        assertThat(inRecord.kokugo, is(outRecord.kokugo));
+        assertThat(inRecord.sum, is(outRecord.sum));
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 1.1
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final StartedDataPositionSheet.HeaderMergedRecord inRecord, final StartedDataPositionSheet.HeaderMergedRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.sansu, is(outRecord.sansu));
+        assertThat(inRecord.kokugo, is(outRecord.kokugo));
+        assertThat(inRecord.sum, is(outRecord.sum));
+        
     }
     
     /**
@@ -3439,6 +3629,194 @@ public class AnnoVerticalRecordsTest {
            record.no(aboveRecords2.size());
            
            return this;
+       }
+       
+   }
+   
+   /**
+    * データの開始位置の指定
+    */
+   @XlsSheet(name="データの開始位置")
+   private static class StartedDataPositionSheet {
+       
+       @XlsHint(order=1)
+       @XlsVerticalRecords(tableLabel="データの開始位置が離れている", terminal=RecordTerminal.Border, headerRight=2,
+               skipEmptyRecord=true, overRecord=OverRecordOperate.Copy)
+       private List<DistantRecord> distantRecords;
+       
+       @XlsHint(order=2)
+       @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border, headerRight=2,
+               skipEmptyRecord=true, overRecord=OverRecordOperate.Copy)
+       private List<HeaderMergedRecord> headerMergedRecords1;
+       
+       @XlsHint(order=3)
+       @XlsVerticalRecords(tableLabel="見出しが結合（タイトルが上）", terminal=RecordTerminal.Border, headerRight=2,
+               tableLabelAbove=true,
+               skipEmptyRecord=true, overRecord=OverRecordOperate.Copy)
+       private List<HeaderMergedRecord> headerMergedRecords2;
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public StartedDataPositionSheet addDistantRecord(DistantRecord record) {
+           if(distantRecords == null) {
+               this.distantRecords = new ArrayList<>();
+           }
+           
+           this.distantRecords.add(record);
+           record.no(distantRecords.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public StartedDataPositionSheet addHeaderMergedRecord1(HeaderMergedRecord record) {
+           if(headerMergedRecords1 == null) {
+               this.headerMergedRecords1 = new ArrayList<>();
+           }
+           
+           this.headerMergedRecords1.add(record);
+           record.no(headerMergedRecords1.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public StartedDataPositionSheet addHeaderMergedRecord2(HeaderMergedRecord record) {
+           if(headerMergedRecords2 == null) {
+               this.headerMergedRecords2 = new ArrayList<>();
+           }
+           
+           this.headerMergedRecords2.add(record);
+           record.no(headerMergedRecords2.size());
+           
+           return this;
+       }
+       
+       /**
+        * 
+        * データ行が離れている
+        */
+       private static class DistantRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsConverter(defaultValue="99")
+           @XlsColumn(columnName="No.", optional=true)
+           private int no;
+           
+           @XlsColumn(columnName="氏名")
+           private String name;
+           
+           @XlsColumn(columnName="算数")
+           private int sansu;
+           
+           @XlsColumn(columnName="国語")
+           private int kokugo;
+           
+           @XlsColumn(columnName="合計")
+           private int sum;
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+           }
+           
+           public DistantRecord no(int no) {
+               this.no = no;
+               return this;
+           }
+           
+           public DistantRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+           
+           public DistantRecord sansu(int sansu) {
+               this.sansu = sansu;
+               return this;
+           }
+           
+           public DistantRecord kokugo(int kokugo) {
+               this.kokugo = kokugo;
+               return this;
+           }
+           
+           public DistantRecord sum(int sum) {
+               this.sum = sum;
+               return this;
+           }
+           
+       }
+       
+       /**
+        * 
+        * 見出しが縦に結合
+        */
+       private static class HeaderMergedRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsConverter(defaultValue="99")
+           @XlsColumn(columnName="No.", optional=true)
+           private int no;
+           
+           @XlsColumn(columnName="氏名")
+           private String name;
+           
+           @XlsColumn(columnName="テスト結果")
+           private int sansu;
+           
+           @XlsColumn(columnName="テスト結果", headerMerged=1)
+           private int kokugo;
+           
+           @XlsColumn(columnName="テスト結果", headerMerged=2)
+           private int sum;
+
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+           }
+           
+           public HeaderMergedRecord no(int no) {
+               this.no = no;
+               return this;
+           }
+           
+           public HeaderMergedRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+           
+           public HeaderMergedRecord sansu(int sansu) {
+               this.sansu = sansu;
+               return this;
+           }
+           
+           public HeaderMergedRecord kokugo(int kokugo) {
+               this.kokugo = kokugo;
+               return this;
+           }
+           
+           public HeaderMergedRecord sum(int sum) {
+               this.sum = sum;
+               return this;
+           }
        }
        
    }
