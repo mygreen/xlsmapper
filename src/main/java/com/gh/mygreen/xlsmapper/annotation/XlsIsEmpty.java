@@ -9,6 +9,9 @@ import java.lang.annotation.Target;
 
 /**
  * レコードの値が空からどうか判定するメソッドに付与します。
+ * 
+ * <h3 class="description">基本的な使い方</h3>
+  * 
  * <p>シートの読み込み時に、{@link XlsHorizontalRecords}、{@link XlsVerticalRecords} の処理対象のレコードが、
  *    空の場合に読み飛ばしたい時に利用します。
  * </p>
@@ -54,6 +57,7 @@ import java.lang.annotation.Target;
  * }
  * </code></pre>
  * 
+ * <h3 class="description">{@link com.gh.mygreen.xlsmapper.IsEmptyBuilder}を使った記述の簡単化</h3>
  * 
  * アノテーション{@link XlsIsEmpty}を付与したメソッドの実装において、{@link com.gh.mygreen.xlsmapper.IsEmptyBuilder}を使用すると、
  * より簡潔に記述することができます。

@@ -13,6 +13,10 @@
 ~*
 \#*\#
 
+## for testdata
+/src/test/out
+
 ## for coverage
 /coverage
+/coverage.exec
 

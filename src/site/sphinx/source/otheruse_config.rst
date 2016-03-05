@@ -50,6 +50,18 @@ XlsMapperConfigでは以下の設定を行うことができます。
      - | シートが見つからなくても無視するかどうか。
        | 初期値は'false'です
    
+   * - ``normalizeLabelText``
+     - ``boolean``
+     - | ラベルを正規化(空白、改行、タブを除去)して、マッピングするかどうか
+       | 初期値は'false'です。
+       | **Ver.1.1以上** から利用可能です。
+   
+   * - ``regexLabelText``
+     - ``boolean``
+     - | マッピングするラベルに ``/正規表現/`` と記述しておくと正規表現でマッピングできるかどうか。
+       | 初期値は'false'です。
+       | **Ver.1.1以上** から利用可能です。
+   
    * - ``skipTypeBindFailure``
      - ``boolean``
      - | 型変換エラーが発生しても処理を続けるかどうか。
@@ -58,7 +70,7 @@ XlsMapperConfigでは以下の設定を行うことができます。
    * - ``mergeCellOnSave``
      - ``boolean``
      - | 書き込み時にセルの結合を行うかどうか。
-       | アノテーション@XlsColumnの属性mergedを書き込み時も考慮します。
+       | アノテーション :ref:`@XlsColumn <annotationXlsColumn>` の属性mergedを書き込み時も考慮します。
        | 初期値は'false'です。
    
    * - ``correctNameRangeOnSave``

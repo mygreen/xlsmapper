@@ -73,7 +73,7 @@ XMLファイルによるマッピング
 .. sourcecode:: java
     
     // XMLファイルの読み込み
-    XMLInfo xmlInfo = XMLLoader.load(new File("example.xml"), "UTF-8");
+    XMLInfo xmlInfo = XmlIO.load(new File("example.xml"), "UTF-8");
     
     // AnnotationReaderのインスタンスを作成
     AnnotationReader reader = new AnnotationReader(xmlInfo);

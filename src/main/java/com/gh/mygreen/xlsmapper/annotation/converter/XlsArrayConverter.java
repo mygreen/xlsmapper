@@ -93,4 +93,11 @@ public @interface XlsArrayConverter {
      */
     Class<?> itemClass() default Object.class;
     
+    /**
+     * 配列やリストの要素に対する変換規則を指定する。
+     * @since 1.1
+     * @return
+     */
+    XlsItemConverter[] itemConverter() default {};
+    
 }

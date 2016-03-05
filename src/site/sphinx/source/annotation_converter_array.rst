@@ -1,0 +1,79 @@
+
+.. _annotationXlsArrayConverter:
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``@XlsArrayConverter``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+配列またはCollection型（List, Set）の変換規則の設定を行います。
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+基本的な使い方
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Collection型のインタフェースを指定している場合、読み込み時のインスタンスは次のクラスが指定されます。
+
+* ``java.util.List`` の場合、``java.util.ArrayList`` がインスタンスのクラスとなります。
+* ``java.util.Set`` の場合、``java.util.LinkedHashSet`` がインスタンスのクラスとなります。
+
+
+配列、またはCollection型の要素で指定可能なクラスタイプは、次の通りです。
+
+* String型
+* プリミティブ型「boolean/char/byte/short/int/long/float/double」と、そのラッパークラス。
+* ``java.math.BigDecimal`` / ``java.math.BigInteger`` 
+
+
+文字列のセルに対して、任意の区切り文字を指定し、配列やListに対してマッピングします。
+
+* 属性separatorで区切り文字を指定します。
+
+  * 区切り文字の初期値は、半角カンマ(,)です。
+  
+* 型変換アノテーション ``@XlsConverter(trim=true)`` を付与し、トリム処理を有効にしている設定の場合、区切った項目にもトリム処理が適用されます。 `[ver0.5+]` 
+  
+  * 属性ignoreEmptyItemの値をtrueに設定していると、トリム処理によって項目が空文字となった場合、その項目は無視されます。
+
+
+.. sourcecode:: java
+    
+    public class SampleRecord {
+        
+        // 区切り文字の指定
+        @XlsColumn(columnName="リスト")
+        @XlsArrayConverter(separator="\n")
+        private List<String> list;
+        
+        // 要素のトリム処理を指定する
+        @XlsColumn(columnName="配列")
+        @XlsConverter(trim=true)    // 区切った配列の要素にもトリムが適用されます。
+        @XlsArrayConverter(separator=",")
+        private int[] array;
+        
+    }
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+空の要素を無視する場合
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+属性ignoreEmptyItemで、区切った項目の値が空文字の場合、無視するか指定します。
+    
+例えば、区切り文字","のとき、セルの値が ``"a,,b"`` の場合、trueを設定すると ``["a", "b"]`` として読み込みます。
+
+書き込み時も同様に、値が空またはnullの項目を無視します。
+
+
+.. sourcecode:: java
+    
+    public class SampleRecord {
+        
+        // 空の要素を無視する場合
+        @XlsColumn(columnName="集合")
+        @XlsArrayConverter(ignoreEmptyItem=true)
+        private Set<Integer> set;
+        
+    }
+
+
+
