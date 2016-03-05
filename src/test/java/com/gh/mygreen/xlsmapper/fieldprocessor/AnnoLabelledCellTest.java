@@ -1,4 +1,4 @@
-package com.gh.mygreen.xlsmapper.annotation;
+package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -24,7 +24,6 @@ import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.annotation.converter.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.processor.LabelledCellProcessor;

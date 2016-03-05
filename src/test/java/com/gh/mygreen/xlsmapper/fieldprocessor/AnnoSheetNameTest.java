@@ -1,4 +1,4 @@
-package com.gh.mygreen.xlsmapper.annotation;
+package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
