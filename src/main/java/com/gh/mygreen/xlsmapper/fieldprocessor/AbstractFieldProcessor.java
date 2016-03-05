@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.CellConverterRegistry;
 import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;

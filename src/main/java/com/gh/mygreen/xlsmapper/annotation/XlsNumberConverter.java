@@ -1,4 +1,4 @@
-package com.gh.mygreen.xlsmapper.annotation.converter;
+package com.gh.mygreen.xlsmapper.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

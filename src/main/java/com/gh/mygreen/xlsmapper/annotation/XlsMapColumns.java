@@ -39,7 +39,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * </div>
  *
  * <h3 class="description">型変換する場合</h3>
- * <p>アノテーション{@link com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter}などで型変換を適用するときは、Mapの値が変換対象となります。
+ * <p>アノテーション{@link com.gh.mygreen.xlsmapper.annotation.XlsConverter}などで型変換を適用するときは、Mapの値が変換対象となります。
  *    <br>マップのキーは必ず{@link String}型に設定してください
  * </p>
  * 

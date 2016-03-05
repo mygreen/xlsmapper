@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * レコードの値が空からどうか判定するメソッドに付与します。
  * 
  * <h3 class="description">基本的な使い方</h3>
-  * 
+ * 
  * <p>シートの読み込み時に、{@link XlsHorizontalRecords}、{@link XlsVerticalRecords} の処理対象のレコードが、
  *    空の場合に読み飛ばしたい時に利用します。
  * </p>

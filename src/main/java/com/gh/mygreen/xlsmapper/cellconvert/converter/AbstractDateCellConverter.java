@@ -21,8 +21,8 @@ import com.gh.mygreen.xlsmapper.POIUtils;
 import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
-import com.gh.mygreen.xlsmapper.annotation.converter.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 

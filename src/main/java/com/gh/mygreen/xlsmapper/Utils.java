@@ -28,8 +28,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellReference;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
+import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
-import com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
