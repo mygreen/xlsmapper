@@ -176,14 +176,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         }
         
         // Check for columns
-        RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader());
+        RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader(), config);
         
         RecordTerminal terminal = anno.terminal();
         if(terminal == null){
             terminal = RecordTerminal.Empty;
         }
         
-        final int startHeaderIndex = getStartHeaderIndex(headers, recordClass, work);
+        final int startHeaderIndex = getStartHeaderIndex(headers, recordClass, work, config);
         
         // データ行の開始位置の調整
         hRow += anno.headerBottom();
@@ -229,14 +229,15 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 }
                 
                 if(!anno.terminateLabel().equals("")){
-                    if(POIUtils.getCellContents(cell, config.getCellFormatter()).equals(anno.terminateLabel())){
+                    if(Utils.matches(POIUtils.getCellContents(cell, config.getCellFormatter()), anno.terminateLabel(), config)){
                         emptyFlag = true;
                         break;
                     }
                 }
                 
                 // mapping from Excel columns to Object properties.
-                final List<FieldAdaptor> propeties = Utils.getLoadingColumnProperties(record.getClass(), headerInfo.getHeaderLabel(), work.getAnnoReader());
+                final List<FieldAdaptor> propeties = Utils.getLoadingColumnProperties(
+                        record.getClass(), headerInfo.getHeaderLabel(), work.getAnnoReader(), config);
                 for(FieldAdaptor property : propeties) {
                     Cell valueCell = cell;
                     final XlsColumn column = property.getLoadingAnnotation(XlsColumn.class);
@@ -373,9 +374,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
      * @param headers
      * @param recordClass
      * @param work
+     * @param config
      * @return
      */
-    private int getStartHeaderIndex(List<RecordHeader> headers, Class<?> recordClass, LoadingWorkObject work) {
+    private int getStartHeaderIndex(List<RecordHeader> headers, Class<?> recordClass, LoadingWorkObject work, XlsMapperConfig config) {
         
         // レコードクラスが不明の場合、0を返す。
         if((recordClass == null || recordClass.equals(Object.class))) {
@@ -384,7 +386,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAdaptor> propeties = Utils.getLoadingColumnProperties(recordClass, headerInfo.getHeaderLabel(), work.getAnnoReader());
+            final List<FieldAdaptor> propeties = Utils.getLoadingColumnProperties(
+                    recordClass, headerInfo.getHeaderLabel(), work.getAnnoReader(), config);
             if(!propeties.isEmpty()) {
                 return i;
             }
@@ -416,7 +419,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             boolean flag = false;
             final Map<String, Object> map = new LinkedHashMap<>();
             for(RecordHeader headerInfo : headerInfos) {
-                if(headerInfo.getHeaderLabel().equals(mapAnno.previousColumnName())){
+                if(Utils.matches(headerInfo.getHeaderLabel(), mapAnno.previousColumnName(), config)){
                     flag = true;
                     begin++;
                     continue;
@@ -528,9 +531,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
      * @param headers
      * @param recordClass
      * @param work
+     * @param config
      * @return
      */
-    private int getStartHeaderIndex(List<RecordHeader> headers, final List<Object> result, Class<?> recordClass, SavingWorkObject work) {
+    private int getStartHeaderIndex(List<RecordHeader> headers, final List<Object> result, Class<?> recordClass,
+            SavingWorkObject work, XlsMapperConfig config) {
         
         // レコードクラスが不明の場合、実際のリストオブジェクトの要素から取得する
         if((recordClass == null || recordClass.equals(Object.class)) && !result.isEmpty()) {
@@ -540,7 +545,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAdaptor> propeties = Utils.getSavingColumnProperties(recordClass, headerInfo.getHeaderLabel(), work.getAnnoReader());
+            final List<FieldAdaptor> propeties = Utils.getSavingColumnProperties(
+                    recordClass, headerInfo.getHeaderLabel(), work.getAnnoReader(), config);
             if(!propeties.isEmpty()) {
                 return i;
             }
@@ -602,7 +608,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         }
         
         // Check for columns
-        RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader());
+        RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader(), config);
         
         /*
          * 書き込む時には終了位置の判定は、Borderで固定する必要がある。
@@ -632,7 +638,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             commentStoreList = new ArrayList<>();
         }
         
-        final int startHeaderIndex = getStartHeaderIndex(headers, result, recordClass, work);
+        final int startHeaderIndex = getStartHeaderIndex(headers, result, recordClass, work, config);
         
         // データ行の開始位置の調整
         hRow += anno.headerBottom();
@@ -691,7 +697,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 }
                 
                 if(!anno.terminateLabel().equals("")){
-                    if(POIUtils.getCellContents(cell, config.getCellFormatter()).equals(anno.terminateLabel())){
+                    if(Utils.matches(POIUtils.getCellContents(cell, config.getCellFormatter()), anno.terminateLabel(), config)){
                         emptyFlag = true;
 //                            break;
                     }
@@ -699,7 +705,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
                 // mapping from Excel columns to Object properties.
                 if(record != null) {
-                    final List<FieldAdaptor> propeties = Utils.getSavingColumnProperties(record.getClass(), headerInfo.getHeaderLabel(), work.getAnnoReader());
+                    final List<FieldAdaptor> propeties = Utils.getSavingColumnProperties(
+                            record.getClass(), headerInfo.getHeaderLabel(), work.getAnnoReader(), config);
                     for(FieldAdaptor property : propeties) {
                         Cell valueCell = cell;
                         final XlsColumn column = property.getSavingAnnotation(XlsColumn.class);
@@ -956,7 +963,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             boolean flag = false;
             for(RecordHeader headerInfo : headerInfos) {
-                if(headerInfo.getHeaderLabel().equals(mapAnno.previousColumnName())){
+                if(Utils.matches(headerInfo.getHeaderLabel(), mapAnno.previousColumnName(), config)){
                     flag = true;
                     begin++;
                     continue;
@@ -977,7 +984,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     }
                     
                     if(!anno.terminateLabel().equals("")) {
-                        if(POIUtils.getCellContents(cell, config.getCellFormatter()).equals(anno.terminateLabel())) {
+                        if(Utils.matches(POIUtils.getCellContents(cell, config.getCellFormatter()), anno.terminateLabel(), config)) {
                             emptyFlag = true;
                         }
                     }

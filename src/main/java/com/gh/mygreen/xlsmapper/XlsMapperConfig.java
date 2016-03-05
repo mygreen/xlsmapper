@@ -17,6 +17,12 @@ public class XlsMapperConfig {
     /** シートが見つからなくても無視するかどうか */
     private boolean ignoreSheetNotFound = false;
     
+    /** ラベルを正規化するかどうか */
+    private boolean normalizeLabelText = false;
+    
+    /** ラベルを正規表現でマッピングするかどうか */
+    private boolean regexLabelText = false;
+    
     /** 型変換エラーが発生しても処理を続けるかどうか */
     private boolean skipTypeBindFailure = false;
     
@@ -60,7 +66,7 @@ public class XlsMapperConfig {
     
     /**
      * シートが見つからなくても無視するかどうか。
-     * @return　初期値は、'false'です。
+     * @return 初期値は、'false'です。
      */
     public boolean isIgnoreSheetNotFound() {
         return ignoreSheetNotFound;
@@ -69,10 +75,54 @@ public class XlsMapperConfig {
     /**
      * シートが見つからなくても無視するかどうか設定します。
      * @param ignoreSheetNotFound 初期値は、'false'です。
-     * @return
+     * @return 自身のインスタンス
      */
     public XlsMapperConfig setIgnoreSheetNotFound(boolean ignoreSheetNotFound) {
         this.ignoreSheetNotFound = ignoreSheetNotFound;
+        return this;
+    }
+    
+    /**
+     * ラベルの文字列を空白などを正規化してマッピングするかどうか。
+     * <p>正規化は、改行コード（{@literal \n},{@literal \r}）の除去、タブ（{@literal \t})、空白（全角、半角）の除去を行います。</p>
+     * @since 1.1
+     * @return 初期値は、'false'です。
+     */
+    public boolean isNormalizeLabelText() {
+        return normalizeLabelText;
+    }
+    
+    /**
+     * ラベルの文字列を空白などを正規化してマッピングするかどうか設定します。
+     * <p>正規化は、改行コード（{@literal \n},{@literal \r}）の除去、タブ（{@literal \t})、空白（全角、半角）の除去を行います。</p>
+     * @since 1.1
+     * @param normalizeLabelText 初期値は、'false'です。
+     * @return 自身のインスタンス
+     */
+    public XlsMapperConfig setNormalizeLabelText(boolean normalizeLabelText) {
+        this.normalizeLabelText = normalizeLabelText;
+        return this;
+    }
+    
+    /**
+     * ラベルを正規表現でマッピングするかどうか。
+     * <p>ラベルに{@literal /正規表現/}と記述しておくと正規表現でマッピングできる。</p>
+     * @since 1.1
+     * @return 初期値は、'false'です。
+     */
+    public boolean isRegexLabelText() {
+        return regexLabelText;
+    }
+    
+    /**
+     * ラベルを正規表現でマッピングするかどうか設置します。
+     * <p>ラベルに{@literal /正規表現/}と記述しておくと正規表現でマッピングできる。</p>
+     * @since 1.1
+     * @param regexLabelText 正規表現でマッピングするかどうか。
+     * @return 自身のインスタンス
+     */
+    public XlsMapperConfig setRegexLabelText(boolean regexLabelText) {
+        this.regexLabelText = regexLabelText;
         return this;
     }
     
@@ -105,7 +155,7 @@ public class XlsMapperConfig {
     /**
      * 保存時にセルの結合を行うかどうか設定します。
      * @param mergeCellOnSave 初期値は、'false'です。
-     * @return
+     * @return 自身のインスタンス
      */
     public XlsMapperConfig setMergeCellOnSave(boolean mergeCellOnSave) {
         this.mergeCellOnSave = mergeCellOnSave;
@@ -125,7 +175,7 @@ public class XlsMapperConfig {
      * 書き込み時に名前の定義範囲を修正するかどうか設定します。
      * @since 0.3
      * @param correctNameRangeOnSave 初期値は、'false'です。
-     * @return
+     * @return 自身のインスタンス
      */
     public XlsMapperConfig setCorrectNameRangeOnSave(boolean correctNameRangeOnSave) {
         this.correctNameRangeOnSave = correctNameRangeOnSave;
@@ -170,6 +220,7 @@ public class XlsMapperConfig {
      * <p>アノテーションXlsHorizontalRecordsで行の追加などを行うときに補正します。
      * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
      * @param correctCellCommentOnSave
+     * @return 自身のインスタンス
      */
     public XlsMapperConfig setCorrectCellCommentOnSave(boolean correctCellCommentOnSave) {
         this.correctCellCommentOnSave = correctCellCommentOnSave;
@@ -187,7 +238,7 @@ public class XlsMapperConfig {
     /**
      * POIのセルのフォーマッターを指定します。
      * @param cellFormatter
-     * @return
+     * @return 自身のインスタンス
      */
     public XlsMapperConfig setCellFormatter(CellFormatter cellFormatter) {
         this.cellFormatter = cellFormatter;
@@ -205,7 +256,7 @@ public class XlsMapperConfig {
     /**
      * セルの値の型変換の管理クラスを設定します。
      * @param converterRegistry
-     * @return
+     * @return 自身のインスタンス
      */
     public XlsMapperConfig setConverterRegistry(CellConverterRegistry converterRegistry) {
         this.converterRegistry = converterRegistry;
@@ -222,7 +273,7 @@ public class XlsMapperConfig {
     
     /**
      * アノテーションを処理するプロセッサの管理クラスを設定します。
-     * @return
+     * @return 自身のインスタンス
      */
     public XlsMapperConfig setFieldProcessorRegistry(FieldProcessorRegstry fieldProcessorRegistry) {
         this.fieldProcessorRegistry = fieldProcessorRegistry;
@@ -251,7 +302,7 @@ public class XlsMapperConfig {
      * 処理対象のシートを取得するためのクラスを取得します。
      * <p>アノテーション{@link XlsSheet} を処理します。
      * @since 1.1
-     * @return
+     * @return 現在設定されいるシートを処理するクラスのインタンス。
      */
     public SheetFinder getSheetFinder() {
         return sheetFinder;
@@ -260,10 +311,13 @@ public class XlsMapperConfig {
     /**
      * 処理対象のシートを取得するためのクラスを設定します。
      * <p>アノテーション{@link XlsSheet} を処理します。
-     * 
-     * @param sheetFinder
+     * @since 1.1
+     * @param sheetFinder シートを処理するクラスのインタンス。
+     * @param 自身のインスタンス
      */
-    public void setSheetFinder(SheetFinder sheetFinder) {
+    public XlsMapperConfig setSheetFinder(SheetFinder sheetFinder) {
         this.sheetFinder = sheetFinder;
+        return this;
     }
+    
 }

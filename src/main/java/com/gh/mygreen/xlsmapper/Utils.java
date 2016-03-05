@@ -40,6 +40,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * ユーティリティクラス。
  * 
+ * @version 1.1
  * @author T.TSUCHIE
  * @author Naoki Takezoe
  * @author Mitsuyoshi Hasegawa
@@ -208,6 +209,39 @@ public class Utils {
             .append(String.valueOf(str.charAt(0)).toLowerCase())
             .append(str.substring(1))
             .toString();
+    }
+    
+    /**
+     * システム設定に従いラベルを比較する。
+     * <p>正規表現や正規化を行い指定する。
+     * 
+     * @since 1.1
+     * @param text1 セルのラベル
+     * @param text2 アノテーションに指定されているラベル。
+     *              {@literal /<ラベル>/}と指定する場合、正規表現による比較を行う。
+     * @param config システム設定
+     * @return true:ラベルが一致する。
+     */
+    public static boolean matches(final String text1, final String text2, final XlsMapperConfig config){
+        if(config.isRegexLabelText() && text2.startsWith("/") && text2.endsWith("/")){
+            return normalize(text1, config).matches(text2.substring(1, text2.length() - 1));
+        } else {
+            return normalize(text1, config).equals(normalize(text2, config));
+        }
+    }
+    
+    /**
+     * システム設定に従いラベルを正規化する。
+     * @since 1.1
+     * @param text セルのラベル
+     * @param config システム設定
+     * @return true:ラベルが一致する。
+     */
+    private static String normalize(final String text, final XlsMapperConfig config){
+        if(text != null && config.isNormalizeLabelText()){
+            return text.trim().replaceAll("[\n\r]", "").replaceAll("[\t 　]+", " ");
+        }
+        return text;
     }
     
     /**
@@ -989,7 +1023,7 @@ public class Utils {
             final Cell[] columns = POIUtils.getColumn(sheet, i);
             for(int j=from; j < columns.length; j++) {
                 final String cellValue = POIUtils.getCellContents(columns[j], config.getCellFormatter());
-                if(cellValue.equals(label)) {
+                if(matches(cellValue, label, config)) {
                     return columns[j];
                 }
                 
@@ -1051,7 +1085,7 @@ public class Utils {
             for(int j=fromCol; j < maxCol; j++) {
                 final Cell cell = row.getCell(j, Row.CREATE_NULL_AS_BLANK);
                 final String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-                if(cellValue.equals(label)) {
+                if(matches(cellValue, label, config)) {
                     return cell;
                 }
             }
@@ -1131,7 +1165,7 @@ public class Utils {
                 
                 final Cell cell = row.getCell(j, Row.CREATE_NULL_AS_BLANK);
                 final String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-                if(cellValue.equals(label)) {
+                if(matches(cellValue, label, config)) {
                     return cell;
                 }
             }
@@ -1241,20 +1275,23 @@ public class Utils {
      * @param clazz
      * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
      * @param reader
+     * @param config
      * @return
      */
-    public static List<FieldAdaptor> getLoadingColumnProperties(final Class<?> clazz, final String name, final AnnotationReader reader) {
+    public static List<FieldAdaptor> getLoadingColumnProperties(final Class<?> clazz, final String name,
+            final AnnotationReader reader, final XlsMapperConfig config) {
         
         ArgUtils.notNull(clazz, "clazz");
         ArgUtils.notNull(reader, "reader");
+        ArgUtils.notNull(config, "config");
         
         final List<FieldAdaptor> list = new ArrayList<>();
         
-        for(FieldAdaptor adaptor : getSetterColumnMethods(clazz, name, reader)) {
+        for(FieldAdaptor adaptor : getSetterColumnMethods(clazz, name, reader, config)) {
             list.add(adaptor);
         }
         
-        for(FieldAdaptor adaptor : getColumnFields(clazz, name, reader)) {
+        for(FieldAdaptor adaptor : getColumnFields(clazz, name, reader, config)) {
             if(list.contains(adaptor)) {
                 continue;
             }
@@ -1272,20 +1309,23 @@ public class Utils {
      * @param clazz
      * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
      * @param reader
+     * @param config
      * @return
      */
-    public static List<FieldAdaptor> getSavingColumnProperties(final Class<?> clazz, final String name, final AnnotationReader reader) {
+    public static List<FieldAdaptor> getSavingColumnProperties(final Class<?> clazz, final String name,
+            final AnnotationReader reader, final XlsMapperConfig config) {
         
         ArgUtils.notNull(clazz, "clazz");
         ArgUtils.notNull(reader, "reader");
+        ArgUtils.notNull(config, "config");
         
         final List<FieldAdaptor> list = new ArrayList<>();
         
-        for(FieldAdaptor adaptor : getGetterColumnMethods(clazz, name, reader)) {
+        for(FieldAdaptor adaptor : getGetterColumnMethods(clazz, name, reader, config)) {
             list.add(adaptor);
         }
         
-        for(FieldAdaptor adaptor : getColumnFields(clazz, name, reader)) {
+        for(FieldAdaptor adaptor : getColumnFields(clazz, name, reader, config)) {
             if(list.contains(adaptor)) {
                 continue;
             }
@@ -1304,9 +1344,11 @@ public class Utils {
      * @param clazz
      * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
      * @param reader
+     * @param config
      * @return
      */
-    public static FieldAdaptor[] getSetterColumnMethods(final Class<?> clazz, final String name, final AnnotationReader reader) {
+    public static FieldAdaptor[] getSetterColumnMethods(final Class<?> clazz, final String name,
+            final AnnotationReader reader, final XlsMapperConfig config) {
         ArgUtils.notNull(clazz, "clazz");
         
         //TODO: 例外のスロー内容を見直す。
@@ -1326,7 +1368,7 @@ public class Utils {
             final String columnName = column.columnName();
             if(name == null) {
                 result.add(adaptor);
-            } else if(columnName.equals(name)) {
+            } else if(Utils.matches(name, columnName, config)) {
                 result.add(adaptor);
             }
             
@@ -1343,9 +1385,11 @@ public class Utils {
      * @param clazz
      * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
      * @param reader
+     * @param config
      * @return
      */
-    public static FieldAdaptor[] getGetterColumnMethods(final Class<?> clazz, final String name, final AnnotationReader reader) {
+    public static FieldAdaptor[] getGetterColumnMethods(final Class<?> clazz, final String name,
+            final AnnotationReader reader, final XlsMapperConfig config) {
         ArgUtils.notNull(clazz, "clazz");
         
         //TODO: 例外のスロー内容を見直す。
@@ -1365,7 +1409,7 @@ public class Utils {
             final String columnName = column.columnName();
             if(name == null) {
                 result.add(adaptor);
-            } else if(columnName.equals(name)) {
+            } else if(matches(name, columnName, config)) {
                 result.add(adaptor);
             }
             
@@ -1382,9 +1426,11 @@ public class Utils {
      * @param clazz
      * @param name 名前を指定しない場合はnullを設定。
      * @param reader
+     * @param config
      * @return
      */
-    public static FieldAdaptor[] getColumnFields(final Class<?> clazz, final String name, final AnnotationReader reader) {
+    public static FieldAdaptor[] getColumnFields(final Class<?> clazz, final String name,
+            final AnnotationReader reader, final XlsMapperConfig config) {
         
         ArgUtils.notNull(clazz, "clazz");
         
@@ -1401,7 +1447,7 @@ public class Utils {
             final String columnName = column.columnName();
             if(name == null) {
                 result.add(adaptor);
-            } else if(columnName.equals(name)) {
+            } else if(Utils.matches(name, columnName, config)) {
                 result.add(adaptor);
             }
             
@@ -2059,4 +2105,5 @@ public class Utils {
         return new ArrayList<>(collection);
         
     }
+    
 }

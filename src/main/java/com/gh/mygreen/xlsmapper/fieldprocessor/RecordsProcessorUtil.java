@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.fieldprocessor.processor.HorizontalRecordsProcessor;
@@ -25,18 +26,21 @@ public class RecordsProcessorUtil {
      * @param recordClass
      * @param headers
      * @param reader
+     * @param config
      * @throws Exception
      */
-    public static void checkColumns(Sheet sheet, Class<?> recordClass, List<RecordHeader> headers, AnnotationReader reader) throws XlsMapperException {
+    public static void checkColumns(final Sheet sheet, final Class<?> recordClass,
+            final List<RecordHeader> headers, final AnnotationReader reader, final XlsMapperConfig config)
+                    throws XlsMapperException {
         
-        for(FieldAdaptor property : Utils.getLoadingColumnProperties(recordClass, null, reader)) {
+        for(FieldAdaptor property : Utils.getLoadingColumnProperties(recordClass, null, reader, config)) {
             final XlsColumn column = property.getLoadingAnnotation(XlsColumn.class);
             
             if(!column.optional()){
                 String columnName = column.columnName();
                 boolean find = false;
                 for(RecordHeader info: headers){
-                    if(info.getHeaderLabel().equals(columnName)){
+                    if(Utils.matches(info.getHeaderLabel(), columnName, config)){
                         find = true;
                         break;
                     }

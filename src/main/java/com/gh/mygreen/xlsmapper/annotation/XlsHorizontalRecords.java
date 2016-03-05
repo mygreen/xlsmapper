@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+
 /**
  * 水平方向に連続する行をCollection(List, Set)または配列にマッピングする際に指定します。
  * 
@@ -101,11 +103,11 @@ import java.lang.annotation.Target;
  *     {@literal @XlsColumn(columnName="名前")}
  *     private String name;
  *     
- *     // セル「国語」のマッピング
+ *     // セル「算数」のマッピング
  *     {@literal @XlsColumn(columnName="テスト結果")}
  *     private int sansu;
  *     
- *     // セル「算数」のマッピング
+ *     // セル「国語」のマッピング
  *     // 結合されている見出しから離れている数を指定する
  *     {@literal @XlsColumn(columnName="テスト結果", headerMerged=1)}
  *     private int kokugo;
@@ -294,6 +296,45 @@ import java.lang.annotation.Target;
  * </div>
  * 
  * 
+ * <h3 class="description">表の名称を正規表現、正規化して指定する場合</h3>
+ * 
+ * <p>シートの構造は同じだが、ラベルのセルが微妙に異なる場合、ラベルセルを正規表現による指定が可能です。
+ *   <br>また、空白や改行を除去してラベルセルを比較するように設定することも可能です。</p>
+ * 
+ * <p>正規表現で指定する場合、アノテーションの属性の値を {@code /正規表現/} のように、スラッシュで囲みます。</p>
+ * <ul>
+ *   <li>スラッシュで囲まない場合、通常の文字列として処理されます。</li>
+ *   <li>正規表現の指定機能を有効にするには、システム設定のプロパティ {@link XlsMapperConfig#setRegexLabelText(boolean)} の値を trueに設定します。</li>
+ * </ul>
+ * 
+ * <p>ラベセルの値に改行が空白が入っている場合、それらを除去し正規化してアノテーションの属性値と比較することが可能です。</p>
+ * <ul>
+ *   <li>正規化とは、空白、改行、タブを除去することを指します。</li>
+ *   <li>ラベルを正規化する機能を有効にするには、、システム設定のプロパティ {@link XlsMapperConfig#setNormalizeLabelText(boolean)} の値を trueに設定します。</li>
+ * </ul>
+ * 
+ * <p>これらの指定が可能な属性は、{@link #tableLabel()}、{@link #terminateLabel()}です。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * 
+ * // システム設定
+ * XlsMapper xlsMapper = new XlsMapper();
+ * xlsMapper.getConfig()
+ *         .setRegexLabelText(true)        // ラベルを正規表現で指定可能にする機能を有効にする。
+ *         .setNormalizeLabelText(true);   // ラベルを正規化して比較する機能を有効にする。
+ * 
+ * // シート用クラス
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     // 正規表現による指定
+ *     {@literal @XlsHorizontalRecords(tableLabel="/ユーザ一覧.+/")}
+ *     private {@literal List<UserRecord>} records;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * 
  * @version 1.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
@@ -310,15 +351,18 @@ public @interface XlsHorizontalRecords {
     boolean optional() default false;
     
     /**
-     * 表の見出し（タイトル）ラベル。値を指定した場合、ラベルと一致するセルを起点に走査を行います。
+     * 表の見出し（タイトル）ラベルを指定します。
+     * 値を指定した場合、ラベルと一致するセルを起点に走査を行います。
      * <p>属性{@link #headerRow()},{@link #headerColumn()}{@link #headerAddress()}のどちらか一方を指定可能です。
+     * <p>システム設定により、正規表現による指定や正規化（改行、空白、タブの削除）による比較の対象となります。</p>
      * @return 
      */
     String tableLabel() default "";
     
     /**
-     * テーブルが他のテーブルと連続しておりterminal属性でBorder、Emptyのいずれを指定しても終端を検出できない場合があります。 
-     * このような場合はterminateLabel属性で終端を示すセルの文字列を指定します。
+     * 表の終端を示すセルの文字列を指定します。
+     * <p>テーブルが他のテーブルと連続しており、属性{@link #terminal()}でBorder、Emptyのいずれを指定しても終端を検出できない場合に指定します</p> 
+     * <p>システム設定により、正規表現による指定や正規化（改行、空白、タブの削除）による比較の対象となります。</p>
      * @return
      */
     String terminateLabel() default "";
