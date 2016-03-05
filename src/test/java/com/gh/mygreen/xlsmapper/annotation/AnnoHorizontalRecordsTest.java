@@ -465,6 +465,63 @@ public class AnnoHorizontalRecordsTest {
         
     }
     
+    /**
+     * ラベルを正規表現で指定した場合のテスト
+     * @throws Exception
+     */
+    @Test
+    public void test_load_hr_regexLabel() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(false)
+            .setNormalizeLabelText(true)
+            .setRegexLabelText(true);
+        
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            
+            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            
+            if(sheet.records1 != null) {
+                
+                assertThat(sheet.records1, hasSize(1));
+                for(RegexSheet.ResultRecord record : sheet.records1) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+            
+            if(sheet.records2 != null) {
+                
+                assertThat(sheet.records2, hasSize(1));
+                for(RegexSheet.ResultRecord record : sheet.records2) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+            
+            if(sheet.records3 != null) {
+                
+                assertThat(sheet.records3, hasSize(1));
+                for(RegexSheet.ResultRecord record : sheet.records3) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+            
+            if(sheet.records4 != null) {
+                
+                assertThat(sheet.records4, hasSize(1));
+                for(RegexSheet.ResultRecord record : sheet.records4) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+        }
+        
+    }
+    
     private void assertRecord(final NormalRecord record, final SheetBindingErrors errors) {
         
         if(record.no == 1) {
@@ -719,6 +776,18 @@ public class AnnoHorizontalRecordsTest {
             assertThat(record.sansu, is(80));
             assertThat(record.kokugo, is(90));
             assertThat(record.sum, is(170));
+            
+        }
+        
+    }
+    
+    private void assertRecord(final RegexSheet.ResultRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.resultMap.get("1回目"), is(30));
+            assertThat(record.resultMap.get("2回目"), is(40));
+            assertThat(record.resultMap.get("3回目"), is(50));
             
         }
         
@@ -1696,6 +1765,82 @@ public class AnnoHorizontalRecordsTest {
     }
     
     /**
+     * 書き込みのテスト - 正規表現で一致
+     * @since 1.1
+     */
+    @Test
+    public void test_save_hr_regexLabel() throws Exception {
+        
+        // テストデータの作成
+        RegexSheet outSheet = new RegexSheet();
+        
+        outSheet.addRecord1(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60));
+        outSheet.addRecord2(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60));
+        outSheet.addRecord3(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60));
+        outSheet.addRecord4(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true)
+            .setRegexLabelText(true)
+            .setNormalizeLabelText(true);
+        
+        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            
+            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            
+            if(sheet.records1 != null) {
+                assertThat(sheet.records1, hasSize(outSheet.records1.size()));
+                
+                for(int i=0; i < sheet.records1.size(); i++) {
+                    assertRecord(sheet.records1.get(i), outSheet.records1.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.records2 != null) {
+                assertThat(sheet.records2, hasSize(outSheet.records2.size()));
+                
+                for(int i=0; i < sheet.records2.size(); i++) {
+                    assertRecord(sheet.records2.get(i), outSheet.records2.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.records3 != null) {
+                assertThat(sheet.records3, hasSize(outSheet.records3.size()));
+                
+                for(int i=0; i < sheet.records3.size(); i++) {
+                    assertRecord(sheet.records3.get(i), outSheet.records3.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.records4 != null) {
+                assertThat(sheet.records4, hasSize(outSheet.records4.size()));
+                
+                for(int i=0; i < sheet.records4.size(); i++) {
+                    assertRecord(sheet.records4.get(i), outSheet.records4.get(i), errors);
+                }
+                
+            }
+            
+            
+        }
+        
+    }
+    
+    /**
      * 書き込んだレコードを検証するための
      * @param inRecord
      * @param outRecord
@@ -2011,6 +2156,25 @@ public class AnnoHorizontalRecordsTest {
         assertThat(inRecord.sansu, is(outRecord.sansu));
         assertThat(inRecord.kokugo, is(outRecord.kokugo));
         assertThat(inRecord.sum, is(outRecord.sum));
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 1.1
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final RegexSheet.ResultRecord inRecord, final RegexSheet.ResultRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.resultMap, is(outRecord.resultMap));
+        
         
     }
     
@@ -3941,6 +4105,135 @@ public class AnnoHorizontalRecordsTest {
             
             public HeaderMergedRecord sum(int sum) {
                 this.sum = sum;
+                return this;
+            }
+        }
+        
+    }
+    
+    /**
+     * 正規表現でラベルを一致させる
+     *
+     */
+    @XlsSheet(name="正規表現で一致")
+    private static class RegexSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsHorizontalRecords(tableLabel="測定結果（通常）", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        private List<ResultRecord> records1;
+        
+        @XlsHorizontalRecords(tableLabel="/測定結果\\[.+\\]/", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        private List<ResultRecord> records2;
+        
+        @XlsHorizontalRecords(tableLabel="測定結果（見出しが正規表現）", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        private List<ResultRecord> records3;
+        
+        @XlsHorizontalRecords(tableLabel="測定結果（終端が正規表現）", terminal=RecordTerminal.Border, skipEmptyRecord=true, terminateLabel="/.*合計.*/")
+        private List<ResultRecord> records4;
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RegexSheet addRecord1(ResultRecord record) {
+            if(records1 == null) {
+                this.records1 = new ArrayList<>();
+            }
+            
+            this.records1.add(record);
+            record.no(records1.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RegexSheet addRecord2(ResultRecord record) {
+            if(records2 == null) {
+                this.records2 = new ArrayList<>();
+            }
+            
+            this.records2.add(record);
+            record.no(records2.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RegexSheet addRecord3(ResultRecord record) {
+            if(records3 == null) {
+                this.records3 = new ArrayList<>();
+            }
+            
+            this.records3.add(record);
+            record.no(records3.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RegexSheet addRecord4(ResultRecord record) {
+            if(records4 == null) {
+                this.records4 = new ArrayList<>();
+            }
+            
+            this.records4.add(record);
+            record.no(records4.size());
+            
+            return this;
+        }
+        
+        private static class ResultRecord {
+            
+            private Map<String, Point> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsColumn(columnName="No.", optional=true)
+            private int no;
+            
+            @XlsColumn(columnName="/名前.*/")
+            private String name;
+            
+            @XlsMapColumns(previousColumnName="/名前.*/")
+            private Map<String, Integer> resultMap;
+            
+            @XlsIsEmpty
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+            }
+            
+            public ResultRecord no(int no) {
+                this.no = no;
+                return this;
+            }
+            
+            public ResultRecord name(String name) {
+                this.name = name;
+                return this;
+            }
+            
+            public ResultRecord result(String key, Integer score) {
+                if(resultMap == null) {
+                    this.resultMap = new LinkedHashMap<>();
+                }
+                
+                this.resultMap.put(key, score);
                 return this;
             }
         }

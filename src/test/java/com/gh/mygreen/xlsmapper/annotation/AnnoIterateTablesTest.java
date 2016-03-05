@@ -31,7 +31,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link IterateTablesProcessor}のテスタ
  * アノテーション{@link XlsIterateTables}のテスタ。
- * @version 1.0
+ * @version 1.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -180,6 +180,33 @@ public class AnnoIterateTablesTest {
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(2));
                 for(MethodAnnoTable table : sheet.classTables) {
+                    assertTable(table, errors);
+                }
+            }
+        }
+        
+    }
+    
+    /**
+     * 正規表現、正規化で一致
+     * @since 1.1
+     */
+    @Test
+    public void test_load_it_regex() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true)
+            .setRegexLabelText(true)
+            .setNormalizeLabelText(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            
+            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(2));
+                for(RegexSheet.RegexpTable table : sheet.classTables) {
                     assertTable(table, errors);
                 }
             }
@@ -436,6 +463,58 @@ public class AnnoIterateTablesTest {
             }
             
         }
+        
+    }
+    
+    private void assertTable(final RegexSheet.RegexpTable table, final SheetBindingErrors errors) {
+        
+        if(table.name.equals("1年2組")) {
+            
+            assertThat(table.no, is(1));
+            assertThat(table.name, is("1年2組"));
+            
+            assertThat(table.persons, hasSize(2));
+            for(RegexSheet.RegexRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("阿部一郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("泉太郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))));
+                    
+                }
+                
+            }
+            
+        } else if(table.name.equals("2年3組")) {
+            
+            assertThat(table.no, is(2));
+            assertThat(table.name, is("2年3組"));
+            
+            assertThat(table.persons, hasSize(3));
+            for(RegexSheet.RegexRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("鈴木一郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("林次郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))));
+                    
+                } else if(record.no == 3) {
+                    assertThat(record.name, is("山田太郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))));
+                    
+                }
+                
+            }
+            
+        }
+        
+        
         
     }
     
@@ -746,6 +825,61 @@ public class AnnoIterateTablesTest {
     }
     
     /**
+     * 書き込みのテスト - ラベルの正規表現、正規化のテスト
+     * @since 1.1
+     */
+    @Test
+    public void test_save_it_regex() throws Exception {
+        
+        // テストデータの作成
+        RegexSheet outSheet = new RegexSheet();
+        
+        outSheet.add(new RegexSheet.RegexpTable().name("1年2組")
+                .add(new RegexSheet.RegexRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
+                .add(new RegexSheet.RegexRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
+                .add(new RegexSheet.RegexRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
+        );
+        
+        outSheet.add(new RegexSheet.RegexpTable().name("2年3組")
+                .add(new RegexSheet.RegexRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
+                .add(new RegexSheet.RegexRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
+                .add(new RegexSheet.RegexRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
+        );
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true)
+            .setRegexLabelText(true)
+            .setNormalizeLabelText(true);
+        
+        File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            
+            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
+                
+                for(int i=0; i < sheet.classTables.size(); i++) {
+                    assertRecord(sheet.classTables.get(i), outSheet.classTables.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
      * 書き込んだレコードを検証するための
      * @param inRecord
      * @param outRecord
@@ -890,6 +1024,46 @@ public class AnnoIterateTablesTest {
             }
             
         }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final RegexSheet.RegexpTable inRecord, final RegexSheet.RegexpTable outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        
+        if(inRecord.persons != null) {
+            assertThat(inRecord.persons, hasSize(outRecord.persons.size()));
+            
+            for(int i=0; i < inRecord.persons.size(); i++) {
+                assertRecord(inRecord.persons.get(i), outRecord.persons.get(i), errors);
+            }
+            
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final RegexSheet.RegexRecord inRecord, final RegexSheet.RegexRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        assertThat(inRecord.birthday, is(outRecord.birthday));
     }
     
     @XlsSheet(name="通常の表")
@@ -1422,5 +1596,118 @@ public class AnnoIterateTablesTest {
         }
         
     }
+    
+    @XlsSheet(name="正規表現で一致")
+    private static class RegexSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsIterateTables(tableLabel="/クラス情報.*/", bottom=3)
+        private List<RegexpTable> classTables;
+        
+        public RegexSheet add(RegexpTable table) {
+            
+            if(classTables == null) {
+                this.classTables = new ArrayList<>();
+            }
+            
+            this.classTables.add(table);
+            table.no(classTables.size());
+            
+            return this;
+        }
+        
+        private static class RegexpTable {
+            
+            
+            // 位置情報／ラベル情報
+            private Point classTablesPoint;
+            
+            private String classTablesLabel;
+            
+            @XlsHint(order=1)
+            @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+            private int no;
+            
+            @XlsHint(order=2)
+            @XlsLabelledCell(label="/クラス名.*/", type=LabelledCellType.Right)
+            private String name;
+            
+            @XlsHint(order=3)
+            @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                    overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
+            private List<RegexRecord> persons;
+            
+            // 値設定用のメソッド
+            
+            public RegexpTable no(int no) {
+                this.no = no;
+                return this;
+            }
+            
+            public RegexpTable name(String name) {
+                this.name = name;
+                return this;
+            }
+            
+            public RegexpTable add(RegexRecord record) {
+                
+                if(persons == null) {
+                    this.persons = new ArrayList<>();
+                }
+                
+                this.persons.add(record);
+                record.no(persons.size());
+                
+                return this;
+            }
+            
+        }
+        
+        /**
+         * HorizontalRecordsのレコードの定義
+         */
+        private static class RegexRecord {
+            
+            private Map<String, Point> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsColumn(columnName="No.")
+            private int no;
+            
+            @XlsColumn(columnName="/氏名.*/")
+            private String name;
+            
+            @XlsDateConverter(javaPattern="yyyy年M月d日")
+            @XlsColumn(columnName="誕生日")
+            private Date birthday;
+            
+            @XlsIsEmpty
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+            }
+            
+            public RegexRecord no(int no) {
+                this.no = no;
+                return this;
+            }
+            
+            public RegexRecord name(String name) {
+                this.name = name;
+                return this;
+            }
+            
+            public RegexRecord birthday(Date birthday) {
+                this.birthday = birthday;
+                return this;
+            }
+            
+        }
+    }
+    
+    
     
 }

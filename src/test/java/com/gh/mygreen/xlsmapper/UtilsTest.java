@@ -4,7 +4,6 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.awt.Point;
-import java.lang.reflect.Constructor;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import java.util.Stack;
 import java.util.Vector;
 
 import org.junit.Before;
@@ -26,6 +24,7 @@ import com.gh.mygreen.xlsmapper.Utils;
 /**
  * {@link Utils}のテスタ
  * 
+ * @version 1.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -58,6 +57,38 @@ public class UtilsTest {
         assertThat(Utils.uncapitalize(""), is(""));
         assertThat(Utils.uncapitalize("CAT"), is("cAT"));
         assertThat(Utils.uncapitalize("Cat"), is("cat"));
+    }
+    
+    /**
+     * {@link Utils#matches(String, String, XlsMapperConfig)}
+     * @since 1.1
+     */
+    @Test
+    public void testMatches_normalize(){
+        String rawText        = "a bc　\t  de\nfg   h  ";
+        String normalizedText = "a bc defg h";
+        
+        XlsMapperConfig config = new XlsMapperConfig();
+        config.setNormalizeLabelText(false);
+        
+        assertFalse(Utils.matches(rawText, normalizedText, config));
+        
+        config.setNormalizeLabelText(true);
+        assertTrue(Utils.matches(rawText, normalizedText, config));
+    }
+    
+    /**
+     * {@link Utils#matches(String, String, XlsMapperConfig)}
+     * @since 1.1
+     */
+    @Test
+    public void testMatches_regex(){
+        XlsMapperConfig config = new XlsMapperConfig();
+        
+        config.setNormalizeLabelText(false);
+        config.setRegexLabelText(true);
+        assertTrue(Utils.matches("test_data", "/test.*/", config));
+        assertFalse(Utils.matches("test_data", "/nottest.*/", config));
     }
     
     @Test

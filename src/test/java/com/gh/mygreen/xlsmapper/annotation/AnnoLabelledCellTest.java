@@ -201,7 +201,64 @@ public class AnnoLabelledCellTest {
     }
     
     /**
-     * 読み込みのテスト - 通常のデータ
+     * 読み込みのテスト - 正規表現、正規化によるテスト
+     */
+    @Test
+    public void test_load_labelled_cell_regex() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        
+        // エラー確認（正規表現が無効）
+        mapper.getConig().setRegexLabelText(false)
+            .setNormalizeLabelText(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            
+            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            fail();
+        } catch(Exception e) {
+            assertThat(e, instanceOf(CellNotFoundException.class));
+        }
+        
+        // エラー確認（正規化が無効）
+        mapper.getConig().setRegexLabelText(true)
+            .setNormalizeLabelText(false);
+        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            
+            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            fail();
+        } catch(Exception e) {
+            assertThat(e, instanceOf(CellNotFoundException.class));
+        }
+        
+        // 正規表現、正規化の両方が有効
+        mapper.getConig().setRegexLabelText(true)
+            .setNormalizeLabelText(true);
+        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            
+            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            
+            // 値の比較
+            assertThat(sheet.regexp,is("正規表現の見出し。"));
+            assertThat(sheet.notRegexp,is("非正規表現の見出し。"));
+            assertThat(sheet.normalize,is("改行がある場合\nです。"));
+            assertThat(sheet.headerRegexp,is("見出しが正規表現です。"));
+            
+            // 見出しの比較
+            assertThat(sheet.labels.get("regexp"), is("見出し(1)"));
+            assertThat(sheet.labels.get("notRegexp"), is("見出し(a)"));
+            assertThat(sheet.labels.get("normalize"), is(" 更新\n日時 "));
+            assertThat(sheet.labels.get("headerRegexp"), is("ラベル"));
+        }
+        
+    }
+    
+    
+    /**
+     * 書き込みのテスト - 通常のデータ
      */
     @Test
     public void test_save_labelled_cell_normal() throws Exception {
@@ -267,7 +324,7 @@ public class AnnoLabelledCellTest {
     }
     
     /**
-     * 読み込みのテスト - メソッドにアノテーションを付与
+     * 書き込みのテスト - メソッドにアノテーションを付与
      * @since 1.0
      */
     @Test
@@ -348,6 +405,60 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.address2, is(outSheet.address2));
             
             assertThat(sheet.blank, is(outSheet.blank));
+            
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 正規表現、正規化によるテスト
+     */
+    @Test
+    public void test_save_labelled_cell_regexl() throws Exception {
+        
+        // テストデータの作成
+        final RegexSheet outSheet = new RegexSheet();
+        
+        outSheet.regexp("正規表現によるマッピング")
+            .notRegexp("非正規表現によるマッピング")
+            .normalize("正規化によるマッピング")
+            .headerRegexp("見出しが正規化によるマッピング")
+            ;
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setSkipTypeBindFailure(true)
+            .setRegexLabelText(true)
+            .setNormalizeLabelText(true);
+        
+        File outFile = new File("src/test/out/anno_LabelledCell.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            
+            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            
+            assertThat(sheet.positions, is(outSheet.positions));
+            assertThat(sheet.labels, is(outSheet.labels));
+            
+            // 見出しの比較
+            assertThat(sheet.labels.get("regexp"), is("見出し(1)"));
+            assertThat(sheet.labels.get("notRegexp"), is("見出し(a)"));
+            assertThat(sheet.labels.get("normalize"), is(" 更新\n日時 "));
+            assertThat(sheet.labels.get("headerRegexp"), is("ラベル"));
+            
+            assertThat(sheet.normalize, is(outSheet.normalize));
+            assertThat(sheet.notRegexp, is(outSheet.notRegexp));
+            assertThat(sheet.normalize, is(outSheet.normalize));
+            assertThat(sheet.headerRegexp, is(outSheet.headerRegexp));
             
             
         }
@@ -903,8 +1014,53 @@ public class AnnoLabelledCellTest {
             this.blank = blank;
             return this;
         }
-
-
+    }
+    
+    /**
+     * 正規表現や正規化によるマッピング
+     *
+     */
+    @XlsSheet(name="正規表現で一致")
+    private static class RegexSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        /** 正規表現によるマッピング */
+        @XlsLabelledCell(label="/見出し\\([0-9]+\\)/", type=LabelledCellType.Right)
+        private String regexp;
+        
+        @XlsLabelledCell(label="見出し(a)", type=LabelledCellType.Right)
+        private String notRegexp;
+        
+        /** 正規化による空白などの削除 */
+        @XlsLabelledCell(label="更新日時", type=LabelledCellType.Bottom)
+        private String normalize;
+        
+        @XlsLabelledCell(headerLabel="/ヘッダー.*/", label="ラベル", type=LabelledCellType.Right)
+        private String headerRegexp;
+        
+        public RegexSheet regexp(String regexp) {
+            this.regexp = regexp;
+            return this;
+        }
+        
+        public RegexSheet notRegexp(String notRegexp) {
+            this.notRegexp = notRegexp;
+            return this;
+        }
+        
+        public RegexSheet normalize(String normalize) {
+            this.normalize = normalize;
+            return this;
+        }
+        
+        public RegexSheet headerRegexp(String headerRegexp) {
+            this.headerRegexp = headerRegexp;
+            return this;
+        }
+        
     }
 
 }
