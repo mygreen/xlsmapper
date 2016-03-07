@@ -128,7 +128,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     Map<String, Object> createTypeErrorMessageVars(final XlsDateConverter anno) {
         
         final Map<String, Object> vars = new LinkedHashMap<>();
-        vars.put("pattern", anno.javaPattern());
+        vars.put("javaPattern", anno.javaPattern());
         vars.put("lenient", anno.lenient());
         vars.put("locale", anno.locale());
         return vars;

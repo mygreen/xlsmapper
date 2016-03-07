@@ -157,7 +157,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
     private Map<String, Object> createTypeErrorMessageVars(final XlsNumberConverter anno) {
         
         final Map<String, Object> vars = new LinkedHashMap<>();
-        vars.put("pattern", anno.javaPattern());
+        vars.put("javaPattern", anno.javaPattern());
         vars.put("currency", anno.currency());
         vars.put("locale", anno.locale());
         vars.put("precision", anno.precision());
