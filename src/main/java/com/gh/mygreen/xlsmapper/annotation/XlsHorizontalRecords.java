@@ -79,7 +79,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * 
  * 
  * <h3 class="description">表の見出しが縦に結合されデータレコードの開始位置が離れた場所にある場合</h3>
- * <p>表の見出しセルが縦に結合され、データレコードの開始位置が離れている場合、属性{@link #headerBottom()}でデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1]`</p>
+ * <p>表の見出しセルが縦に結合され、データレコードの開始位置が離れている場合、属性{@link #headerBottom()}でデータレコードの開始位置がどれだけ離れているか指定します。</p>
  * <p>下記の例の場合、見出しの「テスト結果」は横に結合されているため {@link XlsColumn#headerMerged()}と組み合わせて利用します。
  * 
  * <pre class="highlight"><code class="java">

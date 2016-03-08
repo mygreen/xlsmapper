@@ -39,8 +39,8 @@ import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
  *     private int id;
  *     
  *     {@literal @XlsColumn(columnName="更新日時")}
- *     {@literal @XlsConverter(defaultValue="2010/01/01")} // 属性patternで指定した書式に沿った値を指定します。
- *     {@literal @XlsDateConverter(pattern="yyyy/MM/dd")}
+ *     {@literal @XlsConverter(defaultValue="2010/01/01")} // 属性javaPatternで指定した書式に沿った値を指定します。
+ *     {@literal @XlsDateConverter(javaPattern="yyyy/MM/dd")}
  *     private Date updateTime;
  * 
  * }
