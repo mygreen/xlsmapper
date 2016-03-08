@@ -5,8 +5,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +28,8 @@ import org.apache.poi.ss.util.CellReference;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
-import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;
+import com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter;
+import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -48,31 +47,35 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
  */
 public class Utils {
     
+    private static final ItemConverter ITEM_CONVERTER = new DefaultItemConverter();
+    
     /**
      * 配列の要素を指定した区切り文字で繋げて1つの文字列とする。
-     * @param arrays
-     * @param separator
-     * @param ignoreEmptyItem
-     * @param trim
+     * @param arrays 処理対象の配列。
+     * @param separator 区切り文字。
+     * @param ignoreEmptyItem 空、nullの要素を無視するかどうか。
+     * @param trim トリムをするかどうか。
+     * @param itemConverter 要素を変換するクラス。
      * @return
      */
     public static String join(final Object[] arrays, final String separator,
-            final boolean ignoreEmptyItem, final boolean trim) {
+            final boolean ignoreEmptyItem, final boolean trim, final ItemConverter itemConverter) {
         
-        return join(Arrays.asList(arrays), separator, ignoreEmptyItem, trim);
+        return join(Arrays.asList(arrays), separator, ignoreEmptyItem, trim, itemConverter);
         
     }
     
     /**
      * コレクションの要素を指定した区切り文字で繋げて1つの文字列とする。
-     * @param col
-     * @param separator
-     * @param ignoreEmptyItem
-     * @param trim
+     * @param col 処理対象のコレクション。
+     * @param separator 区切り文字。
+     * @param ignoreEmptyItem 空、nullの要素を無視するかどうか。
+     * @param trim トリムをするかどうか。
+     * @param itemConverter 要素を変換するクラス。
      * @return
      */
     public static String join(final Collection<?> col, final String separator,
-            final boolean ignoreEmptyItem, final boolean trim) {
+            final boolean ignoreEmptyItem, final boolean trim, final ItemConverter itemConverter) {
         
         final List<Object> list = new ArrayList<Object>();
         for(Object item : col) {
@@ -114,7 +117,7 @@ public class Utils {
             
         }
         
-        return join(list, separator);
+        return join(list, separator, itemConverter);
         
     }
     
@@ -126,6 +129,19 @@ public class Utils {
      */
     public static String join(final Object[] arrays, final String separator) {
         
+        return join(arrays, separator, ITEM_CONVERTER);
+        
+    }
+    
+    /**
+     * 配列の要素を指定した区切り文字で繋げて1つの文字列とする。
+     * @param arrays
+     * @param separator
+     * @param itemConverter
+     * @return
+     */
+    public static String join(final Object[] arrays, final String separator, final ItemConverter itemConverter) {
+        
         final int len = arrays.length;
         if(arrays == null || len == 0) {
             return "";
@@ -133,7 +149,8 @@ public class Utils {
         
         StringBuilder sb = new StringBuilder();
         for(int i=0; i < len; i++) {
-            sb.append(arrays[i]);
+            final Object item = arrays[i];
+            sb.append(itemConverter.convertToString(item));
             
             if(separator != null && (i < len-1)) {
                 sb.append(separator);
@@ -151,6 +168,17 @@ public class Utils {
      * @return
      */
     public static String join(final Collection<?> col, final String separator) {
+        return join(col, separator, ITEM_CONVERTER);
+    }
+    
+    /**
+     * Collectionの要素を指定した区切り文字で繋げて1つの文字列とする。
+     * @param col
+     * @param separator
+     * @param itemConverter
+     * @return
+     */
+    public static String join(final Collection<?> col, final String separator, final ItemConverter itemConverter) {
         
         final int size = col.size();
         if(col == null || size == 0) {
@@ -160,7 +188,8 @@ public class Utils {
         StringBuilder sb = new StringBuilder();
         for(Iterator<?> itr = col.iterator(); itr.hasNext();) {
             final Object item = itr.next();
-            sb.append(item.toString());
+            String text = itemConverter.convertToString(item);
+            sb.append(text);
             
             if(separator != null && itr.hasNext()) {
                 sb.append(separator);
@@ -1717,97 +1746,13 @@ public class Utils {
         return !equals(obj1, obj2);
     }
     
-    /** プリミティブ型のデフォルト値 */
-    private static final Map<Class<?>, Object> primitiveDefaults = new HashMap<>();
-    
-    static {
-        primitiveDefaults.put(Boolean.TYPE, Boolean.FALSE);
-        primitiveDefaults.put(Byte.TYPE, (byte)0);
-        primitiveDefaults.put(Short.TYPE, (short)0);
-        primitiveDefaults.put(Character.TYPE, (char)0);
-        primitiveDefaults.put(Integer.TYPE, 0);
-        primitiveDefaults.put(Long.TYPE, 0L);
-        primitiveDefaults.put(Float.TYPE, 0.0f);
-        primitiveDefaults.put(Double.TYPE, 0.0);
-        primitiveDefaults.put(BigInteger.class, new BigInteger("0"));
-        primitiveDefaults.put(BigDecimal.class, new BigDecimal(0.0));
-    }
-    
     /**
-     * 文字列をプリミティブ型に変換する。
-     * <p>文字列の値がnullまたは空文字の場合、プリミティブ型の場合ゼロなどのデフォルト値を返す。オブジェクト型の場合はnullを返す。
-     * @param str
-     * @param targetClass 変換後のクラスタイプ
+     * オブジェクトを文字列に変換する。
+     * <p>nullの場合、文字列として "null"を返す。
+     * <p>単純に、{@link Object#toString()}を呼び出す。
+     * @param value
      * @return
-     * @throws ConversionException 引数classTypeが対応していないクラス型の場合。
      */
-    @SuppressWarnings("unchecked")
-    public static <T> T convertToObject(final String str, final Class<T> targetClass) throws ConversionException {
-        
-        ArgUtils.notNull(targetClass, "targetClass");
-        
-        if(targetClass.isAssignableFrom(String.class)) {
-            return (T) (Utils.isEmpty(str) ? null : str.toString());
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(boolean.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(Boolean.TYPE) : Boolean.valueOf(str));
-        
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(char.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(Character.TYPE) : str.charAt(0));
-        
-        } else if(targetClass.isAssignableFrom(Character.class)) {
-            return (T) (Utils.isEmpty(str) ? null : str.charAt(0));
-            
-        } else if(targetClass.isAssignableFrom(Boolean.class)) {
-            return (T) (Utils.isEmpty(str) ? null : Boolean.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(short.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(Short.TYPE) : Short.valueOf(str));
-        
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(byte.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(Byte.TYPE) : Byte.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Byte.class)) {
-            return (T) (Utils.isEmpty(str) ? null : Byte.valueOf(str));
-            
-        } else if(targetClass.isAssignableFrom(Short.class)) {
-            return (T) (Utils.isEmpty(str) ? null : Short.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(int.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(Integer.TYPE) : Integer.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Integer.class)) {
-            return (T) (Utils.isEmpty(str) ? null : Integer.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(long.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(Long.TYPE) : Long.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Long.class)) {
-            return (T) (Utils.isEmpty(str) ? null : Long.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(float.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(Float.TYPE) : Float.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Float.class)) {
-            return (T) (Utils.isEmpty(str) ? null : Float.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(double.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(Double.TYPE) : Double.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Double.class)) {
-            return (T) (Utils.isEmpty(str) ? null : Double.valueOf(str));
-            
-        } else if(targetClass.isAssignableFrom(BigInteger.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(BigInteger.class) : new BigInteger(str));
-            
-        } else if(targetClass.isAssignableFrom(BigDecimal.class)) {
-            return (T) (Utils.isEmpty(str) ? primitiveDefaults.get(BigDecimal.class) : new BigDecimal(str));
-        }
-        
-        throw new ConversionException(String.format("Cannot convert string to Object [%s].", targetClass.getName()), targetClass);
-        
-    }
-    
     public static String convertToString(final Object value) {
         
         if(value == null) {

@@ -1,7 +1,10 @@
 package com.gh.mygreen.xlsmapper;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.cellconvert.CellConverterRegistry;
+import com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter;
+import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegstry;
 
 
@@ -50,6 +53,9 @@ public class XlsMapperConfig {
     
     /** 処理対象のシートを取得するクラス */
     private SheetFinder sheetFinder = new SheetFinder();
+    
+    /** 単純なクラスオブジェクトの変換するクラス */
+    private ItemConverter itemConverter = new DefaultItemConverter();
     
     public XlsMapperConfig() {
     }
@@ -317,6 +323,29 @@ public class XlsMapperConfig {
      */
     public XlsMapperConfig setSheetFinder(SheetFinder sheetFinder) {
         this.sheetFinder = sheetFinder;
+        return this;
+    }
+    
+    /**
+     * 任意のクラス型に変換するクラスを設定します。
+     * <p>{@link XlsArrayConverter#itemConverter()}の処理クラスです。
+     * 
+     * @since 1.1
+     * @return
+     */
+    public ItemConverter getItemConverter() {
+        return itemConverter;
+    }
+    
+    /**
+     * 任意のクラス型に変換するクラスを取得します。
+     * <p>{@link XlsArrayConverter#itemConverter()}の処理クラスです。
+     * @since 1.1
+     * @param itemConverter 任意のクラス型に変換するクラス
+     * @return 自身のインスタンス
+     */
+    public XlsMapperConfig setItemConverter(ItemConverter itemConverter) {
+        this.itemConverter = itemConverter;
         return this;
     }
     

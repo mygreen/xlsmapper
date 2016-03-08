@@ -1,5 +1,6 @@
 package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -66,18 +67,22 @@ public class CalendarCellConverter extends AbstractCellConverter<Calendar> {
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {
             final String defaultValue = converterAnno.defaultValue();
+            final DateFormat formatter;
+            
             if(Utils.isNotEmpty(anno.javaPattern())) {
-                try {
-                    Date date = dateConverter.parseDate(defaultValue, dateConverter.createDateFormat(anno));
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(date);
-                    value = cal;
-                } catch (ParseException e) {
-                    throw newTypeBindException(e, cell, adaptor, defaultValue)
-                        .addAllMessageVars(dateConverter.createTypeErrorMessageVars(anno));
-                }
+                formatter = dateConverter.createDateFormat(anno);
             } else {
-                value = (Calendar) Utils.convertToObject(defaultValue, adaptor.getTargetClass());
+                formatter = dateConverter.createDateFormat(dateConverter.getDefaultDateConverterAnnotation());
+            }
+            
+            try {
+                Date date = dateConverter.parseDate(defaultValue, formatter);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                value = cal;
+            } catch (ParseException e) {
+                throw newTypeBindException(e, cell, adaptor, defaultValue)
+                    .addAllMessageVars(dateConverter.createTypeErrorMessageVars(anno));
             }
             
         }

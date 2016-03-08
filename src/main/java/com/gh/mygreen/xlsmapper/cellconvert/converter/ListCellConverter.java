@@ -15,9 +15,10 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
-import com.gh.mygreen.xlsmapper.annotation.XlsItemConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;
+import com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter;
+import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 
 
@@ -46,7 +47,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         }
         
         try {
-            final List list = convertList(cellValue, itemClass, converterAnno, anno);
+            final List list = convertList(cellValue, itemClass, converterAnno, anno, config);
             return list;
         } catch(NumberFormatException e) {
             throw newTypeBindException(e, cell, adaptor, cellValue)
@@ -55,13 +56,16 @@ public class ListCellConverter extends AbstractCellConverter<List> {
     }
     
     @SuppressWarnings("unchecked")
-    protected List<?> convertList(final String value, Class<?> itemClass, final XlsConverter converterAnno, final XlsArrayConverter anno) throws ConversionException {
+    protected List<?> convertList(final String value, Class<?> itemClass, final XlsConverter converterAnno,
+            final XlsArrayConverter anno, final XlsMapperConfig config) throws ConversionException {
         
         final String[] split = value.split(anno.separator());
         final List list = new ArrayList<>();
         if(split.length == 0 || value.isEmpty()) {
             return list;
         }
+        
+        final ItemConverter itemConverter = getItemConverter(anno.itemConverter(), config);
         
         for(String item : split) {
             
@@ -70,9 +74,25 @@ public class ListCellConverter extends AbstractCellConverter<List> {
                 continue;
             }
             
-            list.add(Utils.convertToObject(strVal, itemClass));
+            list.add(itemConverter.convertToObject(strVal, itemClass));
         }
         return list;
+        
+    }
+    
+    /**
+     * リストの要素の値を変換するクラスを取得する。
+     * @param converterClass
+     * @param config
+     * @return
+     */
+    ItemConverter getItemConverter(Class<? extends ItemConverter> converterClass, final XlsMapperConfig config) {
+        
+        if(converterClass.isAssignableFrom(DefaultItemConverter.class)) {
+            return config.getItemConverter();
+        } else {
+            return (ItemConverter) config.getBeanFactory().create(converterClass);
+        }
         
     }
     
@@ -98,10 +118,10 @@ public class ListCellConverter extends AbstractCellConverter<List> {
             public boolean ignoreEmptyItem() {
                 return false;
             }
-
+            
             @Override
-            public XlsItemConverter[] itemConverter() {
-                return new XlsItemConverter[]{};
+            public Class<? extends ItemConverter> itemConverter() {
+                return DefaultItemConverter.class;
             }
             
         };
@@ -115,6 +135,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         final Map<String, Object> vars = new LinkedHashMap<>();
         vars.put("separator", anno.separator());
         vars.put("ignoreEmptyItem", anno.ignoreEmptyItem());
+        vars.put("itemConverter", Utils.convertToString(anno.itemConverter()));
         return vars;
     }
     
@@ -158,13 +179,15 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         
         // デフォルト値から値を設定する
         if(Utils.isEmpty(value) && Utils.hasDefaultValue(converterAnno)) {
-            value = convertList(Utils.getDefaultValue(converterAnno), itemClass, converterAnno, anno);
+            value = convertList(Utils.getDefaultValue(converterAnno), itemClass, converterAnno, anno, config);
         }
         
         if(Utils.isNotEmpty(value)) {
             final boolean trim = (converterAnno == null ? false : converterAnno.trim()); 
-            final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trim);
+            final ItemConverter itemConverter = getItemConverter(anno.itemConverter(), config);
+            final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trim, itemConverter);
             cell.setCellValue(cellValue);
+            
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);
         }

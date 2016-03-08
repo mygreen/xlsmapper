@@ -352,15 +352,22 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {
             final String defaultValue = converterAnno.defaultValue();
+            final NumberFormat formatter;
+            final MathContext context;
+            
             if(Utils.isNotEmpty(anno.javaPattern())) {
-                try {
-                    value = parseNumber(defaultValue, createNumberFormat(anno), createMathContext(anno));
-                } catch (ParseException e) {
-                    throw newTypeBindException(e, cell, adaptor, defaultValue)
-                        .addAllMessageVars(createTypeErrorMessageVars(anno));
-                }
+                formatter = createNumberFormat(anno);
+                context = createMathContext(anno);
             } else {
-                value = (Number) Utils.convertToObject(defaultValue, adaptor.getTargetClass());
+                formatter = createNumberFormat(getDefaultNumberConverterAnnotation());
+                context = createMathContext(getDefaultNumberConverterAnnotation());
+            }
+            
+            try {
+                value = parseNumber(defaultValue, formatter, context);
+            } catch (ParseException e) {
+                throw newTypeBindException(e, cell, adaptor, defaultValue)
+                    .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
             
         }

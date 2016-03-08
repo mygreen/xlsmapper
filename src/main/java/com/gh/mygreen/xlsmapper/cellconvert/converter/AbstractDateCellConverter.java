@@ -167,7 +167,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         return convertDate(format.parse(value));
     }
     
-    private XlsDateConverter getDefaultDateConverterAnnotation() {
+    XlsDateConverter getDefaultDateConverterAnnotation() {
         return new XlsDateConverter() {
             
             @Override
@@ -236,15 +236,19 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         // デフォルト値から値を設定する
         if(value == null && Utils.hasDefaultValue(converterAnno)) {
             final String defaultValue = converterAnno.defaultValue();
+            
+            final DateFormat formatter;
             if(Utils.isNotEmpty(anno.javaPattern())) {
-                try {
-                    value = parseDate(defaultValue, createDateFormat(anno));
-                } catch (ParseException e) {
-                    throw newTypeBindException(e, cell, adaptor, defaultValue)
-                        .addAllMessageVars(createTypeErrorMessageVars(anno));
-                }
+                formatter = createDateFormat(anno);
             } else {
-                value = (Date) Utils.convertToObject(defaultValue, adaptor.getTargetClass());
+                formatter = createDateFormat(getDefaultDateConverterAnnotation());
+            }
+            
+            try {
+                value = parseDate(defaultValue, formatter);
+            } catch (ParseException e) {
+                throw newTypeBindException(e, cell, adaptor, defaultValue)
+                    .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
             
         }

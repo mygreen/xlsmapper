@@ -13,6 +13,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
+import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 
 
@@ -66,13 +67,14 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
         Object[] value = targetValue;
         // デフォルト値から値を設定する
         if(Utils.isEmpty(value) && Utils.hasDefaultValue(converterAnno)) {
-            final List<?> list = converter.convertList(Utils.getDefaultValue(converterAnno), itemClass, converterAnno, anno);
+            final List<?> list = converter.convertList(Utils.getDefaultValue(converterAnno), itemClass, converterAnno, anno, config);
             value = list.toArray(((Object[])Array.newInstance(itemClass, list.size())));
         }
         
         if(Utils.isNotEmpty(value)) {
             final boolean trim = (converterAnno == null ? false : converterAnno.trim()); 
-            final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trim);
+            final ItemConverter itemConverter = converter.getItemConverter(anno.itemConverter(), config);
+            final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trim, itemConverter);
             cell.setCellValue(cellValue);
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);
