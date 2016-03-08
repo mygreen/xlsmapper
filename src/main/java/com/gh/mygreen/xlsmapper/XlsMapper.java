@@ -4,11 +4,159 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 
 /**
  * ExcelのシートとJavaオブジェクトをマッピングする機能を提供する。
+ * 
+ * <h3 class="description">マッピングの基本</h3>
+ * <p>次のような表のExcelシートをマッピングする例を説明します。</p>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/howto_load.png">
+ *    <p>基本的なマッピング</p>
+ * </div>
+ * 
+ * <p>まず、シート1つに対して、POJOクラスを作成します。</p>
+ * <ul>
+ *   <li>シート名を指定するために、アノテーション {@link XlsSheet} をクラスに付与します。</li>
+ *   <li>見出し付きのセル「Date」をマッピングするフィールドに、アノテーション {@link XlsLabelledCell} に付与します。</li>
+ *   <li>表「User List」をマッピングするListのフィールドに、アノテーション {@link XlsHorizontalRecords} を付与します。</li>
+ * </ul>
+ * 
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用のPOJOクラスの定義
+ * {@literal @XlsSheet(name="List")}
+ * public class UserSheet {
+ *
+ *     {@literal @XlsLabelledCell(label="Date", type=LabelledCellType.Right)}
+ *     Date createDate;
+ *     
+ *     {@literal @XlsHorizontalRecords(tableLabel="User List")}
+ *     {@literal List<UserRecord>} users;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * 
+ * <p>続いて、表「User List」の1レコードをマッピングするための、POJOクラスを作成します。</p>
+ * <ul>
+ *   <li>レコードの列をマッピングするために、アノテーション {@link XlsColumn} をフィールドに付与します。</li>
+ *   <li>フィールドのクラスタイプが、intや列挙型の場合もマッピングできます。</li>
+ * </ul>
+ * 
+ * <pre class="highlight"><code class="java">
+ * // レコード用のPOJOクラスの定義
+ * public class UserRecord {
+ *
+ *     {@literal @XlsColumn(columnName="ID")}
+ *     int no;
+ *     
+ *     {@literal @XlsColumn(columnName="Class", merged=true)}
+ *     String className;
+ *     
+ *     {@literal @XlsColumn(columnName="Name")}
+ *     String name;
+ *     
+ *     {@literal @XlsColumn(columnName="Gender")}
+ *     Gender gender;
+ *     
+ * }
+ * 
+ * // 性別を表す列挙型の定義
+ * public enum Gender {
+ *    male, female;
+ * }
+ * </code></pre>
+ * 
+ * 
+ * <p>作成したPOJOを使ってシートを読み込むときは、XlsMapper#load メソッドを利用します。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シートの読み込み
+ * XlsMapper xlsMapper = new XlsMapper();
+ * UserSheet sheet = xlsMapper.load(
+ *         new FileInputStream("example.xls"), // 読み込むExcelファイル。
+ *         UserSheet.class                     // シートマッピング用のPOJOクラス。
+ *   );
+ * </code></pre>
+ * 
+ * 
+ * <h3 class="description">書き込み方の基本</h3>
+ * <p>同じシートの形式を使って、書き込み方を説明します。
+ *   <br>まず、書き込み先のテンプレートとなるExcelシートを用意します。 レコードなどは空を設定します。
+ * </p>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/howto_save.png">
+ *    <p>データが空のテンプレートファイル</p>
+ * </div>
+ * 
+ * <p>続いて、読み込み時に作成したシート用のマッピングクラスに、書き込み時の設定を付け加えるために修正します。</p>
+ * <ul>
+ *   <li>セル「Date」の書き込み時の書式を指定するために、アノテーション {@link XlsDateConverter} に付与します。
+ *     <br>属性 {@link XlsDateConverter#excelPattern()} でExcelのセルの書式を設定します。
+ *   </li>
+ *   <li>表「User List」のレコードを追加する操作を指定するために、アノテーションの属性 {@link XlsHorizontalRecords#overRecord()}を指定します。
+ *     <br>テンプレート上は、レコードが1行分しかないですが、実際に書き込むレコード数が2つ以上の場合、足りなくなるため、その際のシートの操作方法を指定します。
+ *     <br>今回の{@link OverRecordOperate#Insert}は、行の挿入を行います。
+ *   </li>
+ * </ul>
+ * 
+ * <pre class="highlight"><code class="java">
+ * // シート用のPOJOクラスの定義
+ * {@literal @XlsSheet(name="List")}
+ * public class UserSheet {
+ *
+ *     {@literal @XlsLabelledCell(label="Date", type=LabelledCellType.Right)}
+ *     {@literal @XlsDateConverter(excelPattern="yyyy/mm/dd")}
+ *     Date createDate;
+ *     
+ *     {@literal @XlsHorizontalRecords(tableLabel="User List", orverRecord=OverRecordOperate.Insert)}
+ *     {@literal List<UserRecord>} users;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * <p>修正したPOJOを使ってシートを書き込むときは、 XlsMapper#save メソッドを利用します。</p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * // 書き込むシート情報の作成
+ * UserSheet sheet = new UserSheet();
+ * sheet.date = new Date();
+ * 
+ * {@literal List<UserRecord>} users = new {@literal ArrayList<>}();
+ * 
+ * // 1レコード分の作成
+ * UserRecord record1 = new UserRecord();
+ * record1.no = 1;
+ * record1.className = "A";
+ * record1.name = "Taro";
+ * recrod1.gender = Gender.male;
+ * users.add(record1);
+ * 
+ * UserRecord record2 = new UserRecord();
+ * // ... 省略
+ * users.add(record2);
+ * 
+ * sheet.users = users;
+ * 
+ * // シートの書き込み
+ * XlsMapper xlsMapper = new XlsMapper();
+ * xlsMapper.save(
+ *     new FileInputStream("template.xls"), // テンプレートのExcelファイル
+ *     new FileOutputStream("out.xls"),     // 書き込むExcelファイル
+ *     sheet                                // 作成したデータ
+ *     );
+ * </code></pre>
  * 
  * @author T.TSUCHIE
  *
