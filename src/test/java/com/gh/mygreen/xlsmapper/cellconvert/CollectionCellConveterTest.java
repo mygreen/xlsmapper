@@ -10,9 +10,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +39,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * リスト/集合/配列型の
  * 
+ * @version 1.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -78,6 +80,12 @@ public class CollectionCellConveterTest {
             
             if(sheet.formattedRecords != null) {
                 for(FormattedRecord record : sheet.formattedRecords) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.customRecords != null) {
+                for(CustomRecord record : sheet.customRecords) {
                     assertRecord(record, errors);
                 }
             }
@@ -232,6 +240,64 @@ public class CollectionCellConveterTest {
         
     }
     
+    private void assertRecord(final CustomRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            // 空文字
+            assertThat(record.listDate, empty());
+            assertThat(record.arrayDate, emptyArray());
+            assertThat(record.setDate, empty());
+            
+        } else if(record.no == 2) {
+            // 項目が１つ
+            Date date1 = toUtilDate(toTimestamp("2016-03-15 00:00:00.000"));
+            
+            assertThat(record.listDate, contains(date1));
+            assertThat(record.arrayDate, arrayContaining(date1));
+            assertThat(record.setDate, contains(date1));
+            
+        } else if(record.no == 3) {
+            // 項目が2つ
+            
+            Date date1 = toUtilDate(toTimestamp("2016-03-15 00:00:00.000"));
+            Date date2 = toUtilDate(toTimestamp("2016-03-16 00:00:00.000"));
+            
+            assertThat(record.listDate, contains(date1, date2));
+            assertThat(record.arrayDate, arrayContaining(date1, date2));
+            assertThat(record.setDate, contains(date1, date2));
+            
+        } else if(record.no == 4) {
+            // 区切り文字のみ
+            assertThat(record.listDate, empty());
+            assertThat(record.arrayDate, emptyArray());
+            assertThat(record.setDate, empty());
+            
+        } else if(record.no == 5) {
+            // 区切り文字、空白
+            
+            Date date1 = toUtilDate(toTimestamp("2016-03-15 00:00:00.000"));
+            Date date2 = toUtilDate(toTimestamp("2016-03-16 00:00:00.000"));
+            
+            assertThat(record.listDate, contains(date1, date2));
+            assertThat(record.arrayDate, arrayContaining(date1, date2));
+            assertThat(record.setDate, contains(date1, date2));
+            
+        } else if(record.no == 6) {
+            // 空白がある
+            
+            Date date1 = toUtilDate(toTimestamp("2016-03-15 00:00:00.000"));
+            Date date2 = toUtilDate(toTimestamp("2016-03-16 00:00:00.000"));
+            
+            assertThat(record.listDate, contains(date1, date2));
+            assertThat(record.arrayDate, arrayContaining(date1, date2));
+            assertThat(record.setDate, contains(date1, date2));
+            
+        } else {
+            fail(String.format("not support test case. No=%d.", record.no));
+        }
+        
+    }
+    
     /**
      * リスト、集合、配列型の書き込みテスト
      */
@@ -339,6 +405,45 @@ public class CollectionCellConveterTest {
                 .setInteger(toSet(123, 456))
                 .comment("空白がある"));
         
+        
+        // リスト型（任意の型）
+        Date date1 = toUtilDate(toTimestamp("2016-03-15 00:00:00.000"));
+        Date date2 = toUtilDate(toTimestamp("2016-03-16 00:00:00.000"));
+        Date nullDate = null;
+        
+        outSheet.add(new CustomRecord()
+                .comment("空文字"));
+        
+        outSheet.add(new CustomRecord()
+                .listDate(toList(date1))
+                .arrayDate(toArray(date1))
+                .setDate(toSet(date1))
+                .comment("項目が1つ"));
+        
+        outSheet.add(new CustomRecord()
+                .listDate(toList(date1, date2))
+                .arrayDate(toArray(date1, date2))
+                .setDate(toSet(date1, date2))
+                .comment("項目が２つ"));
+        
+        outSheet.add(new CustomRecord()
+                .listDate(toList(nullDate, nullDate, nullDate))
+                .arrayDate(toArray(nullDate, nullDate, nullDate))
+                .setDate(toSet(nullDate, nullDate, nullDate))
+                .comment("空の項目のみ"));
+        
+        outSheet.add(new CustomRecord()
+                .listDate(toList(date1, nullDate, date2))
+                .arrayDate(toArray(date1, nullDate, date2))
+                .setDate(toSet(date1, nullDate, date2))
+                .comment("空の項目がある"));
+        
+        outSheet.add(new CustomRecord()
+                .listDate(toList(date1, date2))
+                .arrayDate(toArray(date1, date2))
+                .setDate(toSet(date1, date2))
+                .comment("空白がある（※テスト不可）"));
+        
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setSkipTypeBindFailure(true);
@@ -370,6 +475,14 @@ public class CollectionCellConveterTest {
                 
                 for(int i=0; i < sheet.formattedRecords.size(); i++) {
                     assertRecord(sheet.formattedRecords.get(i), outSheet.formattedRecords.get(i), errors);
+                }
+            }
+            
+            if(sheet.customRecords != null) {
+                assertThat(sheet.customRecords, hasSize(outSheet.customRecords.size()));
+                
+                for(int i=0; i < sheet.customRecords.size(); i++) {
+                    assertRecord(sheet.customRecords.get(i), outSheet.customRecords.get(i), errors);
                 }
             }
             
@@ -494,6 +607,62 @@ public class CollectionCellConveterTest {
         
     }
     
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final CustomRecord inRecord, final CustomRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.listDate, is(hasSize(0)));
+            assertThat(inRecord.arrayDate, is(arrayWithSize(0)));
+            assertThat(inRecord.setDate, is(hasSize(0)));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 4) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.listDate, is(hasSize(0)));
+            assertThat(inRecord.arrayDate, is(arrayWithSize(0)));
+            assertThat(inRecord.setDate, is(hasSize(0)));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 5) {
+            
+            Date date1 = toUtilDate(toTimestamp("2016-03-15 00:00:00.000"));
+            Date date2 = toUtilDate(toTimestamp("2016-03-16 00:00:00.000"));
+            
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.listDate, contains(date1, date2));
+            assertThat(inRecord.arrayDate, arrayContaining(date1, date2));
+            assertThat(inRecord.setDate, contains(date1, date2));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 6) {
+            Date date1 = toUtilDate(toTimestamp("2016-03-15 00:00:00.000"));
+            Date date2 = toUtilDate(toTimestamp("2016-03-16 00:00:00.000"));
+            
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.listDate, contains(date1, date2));
+            assertThat(inRecord.arrayDate, arrayContaining(date1, date2));
+            assertThat(inRecord.setDate, contains(date1, date2));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.listDate, is(outRecord.listDate));
+            assertThat(inRecord.arrayDate, is(outRecord.arrayDate));
+            assertThat(inRecord.setDate, is(outRecord.setDate));
+            assertThat(inRecord.comment, is(outRecord.comment));
+        }
+        
+    }
+    
     @XlsSheet(name="リスト型")
     private static class CollectionSheet {
         
@@ -502,10 +671,15 @@ public class CollectionCellConveterTest {
                 overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
-        @XlsHint(order=1)
+        @XlsHint(order=2)
         @XlsHorizontalRecords(tableLabel="リスト型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="リスト型（任意の型）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<CustomRecord> customRecords;
         
         /**
          * レコードを追加する。noを自動的に付与する。
@@ -532,6 +706,20 @@ public class CollectionCellConveterTest {
             }
             this.formattedRecords.add(record);
             record.no(formattedRecords.size());
+            return this;
+        }
+        
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public CollectionSheet add(CustomRecord record) {
+            if(customRecords == null) {
+                this.customRecords = new ArrayList<>();
+            }
+            this.customRecords.add(record);
+            record.no(customRecords.size());
             return this;
         }
         
@@ -703,6 +891,91 @@ public class CollectionCellConveterTest {
         public FormattedRecord comment(String comment) {
             this.comment = comment;
             return this;
+        }
+        
+    }
+    
+    private static class CustomRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsConverter(trim=true)
+        @XlsArrayConverter(separator="\n", ignoreEmptyItem=true, itemConverter=DateItemConverter.class)
+        @XlsColumn(columnName="List（Date型）")
+        private List<Date> listDate;
+        
+        @XlsConverter(trim=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyItem=true, itemConverter=DateItemConverter.class)
+        @XlsColumn(columnName="Array（Date型）")
+        private Date[] arrayDate;
+        
+        @XlsConverter(trim=true)
+        @XlsArrayConverter(separator=",", ignoreEmptyItem=true, itemConverter=DateItemConverter.class)
+        @XlsColumn(columnName="Set（Date型）")
+        private Set<Date> setDate;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public CustomRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public CustomRecord listDate(List<Date> listDate) {
+            this.listDate = listDate;
+            return this;
+        }
+        
+        public CustomRecord arrayDate(Date[] arrayDate) {
+            this.arrayDate = arrayDate;
+            return this;
+        }
+        
+        public CustomRecord setDate(Set<Date> setDate) {
+            this.setDate = setDate;
+            return this;
+        }
+        
+        public CustomRecord comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+        
+        private static class DateItemConverter implements ItemConverter<Date> {
+            
+            @Override
+            public Date convertToObject(final String text, final Class<Date> targetClass) throws ConversionException {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日");
+                try {
+                    return formatter.parse(text);
+                } catch (ParseException e) {
+                    String message = String.format("fail parse '%s' to java.util.Date", text);
+                    throw new ConversionException(message, e, targetClass);
+                }
+            }
+            
+            @Override
+            public String convertToString(final Date value) {
+                
+                if(value == null) {
+                    return "";
+                }
+                
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日");
+                return formatter.format(value);
+            }
+            
         }
         
     }
