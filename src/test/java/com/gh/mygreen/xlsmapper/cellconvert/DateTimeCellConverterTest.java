@@ -303,12 +303,12 @@ public class DateTimeCellConverterTest {
     private static class DateTimeSheet {
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         

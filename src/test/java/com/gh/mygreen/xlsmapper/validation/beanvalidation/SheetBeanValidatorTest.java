@@ -394,7 +394,7 @@ public class SheetBeanValidatorTest {
         private String className;
         
         @Valid
-        @XlsHorizontalRecords(tableLabel="名簿一覧", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="名簿一覧", terminal=RecordTerminal.Border, ignoreEmptyRecord=true)
         private List<PersonRecord> list;
         
     }

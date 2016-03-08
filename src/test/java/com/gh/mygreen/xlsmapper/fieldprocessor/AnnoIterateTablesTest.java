@@ -1181,7 +1181,7 @@ public class AnnoIterateTablesTest {
         private String name;
         
         @XlsHint(order=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
         private List<PersonRecord> persons;
         
@@ -1295,7 +1295,7 @@ public class AnnoIterateTablesTest {
         private String name;
         
         @XlsHint(order=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
         private List<PersonRecord> persons;
         
@@ -1363,12 +1363,12 @@ public class AnnoIterateTablesTest {
         private String name;
         
         @XlsHint(order=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
         private List<PersonRecord> persons;
         
         @XlsHint(order=4)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Clear)
         private List<ResultRecord> results;
         
@@ -1537,14 +1537,14 @@ public class AnnoIterateTablesTest {
         }
         
         @XlsHint(order=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
         public List<PersonRecord> getPersons() {
             return persons;
         }
         
         @XlsHint(order=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true)
         public void setPersons(List<PersonRecord> persons) {
             this.persons = persons;
         }
@@ -1647,7 +1647,7 @@ public class AnnoIterateTablesTest {
             private String name;
             
             @XlsHint(order=3)
-            @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+            @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                     overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
             private List<RegexRecord> persons;
             

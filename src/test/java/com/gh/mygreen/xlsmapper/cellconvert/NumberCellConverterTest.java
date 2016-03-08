@@ -950,22 +950,22 @@ public class NumberCellConverterTest {
     private static class NumberSheet {
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="プリミティブ型", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="プリミティブ型", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<PrimitiveRecord> primitiveRecords;
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="ラッパークラス", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="ラッパークラス", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<WrapperRecord> wrapperRecords;
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="その他のクラス", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="その他のクラス", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<OtherRecord> otherRecords;
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="初期値、書式指定", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="初期値、書式指定", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         

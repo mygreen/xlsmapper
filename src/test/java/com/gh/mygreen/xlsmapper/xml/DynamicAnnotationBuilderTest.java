@@ -81,7 +81,7 @@ public class DynamicAnnotationBuilderTest {
         assertThat(records.headerAddress(), is(""));
         assertThat(records.overRecord(), is(OverRecordOperate.Break));
         assertThat(records.remainedRecord(), is(RemainedRecordOperate.None));
-        assertThat(records.skipEmptyRecord(), is(false));
+        assertThat(records.ignoreEmptyRecord(), is(false));
         
     }
     

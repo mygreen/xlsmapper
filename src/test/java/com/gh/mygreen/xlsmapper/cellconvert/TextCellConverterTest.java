@@ -299,12 +299,12 @@ public class TextCellConverterTest {
     private static class TextSheet {
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="文字列型（アノテーションなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="文字列型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsHint(order=2)
-        @XlsHorizontalRecords(tableLabel="文字列型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="文字列型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         

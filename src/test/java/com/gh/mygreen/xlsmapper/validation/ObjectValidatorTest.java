@@ -177,7 +177,7 @@ public class ObjectValidatorTest {
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String className;
         
-        @XlsHorizontalRecords(tableLabel="名簿一覧", terminal=RecordTerminal.Border, skipEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="名簿一覧", terminal=RecordTerminal.Border, ignoreEmptyRecord=true)
         private List<PersonRecord> list;
         
         public String getClassName() {

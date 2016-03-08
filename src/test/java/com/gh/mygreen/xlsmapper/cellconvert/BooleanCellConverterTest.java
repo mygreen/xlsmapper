@@ -321,12 +321,12 @@ public class BooleanCellConverterTest {
     private static class BooleanSheet {
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="ブール型（アノテーションなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="ブール型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="ブール型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="ブール型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         

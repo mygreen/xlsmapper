@@ -354,11 +354,11 @@ public class AnnoLifeCycleTest {
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
         
-        @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
         private List<Record> hRecords;
         
-        @XlsVerticalRecords(tableLabel="縦方向", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsVerticalRecords(tableLabel="縦方向", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Clear)
         private List<Record> vRecords;
         
@@ -510,7 +510,7 @@ public class AnnoLifeCycleTest {
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
         
-        @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
         private List<Record> hRecords;
         

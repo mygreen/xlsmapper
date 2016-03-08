@@ -173,7 +173,7 @@ public class XmlBuilderTest {
         // フィールド - XMLに定義していない
         XlsConverter converterAnno = select(nameAnnos, XlsConverter.class);
         assertThat(converterAnno.trim(), is(true));
-        assertThat(converterAnno.forceShrinkToFit(), is(true));
+        assertThat(converterAnno.shrinkToFit(), is(true));
         assertThat(converterAnno.defaultValue(), is("－"));
         
         XlsHint hintAnno1 = select(nameAnnos, XlsHint.class);
@@ -307,7 +307,7 @@ public class XmlBuilderTest {
         private String sheetName;
         
         @XlsHint(order=1)
-        @XlsConverter(trim=true, forceShrinkToFit=true, defaultValue="－")
+        @XlsConverter(trim=true, shrinkToFit=true, defaultValue="－")
         @XlsLabelledCell(label="名称", type=LabelledCellType.Right)
         private String name;
         

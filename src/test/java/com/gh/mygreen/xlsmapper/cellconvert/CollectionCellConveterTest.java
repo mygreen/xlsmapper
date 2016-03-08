@@ -667,17 +667,17 @@ public class CollectionCellConveterTest {
     private static class CollectionSheet {
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="リスト型（アノテーションなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="リスト型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsHint(order=2)
-        @XlsHorizontalRecords(tableLabel="リスト型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="リスト型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsHint(order=3)
-        @XlsHorizontalRecords(tableLabel="リスト型（任意の型）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="リスト型（任意の型）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<CustomRecord> customRecords;
         
@@ -905,17 +905,17 @@ public class CollectionCellConveterTest {
         private int no;
         
         @XlsConverter(trim=true)
-        @XlsArrayConverter(separator="\n", ignoreEmptyItem=true, itemConverter=DateItemConverter.class)
+        @XlsArrayConverter(separator="\n", ignoreEmptyItem=true, itemConverterClass=DateItemConverter.class)
         @XlsColumn(columnName="List（Date型）")
         private List<Date> listDate;
         
         @XlsConverter(trim=true)
-        @XlsArrayConverter(separator=";", ignoreEmptyItem=true, itemConverter=DateItemConverter.class)
+        @XlsArrayConverter(separator=";", ignoreEmptyItem=true, itemConverterClass=DateItemConverter.class)
         @XlsColumn(columnName="Array（Date型）")
         private Date[] arrayDate;
         
         @XlsConverter(trim=true)
-        @XlsArrayConverter(separator=",", ignoreEmptyItem=true, itemConverter=DateItemConverter.class)
+        @XlsArrayConverter(separator=",", ignoreEmptyItem=true, itemConverterClass=DateItemConverter.class)
         @XlsColumn(columnName="Set（Date型）")
         private Set<Date> setDate;
         

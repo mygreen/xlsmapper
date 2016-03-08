@@ -394,12 +394,12 @@ public class LinkCellConverterTest {
     private static class LinkSheet {
         
         @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="リンク型（アノテーションなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="リンク型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsHint(order=2)
-        @XlsHorizontalRecords(tableLabel="リンク型（初期値、書式）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
+        @XlsHorizontalRecords(tableLabel="リンク型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
