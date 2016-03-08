@@ -17,7 +17,8 @@ Collection型のインタフェースを指定している場合、読み込み�
 * ``java.util.Set`` の場合、``java.util.LinkedHashSet`` がインスタンスのクラスとなります。
 
 
-配列、またはCollection型の要素で指定可能なクラスタイプは、次の通りです。
+配列、またはCollection型の要素で指定可能なクラス型は、次の通りです。
+任意のクラス型に対応する場合は、属性 ``itemConverter`` で変換処理クラスを指定してください。
 
 * String型
 * プリミティブ型「boolean/char/byte/short/int/long/float/double」と、そのラッパークラス。
@@ -26,7 +27,7 @@ Collection型のインタフェースを指定している場合、読み込み�
 
 文字列のセルに対して、任意の区切り文字を指定し、配列やListに対してマッピングします。
 
-* 属性separatorで区切り文字を指定します。
+* 属性 ``separator`` で区切り文字を指定します。
 
   * 区切り文字の初期値は、半角カンマ(,)です。
   
@@ -57,7 +58,7 @@ Collection型のインタフェースを指定している場合、読み込み�
 空の要素を無視する場合
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性ignoreEmptyItemで、区切った項目の値が空文字の場合、無視するか指定します。
+属性 ``ignoreEmptyItem`` で、区切った項目の値が空文字の場合、無視するか指定します。
     
 例えば、区切り文字","のとき、セルの値が ``"a,,b"`` の場合、trueを設定すると ``["a", "b"]`` として読み込みます。
 
@@ -75,5 +76,43 @@ Collection型のインタフェースを指定している場合、読み込み�
         
     }
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+要素の値を変換するクラスを指定する
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+属性 ``itemConverterClass`` で要素の値を変換するクラスを指定することができます。 `[ver1.1+]`
+
+変換するクラスは、インタフェース ``com.gh.mygreen.xlsmapper.cellconvert.ItemConverter`` を実装している必要があります。
+標準では、``com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter`` が使用され、基本的な型のみサポートしています。
+
+インスタンスは、システム設定「beanFactory」経由で作成されるため、:doc:`SpringFrameworkのコンテナからインスタンスを取得 <extension_beanfactory>` することもできます。
+
+.. sourcecode:: java
+    
+    // 変換用クラス
+    public class CustomItemConverter implements ItemConverter<User> {
+        
+        @Override
+        public User convertToObject(final String str, final Class<User> targetClass) throws ConversionException {
+            //TODO: 文字列 => オブジェクトに変換する処理
+        }
+        
+        @Override
+        public String convertToString(final User value) {
+            //TODO: オブジェクト => 文字列に変換する処理
+        }
+        
+    }
+    
+    // レコード用クラス
+    public class SampleRecord {
+        
+        // 任意のクラス型の要素の値を変換するConverterを指定します。
+        @XlsColumn(columnName="リスト")
+        @XlsArrayConverter(itemConverterClass=CustomItemConverter.class)
+        private List<User> list;
+        
+    }
 
 

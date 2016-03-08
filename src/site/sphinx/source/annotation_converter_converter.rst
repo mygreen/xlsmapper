@@ -13,9 +13,9 @@
 初期値の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性defaultValueで読み込み時/書き込み時のデフォルト値を指定します。
+属性 ``defaultValue`` で読み込み時/書き込み時のデフォルト値を指定します。
   
-* 日付などの書式がある場合、専用のアノテーションで指定した書式 ``@XlsDateConverter(pattern="<任意の書式>")`` を元に、文字列をそのオブジェクトに変換し処理します。
+* 日付などの書式がある場合、専用のアノテーションで指定した書式 ``@XlsDateConverter(javaPattern="<任意の書式>")`` を元に、文字列をそのオブジェクトに変換し処理します。
   
 * デフォルト値を指定しないでプリミティブ型に対して読み込む場合、その型の初期値が設定されます。
     
@@ -36,8 +36,8 @@
         private int id;
         
         @XlsColumn(columnName="更新日時")
-        @XlsConverter(defaultValue="2010/01/01") // 属性patternで指定した書式に沿った値を指定します。
-        @XlsDateConverter(pattern="yyyy/MM/dd")
+        @XlsConverter(defaultValue="2010/01/01") // 属性javaPatternで指定した書式に沿った値を指定します。
+        @XlsDateConverter(javaPattern="yyyy/MM/dd")
         private Date updateTime;
         
     }
@@ -83,11 +83,11 @@
 
 書き込み時はテンプレートとなるシートのセルの書式を基本的に使用するので、事前に折り返し設定が有効になって入れば書き込み時もそれらの設定が有効になります。
 
-* 属性forceWrapTextの値がtrueの場合、強制的にセルの内の文字表示の設定「折り返して全体を表示する」が有効になります。
+* 属性 ``wrapText`` の値がtrueの場合、強制的にセルの内の文字表示の設定「折り返して全体を表示する」が有効になります。
    
   * falseの場合、テンプレートとなるセルの設定を引き継ぎます。
    
-* 属性forceShrinkToFitの値がtrueの場合、強制的にセル内の文字表示の設定「縮小して全体を表示する」が有効になります。
+* 属性 ``shrinkToFit`` の値がtrueの場合、強制的にセル内の文字表示の設定「縮小して全体を表示する」が有効になります。
     
   * falseの場合、テンプレートとなるセルの設定を引き継ぎます。
 
@@ -97,15 +97,15 @@
     public class SampleRecord {
     
         @XlsColumn(columnName="ID")
-        @XlsConverter(forceWrapText=true) // 「縮小して全体を表示する」が有効になる。
+        @XlsConverter(wrapText=true) // 「縮小して全体を表示する」が有効になる。
         private int id;
         
         @XlsColumn(columnName="名前")
-        @XlsConverter(forceShrinkToFit=true) //「折り返して全体を表示する」が有効になる。
+        @XlsConverter(shrinkToFit=true) //「折り返して全体を表示する」が有効になる。
         private String name;
         
         @XlsColumn(columnName="備考")
-        @XlsConverter(forceShrinkToFit=false) // 設定しない場合は、テンプレート設定が有効になる。
+        @XlsConverter(shrinkToFit=false) // 設定しない場合は、テンプレート設定が有効になる。
         private String comment;
     }
 
@@ -113,16 +113,16 @@
 .. note::
     
     Excelの仕様上、設定「折り返して全体を表示する」と「縮小して全体を表示する」は、二者択一であるため、両方の設定を有効にすることはできません。
-    もし、属性forceWrapTextとforceShrinkToFitの値をtrueに設定した場合、forceShrinkToFitの設定が優先され、「縮小して全体を表示する」が有効になります。
+    もし、属性wrapTextとshrinkToFitの値をtrueに設定した場合、shrinkToFitの設定が優先され、「縮小して全体を表示する」が有効になります。
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 独自の変換規則を指定する場合
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-本ライブラリで対応していない型に変換したい時など、属性「converterClass」で独自のConverter用クラスを指定します。
+本ライブラリで対応していない型に変換したい時など、属性 ``converterClass`` で独自のセルの値を変換するクラスを指定します。
 
-Converterクラスは、インタフェース ``com.gh.mygreen.xlsmapper.cellconvert.CellConverter`` を実装する必要があります。
+変換用クラスは、インタフェース ``com.gh.mygreen.xlsmapper.cellconvert.CellConverter`` を実装する必要があります。
 
 詳細は、 :doc:`CellConverterの拡張 <extension_cellconverter>` を参照してください。
 

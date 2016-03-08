@@ -60,7 +60,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
     * インタフェースの型を指定する場合、次の実装クラスのインスタンスが設定されます。
     
       * List型の場合、 ``java.util.ArrayList`` クラス。
-      * Set型の場合、 ``java.util.LinkedHashMap`` クラス。
+      * Set型の場合、 ``java.util.LinkedHashSet`` クラス。
       * Collection型の場合、 ``java.util.ArrayList`` クラス。
     
     * 実装クラスを指定した場合、そのインスタンスが設定されます。
@@ -70,7 +70,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 表の開始位置の指定（表の名称がない場合）
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-表の名称がない場合、属性headerColumn、headerColumnやheaderAddressで表の開始位置をセルのアドレスで指定します。
+表の名称がない場合、属性 ``headerColumn`` 、 ``headerColumn`` や ``headerAddress`` で表の開始位置をセルのアドレスで指定します。
 
 .. sourcecode:: java
     
@@ -91,7 +91,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 表の名称から開始位置が離れた場所にある場合
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-表の名称が定義してあるセルの直後に表がなく離れている場合、属性bottomで表の開始位置がどれだけ離れているか指定します。
+表の名称が定義してあるセルの直後に表がなく離れている場合、属性 ``bottom`` で表の開始位置がどれだけ離れているか指定します。
 
 
 .. figure:: ./_static/HorizontalRecord_bottom.png
@@ -115,7 +115,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 表の見出しが縦に結合されデータレコードの開始位置が離れた場所にある場合
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-表の見出しセルが縦に結合され、データレコードの開始位置が離れている場合、属性headerBottomでデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1+]`
+表の見出しセルが縦に結合され、データレコードの開始位置が離れている場合、属性 ``headerBottom`` でデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1+]`
 
 下記の例の場合、見出しの「テスト結果」は横に結合されているため :ref:`@XlsColumn(headerMerged=N) <annotationXlsColumnHeaderMerged>` と組み合わせて利用します。
 
@@ -170,7 +170,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 
 デフォルトでは行に1つもデータが存在しない場合、その表の終端となります。
 行の一番左側の列の罫線によってテーブルの終端を検出する方法もあります。
-この場合は ``@XlsHorizontalRecords`` の属性terminalに ``RecordTerminal.Border`` を指定してください。
+この場合は ``@XlsHorizontalRecords`` の属性 ``terminal`` に ``RecordTerminal.Border`` を指定してください。
 
 .. figure:: ./_static/HorizontalRecord_terminal.png
    :align: center
@@ -197,7 +197,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 空のレコードを読み飛ばす条件の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属skipEmptyRecord性で、読み込み時に空のレコードを読み飛ばすことができます。
+属性 ``ignoreEmptyRecord`` で、読み込み時に空のレコードを読み飛ばすことができます。
 
 レコード用のクラスには、レコードを空と判定するためのメソッド用意し、アノテーション :ref:`@XlsIsEmpty <annotationXlsIsEmpty>` を付与します。
 
@@ -211,7 +211,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
     public class SampleSheet {
         
         @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border,
-                skipEmptyRecord=true)
+                ignoreEmptyRecord=true)
         private List<UserRecord> users;
     }
     
@@ -241,7 +241,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 表が他の表と連続しており属性terminalでBorder、Emptyのいずれを指定しても終端を検出できない場合があります。
-属性このような場合はterminateLabelで終端を示すセルの文字列を指定します。
+属性このような場合は、属性 ``terminateLabel`` で終端を示すセルの文字列を指定します。
 
 .. figure:: ./_static/HorizontalRecord_terminateLabel.png
    :align: center
@@ -265,7 +265,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 表の見出しの走査の終了条件の指定(headerLimit)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性headerLimitを指定すると、テーブルのカラムが指定数見つかったタイミングでExcelシートの走査を終了します。
+属性 ``headerLimit`` を指定すると、テーブルのカラムが指定数見つかったタイミングでExcelシートの走査を終了します。
 主に無駄な走査を抑制したい場合にしますが、:ref:`@XlsIterateTables <annotationXlsIterateTables>` 使用時に、テーブルが隣接しており終端を検出できない場合などに
 カラム数を明示的に指定してテーブルの区切りを指定する場合にも使用できます。
 
@@ -294,15 +294,15 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 書き込み時にレコードが不足、余分である場合の操作の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性overRecord、remainedRecordで、書き込み時のレコードの操作を指定することができます。
+属性 ``overRecord`` 、 ``remainedRecord`` で、書き込み時のレコードの操作を指定することができます。
  
-* 属性overRecoredで、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
+* 属性 ``overRecored`` で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
     
   * ``OverRecordOperate.Insert`` を指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。
   * ``OverRecordOperate.Copy`` を指定すると上部のセルを下部にコピーして値を設定します。
   * ``OverRecordOperate.Break`` を指定すると、レコードの書き込みをその時点で止めます。
     
-* 属性remainedRecordで、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
+* 属性 ``remainedRecord`` で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
     
   * ``RemainedRecordOperate.Clear`` は、セルの値をクリアします。
   * ``RemainedRecordOperate.Delete`` は、行を削除します。
@@ -341,7 +341,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
   
   * 正規化とは、空白、改行、タブを除去することを指します。
    
-  * ラベルを正規化する機能を有効にするには、システム設定のプロパティ ``normalizeLabelText`` の値を trueに設定します。
+  * ラベルを正規化する機能を有効にするには、:doc:`システム設定のプロパティ <otheruse_config>` ``normalizeLabelText`` の値を trueに設定します。
   
 
 これらの指定が可能な属性は、``tableLabel`` , ``terminateLabel`` です。

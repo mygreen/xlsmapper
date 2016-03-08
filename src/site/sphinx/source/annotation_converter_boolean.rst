@@ -15,7 +15,7 @@ Excelのセルの種類が「ブール型」以外の場合に、Javaの「boole
 読み込み時の値の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性loadForTrue、loadForFalseで読み込み時のtrueまたはfalseと判断するの候補の値を指定します。
+属性 ``loadForTrue`` 、 ``loadForFalse`` で読み込み時のtrueまたはfalseと判断するの候補の値を指定します。
    
 * 属性loadForTrueとloadForFalseの値に重複がある場合、loadForTrueの定義が優先されまます。
   
@@ -23,7 +23,7 @@ Excelのセルの種類が「ブール型」以外の場合に、Javaの「boole
   
 * 属性loadForFalseを指定しない場合、デフォルトで「"false", "0", "no", "off", "f", "n"」が設定されます。
     
-* 属性ignoreCaseの値をtrueにすると、読み込み時に大文字、小文字の区別なく候補の値と比較します。
+* 属性 ``ignoreCase`` の値をtrueにすると、読み込み時に大文字、小文字の区別なく候補の値と比較します。
 
 
 .. sourcecode:: java
@@ -51,7 +51,7 @@ Excelのセルの種類が「ブール型」以外の場合に、Javaの「boole
 書き込み時の値の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性saveAsTrueとsaveAsFalseで書き込み時のtrueまたはfalse値に該当する文字を指定します。
+属性 ``saveAsTrue`` と ``saveAsFalse`` で書き込み時のtrueまたはfalse値に該当する文字を指定します。
     
 * 属性saveAsTrueを指定しない場合は、デフォルトで"true"が設定され、セルのタイプもブール型になります。
   
@@ -83,7 +83,7 @@ Excelのセルの種類が「ブール型」以外の場合に、Javaの「boole
  
 読み込み時にtrueまたはfalseに変換できない場合、例外TypeBindExceptionが発生します。
 
-* 属性failToFalseをtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、例外を発生しなくできます。
+* 属性 ``failToFalse`` をtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、例外を発生しなくできます。
 
 .. sourcecode:: java
     

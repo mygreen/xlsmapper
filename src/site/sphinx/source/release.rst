@@ -3,15 +3,17 @@
 ======================================
 
 --------------------------------------------------------
-ver.1.1 - 2016-01-31
+ver.1.1 - 2016-03-08
 --------------------------------------------------------
+
+* `#3 <https://github.com/mygreen/xlsmapper/issues/3>`_ : :ref:`@XlsArrayConverter <annotationXlsArrayConverter>` に属性 ``itemConverterClass`` を追加し、任意のクラス型を変換できるようにしました。
 
 * `#65 <https://github.com/mygreen/xlsmapper/issues/65>`_ : 例外時のメッセージのスペルミス、値の設定間違いを修正しました。
 
 * `#66 <https://github.com/mygreen/xlsmapper/issues/66>`_ : セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.6に対応しました。
 
-* `#67 <https://github.com/mygreen/xlsmapper/issues/67>`_ : アノテーション :ref:`@XlsNumberConverter <annotationXlsNumberConverter>` 、 :ref:`@XlsDateConverter <annotationXlsDateConverter>` の属性patternを廃止し、
-  読み込み用の書式の属性javaPatternと書き込み用の書式の属性excelPatternを追加しました。
+* `#67 <https://github.com/mygreen/xlsmapper/issues/67>`_ : アノテーション :ref:`@XlsNumberConverter <annotationXlsNumberConverter>` 、 :ref:`@XlsDateConverter <annotationXlsDateConverter>` の属性 ``pattern`` を廃止し、
+  読み込み用の書式の属性 ``javaPattern`` と書き込み用の書式の属性 ``excelPattern`` を追加しました。
 
 
 * `#70 <https://github.com/mygreen/xlsmapper/issues/70>`_ : アノテーションのXMLによるマッピング機能の機能追加として、:ref:`XMLをJavaオブジェクトで組み立てる機能 <xml-build>` を追加しました。
@@ -22,12 +24,32 @@ ver.1.1 - 2016-01-31
   * 読み込み時/書き込み時の処理対象となるシートの抽出処理を、 ``SheetFinder`` クラスに分離しました。
     :doc:`XlsMapperConfigのプロパティ「sheetFinder」<otheruse_config>` でカスタマイズすることができます。
 
+* `#72 <https://github.com/mygreen/xlsmapper/issues/72>`_ : ラベルや見出しを正規表現で指定、正規化してマッピングする機能を追加しました。
+
+  * :doc:`システム設定のプロパティ <otheruse_config>` として、 ``regexLabelText`` , ``normalizeLabelText`` を追加。
+  
+  * :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` の属性 ``label`` , ``headerLabel`` で有効になります。
+  
+  * :ref:`@XlsHorizonalRecords <annotationXlsHorizontalRecords>` の属性 ``tableLabel`` , ``terminateLabel`` で有効になります。
+
+  * :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` の属性 ``tableLabel`` , ``terminateLabel`` で有効になります。
+  
+  * :ref:`@XlsIterateTables <annotationXlsIterateTables>` の属性 ``tableLabel`` で有効になります。
+
+
 * `#73 <https://github.com/mygreen/xlsmapper/issues/73>`_ : 見出し結合されている場合の属性を追加しました。
 
   * :ref:`@XlsHorizonalRecords(headerBottom) <annotationXlsHorizontalRecords>` を追加しました。
 
   * :ref:`@XlsVerticalRecords(headerRight) <annotationXlsVerticalRecords>` を追加しました。
 
+* `#74 <https://github.com/mygreen/xlsmapper/issues/74>`_ : 型変換用のアノテーションのパッケージ ``～.xlsmapper.annotation.converter`` を ``～.xlsmapper.annotation`` に移動しました。
+
+* `#75 <https://github.com/mygreen/xlsmapper/issues/75>`_ : 一部のアノテーションの属性名を変更しました。
+
+  * アノテーション :ref:`@XlsHorizonalRecords <annotationXlsHorizontalRecords>` と :ref:`@XlsHorizonalRecords <annotationXlsHorizontalRecords>` の属性 ``skipEmptyRecord`` を ``ignoreEmptyErecord`` に変更しました。
+
+  * アノテーション :ref:`@XlsConverter <annotationXlsConverter>` の属性 ``forceWrapText`` を ``wrapText`` に、属性 ``forceShrinkToFit`` を ``shrinkToFit`` 変更しました。
 
 --------------------------------------------------------
 ver.1.0a - 2015-09-23

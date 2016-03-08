@@ -19,6 +19,169 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
 
 .. _howtouseSheetLoad:
 
+
+----------------------------
+マッピングの基本
+----------------------------
+
+次のような表のExcelシートをマッピングする例を説明します。
+
+.. figure:: ./_static/howto_load.png
+   :align: center
+   
+   基本的なマッピング
+
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+読み込み方の基本
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+まず、シート1つに対して、POJOクラスを作成します。
+
+* シート名を指定するために、アノテーション :ref:`@XlsSheet <annotationXlsSheet>` をクラスに付与します。
+* 見出し付きのセル「Date」をマッピングするフィールドに、アノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` に付与します。
+* 表「User List」をマッピングするListのフィールドに、アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を付与します。
+
+.. sourcecode:: java
+    
+    // シート用のPOJOクラスの定義
+    @XlsSheet(name="List")
+    public class UserSheet {
+        
+        @XlsLabelledCell(label="Date", type=LabelledCellType.Right)
+        Date createDate;
+        
+        @XlsHorizontalRecords(tableLabel="User List")
+        List<UserRecord> users;
+        
+    }
+    
+
+
+続いて、表「User List」の1レコードをマッピングするための、POJOクラスを作成します。
+
+* レコードの列をマッピングするために、アノテーション :ref:`@XlsColumn <annotationXlsColumn>` をフィールドに付与します。
+
+* フィールドのクラスタイプが、intや列挙型の場合もマッピングできます。
+
+.. sourcecode:: java
+    
+    // レコード用のPOJOクラスの定義
+    public class UserRecord {
+        
+        @XlsColumn(columnName="ID")
+        int no;
+        
+        @XlsColumn(columnName="Class", merged=true)
+        String className;
+        
+        @XlsColumn(columnName="Name")
+        String name;
+        
+        @XlsColumn(columnName="Gender")
+        Gender gender;
+        
+    }
+    
+    // 性別を表す列挙型の定義
+    public enum Gender {
+        male, female;
+    }
+
+
+
+作成したPOJOを使ってシートを読み込むときは、 ``XlsMapper#load`` メソッドを利用します。
+
+.. sourcecode:: java
+    
+    // シートの読み込み
+    XlsMapper xlsMapper = new XlsMapper();
+    UserSheet sheet = xlsMapper.load(
+        new FileInputStream("example.xls"), // 読み込むExcelファイル。
+        UserSheet.class                     // シートマッピング用のPOJOクラス。
+        );
+
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+書き込み方の基本
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+同じシートの形式を使って、書き込み方を説明します。
+
+まず、書き込み先のテンプレートとなるExcelシートを用意します。
+レコードなどは空を設定します。
+
+.. figure:: ./_static/howto_save.png
+   :align: center
+   
+   データが空のテンプレートファイル
+
+
+続いて、読み込み時に作成したシート用のマッピングクラスに、書き込み時の設定を付け加えるために修正します。
+
+* セル「Date」の書き込み時の書式を指定するために、アノテーション :ref:`@XlsDateConverter <annotationXlsDateConverter>` に付与します。
+
+  * 属性 ``excelPattern`` でExcelのセルの書式を設定します。
+
+* 表「User List」のレコードを追加する操作を指定するために、アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` の属性 ``overRecord`` を指定します。
+  
+  * テンプレート上は、レコードが1行分しかないですが、実際に書き込むレコード数が2つ以上の場合、足りなくなるため、その際のシートの操作方法を指定します。
+  
+  * 今回の ``OverRecordOperate.Insert`` は、行の挿入を行います。
+
+
+.. sourcecode:: java
+    
+    // シート用のPOJOクラスの定義
+    @XlsSheet(name="List")
+    public class UserSheet {
+        
+        @XlsLabelledCell(label="Date", type=LabelledCellType.Right)
+        @XlsDateConverter(excelPattern="yyyy/mm/dd")
+        Date createDate;
+        
+        @XlsHorizontalRecords(tableLabel="User List", orverRecord=OverRecordOperate.Insert)
+        List<UserRecord> users;
+        
+    }
+
+
+修正したPOJOを使ってシートを書き込むときは、 ``XlsMapper#save`` メソッドを利用します。
+
+.. sourcecode:: java
+    
+    // 書き込むシート情報の作成
+    UserSheet sheet = new UserSheet();
+    sheet.date = new Date();
+    
+    List<UserRecord> users = new ArrayList<>();
+    
+    // 1レコード分の作成
+    UserRecord record1 = new UserRecord();
+    record1.no = 1;
+    record1.className = "A";
+    record1.name = "Taro";
+    recrod1.gender = Gender.male;
+    users.add(record1);
+    
+    UserRecord record2 = new UserRecord();
+    // ... 省略
+    users.add(record2);
+    
+    sheet.users = users;
+    
+    // シートの書き込み
+    XlsMapper xlsMapper = new XlsMapper();
+    xlsMapper.save(
+        new FileInputStream("template.xls"), // テンプレートのExcelファイル
+        new FileOutputStream("out.xls"),     // 書き込むExcelファイル
+        sheet                                // 作成したデータ
+        );
+
+
 ----------------------------
 読み込み方
 ----------------------------
