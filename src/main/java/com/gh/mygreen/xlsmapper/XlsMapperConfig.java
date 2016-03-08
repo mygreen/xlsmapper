@@ -55,7 +55,7 @@ public class XlsMapperConfig {
     private SheetFinder sheetFinder = new SheetFinder();
     
     /** 単純なクラスオブジェクトの変換するクラス */
-    private ItemConverter itemConverter = new DefaultItemConverter();
+    private ItemConverter<?> itemConverter = new DefaultItemConverter();
     
     public XlsMapperConfig() {
     }
@@ -333,7 +333,7 @@ public class XlsMapperConfig {
      * @since 1.1
      * @return
      */
-    public ItemConverter getItemConverter() {
+    public ItemConverter<?> getItemConverter() {
         return itemConverter;
     }
     
@@ -344,7 +344,7 @@ public class XlsMapperConfig {
      * @param itemConverter 任意のクラス型に変換するクラス
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setItemConverter(ItemConverter itemConverter) {
+    public XlsMapperConfig setItemConverter(ItemConverter<?> itemConverter) {
         this.itemConverter = itemConverter;
         return this;
     }
