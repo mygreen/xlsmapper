@@ -472,3 +472,41 @@ h1.hidden {
 .strong {
     font-weight:bold;
 }
+
+/**
+ * コードのシンタックスハイライトの基本枠
+ */
+pre.highlight {
+	margin-top: 5px;
+	margin-bottom: 10px;
+	font-size: 90%;
+	border: solid 1px #9eadc0;
+	background-color: #f9f9f9;
+}
+
+/**
+ * 説明用の見出し3
+ */
+h3.description {
+	margin-top: 30px;
+	font-size: 1.1em;
+	border-bottom: dotted 1px  #9eadc0;
+	
+}
+
+/**
+ * 画像音基本枠
+ */
+div.picture {
+	text-align: center;
+	padding-bottom: 0px;
+	margin-bottom: 10px;
+}
+
+div.picture p {
+	font-size: 90%;
+	padding-bottom: 0px;
+	margin-bottom: 10px;
+	
+}
+

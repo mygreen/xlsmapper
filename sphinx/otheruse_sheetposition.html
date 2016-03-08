@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>シート上の位置情報の取得 &mdash; XlsMapper 1.0 ドキュメント</title>
+    <title>シート上の位置情報の取得 &mdash; XlsMapper 1.1 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0',
+        VERSION:     '1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.0 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.1 ドキュメント" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -40,7 +40,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -55,16 +55,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id3">1.2. 読み込み方</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 書き込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.2. マッピングの基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.4. 書き込み方</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id4">2.4. 型変換用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id6">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id28">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id49">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
@@ -87,7 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="extension.html">5. 拡張方法</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#cellformatter">5.3. CellFormatterの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#beanfactory">5.4. BeanFactoryの拡張</a></li>
 </ul>
 </li>
@@ -98,16 +99,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">7.1. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.2. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.3. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.4. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.5. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.6. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.7. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.8. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.9. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.10. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">7.1. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">7.2. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.3. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.4. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.5. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.6. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.7. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.8. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.9. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.10. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.11. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -146,17 +148,16 @@
 <h1>シート上の位置情報の取得<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <p>読み込み時、書き込み時にマッピングしたセルのアドレス取得することができます。</p>
 <p>取得方法は複数ありますが、<code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">Point&gt;</span> <span class="pre">positions</span></code> フィールドを用いるのが記述量が少なく簡単だと思います。</p>
-<blockquote>
-<div><ol class="arabic simple">
+<ol class="arabic simple">
 <li><cite>Map&lt;String, Point&gt; positions</cite> というフィールドを定義しておくとプロパティ名をキーにセルの位置がセットされるようになっています。</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsMapColumns</span></code> のセルの位置情報のキーは、 <em>プロパティ名+[&#8216;セルの見出し&#8217;]</em> としてセットされます。</li>
+<li>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsMapColumns</span></code> のセルの位置情報のキーは、 <em>&lt;プロパティ名&gt;[&lt;セルの見出し&gt;]</em> としてセットされます。</li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="2">
-<li>アノテーションを付与した <em>setterメソッド名+Position</em> というメソッドを用意しておくと、引数にセルの位置が渡されます。</li>
+<li>アノテーションを付与した <em>&lt;setterメソッド名&gt;Position</em> というメソッドを用意しておくと、引数にセルの位置が渡されます。</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
@@ -173,25 +174,58 @@
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li>アノテーションを付与した <em>フィールド名+Position</em> という <code class="docutils literal"><span class="pre">java.awt.Point</span></code> 型のフィールドを用意しておくと、セルの位置が渡されます。</li>
+<li>アノテーションを付与した <em>&lt;フィールド名&gt;Position</em> という <code class="docutils literal"><span class="pre">java.awt.Point</span></code> 型のフィールドを用意しておくと、セルの位置が渡されます。</li>
 </ol>
 <blockquote>
 <div><ul class="simple">
 <li>ただし、<code class="docutils literal"><span class="pre">&#64;XlsMapColumns</span></code> に対するフィールドは、<code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">Point&gt;</span></code> 型にする必要があります。キーには見出しが入ります。</li>
 </ul>
 </div></blockquote>
-</div></blockquote>
-<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Name&quot;</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
-    <span class="o">...</span>
-<span class="o">}</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
-<span class="c1">// 汎用的な位置定義</span>
-<span class="kd">public</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Point</span><span class="o">&gt;</span> <span class="n">positions</span><span class="o">;</span>
+    <span class="c1">// 汎用的な位置情報</span>
+    <span class="kd">public</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Point</span><span class="o">&gt;</span> <span class="n">positions</span><span class="o">;</span>
 
-<span class="c1">// positionsフィールドが定義されている場合は、setter メソッドは必要ありません。</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setNamePosition</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">){</span>
-    <span class="o">...</span>
+
+    <span class="nd">@XlsColumns</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="c1">// プロパティごとに個別に位置情報を定義するフィールド</span>
+    <span class="kd">private</span> <span class="n">Point</span> <span class="n">namePosition</span><span class="o">;</span>
+
+    <span class="c1">// プロパティごとに個別に位置情報を定義するメソッド（Pointクラス）</span>
+    <span class="c1">// フィールド positionsが定義あれば必要ありません。</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setNamePosition</span><span class="o">(</span><span class="n">Point</span> <span class="n">position</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//...</span>
+    <span class="o">}</span>
+
+    <span class="c1">// プロパティごとに個別に位置情報を定義するメソッド（Pointクラス）</span>
+    <span class="c1">// フィールド positionsが定義あれば必要ありません。</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setNamePosition</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//...</span>
+    <span class="o">}</span>
+
+    <span class="c1">// @XlsMapColumnsの場合</span>
+    <span class="nd">@XlsMapColumns</span><span class="o">(</span><span class="n">previousColumnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attendedMap</span><span class="o">;</span>
+
+    <span class="c1">// プロパティごとに個別に位置情報を定義するフィールド</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Point</span><span class="o">&gt;</span> <span class="n">attendedMapPosition</span><span class="o">;</span>
+
+    <span class="c1">// プロパティごとに個別に位置情報を定義するメソッド1</span>
+    <span class="c1">// @XlsMapColumnsの場合keyは、セルの見出しの値</span>
+    <span class="c1">// フィールド positionsが定義あれば必要ありません。</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAttendedMapPosition</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Point</span> <span class="n">position</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//...</span>
+    <span class="o">}</span>
+
+    <span class="c1">// プロパティごとに個別に位置情報を定義するメソッド2</span>
+    <span class="c1">// @XlsMapColumnsの場合keyは、セルの見出しの値</span>
+    <span class="c1">// フィールド positionsが定義あれば必要ありません。</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAttendedMapPosition</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//...</span>
+    <span class="o">}</span>
+
 <span class="o">}</span>
 </pre></div>
 </div>
@@ -238,7 +272,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

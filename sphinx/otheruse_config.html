@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>XlsMapperConfigによる動作のカスタマイズ &mdash; XlsMapper 1.0 ドキュメント</title>
+    <title>XlsMapperConfigによる動作のカスタマイズ &mdash; XlsMapper 1.1 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0',
+        VERSION:     '1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.0 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.1 ドキュメント" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -40,7 +40,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -55,16 +55,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id3">1.2. 読み込み方</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 書き込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.2. マッピングの基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.4. 書き込み方</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id4">2.4. 型変換用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id6">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id28">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id49">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
@@ -87,7 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="extension.html">5. 拡張方法</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#cellformatter">5.3. CellFormatterの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#beanfactory">5.4. BeanFactoryの拡張</a></li>
 </ul>
 </li>
@@ -98,16 +99,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">7.1. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.2. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.3. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.4. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.5. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.6. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.7. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.8. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.9. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.10. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">7.1. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">7.2. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.3. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.4. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.5. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.6. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.7. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.8. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.9. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.10. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.11. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -145,15 +147,29 @@
   <div class="section" id="xlsmapperconfig">
 <h1>XlsMapperConfigによる動作のカスタマイズ<a class="headerlink" href="#xlsmapperconfig" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <p>読み込み時及び書き込み時の動作をXlsMapperConfigクラスでカスタマイズすることができます。</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="n">XlsMapper</span> <span class="n">XlsMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// 設定用のオブジェクトXlsMapperConfigの作成</span>
+<span class="n">XlsMapperConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapperConfig</span><span class="o">();</span>
 
 <span class="c1">// シートが見つからない場合にエラーにしない。</span>
-<span class="n">XlsMapperConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapperConfig</span><span class="o">();</span>
-<span class="n">config</span><span class="o">.</span><span class="na">config</span><span class="o">.</span><span class="na">setIgnoreSheetNotFound</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setIgnoreSheetNotFound</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
 
-<span class="n">XlsMapper</span><span class="o">.</span><span class="na">setConfig</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+<span class="c1">// XlsMapperConfigクラスをXlsMapperに渡す。</span>
+<span class="n">XlsMapper</span> <span class="n">xlsMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
+<span class="n">xlsMapper</span><span class="o">.</span><span class="na">setConfig</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
 
-<span class="n">SheetObject</span> <span class="n">sheet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">.</span><span class="na">load</span><span class="o">(</span>
+<span class="c1">// 設定を変更したXlsMapperでシートの読み込み</span>
+<span class="n">SheetObject</span> <span class="n">sheet</span> <span class="o">=</span> <span class="n">xlsMapper</span><span class="o">.</span><span class="na">load</span><span class="o">(</span>
+    <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="s">&quot;example.xls&quot;</span><span class="o">),</span> <span class="n">SheetObject</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>XlsMapperConfigは、XlsMapperクラスのインスタンスを作成時にも持っているため、次のような変更もできます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">XlsMapper</span> <span class="n">xlsMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
+
+<span class="c1">// XlsMapperクラスから直接XlsMapperConfigのインスタンスを取得し変更する。</span>
+<span class="n">xlsMapper</span><span class="o">.</span><span class="na">getConfig</span><span class="o">().</span><span class="na">setIgnoreSheetNotFound</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+<span class="c1">// 設定を変更したXlsMapperでシートの読み込み</span>
+<span class="n">SheetObject</span> <span class="n">sheet</span> <span class="o">=</span> <span class="n">xlsMapper</span><span class="o">.</span><span class="na">load</span><span class="o">(</span>
     <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="s">&quot;example.xls&quot;</span><span class="o">),</span> <span class="n">SheetObject</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 </pre></div>
 </div>
@@ -180,6 +196,24 @@
 </div>
 </td>
 </tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">normalizeLabelText</span></code></td>
+<td><code class="docutils literal"><span class="pre">boolean</span></code></td>
+<td><div class="first last line-block">
+<div class="line">ラベルを正規化(空白、改行、タブを除去)して、マッピングするかどうか</div>
+<div class="line">初期値は&#8217;false&#8217;です。</div>
+<div class="line"><strong>Ver.1.1以上</strong> から利用可能です。</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">regexLabelText</span></code></td>
+<td><code class="docutils literal"><span class="pre">boolean</span></code></td>
+<td><div class="first last line-block">
+<div class="line">マッピングするラベルに <code class="docutils literal"><span class="pre">/正規表現/</span></code> と記述しておくと正規表現でマッピングできるかどうか。</div>
+<div class="line">初期値は&#8217;false&#8217;です。</div>
+<div class="line"><strong>Ver.1.1以上</strong> から利用可能です。</div>
+</div>
+</td>
+</tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">skipTypeBindFailure</span></code></td>
 <td><code class="docutils literal"><span class="pre">boolean</span></code></td>
 <td><div class="first last line-block">
@@ -192,7 +226,7 @@
 <td><code class="docutils literal"><span class="pre">boolean</span></code></td>
 <td><div class="first last line-block">
 <div class="line">書き込み時にセルの結合を行うかどうか。</div>
-<div class="line">アノテーション&#64;XlsColumnの属性mergedを書き込み時も考慮します。</div>
+<div class="line">アノテーション <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumn"><span>&#64;XlsColumn</span></a> の属性mergedを書き込み時も考慮します。</div>
 <div class="line">初期値は&#8217;false&#8217;です。</div>
 </div>
 </td>
@@ -255,6 +289,22 @@
 </div>
 </td>
 </tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sheetFinder</span></code></td>
+<td><code class="docutils literal"><span class="pre">SheetFinder</span></code></td>
+<td><div class="first last line-block">
+<div class="line">アノテーション <a class="reference internal" href="annotation_mapping_sheet.html#annotationxlssheet"><span>&#64;XlsSheet</span></a> に基づき処理対象のシートを抽出するクラス。</div>
+<div class="line"><strong>Ver.1.1以上</strong> から利用可能です。</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">itemConverter</span></code></td>
+<td><code class="docutils literal"><span class="pre">ItemConverter</span></code></td>
+<td><div class="first last line-block">
+<div class="line">アノテーション <a class="reference internal" href="annotation_converter_array.html#annotationxlsarrayconverter"><span>&#64;XlsArrayConverter</span></a> の属性 <code class="docutils literal"><span class="pre">itemConverter</span></code> で指定する、リストなどの要素を変換するための標準の処理クラスです。</div>
+<div class="line"><strong>Ver.1.1以上</strong> から利用可能です。</div>
+</div>
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -271,7 +321,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

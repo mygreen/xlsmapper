@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>型変換用のアノテーション &mdash; XlsMapper 1.0 ドキュメント</title>
+    <title>型変換用のアノテーション &mdash; XlsMapper 1.1 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0',
+        VERSION:     '1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.0 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.1 ドキュメント" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -40,7 +40,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -55,16 +55,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id3">1.2. 読み込み方</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 書き込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.2. マッピングの基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.4. 書き込み方</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id4">2.4. 型変換用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id6">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id28">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id49">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
@@ -87,7 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="extension.html">5. 拡張方法</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#cellformatter">5.3. CellFormatterの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#beanfactory">5.4. BeanFactoryの拡張</a></li>
 </ul>
 </li>
@@ -98,16 +99,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">7.1. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.2. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.3. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.4. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.5. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.6. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.7. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.8. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.9. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.10. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">7.1. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">7.2. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.3. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.4. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.5. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.6. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.7. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.8. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.9. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.10. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.11. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -144,174 +146,388 @@
             
   <div class="section" id="id1">
 <h1>型変換用のアノテーション<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>数値や日時、列挙型にマッピングする際の変換規則の設定を行います。</p>
-<p>型変換用のアノテーションを付与しない場合は、アノテーションの初期値の設定を元に変換されます。</p>
+<ul class="simple">
+<li>読み込み時は、Excelの型とJavaの型が一致する場合、そのままマッピングします。<ul>
+<li>型が一致しない場合、Excelのセルの値を文字列として取得し、その値をパースしてJavaの型に変換します。</li>
+<li>文字列をパースする書式などの指定は、型ごとの専用のアノテーションを付与します。</li>
+<li>各型の変換用アノテーションを付与しない場合は、アノテーションの初期値の設定を元に変換されます。</li>
+</ul>
+</li>
+<li>書き込み時は、Javaの型に合ったExcelのセルの型で処理します。<ul>
+<li>テンプレートファイルのセルの型とJavaの型が一致すれば、そのまま書き込みます。
+一致しない場合は、付与されたアノテーションに従って書式などを設定します。</li>
+<li>各型の変換用アノテーションを付与しない場合は、アノテーションの初期値の設定を元に変換されます。</li>
+</ul>
+</li>
+</ul>
+<table border="1" class="docutils" id="id21">
+<caption><span class="caption-text">ExcelとJavaのマッピング可能な型</span><a class="headerlink" href="#id21" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="30%" />
+<col width="30%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Excelの型</th>
+<th class="head">Javaの型</th>
+<th class="head">対応するアノテーション</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">ブール型</div>
+<div class="line">（TRUE/FALSE）</div>
+</div>
+</td>
+<td><div class="first last line-block">
+<div class="line">boolean/Boolean</div>
+</div>
+</td>
+<td><a class="reference internal" href="annotation_converter_boolean.html#annotationxlsbooleanconverter"><span>&#64;XlsBooleanConverter</span></a></td>
+</tr>
+<tr class="row-odd"><td>文字列</td>
+<td><div class="first last line-block">
+<div class="line">String</div>
+<div class="line">char/Character(先頭の1文字のみがマッピング対象)</div>
+</div>
+</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">数値</div>
+<div class="line">（数値/通貨/会計/パーセンテージ/分数/指数）</div>
+</div>
+</td>
+<td><div class="first last line-block">
+<div class="line">byte/short/int/long/float/double/これらのラッパークラス</div>
+<div class="line">/java.math.BigDecimal/java.math.BigInteger</div>
+</div>
+</td>
+<td><a class="reference internal" href="annotation_converter_number.html#annotationxlsnumberconverter"><span>&#64;XlsNumberConverter</span></a></td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">日時</div>
+<div class="line">（日付/時刻）</div>
+</div>
+</td>
+<td><div class="first last line-block">
+<div class="line">java.util.Date/java.util.Calendar</div>
+<div class="line">/java.sql.Date/Time/Timestamp</div>
+</div>
+</td>
+<td><a class="reference internal" href="annotation_converter_date.html#annotationxlsdateconverter"><span>&#64;XlsDateConverter</span></a></td>
+</tr>
+<tr class="row-even"><td>文字列</td>
+<td><div class="first last line-block">
+<div class="line">任意の列挙型</div>
+</div>
+</td>
+<td><a class="reference internal" href="annotation_converter_enum.html#annotationxlsenumconverter"><span>&#64;XlsEnumConverter</span></a></td>
+</tr>
+<tr class="row-odd"><td>文字列</td>
+<td><div class="first last line-block">
+<div class="line">配列</div>
+<div class="line">/Collection(java.util.List/java.util.Set)</div>
+</div>
+</td>
+<td><a class="reference internal" href="annotation_converter_array.html#annotationxlsarrayconverter"><span>&#64;XlsArrayConverter</span></a></td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">ハイパーリンクを設定したセル</div>
+</div>
+</td>
+<td><div class="first last line-block">
+<div class="line">java.net.URI</div>
+<div class="line">/com.gh.mygreen.xlsmapper.cellconvert.CellLink(本ライブラリの独自の型)</div>
+</div>
+</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
 <div class="section" id="xlsconverter">
-<h2><code class="docutils literal"><span class="pre">&#64;XlsConverter</span></code><a class="headerlink" href="#xlsconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<span id="annotationxlsconverter"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsConverter</span></code><a class="headerlink" href="#xlsconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>型固有の変換用のアノテーションではなく、共通のアノテーションです。</p>
 <p>値がnullや空のときの初期値の定義やトリム処理の設定を定義します。</p>
-<ul>
-<li><p class="first">属性defaultValueで読み込み時/書き込み時のデフォルト値を指定します。</p>
-<blockquote>
-<div><ul class="simple">
-<li>デフォルト値を指定しないでプリミティブ型に対して読み込む場合、数値型の場合は0や0.0、booleanの場合はfalseが設定されます。
-プリミティブのラッパークラスやオブジェクト型の場合は、nullが設定されます。</li>
+<div class="section" id="id2">
+<h3>初期値の指定<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>属性 <code class="docutils literal"><span class="pre">defaultValue</span></code> で読み込み時/書き込み時のデフォルト値を指定します。</p>
+<ul class="simple">
+<li>日付などの書式がある場合、専用のアノテーションで指定した書式 <code class="docutils literal"><span class="pre">&#64;XlsDateConverter(javaPattern=&quot;&lt;任意の書式&gt;&quot;)</span></code> を元に、文字列をそのオブジェクトに変換し処理します。</li>
+<li>デフォルト値を指定しないでプリミティブ型に対して読み込む場合、その型の初期値が設定されます。<ul>
+<li>int型は0、double型は0.0、boolean型はfalse。char型の場合は、 &#8216;\u0000&#8217; 。</li>
+<li>プリミティブのラッパークラスや参照型の場合は、nullが設定されます。</li>
+</ul>
+</li>
 <li>指定したデフォルト値がマッピング先の型として不正な場合は、通常の型変換エラーと同様に、例外 <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.cellconvert.TypeBindException</span></code> がスローされます。<cite>[ver0.5]</cite></li>
 <li>char型にマッピングする場合、デフォルト値が2文字以上でも、先頭の一文字がマッピングされます。</li>
 </ul>
-</div></blockquote>
-</li>
-<li><p class="first">属性trimの値をtruにすると、読み込み時と書き込み時にトリムを行います。</p>
-<blockquote>
-<div><ul class="simple">
-<li>シート上のセルのタイプ（分類）が数値などの文字列以外の場合は、トリム処理は行われません。
-ただし、シートのセルタイプが文字列型で、Javaの型がString型以外の数値型やDate型などの場合は、変換する前にトリム処理を行います。</li>
-<li>空セル（ブランクセル）をString型にマッピング設定しトリムを有効としている場合、読み込み時は空文字が設定されます。<cite>[ver0.5+]</cite></li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
-    <span class="c1">// 読み込み時や書き込み時の初期値、トリム処理の有効を設定できます。</span>
-    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">defaultValue</span><span class="o">=</span><span class="s">&quot;10&quot;</span><span class="o">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">defaultValue</span><span class="o">=</span><span class="s">&quot;-1&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;更新日時&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">defaultValue</span><span class="o">=</span><span class="s">&quot;2010/01/01&quot;</span><span class="o">)</span> <span class="c1">// 属性javaPatternで指定した書式に沿った値を指定します。</span>
+    <span class="nd">@XlsDateConverter</span><span class="o">(</span><span class="n">javaPattern</span><span class="o">=</span><span class="s">&quot;yyyy/MM/dd&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Date</span> <span class="n">updateTime</span><span class="o">;</span>
 
 <span class="o">}</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="id3">
+<h3>トリミングの指定<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>トリミングを行いたい場合、属性 <code class="docutils literal"><span class="pre">trim</span></code> の値をtrueに指定します。</p>
+<ul class="simple">
+<li>属性trimの値をtrueにすると、読み込み時と書き込み時にトリムを行います。</li>
+<li>シート上のセルのタイプ（分類）が数値などの文字列以外の場合は、トリム処理は行われません。<ul>
+<li>ただし、シートのセルタイプが文字列型で、Javaの型がString型以外の数値型やDate型などの場合は、変換する前にトリム処理を行います。</li>
+</ul>
+</li>
+<li>値が空のセルをString型に読み込む場合、<code class="docutils literal"><span class="pre">trim=false</span></code> のときはnull設定されますが、<code class="docutils literal"><span class="pre">trim=true</span></code> のきは、空文字が設定されます。<cite>[ver0.5+]</cite></li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">defaultValue</span><span class="o">=</span><span class="s">&quot; 123 &quot;</span><span class="o">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span> <span class="c1">// 属性defaultValueもトリム対象となる。</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">trim</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span> <span class="c1">// 空のセルを読み込むと空文字が設定される。</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>書き込み時のセルの文字の制御の指定<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>書き込み時にセルの折り返し設定や縮小表示設定を強制的に行うこともできます。</p>
 <p>書き込み時はテンプレートとなるシートのセルの書式を基本的に使用するので、事前に折り返し設定が有効になって入れば書き込み時もそれらの設定が有効になります。</p>
-<ul>
-<li><p class="first">属性forceWrapTextの値がtrueの場合、強制的にセルの内の文字表示の設定「折り返して全体を表示する」が有効になります。</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">wrapText</span></code> の値がtrueの場合、強制的にセルの内の文字表示の設定「折り返して全体を表示する」が有効になります。<ul>
 <li>falseの場合、テンプレートとなるセルの設定を引き継ぎます。</li>
 </ul>
-</div></blockquote>
 </li>
-</ul>
-<blockquote>
-<div><ul>
-<li><p class="first">属性forceShrinkToFitの値がtrueの場合、強制的にセル内の文字表示の設定「縮小して全体を表示する」が有効になります。</p>
-<blockquote>
-<div><ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">shrinkToFit</span></code> の値がtrueの場合、強制的にセル内の文字表示の設定「縮小して全体を表示する」が有効になります。<ul>
 <li>falseの場合、テンプレートとなるセルの設定を引き継ぎます。</li>
 </ul>
-</div></blockquote>
 </li>
 </ul>
-</div></blockquote>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
-    <span class="c1">// 書き込み時のセルの文字表示の折り返し設定などが指定できます。</span>
-    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">forceWrapText</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">forceShrinkToFit</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">wrapText</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span> <span class="c1">// 「縮小して全体を表示する」が有効になる。</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
 
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">shrinkToFit</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span> <span class="c1">//「折り返して全体を表示する」が有効になる。</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;備考&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">shrinkToFit</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span> <span class="c1">// 設定しない場合は、テンプレート設定が有効になる。</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">comment</span><span class="o">;</span>
 <span class="o">}</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">注釈</p>
 <p class="last">Excelの仕様上、設定「折り返して全体を表示する」と「縮小して全体を表示する」は、二者択一であるため、両方の設定を有効にすることはできません。
-もし、属性forceWrapTextとforceShrinkToFitの値をtrueに設定した場合、forceShrinkToFitの設定が優先され、「縮小して全体を表示する」が有効になります。</p>
+もし、属性wrapTextとshrinkToFitの値をtrueに設定した場合、shrinkToFitの設定が優先され、「縮小して全体を表示する」が有効になります。</p>
+</div>
+</div>
+<div class="section" id="id5">
+<h3>独自の変換規則を指定する場合<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>本ライブラリで対応していない型に変換したい時など、属性 <code class="docutils literal"><span class="pre">converterClass</span></code> で独自のセルの値を変換するクラスを指定します。</p>
+<p>変換用クラスは、インタフェース <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.cellconvert.CellConverter</span></code> を実装する必要があります。</p>
+<p>詳細は、 <a class="reference internal" href="extension_cellconverter.html"><em>CellConverterの拡張</em></a> を参照してください。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// CellConverterの定義</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LocaleDateConverter</span> <span class="kd">extends</span> <span class="n">CellConverter</span><span class="o">&lt;</span><span class="n">LocaleDate</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="c1">// シート読み込み時のExcel Cell =&gt; Javaオブジェクトに変換する。</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">LocaleDate</span> <span class="nf">toObject</span><span class="o">(</span><span class="kd">final</span> <span class="n">Cell</span> <span class="n">cell</span><span class="o">,</span> <span class="kd">final</span> <span class="n">FieldAdaptor</span> <span class="n">adaptor</span><span class="o">,</span> <span class="kd">final</span> <span class="n">XlsMapperConfig</span> <span class="n">config</span><span class="o">)</span>
+        <span class="kd">throws</span> <span class="n">XlsMapperException</span> <span class="o">{</span>
+        <span class="c1">//TODO: 実装する</span>
+    <span class="o">}</span>
+
+    <span class="c1">//シート書き込み時のJavaオブジェクト =&gt; Excel Cellに変換する。</span>
+    <span class="nd">@Override</span>
+    <span class="n">Cell</span> <span class="nf">toCell</span><span class="o">(</span><span class="n">FieldAdaptor</span> <span class="n">adaptor</span><span class="o">,</span> <span class="n">LocaleDate</span> <span class="n">targetValue</span><span class="o">,</span> <span class="n">Sheet</span> <span class="n">sheet</span><span class="o">,</span> <span class="kt">int</span> <span class="n">column</span><span class="o">,</span> <span class="kt">int</span> <span class="n">row</span><span class="o">,</span> <span class="n">XlsMapperConfig</span> <span class="n">config</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">XlsMapperException</span><span class="o">;</span>
+        <span class="c1">//TODO: 実装する</span>
+     <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// 独自CellConverterの指定</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="c1">// フィールド独自のConveterの設定</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;更新日付&quot;</span><span class="o">)}</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">converterClass</span><span class="o">=</span><span class="n">LocaleDateConvereter</span><span class="o">.</span><span class="na">class</span><span class="o">)}</span>
+    <span class="kd">private</span> <span class="n">LocaleDate</span> <span class="n">localeDate</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="xlsbooleanconverter">
-<h2><code class="docutils literal"><span class="pre">&#64;XlsBooleanConverter</span></code><a class="headerlink" href="#xlsbooleanconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>boolean、Boolean型の変換規則の設定を行います。</p>
-<p>単純に、「true、false」以外に、「○、×」とのマッピングも可能となります。</p>
-<ul>
-<li><p class="first">属性loadForTrue、loadForFalseで読み込み時のtrueまたはfalseと判断するの候補の値を指定します。</p>
-<blockquote>
-<div><ul class="simple">
+<span id="annotationxlsbooleanconverter"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsBooleanConverter</span></code><a class="headerlink" href="#xlsbooleanconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Excelのセルの種類が「ブール型」以外の場合に、Javaの「boolean/Boolean」にマッピング規則を定義します。</p>
+<p>単純に「true、false」以外に、「○、×」とのマッピングも可能となります。</p>
+<div class="section" id="id6">
+<h3>読み込み時の値の指定<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>属性 <code class="docutils literal"><span class="pre">loadForTrue</span></code> 、 <code class="docutils literal"><span class="pre">loadForFalse</span></code> で読み込み時のtrueまたはfalseと判断するの候補の値を指定します。</p>
+<ul class="simple">
 <li>属性loadForTrueとloadForFalseの値に重複がある場合、loadForTrueの定義が優先されまます。</li>
 <li>属性laodForTrueを指定しない場合、デフォルトで「&#8221;true&#8221;, &#8220;1&#8221;, &#8220;yes&#8221;, &#8220;on&#8221;, &#8220;y&#8221;, &#8220;t&#8221;」が設定されます。</li>
 <li>属性loadForFalseを指定しない場合、デフォルトで「&#8221;false&#8221;, &#8220;0&#8221;, &#8220;no&#8221;, &#8220;off&#8221;, &#8220;f&#8221;, &#8220;n&#8221;」が設定されます。</li>
+<li>属性 <code class="docutils literal"><span class="pre">ignoreCase</span></code> の値をtrueにすると、読み込み時に大文字、小文字の区別なく候補の値と比較します。</li>
 </ul>
-</div></blockquote>
-</li>
-<li><p class="first">属性saveAsTrueとsaveAsFalseで書き込み時のtrueまたはfalse値に該当する文字を指定します。</p>
-<blockquote>
-<div><ul class="simple">
-<li>属性saveAsTrueを指定しない場合は、デフォルトで&#8221;true&#8221;が設定され、セルのタイプもBoolean型になります。</li>
-<li>属性saveAsFalseを指定しない場合は、デフォルトで&#8221;false&#8221;が設定され、セルのタイプもBoolean型になります。</li>
-<li>読み込みと書き込みの両方を行うプログラムの場合、loadForTrueとloadForFalseの値にsaveAsTrueとsaveAsFalseの値を含める必要があります。</li>
-</ul>
-</div></blockquote>
-</li>
-<li><p class="first">属性ignoreCaseの値をtrueにすると、読み込み時に大文字、小文字の区別なく候補の値と比較します。</p>
-</li>
-</ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
-    <span class="c1">// boolean型の読み込み時と書き込み時のtrueとfalseの値の変換規則を指定します。</span>
+    <span class="c1">// boolean型の読み込み時のtrueとfalseの値の変換規則を指定します。</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ステータス&quot;</span><span class="o">)</span>
     <span class="nd">@XlsBooleanConverter</span><span class="o">(</span>
-      <span class="n">loadForTrue</span><span class="o">={</span><span class="s">&quot;○&quot;</span><span class="o">,</span> <span class="s">&quot;有効&quot;</span><span class="o">,</span> <span class="s">&quot;レ&quot;</span><span class="o">},</span> <span class="n">loadForFalse</span><span class="o">={</span><span class="s">&quot;×&quot;</span><span class="o">,</span> <span class="s">&quot;無効&quot;</span><span class="o">,</span> <span class="s">&quot;-&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">},</span>
-      <span class="n">saveAsTrue</span><span class="o">=</span><span class="s">&quot;○&quot;</span><span class="o">,</span> <span class="n">saveAsFalse</span><span class="o">=</span><span class="s">&quot;-&quot;</span><span class="o">,</span>
-      <span class="n">ignoreCase</span><span class="o">=</span><span class="kc">true</span>
+            <span class="n">loadForTrue</span><span class="o">={</span><span class="s">&quot;○&quot;</span><span class="o">,</span> <span class="s">&quot;有効&quot;</span><span class="o">,</span> <span class="s">&quot;レ&quot;</span><span class="o">},</span>
+            <span class="n">loadForFalse</span><span class="o">={</span><span class="s">&quot;×&quot;</span><span class="o">,</span> <span class="s">&quot;無効&quot;</span><span class="o">,</span> <span class="s">&quot;-&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">})</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">availaled</span><span class="o">;</span>
+
+    <span class="c1">// 読み込み時の大文字・小文字の区別を行わない</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;チェック&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsBooleanConverter</span><span class="o">(</span>
+          <span class="n">loadForTrue</span><span class="o">={</span><span class="s">&quot;OK&quot;</span><span class="o">},</span>
+          <span class="n">loadForFalse</span><span class="o">={</span><span class="s">&quot;NO&quot;</span><span class="o">},</span>
+          <span class="n">ignoreCase</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Boolean</span> <span class="n">checked</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h3>書き込み時の値の指定<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>属性 <code class="docutils literal"><span class="pre">saveAsTrue</span></code> と <code class="docutils literal"><span class="pre">saveAsFalse</span></code> で書き込み時のtrueまたはfalse値に該当する文字を指定します。</p>
+<ul class="simple">
+<li>属性saveAsTrueを指定しない場合は、デフォルトで&#8221;true&#8221;が設定され、セルのタイプもブール型になります。</li>
+<li>属性saveAsFalseを指定しない場合は、デフォルトで&#8221;false&#8221;が設定され、セルのタイプもブール型になります。</li>
+<li>読み込みと書き込みの両方を行う場合、属性loadForTrueとloadForFalseの値に属性saveAsTrueとsaveAsFalseの値を含める必要があります。</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="c1">// boolean型の書き込み時のtrueとfalseの値の変換規則を指定します。</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ステータス&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsBooleanConverter</span><span class="o">(</span>
+            <span class="n">loadForTrue</span><span class="o">={</span><span class="s">&quot;○&quot;</span><span class="o">,</span> <span class="s">&quot;有効&quot;</span><span class="o">,</span> <span class="s">&quot;レ&quot;</span><span class="o">},</span> <span class="c1">// 読み書きの両方を行う場合、書き込む値を含める必要がある。</span>
+            <span class="n">loadForFalse</span><span class="o">={</span><span class="s">&quot;×&quot;</span><span class="o">,</span> <span class="s">&quot;無効&quot;</span><span class="o">,</span> <span class="s">&quot;-&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">},</span>
+            <span class="n">saveAsTrue</span><span class="o">=</span><span class="s">&quot;○&quot;</span><span class="o">,</span>
+            <span class="n">saveAsFalse</span><span class="o">=</span><span class="s">&quot;-&quot;</span><span class="o">)</span>
     <span class="o">)</span>
-    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">availale</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">availaled</span><span class="o">;</span>
 
 <span class="o">}</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="id8">
+<h3>変換に失敗した際の処理<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>読み込み時にtrueまたはfalseに変換できない場合、例外TypeBindExceptionが発生します。</p>
 <ul class="simple">
-<li>属性failToFalseをtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、例外を発生しなくできます。</li>
+<li>属性 <code class="docutils literal"><span class="pre">failToFalse</span></code> をtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、例外を発生しなくできます。</li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
     <span class="c1">// 読み込み時に変換できない場合に、強制的に値をfalseとして読み込みます。</span>
-    <span class="nd">@XlsBooleanConverter</span><span class="o">(</span><span class="n">failToFalse</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">availale</span><span class="o">;</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ステータス&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsBooleanConverter</span><span class="o">(</span>
+            <span class="n">loadForTrue</span><span class="o">={</span><span class="s">&quot;○&quot;</span><span class="o">,</span> <span class="s">&quot;有効&quot;</span><span class="o">,</span> <span class="s">&quot;レ&quot;</span><span class="o">},</span>
+            <span class="n">loadForFalse</span><span class="o">={</span><span class="s">&quot;×&quot;</span><span class="o">,</span> <span class="s">&quot;無効&quot;</span><span class="o">,</span> <span class="s">&quot;-&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">},</span>
+            <span class="n">failToFalse</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">availaled</span><span class="o">;</span>
 
 <span class="o">}</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="xlsnumberconverter">
-<h2><code class="docutils literal"><span class="pre">&#64;XlsNumberConverter</span></code><a class="headerlink" href="#xlsnumberconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>数値型（short、int、long、float、double、プリミティブのラッパークラス、BigDecimal、BigInteger）の書式などの設定を行います。</p>
-<ul>
-<li><p class="first">属性patternで書式を指定します。</p>
-<blockquote>
-<div><ul class="simple">
-<li>Javaのクラス <code class="docutils literal"><span class="pre">java.text.DecimalFormat</span></code> で解釈可能な書式を設定します。</li>
+<span id="annotationxlsnumberconverter"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsNumberConverter</span></code><a class="headerlink" href="#xlsnumberconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>数値型に対する変換規則を指定する際に利用するアノテーションです。</p>
+<p>対応するJavaの型は次の通り。</p>
+<ul class="simple">
+<li>byte/short/int/long/float/doubleのプリミティブ型とそのラッパークラス。</li>
+<li><code class="docutils literal"><span class="pre">java.math.BigDecimal</span></code> / <code class="docutils literal"><span class="pre">java.math.BigInteger</span></code> 。</li>
 </ul>
-</div></blockquote>
+<div class="section" id="id9">
+<h3>読み込み時の書式の指定<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>読み込み時にセルの種類が数値（通貨、会計、パーセンテージ、分数、指数）ではない場合、
+文字列として値を取得し、その値を属性 <code class="docutils literal"><span class="pre">javaPattern</span></code> で指定した書式に従いパースし、Javaの数値型に変換します。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">javaPattern</span></code> で読み込み時の書式を指定します。 <cite>[ver1.1+]</cite><ul>
+<li>Javaのクラス <code class="docutils literal"><span class="pre">java.text.DecimalFormat</span></code> で解釈可能な書式を設定します。</li>
+<li>ver1.0以前は、属性patternを使っていましたが、廃止になりました。</li>
+</ul>
 </li>
-<li><p class="first">属性localeでロケールを指定します。</p>
-<blockquote>
-<div><ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">locale</span></code> でロケールを指定します。<ul>
 <li>言語コードのみを指定する場合、&#8217;ja&#8217;の2桁で指定します。</li>
 <li>言語コードと国コードを指定する場合、&#8217;ja _JP&#8217;のようにアンダーバーで区切り指定します。</li>
 </ul>
-</div></blockquote>
 </li>
-<li><p class="first">属性currencyで通貨コード（ISO-4217コード）を指定します。</p>
-<blockquote>
-<div><ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">currency</span></code> で通貨コード（ISO-4217コード）を指定します。<ul>
 <li>Javaのクラス <code class="docutils literal"><span class="pre">java.util.Currency</span></code> で解釈可能なコードを指定します。</li>
 </ul>
-</div></blockquote>
 </li>
-<li><p class="first">属性precisionで有効桁数を指定します。<cite>[ver0.5+]</cite></p>
-<blockquote>
-<div><ul class="simple">
-<li>Excelの仕様上、有効桁数は15桁であるため、デフォルト値は15です。</li>
-<li>0以下の値を設定すると、桁数の指定を省略したことになります。</li>
+<li>書式に合わない値をパースした場合、例外TypeBindExceptionが発生します。</li>
 </ul>
-</div></blockquote>
-</li>
-</ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
-    <span class="nd">@XlsNumberConverter</span><span class="o">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;#,##0.0000&quot;</span><span class="o">,</span> <span class="n">locale</span><span class="o">=</span><span class="s">&quot;ja_JP&quot;</span><span class="o">,</span> <span class="n">currency</span><span class="o">=</span><span class="s">&quot;USD&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;給与&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsNumberConverter</span><span class="o">(</span><span class="n">javaPattern</span><span class="o">=</span><span class="s">&quot;#,##0.0000&quot;</span><span class="o">,</span> <span class="n">locale</span><span class="o">=</span><span class="s">&quot;ja_JP&quot;</span><span class="o">,</span> <span class="n">currency</span><span class="o">=</span><span class="s">&quot;USD&quot;</span><span class="o">)</span>
     <span class="kd">private</span> <span class="kt">double</span> <span class="n">salary</span><span class="o">;</span>
 
 <span class="o">}</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="id10">
+<h3>書き込み時の書式の指定<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>書き込み時の書式は、基本的にテンプレートファイルに設定してある値を使用します。
+また、アノテーションでも直接指定することができます。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">excelPattern</span></code> で書き込み時の書式を指定します。 <cite>[ver1.1+]</cite><ul>
+<li>Excelの書式を指定する場合は、 <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/sphinx/format_basic.html">ユーザ定義</a> の形式で指定する必要があります。</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;給与&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsNumberConverter</span><span class="o">(</span><span class="n">javaPattern</span><span class="o">=</span><span class="s">&quot;[$-411]\&quot;￥\&quot;#,##0.0000&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">double</span> <span class="n">salary</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p>テンプレートファイルのセルの書式を「標準」に設定している場合に書き込むと、
+書式が「標準」設定の全てのセルの書式が書き換わってしまいます。</p>
+<p class="last">そのため、日付や数値などの書式が必要な場合は、テンプレートファイルで予め書式を設定しておくか、
+アノテーションの属性excelPatternで書式を指定しておいてください。</p>
+</div>
+</div>
+<div class="section" id="id12">
+<h3>有効桁数の指定<a class="headerlink" href="#id12" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Excel内部とJavaの数値は、表現可能な有効桁数が異なります。</p>
+<p>そのため、特に読み込み時などExcelの仕様に合わせてJavaのクラスに指定することが可能です。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">precision</span></code> で有効桁数を指定します。 <cite>[ver0.5+]</cite><ul>
+<li>Excelの仕様上、有効桁数は15桁であるため、デフォルト値は15です。</li>
+<li>0以下の値を設定すると、桁数の指定を省略したことになります。</li>
+</ul>
+</li>
+</ul>
 <div class="admonition note">
 <p class="first admonition-title">注釈</p>
 <p>Excelでは有効桁数が15桁であるため、Javaのlong型など15桁を超える表現が可能な数値を書き込んだ場合、数値が丸められるため注意してください。</p>
@@ -321,39 +537,42 @@
 </ul>
 </div>
 </div>
+</div>
 <div class="section" id="xlsdateconverter">
-<h2><code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code><a class="headerlink" href="#xlsdateconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<p>日付型（<code class="docutils literal"><span class="pre">java.util.Date</span></code> , <code class="docutils literal"><span class="pre">java.sql.Date</span></code> , <code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> , <code class="docutils literal"><span class="pre">java.sql.Time</span></code> ）の書式などの設定を行います。</p>
-<p>ver1.0から、 <code class="docutils literal"><span class="pre">java.util.Calendar</span></code> にも対応しています。</p>
-<ul>
-<li><dl class="first docutils">
-<dt>属性patternで書式を指定します。</dt>
-<dd><ul class="first last simple">
-<li>Javaのクラス <code class="docutils literal"><span class="pre">java.util.SimpleDateFormat</span></code> で解釈可能な書式を指定します。</li>
+<span id="annotationxlsdateconverter"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code><a class="headerlink" href="#xlsdateconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>日時型に対する変換規則を指定する際に利用するアノテーションです。</p>
+<p>対応するJavaの型は次の通り。</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">java.util.Date</span></code></li>
+<li><code class="docutils literal"><span class="pre">java.sql.Date</span></code> / <code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> / <code class="docutils literal"><span class="pre">java.sql.Time</span></code></li>
+<li><code class="docutils literal"><span class="pre">java.util.Calendar</span></code>  <cite>[ver0.5+]</cite></li>
 </ul>
-</dd>
-</dl>
+<div class="section" id="id13">
+<h3>読み込み時の書式の指定<a class="headerlink" href="#id13" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>読み込み時にセルの種類が日付、時刻ではない場合、文字列として値を取得し、
+その値を属性 <code class="docutils literal"><span class="pre">javaPattern</span></code> で指定した書式に従いパースし、Javaの日時型に変換します。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">javaPattern</span></code> で書式を指定します。 <cite>[ver1.1+]</cite><ul>
+<li>Javaのクラス <code class="docutils literal"><span class="pre">java.util.SimpleDateFormat</span></code> で解釈可能な書式を指定します。</li>
+<li>ver1.0以前は、属性patternを使っていましたが、廃止になりました。</li>
+</ul>
 </li>
-<li><p class="first">属性localeでロケールを指定します。</p>
-<blockquote>
-<div><ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">locale</span></code> でロケールを指定します。<ul>
 <li>言語コードのみを指定する場合、&#8217;ja&#8217;の2桁で指定します。</li>
 <li>言語コードと国コードを指定する場合、&#8217;ja _JP&#8217;のようにアンダーバーで区切り指定します。</li>
 </ul>
-</div></blockquote>
 </li>
-<li><p class="first">属性lenientで、日付/時刻の解析を厳密に行わないか指定します。</p>
-<blockquote>
-<div><ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">lenient</span></code> で、日付/時刻の解析を厳密に行わないか指定します。<ul>
 <li>trueの厳密に解析を行いません。falseの場合厳密に解析を行います。</li>
-<li>読み込み時に書式に合わないセルの値を読み込んだ場合、例外TypeBindExceptionが発生します。</li>
 </ul>
-</div></blockquote>
 </li>
+<li>書式に合わない値をパースした場合、例外TypeBindExceptionが発生します。</li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
-    <span class="nd">@XlsDateConverter</span><span class="o">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;yyyy年MM月dd日 HH時mm分ss秒&quot;</span><span class="o">,</span> <span class="n">locale</span><span class="o">=</span><span class="s">&quot;ja_JP&quot;</span><span class="o">,</span> <span class="n">lenient</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;有効期限&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsDateConverter</span><span class="o">(</span><span class="n">javaPattern</span><span class="o">=</span><span class="s">&quot;yyyy年MM月dd日 HH時mm分ss秒&quot;</span><span class="o">,</span> <span class="n">locale</span><span class="o">=</span><span class="s">&quot;ja_JP&quot;</span><span class="o">,</span>
+            <span class="n">lenient</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
     <span class="kd">private</span> <span class="n">Date</span> <span class="n">expired</span><span class="o">;</span>
 
 <span class="o">}</span>
@@ -361,8 +580,8 @@
 </div>
 <div class="admonition note">
 <p class="first admonition-title">注釈</p>
-<p>読み込み時のセルの値が属性patternで指定した書式に一致していなくても、セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
-セルの表示形式の分類が文字列の場合は、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter(pattern=&quot;&lt;書式&gt;&quot;)</span></code> で指定した書式に従い処理されます。</p>
+<p>読み込み時のセルの値が属性javaPatternで指定した書式に一致していなくても、セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
+セルの表示形式の分類が文字列の場合は、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter(javaPattern=&quot;&lt;書式&gt;&quot;)</span></code> で指定した書式に従い処理されます。</p>
 <p>ただし、型変換用のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code> を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。<cite>[ver0.5+]</cite></p>
 <ul class="last simple">
 <li><code class="docutils literal"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
@@ -373,24 +592,68 @@
 </ul>
 </div>
 </div>
+<div class="section" id="id14">
+<h3>書き込み時の書式の指定<a class="headerlink" href="#id14" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>書き込み時の書式は、基本的にテンプレートファイルに設定してある値を使用します。
+また、アノテーションでも直接指定することができます。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">excelPattern</span></code> で書き込み時の書式を指定します。 <cite>[ver1.1+]</cite><ul>
+<li>Excelの書式を指定する場合は、 <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/sphinx/format_basic.html">ユーザ定義</a> の形式で指定する必要があります。</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;有効期限&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsDateConverter</span><span class="o">(</span><span class="n">excelPattern</span><span class="o">=</span><span class="s">&quot;[$-411]yyyy\&quot;年\&quot;mm\&quot;月\&quot;dd\&quot;日\&quot; hh\&quot;時\&quot;mm\&quot;分\&quot;ss\&quot;秒\&quot;&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Date</span> <span class="n">expired</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p>テンプレートファイルのセルの書式を「標準」に設定している場合に書き込むと、
+書式が「標準」設定の全てのセルの書式が書き換わってしまいます。</p>
+<p class="last">そのため、日付や数値などの書式が必要な場合は、テンプレートファイルで予め書式を設定しておくか、
+アノテーションの属性excelPatternで書式を指定しておいてください。</p>
+</div>
+</div>
+</div>
 <div class="section" id="xlsenumconverter">
-<h2><code class="docutils literal"><span class="pre">&#64;XlsEnumConverter</span></code><a class="headerlink" href="#xlsenumconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<span id="annotationxlsenumconverter"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsEnumConverter</span></code><a class="headerlink" href="#xlsenumconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>列挙型の変換規則の設定を行います。</p>
-<ul>
-<li><p class="first">属性ignoreCaseの値をtrueにすると、読み込み時に大文字/小文字の区別なく変換します。</p>
-</li>
-<li><p class="first">属性valueMethodNameで列挙型の項目の値を取得するメソッド名を指定します。</p>
-<blockquote>
-<div><ul class="simple">
-<li>指定しない場合、Enum#name()のメソッドの値が使用されます。</li>
+<div class="section" id="id16">
+<h3>基本的な使い方<a class="headerlink" href="#id16" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>セルの値と列挙型の要素の値をマッピングさせます。</p>
+<p>要素の値とは、 <code class="docutils literal"><span class="pre">Enum#name()</span></code> の値です。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">ignoreCase</span></code> の値をtrueにすると、読み込み時に大文字/小文字の区別なく変換します。</li>
 </ul>
-</div></blockquote>
-</li>
-</ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
     <span class="c1">// 列挙型のマッピング</span>
-    <span class="nd">@XlsEnumConverter</span><span class="o">(</span><span class="n">ignoreCase</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">valueMethodName</span><span class="o">=</span><span class="s">&quot;localeName&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;権限&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsEnumConverter</span><span class="o">(</span><span class="n">ignoreCase</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">RoleType</span> <span class="n">role</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 列挙型の定義</span>
+<span class="kd">public</span> <span class="kd">enum</span> <span class="n">RoleType</span> <span class="o">{</span>
+    <span class="n">Normal</span><span class="o">,</span> <span class="n">Admin</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id17">
+<h3>別名でマッピングする場合<a class="headerlink" href="#id17" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>別名をマッピングする場合、属性 <code class="docutils literal"><span class="pre">valueMethodName</span></code> で列挙型の要素の別名を取得するメソッド名を指定します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="c1">// 別名による列挙型のマッピング</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;権限&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsEnumConverter</span><span class="o">(</span><span class="n">valueMethodName</span><span class="o">=</span><span class="s">&quot;localeName&quot;</span><span class="o">)</span>
     <span class="kd">private</span> <span class="n">RoleType</span> <span class="n">role</span><span class="o">;</span>
 
 <span class="o">}</span>
@@ -406,7 +669,7 @@
         <span class="k">this</span><span class="o">.</span><span class="na">localeName</span> <span class="o">=</span> <span class="n">localeName</span><span class="o">;</span>
     <span class="o">}</span>
 
-    <span class="c1">// 別名の取得</span>
+    <span class="c1">// 別名の取得用メソッド</span>
     <span class="kd">public</span> <span class="n">String</span> <span class="nf">localeName</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">localeName</span><span class="o">;</span>
     <span class="o">}</span>
@@ -415,59 +678,100 @@
 </pre></div>
 </div>
 </div>
+</div>
 <div class="section" id="xlsarrayconverter">
-<h2><code class="docutils literal"><span class="pre">&#64;XlsArrayConverter</span></code><a class="headerlink" href="#xlsarrayconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<span id="annotationxlsarrayconverter"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsArrayConverter</span></code><a class="headerlink" href="#xlsarrayconverter" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>配列またはCollection型（List, Set）の変換規則の設定を行います。</p>
-<p>配列またはCollectoinの要素のクラス型は、String型、プリミティブ型またはそのラッパークラスをとることができます。</p>
-<ul>
-<li><p class="first">属性separatorで区切り文字を指定します。</p>
-</li>
-<li><p class="first">属性ignoreEmptyItemで、区切った項目の値が空文字の場合、無視するか指定します。</p>
-<blockquote>
-<div><ul class="simple">
-<li>例えば、区切り文字&#8221;,&#8221;のとき、セルの値が&#8221;a,,b&#8221;の場合、trueを設定すると[&#8220;a&#8221;, &#8220;b&#8221;]として読み込みます。</li>
-<li>書き込み時も同様に、値が空またはnullの項目を無視します。</li>
+<div class="section" id="id18">
+<h3>基本的な使い方<a class="headerlink" href="#id18" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Collection型のインタフェースを指定している場合、読み込み時のインスタンスは次のクラスが指定されます。</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">java.util.List</span></code> の場合、<code class="docutils literal"><span class="pre">java.util.ArrayList</span></code> がインスタンスのクラスとなります。</li>
+<li><code class="docutils literal"><span class="pre">java.util.Set</span></code> の場合、<code class="docutils literal"><span class="pre">java.util.LinkedHashSet</span></code> がインスタンスのクラスとなります。</li>
 </ul>
-</div></blockquote>
+<p>配列、またはCollection型の要素で指定可能なクラス型は、次の通りです。
+任意のクラス型に対応する場合は、属性 <code class="docutils literal"><span class="pre">itemConverter</span></code> で変換処理クラスを指定してください。</p>
+<ul class="simple">
+<li>String型</li>
+<li>プリミティブ型「boolean/char/byte/short/int/long/float/double」と、そのラッパークラス。</li>
+<li><code class="docutils literal"><span class="pre">java.math.BigDecimal</span></code> / <code class="docutils literal"><span class="pre">java.math.BigInteger</span></code></li>
+</ul>
+<p>文字列のセルに対して、任意の区切り文字を指定し、配列やListに対してマッピングします。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal"><span class="pre">separator</span></code> で区切り文字を指定します。<ul>
+<li>区切り文字の初期値は、半角カンマ(,)です。</li>
+</ul>
 </li>
-<li><p class="first">型変換アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を付与し、トリム処理を有効にしている設定の場合、区切った項目にもトリム処理が適用されます。 <cite>[ver0.5+]</cite></p>
-<blockquote>
-<div><ul class="simple">
+<li>型変換アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を付与し、トリム処理を有効にしている設定の場合、区切った項目にもトリム処理が適用されます。 <cite>[ver0.5+]</cite><ul>
 <li>属性ignoreEmptyItemの値をtrueに設定していると、トリム処理によって項目が空文字となった場合、その項目は無視されます。</li>
 </ul>
-</div></blockquote>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
-    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">separator</span><span class="o">=</span><span class="s">&quot;,&quot;</span><span class="o">,</span> <span class="n">ignoreEmptyItem</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="n">String</span><span class="o">[]</span> <span class="n">arrays</span><span class="o">;</span>
+    <span class="c1">// 区切り文字の指定</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;リスト&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">separator</span><span class="o">=</span><span class="s">&quot;\n&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">;</span>
 
-    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">separator</span><span class="o">=</span><span class="s">&quot;;&quot;</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">;</span>
+    <span class="c1">// 要素のトリム処理を指定する</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;配列&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">trim</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>    <span class="c1">// 区切った配列の要素にもトリムが適用されます。</span>
+    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">separator</span><span class="o">=</span><span class="s">&quot;,&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">array</span><span class="o">;</span>
 
 <span class="o">}</span>
 </pre></div>
 </div>
-<p>読み込む際に各要素の値をトリミングしたい場合は、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を付与します。</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+</div>
+<div class="section" id="id19">
+<h3>空の要素を無視する場合<a class="headerlink" href="#id19" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>属性 <code class="docutils literal"><span class="pre">ignoreEmptyItem</span></code> で、区切った項目の値が空文字の場合、無視するか指定します。</p>
+<p>例えば、区切り文字&#8221;,&#8221;のとき、セルの値が <code class="docutils literal"><span class="pre">&quot;a,,b&quot;</span></code> の場合、trueを設定すると <code class="docutils literal"><span class="pre">[&quot;a&quot;,</span> <span class="pre">&quot;b&quot;]</span></code> として読み込みます。</p>
+<p>書き込み時も同様に、値が空またはnullの項目を無視します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
-    <span class="c1">// 要素のトリム処理を指定する</span>
-    <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">trim</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
-    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">separator</span><span class="o">=</span><span class="s">&quot;;&quot;</span><span class="o">)</span>
+    <span class="c1">// 空の要素を無視する場合</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;集合&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">ignoreEmptyItem</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
     <span class="kd">private</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">set</span><span class="o">;</span>
 
 <span class="o">}</span>
 </pre></div>
 </div>
-<p>基本的に、Genericsの型パラメータから要素のクラス型を自動的に判断しますが、属性itemClassで直接指定することもできます。</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
-    <span class="c1">// 要素のクラス型を指定する</span>
-    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">itemClass</span><span class="o">=</span><span class="n">Integer</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="n">List</span> <span class="n">list</span><span class="o">;</span>
+</div>
+<div class="section" id="id20">
+<h3>要素の値を変換するクラスを指定する<a class="headerlink" href="#id20" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>属性 <code class="docutils literal"><span class="pre">itemConverterClass</span></code> で要素の値を変換するクラスを指定することができます。 <cite>[ver1.1+]</cite></p>
+<p>変換するクラスは、インタフェース <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.cellconvert.ItemConverter</span></code> を実装している必要があります。
+標準では、<code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter</span></code> が使用され、基本的な型のみサポートしています。</p>
+<p>インスタンスは、システム設定「beanFactory」経由で作成されるため、<a class="reference internal" href="extension_beanfactory.html"><em>SpringFrameworkのコンテナからインスタンスを取得</em></a> することもできます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// 変換用クラス</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomItemConverter</span> <span class="kd">implements</span> <span class="n">ItemConverter</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">User</span> <span class="nf">convertToObject</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">str</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">targetClass</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ConversionException</span> <span class="o">{</span>
+        <span class="c1">//TODO: 文字列 =&gt; オブジェクトに変換する処理</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">convertToString</span><span class="o">(</span><span class="kd">final</span> <span class="n">User</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//TODO: オブジェクト =&gt; 文字列に変換する処理</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// レコード用クラス</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="c1">// 任意のクラス型の要素の値を変換するConverterを指定します。</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;リスト&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsArrayConverter</span><span class="o">(</span><span class="n">itemConverterClass</span><span class="o">=</span><span class="n">CustomItemConverter</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">;</span>
 
 <span class="o">}</span>
 </pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -484,7 +788,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

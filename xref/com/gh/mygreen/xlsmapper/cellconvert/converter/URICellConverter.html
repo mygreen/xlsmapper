@@ -20,7 +20,7 @@
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.Utils;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.XlsMapperConfig;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.XlsMapperException;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  
@@ -38,7 +38,7 @@
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">public</strong> URI toObject(<strong class="jxr_keyword">final</strong> Cell cell, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/FieldAdaptor.html">FieldAdaptor</a> adaptor, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> config)
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>              <strong class="jxr_keyword">throws</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/XlsMapperException.html">XlsMapperException</a> {
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>          
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/annotation/converter/XlsConverter.html">XlsConverter</a> converterAnno = adaptor.getLoadingAnnotation(XlsConverter.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/annotation/XlsConverter.html">XlsConverter</a> converterAnno = adaptor.getLoadingAnnotation(XlsConverter.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          <strong class="jxr_keyword">if</strong>(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>              
@@ -82,14 +82,14 @@
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">public</strong> Cell toCell(<strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/FieldAdaptor.html">FieldAdaptor</a> adaptor, <strong class="jxr_keyword">final</strong> URI targetValue, <strong class="jxr_keyword">final</strong> Sheet sheet,
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>              <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> column, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> row, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> config) {
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/annotation/converter/XlsConverter.html">XlsConverter</a> converterAnno = adaptor.getSavingAnnotation(XlsConverter.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/annotation/XlsConverter.html">XlsConverter</a> converterAnno = adaptor.getSavingAnnotation(XlsConverter.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>          
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>          <strong class="jxr_keyword">final</strong> Cell cell = POIUtils.getCell(sheet, column, row);
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          <em class="jxr_comment">// セルの書式設定</em>
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          <strong class="jxr_keyword">if</strong>(converterAnno != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>              POIUtils.wrapCellText(cell, converterAnno.forceWrapText());
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>              POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>              POIUtils.wrapCellText(cell, converterAnno.wrapText());
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>              POIUtils.shrinkToFit(cell, converterAnno.shrinkToFit());
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          }
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          URI value = targetValue;
@@ -119,6 +119,6 @@
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2015 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

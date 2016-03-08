@@ -36,12 +36,12 @@
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsHint;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.converter.XlsNumberConverter;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsHint;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">/**</em>
@@ -958,22 +958,22 @@
 <a class="jxr_linenumber" name="L950" href="#L950">950</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconvert/NumberCellConverterTest.html">NumberSheet</a> {
 <a class="jxr_linenumber" name="L951" href="#L951">951</a>         
 <a class="jxr_linenumber" name="L952" href="#L952">952</a>         @XlsHint(order=1)
-<a class="jxr_linenumber" name="L953" href="#L953">953</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"プリミティブ型"</span>, terminal=RecordTerminal.Border, skipEmptyRecord=<strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L953" href="#L953">953</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"プリミティブ型"</span>, terminal=RecordTerminal.Border, ignoreEmptyRecord=<strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L954" href="#L954">954</a>                 overRecord=OverRecordOperate.Insert)
 <a class="jxr_linenumber" name="L955" href="#L955">955</a>         <strong class="jxr_keyword">private</strong> List&lt;PrimitiveRecord&gt; primitiveRecords;
 <a class="jxr_linenumber" name="L956" href="#L956">956</a>         
 <a class="jxr_linenumber" name="L957" href="#L957">957</a>         @XlsHint(order=1)
-<a class="jxr_linenumber" name="L958" href="#L958">958</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"ラッパークラス"</span>, terminal=RecordTerminal.Border, skipEmptyRecord=<strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L958" href="#L958">958</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"ラッパークラス"</span>, terminal=RecordTerminal.Border, ignoreEmptyRecord=<strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L959" href="#L959">959</a>                 overRecord=OverRecordOperate.Insert)
 <a class="jxr_linenumber" name="L960" href="#L960">960</a>         <strong class="jxr_keyword">private</strong> List&lt;WrapperRecord&gt; wrapperRecords;
 <a class="jxr_linenumber" name="L961" href="#L961">961</a>         
 <a class="jxr_linenumber" name="L962" href="#L962">962</a>         @XlsHint(order=1)
-<a class="jxr_linenumber" name="L963" href="#L963">963</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"その他のクラス"</span>, terminal=RecordTerminal.Border, skipEmptyRecord=<strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L963" href="#L963">963</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"その他のクラス"</span>, terminal=RecordTerminal.Border, ignoreEmptyRecord=<strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L964" href="#L964">964</a>                 overRecord=OverRecordOperate.Insert)
 <a class="jxr_linenumber" name="L965" href="#L965">965</a>         <strong class="jxr_keyword">private</strong> List&lt;OtherRecord&gt; otherRecords;
 <a class="jxr_linenumber" name="L966" href="#L966">966</a>         
 <a class="jxr_linenumber" name="L967" href="#L967">967</a>         @XlsHint(order=1)
-<a class="jxr_linenumber" name="L968" href="#L968">968</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"初期値、書式指定"</span>, terminal=RecordTerminal.Border, skipEmptyRecord=<strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L968" href="#L968">968</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"初期値、書式指定"</span>, terminal=RecordTerminal.Border, ignoreEmptyRecord=<strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L969" href="#L969">969</a>                 overRecord=OverRecordOperate.Insert)
 <a class="jxr_linenumber" name="L970" href="#L970">970</a>         <strong class="jxr_keyword">private</strong> List&lt;FormattedRecord&gt; formattedRecords;
 <a class="jxr_linenumber" name="L971" href="#L971">971</a>         
@@ -1269,24 +1269,24 @@
 <a class="jxr_linenumber" name="L1261" href="#L1261">1261</a>         <strong class="jxr_keyword">private</strong> Short s;
 <a class="jxr_linenumber" name="L1262" href="#L1262">1262</a>         
 <a class="jxr_linenumber" name="L1263" href="#L1263">1263</a>         <em class="jxr_javadoccomment">/** 通貨 */</em>
-<a class="jxr_linenumber" name="L1264" href="#L1264">1264</a>         @XlsNumberConverter(pattern=<span class="jxr_string">""</span>, currency=<span class="jxr_string">"JPY"</span>, locale=<span class="jxr_string">"ja_JP"</span>)
+<a class="jxr_linenumber" name="L1264" href="#L1264">1264</a>         @XlsNumberConverter(javaPattern=<span class="jxr_string">""</span>, currency=<span class="jxr_string">"JPY"</span>, locale=<span class="jxr_string">"ja_JP"</span>)
 <a class="jxr_linenumber" name="L1265" href="#L1265">1265</a>         @XlsColumn(columnName=<span class="jxr_string">"int型"</span>)
 <a class="jxr_linenumber" name="L1266" href="#L1266">1266</a>         <strong class="jxr_keyword">private</strong> Integer i;
 <a class="jxr_linenumber" name="L1267" href="#L1267">1267</a>         
 <a class="jxr_linenumber" name="L1268" href="#L1268">1268</a>         <em class="jxr_javadoccomment">/** トリム */</em>
 <a class="jxr_linenumber" name="L1269" href="#L1269">1269</a>         @XlsConverter(defaultValue=<span class="jxr_string">"-1"</span>, trim=<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L1270" href="#L1270">1270</a>         @XlsNumberConverter(pattern=<span class="jxr_string">"#,###,##0"</span>)
+<a class="jxr_linenumber" name="L1270" href="#L1270">1270</a>         @XlsNumberConverter(javaPattern=<span class="jxr_string">"#,###,##0"</span>)
 <a class="jxr_linenumber" name="L1271" href="#L1271">1271</a>         @XlsColumn(columnName=<span class="jxr_string">"long型"</span>)
 <a class="jxr_linenumber" name="L1272" href="#L1272">1272</a>         <strong class="jxr_keyword">private</strong> Long l;
 <a class="jxr_linenumber" name="L1273" href="#L1273">1273</a>         
 <a class="jxr_linenumber" name="L1274" href="#L1274">1274</a>         <em class="jxr_javadoccomment">/** パーセント */</em>
-<a class="jxr_linenumber" name="L1275" href="#L1275">1275</a>         @XlsNumberConverter(pattern=<span class="jxr_string">"##.00%"</span>)
+<a class="jxr_linenumber" name="L1275" href="#L1275">1275</a>         @XlsNumberConverter(javaPattern=<span class="jxr_string">"##.00%"</span>, excelPattern=<span class="jxr_string">"##.00%"</span>)
 <a class="jxr_linenumber" name="L1276" href="#L1276">1276</a>         @XlsColumn(columnName=<span class="jxr_string">"float型"</span>)
 <a class="jxr_linenumber" name="L1277" href="#L1277">1277</a>         <strong class="jxr_keyword">private</strong> Float f;
 <a class="jxr_linenumber" name="L1278" href="#L1278">1278</a>         
 <a class="jxr_linenumber" name="L1279" href="#L1279">1279</a>         <em class="jxr_javadoccomment">/** 正と負の数 */</em>
 <a class="jxr_linenumber" name="L1280" href="#L1280">1280</a>         @XlsConverter(defaultValue=<span class="jxr_string">"10,000.00"</span>)
-<a class="jxr_linenumber" name="L1281" href="#L1281">1281</a>         @XlsNumberConverter(pattern=<span class="jxr_string">"#,##0.00;(#,##0.00)"</span>)
+<a class="jxr_linenumber" name="L1281" href="#L1281">1281</a>         @XlsNumberConverter(javaPattern=<span class="jxr_string">"#,##0.00;(#,##0.00)"</span>, excelPattern=<span class="jxr_string">"#,##0.00;(#,##0.00)"</span>)
 <a class="jxr_linenumber" name="L1282" href="#L1282">1282</a>         @XlsColumn(columnName=<span class="jxr_string">"double型"</span>)
 <a class="jxr_linenumber" name="L1283" href="#L1283">1283</a>         <strong class="jxr_keyword">private</strong> Double d;
 <a class="jxr_linenumber" name="L1284" href="#L1284">1284</a>         
@@ -1342,6 +1342,6 @@
 <a class="jxr_linenumber" name="L1334" href="#L1334">1334</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2015 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

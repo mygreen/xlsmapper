@@ -52,8 +52,8 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_buildAnnotation1() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          AnnotationInfo info = <strong class="jxr_keyword">new</strong> AnnotationInfo();
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>          info.addAnnotationAttribute(<span class="jxr_string">"row"</span>, <span class="jxr_string">"10"</span>);
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          info.addAnnotationAttribute(<span class="jxr_string">"column"</span>, <span class="jxr_string">"99"</span>);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          info.addAttribute(<span class="jxr_string">"row"</span>, <span class="jxr_string">"10"</span>);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          info.addAttribute(<span class="jxr_string">"column"</span>, <span class="jxr_string">"99"</span>);
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          DynamicAnnotationBuilder builder = DynamicAnnotationBuilder.getInstance();
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          Annotation ann = builder.buildAnnotation(XlsCell.<strong class="jxr_keyword">class</strong>, info);
@@ -89,7 +89,7 @@
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          assertThat(records.headerAddress(), is(<span class="jxr_string">""</span>));
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          assertThat(records.overRecord(), is(OverRecordOperate.Break));
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          assertThat(records.remainedRecord(), is(RemainedRecordOperate.None));
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>          assertThat(records.skipEmptyRecord(), is(false));
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          assertThat(records.ignoreEmptyRecord(), is(false));
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      }
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      
@@ -97,6 +97,6 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2015 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

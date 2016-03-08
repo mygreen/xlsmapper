@@ -31,13 +31,13 @@
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.XlsMapper;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsHint;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.converter.XlsBooleanConverter;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsColumn;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsHint;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.cellconvert.converter.BooleanCellConverter;
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  
@@ -329,12 +329,12 @@
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconvert/BooleanCellConverterTest.html">BooleanSheet</a> {
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>         
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>         @XlsHint(order=1)
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"ブール型（アノテーションなし）"</span>, terminal=RecordTerminal.Border, skipEmptyRecord=<strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"ブール型（アノテーションなし）"</span>, terminal=RecordTerminal.Border, ignoreEmptyRecord=<strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L325" href="#L325">325</a>                 overRecord=OverRecordOperate.Insert)
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>         <strong class="jxr_keyword">private</strong> List&lt;SimpleRecord&gt; simpleRecords;
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>         
 <a class="jxr_linenumber" name="L328" href="#L328">328</a>         @XlsHint(order=1)
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"ブール型（初期値、書式）"</span>, terminal=RecordTerminal.Border, skipEmptyRecord=<strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"ブール型（初期値、書式）"</span>, terminal=RecordTerminal.Border, ignoreEmptyRecord=<strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L330" href="#L330">330</a>                 overRecord=OverRecordOperate.Insert)
 <a class="jxr_linenumber" name="L331" href="#L331">331</a>         <strong class="jxr_keyword">private</strong> List&lt;FormattedRecord&gt; formattedRecords;
 <a class="jxr_linenumber" name="L332" href="#L332">332</a>         
@@ -494,6 +494,6 @@
 <a class="jxr_linenumber" name="L486" href="#L486">486</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2015 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

@@ -1,6 +1,5 @@
 com.gh.mygreen.xlsmapper
 com.gh.mygreen.xlsmapper.annotation
-com.gh.mygreen.xlsmapper.annotation.converter
 com.gh.mygreen.xlsmapper.cellconvert
 com.gh.mygreen.xlsmapper.cellconvert.converter
 com.gh.mygreen.xlsmapper.expression

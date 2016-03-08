@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6. XLSBeansとの違い &mdash; XlsMapper 1.0 ドキュメント</title>
+    <title>6. XLSBeansとの違い &mdash; XlsMapper 1.1 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0',
+        VERSION:     '1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.0 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.1 ドキュメント" href="index.html" />
     <link rel="next" title="7. リリースノート" href="release.html" />
     <link rel="prev" title="5. 拡張方法" href="extension.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="extension.html" title="5. 拡張方法"
              accesskey="P">前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -63,16 +63,17 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id3">1.2. 読み込み方</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 書き込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.2. マッピングの基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.4. 書き込み方</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id4">2.4. 型変換用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id6">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id28">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id49">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
@@ -95,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="extension.html">5. 拡張方法</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#poi">5.3. POIのセルフォーマッターの拡張</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extension.html#cellformatter">5.3. CellFormatterの拡張</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extension.html#beanfactory">5.4. BeanFactoryの拡張</a></li>
 </ul>
 </li>
@@ -106,16 +107,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">7. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">7.1. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.2. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.3. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.4. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.5. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.6. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.7. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.8. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.9. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.10. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">7.1. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">7.2. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">7.3. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">7.4. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">7.5. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">7.6. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">7.7. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">7.8. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">7.9. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">7.10. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">7.11. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -163,67 +165,48 @@
 XLSBeansとの違いを以下に示します。</p>
 <div class="section" id="id1">
 <h2>6.1. 改善機能<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<ul>
-<li><p class="first">アノテーションの名称を&#8221;&#64;Xls～&#8221;として、他のライブラリのアノテーションと区別がつきやすいようにしています。</p>
-<blockquote>
-<div><ul class="simple">
-<li>セルの座標を指定する属性addressが使用できます。</li>
+<ul class="simple">
+<li>アノテーションの名称を <code class="docutils literal"><span class="pre">&#64;Xls～</span></code> （例. <code class="docutils literal"><span class="pre">&#64;Column</span> <span class="pre">=&gt;</span> <span class="pre">&#64;XlsColumn</span></code> ） として、他のライブラリのアノテーションと区別がつきやすいようにしています。</li>
+<li>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsCell</span></code> などセルの座標を指定する際に、Excel形式 <cite>A3</cite> のように指定する <a class="reference internal" href="annotation_mapping_cell.html#annotationxlscell"><span>属性address</span></a> を追加し、指定しやすいようにしています。</li>
+<li>エラーメッセージの内容を詳細に表示し、設定間違いの対応をしやすくしています。</li>
+<li>Generics対応として、<code class="docutils literal"><span class="pre">&#64;XlsMapColums、&#64;XlsIterateTables</span></code> にも対応しており、マッピング先のClassを指定する必要がありません。</li>
+<li><a class="reference internal" href="otheruse_sheetposition.html"><em>シートの座標位置の取得</em></a> が、<code class="docutils literal"><span class="pre">&#64;XlsMapColumn</span></code> を付与したフィールドにも対応しています。<ul>
+<li>フィールド <code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">positions</span></code> を定義しておけば、キーに見出し名が入ります。</li>
 </ul>
-</div></blockquote>
 </li>
-<li><p class="first">エラーメッセージの内容を詳細に表示し、設定間違いの対応をしやすくしています。</p>
-</li>
-<li><p class="first">Generics対応として、<code class="docutils literal"><span class="pre">&#64;XlsMapColums、&#64;XlsIterateTables</span></code> にも対応しており、マッピング先のClassを指定する必要がありません。</p>
-</li>
-<li><p class="first">シートの座標位置の取得が、&#64;XlsMapColumnを付与したフィールドにも対応しています。</p>
-</li>
-<li><p class="first">アノテーションを付与するフィールドの修飾子として、public以外のprivate/protectedにも対応しています。</p>
-</li>
+<li>アノテーションを付与するフィールドの修飾子として、public以外のprivate/protectedにも対応しています。</li>
 </ul>
 </div>
 <div class="section" id="id2">
 <h2>6.2. 追加機能<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<ul>
-<li><p class="first">書き込み機能があります。</p>
-<blockquote>
-<div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords/&#64;XlsVerticalRecords</span></code> に書き込み用の属性を追加し、行が余ったときや足りないときの動作をカスタマイズできます。</li>
+<ul class="simple">
+<li><a class="reference internal" href="howtouse.html#howtousesheetsave"><span>書き込み機能</span></a> があります。<ul>
+<li>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> 、 <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span>&#64;XlsVerticalRecords</span></a> に書き込み用の属性を追加し、行が余ったときや足りないときの動作をカスタマイズできます。</li>
 </ul>
-</div></blockquote>
 </li>
-<li><p class="first">読み込み時、書き込み時のコールバック用メソッドを定義するためのアノテーション <code class="docutils literal"><span class="pre">&#64;XlsPreLoad/&#64;XlsPostLoad/&#64;XlsPreSave/&#64;XlsPostLoad</span></code> が使用できます。</p>
-</li>
-<li><p class="first">型変換機能として、専用のアノテーションを利用して各フィールドごとに細かく設定できます。</p>
-</li>
-<li><p class="first">読み込んだシートの内容をチェックするValidation機能があります。</p>
-<blockquote>
-<div><ul class="simple">
+<li>読み込み時、書き込み時の <a class="reference internal" href="annotation_lifecycle.html"><em>コールバック用メソッドを定義するためのアノテーション</em></a> <code class="docutils literal"><span class="pre">&#64;XlsPreLoad/&#64;XlsPostLoad/&#64;XlsPreSave/&#64;XlsPostLoad</span></code> が使用できます。</li>
+<li>型変換機能として、 <code class="docutils literal"><span class="pre">&#64;XlsConverter</span></code> などの <a class="reference internal" href="annotation_converter.html"><em>型変換用アノテーション</em></a> を利用して各フィールドごとに細かく設定できます。</li>
+<li>読み込んだシートの内容をチェックする <a class="reference internal" href="validation.html"><em>Validation機能</em></a> があります。<ul>
 <li>独自にValidatorを実装する方式の他、Bean Validation 1.0/1.1に対応しています。</li>
 </ul>
-</div></blockquote>
 </li>
-<li><p class="first">セルの座標位置のように、マッピング対象の見出し名を取得するこができます。</p>
-</li>
+<li>セルの座標位置のように、 <a class="reference internal" href="otheruse_caption.html"><em>マッピング対象の見出し名を取得</em></a> するこができます。</li>
 </ul>
 </div>
 <div class="section" id="id3">
 <h2>6.3. 削除機能<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<ul>
-<li><p class="first">コードをシンプルにするため、jExcel API対応を排除し、Apache POIのみに対応しています。</p>
+<ul class="simple">
+<li>コードをシンプルにするため、JExcelAPI対応を排除し、Apache POIのみに対応しています。<ul>
+<li>XlsMapperのプログラム中で利用する機能でJExcelAPIに優位であったユーザ定義などの書式対応は、外部ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> を利用することでJExcelAPIとApache POIの差をなくしています。</li>
+</ul>
 </li>
-<li><p class="first">アノテーション <code class="docutils literal"><span class="pre">&#64;PostProcessor</span></code> を削除しました。</p>
-<blockquote>
-<div><ul class="simple">
+<li>アノテーション <code class="docutils literal"><span class="pre">&#64;PostProcessor</span></code> を削除しました。<ul>
 <li>代わりに、<code class="docutils literal"><span class="pre">&#64;XlsPreLoad/&#64;XlsPostLoad/&#64;XlsPreSave/&#64;XlsPostLoad</span></code> が使用できます。</li>
 </ul>
-</div></blockquote>
 </li>
-<li><p class="first">独自実装のProcessorを、プロパティファイル <code class="docutils literal"><span class="pre">xlsbeans.properties</span></code> で設定できる機能を削除しました。</p>
-<blockquote>
-<div><ul class="simple">
+<li>独自実装のProcessorを、プロパティファイル <code class="docutils literal"><span class="pre">xlsbeans.properties</span></code> で設定できる機能を削除しました。<ul>
 <li>代わりに、システム設定用の <code class="docutils literal"><span class="pre">XlsMapperConfig#getConverterRegistry()#registerProcessor(...)</span></code> から登録できます。</li>
 </ul>
-</div></blockquote>
 </li>
 </ul>
 </div>
@@ -247,7 +230,7 @@ XLSBeansとの違いを以下に示します。</p>
         <li class="right" >
           <a href="extension.html" title="5. 拡張方法"
              >前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.0 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -11,16 +11,16 @@
  
 * エラー情報は、SheetBindingErrorsクラスに格納します。
 
-    * SheetBindingErrorsのインスタンスを、読み込み時に引数として渡します。
+  * SheetBindingErrorsのインスタンスを、読み込み時に引数として渡します。
 
 * セルの値をJavaオブジェクトに変換の失敗情報は、読み込み時に自動的に作成されます。
 
-    * 1つのセルの型変換に失敗しても処理を続行するよう、システム設定XlsMapperConfigの項目「skipTypeBindFailure」を'true'に設定します。
+  * 1つのセルの型変換に失敗しても処理を続行するよう、システム設定XlsMapperConfigの項目「skipTypeBindFailure」を'true'に設定します。
 
 * 別途用意したBeanに対するValidatorにより、値を検証します。
 
-   * 通常は、抽象クラス「AbstractObjectValidator」を継承して作成します。
-   * ``@XlsHorizontalRecords`` のようにネストしたBeanの場合、リストの要素のBeanのValidatorを別途用意します。
+  * 通常は、抽象クラス「AbstractObjectValidator」を継承して作成します。
+  * ``@XlsHorizontalRecords`` のようにネストしたBeanの場合、リストの要素のBeanのValidatorを別途用意します。
 
 * エラーがある場合、SheetMessageConverterを使用して、エラーオブジェクトを文字列に変換します。
 
@@ -60,13 +60,13 @@ Validatorは、AbstractObjectValidatorを継承して作成します。
 * Genericsで検証対象のBeanクラスを指定し、validateメソッド内で検証処理の実装を行います。
 * 検証対象のフィールドにエラーがあるかどうかは、SheetBindingErrors#hasFieldErrorsでチェックできます。
     
-    * 型変換エラーがある場合、Beanに値がマッピングされていないため、エラーがあるかどうかをチェックします。
+  * 型変換エラーがある場合、Beanに値がマッピングされていないため、エラーがあるかどうかをチェックします。
     
 * フィールドに対するエラーを設定する場合、``SheetBindingErrors#rejectValue("フィールド名", "エラーコード", "エラー引数")`` で設定します。
     
-    * Map<String, Points>フィールドでセルのアドレスを保持している場合は、``SheetBindingErrors#rejectSheetValue(...)`` でセルのアドレスを指定できます。
-    
-    * エラー引数は、インデックス形式の配列型と名前付きのマップ型のどちらでも指定できます。名前付きのマップ型の利用をお勧めします。
+  * Map<String, Points>フィールドでセルのアドレスを保持している場合は、``SheetBindingErrors#rejectSheetValue(...)`` でセルのアドレスを指定できます。
+  
+  * エラー引数は、インデックス形式の配列型と名前付きのマップ型のどちらでも指定できます。名前付きのマップ型の利用をお勧めします。
     
 
 .. sourcecode:: java
@@ -130,7 +130,7 @@ Validatorは、AbstractObjectValidatorを継承して作成します。
 * フィールドに対する検証をCellField#add(...)で追加することで複数の検証を設定できます。
 * 値の件所を行う場合は、CellField#validate(errors)で実行します。
 
-   * SheetBindingErrorsに対してエラーオブジェクトが自動的に設定されます。
+  * SheetBindingErrorsに対してエラーオブジェクトが自動的に設定されます。
    
 * フィールドに対してエラーがある場合、CellField#hasErrors(...)/hasNotErrors(...)で検証できます。
  
@@ -173,15 +173,15 @@ Validatorは、AbstractObjectValidatorを継承して作成します。
  
 * 型変換エラーは、読み込み時に自動的にチェックされ、エラーコードは、「cellTypeMismatch」と決まっています。
  
-   * フィールドのクラスタイプごとに、メッセージを指定することもでき、「cellTypeMismatch.\<クラス名\>」で定義します。
-   * さらに、フィールド名でも指定することができ、「cellTypeMismatch.\<フィールド名\>」で定義します。
-   * クラスタイプよりもフィールド名で指定する方が優先されます。
+  * フィールドのクラスタイプごとに、メッセージを指定することもでき、「cellTypeMismatch.\<クラス名\>」で定義します。
+  * さらに、フィールド名でも指定することができ、「cellTypeMismatch.\<フィールド名\>」で定義します。
+  * クラスタイプよりもフィールド名で指定する方が優先されます。
  
 * メッセージ中ではEL式を利用することができます。
 * メッセージ中の通常の変数は、\{変数名\}で定義し、EL式は$\{EL式\}で定義します。
-   
-   * ただし、EL式のライブラリを依存関係に追加しておく必要があります。
-   
+  
+  * ただし、EL式のライブラリを依存関係に追加しておく必要があります。
+  
 
 .. sourcecode:: properties
     
@@ -310,14 +310,14 @@ Bean Validationを使用した入力値検証
 
  BeanValidation JSR-303(ver.1.0)/JSR-349(ver.1.1)を利用する場合、ライブラリで用意されている「SheetBeanValidator」を使用します。
  
-* BeanValidationの実装として、Hibernate Validatorが必要になるため、依存関係に追加します。
-    
-    * Hibernate Validatorを利用するため、メッセージをカスタマイズしたい場合は、クラスパスのルートに「ValidationMessages.properties」を配置します。
-    
+* BeanValidationの実装として、`Hibernate Validator <http://hibernate.org/validator/>`_ が必要になるため、依存関係に追加します。
+  
+  * Hibernate Validatorを利用するため、メッセージをカスタマイズしたい場合は、クラスパスのルートに「ValidationMessages.properties」を配置します。
+  
 * 検証する際には、SheetBeanValidator#validate(...)を実行します。
-    
-    * Bean Validationの検証結果も、SheetBindingErrorsの形式に変換され格納されます。
-    
+  
+  * Bean Validationの検証結果も、SheetBindingErrorsの形式に変換され格納されます。
+  
 * メッセー時を出力する場合は、SheetMessageConverterを使用します。
 
 
