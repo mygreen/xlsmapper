@@ -80,8 +80,8 @@ public class URICellConverter extends AbstractCellConverter<URI> {
         
         // セルの書式設定
         if(converterAnno != null) {
-            POIUtils.wrapCellText(cell, converterAnno.forceWrapText());
-            POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
+            POIUtils.wrapCellText(cell, converterAnno.wrapText());
+            POIUtils.shrinkToFit(cell, converterAnno.shrinkToFit());
         }
         
         URI value = targetValue;

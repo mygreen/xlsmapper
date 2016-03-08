@@ -343,8 +343,8 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         
         // セルの書式設定
         if(converterAnno != null) {
-            POIUtils.wrapCellText(cell, converterAnno.forceWrapText());
-            POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
+            POIUtils.wrapCellText(cell, converterAnno.wrapText());
+            POIUtils.shrinkToFit(cell, converterAnno.shrinkToFit());
         }
         
         Number value = targetValue;

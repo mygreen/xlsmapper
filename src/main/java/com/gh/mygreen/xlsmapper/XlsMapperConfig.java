@@ -328,7 +328,7 @@ public class XlsMapperConfig {
     
     /**
      * 任意のクラス型に変換するクラスを設定します。
-     * <p>{@link XlsArrayConverter#itemConverter()}の処理クラスです。
+     * <p>{@link XlsArrayConverter#itemConverterClass()}の処理クラスです。
      * 
      * @since 1.1
      * @return
@@ -339,7 +339,7 @@ public class XlsMapperConfig {
     
     /**
      * 任意のクラス型に変換するクラスを取得します。
-     * <p>{@link XlsArrayConverter#itemConverter()}の処理クラスです。
+     * <p>{@link XlsArrayConverter#itemConverterClass()}の処理クラスです。
      * @since 1.1
      * @param itemConverter 任意のクラス型に変換するクラス
      * @return 自身のインスタンス

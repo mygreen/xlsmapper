@@ -72,7 +72,7 @@ import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
  * 
  * 
  * <h3 class="description">要素の値を変換するクラスを指定する</h3>
- * <p>属性{@link #itemConverter()}で要素の値を変換するクラスを指定することができます。</p>
+ * <p>属性{@link #itemConverterClass()}で要素の値を変換するクラスを指定することができます。</p>
  * <p>変換するクラスは、インタフェース{@link ItemConverter}を実装している必要があります。
  *   <br>標準では、{@link DefaultItemConverter} が使用され、基本的な型のみサポートしています。
  * </p>
@@ -101,7 +101,7 @@ import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
  * 
  *     // 任意のクラス型の要素の値を変換するConverterを指定します。
  *     {@literal @XlsColumn(columnName="リスト")}
- *     {@literal @XlsArrayConverter(itemConverter=CustomItemConverter.class)}
+ *     {@literal @XlsArrayConverter(itemConverterClass=CustomItemConverter.class)}
  *     private {@literal List<User>} list;
  *     
  * }
@@ -143,6 +143,6 @@ public @interface XlsArrayConverter {
      * @return
      */
     @SuppressWarnings("rawtypes")
-    Class<? extends ItemConverter> itemConverter() default DefaultItemConverter.class;
+    Class<? extends ItemConverter> itemConverterClass() default DefaultItemConverter.class;
     
 }

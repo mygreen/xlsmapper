@@ -51,7 +51,7 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
         
         this._orverRecord = rec.overRecord();
         this._remainedRecord = rec.remainedRecord();
-        this._skipEmptyRecord = rec.skipEmptyRecord();
+        this._skipEmptyRecord = rec.ignoreEmptyRecord();
     }
     
     @Override
@@ -129,7 +129,7 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
     }
     
     @Override
-    public boolean skipEmptyRecord() {
+    public boolean ignoreEmptyRecord() {
         return this._skipEmptyRecord;
     }
 }

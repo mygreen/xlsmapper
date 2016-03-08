@@ -65,7 +65,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
             return list;
         }
         
-        final ItemConverter itemConverter = getItemConverter(anno.itemConverter(), config);
+        final ItemConverter itemConverter = getItemConverter(anno.itemConverterClass(), config);
         
         for(String item : split) {
             
@@ -120,7 +120,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
             }
             
             @Override
-            public Class<? extends ItemConverter> itemConverter() {
+            public Class<? extends ItemConverter> itemConverterClass() {
                 return DefaultItemConverter.class;
             }
             
@@ -135,7 +135,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         final Map<String, Object> vars = new LinkedHashMap<>();
         vars.put("separator", anno.separator());
         vars.put("ignoreEmptyItem", anno.ignoreEmptyItem());
-        vars.put("itemConverter", Utils.convertToString(anno.itemConverter()));
+        vars.put("itemConverter", Utils.convertToString(anno.itemConverterClass()));
         return vars;
     }
     
@@ -171,8 +171,8 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         
         // セルの書式設定
         if(converterAnno != null) {
-            POIUtils.wrapCellText(cell, converterAnno.forceWrapText());
-            POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
+            POIUtils.wrapCellText(cell, converterAnno.wrapText());
+            POIUtils.shrinkToFit(cell, converterAnno.shrinkToFit());
         }
         
         List value = targetValue;
@@ -184,7 +184,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         
         if(Utils.isNotEmpty(value)) {
             final boolean trim = (converterAnno == null ? false : converterAnno.trim()); 
-            final ItemConverter itemConverter = getItemConverter(anno.itemConverter(), config);
+            final ItemConverter itemConverter = getItemConverter(anno.itemConverterClass(), config);
             final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trim, itemConverter);
             cell.setCellValue(cellValue);
             

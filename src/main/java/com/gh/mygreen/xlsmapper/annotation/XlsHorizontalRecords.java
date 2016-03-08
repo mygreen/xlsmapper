@@ -148,7 +148,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  *
  * <h3 class="description">空のレコードを読み飛ばす条件を指定する場合</h3>
  * <p>空のレコードが存在すると無駄なレコードをとなり、読み込んだ後に除外する処理をわざわざ行う必要があります。
- *   <br>そのような場合、属性{@link #skipEmptyRecord()}を'true'に設定することで、予め空のレコードを読み飛ばしておく方法もあります。
+ *   <br>そのような場合、属性{@link #ignoreEmptyRecord()}を'true'に設定することで、予め空のレコードを読み飛ばしておく方法もあります。
  * </p>
  * <p>レコード用クラスには、空を判定するメソッドを用意し、アノテーション {@link XlsIsEmpty}を付与します。
  *    <br>publicかつ引数なしの戻り値がboolean形式の書式にする必要があります。
@@ -162,7 +162,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  *     
  *     // レコードの読み飛ばしを有効にします。
  *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧"), terminal=RecordTerminal.Border,
- *             skipEmptyRecord=true)}
+ *             ignoreEmptyRecord=true)}
  *     private {@literal List<UserRecord>} records;
  *     
  * }
@@ -445,10 +445,10 @@ public @interface XlsHorizontalRecords {
     RemainedRecordOperate remainedRecord() default RemainedRecordOperate.None;
     
     /**
-     * 空のレコードの場合、処理をスキップするかどうか。
+     * 空のレコードの場合、処理を無視するかどうか。
      * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsEmpty}を付与する必要があります。
      * @since 0.2
-     * @return trueの場合、空のレコードをスキップします。
+     * @return trueの場合、空のレコードを無視します。
      */
-    boolean skipEmptyRecord() default false;
+    boolean ignoreEmptyRecord() default false;
 }

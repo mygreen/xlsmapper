@@ -54,8 +54,8 @@ public class StringCellConverter extends AbstractCellConverter<String> {
         
         // セルの書式設定
         if(converterAnno != null) {
-            POIUtils.wrapCellText(cell, converterAnno.forceWrapText());
-            POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
+            POIUtils.wrapCellText(cell, converterAnno.wrapText());
+            POIUtils.shrinkToFit(cell, converterAnno.shrinkToFit());
         }
         
         String value = targetValue;

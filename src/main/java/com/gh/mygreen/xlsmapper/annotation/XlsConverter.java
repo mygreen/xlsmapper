@@ -76,14 +76,14 @@ import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
  * <p>書き込み時にセルの「折り返し設定」「縮小表示」を制御することができます。</p>
  * 
  * <ul>
- *   <li>属性{@link #forceWrapText()}をtrueにすると、強制的にセルの内の文字表示の設定「折り返して全体を表示する」が有効になります。
+ *   <li>属性{@link #wrapText()}をtrueにすると、強制的にセルの内の文字表示の設定「折り返して全体を表示する」が有効になります。
  *    <br>falseの場合、テンプレートとなるセルの設定を引き継ぎ、変更はされません。
  *   </li>
- *   <li>属性{@link #forceShrinkToFit()}をtrueにすると、強制的にセル内の文字表示の設定「縮小して全体を表示する」が有効になります。
+ *   <li>属性{@link #shrinkToFit()}をtrueにすると、強制的にセル内の文字表示の設定「縮小して全体を表示する」が有効になります。
  *      <br>falseの場合、テンプレートとなるセルの設定を引き継ぎ、変更はされません。
  *   </li>
- *   <li>属性{@link #forceWrapText()}と{@link #forceShrinkToFit()}の両方の値をtrueに指定する場合、
- *       {@link #forceShrinkToFit()}の設定が優先され、「縮小して全体を表示する」が有効になります。
+ *   <li>属性{@link #wrapText()}と{@link #shrinkToFit()}の両方の値をtrueに指定する場合、
+ *       {@link #shrinkToFit()}の設定が優先され、「縮小して全体を表示する」が有効になります。
  *   </li>
  * </ul>
  * 
@@ -91,15 +91,15 @@ import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
  * public class SampleRecord {
  * 
  *     {@literal @XlsColumn(columnName="ID")}
- *     {@literal @XlsConverter(forceWrapText=true)} // 「縮小して全体を表示する」が有効になる。
+ *     {@literal @XlsConverter(wrapText=true)} // 「縮小して全体を表示する」が有効になる。
  *     private int id;
  *     
  *     {@literal @XlsColumn(columnName="名前")}
- *     {@literal @XlsConverter(forceShrinkToFit=true)} //「折り返して全体を表示する」が有効になる。
+ *     {@literal @XlsConverter(shrinkToFit=true)} //「折り返して全体を表示する」が有効になる。
  *     private String name;
  *     
  *     {@literal @XlsColumn(columnName="備考")}
- *     {@literal @XlsConverter(forceShrinkToFit=false)} // 設定しない場合は、テンプレート設定が有効になる。
+ *     {@literal @XlsConverter(shrinkToFit=false)} // 設定しない場合は、テンプレート設定が有効になる。
  *     private String comment;
  *     
  * }
@@ -116,7 +116,7 @@ import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
  * 
  * <pre class="highlight"><code class="java">
  * // CellConverterの定義
- * public class LocaleDateConverter extends CellConverter<LocaleDate> {
+ * public class LocaleDateConverter extends {@literal CellConverter<LocaleDate>} {
  * 
  *     // シート読み込み時のExcel Cell => Javaオブジェクトに変換する。
  *     {@literal @Override}
@@ -158,17 +158,17 @@ public @interface XlsConverter {
     boolean trim() default false;
     
     /**
-     * 'true'のとき書き込み時にセルの「折り返し設定」を強制的に有効にします。
-     * 'false'の場合は、既存の折り返し設定は変更されません。
+     * 'true'のとき書き込み時にセルの「折り返し設定」を有効にします。
+     * 'false'の場合は、既存の折り返し設定は変更せずに、テンプレートファイルの設定を引き継ぎます。
      * @return
      */
-    boolean forceWrapText() default false;
+    boolean wrapText() default false;
     
     /**
-     * 'true'のとき書き込み時にセルの「縮小して表示」を強制的に有効にします。
-     * 'false'の場合は、既存の縮小して表示は変更されません。
+     * 'true'のとき書き込み時にセルの「縮小して表示」を有効にします。
+     * 'false'の場合は、既存の縮小して表示は変更せずに、テンプレートファイルの設定を引き継ぎます。
      */
-    boolean forceShrinkToFit() default false;
+    boolean shrinkToFit() default false;
     
     /**
      * 読み込み時または書き込み時のデフォルト値を指定します。

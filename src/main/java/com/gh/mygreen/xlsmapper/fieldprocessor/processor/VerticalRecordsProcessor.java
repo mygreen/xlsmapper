@@ -296,7 +296,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 break;
             }
             
-            if(!anno.skipEmptyRecord() || !isEmptyRecord(record, work.getAnnoReader())) {
+            if(!anno.ignoreEmptyRecord() || !isEmptyRecord(record, work.getAnnoReader())) {
                 result.add(record);
                 
             }

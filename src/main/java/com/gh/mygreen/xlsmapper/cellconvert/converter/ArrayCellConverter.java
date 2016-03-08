@@ -60,8 +60,8 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
         
         // セルの書式設定
         if(converterAnno != null) {
-            POIUtils.wrapCellText(cell, converterAnno.forceWrapText());
-            POIUtils.shrinkToFit(cell, converterAnno.forceShrinkToFit());
+            POIUtils.wrapCellText(cell, converterAnno.wrapText());
+            POIUtils.shrinkToFit(cell, converterAnno.shrinkToFit());
         }
         
         Object[] value = targetValue;
@@ -73,7 +73,7 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
         
         if(Utils.isNotEmpty(value)) {
             final boolean trim = (converterAnno == null ? false : converterAnno.trim()); 
-            final ItemConverter itemConverter = converter.getItemConverter(anno.itemConverter(), config);
+            final ItemConverter itemConverter = converter.getItemConverter(anno.itemConverterClass(), config);
             final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trim, itemConverter);
             cell.setCellValue(cellValue);
         } else {

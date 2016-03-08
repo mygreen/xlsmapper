@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * public class SampleSheet {
  *     
  *     // レコードの読み飛ばしを有効にします。
- *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧"), terminal=RecordTerminal.Border, skipEmptyRecord=true)}
+ *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧"), terminal=RecordTerminal.Border, ignoreEmptyRecord=true)}
  *     private {@literal List<UserRecord>} records;
  *     
  * }
