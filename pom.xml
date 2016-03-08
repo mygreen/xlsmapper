@@ -349,7 +349,7 @@ $(document).ready(function() {
 					</links>
 					<stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
 					<docfilessubdirs>true</docfilessubdirs>
-					<header>${project.name} - ${project.version}
+					<header>${project.name} ${project.version}
  <![CDATA[
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/default.min.css">
 <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
