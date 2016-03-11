@@ -64,7 +64,7 @@ public class NumberCellConverterTest {
     public void test_load_number() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NumberSheet.class);
@@ -777,7 +777,7 @@ public class NumberCellConverterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/convert_number.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");

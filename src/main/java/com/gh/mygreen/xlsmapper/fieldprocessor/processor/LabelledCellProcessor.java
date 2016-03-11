@@ -50,7 +50,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             adaptor.setValue(beansObj, value);
         } catch(TypeBindException e) {
             work.addTypeBindError(e, info.position, adaptor.getName(), info.label);
-            if(!config.isSkipTypeBindFailure()) {
+            if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }
         }
@@ -180,7 +180,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             final Cell xlsCell = converter.toCell(adaptor, adaptor.getValue(targetObj), sheet, info.position.x, info.position.y, config);
         } catch(TypeBindException e) {
             work.addTypeBindError(e, info.position, adaptor.getName(), info.label);
-            if(!config.isSkipTypeBindFailure()) {
+            if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }
         }

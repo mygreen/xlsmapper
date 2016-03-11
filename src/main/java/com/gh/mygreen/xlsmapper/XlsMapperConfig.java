@@ -27,7 +27,7 @@ public class XlsMapperConfig {
     private boolean regexLabelText = false;
     
     /** 型変換エラーが発生しても処理を続けるかどうか */
-    private boolean skipTypeBindFailure = false;
+    private boolean continueTypeBindFailure = false;
     
     /** 保存時にセルの結合を行うかどうか */
     private boolean mergeCellOnSave = false;
@@ -136,17 +136,17 @@ public class XlsMapperConfig {
      * 型変換エラーが発生しても処理を続けるかどうか。
      * @return 初期値は、'false'です。
      */
-    public boolean isSkipTypeBindFailure() {
-        return skipTypeBindFailure;
+    public boolean isContinueTypeBindFailure() {
+        return continueTypeBindFailure;
     }
     
     /**
      * 型変換エラーが発生しても処理を続けるかどうか設定します。
-     * @param skipTypeBindFailure 初期値は、'false'です。
+     * @param continueTypeBindFailure 初期値は、'false'です。
      * @return
      */
-    public XlsMapperConfig setSkipTypeBindFailure(boolean skipTypeBindFailure) {
-        this.skipTypeBindFailure = skipTypeBindFailure;
+    public XlsMapperConfig setContinueTypeBindFailure(boolean continueTypeBindFailure) {
+        this.continueTypeBindFailure = continueTypeBindFailure;
         return this;
     }
     

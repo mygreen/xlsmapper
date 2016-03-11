@@ -89,7 +89,7 @@ public class SheetBeanValidatorTest {
     public void test_simple_success() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors errors;
@@ -116,7 +116,7 @@ public class SheetBeanValidatorTest {
     public void test_simple_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors errors = new SheetBindingErrors(SimpleBeanSheet.class);;
@@ -176,7 +176,7 @@ public class SheetBeanValidatorTest {
     public void test_list_success() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors errors = new SheetBindingErrors(ListBeanSheet.class);
@@ -203,7 +203,7 @@ public class SheetBeanValidatorTest {
     public void test_list_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors errors = new SheetBindingErrors(ListBeanSheet.class);
@@ -271,7 +271,7 @@ public class SheetBeanValidatorTest {
     public void test_interpolator_el() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors errors = new SheetBindingErrors(SimpleBeanSheet.class);;

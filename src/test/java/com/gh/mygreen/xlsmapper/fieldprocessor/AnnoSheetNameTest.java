@@ -53,7 +53,7 @@ public class AnnoSheetNameTest {
     public void test_load_sheetName_name() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_SheetName.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
@@ -74,7 +74,7 @@ public class AnnoSheetNameTest {
     public void test_load_sheetName_methodAnno() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_SheetName.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
@@ -98,7 +98,7 @@ public class AnnoSheetNameTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_SheetName_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_SheetName_template.xlsx");
@@ -133,7 +133,7 @@ public class AnnoSheetNameTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_SheetName_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_SheetName_template.xlsx");

@@ -66,7 +66,7 @@ public class ObjectValidatorTest {
     public void test_success() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors errors = new SheetBindingErrors(SampleSheet.class);;
@@ -92,7 +92,7 @@ public class ObjectValidatorTest {
     public void test_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors errors = new SheetBindingErrors(SampleSheet.class);;

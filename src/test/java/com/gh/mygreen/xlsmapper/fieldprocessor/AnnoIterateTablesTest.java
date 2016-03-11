@@ -68,7 +68,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_normal() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
@@ -92,7 +92,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_normal_array() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NormalArraySheet.class);
@@ -115,7 +115,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_not_found_cell() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NotFoundCellSheet.class);
@@ -134,7 +134,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_optional() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(OptionalCellSheet.class);
@@ -157,7 +157,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_concat_table() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(ConcatTableSheet.class);
@@ -181,7 +181,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_methodAnno() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
@@ -206,7 +206,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_regex() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
@@ -552,7 +552,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -604,7 +604,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -657,7 +657,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -694,7 +694,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -754,7 +754,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -806,7 +806,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -859,7 +859,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         

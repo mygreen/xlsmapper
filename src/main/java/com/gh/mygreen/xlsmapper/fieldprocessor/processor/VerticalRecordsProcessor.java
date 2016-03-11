@@ -281,7 +281,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         property.setValue(record, value);
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getHeaderLabel());
-                        if(!config.isSkipTypeBindFailure()) {
+                        if(!config.isContinueTypeBindFailure()) {
                             throw e;
                         }
                     }
@@ -441,7 +441,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     } catch(TypeBindException e) {
                         e.setBindClass(itemClass);  // マップの項目のタイプに変更
                         work.addTypeBindError(e, cell, String.format("%s[%s]", property.getName(), headerInfo.getHeaderLabel()), headerInfo.getHeaderLabel());     
-                        if(!config.isSkipTypeBindFailure()) {
+                        if(!config.isContinueTypeBindFailure()) {
                             throw e;
                         }
                     }
@@ -762,7 +762,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                             converter.toCell(property, property.getValue(record), sheet, valueCell.getColumnIndex(), valueCell.getRowIndex(), config);
                         } catch(TypeBindException e) {
                             work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getHeaderLabel());
-                            if(!config.isSkipTypeBindFailure()) {
+                            if(!config.isContinueTypeBindFailure()) {
                                 throw e;
                             }
                         }
@@ -968,7 +968,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         converter.toCell(property, itemValue, sheet, cell.getColumnIndex(), cell.getRowIndex(), config);
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, cell, String.format("%s[%s]", property.getName(), headerInfo.getHeaderLabel()), headerInfo.getHeaderLabel());
-                        if(!config.isSkipTypeBindFailure()) {
+                        if(!config.isContinueTypeBindFailure()) {
                             throw e;
                         }
                     }

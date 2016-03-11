@@ -54,7 +54,7 @@ public class AnnoCellTest {
     @Test
     public void test_load_cell_normal() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
@@ -75,7 +75,7 @@ public class AnnoCellTest {
     @Test(expected=TypeBindException.class)
     public void test_load_cell_bind_error() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false);
+        mapper.getConig().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
@@ -93,7 +93,7 @@ public class AnnoCellTest {
     public void test_load_cell_invalid_annotation1() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(InvalidAnno1Sheet1.class);
@@ -112,7 +112,7 @@ public class AnnoCellTest {
     public void test_load_cell_invalid_annotation2() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(InvalidAnnoSheet2.class);
@@ -131,7 +131,7 @@ public class AnnoCellTest {
     @Test
     public void test_load_cell_methodAnno() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
@@ -162,7 +162,7 @@ public class AnnoCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Cell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
@@ -207,7 +207,7 @@ public class AnnoCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Cell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");

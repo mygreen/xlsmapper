@@ -51,7 +51,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_name() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NamedSheet.class);
@@ -68,7 +68,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_name_notFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NamedSheet2.class);
@@ -89,7 +89,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_skip_notFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
@@ -107,7 +107,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_indexed() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(IndexedSheet.class);
@@ -124,7 +124,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_indexed_nofFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(IndexedSheet2.class);
@@ -144,7 +144,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_regexp_single() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             
@@ -165,7 +165,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_regexp_single_notFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             
@@ -186,7 +186,7 @@ public class AnnoSheetTest {
     public void test_load_sheetName_regexp_multiple() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             
@@ -208,7 +208,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_noSetting() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NoSettingSheet.class);
@@ -232,7 +232,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -265,7 +265,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -288,7 +288,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
@@ -313,7 +313,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
@@ -338,7 +338,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -363,7 +363,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -387,7 +387,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -411,7 +411,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -439,7 +439,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -464,7 +464,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");

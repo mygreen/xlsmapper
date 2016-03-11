@@ -78,7 +78,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedPosition() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(StartedPositionSheet.class);
@@ -125,7 +125,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedPosition_error1() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(StartedPositionError1Sheet.class);
@@ -143,7 +143,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedPosition_error2() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(StartedPositionError2Sheet.class);
@@ -161,7 +161,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedPosition_error3() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(StartedPositionError3Sheet.class);
@@ -179,7 +179,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_endPosition() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(EndPositionSheet.class);
@@ -224,7 +224,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_columnSetting() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(ColumnSettingSheet.class);
@@ -276,7 +276,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_columnSetting_bind_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false);
+        mapper.getConig().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(ColumnSettingSheet.class);
@@ -295,7 +295,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_mapColumnSetting() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(MapColumnSettingSheet.class);
@@ -326,7 +326,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_mapColumnSetting_bind_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false);
+        mapper.getConig().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(MapColumnSettingSheet.class);
@@ -346,7 +346,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_recordSetting() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(RecodSettingSheet.class);
@@ -378,7 +378,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_methodAnno() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
@@ -411,7 +411,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedDataPosition() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false);
+        mapper.getConig().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(StartedDataPositionSheet.class);
@@ -447,7 +447,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_concatTable() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false);
+        mapper.getConig().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(ConcatSheet.class);
@@ -484,7 +484,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_regexLabel() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false)
+        mapper.getConig().setContinueTypeBindFailure(false)
             .setNormalizeLabelText(true)
             .setRegexLabelText(true);
         
@@ -830,7 +830,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
@@ -903,7 +903,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
@@ -931,7 +931,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
@@ -959,7 +959,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
@@ -995,7 +995,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
@@ -1058,7 +1058,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_save_hr_columnSetting1() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         test_save_hr_columnSetting(mapper);
     }
@@ -1072,7 +1072,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_save_hr_columnSetting2() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setMergeCellOnSave(true);
         
         test_save_hr_columnSetting(mapper);
@@ -1227,7 +1227,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
@@ -1291,7 +1291,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
@@ -1379,7 +1379,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
@@ -1500,7 +1500,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
@@ -1596,7 +1596,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setCorrectCellCommentOnSave(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
@@ -1672,7 +1672,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
@@ -1736,7 +1736,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
@@ -1792,7 +1792,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         

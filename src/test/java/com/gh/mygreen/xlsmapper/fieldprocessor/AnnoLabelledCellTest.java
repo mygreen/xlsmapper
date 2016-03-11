@@ -58,7 +58,7 @@ public class AnnoLabelledCellTest {
     @Test
     public void test_load_labelled_cell_normal() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
@@ -93,7 +93,7 @@ public class AnnoLabelledCellTest {
     @Test(expected=TypeBindException.class)
     public void test_load_labelled_cell_bind_error() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false);
+        mapper.getConig().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
@@ -111,7 +111,7 @@ public class AnnoLabelledCellTest {
     @Test(expected=CellNotFoundException.class)
     public void test_load_labelled_cell_notFoundCell() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false);
+        mapper.getConig().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NotFounceLabelCellSheet.class);
@@ -130,7 +130,7 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_invalid_annotation1() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false);
+        mapper.getConig().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(InvalidAnnoSheet1.class);
@@ -150,7 +150,7 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_invalid_annotation2() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(false);
+        mapper.getConig().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(InvalidAnnoSheet2.class);
@@ -171,7 +171,7 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_methodAnno() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
@@ -280,7 +280,7 @@ public class AnnoLabelledCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_LabelledCell.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
@@ -346,7 +346,7 @@ public class AnnoLabelledCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_LabelledCell.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
@@ -427,7 +427,7 @@ public class AnnoLabelledCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true)
+        mapper.getConig().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         

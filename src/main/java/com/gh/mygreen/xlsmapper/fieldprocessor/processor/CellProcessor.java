@@ -42,7 +42,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
             adaptor.setValue(beansObj, value);
         } catch(TypeBindException e) {
             work.addTypeBindError(e, cellPosition, adaptor.getName(), null);
-            if(!config.isSkipTypeBindFailure()) {
+            if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }
         }
@@ -87,7 +87,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
             converter.toCell(adaptor, adaptor.getValue(targetObj), sheet, cellPosition.x, cellPosition.y, config);
         } catch(TypeBindException e) {
             work.addTypeBindError(e, cellPosition, adaptor.getName(), null);
-            if(!config.isSkipTypeBindFailure()) {
+            if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }  
         }

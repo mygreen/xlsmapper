@@ -61,7 +61,7 @@ public class EnumCellConverterTest {
     @Test
     public void test_load_enum() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(EnumSheet.class);
@@ -176,7 +176,7 @@ public class EnumCellConverterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/convert_enum.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");

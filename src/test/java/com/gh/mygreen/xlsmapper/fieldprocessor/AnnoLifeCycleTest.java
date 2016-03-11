@@ -69,7 +69,7 @@ public class AnnoLifeCycleTest {
     public void test_load_lc_simple() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LifeCycle.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(SimpleSheet.class);
@@ -108,7 +108,7 @@ public class AnnoLifeCycleTest {
     public void test_load_lc_iterate() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LifeCycle.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(IteratableSheet.class);
@@ -199,7 +199,7 @@ public class AnnoLifeCycleTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_LifeCycle_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LifeCycle_template.xlsx");
@@ -265,7 +265,7 @@ public class AnnoLifeCycleTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setSkipTypeBindFailure(true);
+        mapper.getConig().setContinueTypeBindFailure(true);
         
         File outFile = new File("src/test/out/anno_LifeCycle_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LifeCycle_template.xlsx");
