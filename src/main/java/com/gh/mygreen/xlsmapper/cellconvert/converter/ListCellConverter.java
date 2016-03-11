@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,13 +42,18 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
         cellValue = Utils.getDefaultValueIfEmpty(cellValue, converterAnno);
         
+        Class<?> fieldClass = adaptor.getTargetClass();
+        
         Class<?> itemClass = anno.itemClass();
         if(itemClass == Object.class) {
             itemClass = adaptor.getLoadingGenericClassType();
         }
         
         try {
-            final List list = convertList(cellValue, itemClass, converterAnno, anno, config);
+            List list = convertList(cellValue, itemClass, converterAnno, anno, config);
+            if(List.class.isAssignableFrom(fieldClass)) {
+                list = (List) Utils.convertListToCollection(list, (Class<Collection>)fieldClass, config.getBeanFactory());
+            }
             return list;
         } catch(NumberFormatException e) {
             throw newTypeBindException(e, cell, adaptor, cellValue)

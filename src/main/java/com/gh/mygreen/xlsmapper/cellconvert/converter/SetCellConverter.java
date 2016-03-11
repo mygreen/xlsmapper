@@ -1,5 +1,6 @@
 package com.gh.mygreen.xlsmapper.cellconvert.converter;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,13 +38,16 @@ public class SetCellConverter extends AbstractCellConverter<Set> {
         final ListCellConverter converter = new ListCellConverter();
         final XlsArrayConverter anno = converter.getLoadingAnnotation(adaptor);
         
+        Class<?> fieldClass = adaptor.getTargetClass();
+        
         Class<?> itemClass = anno.itemClass();
         if(itemClass == Object.class) {
             itemClass = adaptor.getLoadingGenericClassType();
         }
         
         final List<?> list = converter.toObject(cell, adaptor, config);
-        return new LinkedHashSet(list);
+        Set<?> set = (Set) Utils.convertListToCollection(list, (Class<Collection>)fieldClass, config.getBeanFactory());
+        return set;
     }
     
     @Override
