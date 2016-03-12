@@ -150,7 +150,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             // column, rowのアドレスを直接指定の場合
             if(anno.labelColumn() < 0 || anno.labelRow() < 0) {
                 throw new AnnotationInvalidException(
-                        String.format("@XlsLabelledCell#labelColumn or labelRow soulde be greather than or equal zero. (headerColulmn=%d, headerRow=%d)",
+                        String.format("@XlsLabelledCell#labelColumn or labelRow should be greater than or equal zero. (headerColulmn=%d, headerRow=%d)",
                                 anno.labelColumn(), anno.labelRow()), anno);
             }
             

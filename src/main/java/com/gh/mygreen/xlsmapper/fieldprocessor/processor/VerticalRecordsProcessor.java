@@ -366,7 +366,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         } else {
             if(anno.headerColumn() < 0 || anno.headerRow() < 0) {
                 throw new AnnotationInvalidException(
-                        String.format("@XlsVerticalRecords#headerColumn or headerRow soulde be greather than or equal zero. (headerColulmn=%d, headerRow=%d)",
+                        String.format("@XlsVerticalRecords#headerColumn or headerRow should be greater than or equal zero. (headerColulmn=%d, headerRow=%d)",
                                 anno.headerColumn(), anno.headerRow()), anno);
             }
             return new Point(anno.headerColumn(), anno.headerRow());
