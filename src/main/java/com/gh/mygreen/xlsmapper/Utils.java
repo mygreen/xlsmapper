@@ -1872,15 +1872,16 @@ public class Utils {
      * PostProcessなどのメソッドを実行する。
      * <p>メソッドの引数が既知のものであれば、インスタンスを設定する。
      * 
+     * @param processObj 実行対象の処理が埋め込まれているオブジェクト。
      * @param method 実行対象のメソッド情報
-     * @param object 実行対象のインスタンス
+     * @param beanObj 処理対象のBeanオブジェクト。
      * @param sheet シート情報
      * @param config 共通設定
      * @param errors エラー情報
      * @throws XlsMapperException 
      */
-    public static void invokeNeedProcessMethod(final Method method, final Object object, final Sheet sheet,
-            final XlsMapperConfig config, final SheetBindingErrors errors) throws XlsMapperException {
+    public static void invokeNeedProcessMethod(final Object processObj, final Method method, final Object beanObj, 
+            final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) throws XlsMapperException {
         
         final Class<?>[] paramTypes = method.getParameterTypes();
         final Object[] paramValues =  new Object[paramTypes.length];
@@ -1894,6 +1895,13 @@ public class Utils {
                 
             } else if(SheetBindingErrors.class.isAssignableFrom(paramTypes[i])) {
                 paramValues[i] = errors;
+                
+            } else if(paramTypes[i].isAssignableFrom(beanObj.getClass())) {
+                paramValues[i] = beanObj;
+                
+            } else if(paramTypes[i].equals(Object.class)) {
+                paramValues[i] = beanObj;
+                
             } else {
                 paramValues[i] = null;
             }
@@ -1901,11 +1909,11 @@ public class Utils {
         
         try {
             method.setAccessible(true);
-            method.invoke(object, paramValues);
+            method.invoke(processObj, paramValues);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             Throwable t = e.getCause() == null ? e : e.getCause();
             throw new XlsMapperException(
-                    String.format("fail execute method '%s#%s'.", object.getClass().getName(), method.getName()),
+                    String.format("fail execute method '%s#%s'.", processObj.getClass().getName(), method.getName()),
                     t);
         }
     }
