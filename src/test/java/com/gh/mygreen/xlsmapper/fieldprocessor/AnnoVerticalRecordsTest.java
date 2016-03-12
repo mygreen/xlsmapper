@@ -294,6 +294,13 @@ public class AnnoVerticalRecordsTest {
                 }
             }
             
+            if(sheet.mapRecords3 != null) {
+                assertThat(sheet.mapRecords3, hasSize(2));
+                for(MapEndRecord record : sheet.mapRecords3) {
+                    assertRecord(record, errors, false);
+                }
+            }
+            
         }
     }
     
@@ -666,6 +673,28 @@ public class AnnoVerticalRecordsTest {
         
     }
     
+    private void assertRecord(final MapEndRecord record, final SheetBindingErrors errors, boolean hasCell) {
+        
+        if(record.no == 1) {
+            
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.dateAttended.get("4月1日"), is("出席"));
+            assertThat(record.dateAttended.get("4月2日"), is("出席"));
+            assertThat(record.dateAttended.get("4月3日"), is(nullValue()));
+            assertThat(record.dateAttended, not(hasKey("備考")));
+            assertThat(record.comment, is("とりあえず出席します。"));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.dateAttended.get("4月1日"), is("欠席"));
+            assertThat(record.dateAttended.get("4月2日"), is("-"));
+            assertThat(record.dateAttended.get("4月3日"), is("出席"));
+            assertThat(record.dateAttended, not(hasKey("備考")));
+            assertThat(record.comment, is(nullValue()));
+        }
+        
+    }
+    
     private void assertRecord(final EmptySkipRecord record, final SheetBindingErrors errors) {
         
         if(record.no == 1) {
@@ -760,6 +789,8 @@ public class AnnoVerticalRecordsTest {
             assertThat(record.resultMap.get("1回目"), is(30));
             assertThat(record.resultMap.get("2回目"), is(40));
             assertThat(record.resultMap.get("3回目"), is(50));
+            assertThat(record.resultMap, not(hasKey("備考")));
+            assertThat(record.comment, is("改善している。"));
             
         }
         
@@ -1186,6 +1217,15 @@ public class AnnoVerticalRecordsTest {
                 .name("鈴木次郎")
                 .addDateAttended("4月1日", false).addDateAttended("4月2日", false).addDateAttended("4月3日", true));
         
+        // マップカラム（終了条件あり）
+        outSheet.add(new MapEndRecord()
+                .name("山田太郎")
+                .addDateAttended("4月1日", "出席").addDateAttended("4月2日", "出席").comment("とりあえず出席します。"));
+        
+        outSheet.add(new MapEndRecord()
+                .name("鈴木次郎")
+                .addDateAttended("4月1日", "欠席").addDateAttended("4月2日", "-").addDateAttended("4月3日", "出席"));
+        
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
@@ -1218,6 +1258,15 @@ public class AnnoVerticalRecordsTest {
                 
                 for(int i=0; i < sheet.mapRecords2.size(); i++) {
                     assertRecord(sheet.mapRecords2.get(i), outSheet.mapRecords2.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.mapRecords3 != null) {
+                assertThat(sheet.mapRecords3, hasSize(outSheet.mapRecords3.size()));
+                
+                for(int i=0; i < sheet.mapRecords3.size(); i++) {
+                    assertRecord(sheet.mapRecords3.get(i), outSheet.mapRecords3.get(i), errors);
                 }
                 
             }
@@ -1760,10 +1809,10 @@ public class AnnoVerticalRecordsTest {
         // テストデータの作成
         RegexSheet outSheet = new RegexSheet();
         
-        outSheet.addRecord1(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60));
-        outSheet.addRecord2(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60));
-        outSheet.addRecord3(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60));
-        outSheet.addRecord4(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60));
+        outSheet.addRecord1(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60).comment("改善している。"));
+        outSheet.addRecord2(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60).comment("改善している。"));
+        outSheet.addRecord3(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60).comment("改善している。"));
+        outSheet.addRecord4(new RegexSheet.ResultRecord().name("山田太郎").result("1回目", 40).result("2回目", 50).result("3回目", 60).comment("改善している。"));
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
@@ -1979,6 +2028,41 @@ public class AnnoVerticalRecordsTest {
      * @param outRecord
      * @param errors
      */
+    private void assertRecord(final MapEndRecord inRecord, final MapEndRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.name, is(trim(outRecord.name)));
+            
+            Map<String, String> expected = new LinkedHashMap<>();
+            expected.put("4月1日", "出席");
+            expected.put("4月2日", "出席");
+            expected.put("4月3日", null);
+            
+            assertThat(inRecord.dateAttended, is(expected));
+            assertThat(inRecord.dateAttended, not(hasKey("備考")));
+            
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.name, is(trim(outRecord.name)));
+            assertThat(inRecord.dateAttended, is(outRecord.dateAttended));
+            
+            assertThat(inRecord.dateAttended, not(hasKey("備考")));
+            assertThat(inRecord.comment, is(outRecord.comment));
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
     private void assertRecord(final EmptySkipRecord inRecord, final EmptySkipRecord outRecord, final SheetBindingErrors errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
@@ -2143,7 +2227,7 @@ public class AnnoVerticalRecordsTest {
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.name, is(trim(outRecord.name)));
         assertThat(inRecord.resultMap, is(outRecord.resultMap));
-        
+        assertThat(inRecord.comment, is(outRecord.comment));
         
     }
     
@@ -2752,6 +2836,10 @@ public class AnnoVerticalRecordsTest {
                overRecord=OverRecordOperate.Copy)
        private List<MapConvertedRecord> mapRecords2;
        
+       @XlsVerticalRecords(tableLabel="マップカラム（終了条件がある）", terminal=RecordTerminal.Border,
+               overRecord=OverRecordOperate.Copy)
+       private List<MapEndRecord> mapRecords3;
+       
        /**
         * noを自動的に付与する。
         * @param record
@@ -2780,6 +2868,22 @@ public class AnnoVerticalRecordsTest {
            
            this.mapRecords2.add(record);
            record.no(mapRecords2.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public MapColumnSettingSheet add(MapEndRecord record) {
+           if(mapRecords3 == null) {
+               this.mapRecords3 = new ArrayList<>();
+           }
+           
+           this.mapRecords3.add(record);
+           record.no(mapRecords3.size());
            
            return this;
        }
@@ -2871,6 +2975,58 @@ public class AnnoVerticalRecordsTest {
            
            this.dateAttended.put(key, value);
            
+           return this;
+       }
+   }
+   
+   /**
+    * マップのセル（終了条件がある）
+    */
+   private static class MapEndRecord {
+       
+       private Map<String, Point> positions;
+       
+       private Map<String, String> labels;
+       
+       @XlsColumn(columnName="No.")
+       private int no;
+       
+       @XlsColumn(columnName="氏名")
+       private String name;
+       
+       @XlsMapColumns(previousColumnName="氏名", nextColumnName="備考")
+       private Map<String, String> dateAttended;
+       
+       @XlsColumn(columnName="備考")
+       private String comment;
+       
+       public MapEndRecord no(int no) {
+           this.no = no;
+           return this;
+       }
+       
+       public MapEndRecord name(String name) {
+           this.name = name;
+           return this;
+       }
+       
+       public MapEndRecord dateAttended(Map<String, String> dateAttended) {
+           this.dateAttended = dateAttended;
+           return this;
+       }
+       
+       public MapEndRecord addDateAttended(final String key, final String value) {
+           if(dateAttended == null) {
+               this.dateAttended = new LinkedHashMap<>();
+           }
+           
+           this.dateAttended.put(key, value);
+           
+           return this;
+       }
+       
+       public MapEndRecord comment(String comment) {
+           this.comment = comment;
            return this;
        }
    }
@@ -4093,8 +4249,11 @@ public class AnnoVerticalRecordsTest {
            @XlsColumn(columnName="/名前.*/")
            private String name;
            
-           @XlsMapColumns(previousColumnName="/名前.*/")
+           @XlsMapColumns(previousColumnName="/名前.*/", nextColumnName="/備考.*/")
            private Map<String, Integer> resultMap;
+           
+           @XlsColumn(columnName="/備考.*/")
+           private String comment;
            
            @XlsIsEmpty
            public boolean isEmpty() {
@@ -4117,6 +4276,11 @@ public class AnnoVerticalRecordsTest {
                }
                
                this.resultMap.put(key, score);
+               return this;
+           }
+           
+           public ResultRecord comment(String comment) {
+               this.comment = comment;
                return this;
            }
        }
