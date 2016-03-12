@@ -3,6 +3,13 @@
 ======================================
 
 --------------------------------------------------------
+ver.1.2.1 - 2016-03-12
+--------------------------------------------------------
+
+* `#65 <https://github.com/mygreen/xlsmapper/issues/65>`_ : 例外時のメッセージのスペルミス、値の設定間違いを修正しました。
+
+
+--------------------------------------------------------
 ver.1.2 - 2016-03-12
 --------------------------------------------------------
 
@@ -18,8 +25,6 @@ ver.1.1 - 2016-03-08
 --------------------------------------------------------
 
 * `#3 <https://github.com/mygreen/xlsmapper/issues/3>`_ : :ref:`@XlsArrayConverter <annotationXlsArrayConverter>` に属性 ``itemConverterClass`` を追加し、任意のクラス型を変換できるようにしました。
-
-* `#65 <https://github.com/mygreen/xlsmapper/issues/65>`_ : 例外時のメッセージのスペルミス、値の設定間違いを修正しました。
 
 * `#66 <https://github.com/mygreen/xlsmapper/issues/66>`_ : セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.6に対応しました。
 

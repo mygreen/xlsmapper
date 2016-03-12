@@ -374,7 +374,7 @@
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L367" href="#L367">367</a>             <strong class="jxr_keyword">if</strong>(anno.headerColumn() &lt; 0 || anno.headerRow() &lt; 0) {
 <a class="jxr_linenumber" name="L368" href="#L368">368</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/AnnotationInvalidException.html">AnnotationInvalidException</a>(
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>                         String.format(<span class="jxr_string">"@XlsVerticalRecords#headerColumn or headerRow soulde be greather than or equal zero. (headerColulmn=%d, headerRow=%d)"</span>,
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>                         String.format(<span class="jxr_string">"@XlsVerticalRecords#headerColumn or headerRow should be greater than or equal zero. (headerColumn=%d, headerRow=%d)"</span>,
 <a class="jxr_linenumber" name="L370" href="#L370">370</a>                                 anno.headerColumn(), anno.headerRow()), anno);
 <a class="jxr_linenumber" name="L371" href="#L371">371</a>             }
 <a class="jxr_linenumber" name="L372" href="#L372">372</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Point(anno.headerColumn(), anno.headerRow());
@@ -535,7 +535,7 @@
 <a class="jxr_linenumber" name="L527" href="#L527">527</a>             
 <a class="jxr_linenumber" name="L528" href="#L528">528</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L529" href="#L529">529</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/AnnotationInvalidException.html">AnnotationInvalidException</a>(
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>                     String.format(<span class="jxr_string">"Annotation '@%s' should only granted List or Array. : %s"</span>, 
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>                     String.format(<span class="jxr_string">"Annotation '@%s' should only granted Collection(List/Set) or array. : %s"</span>, 
 <a class="jxr_linenumber" name="L531" href="#L531">531</a>                             XlsVerticalRecords.<strong class="jxr_keyword">class</strong>.getSimpleName(), clazz.getName()),
 <a class="jxr_linenumber" name="L532" href="#L532">532</a>                             anno);
 <a class="jxr_linenumber" name="L533" href="#L533">533</a>         }

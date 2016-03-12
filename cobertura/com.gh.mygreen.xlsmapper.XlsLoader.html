@@ -95,16 +95,16 @@
   <td class="src"><pre class="src">&nbsp;<span class="keyword">public</span> <span class="keyword">class</span> XlsLoader {</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;39</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;40</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(XlsLoader.<span class="keyword">class</span>); </pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;40</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(XlsLoader.<span class="keyword">class</span>); </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;41</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;42</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    <span class="keyword">private</span> XlsMapperConfig config;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;43</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;44</td>  <td class="nbHitsCovered">&nbsp;816</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">public</span> XlsLoader(<span class="keyword">final</span> XlsMapperConfig config) {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;45</td>  <td class="nbHitsCovered">&nbsp;816</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">this</span>.config = config;</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;46</td>  <td class="nbHitsCovered">&nbsp;816</td>  <td class="src"><pre class="src">&nbsp;    }</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;44</td>  <td class="nbHitsCovered">&nbsp;954</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">public</span> XlsLoader(<span class="keyword">final</span> XlsMapperConfig config) {</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;45</td>  <td class="nbHitsCovered">&nbsp;954</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">this</span>.config = config;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;46</td>  <td class="nbHitsCovered">&nbsp;954</td>  <td class="src"><pre class="src">&nbsp;    }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;47</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;48</td>  <td class="nbHits">&nbsp;</td>
@@ -209,11 +209,11 @@
   <td class="src"><pre class="src">&nbsp;    <span class="keyword">public</span> &lt;P&gt; P load(<span class="keyword">final</span> InputStream xlsIn, <span class="keyword">final</span> Class&lt;P&gt; clazz, <span class="keyword">final</span> SheetBindingErrors errors) <span class="keyword">throws</span> XlsMapperException, IOException {</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;102</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;103</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(xlsIn, <span class="string">"xlsIn"</span>);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;104</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(clazz, <span class="string">"clazz"</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;103</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(xlsIn, <span class="string">"xlsIn"</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;104</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(clazz, <span class="string">"clazz"</span>);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;105</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;106</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">return</span> load(xlsIn, clazz, <span class="keyword">null</span>, errors);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;106</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">return</span> load(xlsIn, clazz, <span class="keyword">null</span>, errors);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;107</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;108</td>  <td class="nbHits">&nbsp;</td>
@@ -248,34 +248,34 @@
   <td class="src"><pre class="src">&nbsp;            <span class="keyword">final</span> SheetBindingErrors errors)</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;123</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            <span class="keyword">throws</span> XlsMapperException, IOException {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;124</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(xlsIn, <span class="string">"xlsIn"</span>);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;125</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(clazz, <span class="string">"clazz"</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;124</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(xlsIn, <span class="string">"xlsIn"</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;125</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(clazz, <span class="string">"clazz"</span>);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;126</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;127</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        XmlInfo xmlInfo = <span class="keyword">null</span>;</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;128</td>  <td class="nbHitsUncovered"><a title="Line 128: Conditional coverage 50% (1/2).">&nbsp;726</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 128: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(xmlIn != <span class="keyword">null</span>) {</a></span></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;127</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        XmlInfo xmlInfo = <span class="keyword">null</span>;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;128</td>  <td class="nbHitsUncovered"><a title="Line 128: Conditional coverage 50% (1/2).">&nbsp;849</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 128: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(xmlIn != <span class="keyword">null</span>) {</a></span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;129</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;            xmlInfo = XmlIO.load(xmlIn);</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;130</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;131</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;132</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> LoadingWorkObject work = <span class="keyword">new</span> LoadingWorkObject();</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;132</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> LoadingWorkObject work = <span class="keyword">new</span> LoadingWorkObject();</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;133</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;134</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> AnnotationReader annoReader = <span class="keyword">new</span> AnnotationReader(xmlInfo);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;135</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        work.setAnnoReader(annoReader);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;134</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> AnnotationReader annoReader = <span class="keyword">new</span> AnnotationReader(xmlInfo);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;135</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        work.setAnnoReader(annoReader);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;136</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;137</td>  <td class="nbHitsUncovered"><a title="Line 137: Conditional coverage 50% (1/2).">&nbsp;726</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 137: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(errors != <span class="keyword">null</span>) {</a></span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;138</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;            work.setErrors(errors);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;139</td>  <td class="nbHitsCovered">&nbsp;246</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">else</span> {</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;137</td>  <td class="nbHitsUncovered"><a title="Line 137: Conditional coverage 50% (1/2).">&nbsp;849</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 137: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(errors != <span class="keyword">null</span>) {</a></span></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;138</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;            work.setErrors(errors);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;139</td>  <td class="nbHitsCovered">&nbsp;369</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">else</span> {</pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;140</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;            work.setErrors(<span class="keyword">new</span> SheetBindingErrors(clazz));</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;141</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;142</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;143</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.<span class="keyword">class</span>);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;144</td>  <td class="nbHitsUncovered"><a title="Line 144: Conditional coverage 50% (1/2).">&nbsp;726</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 144: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(sheetAnno == <span class="keyword">null</span>) {</a></span></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;143</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.<span class="keyword">class</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;144</td>  <td class="nbHitsUncovered"><a title="Line 144: Conditional coverage 50% (1/2).">&nbsp;849</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 144: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(sheetAnno == <span class="keyword">null</span>) {</a></span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;145</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;            <span class="keyword">throw</span> <span class="keyword">new</span> AnnotationInvalidException(<span class="string">"Cannot finld annoation '@XlsSheet'"</span>, sheetAnno);</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;146</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
@@ -285,25 +285,25 @@
   <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> Workbook book;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;149</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="keyword">try</span> {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;150</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;            book = WorkbookFactory.create(xlsIn);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;150</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;            book = WorkbookFactory.create(xlsIn);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;151</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;152</td>  <td class="nbHitsCovered">&nbsp;246</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">catch</span> (InvalidFormatException e) {</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;152</td>  <td class="nbHitsCovered">&nbsp;369</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">catch</span> (InvalidFormatException e) {</pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;153</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;            <span class="keyword">throw</span> <span class="keyword">new</span> XlsMapperException(<span class="string">"fail load Excel File"</span>, e);</span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;154</td>  <td class="nbHitsCovered">&nbsp;480</td>  <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;155</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;156</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="keyword">try</span> {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;157</td>  <td class="nbHitsCovered">&nbsp;726</td>  <td class="src"><pre class="src">&nbsp;            <span class="keyword">final</span> Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;158</td>  <td class="nbHitsCovered">&nbsp;696</td>  <td class="src"><pre class="src">&nbsp;            <span class="keyword">return</span> loadSheet(xlsSheet[0], clazz, work);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;159</td>  <td class="nbHitsCovered">&nbsp;24</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">catch</span>(SheetNotFoundException e) {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;160</td>  <td class="nbHitsCovered"><a title="Line 160: Conditional coverage 100% (2/2).">&nbsp;24</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 160: Conditional coverage 100% (2/2).">            <span class="keyword">if</span>(config.isIgnoreSheetNotFound()){</a></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;161</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;                logger.warn(<span class="string">"skip loading by not-found sheet."</span>, e);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;162</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">return</span> <span class="keyword">null</span>;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;157</td>  <td class="nbHitsCovered">&nbsp;849</td>  <td class="src"><pre class="src">&nbsp;            <span class="keyword">final</span> Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;158</td>  <td class="nbHitsCovered">&nbsp;814</td>  <td class="src"><pre class="src">&nbsp;            <span class="keyword">return</span> loadSheet(xlsSheet[0], clazz, work);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;159</td>  <td class="nbHitsCovered">&nbsp;28</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">catch</span>(SheetNotFoundException e) {</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;160</td>  <td class="nbHitsCovered"><a title="Line 160: Conditional coverage 100% (2/2).">&nbsp;28</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 160: Conditional coverage 100% (2/2).">            <span class="keyword">if</span>(config.isIgnoreSheetNotFound()){</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;161</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;                logger.warn(<span class="string">"skip loading by not-found sheet."</span>, e);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;162</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">return</span> <span class="keyword">null</span>;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;163</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            } <span class="keyword">else</span> {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;164</td>  <td class="nbHitsCovered">&nbsp;18</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">throw</span> e;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;164</td>  <td class="nbHitsCovered">&nbsp;21</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">throw</span> e;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;165</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;166</td>  <td class="nbHits">&nbsp;</td>
@@ -390,11 +390,11 @@
   <td class="src"><pre class="src">&nbsp;    <span class="keyword">public</span> &lt;P&gt; P[] loadMultiple(<span class="keyword">final</span> InputStream xlsIn, <span class="keyword">final</span> Class&lt;P&gt; clazz,</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;210</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            <span class="keyword">final</span> SheetBindingErrorsContainer errorsContainer) <span class="keyword">throws</span> XlsMapperException, IOException {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;211</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(xlsIn, <span class="string">"xlsIn"</span>);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;212</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(clazz, <span class="string">"clazz"</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;211</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(xlsIn, <span class="string">"xlsIn"</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;212</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(clazz, <span class="string">"clazz"</span>);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;213</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;214</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">return</span> loadMultiple(xlsIn, clazz, <span class="keyword">null</span>, errorsContainer);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;214</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">return</span> loadMultiple(xlsIn, clazz, <span class="keyword">null</span>, errorsContainer);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;215</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;216</td>  <td class="nbHits">&nbsp;</td>
@@ -427,22 +427,22 @@
   <td class="src"><pre class="src">&nbsp;            <span class="keyword">final</span> SheetBindingErrorsContainer errorsContainer) <span class="keyword">throws</span> XlsMapperException, IOException {</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;230</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;231</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(xlsIn, <span class="string">"xlsIn"</span>);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;232</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(clazz, <span class="string">"clazz"</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;231</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(xlsIn, <span class="string">"xlsIn"</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;232</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        ArgUtils.notNull(clazz, <span class="string">"clazz"</span>);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;233</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;234</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        XmlInfo xmlInfo = <span class="keyword">null</span>;</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;235</td>  <td class="nbHitsUncovered"><a title="Line 235: Conditional coverage 50% (1/2).">&nbsp;6</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 235: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(xmlIn != <span class="keyword">null</span>) {</a></span></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;234</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        XmlInfo xmlInfo = <span class="keyword">null</span>;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;235</td>  <td class="nbHitsUncovered"><a title="Line 235: Conditional coverage 50% (1/2).">&nbsp;7</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 235: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(xmlIn != <span class="keyword">null</span>) {</a></span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;236</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;            xmlInfo = XmlIO.load(xmlIn);</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;237</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;238</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;239</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> AnnotationReader annoReader = <span class="keyword">new</span> AnnotationReader(xmlInfo);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;239</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> AnnotationReader annoReader = <span class="keyword">new</span> AnnotationReader(xmlInfo);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;240</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;241</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.<span class="keyword">class</span>);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;242</td>  <td class="nbHitsUncovered"><a title="Line 242: Conditional coverage 50% (1/2).">&nbsp;6</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 242: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(sheetAnno == <span class="keyword">null</span>) {</a></span></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;241</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.<span class="keyword">class</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;242</td>  <td class="nbHitsUncovered"><a title="Line 242: Conditional coverage 50% (1/2).">&nbsp;7</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 242: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(sheetAnno == <span class="keyword">null</span>) {</a></span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;243</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;            <span class="keyword">throw</span> <span class="keyword">new</span> AnnotationInvalidException(<span class="string">"Cannot finld annoation '@XlsSheet'"</span>, sheetAnno);</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;244</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
@@ -450,9 +450,9 @@
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;246</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> SheetBindingErrorsContainer container;</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;247</td>  <td class="nbHitsUncovered"><a title="Line 247: Conditional coverage 50% (1/2).">&nbsp;6</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 247: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(errorsContainer != <span class="keyword">null</span>) {</a></span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;248</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;            container = errorsContainer;</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;249</td>  <td class="nbHitsCovered">&nbsp;2</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">else</span> {</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;247</td>  <td class="nbHitsUncovered"><a title="Line 247: Conditional coverage 50% (1/2).">&nbsp;7</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 247: Conditional coverage 50% (1/2).">        <span class="keyword">if</span>(errorsContainer != <span class="keyword">null</span>) {</a></span></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;248</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;            container = errorsContainer;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;249</td>  <td class="nbHitsCovered">&nbsp;3</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">else</span> {</pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;250</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;            container = <span class="keyword">new</span> SheetBindingErrorsContainer(clazz);</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;251</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
@@ -462,18 +462,18 @@
   <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> Workbook book;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;254</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="keyword">try</span> {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;255</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;            book = WorkbookFactory.create(xlsIn);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;255</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;            book = WorkbookFactory.create(xlsIn);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;256</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;257</td>  <td class="nbHitsCovered">&nbsp;2</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">catch</span> (InvalidFormatException e) {</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;257</td>  <td class="nbHitsCovered">&nbsp;3</td>  <td class="src"><pre class="src">&nbsp;        } <span class="keyword">catch</span> (InvalidFormatException e) {</pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;258</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;            <span class="keyword">throw</span> <span class="keyword">new</span> XlsMapperException(<span class="string">"fail load Excel File"</span>, e);</span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;259</td>  <td class="nbHitsCovered">&nbsp;4</td>  <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;260</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;261</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> List&lt;P&gt; list = <span class="keyword">new</span> ArrayList&lt;P&gt;();</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;261</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> List&lt;P&gt; list = <span class="keyword">new</span> ArrayList&lt;P&gt;();</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;262</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;263</td>  <td class="nbHitsUncovered"><a title="Line 263: Conditional coverage 50% (3/6) [each condition: 50%, 50%, 50%].">&nbsp;6</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 263: Conditional coverage 50% (3/6) [each condition: 50%, 50%, 50%].">        <span class="keyword">if</span>(sheetAnno.number() == -1 &amp;&amp; sheetAnno.name().isEmpty() &amp;&amp; sheetAnno.regex().isEmpty()) {</a></span></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;263</td>  <td class="nbHitsUncovered"><a title="Line 263: Conditional coverage 50% (3/6) [each condition: 50%, 50%, 50%].">&nbsp;7</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 263: Conditional coverage 50% (3/6) [each condition: 50%, 50%, 50%].">        <span class="keyword">if</span>(sheetAnno.number() == -1 &amp;&amp; sheetAnno.name().isEmpty() &amp;&amp; sheetAnno.regex().isEmpty()) {</a></span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;264</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            <span class="comment">// 読み込むシートの条件が指定されていない場合、全て読み込む</span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;265</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;            <span class="keyword">int</span> sheetNum = book.getNumberOfSheets();</span></pre></td></tr>
@@ -494,19 +494,19 @@
   <td class="src"><pre class="src">&nbsp;            <span class="comment">// 読み込むシートの条件が指定されている場合</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;277</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            <span class="keyword">try</span> {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;278</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">final</span> Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;279</td>  <td class="nbHitsCovered"><a title="Line 279: Conditional coverage 100% (2/2).">&nbsp;18</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 279: Conditional coverage 100% (2/2).">                <span class="keyword">for</span>(Sheet sheet : xlsSheet) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;278</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">final</span> Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;279</td>  <td class="nbHitsCovered"><a title="Line 279: Conditional coverage 100% (2/2).">&nbsp;21</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 279: Conditional coverage 100% (2/2).">                <span class="keyword">for</span>(Sheet sheet : xlsSheet) {</a></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;280</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;                    </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;281</td>  <td class="nbHitsCovered">&nbsp;12</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">final</span> LoadingWorkObject work = <span class="keyword">new</span> LoadingWorkObject();</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;282</td>  <td class="nbHitsCovered">&nbsp;12</td>  <td class="src"><pre class="src">&nbsp;                    work.setAnnoReader(annoReader);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;283</td>  <td class="nbHitsCovered">&nbsp;12</td>  <td class="src"><pre class="src">&nbsp;                    work.setErrors(container.findBindingResult(list.size()));</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;284</td>  <td class="nbHitsCovered">&nbsp;12</td>  <td class="src"><pre class="src">&nbsp;                    list.add(loadSheet(sheet, clazz, work));</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;281</td>  <td class="nbHitsCovered">&nbsp;14</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">final</span> LoadingWorkObject work = <span class="keyword">new</span> LoadingWorkObject();</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;282</td>  <td class="nbHitsCovered">&nbsp;14</td>  <td class="src"><pre class="src">&nbsp;                    work.setAnnoReader(annoReader);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;283</td>  <td class="nbHitsCovered">&nbsp;14</td>  <td class="src"><pre class="src">&nbsp;                    work.setErrors(container.findBindingResult(list.size()));</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;284</td>  <td class="nbHitsCovered">&nbsp;14</td>  <td class="src"><pre class="src">&nbsp;                    list.add(loadSheet(sheet, clazz, work));</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;285</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;                }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;286</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;                </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;287</td>  <td class="nbHitsCovered">&nbsp;2</td>  <td class="src"><pre class="src">&nbsp;            } <span class="keyword">catch</span>(SheetNotFoundException e) {</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;287</td>  <td class="nbHitsCovered">&nbsp;3</td>  <td class="src"><pre class="src">&nbsp;            } <span class="keyword">catch</span>(SheetNotFoundException e) {</pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;288</td>  <td class="nbHitsUncovered"><a title="Line 288: Conditional coverage 0% (0/2).">&nbsp;0</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 288: Conditional coverage 0% (0/2).">                <span class="keyword">if</span>(config.isIgnoreSheetNotFound()){</a></span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;289</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;                    logger.warn(<span class="string">"skip loading by not-found sheet."</span>, e);</span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;290</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;                } <span class="keyword">else</span> {</span></pre></td></tr>
@@ -520,7 +520,7 @@
   <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;296</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;297</td>  <td class="nbHitsCovered">&nbsp;6</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">return</span> list.toArray((P[])Array.newInstance(clazz, list.size()));</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;297</td>  <td class="nbHitsCovered">&nbsp;7</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">return</span> list.toArray((P[])Array.newInstance(clazz, list.size()));</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;298</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;299</td>  <td class="nbHits">&nbsp;</td>
@@ -657,23 +657,23 @@
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;382</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="comment">// 値の読み込み対象のJavaBeanオブジェクトの作成</span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;383</td>  <td class="nbHitsCovered">&nbsp;708</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> P beanObj = config.createBean(clazz);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;383</td>  <td class="nbHitsCovered">&nbsp;828</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> P beanObj = config.createBean(clazz);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;384</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;385</td>  <td class="nbHitsCovered">&nbsp;708</td>  <td class="src"><pre class="src">&nbsp;        work.getErrors().setSheetName(sheet.getSheetName());</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;385</td>  <td class="nbHitsCovered">&nbsp;828</td>  <td class="src"><pre class="src">&nbsp;        work.getErrors().setSheetName(sheet.getSheetName());</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;386</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;387</td>  <td class="nbHitsCovered">&nbsp;708</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> List&lt;FieldAdaptorProxy&gt; adaptorProxies = <span class="keyword">new</span> ArrayList&lt;&gt;();</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;387</td>  <td class="nbHitsCovered">&nbsp;828</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">final</span> List&lt;FieldAdaptorProxy&gt; adaptorProxies = <span class="keyword">new</span> ArrayList&lt;&gt;();</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;388</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;389</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="comment">// @PreLoad用のメソッドの取得と実行</span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;390</td>  <td class="nbHitsCovered"><a title="Line 390: Conditional coverage 100% (2/2).">&nbsp;9926</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 390: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(Method method : clazz.getMethods()) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;390</td>  <td class="nbHitsCovered"><a title="Line 390: Conditional coverage 100% (2/2).">&nbsp;11614</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 390: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(Method method : clazz.getMethods()) {</a></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;391</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;392</td>  <td class="nbHitsCovered">&nbsp;9218</td>  <td class="src"><pre class="src">&nbsp;            <span class="keyword">final</span> XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(beanObj.getClass(), method, XlsPreLoad.<span class="keyword">class</span>);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;393</td>  <td class="nbHitsCovered"><a title="Line 393: Conditional coverage 100% (2/2).">&nbsp;9218</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 393: Conditional coverage 100% (2/2).">            <span class="keyword">if</span>(preProcessAnno != <span class="keyword">null</span>) {</a></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;394</td>  <td class="nbHitsCovered">&nbsp;24</td>  <td class="src"><pre class="src">&nbsp;                Utils.invokeNeedProcessMethod(method, beanObj, sheet, config, work.getErrors());</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;392</td>  <td class="nbHitsCovered">&nbsp;10786</td>  <td class="src"><pre class="src">&nbsp;            <span class="keyword">final</span> XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(beanObj.getClass(), method, XlsPreLoad.<span class="keyword">class</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;393</td>  <td class="nbHitsCovered"><a title="Line 393: Conditional coverage 100% (2/2).">&nbsp;10786</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 393: Conditional coverage 100% (2/2).">            <span class="keyword">if</span>(preProcessAnno != <span class="keyword">null</span>) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;394</td>  <td class="nbHitsCovered">&nbsp;28</td>  <td class="src"><pre class="src">&nbsp;                Utils.invokeNeedProcessMethod(method, beanObj, sheet, config, work.getErrors());</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;395</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;396</td>  <td class="nbHits">&nbsp;</td>
@@ -682,21 +682,21 @@
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;398</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="comment">// public メソッドの処理</span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;399</td>  <td class="nbHitsCovered"><a title="Line 399: Conditional coverage 100% (2/2).">&nbsp;9926</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 399: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(Method method : clazz.getMethods()) {</a></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;400</td>  <td class="nbHitsCovered">&nbsp;9218</td>  <td class="src"><pre class="src">&nbsp;            method.setAccessible(<span class="keyword">true</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;399</td>  <td class="nbHitsCovered"><a title="Line 399: Conditional coverage 100% (2/2).">&nbsp;11614</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 399: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(Method method : clazz.getMethods()) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;400</td>  <td class="nbHitsCovered">&nbsp;10786</td>  <td class="src"><pre class="src">&nbsp;            method.setAccessible(<span class="keyword">true</span>);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;401</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;402</td>  <td class="nbHitsCovered"><a title="Line 402: Conditional coverage 100% (2/2).">&nbsp;9590</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 402: Conditional coverage 100% (2/2).">            <span class="keyword">for</span>(Annotation anno : work.getAnnoReader().getAnnotations(clazz, method)) {</a></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;403</td>  <td class="nbHitsCovered">&nbsp;660</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">final</span> LoadingFieldProcessor processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;404</td>  <td class="nbHitsUncovered"><a title="Line 404: Conditional coverage 75% (3/4) [each condition: 100%, 50%].">&nbsp;660</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 404: Conditional coverage 75% (3/4) [each condition: 100%, 50%].">                <span class="keyword">if</span>(Utils.isSetterMethod(method) &amp;&amp; processor != <span class="keyword">null</span>) {</a></span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;405</td>  <td class="nbHitsCovered">&nbsp;252</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">final</span> FieldAdaptor adaptor = <span class="keyword">new</span> FieldAdaptor(clazz, method, work.getAnnoReader());</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;406</td>  <td class="nbHitsCovered">&nbsp;252</td>  <td class="src"><pre class="src">&nbsp;                    adaptorProxies.add(<span class="keyword">new</span> FieldAdaptorProxy(anno, processor, adaptor));</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;407</td>  <td class="nbHitsCovered">&nbsp;252</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">break</span>;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;402</td>  <td class="nbHitsCovered"><a title="Line 402: Conditional coverage 100% (2/2).">&nbsp;11220</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 402: Conditional coverage 100% (2/2).">            <span class="keyword">for</span>(Annotation anno : work.getAnnoReader().getAnnotations(clazz, method)) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;403</td>  <td class="nbHitsCovered">&nbsp;770</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">final</span> LoadingFieldProcessor processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;404</td>  <td class="nbHitsUncovered"><a title="Line 404: Conditional coverage 75% (3/4) [each condition: 100%, 50%].">&nbsp;770</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 404: Conditional coverage 75% (3/4) [each condition: 100%, 50%].">                <span class="keyword">if</span>(Utils.isSetterMethod(method) &amp;&amp; processor != <span class="keyword">null</span>) {</a></span></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;405</td>  <td class="nbHitsCovered">&nbsp;294</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">final</span> FieldAdaptor adaptor = <span class="keyword">new</span> FieldAdaptor(clazz, method, work.getAnnoReader());</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;406</td>  <td class="nbHitsCovered">&nbsp;294</td>  <td class="src"><pre class="src">&nbsp;                    adaptorProxies.add(<span class="keyword">new</span> FieldAdaptorProxy(anno, processor, adaptor));</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;407</td>  <td class="nbHitsCovered">&nbsp;294</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">break</span>;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;408</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;                    </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;409</td>  <td class="nbHitsCovered"><a title="Line 409: Conditional coverage 100% (2/2).">&nbsp;408</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 409: Conditional coverage 100% (2/2).">                } <span class="keyword">else</span> <span class="keyword">if</span>(anno <span class="keyword">instanceof</span> XlsPostLoad) {</a></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;410</td>  <td class="nbHitsCovered">&nbsp;36</td>  <td class="src"><pre class="src">&nbsp;                    work.addNeedPostProcess(<span class="keyword">new</span> NeedProcess(beanObj, method));</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;411</td>  <td class="nbHitsCovered">&nbsp;36</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">break</span>;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;409</td>  <td class="nbHitsCovered"><a title="Line 409: Conditional coverage 100% (2/2).">&nbsp;476</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 409: Conditional coverage 100% (2/2).">                } <span class="keyword">else</span> <span class="keyword">if</span>(anno <span class="keyword">instanceof</span> XlsPostLoad) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;410</td>  <td class="nbHitsCovered">&nbsp;42</td>  <td class="src"><pre class="src">&nbsp;                    work.addNeedPostProcess(<span class="keyword">new</span> NeedProcess(beanObj, method));</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;411</td>  <td class="nbHitsCovered">&nbsp;42</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">break</span>;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;412</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;                }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;413</td>  <td class="nbHits">&nbsp;</td>
@@ -709,26 +709,26 @@
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;417</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="comment">// public / private / protected / default フィールドの処理</span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;418</td>  <td class="nbHitsCovered"><a title="Line 418: Conditional coverage 100% (2/2).">&nbsp;3758</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 418: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(Field field : clazz.getDeclaredFields()) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;418</td>  <td class="nbHitsCovered"><a title="Line 418: Conditional coverage 100% (2/2).">&nbsp;4404</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 418: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(Field field : clazz.getDeclaredFields()) {</a></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;419</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;420</td>  <td class="nbHitsCovered">&nbsp;3050</td>  <td class="src"><pre class="src">&nbsp;            field.setAccessible(<span class="keyword">true</span>);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;421</td>  <td class="nbHitsCovered">&nbsp;3050</td>  <td class="src"><pre class="src">&nbsp;            <span class="keyword">final</span> FieldAdaptor adaptor = <span class="keyword">new</span> FieldAdaptor(clazz, field, work.getAnnoReader());</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;420</td>  <td class="nbHitsCovered">&nbsp;3576</td>  <td class="src"><pre class="src">&nbsp;            field.setAccessible(<span class="keyword">true</span>);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;421</td>  <td class="nbHitsCovered">&nbsp;3576</td>  <td class="src"><pre class="src">&nbsp;            <span class="keyword">final</span> FieldAdaptor adaptor = <span class="keyword">new</span> FieldAdaptor(clazz, field, work.getAnnoReader());</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;422</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;423</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            <span class="comment">// メソッドを重複している場合は排除する。</span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;424</td>  <td class="nbHitsUncovered"><a title="Line 424: Conditional coverage 50% (1/2).">&nbsp;3050</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 424: Conditional coverage 50% (1/2).">            <span class="keyword">if</span>(adaptorProxies.contains(adaptor)) {</a></span></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;424</td>  <td class="nbHitsUncovered"><a title="Line 424: Conditional coverage 50% (1/2).">&nbsp;3576</a></td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;<a title="Line 424: Conditional coverage 50% (1/2).">            <span class="keyword">if</span>(adaptorProxies.contains(adaptor)) {</a></span></pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;425</td>  <td class="nbHitsUncovered">&nbsp;0</td>  <td class="src"><pre class="src"><span class="srcUncovered">&nbsp;                <span class="keyword">continue</span>;</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;426</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;427</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;            </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;428</td>  <td class="nbHitsCovered"><a title="Line 428: Conditional coverage 100% (2/2).">&nbsp;4152</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 428: Conditional coverage 100% (2/2).">            <span class="keyword">for</span>(Annotation anno : work.getAnnoReader().getAnnotations(clazz, field)) {</a></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;429</td>  <td class="nbHitsCovered">&nbsp;2934</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">final</span> LoadingFieldProcessor processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;430</td>  <td class="nbHitsCovered"><a title="Line 430: Conditional coverage 100% (2/2).">&nbsp;2934</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 430: Conditional coverage 100% (2/2).">                <span class="keyword">if</span>(processor != <span class="keyword">null</span>) {</a></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;431</td>  <td class="nbHitsCovered">&nbsp;1832</td>  <td class="src"><pre class="src">&nbsp;                    adaptorProxies.add(<span class="keyword">new</span> FieldAdaptorProxy(anno, processor, adaptor));</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;432</td>  <td class="nbHitsCovered">&nbsp;1832</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">break</span>;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;428</td>  <td class="nbHitsCovered"><a title="Line 428: Conditional coverage 100% (2/2).">&nbsp;4863</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 428: Conditional coverage 100% (2/2).">            <span class="keyword">for</span>(Annotation anno : work.getAnnoReader().getAnnotations(clazz, field)) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;429</td>  <td class="nbHitsCovered">&nbsp;3438</td>  <td class="src"><pre class="src">&nbsp;                <span class="keyword">final</span> LoadingFieldProcessor processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;430</td>  <td class="nbHitsCovered"><a title="Line 430: Conditional coverage 100% (2/2).">&nbsp;3438</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 430: Conditional coverage 100% (2/2).">                <span class="keyword">if</span>(processor != <span class="keyword">null</span>) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;431</td>  <td class="nbHitsCovered">&nbsp;2151</td>  <td class="src"><pre class="src">&nbsp;                    adaptorProxies.add(<span class="keyword">new</span> FieldAdaptorProxy(anno, processor, adaptor));</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;432</td>  <td class="nbHitsCovered">&nbsp;2151</td>  <td class="src"><pre class="src">&nbsp;                    <span class="keyword">break</span>;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;433</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;                }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;434</td>  <td class="nbHits">&nbsp;</td>
@@ -739,20 +739,20 @@
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;437</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="comment">// 順番を並び替えて保存処理を実行する</span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;438</td>  <td class="nbHitsCovered">&nbsp;708</td>  <td class="src"><pre class="src">&nbsp;        Collections.sort(adaptorProxies, HintOrderComparator.createForLoading());</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;439</td>  <td class="nbHitsCovered"><a title="Line 439: Conditional coverage 100% (2/2).">&nbsp;1612</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 439: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(FieldAdaptorProxy adaptorProxy : adaptorProxies) {</a></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;440</td>  <td class="nbHitsCovered">&nbsp;2054</td>  <td class="src"><pre class="src">&nbsp;            adaptorProxy.loadProcess(sheet, beanObj, config, work);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;438</td>  <td class="nbHitsCovered">&nbsp;828</td>  <td class="src"><pre class="src">&nbsp;        Collections.sort(adaptorProxies, HintOrderComparator.createForLoading());</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;439</td>  <td class="nbHitsCovered"><a title="Line 439: Conditional coverage 100% (2/2).">&nbsp;2186</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 439: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(FieldAdaptorProxy adaptorProxy : adaptorProxies) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;440</td>  <td class="nbHitsCovered">&nbsp;2407</td>  <td class="src"><pre class="src">&nbsp;            adaptorProxy.loadProcess(sheet, beanObj, config, work);</pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;441</td>  <td class="nbHitsCovered">&nbsp;1276</td>  <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;442</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;443</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        <span class="comment">//@PostLoadが付与されているメソッドの実行</span></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;444</td>  <td class="nbHitsCovered"><a title="Line 444: Conditional coverage 100% (2/2).">&nbsp;864</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 444: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(NeedProcess need : work.getNeedPostProcesses()) {</a></pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;445</td>  <td class="nbHitsCovered">&nbsp;204</td>  <td class="src"><pre class="src">&nbsp;            Utils.invokeNeedProcessMethod(need.getMethod(), need.getTarget(), sheet, config, work.getErrors());</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;444</td>  <td class="nbHitsCovered"><a title="Line 444: Conditional coverage 100% (2/2).">&nbsp;1100</a></td>  <td class="src"><pre class="src">&nbsp;<a title="Line 444: Conditional coverage 100% (2/2).">        <span class="keyword">for</span>(NeedProcess need : work.getNeedPostProcesses()) {</a></pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;445</td>  <td class="nbHitsCovered">&nbsp;238</td>  <td class="src"><pre class="src">&nbsp;            Utils.invokeNeedProcessMethod(need.getMethod(), need.getTarget(), sheet, config, work.getErrors());</pre></td></tr>
 <tr>  <td class="numLineCover">&nbsp;446</td>  <td class="nbHitsCovered">&nbsp;136</td>  <td class="src"><pre class="src">&nbsp;        }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;447</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;        </pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;448</td>  <td class="nbHitsCovered">&nbsp;594</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">return</span> beanObj;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;448</td>  <td class="nbHitsCovered">&nbsp;695</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">return</span> beanObj;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;449</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;450</td>  <td class="nbHits">&nbsp;</td>
@@ -766,14 +766,14 @@
   <td class="src"><pre class="src">&nbsp;    </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;455</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    <span class="keyword">public</span> <span class="keyword">void</span> setConfig(XlsMapperConfig config) {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;456</td>  <td class="nbHitsCovered">&nbsp;12</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">this</span>.config = config;</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;457</td>  <td class="nbHitsCovered">&nbsp;12</td>  <td class="src"><pre class="src">&nbsp;    }</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;456</td>  <td class="nbHitsCovered">&nbsp;14</td>  <td class="src"><pre class="src">&nbsp;        <span class="keyword">this</span>.config = config;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;457</td>  <td class="nbHitsCovered">&nbsp;14</td>  <td class="src"><pre class="src">&nbsp;    }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;458</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;    </pre></td></tr>
 <tr>  <td class="numLine">&nbsp;459</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;}</pre></td></tr>
 </table>
 
-<div class="footer">Report generated by <a href="http://cobertura.sourceforge.net/" target="_top">Cobertura</a> 2.1.1 on 16/03/12 10:28.</div>
+<div class="footer">Report generated by <a href="http://cobertura.sourceforge.net/" target="_top">Cobertura</a> 2.1.1 on 16/03/12 10:48.</div>
 </body>
 </html>

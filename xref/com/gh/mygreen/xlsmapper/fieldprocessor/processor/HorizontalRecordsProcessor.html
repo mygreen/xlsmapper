@@ -342,7 +342,7 @@
 <a class="jxr_linenumber" name="L334" href="#L334">334</a>             <strong class="jxr_keyword">final</strong> Point address = Utils.parseCellAddress(anno.headerAddress());
 <a class="jxr_linenumber" name="L335" href="#L335">335</a>             <strong class="jxr_keyword">if</strong>(address == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L336" href="#L336">336</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/AnnotationInvalidException.html">AnnotationInvalidException</a>(
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>                         String.format(<span class="jxr_string">"@XlsHorizontalRecors#headerAddress is wrong cell address '%s'."</span>, anno.headerAddress()), anno);
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>                         String.format(<span class="jxr_string">"@XlsHorizontalRecords#headerAddress is wrong cell address '%s'."</span>, anno.headerAddress()), anno);
 <a class="jxr_linenumber" name="L338" href="#L338">338</a>             }
 <a class="jxr_linenumber" name="L339" href="#L339">339</a>             
 <a class="jxr_linenumber" name="L340" href="#L340">340</a>             <strong class="jxr_keyword">return</strong> address;
@@ -367,7 +367,7 @@
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>             <em class="jxr_comment">// column, rowのアドレスを直接指定の場合</em>
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>             <strong class="jxr_keyword">if</strong>(anno.headerColumn() &lt; 0 || anno.headerRow() &lt; 0) {
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/AnnotationInvalidException.html">AnnotationInvalidException</a>(
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>                         String.format(<span class="jxr_string">"@XlsHorizontalRecors#headerColumn or headerRow soulde be greather than or equal zero. (headerColulmn=%d, headerRow=%d)"</span>,
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>                         String.format(<span class="jxr_string">"@XlsHorizontalRecors#headerColumn or headerRow should be greater than or equal zero. (headerColumn=%d, headerRow=%d)"</span>,
 <a class="jxr_linenumber" name="L363" href="#L363">363</a>                                 anno.headerColumn(), anno.headerRow()), anno);
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>             }
 <a class="jxr_linenumber" name="L365" href="#L365">365</a>             
@@ -530,7 +530,7 @@
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>             
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/AnnotationInvalidException.html">AnnotationInvalidException</a>(
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>                     String.format(<span class="jxr_string">"Annotation '@%s' should only granted List or Array. : %s"</span>, 
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>                     String.format(<span class="jxr_string">"Annotation '@%s' should only granted Collection(List/Set) or array. : %s"</span>, 
 <a class="jxr_linenumber" name="L526" href="#L526">526</a>                             XlsHorizontalRecords.<strong class="jxr_keyword">class</strong>.getSimpleName(), clazz.getName()),
 <a class="jxr_linenumber" name="L527" href="#L527">527</a>                             anno);
 <a class="jxr_linenumber" name="L528" href="#L528">528</a>         }

@@ -75,8 +75,8 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>              <strong class="jxr_keyword">if</strong>(anno.row() &lt; 0 || anno.column() &lt; 0) {
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>                  <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/AnnotationInvalidException.html">AnnotationInvalidException</a>(
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>                          String.format(<span class="jxr_string">"@XlsCell#column or row soulde be greather than or equal zero. (colunm=%d, row=%d)"</span>,
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                                  anno.row(), anno.column()), anno);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                          String.format(<span class="jxr_string">"@XlsCell#column or row sould be greater than or equal zero. (column=%d, row=%d)"</span>,
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>                                  anno.column(), anno.row()), anno);
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>              }
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Point(anno.column(), anno.row());
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          }
