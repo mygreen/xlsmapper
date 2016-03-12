@@ -13,9 +13,9 @@ Apache License verion 2.0
 <dependency>
 	<groupId>com.github.mygreen</groupId>
 	<artifactId>xlsmapper</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 </dependency>
 ```
 
-# Document
+# Documentation
 http://mygreen.github.io/xlsmapper/sphinx/howtouse.html
