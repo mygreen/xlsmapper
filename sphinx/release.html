@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7. リリースノート &mdash; XlsMapper 1.1 ドキュメント</title>
+    <title>8. リリースノート &mdash; XlsMapper 1.2 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1',
+        VERSION:     '1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,8 +27,8 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.1 ドキュメント" href="index.html" />
-    <link rel="prev" title="6. XLSBeansとの違い" href="diff_xlsbeans.html" />
+    <link rel="top" title="XlsMapper 1.2 ドキュメント" href="index.html" />
+    <link rel="prev" title="7. マイグレーション" href="migration.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -42,9 +42,9 @@
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="diff_xlsbeans.html" title="6. XLSBeansとの違い"
+          <a href="migration.html" title="7. マイグレーション"
              accesskey="P">前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.2 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -68,8 +68,8 @@
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id28">2.4. 型変換用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id49">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id29">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id50">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
@@ -102,18 +102,24 @@
 <li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id3">6.3. 削除機能</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">7. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-1-2016-03-08">7.1. ver.1.1 - 2016-03-08</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-0a-2015-09-23">7.2. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-0-2015-07-19">7.3. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-5-2015-06-29">7.4. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-4-2015-04-05">7.5. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-3-2015-01-11">7.6. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-3-2015-01-01">7.7. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2-2014-12-01">7.8. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-1-2014-11-25">7.9. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2014-11-24">7.10. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-1-2014-10-30">7.11. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">7. マイグレーション</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-1">7.1. To ver.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-2">7.2. To ver.1.2</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">8. リリースノート</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-2-2016-03-12">8.1. ver.1.2 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-1-2016-03-08">8.2. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-0a-2015-09-23">8.3. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-0-2015-07-19">8.4. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-5-2015-06-29">8.5. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-4-2015-04-05">8.6. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-3-2015-01-11">8.7. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-3-2015-01-01">8.8. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2-2014-12-01">8.9. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-1-2014-11-25">8.10. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2014-11-24">8.11. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-1-2014-10-30">8.12. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -121,8 +127,8 @@
 
 </div>
   <h4>前のトピックへ</h4>
-  <p class="topless"><a href="diff_xlsbeans.html"
-                        title="前の章へ">6. XLSBeansとの違い</a></p>
+  <p class="topless"><a href="migration.html"
+                        title="前の章へ">7. マイグレーション</a></p>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -152,9 +158,17 @@
           <div class="body" role="main">
             
   <div class="section" id="id1">
-<h1>7. リリースノート<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<h1>8. リリースノート<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="ver-1-2-2016-03-12">
+<h2>8.1. ver.1.2 - 2016-03-12<a class="headerlink" href="#ver-1-2-2016-03-12" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="otheruse_config.html"><em>システムプロパティ</em></a> <code class="docutils literal"><span class="pre">skipTypeBindFailure</span></code> の名称を <code class="docutils literal"><span class="pre">continueTypeBindFailure</span></code> に変更し、意味と名称が一致するようにしました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/71">#71</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsColumn</span></code> などを付与したフィールドが、<code class="docutils literal"><span class="pre">java.util.LinkedList</span></code> などの具象クラスの場合をサポートしました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/76">#76</a> : アノテーション <a class="reference internal" href="annotation_mapping_mapcolumns.html#annotationxlsmapcolumns"><span>&#64;XlsMapColumn</span></a> に属性 <code class="docutils literal"><span class="pre">nextColumnName</span></code> を追加、マッピングの終了条件のセルを指定できるようにしました。</li>
+</ul>
+</div>
 <div class="section" id="ver-1-1-2016-03-08">
-<h2>7.1. ver.1.1 - 2016-03-08<a class="headerlink" href="#ver-1-1-2016-03-08" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.2. ver.1.1 - 2016-03-08<a class="headerlink" href="#ver-1-1-2016-03-08" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/3">#3</a> : <a class="reference internal" href="annotation_converter_array.html#annotationxlsarrayconverter"><span>&#64;XlsArrayConverter</span></a> に属性 <code class="docutils literal"><span class="pre">itemConverterClass</span></code> を追加し、任意のクラス型を変換できるようにしました。</li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/65">#65</a> : 例外時のメッセージのスペルミス、値の設定間違いを修正しました。</li>
@@ -184,14 +198,14 @@
 </li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/74">#74</a> : 型変換用のアノテーションのパッケージ <code class="docutils literal"><span class="pre">～.xlsmapper.annotation.converter</span></code> を <code class="docutils literal"><span class="pre">～.xlsmapper.annotation</span></code> に移動しました。</li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/75">#75</a> : 一部のアノテーションの属性名を変更しました。<ul>
-<li>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizonalRecords</span></a> と <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizonalRecords</span></a> の属性 <code class="docutils literal"><span class="pre">skipEmptyRecord</span></code> を <code class="docutils literal"><span class="pre">ignoreEmptyErecord</span></code> に変更しました。</li>
+<li>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizonalRecords</span></a> と <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span>&#64;XlsVerticalRecords</span></a> の属性 <code class="docutils literal"><span class="pre">skipEmptyRecord</span></code> を <code class="docutils literal"><span class="pre">ignoreEmptyErecord</span></code> に変更しました。</li>
 <li>アノテーション <a class="reference internal" href="annotation_converter_converter.html#annotationxlsconverter"><span>&#64;XlsConverter</span></a> の属性 <code class="docutils literal"><span class="pre">forceWrapText</span></code> を <code class="docutils literal"><span class="pre">wrapText</span></code> に、属性 <code class="docutils literal"><span class="pre">forceShrinkToFit</span></code> を <code class="docutils literal"><span class="pre">shrinkToFit</span></code> 変更しました。</li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="ver-1-0a-2015-09-23">
-<h2>7.2. ver.1.0a - 2015-09-23<a class="headerlink" href="#ver-1-0a-2015-09-23" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.3. ver.1.0a - 2015-09-23<a class="headerlink" href="#ver-1-0a-2015-09-23" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/63">#63</a> : 実行すると必要のないCoverturaのクラスのエラーが発生する事象を修正しました。</p>
@@ -204,7 +218,7 @@
 </ul>
 </div>
 <div class="section" id="ver-1-0-2015-07-19">
-<h2>7.3. ver.1.0 - 2015-07-19<a class="headerlink" href="#ver-1-0-2015-07-19" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.4. ver.1.0 - 2015-07-19<a class="headerlink" href="#ver-1-0-2015-07-19" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/14">#14</a> : メッセージ中で利用可能な式言語を EL2.0/3.0、MVELの2つにしました。</p>
@@ -272,7 +286,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-5-2015-06-29">
-<h2>7.4. ver.0.5 - 2015-06-29<a class="headerlink" href="#ver-0-5-2015-06-29" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.5. ver.0.5 - 2015-06-29<a class="headerlink" href="#ver-0-5-2015-06-29" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/21">#21</a> : セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.4に対応しました。</p>
@@ -389,7 +403,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-4-2015-04-05">
-<h2>7.5. ver.0.4 - 2015-04-05<a class="headerlink" href="#ver-0-4-2015-04-05" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.6. ver.0.4 - 2015-04-05<a class="headerlink" href="#ver-0-4-2015-04-05" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/15">#15</a> : セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> を利用するよう変更。</p>
@@ -413,7 +427,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-3-2015-01-11">
-<h2>7.6. ver.0.3 - 2015-01-11<a class="headerlink" href="#ver-0-3-2015-01-11" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.7. ver.0.3 - 2015-01-11<a class="headerlink" href="#ver-0-3-2015-01-11" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/4">#4</a> : 書き込み時にレコードの追加・削除を行った際に入力規則と名前の定義を自動的に修正する機能を追加。</p>
@@ -434,7 +448,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-3-2015-01-01">
-<h2>7.7. ver.0.2.3 - 2015-01-01<a class="headerlink" href="#ver-0-2-3-2015-01-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.8. ver.0.2.3 - 2015-01-01<a class="headerlink" href="#ver-0-2-3-2015-01-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/7">#7</a> : Excel関数が設定されているセルを読み込んだときに例外が発生する事象を修正。</li>
@@ -446,7 +460,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-2-2014-12-01">
-<h2>7.8. ver.0.2.2 - 2014-12-01<a class="headerlink" href="#ver-0-2-2-2014-12-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.9. ver.0.2.2 - 2014-12-01<a class="headerlink" href="#ver-0-2-2-2014-12-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の不良を修正。</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/5">#5</a>  : 書き込み時に、リストのトリムが有効にならない。</li>
@@ -454,7 +468,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-1-2014-11-25">
-<h2>7.9. ver.0.2.1 - 2014-11-25<a class="headerlink" href="#ver-0-2-1-2014-11-25" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.10. ver.0.2.1 - 2014-11-25<a class="headerlink" href="#ver-0-2-1-2014-11-25" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の不良を修正。</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/1">#1</a> - &#64;XlsHorizontalRecordsに、Set型を使用すると例外が発生する。</li>
@@ -462,9 +476,9 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-2014-11-24">
-<h2>7.10. ver.0.2 - 2014-11-24<a class="headerlink" href="#ver-0-2-2014-11-24" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.11. ver.0.2 - 2014-11-24<a class="headerlink" href="#ver-0-2-2014-11-24" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul>
-<li><p class="first">アノテーション &#64;XlsIsEmptyを追加しました。</p>
+<li><p class="first">アノテーション <code class="docutils literal"><span class="pre">&#64;XlsIsEmpty</span></code> を追加しました。</p>
 <blockquote>
 <div><ul class="simple">
 <li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> 、<code class="docutils literal"><span class="pre">&#64;XlsVertialRecords</span></code> の属性skipEmptyRecordで&#8217;true&#8217;を指定した場合、レコードが空の場合、そのレコードの読み込みをスキップします。</li>
@@ -488,7 +502,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-1-2014-10-30">
-<h2>7.11. ver.0.1 - 2014-10-30<a class="headerlink" href="#ver-0-1-2014-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>8.12. ver.0.1 - 2014-10-30<a class="headerlink" href="#ver-0-1-2014-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>初期リリース。</p>
 </div>
 </div>
@@ -506,9 +520,9 @@
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="diff_xlsbeans.html" title="6. XLSBeansとの違い"
+          <a href="migration.html" title="7. マイグレーション"
              >前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.1 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.2 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

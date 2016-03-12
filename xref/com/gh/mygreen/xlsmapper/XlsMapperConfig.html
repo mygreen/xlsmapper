@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> regexLabelText = false;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>      <em class="jxr_javadoccomment">/** 型変換エラーが発生しても処理を続けるかどうか */</em>
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> skipTypeBindFailure = false;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> continueTypeBindFailure = false;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>      
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>      <em class="jxr_javadoccomment">/** 保存時にセルの結合を行うかどうか */</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> mergeCellOnSave = false;
@@ -144,17 +144,17 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * 型変換エラーが発生しても処理を続けるかどうか。</em>
 <a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">     * @return 初期値は、'false'です。</em>
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isSkipTypeBindFailure() {
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>         <strong class="jxr_keyword">return</strong> skipTypeBindFailure;
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isContinueTypeBindFailure() {
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>         <strong class="jxr_keyword">return</strong> continueTypeBindFailure;
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>     }
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>     
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> <em class="jxr_javadoccomment">     * 型変換エラーが発生しても処理を続けるかどうか設定します。</em>
-<a class="jxr_linenumber" name="L145" href="#L145">145</a> <em class="jxr_javadoccomment">     * @param skipTypeBindFailure 初期値は、'false'です。</em>
+<a class="jxr_linenumber" name="L145" href="#L145">145</a> <em class="jxr_javadoccomment">     * @param continueTypeBindFailure 初期値は、'false'です。</em>
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> <em class="jxr_javadoccomment">     * @return</em>
 <a class="jxr_linenumber" name="L147" href="#L147">147</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> setSkipTypeBindFailure(<strong class="jxr_keyword">boolean</strong> skipTypeBindFailure) {
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>         <strong class="jxr_keyword">this</strong>.skipTypeBindFailure = skipTypeBindFailure;
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> setContinueTypeBindFailure(<strong class="jxr_keyword">boolean</strong> continueTypeBindFailure) {
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>         <strong class="jxr_keyword">this</strong>.continueTypeBindFailure = continueTypeBindFailure;
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>     }
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     

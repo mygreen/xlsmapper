@@ -58,7 +58,7 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>              adaptor.setValue(beansObj, value);
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          } <strong class="jxr_keyword">catch</strong>(<a href="../../../../../../com/gh/mygreen/xlsmapper/cellconvert/TypeBindException.html">TypeBindException</a> e) {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>              work.addTypeBindError(e, info.position, adaptor.getName(), info.label);
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>              <strong class="jxr_keyword">if</strong>(!config.isSkipTypeBindFailure()) {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>              <strong class="jxr_keyword">if</strong>(!config.isContinueTypeBindFailure()) {
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>                  <strong class="jxr_keyword">throw</strong> e;
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>              }
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>          }
@@ -188,7 +188,7 @@
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>             <strong class="jxr_keyword">final</strong> Cell xlsCell = converter.toCell(adaptor, adaptor.getValue(targetObj), sheet, info.position.x, info.position.y, config);
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>         } <strong class="jxr_keyword">catch</strong>(<a href="../../../../../../com/gh/mygreen/xlsmapper/cellconvert/TypeBindException.html">TypeBindException</a> e) {
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>             work.addTypeBindError(e, info.position, adaptor.getName(), info.label);
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>             <strong class="jxr_keyword">if</strong>(!config.isSkipTypeBindFailure()) {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>             <strong class="jxr_keyword">if</strong>(!config.isContinueTypeBindFailure()) {
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>                 <strong class="jxr_keyword">throw</strong> e;
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>             }
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>         }

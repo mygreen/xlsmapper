@@ -69,7 +69,7 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      @Test
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_load_enum() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          mapper.getConig().setSkipTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          mapper.getConig().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/convert.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>              SheetBindingErrors errors = <strong class="jxr_keyword">new</strong> SheetBindingErrors(EnumSheet.<strong class="jxr_keyword">class</strong>);
@@ -184,7 +184,7 @@
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>         
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>         mapper.getConig().setSkipTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>         mapper.getConig().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>         
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>         File outFile = <strong class="jxr_keyword">new</strong> File(<span class="jxr_string">"src/test/out/convert_enum.xlsx"</span>);
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>         <strong class="jxr_keyword">try</strong>(InputStream template = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/convert_template.xlsx"</span>);

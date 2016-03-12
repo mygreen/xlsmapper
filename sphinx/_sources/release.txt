@@ -3,6 +3,17 @@
 ======================================
 
 --------------------------------------------------------
+ver.1.2 - 2016-03-12
+--------------------------------------------------------
+
+* :doc:`システムプロパティ <otheruse_config>` ``skipTypeBindFailure`` の名称を ``continueTypeBindFailure`` に変更し、意味と名称が一致するようにしました。
+
+* `#71 <https://github.com/mygreen/xlsmapper/issues/71>`_ : アノテーション ``@XlsColumn`` などを付与したフィールドが、``java.util.LinkedList`` などの具象クラスの場合をサポートしました。
+
+* `#76 <https://github.com/mygreen/xlsmapper/issues/76>`_ : アノテーション :ref:`@XlsMapColumn <annotationXlsMapColumns>` に属性 ``nextColumnName`` を追加、マッピングの終了条件のセルを指定できるようにしました。
+
+
+--------------------------------------------------------
 ver.1.1 - 2016-03-08
 --------------------------------------------------------
 
@@ -47,7 +58,7 @@ ver.1.1 - 2016-03-08
 
 * `#75 <https://github.com/mygreen/xlsmapper/issues/75>`_ : 一部のアノテーションの属性名を変更しました。
 
-  * アノテーション :ref:`@XlsHorizonalRecords <annotationXlsHorizontalRecords>` と :ref:`@XlsHorizonalRecords <annotationXlsHorizontalRecords>` の属性 ``skipEmptyRecord`` を ``ignoreEmptyErecord`` に変更しました。
+  * アノテーション :ref:`@XlsHorizonalRecords <annotationXlsHorizontalRecords>` と :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` の属性 ``skipEmptyRecord`` を ``ignoreEmptyErecord`` に変更しました。
 
   * アノテーション :ref:`@XlsConverter <annotationXlsConverter>` の属性 ``forceWrapText`` を ``wrapText`` に、属性 ``forceShrinkToFit`` を ``shrinkToFit`` 変更しました。
 
@@ -281,7 +292,7 @@ ver.0.2 - 2014-11-24
 --------------------------------------------------------
 
 
-* アノテーション @XlsIsEmptyを追加しました。
+* アノテーション ``@XlsIsEmpty`` を追加しました。
    
     * ``@XlsHorizontalRecords`` 、``@XlsVertialRecords`` の属性skipEmptyRecordで'true'を指定した場合、レコードが空の場合、そのレコードの読み込みをスキップします。
     * アノテーション @XlsIsEmptyは、引数なしで、戻り値がtrueのメソッドに付与する必要がります。

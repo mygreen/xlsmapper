@@ -19,6 +19,7 @@ ExcelとPOJOをマッピングするJavaライブラリです。
    validation
    extension
    diff_xlsbeans
+   migration
    release
 
 

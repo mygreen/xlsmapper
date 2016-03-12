@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_load_text() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          mapper.getConig().setSkipTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          mapper.getConig().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/convert.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>              SheetBindingErrors errors = <strong class="jxr_keyword">new</strong> SheetBindingErrors(TextSheet.<strong class="jxr_keyword">class</strong>);
@@ -199,7 +199,7 @@
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>         mapper.getConig().setSkipTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>         mapper.getConig().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>         
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         File outFile = <strong class="jxr_keyword">new</strong> File(<span class="jxr_string">"src/test/out/convert_text.xlsx"</span>);
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>         <strong class="jxr_keyword">try</strong>(InputStream template = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/convert_template.xlsx"</span>);

@@ -66,7 +66,7 @@
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      @Test
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_load_labelled_cell_normal() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          mapper.getConig().setSkipTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          mapper.getConig().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/anno_LabelledCell.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>              SheetBindingErrors errors = <strong class="jxr_keyword">new</strong> SheetBindingErrors(NormalSheet.<strong class="jxr_keyword">class</strong>);
@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      @Test(expected=TypeBindException.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_load_labelled_cell_bind_error() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          mapper.getConig().setSkipTypeBindFailure(false);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          mapper.getConig().setContinueTypeBindFailure(false);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/anno_LabelledCell.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>              SheetBindingErrors errors = <strong class="jxr_keyword">new</strong> SheetBindingErrors(NormalSheet.<strong class="jxr_keyword">class</strong>);
@@ -119,7 +119,7 @@
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>     @Test(expected=CellNotFoundException.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_load_labelled_cell_notFoundCell() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>         mapper.getConig().setSkipTypeBindFailure(false);
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         mapper.getConig().setContinueTypeBindFailure(false);
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/anno_LabelledCell.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>             SheetBindingErrors errors = <strong class="jxr_keyword">new</strong> SheetBindingErrors(NotFounceLabelCellSheet.<strong class="jxr_keyword">class</strong>);
@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_load_labelled_cell_invalid_annotation1() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>         mapper.getConig().setSkipTypeBindFailure(false);
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         mapper.getConig().setContinueTypeBindFailure(false);
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/anno_LabelledCell.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>             SheetBindingErrors errors = <strong class="jxr_keyword">new</strong> SheetBindingErrors(InvalidAnnoSheet1.<strong class="jxr_keyword">class</strong>);
@@ -158,7 +158,7 @@
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_load_labelled_cell_invalid_annotation2() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>         mapper.getConig().setSkipTypeBindFailure(false);
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>         mapper.getConig().setContinueTypeBindFailure(false);
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>         <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/anno_LabelledCell.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>             SheetBindingErrors errors = <strong class="jxr_keyword">new</strong> SheetBindingErrors(InvalidAnnoSheet2.<strong class="jxr_keyword">class</strong>);
@@ -179,7 +179,7 @@
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_load_labelled_cell_methodAnno() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>         
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>         mapper.getConig().setSkipTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>         mapper.getConig().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>         <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/anno_LabelledCell.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>             SheetBindingErrors errors = <strong class="jxr_keyword">new</strong> SheetBindingErrors(MethodAnnoSheet.<strong class="jxr_keyword">class</strong>);
@@ -288,7 +288,7 @@
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>         
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>         mapper.getConig().setSkipTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>         mapper.getConig().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>         
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>         File outFile = <strong class="jxr_keyword">new</strong> File(<span class="jxr_string">"src/test/out/anno_LabelledCell.xlsx"</span>);
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>         <strong class="jxr_keyword">try</strong>(InputStream template = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/anno_LabelledCell_template.xlsx"</span>);
@@ -354,7 +354,7 @@
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>         
 <a class="jxr_linenumber" name="L347" href="#L347">347</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L348" href="#L348">348</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>         mapper.getConig().setSkipTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>         mapper.getConig().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>         
 <a class="jxr_linenumber" name="L351" href="#L351">351</a>         File outFile = <strong class="jxr_keyword">new</strong> File(<span class="jxr_string">"src/test/out/anno_LabelledCell.xlsx"</span>);
 <a class="jxr_linenumber" name="L352" href="#L352">352</a>         <strong class="jxr_keyword">try</strong>(InputStream template = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/anno_LabelledCell_template.xlsx"</span>);
@@ -435,7 +435,7 @@
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>         
 <a class="jxr_linenumber" name="L428" href="#L428">428</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L429" href="#L429">429</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>         mapper.getConig().setSkipTypeBindFailure(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>         mapper.getConig().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L431" href="#L431">431</a>             .setRegexLabelText(<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L432" href="#L432">432</a>             .setNormalizeLabelText(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L433" href="#L433">433</a>         

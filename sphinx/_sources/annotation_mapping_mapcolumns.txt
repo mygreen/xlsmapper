@@ -15,7 +15,7 @@
 
 BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。
 
-属性 ``previousColumnName`` で指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。
+属性 ``previousColumnName`` で、指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。
 
 .. figure:: ./_static/MapColumns.png
    :align: center
@@ -35,6 +35,37 @@ BeanにはMapを引数に取るフィールドまたはメソッドを用意し�
         
         @XlsMapColumns(previousColumnName="名前")
         private Map<String, String> attendedMap;
+    }
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+終了条件のセルを指定する場合
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+属性 ``nextColumnName`` で、指定した前のカラムまでが処理対象となり、マッピングの終了条件を指定することができます。 `[ver1.2+]`
+
+.. figure:: ./_static/MapColumns_nextColumnName.png
+   :align: center
+   
+   MapColumns(nextColumnName)
+
+
+.. sourcecode:: java
+    
+    public class SampleRecord {
+        
+        @XlsColumn(columnName="ID")
+        private int id;
+        
+        @XlsColumn(columnName="名前")
+        private String name;
+        
+        @XlsMapColumns(previousColumnName="名前", nextColumnName="備考")
+        private Map<String, String> attendedMap;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
     }
 
 
@@ -135,7 +166,7 @@ BeanにはMapを引数に取るフィールドまたはメソッドを用意し�
   * ラベルを正規化する機能を有効にするには、システム設定のプロパティ ``normalizeLabelText`` の値を trueに設定します。
   
 
-これらの指定が可能な属性は、``previousColumnName`` です。
+これらの指定が可能な属性は、``previousColumnName`` 、``nextColumnName`` です。
 
 
 .. sourcecode:: java
@@ -157,8 +188,11 @@ BeanにはMapを引数に取るフィールドまたはメソッドを用意し�
         private String name;
         
         // 正規表現による指定
-        @XlsMapColumns(previousColumnName="/名前.+/")
+        @XlsMapColumns(previousColumnName="/名前.+/", nextColumnName="/備考.+/")
         private Map<String, String> attendedMap;
+        
+        @XlsColumn(columnName="/備考.+/")
+        private String comment;
         
     }
 
