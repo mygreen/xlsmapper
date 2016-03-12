@@ -59,7 +59,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * アノテーション{@link XlsHorizontalRecords}を処理するクラス。
  * 
- * @version 1.1
+ * @version 1.2
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -416,16 +416,20 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 throw newNotFoundConverterExpcetion(itemClass);
             }
             
-            boolean flag = false;
+            boolean found = false;
             final Map<String, Object> map = new LinkedHashMap<>();
             for(RecordHeader headerInfo : headerInfos) {
                 if(Utils.matches(headerInfo.getHeaderLabel(), mapAnno.previousColumnName(), config)){
-                    flag = true;
+                    found = true;
                     begin++;
                     continue;
                 }
                 
-                if(flag){
+                if(Utils.isNotEmpty(mapAnno.nextColumnName()) && Utils.matches(headerInfo.getHeaderLabel(), mapAnno.nextColumnName(), config)) {
+                    break;
+                }
+                
+                if(found){
                     final Cell cell = POIUtils.getCell(sheet, begin + headerInfo.getHeaderRange(), row);
                     Utils.setPositionWithMapColumn(cell.getColumnIndex(), cell.getRowIndex(), record, property.getName(), headerInfo.getHeaderLabel());
                     Utils.setLabelWithMapColumn(headerInfo.getHeaderLabel(), record, property.getName(), headerInfo.getHeaderLabel());
@@ -967,6 +971,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     flag = true;
                     begin++;
                     continue;
+                }
+                
+                if(Utils.isNotEmpty(mapAnno.nextColumnName()) && Utils.matches(headerInfo.getHeaderLabel(), mapAnno.nextColumnName(), config)) {
+                    break;
                 }
                 
                 if(flag) {
