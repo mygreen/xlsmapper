@@ -94,7 +94,7 @@ Here is the template Excel sheet.
 
 And the following is the record class. 
 - Append the annotation ```@XlsDateConverter``` for setting Excel format pattern.
-- Appannd the attribute ```overRecord``` with ```@XlsHorizontalRecords```.
+- Append the attribute ```overRecord``` with ```@XlsHorizontalRecords```.
 
 ```java
 @XlsSheet(name="List")
