@@ -32,6 +32,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
@@ -349,6 +350,7 @@ public class AnnoLifeCycleTest {
     }
     
     @XlsSheet(name="単純な表")
+    @XlsListener(listenerClass=SimpleSheetListener.class)
     private static class SimpleSheet {
         
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
@@ -434,27 +436,7 @@ public class AnnoLifeCycleTest {
         
     }
     
-    @XlsSheet(name="繰り返しの表")
-    private static class IteratableSheet {
-        
-        private Map<String, Point> positions;
-        
-        private Map<String, String> labels;
-        
-        @XlsIterateTables(tableLabel="横方向", bottom=2)
-        private List<Table> tables;
-        
-        public IteratableSheet add(final Table table) {
-            
-            if(tables == null) {
-                this.tables = new ArrayList<>();
-            }
-            
-            this.tables.add(table);
-            
-            return this;
-            
-        }
+    private static class SimpleSheetListener {
         
         private boolean executeInitLoad;
         private boolean executeDestroyLoad;
@@ -499,8 +481,134 @@ public class AnnoLifeCycleTest {
             this.executeDestroySave = true;
             
         }
+        
     }
     
+    @XlsSheet(name="繰り返しの表")
+    @XlsListener(listenerClass=IteratableSheetListener.class)
+    private static class IteratableSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsIterateTables(tableLabel="横方向", bottom=2)
+        private List<Table> tables;
+        
+        public IteratableSheet add(final Table table) {
+            
+            if(tables == null) {
+                this.tables = new ArrayList<>();
+            }
+            
+            this.tables.add(table);
+            
+            return this;
+            
+        }
+        
+        private boolean executeInitLoad;
+        private boolean executeDestroyLoad;
+        private boolean executeInitSave;
+        private boolean executeDestroySave;
+        
+        @XlsPreLoad
+        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeInitLoad = true;
+        }
+        
+        @XlsPostLoad
+        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeDestroyLoad = true;
+            
+        }
+        
+        @XlsPreSave
+        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeInitSave = true;
+            
+        }
+        
+        @XlsPostSave
+        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeDestroySave = true;
+            
+        }
+    }
+    
+    private static class IteratableSheetListener {
+        
+        private boolean executeInitLoad;
+        private boolean executeDestroyLoad;
+        private boolean executeInitSave;
+        private boolean executeDestroySave;
+        
+        @XlsPreLoad
+        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeInitLoad = true;
+        }
+        
+        @XlsPostLoad
+        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeDestroyLoad = true;
+            
+        }
+        
+        @XlsPreSave
+        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeInitSave = true;
+            
+        }
+        
+        @XlsPostSave
+        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeDestroySave = true;
+            
+        }
+        
+    }
+    
+    @XlsListener(listenerClass=TableListener.class)
     private static class Table {
         
         private Map<String, Point> positions;
@@ -538,39 +646,43 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
             
             this.executeInitLoad = true;
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
             
             this.executeDestroyLoad = true;
             
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
             
             this.executeInitSave = true;
             
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
             
             this.executeDestroySave = true;
             
@@ -578,6 +690,59 @@ public class AnnoLifeCycleTest {
         
     }
     
+    private static class TableListener {
+        
+        private boolean executeInitLoad;
+        private boolean executeDestroyLoad;
+        private boolean executeInitSave;
+        private boolean executeDestroySave;
+        
+        @XlsPreLoad
+        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeInitLoad = true;
+        }
+        
+        @XlsPostLoad
+        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeDestroyLoad = true;
+            
+        }
+        
+        @XlsPreSave
+        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeInitSave = true;
+            
+        }
+        
+        @XlsPostSave
+        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeDestroySave = true;
+            
+        }
+        
+    }
+    
+    @XlsListener(listenerClass=RecordListener.class)
     private static class Record {
         
         private Map<String, Point> positions;
@@ -612,39 +777,95 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
             
             this.executeInitLoad = true;
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
             
             this.executeDestroyLoad = true;
             
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
             
             this.executeInitSave = true;
             
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeDestroySave = true;
+            
+        }
+        
+    }
+    
+    private static class RecordListener {
+        
+        private boolean executeInitLoad;
+        private boolean executeDestroyLoad;
+        private boolean executeInitSave;
+        private boolean executeDestroySave;
+        
+        @XlsPreLoad
+        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeInitLoad = true;
+        }
+        
+        @XlsPostLoad
+        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeDestroyLoad = true;
+            
+        }
+        
+        @XlsPreSave
+        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
+            
+            this.executeInitSave = true;
+            
+        }
+        
+        @XlsPostSave
+        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+            assertThat(sheet, is(not(nullValue())));
+            assertThat(config, is(not(nullValue())));
+            assertThat(errors, is(not(nullValue())));
+            assertThat(targetObj, is(not(nullValue())));
             
             this.executeDestroySave = true;
             
