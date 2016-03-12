@@ -18,7 +18,7 @@ Collection型のインタフェースを指定している場合、読み込み�
 
 
 配列、またはCollection型の要素で指定可能なクラス型は、次の通りです。
-任意のクラス型に対応する場合は、属性 ``itemConverter`` で変換処理クラスを指定してください。
+任意のクラス型に対応する場合は、属性 ``itemConverterClass`` で変換処理クラスを指定してください。
 
 * String型
 * プリミティブ型「boolean/char/byte/short/int/long/float/double」と、そのラッパークラス。
@@ -33,7 +33,7 @@ Collection型のインタフェースを指定している場合、読み込み�
   
 * 型変換アノテーション ``@XlsConverter(trim=true)`` を付与し、トリム処理を有効にしている設定の場合、区切った項目にもトリム処理が適用されます。 `[ver0.5+]` 
   
-  * 属性ignoreEmptyItemの値をtrueに設定していると、トリム処理によって項目が空文字となった場合、その項目は無視されます。
+* 属性 ``ignoreEmptyItem`` の値をtrueに設定していると、トリム処理によって項目が空文字となった場合、その項目は無視されます。
 
 
 .. sourcecode:: java

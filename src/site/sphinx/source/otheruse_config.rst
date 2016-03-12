@@ -52,7 +52,7 @@ XlsMapperConfigでは以下の設定を行うことができます。
    
    * - ``normalizeLabelText``
      - ``boolean``
-     - | ラベルを正規化(空白、改行、タブを除去)して、マッピングするかどうか
+     - | ラベルを正規化（空白、改行、タブを除去）して、マッピングするかどうか
        | 初期値は'false'です。
        | **Ver.1.1以上** から利用可能です。
    
@@ -62,10 +62,11 @@ XlsMapperConfigでは以下の設定を行うことができます。
        | 初期値は'false'です。
        | **Ver.1.1以上** から利用可能です。
    
-   * - ``skipTypeBindFailure``
+   * - ``continueTypeBindFailure``
      - ``boolean``
      - | 型変換エラーが発生しても処理を続けるかどうか。
        | 初期値は'false'です。
+       | **Ver1.1以前** は、 ``skipTypeBindFailure`` という名称です。
    
    * - ``mergeCellOnSave``
      - ``boolean``
@@ -88,7 +89,7 @@ XlsMapperConfigでは以下の設定を行うことができます。
    * - ``correctCellCommentOnSave``
      - ``boolean``
      - | コメント付きのシートに対して列を追加し保存する際にPOIの不良（ `Bug 56017 <https://bz.apache.org/bugzilla/show_bug.cgi?id=56017>`_ ）のため例外が発生する事象を回避するために設定します。
-       | 例外がPOI-3.10～3.11以上で発生します。POI-3.12で修正されています。
+       | 例外は、バージョンPOI-3.10～3.11で発生します。バージョンPOI-3.12で修正されています。
        | 初期値は'false'です。
        | **Ver.0.4以上** から利用可能です。
    

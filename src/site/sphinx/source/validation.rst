@@ -15,7 +15,7 @@
 
 * セルの値をJavaオブジェクトに変換の失敗情報は、読み込み時に自動的に作成されます。
 
-  * 1つのセルの型変換に失敗しても処理を続行するよう、システム設定XlsMapperConfigの項目「skipTypeBindFailure」を'true'に設定します。
+  * 1つのセルの型変換に失敗しても処理を続行するよう、システム設定XlsMapperConfigの項目「continueTypeBindFailure」を'true'に設定します。
 
 * 別途用意したBeanに対するValidatorにより、値を検証します。
 
@@ -30,7 +30,7 @@
     XlsMapper xlsMapper = new XlsMapper();
     
     // 型変換エラーが起きても処理を続行するよう設定
-    xlsMapper.getConig().setSkipTypeBindFailure(true);
+    xlsMapper.getConig().setContinueTypeBindFailure(true);
     
     // エラー情報の管理クラスのインスタンスの作成。オブジェクト名をクラス名に設定します。
     SheetBindingErrors errors = new SheetBindingErrors(Employer.class);
