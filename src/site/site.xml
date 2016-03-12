@@ -25,6 +25,7 @@
 			<item name="読み込んだ値の入力値検証" href="sphinx/validation.html" />
 			<item name="拡張方法" href="sphinx/extension.html" />
 			<item name="XLSBeansとの違い" href="sphinx/diff_xlsbeans.html" />
+			<item name="マイグレーション" href="sphinx/migration.html" />
 			<item name="リリースノート" href="sphinx/release.html" />
 			<item name="Javadoc" href="./apidocs/index.html" />
 		</menu>
