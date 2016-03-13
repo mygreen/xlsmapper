@@ -1880,186 +1880,194 @@
 <a class="jxr_linenumber" name="L1872" href="#L1872">1872</a> <em class="jxr_javadoccomment">     * PostProcessなどのメソッドを実行する。</em>
 <a class="jxr_linenumber" name="L1873" href="#L1873">1873</a> <em class="jxr_javadoccomment">     * &lt;p&gt;メソッドの引数が既知のものであれば、インスタンスを設定する。</em>
 <a class="jxr_linenumber" name="L1874" href="#L1874">1874</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L1875" href="#L1875">1875</a> <em class="jxr_javadoccomment">     * @param method 実行対象のメソッド情報</em>
-<a class="jxr_linenumber" name="L1876" href="#L1876">1876</a> <em class="jxr_javadoccomment">     * @param object 実行対象のインスタンス</em>
-<a class="jxr_linenumber" name="L1877" href="#L1877">1877</a> <em class="jxr_javadoccomment">     * @param sheet シート情報</em>
-<a class="jxr_linenumber" name="L1878" href="#L1878">1878</a> <em class="jxr_javadoccomment">     * @param config 共通設定</em>
-<a class="jxr_linenumber" name="L1879" href="#L1879">1879</a> <em class="jxr_javadoccomment">     * @param errors エラー情報</em>
-<a class="jxr_linenumber" name="L1880" href="#L1880">1880</a> <em class="jxr_javadoccomment">     * @throws XlsMapperException </em>
-<a class="jxr_linenumber" name="L1881" href="#L1881">1881</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L1882" href="#L1882">1882</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> invokeNeedProcessMethod(<strong class="jxr_keyword">final</strong> Method method, <strong class="jxr_keyword">final</strong> Object object, <strong class="jxr_keyword">final</strong> Sheet sheet,
-<a class="jxr_linenumber" name="L1883" href="#L1883">1883</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> config, <strong class="jxr_keyword">final</strong> <a href="../../../../com/gh/mygreen/xlsmapper/validation/SheetBindingErrors.html">SheetBindingErrors</a> errors) <strong class="jxr_keyword">throws</strong> XlsMapperException {
-<a class="jxr_linenumber" name="L1884" href="#L1884">1884</a>         
-<a class="jxr_linenumber" name="L1885" href="#L1885">1885</a>         <strong class="jxr_keyword">final</strong> Class&lt;?&gt;[] paramTypes = method.getParameterTypes();
-<a class="jxr_linenumber" name="L1886" href="#L1886">1886</a>         <strong class="jxr_keyword">final</strong> Object[] paramValues =  <strong class="jxr_keyword">new</strong> Object[paramTypes.length];
-<a class="jxr_linenumber" name="L1887" href="#L1887">1887</a>         
-<a class="jxr_linenumber" name="L1888" href="#L1888">1888</a>         <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i=0; i &lt; paramTypes.length; i++) {
-<a class="jxr_linenumber" name="L1889" href="#L1889">1889</a>             <strong class="jxr_keyword">if</strong>(Sheet.<strong class="jxr_keyword">class</strong>.isAssignableFrom(paramTypes[i])) {
-<a class="jxr_linenumber" name="L1890" href="#L1890">1890</a>                 paramValues[i] = sheet;
-<a class="jxr_linenumber" name="L1891" href="#L1891">1891</a>                 
-<a class="jxr_linenumber" name="L1892" href="#L1892">1892</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(XlsMapperConfig.<strong class="jxr_keyword">class</strong>.isAssignableFrom(paramTypes[i])) {
-<a class="jxr_linenumber" name="L1893" href="#L1893">1893</a>                 paramValues[i] = config;
-<a class="jxr_linenumber" name="L1894" href="#L1894">1894</a>                 
-<a class="jxr_linenumber" name="L1895" href="#L1895">1895</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(SheetBindingErrors.<strong class="jxr_keyword">class</strong>.isAssignableFrom(paramTypes[i])) {
-<a class="jxr_linenumber" name="L1896" href="#L1896">1896</a>                 paramValues[i] = errors;
-<a class="jxr_linenumber" name="L1897" href="#L1897">1897</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L1898" href="#L1898">1898</a>                 paramValues[i] = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L1899" href="#L1899">1899</a>             }
-<a class="jxr_linenumber" name="L1900" href="#L1900">1900</a>         }
-<a class="jxr_linenumber" name="L1901" href="#L1901">1901</a>         
-<a class="jxr_linenumber" name="L1902" href="#L1902">1902</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L1903" href="#L1903">1903</a>             method.setAccessible(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L1904" href="#L1904">1904</a>             method.invoke(object, paramValues);
-<a class="jxr_linenumber" name="L1905" href="#L1905">1905</a>         } <strong class="jxr_keyword">catch</strong> (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-<a class="jxr_linenumber" name="L1906" href="#L1906">1906</a>             Throwable t = e.getCause() == <strong class="jxr_keyword">null</strong> ? e : e.getCause();
-<a class="jxr_linenumber" name="L1907" href="#L1907">1907</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsMapperException.html">XlsMapperException</a>(
-<a class="jxr_linenumber" name="L1908" href="#L1908">1908</a>                     String.format(<span class="jxr_string">"fail execute method '%s#%s'."</span>, object.getClass().getName(), method.getName()),
-<a class="jxr_linenumber" name="L1909" href="#L1909">1909</a>                     t);
-<a class="jxr_linenumber" name="L1910" href="#L1910">1910</a>         }
-<a class="jxr_linenumber" name="L1911" href="#L1911">1911</a>     }
-<a class="jxr_linenumber" name="L1912" href="#L1912">1912</a>     
-<a class="jxr_linenumber" name="L1913" href="#L1913">1913</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1914" href="#L1914">1914</a> <em class="jxr_javadoccomment">     * 文字列形式のロケールをオブジェクトに変換する。</em>
-<a class="jxr_linenumber" name="L1915" href="#L1915">1915</a> <em class="jxr_javadoccomment">     * &lt;p&gt;アンダーバーで区切った'ja_JP'を分解して、Localeに渡す。</em>
-<a class="jxr_linenumber" name="L1916" href="#L1916">1916</a> <em class="jxr_javadoccomment">     * @param str</em>
-<a class="jxr_linenumber" name="L1917" href="#L1917">1917</a> <em class="jxr_javadoccomment">     * @return 引数が空の時はデフォルトロケールを返す。</em>
-<a class="jxr_linenumber" name="L1918" href="#L1918">1918</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L1919" href="#L1919">1919</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Locale getLocale(<strong class="jxr_keyword">final</strong> String str) {
-<a class="jxr_linenumber" name="L1920" href="#L1920">1920</a>         
-<a class="jxr_linenumber" name="L1921" href="#L1921">1921</a>         <strong class="jxr_keyword">if</strong>(isEmpty(str)) {
-<a class="jxr_linenumber" name="L1922" href="#L1922">1922</a>             <strong class="jxr_keyword">return</strong> Locale.getDefault();
-<a class="jxr_linenumber" name="L1923" href="#L1923">1923</a>         }
-<a class="jxr_linenumber" name="L1924" href="#L1924">1924</a>         
-<a class="jxr_linenumber" name="L1925" href="#L1925">1925</a>         <strong class="jxr_keyword">if</strong>(!str.contains(<span class="jxr_string">"_"</span>)) {
-<a class="jxr_linenumber" name="L1926" href="#L1926">1926</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Locale(str);
-<a class="jxr_linenumber" name="L1927" href="#L1927">1927</a>         }
+<a class="jxr_linenumber" name="L1875" href="#L1875">1875</a> <em class="jxr_javadoccomment">     * @param processObj 実行対象の処理が埋め込まれているオブジェクト。</em>
+<a class="jxr_linenumber" name="L1876" href="#L1876">1876</a> <em class="jxr_javadoccomment">     * @param method 実行対象のメソッド情報</em>
+<a class="jxr_linenumber" name="L1877" href="#L1877">1877</a> <em class="jxr_javadoccomment">     * @param beanObj 処理対象のBeanオブジェクト。</em>
+<a class="jxr_linenumber" name="L1878" href="#L1878">1878</a> <em class="jxr_javadoccomment">     * @param sheet シート情報</em>
+<a class="jxr_linenumber" name="L1879" href="#L1879">1879</a> <em class="jxr_javadoccomment">     * @param config 共通設定</em>
+<a class="jxr_linenumber" name="L1880" href="#L1880">1880</a> <em class="jxr_javadoccomment">     * @param errors エラー情報</em>
+<a class="jxr_linenumber" name="L1881" href="#L1881">1881</a> <em class="jxr_javadoccomment">     * @throws XlsMapperException </em>
+<a class="jxr_linenumber" name="L1882" href="#L1882">1882</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L1883" href="#L1883">1883</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> invokeNeedProcessMethod(<strong class="jxr_keyword">final</strong> Object processObj, <strong class="jxr_keyword">final</strong> Method method, <strong class="jxr_keyword">final</strong> Object beanObj, 
+<a class="jxr_linenumber" name="L1884" href="#L1884">1884</a>             <strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> config, <strong class="jxr_keyword">final</strong> <a href="../../../../com/gh/mygreen/xlsmapper/validation/SheetBindingErrors.html">SheetBindingErrors</a> errors) <strong class="jxr_keyword">throws</strong> XlsMapperException {
+<a class="jxr_linenumber" name="L1885" href="#L1885">1885</a>         
+<a class="jxr_linenumber" name="L1886" href="#L1886">1886</a>         <strong class="jxr_keyword">final</strong> Class&lt;?&gt;[] paramTypes = method.getParameterTypes();
+<a class="jxr_linenumber" name="L1887" href="#L1887">1887</a>         <strong class="jxr_keyword">final</strong> Object[] paramValues =  <strong class="jxr_keyword">new</strong> Object[paramTypes.length];
+<a class="jxr_linenumber" name="L1888" href="#L1888">1888</a>         
+<a class="jxr_linenumber" name="L1889" href="#L1889">1889</a>         <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i=0; i &lt; paramTypes.length; i++) {
+<a class="jxr_linenumber" name="L1890" href="#L1890">1890</a>             <strong class="jxr_keyword">if</strong>(Sheet.<strong class="jxr_keyword">class</strong>.isAssignableFrom(paramTypes[i])) {
+<a class="jxr_linenumber" name="L1891" href="#L1891">1891</a>                 paramValues[i] = sheet;
+<a class="jxr_linenumber" name="L1892" href="#L1892">1892</a>                 
+<a class="jxr_linenumber" name="L1893" href="#L1893">1893</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(XlsMapperConfig.<strong class="jxr_keyword">class</strong>.isAssignableFrom(paramTypes[i])) {
+<a class="jxr_linenumber" name="L1894" href="#L1894">1894</a>                 paramValues[i] = config;
+<a class="jxr_linenumber" name="L1895" href="#L1895">1895</a>                 
+<a class="jxr_linenumber" name="L1896" href="#L1896">1896</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(SheetBindingErrors.<strong class="jxr_keyword">class</strong>.isAssignableFrom(paramTypes[i])) {
+<a class="jxr_linenumber" name="L1897" href="#L1897">1897</a>                 paramValues[i] = errors;
+<a class="jxr_linenumber" name="L1898" href="#L1898">1898</a>                 
+<a class="jxr_linenumber" name="L1899" href="#L1899">1899</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(paramTypes[i].isAssignableFrom(beanObj.getClass())) {
+<a class="jxr_linenumber" name="L1900" href="#L1900">1900</a>                 paramValues[i] = beanObj;
+<a class="jxr_linenumber" name="L1901" href="#L1901">1901</a>                 
+<a class="jxr_linenumber" name="L1902" href="#L1902">1902</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(paramTypes[i].equals(Object.<strong class="jxr_keyword">class</strong>)) {
+<a class="jxr_linenumber" name="L1903" href="#L1903">1903</a>                 paramValues[i] = beanObj;
+<a class="jxr_linenumber" name="L1904" href="#L1904">1904</a>                 
+<a class="jxr_linenumber" name="L1905" href="#L1905">1905</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L1906" href="#L1906">1906</a>                 paramValues[i] = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L1907" href="#L1907">1907</a>             }
+<a class="jxr_linenumber" name="L1908" href="#L1908">1908</a>         }
+<a class="jxr_linenumber" name="L1909" href="#L1909">1909</a>         
+<a class="jxr_linenumber" name="L1910" href="#L1910">1910</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L1911" href="#L1911">1911</a>             method.setAccessible(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L1912" href="#L1912">1912</a>             method.invoke(processObj, paramValues);
+<a class="jxr_linenumber" name="L1913" href="#L1913">1913</a>         } <strong class="jxr_keyword">catch</strong> (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+<a class="jxr_linenumber" name="L1914" href="#L1914">1914</a>             Throwable t = e.getCause() == <strong class="jxr_keyword">null</strong> ? e : e.getCause();
+<a class="jxr_linenumber" name="L1915" href="#L1915">1915</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsMapperException.html">XlsMapperException</a>(
+<a class="jxr_linenumber" name="L1916" href="#L1916">1916</a>                     String.format(<span class="jxr_string">"fail execute method '%s#%s'."</span>, processObj.getClass().getName(), method.getName()),
+<a class="jxr_linenumber" name="L1917" href="#L1917">1917</a>                     t);
+<a class="jxr_linenumber" name="L1918" href="#L1918">1918</a>         }
+<a class="jxr_linenumber" name="L1919" href="#L1919">1919</a>     }
+<a class="jxr_linenumber" name="L1920" href="#L1920">1920</a>     
+<a class="jxr_linenumber" name="L1921" href="#L1921">1921</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1922" href="#L1922">1922</a> <em class="jxr_javadoccomment">     * 文字列形式のロケールをオブジェクトに変換する。</em>
+<a class="jxr_linenumber" name="L1923" href="#L1923">1923</a> <em class="jxr_javadoccomment">     * &lt;p&gt;アンダーバーで区切った'ja_JP'を分解して、Localeに渡す。</em>
+<a class="jxr_linenumber" name="L1924" href="#L1924">1924</a> <em class="jxr_javadoccomment">     * @param str</em>
+<a class="jxr_linenumber" name="L1925" href="#L1925">1925</a> <em class="jxr_javadoccomment">     * @return 引数が空の時はデフォルトロケールを返す。</em>
+<a class="jxr_linenumber" name="L1926" href="#L1926">1926</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L1927" href="#L1927">1927</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Locale getLocale(<strong class="jxr_keyword">final</strong> String str) {
 <a class="jxr_linenumber" name="L1928" href="#L1928">1928</a>         
-<a class="jxr_linenumber" name="L1929" href="#L1929">1929</a>         <strong class="jxr_keyword">final</strong> String[] split = str.split(<span class="jxr_string">"_"</span>);
-<a class="jxr_linenumber" name="L1930" href="#L1930">1930</a>         <strong class="jxr_keyword">if</strong>(split.length == 2) {
-<a class="jxr_linenumber" name="L1931" href="#L1931">1931</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Locale(split[0], split[1]);
-<a class="jxr_linenumber" name="L1932" href="#L1932">1932</a>             
-<a class="jxr_linenumber" name="L1933" href="#L1933">1933</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L1934" href="#L1934">1934</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Locale(split[0], split[1], split[2]);
+<a class="jxr_linenumber" name="L1929" href="#L1929">1929</a>         <strong class="jxr_keyword">if</strong>(isEmpty(str)) {
+<a class="jxr_linenumber" name="L1930" href="#L1930">1930</a>             <strong class="jxr_keyword">return</strong> Locale.getDefault();
+<a class="jxr_linenumber" name="L1931" href="#L1931">1931</a>         }
+<a class="jxr_linenumber" name="L1932" href="#L1932">1932</a>         
+<a class="jxr_linenumber" name="L1933" href="#L1933">1933</a>         <strong class="jxr_keyword">if</strong>(!str.contains(<span class="jxr_string">"_"</span>)) {
+<a class="jxr_linenumber" name="L1934" href="#L1934">1934</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Locale(str);
 <a class="jxr_linenumber" name="L1935" href="#L1935">1935</a>         }
 <a class="jxr_linenumber" name="L1936" href="#L1936">1936</a>         
-<a class="jxr_linenumber" name="L1937" href="#L1937">1937</a>     }
-<a class="jxr_linenumber" name="L1938" href="#L1938">1938</a>     
-<a class="jxr_linenumber" name="L1939" href="#L1939">1939</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1940" href="#L1940">1940</a> <em class="jxr_javadoccomment">     * エスケープ文字を除去した文字列を取得する。</em>
-<a class="jxr_linenumber" name="L1941" href="#L1941">1941</a> <em class="jxr_javadoccomment">     * @param str</em>
-<a class="jxr_linenumber" name="L1942" href="#L1942">1942</a> <em class="jxr_javadoccomment">     * @param escapeChar</em>
-<a class="jxr_linenumber" name="L1943" href="#L1943">1943</a> <em class="jxr_javadoccomment">     * @return</em>
-<a class="jxr_linenumber" name="L1944" href="#L1944">1944</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L1945" href="#L1945">1945</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String removeEscapeChar(<strong class="jxr_keyword">final</strong> String str, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">char</strong> escapeChar) {
-<a class="jxr_linenumber" name="L1946" href="#L1946">1946</a>         
-<a class="jxr_linenumber" name="L1947" href="#L1947">1947</a>         <strong class="jxr_keyword">if</strong>(str == <strong class="jxr_keyword">null</strong> || str.isEmpty()) {
-<a class="jxr_linenumber" name="L1948" href="#L1948">1948</a>             <strong class="jxr_keyword">return</strong> str;
-<a class="jxr_linenumber" name="L1949" href="#L1949">1949</a>         }
-<a class="jxr_linenumber" name="L1950" href="#L1950">1950</a>         
-<a class="jxr_linenumber" name="L1951" href="#L1951">1951</a>         <strong class="jxr_keyword">final</strong> String escapeStr = String.valueOf(escapeChar);
-<a class="jxr_linenumber" name="L1952" href="#L1952">1952</a>         StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder();
-<a class="jxr_linenumber" name="L1953" href="#L1953">1953</a>         
-<a class="jxr_linenumber" name="L1954" href="#L1954">1954</a>         LinkedList&lt;String&gt; stack = <strong class="jxr_keyword">new</strong> LinkedList&lt;String&gt;();
-<a class="jxr_linenumber" name="L1955" href="#L1955">1955</a>         
-<a class="jxr_linenumber" name="L1956" href="#L1956">1956</a>         <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> length = str.length();
-<a class="jxr_linenumber" name="L1957" href="#L1957">1957</a>         <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i=0; i &lt; length; i++) {
-<a class="jxr_linenumber" name="L1958" href="#L1958">1958</a>             <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">char</strong> c = str.charAt(i);
-<a class="jxr_linenumber" name="L1959" href="#L1959">1959</a>             
-<a class="jxr_linenumber" name="L1960" href="#L1960">1960</a>             <strong class="jxr_keyword">if</strong>(StackUtils.equalsTopElement(stack, escapeStr)) {
-<a class="jxr_linenumber" name="L1961" href="#L1961">1961</a>                 <em class="jxr_comment">// スタックの一番上がエスケープ文字の場合</em>
-<a class="jxr_linenumber" name="L1962" href="#L1962">1962</a>                 StackUtils.popup(stack);
-<a class="jxr_linenumber" name="L1963" href="#L1963">1963</a>                 sb.append(c);
-<a class="jxr_linenumber" name="L1964" href="#L1964">1964</a>                 
-<a class="jxr_linenumber" name="L1965" href="#L1965">1965</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(c == escapeChar) {
-<a class="jxr_linenumber" name="L1966" href="#L1966">1966</a>                 <em class="jxr_comment">// スタックに積む</em>
-<a class="jxr_linenumber" name="L1967" href="#L1967">1967</a>                 stack.push(String.valueOf(c));
-<a class="jxr_linenumber" name="L1968" href="#L1968">1968</a>                 
-<a class="jxr_linenumber" name="L1969" href="#L1969">1969</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L1970" href="#L1970">1970</a>                 sb.append(c);
-<a class="jxr_linenumber" name="L1971" href="#L1971">1971</a>             }
-<a class="jxr_linenumber" name="L1972" href="#L1972">1972</a>             
-<a class="jxr_linenumber" name="L1973" href="#L1973">1973</a>         }
-<a class="jxr_linenumber" name="L1974" href="#L1974">1974</a>         
-<a class="jxr_linenumber" name="L1975" href="#L1975">1975</a>         <strong class="jxr_keyword">if</strong>(!stack.isEmpty()) {
-<a class="jxr_linenumber" name="L1976" href="#L1976">1976</a>             sb.append(StackUtils.popupAndConcat(stack));
-<a class="jxr_linenumber" name="L1977" href="#L1977">1977</a>         }
-<a class="jxr_linenumber" name="L1978" href="#L1978">1978</a>         
-<a class="jxr_linenumber" name="L1979" href="#L1979">1979</a>         <strong class="jxr_keyword">return</strong> sb.toString();
-<a class="jxr_linenumber" name="L1980" href="#L1980">1980</a>         
-<a class="jxr_linenumber" name="L1981" href="#L1981">1981</a>     }
-<a class="jxr_linenumber" name="L1982" href="#L1982">1982</a>     
-<a class="jxr_linenumber" name="L1983" href="#L1983">1983</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1984" href="#L1984">1984</a> <em class="jxr_javadoccomment">     * Listのインスタンスを他のCollectionのインスタンスに変換する。</em>
-<a class="jxr_linenumber" name="L1985" href="#L1985">1985</a> <em class="jxr_javadoccomment">     * &lt;p&gt;ただし、変換先のクラスタイプがインタフェースの場合は変換しない。</em>
-<a class="jxr_linenumber" name="L1986" href="#L1986">1986</a> <em class="jxr_javadoccomment">     * &lt;p&gt;変換元のクラスと変換先のクラスが同じ場合は、変換しない。</em>
-<a class="jxr_linenumber" name="L1987" href="#L1987">1987</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L1988" href="#L1988">1988</a> <em class="jxr_javadoccomment">     * @since 1.0</em>
-<a class="jxr_linenumber" name="L1989" href="#L1989">1989</a> <em class="jxr_javadoccomment">     * @param list 変換元のListのインスタンス</em>
-<a class="jxr_linenumber" name="L1990" href="#L1990">1990</a> <em class="jxr_javadoccomment">     * @param toClass 変換先のCollectionのクラス</em>
-<a class="jxr_linenumber" name="L1991" href="#L1991">1991</a> <em class="jxr_javadoccomment">     * @param beanFactory てインスタンスを生成するファクトリクラス。</em>
-<a class="jxr_linenumber" name="L1992" href="#L1992">1992</a> <em class="jxr_javadoccomment">     * @return 変換したコレクションのインスタンス</em>
-<a class="jxr_linenumber" name="L1993" href="#L1993">1993</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L1994" href="#L1994">1994</a>     @SuppressWarnings({<span class="jxr_string">"rawtypes"</span>, <span class="jxr_string">"unchecked"</span>})
-<a class="jxr_linenumber" name="L1995" href="#L1995">1995</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Collection convertListToCollection(<strong class="jxr_keyword">final</strong> List list, <strong class="jxr_keyword">final</strong> Class&lt;Collection&gt; toClass,
-<a class="jxr_linenumber" name="L1996" href="#L1996">1996</a>             <strong class="jxr_keyword">final</strong> FactoryCallback&lt;Class&lt;?&gt;, Object&gt; beanFactory) {
-<a class="jxr_linenumber" name="L1997" href="#L1997">1997</a>         
-<a class="jxr_linenumber" name="L1998" href="#L1998">1998</a>         <strong class="jxr_keyword">if</strong>(list.getClass().equals(toClass)) {
-<a class="jxr_linenumber" name="L1999" href="#L1999">1999</a>             <strong class="jxr_keyword">return</strong> list;
-<a class="jxr_linenumber" name="L2000" href="#L2000">2000</a>         }
-<a class="jxr_linenumber" name="L2001" href="#L2001">2001</a>         
-<a class="jxr_linenumber" name="L2002" href="#L2002">2002</a>         <strong class="jxr_keyword">if</strong>(toClass.isInterface()) {
-<a class="jxr_linenumber" name="L2003" href="#L2003">2003</a>             <strong class="jxr_keyword">if</strong>(List.<strong class="jxr_keyword">class</strong>.isAssignableFrom(toClass)) {
-<a class="jxr_linenumber" name="L2004" href="#L2004">2004</a>                 <em class="jxr_comment">// 変換先がListの実態の場合はそのまま。</em>
-<a class="jxr_linenumber" name="L2005" href="#L2005">2005</a>                 <strong class="jxr_keyword">return</strong> list;
-<a class="jxr_linenumber" name="L2006" href="#L2006">2006</a>                 
-<a class="jxr_linenumber" name="L2007" href="#L2007">2007</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(Set.<strong class="jxr_keyword">class</strong>.isAssignableFrom(toClass)) {
-<a class="jxr_linenumber" name="L2008" href="#L2008">2008</a>                 
-<a class="jxr_linenumber" name="L2009" href="#L2009">2009</a>                 Collection value = (Collection) beanFactory.create(LinkedHashSet.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L2010" href="#L2010">2010</a>                 value.addAll(list);
-<a class="jxr_linenumber" name="L2011" href="#L2011">2011</a>                 <strong class="jxr_keyword">return</strong> value;
-<a class="jxr_linenumber" name="L2012" href="#L2012">2012</a>                 
-<a class="jxr_linenumber" name="L2013" href="#L2013">2013</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(Queue.<strong class="jxr_keyword">class</strong>.isAssignableFrom(toClass)) {
+<a class="jxr_linenumber" name="L1937" href="#L1937">1937</a>         <strong class="jxr_keyword">final</strong> String[] split = str.split(<span class="jxr_string">"_"</span>);
+<a class="jxr_linenumber" name="L1938" href="#L1938">1938</a>         <strong class="jxr_keyword">if</strong>(split.length == 2) {
+<a class="jxr_linenumber" name="L1939" href="#L1939">1939</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Locale(split[0], split[1]);
+<a class="jxr_linenumber" name="L1940" href="#L1940">1940</a>             
+<a class="jxr_linenumber" name="L1941" href="#L1941">1941</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L1942" href="#L1942">1942</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Locale(split[0], split[1], split[2]);
+<a class="jxr_linenumber" name="L1943" href="#L1943">1943</a>         }
+<a class="jxr_linenumber" name="L1944" href="#L1944">1944</a>         
+<a class="jxr_linenumber" name="L1945" href="#L1945">1945</a>     }
+<a class="jxr_linenumber" name="L1946" href="#L1946">1946</a>     
+<a class="jxr_linenumber" name="L1947" href="#L1947">1947</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1948" href="#L1948">1948</a> <em class="jxr_javadoccomment">     * エスケープ文字を除去した文字列を取得する。</em>
+<a class="jxr_linenumber" name="L1949" href="#L1949">1949</a> <em class="jxr_javadoccomment">     * @param str</em>
+<a class="jxr_linenumber" name="L1950" href="#L1950">1950</a> <em class="jxr_javadoccomment">     * @param escapeChar</em>
+<a class="jxr_linenumber" name="L1951" href="#L1951">1951</a> <em class="jxr_javadoccomment">     * @return</em>
+<a class="jxr_linenumber" name="L1952" href="#L1952">1952</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L1953" href="#L1953">1953</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String removeEscapeChar(<strong class="jxr_keyword">final</strong> String str, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">char</strong> escapeChar) {
+<a class="jxr_linenumber" name="L1954" href="#L1954">1954</a>         
+<a class="jxr_linenumber" name="L1955" href="#L1955">1955</a>         <strong class="jxr_keyword">if</strong>(str == <strong class="jxr_keyword">null</strong> || str.isEmpty()) {
+<a class="jxr_linenumber" name="L1956" href="#L1956">1956</a>             <strong class="jxr_keyword">return</strong> str;
+<a class="jxr_linenumber" name="L1957" href="#L1957">1957</a>         }
+<a class="jxr_linenumber" name="L1958" href="#L1958">1958</a>         
+<a class="jxr_linenumber" name="L1959" href="#L1959">1959</a>         <strong class="jxr_keyword">final</strong> String escapeStr = String.valueOf(escapeChar);
+<a class="jxr_linenumber" name="L1960" href="#L1960">1960</a>         StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder();
+<a class="jxr_linenumber" name="L1961" href="#L1961">1961</a>         
+<a class="jxr_linenumber" name="L1962" href="#L1962">1962</a>         LinkedList&lt;String&gt; stack = <strong class="jxr_keyword">new</strong> LinkedList&lt;String&gt;();
+<a class="jxr_linenumber" name="L1963" href="#L1963">1963</a>         
+<a class="jxr_linenumber" name="L1964" href="#L1964">1964</a>         <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> length = str.length();
+<a class="jxr_linenumber" name="L1965" href="#L1965">1965</a>         <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i=0; i &lt; length; i++) {
+<a class="jxr_linenumber" name="L1966" href="#L1966">1966</a>             <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">char</strong> c = str.charAt(i);
+<a class="jxr_linenumber" name="L1967" href="#L1967">1967</a>             
+<a class="jxr_linenumber" name="L1968" href="#L1968">1968</a>             <strong class="jxr_keyword">if</strong>(StackUtils.equalsTopElement(stack, escapeStr)) {
+<a class="jxr_linenumber" name="L1969" href="#L1969">1969</a>                 <em class="jxr_comment">// スタックの一番上がエスケープ文字の場合</em>
+<a class="jxr_linenumber" name="L1970" href="#L1970">1970</a>                 StackUtils.popup(stack);
+<a class="jxr_linenumber" name="L1971" href="#L1971">1971</a>                 sb.append(c);
+<a class="jxr_linenumber" name="L1972" href="#L1972">1972</a>                 
+<a class="jxr_linenumber" name="L1973" href="#L1973">1973</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(c == escapeChar) {
+<a class="jxr_linenumber" name="L1974" href="#L1974">1974</a>                 <em class="jxr_comment">// スタックに積む</em>
+<a class="jxr_linenumber" name="L1975" href="#L1975">1975</a>                 stack.push(String.valueOf(c));
+<a class="jxr_linenumber" name="L1976" href="#L1976">1976</a>                 
+<a class="jxr_linenumber" name="L1977" href="#L1977">1977</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L1978" href="#L1978">1978</a>                 sb.append(c);
+<a class="jxr_linenumber" name="L1979" href="#L1979">1979</a>             }
+<a class="jxr_linenumber" name="L1980" href="#L1980">1980</a>             
+<a class="jxr_linenumber" name="L1981" href="#L1981">1981</a>         }
+<a class="jxr_linenumber" name="L1982" href="#L1982">1982</a>         
+<a class="jxr_linenumber" name="L1983" href="#L1983">1983</a>         <strong class="jxr_keyword">if</strong>(!stack.isEmpty()) {
+<a class="jxr_linenumber" name="L1984" href="#L1984">1984</a>             sb.append(StackUtils.popupAndConcat(stack));
+<a class="jxr_linenumber" name="L1985" href="#L1985">1985</a>         }
+<a class="jxr_linenumber" name="L1986" href="#L1986">1986</a>         
+<a class="jxr_linenumber" name="L1987" href="#L1987">1987</a>         <strong class="jxr_keyword">return</strong> sb.toString();
+<a class="jxr_linenumber" name="L1988" href="#L1988">1988</a>         
+<a class="jxr_linenumber" name="L1989" href="#L1989">1989</a>     }
+<a class="jxr_linenumber" name="L1990" href="#L1990">1990</a>     
+<a class="jxr_linenumber" name="L1991" href="#L1991">1991</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1992" href="#L1992">1992</a> <em class="jxr_javadoccomment">     * Listのインスタンスを他のCollectionのインスタンスに変換する。</em>
+<a class="jxr_linenumber" name="L1993" href="#L1993">1993</a> <em class="jxr_javadoccomment">     * &lt;p&gt;ただし、変換先のクラスタイプがインタフェースの場合は変換しない。</em>
+<a class="jxr_linenumber" name="L1994" href="#L1994">1994</a> <em class="jxr_javadoccomment">     * &lt;p&gt;変換元のクラスと変換先のクラスが同じ場合は、変換しない。</em>
+<a class="jxr_linenumber" name="L1995" href="#L1995">1995</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L1996" href="#L1996">1996</a> <em class="jxr_javadoccomment">     * @since 1.0</em>
+<a class="jxr_linenumber" name="L1997" href="#L1997">1997</a> <em class="jxr_javadoccomment">     * @param list 変換元のListのインスタンス</em>
+<a class="jxr_linenumber" name="L1998" href="#L1998">1998</a> <em class="jxr_javadoccomment">     * @param toClass 変換先のCollectionのクラス</em>
+<a class="jxr_linenumber" name="L1999" href="#L1999">1999</a> <em class="jxr_javadoccomment">     * @param beanFactory てインスタンスを生成するファクトリクラス。</em>
+<a class="jxr_linenumber" name="L2000" href="#L2000">2000</a> <em class="jxr_javadoccomment">     * @return 変換したコレクションのインスタンス</em>
+<a class="jxr_linenumber" name="L2001" href="#L2001">2001</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L2002" href="#L2002">2002</a>     @SuppressWarnings({<span class="jxr_string">"rawtypes"</span>, <span class="jxr_string">"unchecked"</span>})
+<a class="jxr_linenumber" name="L2003" href="#L2003">2003</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Collection convertListToCollection(<strong class="jxr_keyword">final</strong> List list, <strong class="jxr_keyword">final</strong> Class&lt;Collection&gt; toClass,
+<a class="jxr_linenumber" name="L2004" href="#L2004">2004</a>             <strong class="jxr_keyword">final</strong> FactoryCallback&lt;Class&lt;?&gt;, Object&gt; beanFactory) {
+<a class="jxr_linenumber" name="L2005" href="#L2005">2005</a>         
+<a class="jxr_linenumber" name="L2006" href="#L2006">2006</a>         <strong class="jxr_keyword">if</strong>(list.getClass().equals(toClass)) {
+<a class="jxr_linenumber" name="L2007" href="#L2007">2007</a>             <strong class="jxr_keyword">return</strong> list;
+<a class="jxr_linenumber" name="L2008" href="#L2008">2008</a>         }
+<a class="jxr_linenumber" name="L2009" href="#L2009">2009</a>         
+<a class="jxr_linenumber" name="L2010" href="#L2010">2010</a>         <strong class="jxr_keyword">if</strong>(toClass.isInterface()) {
+<a class="jxr_linenumber" name="L2011" href="#L2011">2011</a>             <strong class="jxr_keyword">if</strong>(List.<strong class="jxr_keyword">class</strong>.isAssignableFrom(toClass)) {
+<a class="jxr_linenumber" name="L2012" href="#L2012">2012</a>                 <em class="jxr_comment">// 変換先がListの実態の場合はそのまま。</em>
+<a class="jxr_linenumber" name="L2013" href="#L2013">2013</a>                 <strong class="jxr_keyword">return</strong> list;
 <a class="jxr_linenumber" name="L2014" href="#L2014">2014</a>                 
-<a class="jxr_linenumber" name="L2015" href="#L2015">2015</a>                 Collection value = (Collection) beanFactory.create(LinkedList.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L2016" href="#L2016">2016</a>                 value.addAll(list);
-<a class="jxr_linenumber" name="L2017" href="#L2017">2017</a>                 <strong class="jxr_keyword">return</strong> value;
-<a class="jxr_linenumber" name="L2018" href="#L2018">2018</a>                 
-<a class="jxr_linenumber" name="L2019" href="#L2019">2019</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(Collection.<strong class="jxr_keyword">class</strong>.isAssignableFrom(toClass)) {
-<a class="jxr_linenumber" name="L2020" href="#L2020">2020</a>                 Collection value = (Collection) beanFactory.create(ArrayList.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L2021" href="#L2021">2021</a>                 value.addAll(list);
-<a class="jxr_linenumber" name="L2022" href="#L2022">2022</a>                 <strong class="jxr_keyword">return</strong> value;
-<a class="jxr_linenumber" name="L2023" href="#L2023">2023</a>                 
-<a class="jxr_linenumber" name="L2024" href="#L2024">2024</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L2025" href="#L2025">2025</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"not support class type:"</span> + toClass.getName());
-<a class="jxr_linenumber" name="L2026" href="#L2026">2026</a>             }
-<a class="jxr_linenumber" name="L2027" href="#L2027">2027</a>             
-<a class="jxr_linenumber" name="L2028" href="#L2028">2028</a>         }
-<a class="jxr_linenumber" name="L2029" href="#L2029">2029</a>         
-<a class="jxr_linenumber" name="L2030" href="#L2030">2030</a>         Collection value = (Collection) beanFactory.create(toClass);
-<a class="jxr_linenumber" name="L2031" href="#L2031">2031</a>         value.addAll(list);
-<a class="jxr_linenumber" name="L2032" href="#L2032">2032</a>         
-<a class="jxr_linenumber" name="L2033" href="#L2033">2033</a>         <strong class="jxr_keyword">return</strong> value;
-<a class="jxr_linenumber" name="L2034" href="#L2034">2034</a>         
-<a class="jxr_linenumber" name="L2035" href="#L2035">2035</a>     }
-<a class="jxr_linenumber" name="L2036" href="#L2036">2036</a>     
-<a class="jxr_linenumber" name="L2037" href="#L2037">2037</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2038" href="#L2038">2038</a> <em class="jxr_javadoccomment">     * CollectionのインスタンスをListに変換する。</em>
-<a class="jxr_linenumber" name="L2039" href="#L2039">2039</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L2040" href="#L2040">2040</a> <em class="jxr_javadoccomment">     * @since 1.0</em>
-<a class="jxr_linenumber" name="L2041" href="#L2041">2041</a> <em class="jxr_javadoccomment">     * @param collection 変換元のCollectionのインスタンス。</em>
-<a class="jxr_linenumber" name="L2042" href="#L2042">2042</a> <em class="jxr_javadoccomment">     * @return 変換したListのインスタンス。</em>
-<a class="jxr_linenumber" name="L2043" href="#L2043">2043</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L2044" href="#L2044">2044</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; List&lt;T&gt; convertCollectionToList(<strong class="jxr_keyword">final</strong> Collection&lt;T&gt; collection) {
-<a class="jxr_linenumber" name="L2045" href="#L2045">2045</a>         
-<a class="jxr_linenumber" name="L2046" href="#L2046">2046</a>         <strong class="jxr_keyword">if</strong>(List.<strong class="jxr_keyword">class</strong>.isAssignableFrom(collection.getClass())) {
-<a class="jxr_linenumber" name="L2047" href="#L2047">2047</a>             <strong class="jxr_keyword">return</strong> (List&lt;T&gt;)collection;
-<a class="jxr_linenumber" name="L2048" href="#L2048">2048</a>         }
-<a class="jxr_linenumber" name="L2049" href="#L2049">2049</a>         
-<a class="jxr_linenumber" name="L2050" href="#L2050">2050</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(collection);
-<a class="jxr_linenumber" name="L2051" href="#L2051">2051</a>         
-<a class="jxr_linenumber" name="L2052" href="#L2052">2052</a>     }
-<a class="jxr_linenumber" name="L2053" href="#L2053">2053</a>     
-<a class="jxr_linenumber" name="L2054" href="#L2054">2054</a> }
+<a class="jxr_linenumber" name="L2015" href="#L2015">2015</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(Set.<strong class="jxr_keyword">class</strong>.isAssignableFrom(toClass)) {
+<a class="jxr_linenumber" name="L2016" href="#L2016">2016</a>                 
+<a class="jxr_linenumber" name="L2017" href="#L2017">2017</a>                 Collection value = (Collection) beanFactory.create(LinkedHashSet.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L2018" href="#L2018">2018</a>                 value.addAll(list);
+<a class="jxr_linenumber" name="L2019" href="#L2019">2019</a>                 <strong class="jxr_keyword">return</strong> value;
+<a class="jxr_linenumber" name="L2020" href="#L2020">2020</a>                 
+<a class="jxr_linenumber" name="L2021" href="#L2021">2021</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(Queue.<strong class="jxr_keyword">class</strong>.isAssignableFrom(toClass)) {
+<a class="jxr_linenumber" name="L2022" href="#L2022">2022</a>                 
+<a class="jxr_linenumber" name="L2023" href="#L2023">2023</a>                 Collection value = (Collection) beanFactory.create(LinkedList.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L2024" href="#L2024">2024</a>                 value.addAll(list);
+<a class="jxr_linenumber" name="L2025" href="#L2025">2025</a>                 <strong class="jxr_keyword">return</strong> value;
+<a class="jxr_linenumber" name="L2026" href="#L2026">2026</a>                 
+<a class="jxr_linenumber" name="L2027" href="#L2027">2027</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(Collection.<strong class="jxr_keyword">class</strong>.isAssignableFrom(toClass)) {
+<a class="jxr_linenumber" name="L2028" href="#L2028">2028</a>                 Collection value = (Collection) beanFactory.create(ArrayList.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L2029" href="#L2029">2029</a>                 value.addAll(list);
+<a class="jxr_linenumber" name="L2030" href="#L2030">2030</a>                 <strong class="jxr_keyword">return</strong> value;
+<a class="jxr_linenumber" name="L2031" href="#L2031">2031</a>                 
+<a class="jxr_linenumber" name="L2032" href="#L2032">2032</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L2033" href="#L2033">2033</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"not support class type:"</span> + toClass.getName());
+<a class="jxr_linenumber" name="L2034" href="#L2034">2034</a>             }
+<a class="jxr_linenumber" name="L2035" href="#L2035">2035</a>             
+<a class="jxr_linenumber" name="L2036" href="#L2036">2036</a>         }
+<a class="jxr_linenumber" name="L2037" href="#L2037">2037</a>         
+<a class="jxr_linenumber" name="L2038" href="#L2038">2038</a>         Collection value = (Collection) beanFactory.create(toClass);
+<a class="jxr_linenumber" name="L2039" href="#L2039">2039</a>         value.addAll(list);
+<a class="jxr_linenumber" name="L2040" href="#L2040">2040</a>         
+<a class="jxr_linenumber" name="L2041" href="#L2041">2041</a>         <strong class="jxr_keyword">return</strong> value;
+<a class="jxr_linenumber" name="L2042" href="#L2042">2042</a>         
+<a class="jxr_linenumber" name="L2043" href="#L2043">2043</a>     }
+<a class="jxr_linenumber" name="L2044" href="#L2044">2044</a>     
+<a class="jxr_linenumber" name="L2045" href="#L2045">2045</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L2046" href="#L2046">2046</a> <em class="jxr_javadoccomment">     * CollectionのインスタンスをListに変換する。</em>
+<a class="jxr_linenumber" name="L2047" href="#L2047">2047</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L2048" href="#L2048">2048</a> <em class="jxr_javadoccomment">     * @since 1.0</em>
+<a class="jxr_linenumber" name="L2049" href="#L2049">2049</a> <em class="jxr_javadoccomment">     * @param collection 変換元のCollectionのインスタンス。</em>
+<a class="jxr_linenumber" name="L2050" href="#L2050">2050</a> <em class="jxr_javadoccomment">     * @return 変換したListのインスタンス。</em>
+<a class="jxr_linenumber" name="L2051" href="#L2051">2051</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L2052" href="#L2052">2052</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; List&lt;T&gt; convertCollectionToList(<strong class="jxr_keyword">final</strong> Collection&lt;T&gt; collection) {
+<a class="jxr_linenumber" name="L2053" href="#L2053">2053</a>         
+<a class="jxr_linenumber" name="L2054" href="#L2054">2054</a>         <strong class="jxr_keyword">if</strong>(List.<strong class="jxr_keyword">class</strong>.isAssignableFrom(collection.getClass())) {
+<a class="jxr_linenumber" name="L2055" href="#L2055">2055</a>             <strong class="jxr_keyword">return</strong> (List&lt;T&gt;)collection;
+<a class="jxr_linenumber" name="L2056" href="#L2056">2056</a>         }
+<a class="jxr_linenumber" name="L2057" href="#L2057">2057</a>         
+<a class="jxr_linenumber" name="L2058" href="#L2058">2058</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(collection);
+<a class="jxr_linenumber" name="L2059" href="#L2059">2059</a>         
+<a class="jxr_linenumber" name="L2060" href="#L2060">2060</a>     }
+<a class="jxr_linenumber" name="L2061" href="#L2061">2061</a>     
+<a class="jxr_linenumber" name="L2062" href="#L2062">2062</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>

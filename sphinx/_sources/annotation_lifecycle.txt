@@ -3,8 +3,10 @@
 -----------------------------------------------------------
 
 読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。 
-**publicメソッドに付与** する必要があります。
 
+実装方法として、JavaBeanに直接処理を実装する方法と、リスナークラスを指定して別のクラスで実装する方法の2種類があります。
+
+**publicメソッドに付与** する必要があります。
 
 .. list-table:: ライフサイクル・コールバック用のアノテーション一覧
    :widths: 30 70 
@@ -50,6 +52,9 @@
    * - ``com.gh.mygreen.xlsmapper.validation.SheetBindingErrors``
      - | シートのエラー情報を格納するオブジェクト。
        | 読み込み時に引数で渡したオブジェクト。
+   
+   * - `処理対象のBeanオブジェクト`
+     - | 処理対象のBeanオブジェクト。 `[ver1.3+]`
 
 
 以下のような時にライフサイクルコールバック関数を利用します。
@@ -61,32 +66,98 @@
   * 例えば、Excelファイル上の定義された名前の範囲の変更や入力規則の設定。
 
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+JavaBeanクラスに実装する場合
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+シート用クラス、レコード用クラスのどちらにも定義できます。
+
+実行順は、親であるシートクラスの処理が先に処理されます。 
+
 .. sourcecode:: java
     
-    public class UnitUser {
-      
-        private Date date;
+    // シートクラス
+    @XlsSheet(name="Users")
+    public class SampleSheet {
+    
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧")
+        private List<UserRecord> records;
         
-        // 読み込み前、書き込み前の処理
-        @XlsPreLoad
-        @XlsPreSave
-        public void onInit() {
-            // フィールドの初期化
-            this.date = new Date();
-        }
-        
-        // 読み込み後の処理
         @XlsPostLoad
-        public void onPostSave(Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
-           // 入力値チェックなどを行う。
+        public void onPostLoad() {
+            // 読み込み後に実行される処理
         }
+    }
+    
+    // レコードクラス
+    public class UserRecord {
         
-        // 書き込み後の処理
-        @XlsPostSave
-        public void onPostSave(Sheet sheet) {
-            // 提供されない機能の補完。
-            
+        @XlsColumn(columnName="ID")
+        private int id;
+        
+        @XlsColumn(columnName="名前")
+        private String name;
+        
+        @XlsPostLoad
+        public void onPostLoad(Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
+            // 読み込み後に実行される処理
+            // 入力値チェックなどを行う
         }
         
     }
+
+
+.. _annotationXlsListener:
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+リスナークラスに実装する場合
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+クラスにアノテーション ``@XlsListener`` を付与し、属性 ``listenerClass`` で処理が実装されたクラスを指定します。 `[ver1.3+]`
+
+指定したリスナークラスのインスタンスは、システム設定「beanFactory」経由で作成されるため、:doc:`SpringFrameworkのコンテナからインスタンスを取得 <extension_beanfactory>` することもできます。
+
+.. sourcecode:: java
+    
+    // シートクラス
+    @XlsSheet(name="Users")
+    @XlsListener(listenerClass=SampleSheetListener.class)
+    public class SampleSheet {
+    
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧")
+        private List<UserRecord> records;
+        
+    }
+    
+    // SampleSheetクラスのリスナー
+    public static class SampleSheetListener {
+        
+        @XlsPostLoad
+        public void onPostLoad(SampleSheet targetObj) {
+            // 読み込み後に実行される処理
+        }
+    }
+    
+    // レコードクラス
+    @XlsListener(listenerClass=UserRecordListener.class)
+    public class UserRecord {
+        
+        @XlsColumn(columnName="ID")
+        private int id;
+        
+        @XlsColumn(columnName="名前")
+        private String name;
+        
+    }
+    
+    // UserRecordクラスのリスナー
+    public static class UserRecordListener {
+        
+        @XlsPostLoad
+        public void onPostLoad(SampleSheet targetObj, Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
+            // 読み込み後に実行される処理
+            // 入力値チェックなどを行う
+        }
+    }
+
 

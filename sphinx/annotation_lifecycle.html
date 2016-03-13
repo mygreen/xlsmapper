@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ライフサイクル・コールバック用のアノテーション &mdash; XlsMapper 1.2.1 ドキュメント</title>
+    <title>ライフサイクル・コールバック用のアノテーション &mdash; XlsMapper 1.3 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.1',
+        VERSION:     '1.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.2.1 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.3 ドキュメント" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -40,7 +40,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.2.1 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.3 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -64,8 +64,8 @@
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id29">2.4. 型変換用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id50">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id30">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id51">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
@@ -104,19 +104,20 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">8. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.1. ver.1.2.1 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.2. ver.1.2 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.3. ver.1.1 - 2016-03-08</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.4. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.5. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.6. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.7. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.8. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.9. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.10. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.11. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.12. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.13. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">8.1. ver.1.3 - 2016-03-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.2. ver.1.2.1 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.3. ver.1.2 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.4. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.5. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.6. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.7. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.8. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.9. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.10. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.11. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.12. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.13. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.14. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -153,10 +154,11 @@
             
   <div class="section" id="id1">
 <h1>ライフサイクル・コールバック用のアノテーション<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。
-<strong>publicメソッドに付与</strong> する必要があります。</p>
-<table border="1" class="docutils" id="id2">
-<caption><span class="caption-text">ライフサイクル・コールバック用のアノテーション一覧</span><a class="headerlink" href="#id2" title="このテーブルへのパーマリンク">¶</a></caption>
+<p>読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。</p>
+<p>実装方法として、JavaBeanに直接処理を実装する方法と、リスナークラスを指定して別のクラスで実装する方法の2種類があります。</p>
+<p><strong>publicメソッドに付与</strong> する必要があります。</p>
+<table border="1" class="docutils" id="id3">
+<caption><span class="caption-text">ライフサイクル・コールバック用のアノテーション一覧</span><a class="headerlink" href="#id3" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="30%" />
 <col width="70%" />
@@ -197,8 +199,8 @@
 <li>引数は、とらなくても可能です。</li>
 <li>引数の順番は任意で指定可能です。</li>
 </ul>
-<table border="1" class="docutils" id="id3">
-<caption><span class="caption-text">コールバック用アノテーションのメソッドに指定可能な引数一覧</span><a class="headerlink" href="#id3" title="このテーブルへのパーマリンク">¶</a></caption>
+<table border="1" class="docutils" id="id4">
+<caption><span class="caption-text">コールバック用アノテーションのメソッドに指定可能な引数一覧</span><a class="headerlink" href="#id4" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="50%" />
 <col width="50%" />
@@ -228,6 +230,12 @@
 </div>
 </td>
 </tr>
+<tr class="row-odd"><td><cite>処理対象のBeanオブジェクト</cite></td>
+<td><div class="first last line-block">
+<div class="line">処理対象のBeanオブジェクト。 <cite>[ver1.3+]</cite></div>
+</div>
+</td>
+</tr>
 </tbody>
 </table>
 <p>以下のような時にライフサイクルコールバック関数を利用します。</p>
@@ -239,33 +247,88 @@
 </ul>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnitUser</span> <span class="o">{</span>
+<div class="section" id="javabean">
+<h2>JavaBeanクラスに実装する場合<a class="headerlink" href="#javabean" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>シート用クラス、レコード用クラスのどちらにも定義できます。</p>
+<p>実行順は、親であるシートクラスの処理が先に処理されます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// シートクラス</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
 
-    <span class="kd">private</span> <span class="n">Date</span> <span class="n">date</span><span class="o">;</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">UserRecord</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
 
-    <span class="c1">// 読み込み前、書き込み前の処理</span>
-    <span class="nd">@XlsPreLoad</span>
-    <span class="nd">@XlsPreSave</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onInit</span><span class="o">()</span> <span class="o">{</span>
-        <span class="c1">// フィールドの初期化</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">date</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
-    <span class="o">}</span>
-
-    <span class="c1">// 読み込み後の処理</span>
     <span class="nd">@XlsPostLoad</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPostSave</span><span class="o">(</span><span class="n">Sheet</span> <span class="n">sheet</span><span class="o">,</span> <span class="n">XlsMapperConfig</span> <span class="n">config</span><span class="o">,</span> <span class="n">SheetBindingErrors</span> <span class="n">errors</span><span class="o">)</span> <span class="o">{</span>
-       <span class="c1">// 入力値チェックなどを行う。</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPostLoad</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// 読み込み後に実行される処理</span>
     <span class="o">}</span>
+<span class="o">}</span>
 
-    <span class="c1">// 書き込み後の処理</span>
-    <span class="nd">@XlsPostSave</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPostSave</span><span class="o">(</span><span class="n">Sheet</span> <span class="n">sheet</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// 提供されない機能の補完。</span>
+<span class="c1">// レコードクラス</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRecord</span> <span class="o">{</span>
 
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsPostLoad</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPostLoad</span><span class="o">(</span><span class="n">Sheet</span> <span class="n">sheet</span><span class="o">,</span> <span class="n">XlsMapperConfig</span> <span class="n">config</span><span class="o">,</span> <span class="n">SheetBindingErrors</span> <span class="n">errors</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 読み込み後に実行される処理</span>
+        <span class="c1">// 入力値チェックなどを行う</span>
     <span class="o">}</span>
 
 <span class="o">}</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="annotationxlslistener">
+<span id="id2"></span><h2>リスナークラスに実装する場合<a class="headerlink" href="#annotationxlslistener" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>クラスにアノテーション <code class="docutils literal"><span class="pre">&#64;XlsListener</span></code> を付与し、属性 <code class="docutils literal"><span class="pre">listenerClass</span></code> で処理が実装されたクラスを指定します。 <cite>[ver1.3+]</cite></p>
+<p>指定したリスナークラスのインスタンスは、システム設定「beanFactory」経由で作成されるため、<a class="reference internal" href="extension_beanfactory.html"><em>SpringFrameworkのコンテナからインスタンスを取得</em></a> することもできます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// シートクラス</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="nd">@XlsListener</span><span class="o">(</span><span class="n">listenerClass</span><span class="o">=</span><span class="n">SampleSheetListener</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">UserRecord</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// SampleSheetクラスのリスナー</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">SampleSheetListener</span> <span class="o">{</span>
+
+    <span class="nd">@XlsPostLoad</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPostLoad</span><span class="o">(</span><span class="n">SampleSheet</span> <span class="n">targetObj</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 読み込み後に実行される処理</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// レコードクラス</span>
+<span class="nd">@XlsListener</span><span class="o">(</span><span class="n">listenerClass</span><span class="o">=</span><span class="n">UserRecordListener</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRecord</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// UserRecordクラスのリスナー</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">UserRecordListener</span> <span class="o">{</span>
+
+    <span class="nd">@XlsPostLoad</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPostLoad</span><span class="o">(</span><span class="n">SampleSheet</span> <span class="n">targetObj</span><span class="o">,</span> <span class="n">Sheet</span> <span class="n">sheet</span><span class="o">,</span> <span class="n">XlsMapperConfig</span> <span class="n">config</span><span class="o">,</span> <span class="n">SheetBindingErrors</span> <span class="n">errors</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 読み込み後に実行される処理</span>
+        <span class="c1">// 入力値チェックなどを行う</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -281,7 +344,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.2.1 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.3 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
