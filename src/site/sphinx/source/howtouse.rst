@@ -99,7 +99,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     // シートの読み込み
     XlsMapper xlsMapper = new XlsMapper();
     UserSheet sheet = xlsMapper.load(
-        new FileInputStream("example.xls"), // 読み込むExcelファイル。
+        new FileInputStream("example.xlsx"), // 読み込むExcelファイル。
         UserSheet.class                     // シートマッピング用のPOJOクラス。
         );
 
@@ -140,10 +140,10 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     public class UserSheet {
         
         @XlsLabelledCell(label="Date", type=LabelledCellType.Right)
-        @XlsDateConverter(excelPattern="yyyy/mm/dd")
+        @XlsDateConverter(excelPattern="yyyy/m/d")
         Date createDate;
         
-        @XlsHorizontalRecords(tableLabel="User List", orverRecord=OverRecordOperate.Insert)
+        @XlsHorizontalRecords(tableLabel="User List", overRecord=OverRecordOperate.Insert)
         List<UserRecord> users;
         
     }
@@ -155,7 +155,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     
     // 書き込むシート情報の作成
     UserSheet sheet = new UserSheet();
-    sheet.date = new Date();
+    sheet.createDate = new Date();
     
     List<UserRecord> users = new ArrayList<>();
     
@@ -163,8 +163,8 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     UserRecord record1 = new UserRecord();
     record1.no = 1;
     record1.className = "A";
-    record1.name = "Taro";
-    recrod1.gender = Gender.male;
+    record1.name = "Ichiro";
+    record1.gender = Gender.male;
     users.add(record1);
     
     UserRecord record2 = new UserRecord();
@@ -176,8 +176,8 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     // シートの書き込み
     XlsMapper xlsMapper = new XlsMapper();
     xlsMapper.save(
-        new FileInputStream("template.xls"), // テンプレートのExcelファイル
-        new FileOutputStream("out.xls"),     // 書き込むExcelファイル
+        new FileInputStream("template.xlsx"), // テンプレートのExcelファイル
+        new FileOutputStream("out.xlsx"),     // 書き込むExcelファイル
         sheet                                // 作成したデータ
         );
 
@@ -317,7 +317,7 @@ Apache POIは、ver.3.5以上に対応しています。
 
 .. note::
     アノテーション ``@XlsSheet(regexp="正規表現*")`` のようにシート名を正規表現で定義している場合、
-    書き込み先のシート名はアノテーション@XlsSheetNameを付与したフィールドを元に決定します。
+    書き込み先のシート名はアノテーション :ref:`@XlsSheetName <annotationXlsSheetName>` を付与したフィールドを元に決定します。
     
 テンプレートのExcelファイル中にシートが1つしかない場合、書き込む個数分コピーしておく必要があります。
 このような場合、書き込み対象のテンプレートファイルを事前に処理しておきます。
@@ -346,12 +346,30 @@ Apache POIは、ver.3.5以上に対応しています。
     SampleSheet sheet3 = new SampleSheet();
     sheet3.sheetName = "Sheet_3"; // シート名の設定
     
+    SampleSheet[] sheets = new SampleSheet[]{sheet1, sheet2, sheet3};
+    
+    // シートのクローン
+    Workbook workbook = WorkbookFactory.create(new FileInputStream("template.xlsx"));
+    Sheet templateSheet = workbook.getSheet("XlsSheet(regexp)");
+    for(SampleSheet sheetObj : sheets) {
+        int sheetIndex = workbook.getSheetIndex(templateSheet);
+        Sheet cloneSheet = workbook.cloneSheet(sheetIndex);
+        workbook.setSheetName(workbook.getSheetIndex(cloneSheet), sheetObj.sheetName);
+    }
+    
+    // コピー元のシートを削除する
+    workbook.removeSheetAt(workbook.getSheetIndex(templateSheet));
+    
+    // クローンしたシートファイルを、一時ファイルに一旦出力する。
+    File cloneTemplateFile = File.createTempFile("template", ".xlsx");
+    workbook.write(new FileOutputStream(cloneTemplateFile));
+    
     // 複数のシートの書き込み
     XlsMapper xlsMapper = new XlsMapper();
-    xlsMapper.saveMultiple(new FileInputStream("template.xls"),
-        new FileOutputStream("out.xls"),
-        new Object[]{sheet1, sheet2, sheet3}
-    );
+    xlsMapper.saveMultiple(
+            new FileInputStream(cloneTemplateFile), // クローンしたシートを持つファイルを指定する
+            new FileOutputStream("out.xlsx"),
+            sheets);
 
 
 

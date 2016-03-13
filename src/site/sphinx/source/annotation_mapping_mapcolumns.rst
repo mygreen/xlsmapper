@@ -197,6 +197,95 @@ BeanにはMapを引数に取るフィールドまたはメソッドを用意し�
     }
 
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+書き込み前に動的にテンプレートファイルを書き換える
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+書き込み処理の場合、マップのキーがデータごとに異なり、テンプレートのフォーマットと合わない場合があります。
+
+そのような場合、テンプレートファイルを書き込むデータに合わせて書き換えます。
+その際には、 :doc:`ライフサイクル・コールバック用のアノテーション <annotation_lifecycle>` ``@XlsPreSave`` で、実装を行うことができます。
+
+実装処理は、Apache POIのAPIを使って行います。。
+
+.. figure:: ./_static/MapColumns_preSave.png
+   :align: center
+   
+   MapColumns(preSave)
+
+
+.. sourcecode:: java
+    
+    // シート用クラス
+    @XlsSheet(name="List")
+    public class SampleSheet {
+        
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧", overRecord=OverRecordOperate.Insert)
+        List<SampleRecord> records;
+        
+        // XlsMapColumnsのマッピング用のセルを作成する
+        @XlsPreSave
+        public void onPreSave(final Sheet sheet, final XlsMapperConfig config) {
+            
+            try {
+                final Workbook workbook = sheet.getWorkbook();
+                
+                // 基準となる日付のセル[日付]を取得する
+                Cell baseHeaderCell = Utils.getCell(sheet, "[日付]", 0, 0, config);
+                
+                // 書き換えるための見出しの値の取得
+                List<String> dateHeaders = new ArrayList<>(records.get(0).attendedMap.keySet());
+                
+                // 1つ目の見出しの書き換え
+                baseHeaderCell.setCellValue(dateHeaders.get(0));
+                
+                // ２つ目以降の見出し列の追加
+                Row headerRow = baseHeaderCell.getRow();
+                for(int i=1; i < dateHeaders.size(); i++) {
+                    Cell headerCell = headerRow.createCell(baseHeaderCell.getColumnIndex() + i);
+                    
+                    CellStyle style = workbook.createCellStyle();
+                    style.cloneStyleFrom(baseHeaderCell.getCellStyle());
+                    headerCell.setCellStyle(style);
+                    headerCell.setCellValue(dateHeaders.get(i));
+                    
+                }
+                
+                // 2つめ以降のデータ行の列の追加
+                Row valueRow = sheet.getRow(baseHeaderCell.getRowIndex() + 1);
+                Cell baseValueCell = valueRow.getCell(baseHeaderCell.getColumnIndex());
+                for(int i=1; + i < dateHeaders.size(); i++) {
+                    Cell valueCell = valueRow.createCell(baseValueCell.getColumnIndex() + i);
+                    
+                    CellStyle style = workbook.createCellStyle();
+                    style.cloneStyleFrom(baseValueCell.getCellStyle());
+                    valueCell.setCellStyle(style);
+                    
+                }
+                
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            
+        }
+    
+    }
+    
+    // レコード用クラス
+    public class SampleRecord {
+        
+        @XlsColumn(columnName="ID")
+        private int id;
+        
+        @XlsColumn(columnName="名前")
+        private String name;
+        
+        // 可変長のセルのマッピング
+        @XlsMapColumns(previousColumnName="名前")
+        private Map<String, String> attendedMap;
+        
+    }
+    
 
 
 

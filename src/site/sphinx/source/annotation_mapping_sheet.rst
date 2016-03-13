@@ -86,4 +86,45 @@
     );
 
 
+動的に書き込むシート数が変わるような場合は、下記のように、テンプレート用のシートをコピーしてから処理を行います。
+
+.. sourcecode:: java
+    
+    // 正規表現による複数のシートを出力する場合。
+    // 書き込み時に、シート名を設定して、一意に関連づけます。
+    SampleSheet sheet1 = new SampleSheet();
+    sheet1.sheetName = "Sheet_1"; // シート名の設定
+    
+    SampleSheet sheet2 = new SampleSheet();
+    sheet2.sheetName = "Sheet_2"; // シート名の設定
+    
+    SampleSheet sheet3 = new SampleSheet();
+    sheet3.sheetName = "Sheet_3"; // シート名の設定
+    
+    SampleSheet[] sheets = new SampleSheet[]{sheet1, sheet2, sheet3};
+    
+    // シートのクローン
+    Workbook workbook = WorkbookFactory.create(new FileInputStream("template.xlsx"));
+    Sheet templateSheet = workbook.getSheet("XlsSheet(regexp)");
+    for(SampleSheet sheetObj : sheets) {
+        int sheetIndex = workbook.getSheetIndex(templateSheet);
+        Sheet cloneSheet = workbook.cloneSheet(sheetIndex);
+        workbook.setSheetName(workbook.getSheetIndex(cloneSheet), sheetObj.sheetName);
+    }
+    
+    // コピー元のシートを削除する
+    workbook.removeSheetAt(workbook.getSheetIndex(templateSheet));
+    
+    // クローンしたシートファイルを、一時ファイルに一旦出力する。
+    File cloneTemplateFile = File.createTempFile("template", ".xlsx");
+    workbook.write(new FileOutputStream(cloneTemplateFile));
+    
+    // 複数のシートの書き込み
+    XlsMapper xlsMapper = new XlsMapper();
+    xlsMapper.saveMultiple(
+            new FileInputStream(cloneTemplateFile), // クローンしたシートを持つファイルを指定する
+            new FileOutputStream("out.xlsx"),
+            sheets);
+    
+
 
