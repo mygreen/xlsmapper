@@ -418,11 +418,9 @@ public class XlsLoader {
                 if(Utils.isSetterMethod(method) && processor != null) {
                     final FieldAdaptor adaptor = new FieldAdaptor(clazz, method, work.getAnnoReader());
                     adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
-                    break;
                     
                 } else if(anno instanceof XlsPostLoad) {
                     work.addNeedPostProcess(new NeedProcess(beanObj, beanObj, method));
-                    break;
                 }
             }
             
@@ -443,7 +441,6 @@ public class XlsLoader {
                 final LoadingFieldProcessor processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);
                 if(processor != null) {
                     adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
-                    break;
                 }
             }
         }

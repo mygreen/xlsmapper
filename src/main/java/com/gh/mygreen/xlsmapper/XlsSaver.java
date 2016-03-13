@@ -259,11 +259,9 @@ public class XlsSaver {
                 if((Utils.isGetterMethod(method) || Utils.isBooleanGetterMethod(method))&& processor != null) {
                     final FieldAdaptor adaptor = new FieldAdaptor(clazz, method, work.getAnnoReader());
                     adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
-                    break;
                     
                 } else if(anno instanceof XlsPostSave) {
                     work.addNeedPostProcess(new NeedProcess(beanObj, beanObj, method));
-                    break;
                 }
             }
         }
@@ -283,7 +281,6 @@ public class XlsSaver {
                 final SavingFieldProcessor processor = config.getFieldProcessorRegistry().getSavingProcessor(anno);
                 if(processor != null) {
                     adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
-                    break;
                 }
             }
             
