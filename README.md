@@ -13,7 +13,7 @@ Apache License verion 2.0
 <dependency>
 	<groupId>com.github.mygreen</groupId>
 	<artifactId>xlsmapper</artifactId>
-	<version>1.2.1</version>
+	<version>1.3</version>
 </dependency>
 ```
 
@@ -101,10 +101,10 @@ And the following is the record class.
 public class UserSheet {
 
     @XlsLabelledCell(label="Date", type=LabelledCellType.Right)
-    @XlsDateConverter(excelPattern="yyyy/mm/dd")
+    @XlsDateConverter(excelPattern="yyyy/m/d")
     Date createDate;
 
-    @XlsHorizontalRecords(tableLabel="User List", orverRecord=OverRecordOperate.Insert)
+    @XlsHorizontalRecords(tableLabel="User List", overRecord=OverRecordOperate.Insert)
     List<UserRecord> users;
 
 }
@@ -123,8 +123,8 @@ List<UserRecord> users = new ArrayList<>();
 UserRecord record1 = new UserRecord();
 record1.no = 1;
 record1.className = "A";
-record1.name = "Taro";
-recrod1.gender = Gender.male;
+record1.name = "Ichiro";
+record1.gender = Gender.male;
 users.add(record1);
 
 UserRecord record2 = new UserRecord();
