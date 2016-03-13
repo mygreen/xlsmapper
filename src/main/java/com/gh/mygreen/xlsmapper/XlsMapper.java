@@ -117,10 +117,10 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * public class UserSheet {
  *
  *     {@literal @XlsLabelledCell(label="Date", type=LabelledCellType.Right)}
- *     {@literal @XlsDateConverter(excelPattern="yyyy/mm/dd")}
+ *     {@literal @XlsDateConverter(excelPattern="yyyy/m/d")}
  *     Date createDate;
  *     
- *     {@literal @XlsHorizontalRecords(tableLabel="User List", orverRecord=OverRecordOperate.Insert)}
+ *     {@literal @XlsHorizontalRecords(tableLabel="User List", overRecord=OverRecordOperate.Insert)}
  *     {@literal List<UserRecord>} users;
  *     
  * }
@@ -131,7 +131,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * <pre class="highlight"><code class="java">
  * // 書き込むシート情報の作成
  * UserSheet sheet = new UserSheet();
- * sheet.date = new Date();
+ * sheet.createDate = new Date();
  * 
  * {@literal List<UserRecord>} users = new {@literal ArrayList<>}();
  * 
@@ -139,8 +139,8 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * UserRecord record1 = new UserRecord();
  * record1.no = 1;
  * record1.className = "A";
- * record1.name = "Taro";
- * recrod1.gender = Gender.male;
+ * record1.name = "Ichiro";
+ * record1.gender = Gender.male;
  * users.add(record1);
  * 
  * UserRecord record2 = new UserRecord();

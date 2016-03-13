@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
@@ -226,12 +227,25 @@ public class XlsSaver {
         
         work.getErrors().setSheetName(sheet.getSheetName());
         
+        // リスナークラスの@PreSave用メソッドの実行
+        final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(beanObj.getClass(), XlsListener.class);
+        if(listenerAnno != null) {
+            Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            for(Method method : listenerObj.getClass().getMethods()) {
+                final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPreSave.class);
+                if(preProcessAnno != null) {
+                    Utils.invokeNeedProcessMethod(listenerObj, method, beanObj, sheet, config, work.getErrors());
+                }
+            }
+            
+        }
+        
         // @PreSave用のメソッドの取得と実行
         for(Method method : clazz.getMethods()) {
             
             final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(beanObj.getClass(), method, XlsPreSave.class);
             if(preProcessAnno != null) {
-                Utils.invokeNeedProcessMethod(method, beanObj, sheet, config, work.getErrors());
+                Utils.invokeNeedProcessMethod(beanObj, method, beanObj, sheet, config, work.getErrors());
             }
         }
         
@@ -245,11 +259,9 @@ public class XlsSaver {
                 if((Utils.isGetterMethod(method) || Utils.isBooleanGetterMethod(method))&& processor != null) {
                     final FieldAdaptor adaptor = new FieldAdaptor(clazz, method, work.getAnnoReader());
                     adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
-                    break;
                     
                 } else if(anno instanceof XlsPostSave) {
-                    work.addNeedPostProcess(new NeedProcess(beanObj, method));
-                    break;
+                    work.addNeedPostProcess(new NeedProcess(beanObj, beanObj, method));
                 }
             }
         }
@@ -269,7 +281,6 @@ public class XlsSaver {
                 final SavingFieldProcessor processor = config.getFieldProcessorRegistry().getSavingProcessor(anno);
                 if(processor != null) {
                     adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
-                    break;
                 }
             }
             
@@ -281,9 +292,21 @@ public class XlsSaver {
             adaptorProxy.saveProcess(sheet, beanObj, config, work);
         }
         
+        // リスナークラスの@PostSaveの取得
+        if(listenerAnno != null) {
+            Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            for(Method method : listenerObj.getClass().getMethods()) {
+                final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPostSave.class);
+                if(postProcessAnno != null) {
+                    work.addNeedPostProcess(new NeedProcess(beanObj, listenerObj, method));
+                }
+            }
+            
+        }
+        
         //@PostSaveが付与されているメソッドの実行
         for(NeedProcess need : work.getNeedPostProcesses()) {
-            Utils.invokeNeedProcessMethod(need.getMethod(), need.getTarget(), sheet, config, work.getErrors());
+            Utils.invokeNeedProcessMethod(need.getProcess(), need.getMethod(), need.getTarget(), sheet, config, work.getErrors());
         }
         
     }

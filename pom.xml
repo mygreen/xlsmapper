@@ -5,7 +5,7 @@
 	<groupId>com.github.mygreen</groupId>
 	<artifactId>xlsmapper</artifactId>
 	<packaging>jar</packaging>
-	<version>1.2.1</version>
+	<version>1.3</version>
 	<name>XlsMapper</name>
 	<url>http://mygreen.github.io/xlsmapper/</url>
 	<description><![CDATA[

@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
@@ -31,7 +32,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 /**
  * ExcelのシートをJavaBeanにマッピングするクラス。
  * 
- * @version 1.1
+ * @version 1.3
  * @author T.TSUCHIE
  *
  */
@@ -386,12 +387,25 @@ public class XlsLoader {
         
         final List<FieldAdaptorProxy> adaptorProxies = new ArrayList<>();
         
-        // @PreLoad用のメソッドの取得と実行
+        // リスナークラスの@PreLoadd用メソッドの実行
+        final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(beanObj.getClass(), XlsListener.class);
+        if(listenerAnno != null) {
+            Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            for(Method method : listenerObj.getClass().getMethods()) {
+                final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPreLoad.class);
+                if(preProcessAnno != null) {
+                    Utils.invokeNeedProcessMethod(listenerObj, method, beanObj, sheet, config, work.getErrors());
+                }
+            }
+            
+        }
+        
+        // @PreLoad用のメソッドの実行
         for(Method method : clazz.getMethods()) {
             
             final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(beanObj.getClass(), method, XlsPreLoad.class);
             if(preProcessAnno != null) {
-                Utils.invokeNeedProcessMethod(method, beanObj, sheet, config, work.getErrors());
+                Utils.invokeNeedProcessMethod(beanObj, method, beanObj, sheet, config, work.getErrors());
             }
         }
         
@@ -404,11 +418,9 @@ public class XlsLoader {
                 if(Utils.isSetterMethod(method) && processor != null) {
                     final FieldAdaptor adaptor = new FieldAdaptor(clazz, method, work.getAnnoReader());
                     adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
-                    break;
                     
                 } else if(anno instanceof XlsPostLoad) {
-                    work.addNeedPostProcess(new NeedProcess(beanObj, method));
-                    break;
+                    work.addNeedPostProcess(new NeedProcess(beanObj, beanObj, method));
                 }
             }
             
@@ -429,7 +441,6 @@ public class XlsLoader {
                 final LoadingFieldProcessor processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);
                 if(processor != null) {
                     adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
-                    break;
                 }
             }
         }
@@ -440,9 +451,21 @@ public class XlsLoader {
             adaptorProxy.loadProcess(sheet, beanObj, config, work);
         }
         
+        // リスナークラスの@PostLoadの取得
+        if(listenerAnno != null) {
+            Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            for(Method method : listenerObj.getClass().getMethods()) {
+                final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPostLoad.class);
+                if(postProcessAnno != null) {
+                    work.addNeedPostProcess(new NeedProcess(beanObj, listenerObj, method));
+                }
+            }
+            
+        }
+        
         //@PostLoadが付与されているメソッドの実行
         for(NeedProcess need : work.getNeedPostProcesses()) {
-            Utils.invokeNeedProcessMethod(need.getMethod(), need.getTarget(), sheet, config, work.getErrors());
+            Utils.invokeNeedProcessMethod(need.getProcess(), need.getMethod(), need.getTarget(), sheet, config, work.getErrors());
         }
         
         return beanObj;
