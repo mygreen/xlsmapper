@@ -117,7 +117,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
         } else {
             throw new AnnotationInvalidException(
-                    String.format("Annotation '@%s' should only granted List or Array. : %s", 
+                    String.format("Annotation '@%s' should only granted Collection(List/Set) or Array. : %s", 
                             XlsHorizontalRecords.class.getSimpleName(), clazz.getName()),
                             anno);
         }
