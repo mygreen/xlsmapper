@@ -70,14 +70,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     private static Logger logger = LoggerFactory.getLogger(HorizontalRecordsProcessor.class);
     
     @Override
-    public void loadProcess(final Sheet sheet, final Object obj, final XlsHorizontalRecords anno, final FieldAdaptor adaptor,
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsHorizontalRecords anno, final FieldAdaptor adaptor,
             final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
                 final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), obj, adaptor.getName());
+                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), beansObj, adaptor.getName());
             } catch(CellNotFoundException e) {
                 
             }
@@ -95,7 +95,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             if(value != null) {
                 @SuppressWarnings({"unchecked", "rawtypes"})
                 Collection<?> collection = Utils.convertListToCollection(value, (Class<Collection>)clazz, config.getBeanFactory());
-                adaptor.setValue(obj, collection);
+                adaptor.setValue(beansObj, collection);
             }
             
         } else if(clazz.isArray()) {
@@ -112,7 +112,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     Array.set(array, i, value.get(i));
                 }
                 
-                adaptor.setValue(obj, array);
+                adaptor.setValue(beansObj, array);
             }
             
         } else {
@@ -509,21 +509,21 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     }
     
     @Override
-    public void saveProcess(final Sheet sheet, final Object obj, final XlsHorizontalRecords anno,
+    public void saveProcess(final Sheet sheet, final Object beansObj, final XlsHorizontalRecords anno,
             final FieldAdaptor adaptor, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
                 final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), obj, adaptor.getName());
+                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), beansObj, adaptor.getName());
             } catch(CellNotFoundException e) {
                 
             }
         }
         
         final Class<?> clazz = adaptor.getTargetClass();
-        final Object result = adaptor.getValue(obj);
+        final Object result = adaptor.getValue(beansObj);
         if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> recordClass = anno.recordClass();
