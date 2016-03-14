@@ -37,7 +37,7 @@ XlsMapperConfigは、XlsMapperクラスのインスタンスを作成時にも�
 
 XlsMapperConfigでは以下の設定を行うことができます。
 
-.. list-table:: XlsConfigで設定可能な項目
+.. list-table:: XlsMapperConfigで設定可能な項目
    :widths: 20 30 50
    :header-rows: 1
    
