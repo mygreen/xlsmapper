@@ -47,13 +47,16 @@
      - | 処理対象のSheetオブジェクト。
    
    * - ``com.gh.mygreen.xlsmapper.XlsMapperConfig``
-     - | XlsMapperの設定オブジェクト。
+     - | :doc:`XlsMapperの設定オブジェクト <otheruse_config>` 。
    
    * - ``com.gh.mygreen.xlsmapper.validation.SheetBindingErrors``
-     - | シートのエラー情報を格納するオブジェクト。
+     - | :doc:`シートのエラー情報 <validation>` を格納するオブジェクト。
        | 読み込み時に引数で渡したオブジェクト。
    
    * - `処理対象のBeanオブジェクト`
+     - | 処理対象のBeanオブジェクト。 `[ver1.3+]`
+
+   * - ``java.lang.Object``
      - | 処理対象のBeanオブジェクト。 `[ver1.3+]`
 
 
@@ -83,9 +86,10 @@ JavaBeanクラスに実装する場合
         @XlsHorizontalRecords(tableLabel="ユーザ一覧")
         private List<UserRecord> records;
         
-        @XlsPostLoad
-        public void onPostLoad() {
-            // 読み込み後に実行される処理
+        @XlsPreLoad
+        @XlsPreSave
+        public void onInit() {
+            // 読み込み前と書き込み前に実行される処理
         }
     }
     
@@ -132,9 +136,10 @@ JavaBeanクラスに実装する場合
     // SampleSheetクラスのリスナー
     public static class SampleSheetListener {
         
-        @XlsPostLoad
-        public void onPostLoad(SampleSheet targetObj) {
-            // 読み込み後に実行される処理
+        @XlsPreLoad
+        @XlsPreSave
+        public void onInit(SampleSheet targetObj) {
+            // 読み込み前と書き込み前に実行される処理
         }
     }
     

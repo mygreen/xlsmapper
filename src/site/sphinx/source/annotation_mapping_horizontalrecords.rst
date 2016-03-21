@@ -23,7 +23,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 指定しない場合は、アノテーションの属性 ``recordClass`` でクラス型を指定します。
 
 レコード用クラスは、列の定義をアノテーション :ref:`@XlsColumn <annotationXlsColumn>` や :ref:`@XlsMapColumns <annotationXlsMapColumns>` で指定します。
-
+また、ツリー構造のように入れ子になったレコードをマッピングする場合は、 :ref:`@XlsNestedRecords <annotationXlsNestedRecords>` を使用します。
 
 
 .. sourcecode:: java
@@ -241,7 +241,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 表が他の表と連続しており属性terminalでBorder、Emptyのいずれを指定しても終端を検出できない場合があります。
-属性このような場合は、属性 ``terminateLabel`` で終端を示すセルの文字列を指定します。
+このような場合は、属性 ``terminateLabel`` で終端を示すセルの文字列を指定します。
 
 .. figure:: ./_static/HorizontalRecord_terminateLabel.png
    :align: center
@@ -290,6 +290,38 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 なお、セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。
 
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+表の見出しに空白がある場合(range)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+表の走査は、まず指定したタイトルなどの表の開始位置を元に、見出し用セルを取得し、その後、データのレコードを取得します。
+
+見出しセルを取得する際には、右方向に向かって検索をしますが、 `通常は空白セルが見つかった時点で走査を終了` します。
+
+空白セルの次にも見出し用セルがあるような場合、属性 ``range`` を指定することで、指定した値分の空白セルを許容し、
+さらに先のセルの検索を試みます。
+
+また、属性 ``headerAddress`` や ``tableLabel`` で指定した位置から表が開始しないような場合も、
+属性 ``range`` を指定することで、さらに先のセルの検索を試みます。
+
+
+.. figure:: ./_static/HorizontalRecord_range.png
+   :align: center
+   
+   HorizontalRecords(range)
+
+
+.. sourcecode:: java
+    
+    @XlsSheet(name="Users")
+    public class SampleSheet {
+        
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border,
+                range=3)
+        private List<UserRecord> records;
+    }
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 書き込み時にレコードが不足、余分である場合の操作の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -309,7 +341,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
   * ``RemainedRecordOperate.Noneは`` は、何もしません。
 
 
-.. figure:: ./_static/HorizontalRecord_overRecordpng.png
+.. figure:: ./_static/HorizontalRecord_overRecord.png
    :align: center
    
    HorizontalRecords(overRecord/remainedRecord)

@@ -23,6 +23,10 @@
      - Javaの型
      - 対応するアノテーション
      
+   * - | -(共通)
+     - | -(共通)
+     - :ref:`@XlsConverter <annotationXlsConverter>`
+     
    * - | ブール型
        | （TRUE/FALSE）
      - | boolean/Boolean
