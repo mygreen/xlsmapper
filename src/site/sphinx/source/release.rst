@@ -8,6 +8,8 @@ ver.1.4 - 2016-03-21
 
 * `#79 <https://github.com/mygreen/xlsmapper/issues/79>`_ : :ref:`@XlsNestedRecords <annotationXlsNestedRecords>` による、入れ子構造の表をマッピングする機能を追加しました。
 
+* セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.7に対応しました。
+
 
 --------------------------------------------------------
 ver.1.3 - 2016-03-13
