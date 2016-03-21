@@ -147,7 +147,7 @@ XMLに定義していないメソッドなどは、Javaのソースコードの�
         private String sheetName;
         
         @XlsHint(order=1)
-        @XlsConverter(trim=true, forceShrinkToFit=true, defaultValue="－")
+        @XlsConverter(trim=true, shrinkToFit=true, defaultValue="－")
         @XlsLabelledCell(label="名称", type=LabelledCellType.Right)  // <== 上書きされる
         private String name;
         

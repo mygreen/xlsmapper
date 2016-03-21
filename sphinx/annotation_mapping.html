@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>マッピング用のアノテーション &mdash; XlsMapper 1.3 ドキュメント</title>
+    <title>マッピング用のアノテーション &mdash; XlsMapper 1.4 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.3',
+        VERSION:     '1.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.3 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.4 ドキュメント" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -40,7 +40,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.3 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.4 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -64,8 +64,8 @@
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id30">2.4. 型変換用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id51">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id33">2.4. 型変換用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation.html#id54">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
@@ -104,20 +104,21 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">8. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">8.1. ver.1.3 - 2016-03-13</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.2. ver.1.2.1 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.3. ver.1.2 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.4. ver.1.1 - 2016-03-08</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.5. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.6. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.7. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.8. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.9. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.10. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.11. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.12. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.13. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.14. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">8.1. ver.1.4 - 2016-03-21</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">8.2. ver.1.3 - 2016-03-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.3. ver.1.2.1 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.4. ver.1.2 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.5. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.6. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.7. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.8. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.9. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.10. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.11. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.12. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.13. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.14. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.15. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -154,6 +155,56 @@
             
   <div class="section" id="id1">
 <h1>マッピング用のアノテーション<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<table border="1" class="docutils" id="id31">
+<caption><span class="caption-text">マッピング用のアノテーション</span><a class="headerlink" href="#id31" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">アノテーション</th>
+<th class="head">概要</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="annotation_mapping_sheet.html#annotationxlssheet"><span>&#64;XlsSheet</span></a></td>
+<td>シートをマッピングするために使用します。</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="annotation_mapping_cell.html#annotationxlscell"><span>&#64;XlsCell</span></a></td>
+<td>セルの座標を直接指定してマッピングします。</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="annotation_mapping_labelledcell.html#annotationxlslabelledcell"><span>&#64;XlsLabelledCell</span></a></td>
+<td>見出し付きのセルをマッピングします。</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="annotation_mapping_sheetname.html#annotationxlssheetname"><span>&#64;XlsSheetName</span></a></td>
+<td>シート名をマッピングします。</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a></td>
+<td>水平方向に連続する行のレコード持つ表をマッピングします。</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span>&#64;XlsVerticalRecords</span></a></td>
+<td>垂直方向に連続する列のレコードを持つ表をマッピングします。</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumn"><span>&#64;XlsColumn</span></a></td>
+<td>レコードのカラムをマッピングします。</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="annotation_mapping_mapcolumns.html#annotationxlsmapcolumns"><span>&#64;XlsMapColumns</span></a></td>
+<td>レコードの可変長のカラムをマッピングします。</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="annotation_mapping_nestedrecords.html#annotationxlsnestedrecords"><span>&#64;XlsNestedRecords</span></a></td>
+<td>入れ子構造のレコードをマッピングします。</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="annotation_mapping_iteratetables.html#annotationxlsiteratetables"><span>&#64;XlsIterateTables</span></a></td>
+<td>シート内で繰り返される同一構造の表をマッピングします。</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="annotation_mapping_hint.html#annotationxlshint"><span>&#64;XlsHint</span></a></td>
+<td>フィールドの処理順序などを指定するために使用します。</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="annotation_mapping_isempty.html#annotationxlsisempty"><span>&#64;XlsIsEmpty</span></a></td>
+<td>レコードを空と判定するためのメソッドに使用します。</td>
+</tr>
+</tbody>
+</table>
 <div class="section" id="xlssheet">
 <span id="annotationxlssheet"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsSheet</span></code><a class="headerlink" href="#xlssheet" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <div class="section" id="id2">
@@ -278,7 +329,7 @@
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id28">
+<div class="figure align-center" id="id32">
 <img alt="_images/Cell.png" src="_images/Cell.png" />
 <p class="caption"><span class="caption-text">Cell</span></p>
 </div>
@@ -309,7 +360,7 @@
 </li>
 <li>属性 <code class="docutils literal"><span class="pre">optional</span></code> で、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。</li>
 </ul>
-<div class="figure align-center" id="id29">
+<div class="figure align-center" id="id33">
 <img alt="_images/LabelledCell.png" src="_images/LabelledCell.png" />
 <p class="caption"><span class="caption-text">LabelledCell</span></p>
 </div>
@@ -328,7 +379,7 @@
 <div class="section" id="range">
 <h3>ラベルセルから離れたセルを指定する方法（属性range）<a class="headerlink" href="#range" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>属性 <code class="docutils literal"><span class="pre">range</span></code> を指定すると、属性typeの方向に向かって指定した <strong>セル数分を検索</strong> し、最初に発見した空白以外のセルの値を取得します。</p>
-<div class="figure align-center" id="id30">
+<div class="figure align-center" id="id34">
 <img alt="_images/LabelledCell_range.png" src="_images/LabelledCell_range.png" />
 <p class="caption"><span class="caption-text">LabelledCell(range)</span></p>
 </div>
@@ -346,7 +397,7 @@
 <h3>ラベルセルから離れたセルを指定する方法（属性skip）<a class="headerlink" href="#skip" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>属性 <code class="docutils literal"><span class="pre">skip</span></code> を指定すると、属性typeの方向に向かって指定した <strong>セル数分離れた</strong> セルの値をマッピングすることができます。</p>
 <p>ラベルセルを結合してる場合、結合しているセル数-1分を指定することでマッピングできます。</p>
-<div class="figure align-center" id="id31">
+<div class="figure align-center" id="id35">
 <img alt="_images/LabelledCell_skip.png" src="_images/LabelledCell_skip.png" />
 <p class="caption"><span class="caption-text">LabelledCell(skip)</span></p>
 </div>
@@ -364,7 +415,7 @@
 <h3>ラベルセルが重複するセルを指定する方法<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>同じラベルのセルが複数ある場合は、領域の見出しを属性 <code class="docutils literal"><span class="pre">headerLabel</span></code> で指定します。
 属性headerLabelで指定されたセルからlabel属性で指定されたセルを下方向に検索し、最初に見つかったセルをラベルセルとして使用します。</p>
-<div class="figure align-center" id="id32">
+<div class="figure align-center" id="id36">
 <img alt="_images/LabelledCell_headerLabel.png" src="_images/LabelledCell_headerLabel.png" />
 <p class="caption"><span class="caption-text">LabelledCell(headerLabel)</span></p>
 </div>
@@ -481,7 +532,7 @@
 <span id="annotationxlshorizontalrecords"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code><a class="headerlink" href="#xlshorizontalrecords" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>水平方向に連続する行をCollection(List、Set)または配列にマッピングします。</p>
 <p>標準では表には最上部に表の名称と列名を記述した行が必要になります。</p>
-<div class="figure align-center" id="id33">
+<div class="figure align-center" id="id37">
 <img alt="_images/HorizontalRecord.png" src="_images/HorizontalRecord.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords</span></p>
 </div>
@@ -489,7 +540,8 @@
 <p>List型または配列のフィールドに付与します。
 List型などの場合、Genericsのタイプとして、マッピング先のBeanクラスを指定します。
 指定しない場合は、アノテーションの属性 <code class="docutils literal"><span class="pre">recordClass</span></code> でクラス型を指定します。</p>
-<p>レコード用クラスは、列の定義をアノテーション <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumn"><span>&#64;XlsColumn</span></a> や <a class="reference internal" href="annotation_mapping_mapcolumns.html#annotationxlsmapcolumns"><span>&#64;XlsMapColumns</span></a> で指定します。</p>
+<p>レコード用クラスは、列の定義をアノテーション <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumn"><span>&#64;XlsColumn</span></a> や <a class="reference internal" href="annotation_mapping_mapcolumns.html#annotationxlsmapcolumns"><span>&#64;XlsMapColumns</span></a> で指定します。
+また、ツリー構造のように入れ子になったレコードをマッピングする場合は、 <a class="reference internal" href="annotation_mapping_nestedrecords.html#annotationxlsnestedrecords"><span>&#64;XlsNestedRecords</span></a> を使用します。</p>
 <div class="highlight-java"><div class="highlight"><pre><span class="c1">// シート用クラス</span>
 <span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
@@ -548,7 +600,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <div class="section" id="id7">
 <h3>表の名称から開始位置が離れた場所にある場合<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性 <code class="docutils literal"><span class="pre">bottom</span></code> で表の開始位置がどれだけ離れているか指定します。</p>
-<div class="figure align-center" id="id34">
+<div class="figure align-center" id="id38">
 <img alt="_images/HorizontalRecord_bottom.png" src="_images/HorizontalRecord_bottom.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(bottom)</span></p>
 </div>
@@ -566,7 +618,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h3>表の見出しが縦に結合されデータレコードの開始位置が離れた場所にある場合<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>表の見出しセルが縦に結合され、データレコードの開始位置が離れている場合、属性 <code class="docutils literal"><span class="pre">headerBottom</span></code> でデータレコードの開始位置がどれだけ離れているか指定します。 <cite>[ver1.1+]</cite></p>
 <p>下記の例の場合、見出しの「テスト結果」は横に結合されているため <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumnheadermerged"><span>&#64;XlsColumn(headerMerged=N)</span></a> と組み合わせて利用します。</p>
-<div class="figure align-center" id="id35">
+<div class="figure align-center" id="id39">
 <img alt="_images/HorizontalRecord_headerBottom.png" src="_images/HorizontalRecord_headerBottom.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(headerBottom)</span></p>
 </div>
@@ -612,7 +664,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>デフォルトでは行に1つもデータが存在しない場合、その表の終端となります。
 行の一番左側の列の罫線によってテーブルの終端を検出する方法もあります。
 この場合は <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> の属性 <code class="docutils literal"><span class="pre">terminal</span></code> に <code class="docutils literal"><span class="pre">RecordTerminal.Border</span></code> を指定してください。</p>
-<div class="figure align-center" id="id36">
+<div class="figure align-center" id="id40">
 <img alt="_images/HorizontalRecord_terminal.png" src="_images/HorizontalRecord_terminal.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(terminal)</span></p>
 </div>
@@ -667,8 +719,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <div class="section" id="terminatelabel">
 <h3>表の終端の指定（属性terminateLabel）<a class="headerlink" href="#terminatelabel" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>表が他の表と連続しており属性terminalでBorder、Emptyのいずれを指定しても終端を検出できない場合があります。
-属性このような場合は、属性 <code class="docutils literal"><span class="pre">terminateLabel</span></code> で終端を示すセルの文字列を指定します。</p>
-<div class="figure align-center" id="id37">
+このような場合は、属性 <code class="docutils literal"><span class="pre">terminateLabel</span></code> で終端を示すセルの文字列を指定します。</p>
+<div class="figure align-center" id="id41">
 <img alt="_images/HorizontalRecord_terminateLabel.png" src="_images/HorizontalRecord_terminateLabel.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(terminateLabel)</span></p>
 </div>
@@ -689,7 +741,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 主に無駄な走査を抑制したい場合にしますが、<a class="reference internal" href="annotation_mapping_iteratetables.html#annotationxlsiteratetables"><span>&#64;XlsIterateTables</span></a> 使用時に、テーブルが隣接しており終端を検出できない場合などに
 カラム数を明示的に指定してテーブルの区切りを指定する場合にも使用できます。</p>
 <p>たとえば以下の例は、列の見出しセルを3つ分検出したところでそのテーブルの終端と見なします。</p>
-<div class="figure align-center" id="id38">
+<div class="figure align-center" id="id42">
 <img alt="_images/HorizontalRecord_headerLimit.png" src="_images/HorizontalRecord_headerLimit.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(headerLimit)</span></p>
 </div>
@@ -705,7 +757,29 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>なお、セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。</p>
 </div>
 <div class="section" id="id10">
-<h3>書き込み時にレコードが不足、余分である場合の操作の指定<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<h3>表の見出しに空白がある場合(range)<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>表の走査は、まず指定したタイトルなどの表の開始位置を元に、見出し用セルを取得し、その後、データのレコードを取得します。</p>
+<p>見出しセルを取得する際には、右方向に向かって検索をしますが、 <cite>通常は空白セルが見つかった時点で走査を終了</cite> します。</p>
+<p>空白セルの次にも見出し用セルがあるような場合、属性 <code class="docutils literal"><span class="pre">range</span></code> を指定することで、指定した値分の空白セルを許容し、
+さらに先のセルの検索を試みます。</p>
+<p>また、属性 <code class="docutils literal"><span class="pre">headerAddress</span></code> や <code class="docutils literal"><span class="pre">tableLabel</span></code> で指定した位置から表が開始しないような場合も、
+属性 <code class="docutils literal"><span class="pre">range</span></code> を指定することで、さらに先のセルの検索を試みます。</p>
+<div class="figure align-center" id="id43">
+<img alt="_images/HorizontalRecord_range.png" src="_images/HorizontalRecord_range.png" />
+<p class="caption"><span class="caption-text">HorizontalRecords(range)</span></p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;ユーザ一覧&quot;</span><span class="o">,</span> <span class="n">terminal</span><span class="o">=</span><span class="n">RecordTerminal</span><span class="o">.</span><span class="na">Border</span><span class="o">,</span>
+            <span class="n">range</span><span class="o">=</span><span class="mi">3</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">UserRecord</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id11">
+<h3>書き込み時にレコードが不足、余分である場合の操作の指定<a class="headerlink" href="#id11" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>属性 <code class="docutils literal"><span class="pre">overRecord</span></code> 、 <code class="docutils literal"><span class="pre">remainedRecord</span></code> で、書き込み時のレコードの操作を指定することができます。</p>
 <ul class="simple">
 <li>属性 <code class="docutils literal"><span class="pre">overRecored</span></code> で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。<ul>
@@ -721,8 +795,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id39">
-<img alt="_images/HorizontalRecord_overRecordpng.png" src="_images/HorizontalRecord_overRecordpng.png" />
+<div class="figure align-center" id="id44">
+<img alt="_images/HorizontalRecord_overRecord.png" src="_images/HorizontalRecord_overRecord.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(overRecord/remainedRecord)</span></p>
 </div>
 <div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
@@ -734,8 +808,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id11">
-<h3>表の名称を正規表現、正規化して指定する場合<a class="headerlink" href="#id11" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id12">
+<h3>表の名称を正規表現、正規化して指定する場合<a class="headerlink" href="#id12" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>シートの構造は同じだが、ラベルのセルが微妙に異なる場合、ラベルセルを正規表現による指定が可能です。
 また、空白や改行を除去してラベルセルを比較するように設定することも可能です。 <cite>[ver1.1+]</cite></p>
 <ul class="simple">
@@ -778,7 +852,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>メソッドに定義する場合、<a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> と同じくList型の引数を1つだけ取るsetterメソッドに対して付与します。</p>
 <p>ここでは、アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> と異なる部分を説明します。
 詳細は、アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> の説明を参照してください。</p>
-<div class="figure align-center" id="id40">
+<div class="figure align-center" id="id45">
 <img alt="_images/VerticalRecord.png" src="_images/VerticalRecord.png" />
 <p class="caption"><span class="caption-text">VerticalRecords</span></p>
 </div>
@@ -802,11 +876,11 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <span class="o">}</span>
 </pre></div>
 </div>
-<div class="section" id="id12">
-<h3>表の名称位置の指定<a class="headerlink" href="#id12" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id13">
+<h3>表の名称位置の指定<a class="headerlink" href="#id13" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>実際に表を作る場合、垂直方向ですが表の名称は上方に設定することが一般的です。
 そのような場合、属性 <code class="docutils literal"><span class="pre">tableLabelAbove</span></code> の値を <code class="docutils literal"><span class="pre">true</span></code> に設定すると表のタイトルが上方に位置するとして処理します。 <cite>[ver1.0+]</cite></p>
-<div class="figure align-center" id="id41">
+<div class="figure align-center" id="id46">
 <img alt="_images/VerticalRecord_tableLabelAbove.png" src="_images/VerticalRecord_tableLabelAbove.png" />
 <p class="caption"><span class="caption-text">VerticalRecords（tableLabelAbove）</span></p>
 </div>
@@ -819,12 +893,12 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id13">
-<h3>表の名称から開始位置が離れた場所にある場合<a class="headerlink" href="#id13" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id14">
+<h3>表の名称から開始位置が離れた場所にある場合<a class="headerlink" href="#id14" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性 <code class="docutils literal"><span class="pre">right</span></code> で表の開始位置がどれだけ離れているか指定します。 <cite>[ver1.0]+</cite></p>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> の属性 <code class="docutils literal"><span class="pre">bottom</span></code> と同じような意味になります。</p>
 <p>さらに、属性 <code class="docutils literal"><span class="pre">tableLabelAbove=true</span></code> と組み合わせると、下方向にどれだけ離れているかの意味になります。</p>
-<div class="figure align-center" id="id42">
+<div class="figure align-center" id="id47">
 <img alt="_images/VerticalRecord_right.png" src="_images/VerticalRecord_right.png" />
 <p class="caption"><span class="caption-text">VerticalRecords（right）</span></p>
 </div>
@@ -837,12 +911,12 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id14">
-<h3>表の見出しが横に結合されデータレコードの開始位置が離れた場所にある場合<a class="headerlink" href="#id14" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id15">
+<h3>表の見出しが横に結合されデータレコードの開始位置が離れた場所にある場合<a class="headerlink" href="#id15" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>表の見出しセルが横に結合され、データレコードの開始位置が離れている場合、属性 <code class="docutils literal"><span class="pre">headerRight</span></code> でデータレコードの開始位置がどれだけ離れているか指定します。 <cite>[ver1.1+]</cite></p>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> の属性 <code class="docutils literal"><span class="pre">headerBottom</span></code> と同じような意味になります。</p>
 <p>下記の例の場合、見出しの「テスト結果」は横に結合されているため <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumnheadermerged"><span>&#64;XlsColumn(headerMerged=N)</span></a> と組み合わせて利用します。</p>
-<div class="figure align-center" id="id43">
+<div class="figure align-center" id="id48">
 <img alt="_images/VerticalRecord_headerRight.png" src="_images/VerticalRecord_headerRight.png" />
 <p class="caption"><span class="caption-text">VerticalRecords(headerRight)</span></p>
 </div>
@@ -880,8 +954,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id15">
-<h3>書き込み時にレコードが不足、余分である場合の操作の指定<a class="headerlink" href="#id15" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id16">
+<h3>書き込み時にレコードが不足、余分である場合の操作の指定<a class="headerlink" href="#id16" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>属性overRecord、remainedRecordで、書き込み時のレコードの操作を指定することができますが、 <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> 場合は <strong>一部の設定が使用できません</strong> 。</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> の場合、属性 <code class="docutils literal"><span class="pre">overRecord</span></code> では、列の挿入を行う <code class="docutils literal"><span class="pre">OverRecordOperate.Insert</span></code> は使用できません。</li>
@@ -897,7 +971,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>属性 <code class="docutils literal"><span class="pre">columnName</span></code> で、見出しとなるセルのラベルを指定します。</p>
 <p>フィールドやメソッドに対して付与します。</p>
 <p>セルが見つからない場合はエラーとなりますが、属性 <code class="docutils literal"><span class="pre">optional</span></code> を <code class="docutils literal"><span class="pre">true</span></code> とすることで無視して処理を続行します。</p>
-<div class="figure align-center" id="id44">
+<div class="figure align-center" id="id49">
 <img alt="_images/Column.png" src="_images/Column.png" />
 <p class="caption"><span class="caption-text">Column</span></p>
 </div>
@@ -915,11 +989,11 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <span class="o">}</span>
 </pre></div>
 </div>
-<div class="section" id="id16">
-<h3>データの列が結合されている場合<a class="headerlink" href="#id16" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id17">
+<h3>データの列が結合されている場合<a class="headerlink" href="#id17" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>同じ値がグループごとに結合されているカラムの場合は属性 <code class="docutils literal"><span class="pre">merged</span></code> をtrueに設定します。
 こうしておくと、前の列の値が引き継がれて設定されます。</p>
-<div class="figure align-center" id="id45">
+<div class="figure align-center" id="id50">
 <img alt="_images/Column_merged.png" src="_images/Column_merged.png" />
 <p class="caption"><span class="caption-text">Column(merged)</span></p>
 </div>
@@ -945,11 +1019,11 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 </div>
 <div class="section" id="annotationxlscolumnheadermerged">
-<span id="id17"></span><h3>見出し行が結合されている場合<a class="headerlink" href="#annotationxlscolumnheadermerged" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<span id="id18"></span><h3>見出し行が結合されている場合<a class="headerlink" href="#annotationxlscolumnheadermerged" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>見出し行が結合され、1つの見出しに対して複数の列が存在する場合は属性 <code class="docutils literal"><span class="pre">headerMerged</span></code> を使用します。</p>
 <p>属性headerMergedの値には列見出しから何セル分離れているかを指定します。</p>
 <p>属性columnNameで指定する見出しのセル名は、結合されているセルと同じ値を指定します。</p>
-<div class="figure align-center" id="id46">
+<div class="figure align-center" id="id51">
 <img alt="_images/Column_headerMerged.png" src="_images/Column_headerMerged.png" />
 <p class="caption"><span class="caption-text">Column(headerMerged)</span></p>
 </div>
@@ -972,8 +1046,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id18">
-<h3>見出しを正規表現、正規化して指定する場合<a class="headerlink" href="#id18" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id19">
+<h3>見出しを正規表現、正規化して指定する場合<a class="headerlink" href="#id19" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>シートの構造は同じだが、ラベルのセルが微妙に異なる場合、ラベルセルを正規表現による指定が可能です。
 また、空白や改行を除去してラベルセルを比較するように設定することも可能です。 <cite>[ver1.1+]</cite></p>
 <ul class="simple">
@@ -1012,13 +1086,13 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 <div class="section" id="xlsmapcolumns">
 <span id="annotationxlsmapcolumns"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsMapColumns</span></code><a class="headerlink" href="#xlsmapcolumns" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<div class="section" id="id19">
-<h3>基本的な使い方<a class="headerlink" href="#id19" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id20">
+<h3>基本的な使い方<a class="headerlink" href="#id20" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> もしくは <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span>&#64;XlsVerticalRecords</span></a> において、
 指定されたレコード用クラスのカラム数が可変の場合に、それらのカラムを <code class="docutils literal"><span class="pre">java.util.Map</span></code> として設定します。</p>
 <p>BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。</p>
 <p>属性 <code class="docutils literal"><span class="pre">previousColumnName</span></code> で、指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。</p>
-<div class="figure align-center" id="id47">
+<div class="figure align-center" id="id52">
 <img alt="_images/MapColumns.png" src="_images/MapColumns.png" />
 <p class="caption"><span class="caption-text">MapColumns</span></p>
 </div>
@@ -1036,10 +1110,10 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id20">
-<h3>終了条件のセルを指定する場合<a class="headerlink" href="#id20" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id21">
+<h3>終了条件のセルを指定する場合<a class="headerlink" href="#id21" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>属性 <code class="docutils literal"><span class="pre">nextColumnName</span></code> で、指定した前のカラムまでが処理対象となり、マッピングの終了条件を指定することができます。 <cite>[ver1.2+]</cite></p>
-<div class="figure align-center" id="id48">
+<div class="figure align-center" id="id53">
 <img alt="_images/MapColumns_nextColumnName.png" src="_images/MapColumns_nextColumnName.png" />
 <p class="caption"><span class="caption-text">MapColumns(nextColumnName)</span></p>
 </div>
@@ -1061,8 +1135,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id21">
-<h3>型変換する場合<a class="headerlink" href="#id21" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id22">
+<h3>型変換する場合<a class="headerlink" href="#id22" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>アノテーション <a class="reference internal" href="annotation_converter_converter.html#annotationxlsconverter"><span>&#64;XlsConverter</span></a> などで型変換を適用するときは、Mapの値が変換対象となります。
 マップのキーは必ずString型を指定してください。</p>
 <div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
@@ -1083,14 +1157,14 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id22">
-<h3>位置情報／見出し情報を取得する際の注意事項<a class="headerlink" href="#id22" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id23">
+<h3>位置情報／見出し情報を取得する際の注意事項<a class="headerlink" href="#id23" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>マッピング対象のセルのアドレスを取得する際に、フィールド <code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">Point&gt;</span> <span class="pre">positions</span></code> を定義しておけば、自動的にアドレスがマッピングされます。</p>
 <p>通常は、キーにはプロパティ名が記述（フィールドの場合はフィールド名）が入ります。</p>
 <p>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsMapColumns</span></code> でマッピングしたセルのキーは、 <cite>&lt;プロパティ名&gt;[&lt;セルの見出し&gt;]</cite> の形式になります。</p>
 <p>同様に、マッピング対象の見出しを取得する、フィールド <code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">labels</span></code> へのアクセスも、
 キーは、 <cite>&lt;プロパティ名&gt;[&lt;セルの見出し&gt;]</cite> の形式になります。</p>
-<div class="figure align-center" id="id49">
+<div class="figure align-center" id="id54">
 <img alt="_images/MapColumns_positions.png" src="_images/MapColumns_positions.png" />
 <p class="caption"><span class="caption-text">MapColumns(positions/labels)</span></p>
 </div>
@@ -1121,8 +1195,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id23">
-<h3>見出しを正規表現、正規化して指定する場合<a class="headerlink" href="#id23" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id24">
+<h3>見出しを正規表現、正規化して指定する場合<a class="headerlink" href="#id24" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>シートの構造は同じだが、ラベルのセルが微妙に異なる場合、ラベルセルを正規表現による指定が可能です。
 また、空白や改行を除去してラベルセルを比較するように設定することも可能です。 <cite>[ver1.1+]</cite></p>
 <ul class="simple">
@@ -1165,13 +1239,13 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id24">
-<h3>書き込み前に動的にテンプレートファイルを書き換える<a class="headerlink" href="#id24" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id25">
+<h3>書き込み前に動的にテンプレートファイルを書き換える<a class="headerlink" href="#id25" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>書き込み処理の場合、マップのキーがデータごとに異なり、テンプレートのフォーマットと合わない場合があります。</p>
 <p>そのような場合、テンプレートファイルを書き込むデータに合わせて書き換えます。
 その際には、 <a class="reference internal" href="annotation_lifecycle.html"><em>ライフサイクル・コールバック用のアノテーション</em></a> <code class="docutils literal"><span class="pre">&#64;XlsPreSave</span></code> で、実装を行うことができます。</p>
 <p>実装処理は、Apache POIのAPIを使って行います。。</p>
-<div class="figure align-center" id="id50">
+<div class="figure align-center" id="id55">
 <img alt="_images/MapColumns_preSave.png" src="_images/MapColumns_preSave.png" />
 <p class="caption"><span class="caption-text">MapColumns(preSave)</span></p>
 </div>
@@ -1248,15 +1322,141 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 </div>
 </div>
+<div class="section" id="xlsnestedrecords">
+<span id="annotationxlsnestedrecords"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsNestedRecords</span></code><a class="headerlink" href="#xlsnestedrecords" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> もしくは <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span>&#64;XlsVerticalRecords</span></a> のレコード用クラスにおいて、ツリー構造のように入れ子になっている表をマッピングする際に使用します。 <cite>[ver.1.4+]</cite></p>
+<div class="section" id="id26">
+<h3>一対多の関係<a class="headerlink" href="#id26" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>一対多の関係を表現する際には、Collection(List/Set)または、配列で指定します。</p>
+<ul class="simple">
+<li>親子関係は、結合しているかで表現します。<ul>
+<li>結合している個数が不一致の場合は、例外 <code class="docutils literal"><span class="pre">NestMergedSizeException</span></code> がスローされます。</li>
+</ul>
+</li>
+<li>親に指定しているJavaBeanクラスは、子や孫には指定することができません。<ul>
+<li>カラムの定義はレコードに記述されているため、親子に同じレコードのクラス定義があると、無限に再帰処理してしまうため、それを防ぐための制約になります。</li>
+</ul>
+</li>
+<li>属性 <code class="docutils literal"><span class="pre">&#64;XlsHorizotanlRecords#terminalLabel</span></code> や <code class="docutils literal"><span class="pre">&#64;XlsHorizotanlRecords#ignoreEmptyRecord</span></code> などの終端や空のレコードの判定は、入れ子になったレコードごとに判定されます。</li>
+<li>読み込みの際、アノテーション <a class="reference internal" href="annotation_mapping_isempty.html#annotationxlsisempty"><span>&#64;XlsIsEmpty</span></a> で、空のレコードを読み飛ばした結果、レコード数が0件となった場合は、要素数0個リストや配列が設定されます。</li>
+</ul>
+<div class="figure align-center" id="id56">
+<img alt="_images/NestedRecords_oneToMany.png" src="_images/NestedRecords_oneToMany.png" />
+<p class="caption"><span class="caption-text">NestedRecords(一対多の関係)</span></p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// シート用クラス</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;機能&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;機能一覧&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">CategoryRecord</span><span class="o">&gt;</span> <span class="n">categories</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// レコード用クラス（分類）</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CategoryRecord</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;分類&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;説明（分類）&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">description</span><span class="o">;</span>
+
+    <span class="c1">// ネストしたレコードのマッピング</span>
+    <span class="nd">@XlsNestedRecords</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">FunctionRecord</span><span class="o">&gt;</span> <span class="n">functions</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// レコード用クラス（機能）</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FunctionRecord</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;機能名&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;説明（機能）&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">description</span><span class="o">;</span>
+
+    <span class="c1">// ネストしたレコードのマッピング</span>
+    <span class="nd">@XlsNestedRecords</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">DetailRecord</span><span class="o">&gt;</span> <span class="n">details</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// レコード用クラス（詳細）</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DetailRecord</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;項目&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;値&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id27">
+<h3>一対一の関係<a class="headerlink" href="#id27" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>一対一の関係をマッピングする際には、ネストしたクラスを直接指定します。</p>
+<p>クラス定義などの制約は、基本的に一対多のときと同じです。</p>
+<div class="figure align-center" id="id57">
+<img alt="_images/NestedRecords_oneToOne.png" src="_images/NestedRecords_oneToOne.png" />
+<p class="caption"><span class="caption-text">NestedRecords(一対一の関係)</span></p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// シート用クラス</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;学期末テスト&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;テスト結果&quot;</span><span class="o">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">UserRecord</span><span class="o">&gt;</span> <span class="n">users</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// レコード用クラス（生徒情報）</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRecord</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;No.&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">no</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;クラス&quot;</span><span class="o">,</span> <span class="n">merged</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">className</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;氏名&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="c1">// ネストしたレコードのマッピング</span>
+    <span class="nd">@XlsNestedRecords</span>
+    <span class="kd">private</span> <span class="n">ResultRecord</span> <span class="n">result</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="c1">// レコード用クラス（テスト結果）</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FunctionRecord</span> <span class="o">{</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;国語&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">kokugo</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;算数&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">sansu</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;合計&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">sum</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="xlsiteratetables">
 <span id="annotationxlsiteratetables"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code><a class="headerlink" href="#xlsiteratetables" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>同一の構造の表がシート内で繰り返し出現する場合に使用します。</p>
-<div class="section" id="id25">
-<h3>基本的な使い方<a class="headerlink" href="#id25" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id28">
+<h3>基本的な使い方<a class="headerlink" href="#id28" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>属性 <code class="docutils literal"><span class="pre">tableLabel</span></code> で繰り返し部分の表の名称を指定します。</p>
 <p>また、属性bottomは、<code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> 内で <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> を使用する場合に、
 テーブルの開始位置が <code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> の表の名称セルからどれだけ離れているかを指定します。</p>
-<div class="figure align-center" id="id51">
+<div class="figure align-center" id="id58">
 <img alt="_images/IterateTables.png" src="_images/IterateTables.png" />
 <p class="caption"><span class="caption-text">IterateTables</span></p>
 </div>
@@ -1295,8 +1495,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </div>
 </div>
-<div class="section" id="id26">
-<h3>表の名称を正規表現、正規化して指定する場合<a class="headerlink" href="#id26" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id29">
+<h3>表の名称を正規表現、正規化して指定する場合<a class="headerlink" href="#id29" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>シートの構造は同じだが、ラベルのセルが微妙に異なる場合、ラベルセルを正規表現による指定が可能です。
 また、空白や改行を除去してラベルセルを比較するように設定することも可能です。 <cite>[ver1.1+]</cite></p>
 <ul class="simple">
@@ -1338,7 +1538,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>このようなときに、<code class="docutils literal"><span class="pre">&#64;XlsHint</span></code> の属性 <code class="docutils literal"><span class="pre">order</span></code> で書き込む処理順序を指定し一定に保つことができます。</p>
 <p><code class="docutils literal"><span class="pre">&#64;XlsHint</span></code> を付与しないフィールドは、付与しているフィールドよりも後から処理が実行されます。
 属性orderが同じ値を設定されているときは、 フィールド名の昇順で優先度を決めて処理されます。</p>
-<div class="figure align-center" id="id52">
+<div class="figure align-center" id="id59">
 <img alt="_images/Hint.png" src="_images/Hint.png" />
 <p class="caption"><span class="caption-text">Hint</span></p>
 </div>
@@ -1368,8 +1568,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 <div class="section" id="xlsisempty">
 <span id="annotationxlsisempty"></span><h2><code class="docutils literal"><span class="pre">&#64;XlsIsEmpty</span></code><a class="headerlink" href="#xlsisempty" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<div class="section" id="id27">
-<h3>基本的な使い方<a class="headerlink" href="#id27" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id30">
+<h3>基本的な使い方<a class="headerlink" href="#id30" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> 、<a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span>&#64;XlsVerticalRecords</span></a> を使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
 レコードが空と判定するためのメソッドに付与します。</p>
 <ul class="simple">
@@ -1485,7 +1685,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.3 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.4 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

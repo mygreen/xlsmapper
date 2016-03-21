@@ -71,7 +71,7 @@
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          <em class="jxr_comment">// assertion</em>
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          assertThat(sheet.createDate, is(toUtilDate(toTimestamp(<span class="jxr_string">"2016-03-08 00:00:00.000"</span>))));
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          assertThat(sheet.users, hasSize(4));
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">for</strong>(<a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoHorizontalRecordsTest.html">UserRecord</a> record : sheet.users) {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">for</strong>(<a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoVerticalRecordsTest.html">UserRecord</a> record : sheet.users) {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>              <strong class="jxr_keyword">if</strong>(record.no == 1) {
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>                  assertThat(record.className, is(<span class="jxr_string">"A"</span>));
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>                  assertThat(record.name, is(<span class="jxr_string">"Ichiro"</span>));
@@ -109,21 +109,21 @@
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>         List&lt;UserRecord&gt; users = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         <em class="jxr_comment">// 1レコード分の作成</em>
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>         <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoHorizontalRecordsTest.html">UserRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoHorizontalRecordsTest.html">UserRecord</a>();
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoVerticalRecordsTest.html">UserRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoVerticalRecordsTest.html">UserRecord</a>();
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         record1.no = 1;
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         record1.className = <span class="jxr_string">"A"</span>;
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         record1.name = <span class="jxr_string">"Ichiro"</span>;
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         record1.gender = Gender.male;
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         users.add(record1);
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoHorizontalRecordsTest.html">UserRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoHorizontalRecordsTest.html">UserRecord</a>();
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>         <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoVerticalRecordsTest.html">UserRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoVerticalRecordsTest.html">UserRecord</a>();
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         record2.no = 2;
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         record2.className = <span class="jxr_string">"A"</span>;
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>         record2.name = <span class="jxr_string">"Hanako"</span>;
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         record2.gender = Gender.female;
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         users.add(record2);
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>         <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoHorizontalRecordsTest.html">UserRecord</a> record3 = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoHorizontalRecordsTest.html">UserRecord</a>();
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>         <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoVerticalRecordsTest.html">UserRecord</a> record3 = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoVerticalRecordsTest.html">UserRecord</a>();
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         record3.no = 3;
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>         record3.className = <span class="jxr_string">"B"</span>;
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         record3.name = <span class="jxr_string">"Taro"</span>;
@@ -147,7 +147,7 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         assertThat(inSheet.createDate, is(sheet.createDate));
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         assertThat(inSheet.users, hasSize(sheet.users.size()));
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i=0; i &lt; inSheet.users.size(); i++) {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>             <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoHorizontalRecordsTest.html">UserRecord</a> inRecord = inSheet.users.get(i);
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>             <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoVerticalRecordsTest.html">UserRecord</a> inRecord = inSheet.users.get(i);
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>             assertThat(inRecord.className, is(sheet.users.get(i).className));
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             assertThat(inRecord.name, is(sheet.users.get(i).name));
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>             assertThat(inRecord.gender, is(sheet.users.get(i).gender));
@@ -169,7 +169,7 @@
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     }
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>     
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>     <em class="jxr_comment">// レコード用のPOJOクラスの定義</em>
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoHorizontalRecordsTest.html">UserRecord</a> {
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoVerticalRecordsTest.html">UserRecord</a> {
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>         @XlsColumn(columnName=<span class="jxr_string">"ID"</span>)
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>         <strong class="jxr_keyword">int</strong> no;
