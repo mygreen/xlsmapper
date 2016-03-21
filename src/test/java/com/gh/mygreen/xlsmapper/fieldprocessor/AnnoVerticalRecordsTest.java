@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -26,6 +28,7 @@ import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.IsEmptyComparator;
 import com.gh.mygreen.xlsmapper.IsEmptyConfig;
+import com.gh.mygreen.xlsmapper.POIUtils;
 import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
@@ -38,6 +41,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
+import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
@@ -49,7 +53,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * {@link VerticalRecordsProcessor}のテスタ
  * アノテーション{@link XlsVerticalRecords}のテスタ。
  * 
- * @version 1.1
+ * @version 1.4
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -215,6 +219,53 @@ public class AnnoVerticalRecordsTest {
     }
     
     /**
+     * 見出しの空白
+     * @since 1.4
+     */
+    @Test
+    public void test_load_vr_headerSpace() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(HeaderSpaceSheet.class);
+            
+            HeaderSpaceSheet sheet = mapper.load(in, HeaderSpaceSheet.class, errors);
+            
+            if(sheet.records1 != null) {
+                assertThat(sheet.records1, hasSize(2));
+                for(HeaderSpaceSheet.UserRecord record : sheet.records1) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.records2 != null) {
+                assertThat(sheet.records2, hasSize(2));
+                for(HeaderSpaceSheet.UserRecord record : sheet.records2) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.records3 != null) {
+                assertThat(sheet.records3, hasSize(2));
+                for(HeaderSpaceSheet.UserRecord record : sheet.records3) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.records4 != null) {
+                assertThat(sheet.records4, hasSize(2));
+                for(HeaderSpaceSheet.UserRecord record : sheet.records4) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+        }
+        
+    }
+    
+    /**
      * カラムの設定テスト
      */
     @Test
@@ -341,6 +392,13 @@ public class AnnoVerticalRecordsTest {
             if(sheet.skipList != null) {
                 assertThat(sheet.skipList, hasSize(3));
                 for(EmptySkipRecord record : sheet.skipList) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.skipSet != null) {
+                assertThat(sheet.skipSet, hasSize(3));
+                for(EmptySkipRecord record : sheet.skipSet) {
                     assertRecord(record, errors);
                 }
             }
@@ -536,6 +594,58 @@ public class AnnoVerticalRecordsTest {
         
     }
     
+    /**
+     * ネストした表のテスト
+     * @since 1.4
+     */
+    @Test
+    public void test_load_vr_nestedRecords() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(NestedSheet.class);
+            
+            NestedSheet sheet = mapper.load(in, NestedSheet.class, errors);
+            
+            if(sheet.largeRecords1 != null) {
+                sheet.printRecord1();
+                
+                assertThat(sheet.largeRecords1, hasSize(3));
+                for(NestedSheet.LargeRecord record : sheet.largeRecords1) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.largeRecords2 != null) {
+                sheet.printRecord2();
+                
+                assertThat(sheet.largeRecords2, hasSize(3));
+                for(NestedSheet.LargeRecord record : sheet.largeRecords2) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.largeRecords3 != null) {
+                sheet.printRecord3();
+                
+                assertThat(sheet.largeRecords3, hasSize(3));
+                for(NestedSheet.HeaderMergedLargeRecord record : sheet.largeRecords3) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.oneToOneRecords != null) {
+                assertThat(sheet.oneToOneRecords, hasSize(4));
+                for(NestedSheet.OneToOneRecord record : sheet.oneToOneRecords) {
+                    assertRecord(record, errors);
+                }
+            }
+        }
+        
+    }
+    
     private void assertRecord(final NormalRecord record, final SheetBindingErrors errors) {
         
         if(record.no == 1) {
@@ -547,6 +657,25 @@ public class AnnoVerticalRecordsTest {
             assertThat(record.value, is(-12.0));
         }
         
+    }
+    
+    private void assertRecord(final HeaderSpaceSheet.UserRecord record, final SheetBindingErrors errors) {
+        
+        assertThat(record.labels.get("no"), is("No."));
+        assertThat(record.labels.get("name"), is("氏名"));
+        assertThat(record.labels.get("tel"), is("電話番号"));
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.tel, is("090-1111-1111"));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.tel, is("090-2222-222"));
+            
+        }
+        
+    
     }
     
     private void assertRecord(final MergedRecord record, final SheetBindingErrors errors) {
@@ -589,11 +718,14 @@ public class AnnoVerticalRecordsTest {
             assertThat(record.name, is("山田太郎"));
             assertThat(record.mail, is("taro.yamada@example.com"));
             assertThat(record.tel, is("0000-1111-2222"));
+            assertThat(record.comment, is("コメント1"));
+            
             
         } else if(record.no == 2) {
             assertThat(record.name, is("鈴木次郎"));
             assertThat(record.mail, is("jiro.suzuki@example.com"));
             assertThat(record.tel, is("0000-3333-4444"));
+            assertThat(record.comment, is("コメント2"));
         }
         
     }
@@ -793,6 +925,144 @@ public class AnnoVerticalRecordsTest {
             assertThat(record.comment, is("改善している。"));
             
         }
+        
+    }
+    
+private void assertRecord(final NestedSheet.LargeRecord largeRecord, final SheetBindingErrors errors) {
+        
+        final String largeName = largeRecord.largeName;
+        assertThat(largeRecord.largeDescription, is(String.format("%sの説明", largeName)));
+        assertThat(largeRecord.labels.get("largeName"), is("大分類"));
+        assertThat(largeRecord.labels.get("largeDescription"), is("説明（大分類）"));
+        
+        if(largeName.equals("機能A")) {
+            assertThat(largeRecord.middleRecords, hasSize(3));
+        } else if(largeName.equals("機能B")) {
+            assertThat(largeRecord.middleRecords, hasSize(2));
+        } else if(largeName.equals("機能C")) {
+            assertThat(largeRecord.middleRecords, hasSize(1));
+        }
+        
+        if(largeRecord.middleRecords != null) {
+            for(final NestedSheet.MiddleRecord middleRecord : largeRecord.middleRecords) {
+                final String middleName = middleRecord.middleName;
+                assertThat(middleRecord.middleDescription, is(String.format("%sの説明", middleName)));
+                assertThat(middleRecord.labels.get("middleName"), is("中分類"));
+                assertThat(middleRecord.labels.get("middleDescription"), is("説明（中分類）"));
+                
+                if(middleName.equals("機能A1")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(2));
+                } else if(middleName.equals("機能A2")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(1));
+                } else if(middleName.equals("機能A3")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(3));
+                } else if(middleName.equals("機能B1")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(1));
+                } else if(middleName.equals("機能B2")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(2));
+                } else if(middleName.equals("機能C1")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(1));
+                }
+                
+                for(NestedSheet.SmallRecord smallRecord : middleRecord.smallRecords) {
+                    
+                    final String smallName = smallRecord.name;
+                    assertThat(smallRecord.value, is(String.format("%sの値", smallName)));
+                    assertThat(smallRecord.labels.get("name"), is("項目"));
+                    assertThat(smallRecord.labels.get("value"), is("値"));
+                }
+            }
+        }
+        
+        
+    }
+    
+    private void assertRecord(final NestedSheet.HeaderMergedLargeRecord largeRecord, final SheetBindingErrors errors) {
+        
+        final String largeName = largeRecord.largeName;
+        assertThat(largeRecord.largeDescription, is(String.format("%sの説明", largeName)));
+        assertThat(largeRecord.labels.get("largeName"), is("大分類"));
+        assertThat(largeRecord.labels.get("largeDescription"), is("大分類"));
+        
+        if(largeName.equals("機能A")) {
+            assertThat(largeRecord.middleRecords, hasSize(3));
+        } else if(largeName.equals("機能B")) {
+            assertThat(largeRecord.middleRecords, hasSize(2));
+        } else if(largeName.equals("機能C")) {
+            assertThat(largeRecord.middleRecords, hasSize(1));
+        }
+        
+        if(largeRecord.middleRecords != null) {
+            for(final NestedSheet.HeaderMergedMiddleRecord middleRecord : largeRecord.middleRecords) {
+                final String middleName = middleRecord.middleName;
+                assertThat(middleRecord.middleDescription, is(String.format("%sの説明", middleName)));
+                assertThat(middleRecord.labels.get("middleName"), is("中分類"));
+                assertThat(middleRecord.labels.get("middleDescription"), is("中分類"));
+                
+                if(middleName.equals("機能A1")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(2));
+                } else if(middleName.equals("機能A2")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(1));
+                } else if(middleName.equals("機能A3")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(3));
+                } else if(middleName.equals("機能B1")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(1));
+                } else if(middleName.equals("機能B2")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(2));
+                } else if(middleName.equals("機能C1")) {
+                    assertThat(middleRecord.smallRecords, arrayWithSize(1));
+                }
+                
+                for(NestedSheet.HeaderMergedSmallRecord smallRecord : middleRecord.smallRecords) {
+                    
+                    final String smallName = smallRecord.name;
+                    assertThat(smallRecord.value, is(String.format("%sの値", smallName)));
+                    assertThat(smallRecord.labels.get("name"), is("詳細"));
+                    assertThat(smallRecord.labels.get("value"), is("詳細"));
+                }
+            }
+        }
+        
+        
+    }
+    
+    private void assertRecord(final NestedSheet.OneToOneRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.className, is("A"));
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))));
+            
+            assertThat(record.result.kokugo, is(90));
+            assertThat(record.result.sansu, is(70));
+            assertThat(record.result.sum, is(160));
+            
+        } else if(record.no == 2) {
+            assertThat(record.className, is("A"));
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))));
+            
+            assertThat(record.result.kokugo, is(80));
+            assertThat(record.result.sansu, is(90));
+            assertThat(record.result.sum, is(170));
+            
+        } else if(record.no == 3) {
+            assertThat(record.className, is("B"));
+            assertThat(record.name, is("林三郎"));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-05-01 00:00:00.000"))));
+            
+            assertThat(record.result.kokugo, is(60));
+            assertThat(record.result.sansu, is(30));
+            assertThat(record.result.sum, is(90));
+            
+        } else if(record.no == 4) {
+            assertThat(record.className, is("B"));
+            assertThat(record.name, is("山田花子"));
+            assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-05-02 00:00:00.000"))));
+            
+            assertThat(record.result, is(nullValue()));
+        }
+        
         
     }
     
@@ -1043,6 +1313,85 @@ public class AnnoVerticalRecordsTest {
     }
     
     /**
+     * 書き込みのテスト - 見出しの空白がある場合のテスト
+     */
+    @Test
+    public void test_save_vr_headerSpace() throws Exception {
+        
+        // テストデータの作成
+        HeaderSpaceSheet outSheet = new HeaderSpaceSheet();
+        
+        outSheet.addRecord1(new HeaderSpaceSheet.UserRecord().name("山田太郎").tel("090-1111-1111"));
+        outSheet.addRecord1(new HeaderSpaceSheet.UserRecord().name("鈴木次郎").tel("090-2222-222"));
+        
+        outSheet.addRecord2(new HeaderSpaceSheet.UserRecord().name("山田太郎").tel("090-1111-1111"));
+        outSheet.addRecord2(new HeaderSpaceSheet.UserRecord().name("鈴木次郎").tel("090-2222-222"));
+        
+        outSheet.addRecord3(new HeaderSpaceSheet.UserRecord().name("山田太郎").tel("090-1111-1111"));
+        outSheet.addRecord3(new HeaderSpaceSheet.UserRecord().name("鈴木次郎").tel("090-2222-222"));
+        
+        outSheet.addRecord4(new HeaderSpaceSheet.UserRecord().name("山田太郎").tel("090-1111-1111"));
+        outSheet.addRecord4(new HeaderSpaceSheet.UserRecord().name("鈴木次郎").tel("090-2222-222"));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(HeaderSpaceSheet.class);
+            
+            HeaderSpaceSheet sheet = mapper.load(in, HeaderSpaceSheet.class, errors);
+            
+            if(sheet.records1 != null) {
+                assertThat(sheet.records1, hasSize(outSheet.records1.size()));
+                
+                for(int i=0; i < sheet.records1.size(); i++) {
+                    assertRecord(sheet.records1.get(i), outSheet.records1.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.records2 != null) {
+                assertThat(sheet.records2, hasSize(outSheet.records2.size()));
+                
+                for(int i=0; i < sheet.records2.size(); i++) {
+                    assertRecord(sheet.records2.get(i), outSheet.records2.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.records3 != null) {
+                assertThat(sheet.records3, hasSize(outSheet.records3.size()));
+                
+                for(int i=0; i < sheet.records3.size(); i++) {
+                    assertRecord(sheet.records3.get(i), outSheet.records3.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.records4 != null) {
+                assertThat(sheet.records4, hasSize(outSheet.records4.size()));
+                
+                for(int i=0; i < sheet.records4.size(); i++) {
+                    assertRecord(sheet.records4.get(i), outSheet.records4.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
      * 書き込みのテスト - カラム設定のテスト
      * @throws Exception
      */
@@ -1102,10 +1451,10 @@ public class AnnoVerticalRecordsTest {
         
         // 見出しが結合
         outSheet.addHeaderMerged(new HeaderMergedRecord()
-                .name("山田太郎").mail("taro.yamada@example.com").tel("0000-1111-2222"));
+                .name("山田太郎").mail("taro.yamada@example.com").tel("0000-1111-2222").comment("コメント1"));
         
         outSheet.addHeaderMerged(new HeaderMergedRecord()
-                .name("鈴木次郎").mail("jiro.suzuki@example.com").tel("0000-3333-4444"));
+                .name("鈴木次郎").mail("jiro.suzuki@example.com").tel("0000-3333-4444").comment("コメント1"));
         
         // オプションのセル（セルがある）
         outSheet.addOptional1(new OptionalRecord()
@@ -1292,6 +1641,13 @@ public class AnnoVerticalRecordsTest {
         outSheet.addList(new EmptySkipRecord().name("林三郎").birthday(toUtilDate(toTimestamp("1992-04-14 00:00:00.000"))));
         outSheet.addList(new EmptySkipRecord());
         
+        // 名簿（集合）
+        outSheet.addSet(new EmptySkipRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1989-01-02 00:00:00.000"))));
+        outSheet.addSet(new EmptySkipRecord().name("鈴木次郎").birthday(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
+        outSheet.addSet(new EmptySkipRecord());
+        outSheet.addSet(new EmptySkipRecord().name("林三郎").birthday(toUtilDate(toTimestamp("1992-04-14 00:00:00.000"))));
+        outSheet.addSet(new EmptySkipRecord());
+        
         // 名簿（配列）
         outSheet.addArray(new EmptySkipRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1989-01-02 00:00:00.000"))));
         outSheet.addArray(new EmptySkipRecord().name("鈴木次郎").birthday(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
@@ -1325,6 +1681,20 @@ public class AnnoVerticalRecordsTest {
                         continue;
                     }
                     assertRecord(sheet.skipList.get(i - emptyRecordCount), outSheet.skipList.get(i), errors);
+                }
+                
+                assertThat(sheet.skipList, hasSize(outSheet.skipList.size() - emptyRecordCount));
+                
+            }
+            
+            if(sheet.skipSet != null) {
+                int emptyRecordCount = 0;
+                for(int i=0; i < outSheet.skipSet.size(); i++) {
+                    if(outSheet.skipSet.toArray(new EmptySkipRecord[0])[i].isEmpty()) {
+                        emptyRecordCount++;
+                        continue;
+                    }
+                    assertRecord(sheet.skipSet.toArray(new EmptySkipRecord[0])[i - emptyRecordCount], outSheet.skipSet.toArray(new EmptySkipRecord[0])[i], errors);
                 }
                 
                 assertThat(sheet.skipList, hasSize(outSheet.skipList.size() - emptyRecordCount));
@@ -1876,6 +2246,165 @@ public class AnnoVerticalRecordsTest {
     }
     
     /**
+     * 書き込みのテスト - ネストしたレコード
+     * @since 1.4
+     */
+    @Test
+    public void test_save_vr_nestedRecords() throws Exception {
+        
+        // テストデータの作成
+        NestedSheet outSheet = new NestedSheet();
+        
+        // ○通常の表
+        outSheet.addRecord1(new NestedSheet.LargeRecord().largeName("機能A").largeDescription("機能Aの説明")
+                .addRecord(new NestedSheet.MiddleRecord().middleName("機能A1").middleDescription("機能A1の説明")
+                        .addRecord(new NestedSheet.SmallRecord().name("項目A11").value("項目A11の値"))
+                        .addRecord(new NestedSheet.SmallRecord().name("項目A12").value("項目A12の値")))
+                .addRecord(new NestedSheet.MiddleRecord().middleName("機能A2").middleDescription("機能A2の説明")
+                        .addRecord(new NestedSheet.SmallRecord().name("項目A21").value("項目A21の値")))
+                .addRecord(new NestedSheet.MiddleRecord().middleName("機能A3").middleDescription("機能A3の説明")
+                        .addRecord(new NestedSheet.SmallRecord().name("項目A31").value("項目A31の値"))
+                        .addRecord(new NestedSheet.SmallRecord().name("項目A32").value("項目A32の値"))
+                        .addRecord(new NestedSheet.SmallRecord().name("項目A33").value("項目A33の値"))));
+        
+        outSheet.addRecord1(new NestedSheet.LargeRecord().largeName("機能B").largeDescription("機能Bの説明")
+                .addRecord(new NestedSheet.MiddleRecord().middleName("機能B1").middleDescription("機能B1の説明")
+                        .addRecord(new NestedSheet.SmallRecord().name("項目B11").value("項目B11の値")))
+                .addRecord(new NestedSheet.MiddleRecord().middleName("機能B2").middleDescription("機能B2の説明")
+                        .addRecord(new NestedSheet.SmallRecord().name("項目B21").value("項目B21の値"))
+                        .addRecord(new NestedSheet.SmallRecord().name("項目B22").value("項目B22の値"))));
+        
+        outSheet.addRecord1(new NestedSheet.LargeRecord().largeName("機能C").largeDescription("機能Cの説明")
+                .addRecord(new NestedSheet.MiddleRecord().middleName("機能C1").middleDescription("機能C1の説明")
+                        .addRecord(new NestedSheet.SmallRecord().name("項目C11").value("項目C11の値"))));
+        
+        // ○空のレコードがある表
+        outSheet.addRecord2(new NestedSheet.LargeRecord().largeName("機能A").largeDescription("機能Aの説明")
+                    .addRecord(new NestedSheet.MiddleRecord().middleName("機能A1").middleDescription("機能A1の説明")
+                            .addRecord(new NestedSheet.SmallRecord().name("項目A11").value("項目A11の値"))
+                            .addRecord(new NestedSheet.SmallRecord().name("項目A12").value("項目A12の値")))
+                    .addRecord(new NestedSheet.MiddleRecord())
+                    .addRecord(new NestedSheet.MiddleRecord().middleName("機能A2").middleDescription("機能A2の説明")
+                            .addRecord(new NestedSheet.SmallRecord().name("項目A21").value("項目A21の値")))
+                    .addRecord(new NestedSheet.MiddleRecord().middleName("機能A3").middleDescription("機能A3の説明")
+                            .addRecord(new NestedSheet.SmallRecord().name("項目A31").value("項目A31の値"))
+                            .addRecord(new NestedSheet.SmallRecord().name("項目A32").value("項目A32の値"))
+                            .addRecord(new NestedSheet.SmallRecord().name("項目A33").value("項目A33の値"))));
+        
+        outSheet.addRecord2(new NestedSheet.LargeRecord());
+        
+        outSheet.addRecord2(new NestedSheet.LargeRecord().largeName("機能B").largeDescription("機能Bの説明")
+                .addRecord(new NestedSheet.MiddleRecord().middleName("機能B1").middleDescription("機能B1の説明")
+                        .addRecord(new NestedSheet.SmallRecord().name("項目B11").value("項目B11の値")))
+                .addRecord(new NestedSheet.MiddleRecord().middleName("機能B2").middleDescription("機能B2の説明")
+                        .addRecord(new NestedSheet.SmallRecord().name("項目B21").value("項目B21の値"))
+                        .addRecord(new NestedSheet.SmallRecord())
+                        .addRecord(new NestedSheet.SmallRecord().name("項目B22").value("項目B22の値"))));
+        
+        outSheet.addRecord2(new NestedSheet.LargeRecord().largeName("機能C").largeDescription("機能Cの説明")
+                .addRecord(new NestedSheet.MiddleRecord().middleName("機能C1").middleDescription("機能C1の説明")
+                        .addRecord(new NestedSheet.SmallRecord().name("項目C11").value("項目C11の値"))));
+        
+        
+        // ○見出しが結合している
+        outSheet.addRecord3(new NestedSheet.HeaderMergedLargeRecord().largeName("機能A").largeDescription("機能Aの説明")
+                .addRecord(new NestedSheet.HeaderMergedMiddleRecord().middleName("機能A1").middleDescription("機能A1の説明")
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目A11").value("項目A11の値"))
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目A12").value("項目A12の値")))
+                .addRecord(new NestedSheet.HeaderMergedMiddleRecord())
+                .addRecord(new NestedSheet.HeaderMergedMiddleRecord().middleName("機能A2").middleDescription("機能A2の説明")
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目A21").value("項目A21の値")))
+                .addRecord(new NestedSheet.HeaderMergedMiddleRecord().middleName("機能A3").middleDescription("機能A3の説明")
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目A31").value("項目A31の値"))
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目A32").value("項目A32の値"))
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目A33").value("項目A33の値"))));
+        
+        outSheet.addRecord3(new NestedSheet.HeaderMergedLargeRecord());
+        
+        outSheet.addRecord3(new NestedSheet.HeaderMergedLargeRecord().largeName("機能B").largeDescription("機能Bの説明")
+                .addRecord(new NestedSheet.HeaderMergedMiddleRecord().middleName("機能B1").middleDescription("機能B1の説明")
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目B11").value("項目B11の値")))
+                .addRecord(new NestedSheet.HeaderMergedMiddleRecord().middleName("機能B2").middleDescription("機能B2の説明")
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目B21").value("項目B21の値"))
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord())
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目B22").value("項目B22の値"))));
+        
+        outSheet.addRecord3(new NestedSheet.HeaderMergedLargeRecord().largeName("機能C").largeDescription("機能Cの説明")
+                .addRecord(new NestedSheet.HeaderMergedMiddleRecord().middleName("機能C1").middleDescription("機能C1の説明")
+                        .addRecord(new NestedSheet.HeaderMergedSmallRecord().name("項目C11").value("項目C11の値"))));
+            
+        // 一対一のネスト
+        outSheet.addRecord(new NestedSheet.OneToOneRecord().no(1).className("A").name("山田太郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000")))
+                .result(new NestedSheet.ResultRecord().kokugo(90).sansu(70).sum(160)));
+        
+        outSheet.addRecord(new NestedSheet.OneToOneRecord().no(2).className("A").name("鈴木次郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000")))
+                .result(new NestedSheet.ResultRecord().kokugo(80).sansu(90).sum(170)));
+        
+        outSheet.addRecord(new NestedSheet.OneToOneRecord().no(3).className("B").name("山田太郎").birthday(toUtilDate(toTimestamp("2000-05-01 00:00:00.000")))
+                .result(new NestedSheet.ResultRecord().kokugo(60).sansu(30).sum(90)));
+        
+        outSheet.addRecord(new NestedSheet.OneToOneRecord().no(4).className("B").name("山田花子").birthday(toUtilDate(toTimestamp("2000-05-02 00:00:00.000")))
+                /*.result(new NestedSheet.ResultRecord().kokugo(90).sansu(70).sum(160))*/);
+        
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        
+        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(NestedSheet.class);
+            
+            NestedSheet sheet = mapper.load(in, NestedSheet.class, errors);
+            
+            if(sheet.largeRecords1 != null) {
+                sheet.printRecord1();
+                
+                assertThat(sheet.largeRecords1, hasSize(3));
+                for(int i=0; i < sheet.largeRecords1.size(); i++) {
+                    assertRecord(sheet.largeRecords1.get(i), outSheet.largeRecords1.get(i), errors);
+                }
+            }
+            
+            if(sheet.largeRecords2 != null) {
+                sheet.printRecord2();
+                
+                assertThat(sheet.largeRecords2, hasSize(3));
+                
+                // 空白があるので、再読込した値のみチェックする。
+                for(NestedSheet.LargeRecord record : sheet.largeRecords2) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.largeRecords3 != null) {
+                sheet.printRecord3();
+                
+                assertThat(sheet.largeRecords3, hasSize(3));
+                
+                // 空白があるので、再読込した値のみチェックする。
+                for(NestedSheet.HeaderMergedLargeRecord record : sheet.largeRecords3) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.oneToOneRecords != null) {
+                assertThat(sheet.oneToOneRecords, hasSize(4));
+                for(int i=0; i < sheet.oneToOneRecords.size(); i++) {
+                    assertRecord(sheet.oneToOneRecords.get(i), outSheet.oneToOneRecords.get(i), errors);
+                }
+            }
+        }
+    }
+    
+    /**
      * 書き込んだレコードを検証するための
      * @param inRecord
      * @param outRecord
@@ -1889,6 +2418,23 @@ public class AnnoVerticalRecordsTest {
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.name, is(outRecord.name));
         assertThat(inRecord.value, is(outRecord.value));
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final HeaderSpaceSheet.UserRecord inRecord, final HeaderSpaceSheet.UserRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        assertThat(inRecord.tel, is(outRecord.tel));
+        
     }
     
     /**
@@ -1922,6 +2468,8 @@ public class AnnoVerticalRecordsTest {
         assertThat(inRecord.name, is(outRecord.name));
         assertThat(inRecord.mail, is(outRecord.mail));
         assertThat(inRecord.tel, is(outRecord.tel));
+        assertThat(inRecord.comment, is(outRecord.comment));
+        
     }
     
     /**
@@ -2228,6 +2776,83 @@ public class AnnoVerticalRecordsTest {
         assertThat(inRecord.name, is(trim(outRecord.name)));
         assertThat(inRecord.resultMap, is(outRecord.resultMap));
         assertThat(inRecord.comment, is(outRecord.comment));
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 1.4
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final NestedSheet.LargeRecord inLargeRecord, final NestedSheet.LargeRecord outLargeRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s largeName=%s\n",
+                this.getClass().getSimpleName(), inLargeRecord.getClass().getSimpleName(), inLargeRecord.largeName);
+        
+        assertThat(inLargeRecord.largeName, is(outLargeRecord.largeName));
+        assertThat(inLargeRecord.largeDescription, is(outLargeRecord.largeDescription));
+        assertThat(inLargeRecord.labels.get("largeName"), is(outLargeRecord.labels.get("largeName")));
+        assertThat(inLargeRecord.labels.get("largeDescription"), is(outLargeRecord.labels.get("largeDescription")));
+        
+        if(inLargeRecord.middleRecords != null) {
+            assertThat(inLargeRecord.middleRecords, hasSize(outLargeRecord.middleRecords.size()));
+            
+            for(int i=0; i < inLargeRecord.middleRecords.size(); i++) {
+                
+                final NestedSheet.MiddleRecord inMiddleRecord = inLargeRecord.middleRecords.get(i);
+                final NestedSheet.MiddleRecord outMiddleRecord = outLargeRecord.middleRecords.get(i);
+                
+                assertThat(inMiddleRecord.middleName, is(outMiddleRecord.middleName));
+                assertThat(inMiddleRecord.middleDescription, is(outMiddleRecord.middleDescription));
+                assertThat(inMiddleRecord.labels.get("middleName"), is(outMiddleRecord.labels.get("middleName")));
+                assertThat(inMiddleRecord.labels.get("middleDescription"), is(outMiddleRecord.labels.get("middleDescription")));
+                
+                if(inMiddleRecord.smallRecords != null) {
+                    assertThat(inMiddleRecord.smallRecords, arrayWithSize(outMiddleRecord.smallRecords.length));
+                    
+                    for(int j=0; j < inMiddleRecord.smallRecords.length; j++) {
+                        final NestedSheet.SmallRecord inSmallRecord = inMiddleRecord.smallRecords[j];
+                        final NestedSheet.SmallRecord outSmallRecord = outMiddleRecord.smallRecords[j];
+                        
+                        assertThat(inSmallRecord.name, is(outSmallRecord.name));
+                        assertThat(inSmallRecord.value, is(outSmallRecord.value));
+                        assertThat(inSmallRecord.labels.get("name"), is(outSmallRecord.labels.get("name")));
+                        assertThat(inSmallRecord.labels.get("value"), is(outSmallRecord.labels.get("value")));
+                    }
+                    
+                }
+            }
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 1.4
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final NestedSheet.OneToOneRecord inRecord, final NestedSheet.OneToOneRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.birthday, is(outRecord.birthday));
+        
+        if(inRecord.no == 4) {
+            assertThat(inRecord.result, is(nullValue()));
+            assertThat(inRecord.result, is(outRecord.result));
+            
+        } else {
+            assertThat(inRecord.result.sansu, is(outRecord.result.sansu));
+            assertThat(inRecord.result.kokugo, is(outRecord.result.kokugo));
+            assertThat(inRecord.result.sum, is(outRecord.result.sum));
+            
+        }
         
     }
     
@@ -2540,6 +3165,135 @@ public class AnnoVerticalRecordsTest {
    }
    
    /**
+    * 見出しに空白がある場合のシート
+    *
+    */
+   @XlsSheet(name="見出しの空白")
+   private static class HeaderSpaceSheet {
+       
+       @XlsHint(order=1)
+       @XlsVerticalRecords(tableLabel="見出しに空白なし", terminal=RecordTerminal.Border,
+               overRecord=OverRecordOperate.Copy)
+       private List<UserRecord> records1;
+       
+       @XlsHint(order=2)
+       @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border,
+               overRecord=OverRecordOperate.Copy)
+       private List<UserRecord> records2;
+       
+       @XlsHint(order=3)
+       @XlsVerticalRecords(tableLabel="見出しに空白がある", terminal=RecordTerminal.Border,
+               overRecord=OverRecordOperate.Copy, range=2)
+       private List<UserRecord> records3;
+       
+       @XlsHint(order=4)
+       @XlsVerticalRecords(tableLabel="開始位置がずれている", terminal=RecordTerminal.Border,
+               overRecord=OverRecordOperate.Copy, range=3)
+       private List<UserRecord> records4;
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public HeaderSpaceSheet addRecord1(UserRecord record) {
+           if(records1 == null) {
+               this.records1 = new ArrayList<>();
+           }
+           
+           this.records1.add(record);
+           record.no(records1.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public HeaderSpaceSheet addRecord2(UserRecord record) {
+           if(records2 == null) {
+               this.records2 = new ArrayList<>();
+           }
+           
+           this.records2.add(record);
+           record.no(records2.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public HeaderSpaceSheet addRecord3(UserRecord record) {
+           if(records3 == null) {
+               this.records3 = new ArrayList<>();
+           }
+           
+           this.records3.add(record);
+           record.no(records3.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public HeaderSpaceSheet addRecord4(UserRecord record) {
+           if(records4 == null) {
+               this.records4 = new ArrayList<>();
+           }
+           
+           this.records4.add(record);
+           record.no(records4.size());
+           
+           return this;
+       }
+       
+       private static class UserRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsColumn(columnName="No.")
+           int no;
+           
+           @XlsColumn(columnName="氏名")
+           String name;
+           
+           @XlsColumn(columnName="電話番号")
+           String tel;
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+           }
+           
+           public UserRecord no(int no) {
+               this.no = no;
+               return this;
+           }
+           
+           public UserRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+           
+           public UserRecord tel(String tel) {
+               this.tel = tel;
+               return this;
+           }
+       }
+       
+   }
+   
+   /**
     * カラムの様々な指定のシート
     */
    @XlsSheet(name="カラムの設定")
@@ -2711,6 +3465,9 @@ public class AnnoVerticalRecordsTest {
        @XlsColumn(columnName="連絡先", headerMerged=1)
        private String tel;
        
+       @XlsColumn(columnName="備考")
+       private String comment;
+       
        public HeaderMergedRecord no(int no) {
            this.no = no;
            return this;
@@ -2728,6 +3485,11 @@ public class AnnoVerticalRecordsTest {
        
        public HeaderMergedRecord tel(String tel) {
            this.tel = tel;
+           return this;
+       }
+       
+       public HeaderMergedRecord comment(String comment) {
+           this.comment = comment;
            return this;
        }
        
@@ -3038,7 +3800,7 @@ public class AnnoVerticalRecordsTest {
    private static class RecodSettingSheet {
        
        /**
-        * 空のレコードをスキップ（）
+        * 空のレコードをスキップ（リスト）
         */
        @XlsHint(order=1)
        @XlsVerticalRecords(tableLabel="名簿（リスト）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
@@ -3046,9 +3808,17 @@ public class AnnoVerticalRecordsTest {
        private List<EmptySkipRecord> skipList;
        
        /**
-        * 配列
+        * 空のレコードをスキップ（集合）
         */
        @XlsHint(order=2)
+       @XlsVerticalRecords(tableLabel="名簿（集合）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+               overRecord=OverRecordOperate.Copy)
+       private Set<EmptySkipRecord> skipSet;
+       
+       /**
+        * 配列
+        */
+       @XlsHint(order=3)
        @XlsVerticalRecords(tableLabel="名簿（配列）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                overRecord=OverRecordOperate.Copy)
        private EmptySkipRecord[] skipArray;
@@ -3065,6 +3835,22 @@ public class AnnoVerticalRecordsTest {
            
            this.skipList.add(record);
            record.no(skipList.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public RecodSettingSheet addSet(EmptySkipRecord record) {
+           if(skipSet == null) {
+               this.skipSet = new LinkedHashSet<>();
+           }
+           
+           this.skipSet.add(record);
+           record.no(skipSet.size());
            
            return this;
        }
@@ -3108,7 +3894,7 @@ public class AnnoVerticalRecordsTest {
        @XlsColumn(columnName="氏名")
        private String name;
        
-       @XlsDateConverter(javaPattern="yyyy年M月d日")
+       @XlsDateConverter(javaPattern="yyyy年M月d日", excelPattern="yyyy\"年\"m\"月\"d\"日\"")
        @XlsColumn(columnName="生年月日")
        private Date birthday;
        
@@ -4283,6 +5069,515 @@ public class AnnoVerticalRecordsTest {
                this.comment = comment;
                return this;
            }
+       }
+       
+   }
+   
+   @XlsSheet(name="ネストした表")
+   private static class NestedSheet {
+       
+       private Map<String, Point> positions;
+       
+       private Map<String, String> labels;
+       
+       @XlsHint(order=1)
+       @XlsVerticalRecords(tableLabel="通常の表", overRecord=OverRecordOperate.Copy)
+       private List<LargeRecord> largeRecords1;
+       
+       @XlsHint(order=2)
+       @XlsVerticalRecords(tableLabel="空のレコードがある表", terminal=RecordTerminal.Border, 
+               overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Clear, ignoreEmptyRecord=true)
+       private List<LargeRecord> largeRecords2;
+       
+       @XlsHint(order=3)
+       @XlsVerticalRecords(tableLabel="見出しが結合している表", terminal=RecordTerminal.Border, 
+               overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Clear, ignoreEmptyRecord=true, headerRight=2)
+       private List<HeaderMergedLargeRecord> largeRecords3;
+       
+       @XlsHint(order=4)
+       @XlsVerticalRecords(tableLabel="1対1のネスト", overRecord=OverRecordOperate.Copy, ignoreEmptyRecord=true)
+       private List<OneToOneRecord> oneToOneRecords;
+       
+       public NestedSheet addRecord1(LargeRecord record) {
+           if(largeRecords1 == null) {
+               this.largeRecords1 = new ArrayList<>();
+           }
+           
+           this.largeRecords1.add(record);
+           
+           return this;
+       }
+       
+       public NestedSheet addRecord2(LargeRecord record) {
+           if(largeRecords2 == null) {
+               this.largeRecords2 = new ArrayList<>();
+           }
+           
+           this.largeRecords2.add(record);
+           
+           return this;
+       }
+       
+       public NestedSheet addRecord3(HeaderMergedLargeRecord record) {
+           if(largeRecords3 == null) {
+               this.largeRecords3 = new ArrayList<>();
+           }
+           
+           this.largeRecords3.add(record);
+           
+           return this;
+       }
+       
+       public NestedSheet addRecord(OneToOneRecord record) {
+           if(oneToOneRecords == null) {
+               this.oneToOneRecords = new ArrayList<>();
+           }
+           
+           this.oneToOneRecords.add(record);
+           
+           return this;
+       }
+       
+       public void printRecord1() {
+           
+           System.out.printf("----- ▽▽▽▽table :: [%s] ▽▽▽▽------\n", labels.get("largeRecords1"));
+           
+           if(largeRecords1 == null) {
+               return;
+           }
+           
+           for(LargeRecord largeRecord : largeRecords1) {
+               largeRecord.printRecord();
+           }
+           
+           System.out.printf("----- △△△△table :: [%s] △△△△------\n", labels.get("largeRecords1"));
+           
+       }
+       
+       public void printRecord2() {
+           
+           System.out.printf("----- ▽▽▽▽table :: [%s] ▽▽▽▽------\n", labels.get("largeRecords2"));
+           
+           if(largeRecords2 == null) {
+               return;
+           }
+           
+           for(LargeRecord largeRecord : largeRecords2) {
+               largeRecord.printRecord();
+           }
+           
+           System.out.printf("----- △△△△table :: [%s] △△△△------\n", labels.get("largeRecords2"));
+
+       }
+       
+       public void printRecord3() {
+           
+           System.out.printf("----- ▽▽▽▽table :: [%s] ▽▽▽▽------\n", labels.get("largeRecords3"));
+           
+           if(largeRecords3 == null) {
+               return;
+           }
+           
+           for(HeaderMergedLargeRecord largeRecord : largeRecords3) {
+               largeRecord.printRecord();
+           }
+           
+           System.out.printf("----- △△△△table :: [%s] △△△△------\n", labels.get("largeRecords3"));
+
+       }
+       
+       private static class LargeRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsColumn(columnName="大分類")
+           private String largeName;
+           
+           @XlsColumn(columnName="説明（大分類）")
+           private String largeDescription;
+           
+           @XlsNestedRecords
+           private List<MiddleRecord> middleRecords;
+           
+           public LargeRecord addRecord(MiddleRecord record) {
+               if(middleRecords == null) {
+                   this.middleRecords = new ArrayList<>();
+               }
+               
+               this.middleRecords.add(record);
+               
+               return this;
+           }
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "middleRecords");
+           }
+           
+           public void printRecord() {
+               
+               System.out.printf("◆%s::%s (%s::%s), \n",
+                       largeName, POIUtils.formatCellAddress(positions.get("largeName")),
+                       largeDescription, POIUtils.formatCellAddress(positions.get("largeDescription")));
+               
+               if(middleRecords == null) {
+                   return;
+               }
+               
+               for(MiddleRecord middleRecord : middleRecords) {
+                   middleRecord.printRecord();
+               }
+           }
+           
+           public LargeRecord largeName(String largeName) {
+               this.largeName = largeName;
+               return this;
+           }
+           
+           public LargeRecord largeDescription(String largeDescription) {
+               this.largeDescription = largeDescription;
+               return this;
+           }
+       }
+       
+       private static class MiddleRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsColumn(columnName="中分類")
+           private String middleName;
+           
+           @XlsColumn(columnName="説明（中分類）")
+           private String middleDescription;
+           
+           @XlsNestedRecords
+           private SmallRecord[] smallRecords;
+           
+           public MiddleRecord addRecord(SmallRecord record) {
+               
+               final List<SmallRecord> list;
+               if(smallRecords == null) {
+                   list = new ArrayList<>();
+               } else {
+                   list = new ArrayList<>(Arrays.asList(smallRecords));
+               }
+               
+               list.add(record);
+               
+               this.smallRecords = list.toArray(new SmallRecord[list.size()]);
+               
+               return this;
+           }
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "smallRecords");
+           }
+           
+           public void printRecord() {
+               
+               System.out.printf("    ○%s::%s (%s::%s)\n",
+                       middleName, POIUtils.formatCellAddress(positions.get("middleName")),
+                       middleDescription, POIUtils.formatCellAddress(positions.get("middleDescription")));
+               
+               if(smallRecords == null) {
+                   return;
+               }
+               
+               for(SmallRecord smallRecord : smallRecords) {
+                   smallRecord.printRecord();
+               }
+           }
+           
+           public MiddleRecord middleName(String middleName) {
+               this.middleName = middleName;
+               return this;
+           }
+           
+           public MiddleRecord middleDescription(String middleDescription) {
+               this.middleDescription = middleDescription;
+               return this;
+           }
+       }
+       
+       private static class SmallRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsColumn(columnName="項目")
+           private String name;
+           
+           @XlsColumn(columnName="値")
+           private String value;
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
+           }
+           
+           public void printRecord() {
+               System.out.printf("        ・%s::%s=%s::%s\n",
+                       name, POIUtils.formatCellAddress(positions.get("name")),
+                       value, POIUtils.formatCellAddress(positions.get("value")));
+           }
+           
+           public SmallRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+           
+           public SmallRecord value(String value) {
+               this.value = value;
+               return this;
+           }
+       }
+       
+       private static class HeaderMergedLargeRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsColumn(columnName="大分類")
+           private String largeName;
+           
+           @XlsColumn(columnName="大分類", headerMerged=1)
+           private String largeDescription;
+           
+           @XlsNestedRecords
+           private List<HeaderMergedMiddleRecord> middleRecords;
+           
+           public HeaderMergedLargeRecord addRecord(HeaderMergedMiddleRecord record) {
+               if(middleRecords == null) {
+                   this.middleRecords = new ArrayList<>();
+               }
+               
+               this.middleRecords.add(record);
+               
+               return this;
+           }
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "middleRecords");
+           }
+           
+           public void printRecord() {
+               
+               System.out.printf("◆%s::%s (%s::%s), \n",
+                       largeName, POIUtils.formatCellAddress(positions.get("largeName")),
+                       largeDescription, POIUtils.formatCellAddress(positions.get("largeDescription")));
+               
+               if(middleRecords == null) {
+                   return;
+               }
+               
+               for(HeaderMergedMiddleRecord middleRecord : middleRecords) {
+                   middleRecord.printRecord();
+               }
+           }
+           
+           public HeaderMergedLargeRecord largeName(String largeName) {
+               this.largeName = largeName;
+               return this;
+           }
+           
+           public HeaderMergedLargeRecord largeDescription(String largeDescription) {
+               this.largeDescription = largeDescription;
+               return this;
+           }
+       }
+       
+       private static class HeaderMergedMiddleRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsColumn(columnName="中分類")
+           private String middleName;
+           
+           @XlsColumn(columnName="中分類", headerMerged=1)
+           private String middleDescription;
+           
+           @XlsNestedRecords
+           private HeaderMergedSmallRecord[] smallRecords;
+           
+           public HeaderMergedMiddleRecord addRecord(HeaderMergedSmallRecord record) {
+               
+               final List<HeaderMergedSmallRecord> list;
+               if(smallRecords == null) {
+                   list = new ArrayList<>();
+               } else {
+                   list = new ArrayList<>(Arrays.asList(smallRecords));
+               }
+               
+               list.add(record);
+               
+               this.smallRecords = list.toArray(new HeaderMergedSmallRecord[list.size()]);
+               
+               return this;
+           }
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "smallRecords");
+           }
+           
+           public void printRecord() {
+               
+               System.out.printf("    ○%s::%s (%s::%s)\n",
+                       middleName, POIUtils.formatCellAddress(positions.get("middleName")),
+                       middleDescription, POIUtils.formatCellAddress(positions.get("middleDescription")));
+               
+               if(smallRecords == null) {
+                   return;
+               }
+               
+               for(HeaderMergedSmallRecord smallRecord : smallRecords) {
+                   smallRecord.printRecord();
+               }
+           }
+           
+           public HeaderMergedMiddleRecord middleName(String middleName) {
+               this.middleName = middleName;
+               return this;
+           }
+           
+           public HeaderMergedMiddleRecord middleDescription(String middleDescription) {
+               this.middleDescription = middleDescription;
+               return this;
+           }
+       }
+       
+       private static class HeaderMergedSmallRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsColumn(columnName="詳細")
+           private String name;
+           
+           @XlsColumn(columnName="詳細", headerMerged=1)
+           private String value;
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
+           }
+           
+           public void printRecord() {
+               System.out.printf("        ・%s::%s=%s::%s\n",
+                       name, POIUtils.formatCellAddress(positions.get("name")),
+                       value, POIUtils.formatCellAddress(positions.get("value")));
+           }
+           
+           public HeaderMergedSmallRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+           
+           public HeaderMergedSmallRecord value(String value) {
+               this.value = value;
+               return this;
+           }
+       }
+       
+       private static class OneToOneRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsColumn(columnName="No.")
+           private int no;
+           
+           @XlsColumn(columnName="クラス", merged=true)
+           private String className;
+           
+           @XlsColumn(columnName="氏名")
+           private String name;
+           
+           @XlsColumn(columnName="生年月日")
+           @XlsDateConverter(excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
+           private Date birthday;
+           
+           @XlsNestedRecords
+           private ResultRecord result;
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
+           }
+           
+           public OneToOneRecord no(int no) {
+               this.no = no;
+               return this;
+           }
+           
+           public OneToOneRecord className(String className) {
+               this.className = className;
+               return this;
+           }
+           
+           public OneToOneRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+           
+           public OneToOneRecord birthday(Date birthday) {
+               this.birthday = birthday;
+               return this;
+           }
+           
+           public OneToOneRecord result(ResultRecord result) {
+               this.result = result;
+               return this;
+           }
+       }
+       
+       private static class ResultRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           @XlsColumn(columnName="算数")
+           private int sansu;
+           
+           @XlsColumn(columnName="国語")
+           private int kokugo;
+           
+           @XlsColumn(columnName="合計")
+           private int sum;
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
+           }
+           
+           public ResultRecord sansu(int sansu) {
+               this.sansu = sansu;
+               return this;
+           }
+           
+           public ResultRecord kokugo(int kokugo) {
+               this.kokugo = kokugo;
+               return this;
+           }
+           
+           public ResultRecord sum(int sum) {
+               this.sum = sum;
+               return this;
+           }
+           
        }
        
    }
