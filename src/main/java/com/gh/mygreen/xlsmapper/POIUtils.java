@@ -40,6 +40,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDataValidations;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 
 import com.gh.mygreen.xlsmapper.cellconvert.LinkType;
+import com.gh.mygreen.xlsmapper.fieldprocessor.CellAddress;
 import com.github.mygreen.cellformatter.POICell;
 
 /**
@@ -164,6 +165,19 @@ public class POIUtils {
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notNull(address, "address");
         return getCell(sheet, address.x, address.y);
+    }
+    
+    /**
+     * シートから任意のセルを取得する。
+     * @since 1.4
+     * @param sheet シートオブジェクト
+     * @param address セルのアドレス
+     * @return 
+     */
+    public static Cell getCell(final Sheet sheet, final CellAddress address) {
+        ArgUtils.notNull(sheet, "sheet");
+        ArgUtils.notNull(address, "address");
+        return getCell(sheet, address.getColumn(), address.getRow());
     }
     
     /**

@@ -3,38 +3,51 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 /**
  * 見出し用セルの情報を保持するクラス。
  * 
+ * @version 1.4
  *
  */
 public class RecordHeader {
     
-    private final String headerLabel;
+    /**
+     * 見出しの値
+     */
+    private final String label;
     
-    private final int headerRange;
+    /**
+     * 表の開始位置からの距離
+     */
+    private final int interval;
     
-    public RecordHeader(final String headerLabel, final int headerRange) {
-        this.headerLabel = headerLabel;
-        this.headerRange = headerRange;
+    public RecordHeader(final String label, final int interval) {
+        this.label = label;
+        this.interval = interval;
     }
     
     @Override
     public String toString() {
-        return "RecordHeader [headerLabel=" + headerLabel + ", headerRange=" + headerRange + "]";
+        StringBuilder sb = new StringBuilder();
+        sb.append(RecordHeader.class.getSimpleName())
+            .append(" [")
+            .append("label=").append(label)
+            .append(", interval=").append(interval)
+            .append(" ]");
+        return sb.toString();
     }
     
     /**
-     * ヘッダーの見出しの取得
+     * 見出しセルの取得
      * @return
      */
-    public String getHeaderLabel() {
-        return headerLabel;
+    public String getLabel() {
+        return label;
     }
     
     /**
-     * このヘッダーの見出しが定義されている位置が、表の開始位置から離れている距離。
+     * この見出しが定義されている位置が、表の開始位置から離れている距離。
      * @return
      */
-    public int getHeaderRange() {
-        return headerRange;
+    public int getInterval() {
+        return interval;
     }
     
 }

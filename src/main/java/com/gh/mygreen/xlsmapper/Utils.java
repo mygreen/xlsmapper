@@ -28,6 +28,7 @@ import org.apache.poi.ss.util.CellReference;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
+import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
@@ -1499,11 +1500,11 @@ public class Utils {
         
         final List<FieldAdaptor> list = new ArrayList<>();
         
-        for(FieldAdaptor adaptor : getSetterMapColumnMethods(clazz, reader)) {
+        for(FieldAdaptor adaptor : getSetterMethodsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
             list.add(adaptor);
         }
         
-        for(FieldAdaptor adaptor : getMapColumnFields(clazz, reader)) {
+        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
             if(list.contains(adaptor)) {
                 continue;
             }
@@ -1516,7 +1517,7 @@ public class Utils {
     }
     
     /**
-     * アノテーション{@link XlsMapColumns}が付与されている読み込み系の指定したオブジェクトのメソッド（Getter）とフィールド情報を取得する。
+     * アノテーション{@link XlsMapColumns}が付与されている書き込み系の指定したオブジェクトのメソッド（Getter）とフィールド情報を取得する。
      * <p>フィールドは、public以外の全てのメソッドを対象とする。
      * 
      * @param clazz
@@ -1529,11 +1530,11 @@ public class Utils {
         
         final List<FieldAdaptor> list = new ArrayList<>();
         
-        for(FieldAdaptor adaptor : getGetterMapColumnMethods(clazz, reader)) {
+        for(FieldAdaptor adaptor : getGetterMethodsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
             list.add(adaptor);
         }
         
-        for(FieldAdaptor adaptor : getMapColumnFields(clazz, reader)) {
+        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
             if(list.contains(adaptor)) {
                 continue;
             }
@@ -1546,37 +1547,65 @@ public class Utils {
     }
     
     /**
-     *  アノテーション{@link XlsMapColumns}が付与されているsetterメソッドを取得する。
-     * @param clazz
-     * @param reader
+     * アノテーション{@link XlsNestedRecords}が付与されている読み込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
+     * <p>フィールドは、public以外の全てのメソッドを対象とする。
+     * 
+     * @since 1.4
+     * @param clazz レコードのクラス情報
+     * @param reader アノテーションリーダ。
      * @return
      */
-    public static FieldAdaptor[] getSetterMapColumnMethods(Class<?> clazz, AnnotationReader reader) {
-        return getSetterMethodsWithAnnotation(clazz, reader, XlsMapColumns.class);
+    public static List<FieldAdaptor> getLoadingNestedRecordsProperties(final Class<?> clazz, final AnnotationReader reader) {
+        
+        ArgUtils.notNull(clazz, "clazz");
+        
+        final List<FieldAdaptor> list = new ArrayList<>();
+        
+        for(FieldAdaptor adaptor : getSetterMethodsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
+            list.add(adaptor);
+        }
+        
+        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
+            if(list.contains(adaptor)) {
+                continue;
+            }
+            
+            list.add(adaptor);
+        }
+        
+        return list;
         
     }
     
     /**
-     *  アノテーション{@link XlsMapColumns}が付与されているGetterメソッドを取得する。
-     * @param clazz
-     * @param reader
+     * アノテーション{@link XlsNestedRecords}が付与されている書き込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
+     * <p>フィールドは、public以外の全てのメソッドを対象とする。
+     * 
+     * @since 1.4
+     * @param clazz レコードのクラス情報
+     * @param reader アノテーションリーダ。
      * @return
      */
-    public static FieldAdaptor[] getGetterMapColumnMethods(Class<?> clazz, AnnotationReader reader) {
-        return getGetterMethodsWithAnnotation(clazz, reader, XlsMapColumns.class);
+    public static List<FieldAdaptor> getSavingNestedRecordsProperties(final Class<?> clazz, final AnnotationReader reader) {
         
-    }
-    
-    /**
-     * アノテーション{@link XlsMapColumns}が付与されているフィールドを取得する。
-     * <p>publicメソッド以外も対象とする。
-     * @param clazz
-     * @param reader
-     * @return
-     */
-    public static FieldAdaptor[] getMapColumnFields(final Class<?> clazz, final AnnotationReader reader) {
+        ArgUtils.notNull(clazz, "clazz");
         
-        return getFieldsWithAnnotation(clazz, reader, XlsMapColumns.class);
+        final List<FieldAdaptor> list = new ArrayList<>();
+        
+        for(FieldAdaptor adaptor : getGetterMethodsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
+            list.add(adaptor);
+        }
+        
+        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
+            if(list.contains(adaptor)) {
+                continue;
+            }
+            
+            list.add(adaptor);
+        }
+        
+        return list;
+        
     }
     
     /**

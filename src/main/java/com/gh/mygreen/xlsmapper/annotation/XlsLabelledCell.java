@@ -154,7 +154,7 @@ public @interface XlsLabelledCell {
     boolean optional() default false;
     
     /**
-     * type属性の方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルの値を取得します。
+     * 属性{@link #type()}の方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルの値を取得します。
      * @return 値は1から始まり、指定しない場合は1を指定します。
      */
     int range() default 1;

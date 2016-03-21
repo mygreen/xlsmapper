@@ -265,6 +265,35 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * </div>
  * 
  * 
+ * <h3 class="description">表の見出しに空白がある場合</h3>
+ * 
+ * <p>表の走査は、まず指定したタイトルなどの表の開始位置を元に、見出し用セルを取得し、その後、データのレコードを取得します。
+ *  <br>見出しセルを取得する際には、右方向に向かって検索をしますが、 通常は空白セルが見つかった時点で走査を終了します。
+ * </p>
+ * <p>空白セルの次にも見出し用セルがあるような場合、属性{@link #range()}を指定することで、指定した値分の空白セルを許容し、
+ *   さらに先のセルの検索を試みます。
+ * </p>
+ * <p>また、属性{@link #headerAddress()}や{@link #tableLabel()}で指定した位置から表が開始しないような場合も、
+ *   属性{@link #range()}を指定することで、さらに先のセルの検索を試みます。
+ * </p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *     
+ *     // レコードの読み飛ばしを有効にします。
+ *     {@literal @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border,
+ *             range=3)}
+ *     private {@literal List<UserRecord>} records;
+ *     
+ * }
+ * </code></pre>
+ * 
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord_range.png">
+ *    <p>表の見出しに空白がある場合</p>
+ * </div>
+ * 
  * <h3 class="description">書き込み時にレコードが不足、余分である場合の操作の指定</h3>
  * <p>属性{@link #overRecord()}で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
  *    <br>値は、{@link OverRecordOperate}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
@@ -291,7 +320,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/HorizontalRecord_overRecordpng.png">
+ *    <img src="doc-files/HorizontalRecord_overRecord.png">
  *    <p>表の書き込み時の不足・余分なレコードの操作の指定</p>
  * </div>
  * 
@@ -390,19 +419,26 @@ public @interface XlsHorizontalRecords {
     
     /** 
      * レコードのマッピング先のクラスを指定します。
-     * <p>指定しない場合は、Genericsの定義タイプが自動的に採用されます。
+     * <p>指定しない場合は、Genericsの定義タイプが自動的に採用されます。</p>
      */
     Class<?> recordClass() default Object.class;
     
     /** 
-     * 表の終端の種類を指定します
+     * 表の終端の種類を指定します。
      * @return {@link RecordTerminal#Empty}の場合、空のレコードがあると処理を終了します。
      */
     RecordTerminal terminal() default RecordTerminal.Empty;
     
     /**
-     * 右方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルを見出しとします。
-     * @return 値は1から始まり、指定しない場合は1を指定します。
+     * 見出し用セルを走査するときの許容する空白セルの個数を指定します。
+     * <p>見出しセルを走査する際には、右方向に向かって検索をしますが、通常は空白セルが見つかった時点で走査を終了します。
+     *  <br>空白セルの次にも見出し用セルがあるような場合、属性{@link #range()}を指定することで、
+     *    指定した値分の空白セルを許容し、さらに先のセルの検索を試みます。
+     * </p>
+     * <p>また、属性{@link #headerAddress()}や{@link #tableLabel()}で指定した位置から表が開始しないような場合も、
+     *  属性{@link #range()}を指定することで、さらに先のセルの検索を試みます。
+     * </p>
+     * @return 値は1から始まります。初期値は1です。
      */
     int range() default 1;
     
@@ -414,7 +450,7 @@ public @interface XlsHorizontalRecords {
     int bottom() default 1;
     
     /**
-     * テーブルのカラムが指定数見つかったタイミングで Excelシートの走査を終了したい場合に指定します。
+     * 表の見出しとなるセルのカラムが指定数見つかったタイミングで Excelシートの走査を終了したい場合に指定します。
      * <p>主に無駄な走査を抑制したい場合にします。</p>
      * <p>テーブルが隣接しており終端を検出できない場合などに、
      *   見出し用セルのカラム数を明示的に指定してテーブルの区切りを指定する場合に使用できます。 

@@ -502,6 +502,16 @@ public class FieldAdaptor {
     }
     
     /**
+     * クラス名付きのフィールド名称を取得する。
+     * <p>{@literal <クラス名#フィールド名>}
+     * @since 1.4
+     * @return
+     */
+    public String getNameWithClass() {
+        return getParentClass().getName() + "#" + getName();
+    }
+    
+    /**
      * フィールドが定義されているクラス情報を取得する。
      * @return
      */

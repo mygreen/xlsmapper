@@ -73,7 +73,7 @@ public class ArgUtils {
     }
     
     /**
-     * 引数が {@literal 'arg' > 'min'} の関係か検証する。
+     * 引数が {@literal 'arg' >= 'min'} の関係か検証する。
      * @param arg 検証対象の値
      * @param min 最小値
      * @param name 検証対象の引数の名前
@@ -93,7 +93,7 @@ public class ArgUtils {
     }
     
     /**
-     * 引数が {@literal 'arg' < 'max'} の関係か検証する。
+     * 引数が {@literal 'arg' <= 'max'} の関係か検証する。
      * @param arg 検証対象の値
      * @param max 最大値
      * @param name 検証対象の引数の名前
