@@ -111,7 +111,7 @@ import java.lang.annotation.Target;
  * }
  * 
  * // レコード用クラス（テスト結果）
- * public class FunctionRecord {
+ * public class UserRecord {
  * 
  *     {@literal @XlsColumn(columnName="国語")}
  *     private int kokugo;
