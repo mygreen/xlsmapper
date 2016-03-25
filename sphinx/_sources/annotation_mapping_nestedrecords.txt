@@ -133,7 +133,7 @@
     }
     
     // レコード用クラス（テスト結果）
-    public class FunctionRecord {
+    public class ResultRecord {
     
         @XlsColumn(columnName="国語")
         private int kokugo;

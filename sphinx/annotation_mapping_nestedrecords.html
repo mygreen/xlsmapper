@@ -155,7 +155,7 @@
             
   <div class="section" id="xlsnestedrecords">
 <span id="annotationxlsnestedrecords"></span><h1><code class="docutils literal"><span class="pre">&#64;XlsNestedRecords</span></code><a class="headerlink" href="#xlsnestedrecords" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> もしくは <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span>&#64;XlsVerticalRecords</span></a> のレコード用クラスにおいて、ツリー構造のように入れ子になっている表をマッピングする際に使用します。 <cite>[ver.1.4+]</cite></p>
+<p>アノテーション <a class="reference internal" href="annotation_mapping.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> もしくは <a class="reference internal" href="annotation_mapping.html#annotationxlsverticalrecords"><span>&#64;XlsVerticalRecords</span></a> のレコード用クラスにおいて、ツリー構造のように入れ子になっている表をマッピングする際に使用します。 <cite>[ver.1.4+]</cite></p>
 <div class="section" id="id1">
 <h2>一対多の関係<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>一対多の関係を表現する際には、Collection(List/Set)または、配列で指定します。</p>
@@ -169,7 +169,7 @@
 </ul>
 </li>
 <li>属性 <code class="docutils literal"><span class="pre">&#64;XlsHorizotanlRecords#terminalLabel</span></code> や <code class="docutils literal"><span class="pre">&#64;XlsHorizotanlRecords#ignoreEmptyRecord</span></code> などの終端や空のレコードの判定は、入れ子になったレコードごとに判定されます。</li>
-<li>読み込みの際、アノテーション <a class="reference internal" href="annotation_mapping_isempty.html#annotationxlsisempty"><span>&#64;XlsIsEmpty</span></a> で、空のレコードを読み飛ばした結果、レコード数が0件となった場合は、要素数0個リストや配列が設定されます。</li>
+<li>読み込みの際、アノテーション <a class="reference internal" href="annotation_mapping.html#annotationxlsisempty"><span>&#64;XlsIsEmpty</span></a> で、空のレコードを読み飛ばした結果、レコード数が0件となった場合は、要素数0個リストや配列が設定されます。</li>
 </ul>
 <div class="figure align-center" id="id3">
 <img alt="_images/NestedRecords_oneToMany.png" src="_images/NestedRecords_oneToMany.png" />
@@ -263,7 +263,7 @@
 <span class="o">}</span>
 
 <span class="c1">// レコード用クラス（テスト結果）</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FunctionRecord</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ResultRecord</span> <span class="o">{</span>
 
     <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;国語&quot;</span><span class="o">)</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">kokugo</span><span class="o">;</span>

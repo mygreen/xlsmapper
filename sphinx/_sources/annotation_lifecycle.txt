@@ -159,7 +159,7 @@ JavaBeanクラスに実装する場合
     public static class UserRecordListener {
         
         @XlsPostLoad
-        public void onPostLoad(SampleSheet targetObj, Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
+        public void onPostLoad(UserRecord targetObj, Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
             // 読み込み後に実行される処理
             // 入力値チェックなどを行う
         }
