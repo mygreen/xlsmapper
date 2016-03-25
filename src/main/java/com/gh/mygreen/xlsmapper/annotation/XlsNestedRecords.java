@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * アノテーション{@link XlsHorizontalRecords}や{@link XlsVerticalRecords}のレコード用のクラスにおいて、
- * ツリー構造のように入れ子になっている表をマッピングする際に使用します
+ * ツリー構造のように入れ子になっている表をマッピングする際に使用します。
  *
  * <h3 class="description">一対多の関係</h3>
  * <p>一対多の関係を表現する際には、Collection(List/Set)または、配列で指定します。</p>
