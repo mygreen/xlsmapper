@@ -3,9 +3,7 @@ package com.gh.mygreen.xlsmapper.xml.bind;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -50,7 +48,7 @@ public class AnnotationInfo implements Serializable {
      * <p>値：属性値。
      * 
      */
-    private Map<String, String> attributes = new LinkedHashMap<>();
+    private List<AtttributeInfo> attributes = new ArrayList<>();
     
     /**
      * ビルダクラスのインスタンスを取得する。
@@ -89,8 +87,8 @@ public class AnnotationInfo implements Serializable {
         sb.append("AnnotationInfo:")
             .append(String.format(" [name=%s]", getClassName()));
         
-        for(Map.Entry<String, String> entry : attributes.entrySet()) {
-            sb.append(String.format(" [(attr)%s=%s]", entry.getKey(), entry.getValue()));
+        for(AtttributeInfo entry : attributes) {
+            sb.append(String.format(" [(attr)%s=%s]", entry.name, entry.value));
         }
         
         return sb.toString();
@@ -125,7 +123,7 @@ public class AnnotationInfo implements Serializable {
      */
     public void addAttribute(final String name, final String value) {
         ArgUtils.notEmpty(name, "name");
-        this.attributes.put(name, value);
+        this.attributes.add(AtttributeInfo.create(name, value));
     }
     
     /**
@@ -133,7 +131,11 @@ public class AnnotationInfo implements Serializable {
      * @return 属性名の一覧情報。
      */
     public String[] getAttributeKeys() {
-        return this.attributes.keySet().toArray(new String[attributes.size()]);
+        List<String> keys = new ArrayList<>();
+        for (AtttributeInfo attribute : this.getAttributeInfos()) {
+            keys.add(attribute.name);
+        }
+        return keys.toArray(new String[this.attributes.size()]);
     }
     
     /**
@@ -142,7 +144,12 @@ public class AnnotationInfo implements Serializable {
      * @return 存在しない属性名の場合、nullを返します。
      */
     public String getAttribute(final String name) {
-        return this.attributes.get(name);
+        for (AtttributeInfo attribute : this.getAttributeInfos()) {
+            if (attribute.name.equals(name)) {
+                return attribute.value;
+            }
+        }
+        return null;
     }
     
     /**
@@ -152,7 +159,12 @@ public class AnnotationInfo implements Serializable {
      * @return true: 指定したアノテーションの属性名が存在する場合。
      */
     public boolean containsAttribute(final String name) {
-        return this.attributes.containsKey(name);
+        for (AtttributeInfo attribute : this.getAttributeInfos()) {
+            if (attribute.name.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -188,10 +200,7 @@ public class AnnotationInfo implements Serializable {
      */
     @XmlElement(name="attribute")
     public void setAttributeInfos(List<AtttributeInfo> attributeInfos) {
-        this.attributes.clear();
-        for(AtttributeInfo attr : attributeInfos) {
-            this.attributes.put(attr.name, attr.value);
-        }
+        this.attributes = attributeInfos;
     }
     
     /**
@@ -201,12 +210,7 @@ public class AnnotationInfo implements Serializable {
      * @return
      */
     public List<AtttributeInfo> getAttributeInfos() {
-        List<AtttributeInfo> attrs = new ArrayList<>();
-        for(Map.Entry<String, String> entry : attributes.entrySet()) {
-            attrs.add(AtttributeInfo.create(entry.getKey(), entry.getValue()));
-        }
-        
-        return attrs;
+        return attributes;
     }
     
     /**

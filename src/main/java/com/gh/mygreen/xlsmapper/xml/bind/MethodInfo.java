@@ -2,9 +2,7 @@ package com.gh.mygreen.xlsmapper.xml.bind;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,7 +27,7 @@ public class MethodInfo implements Serializable {
     
     private boolean override;
     
-    private Map<String, AnnotationInfo> annotationInfos = new LinkedHashMap<>();
+    private List<AnnotationInfo> annotationInfos = new ArrayList<>();
     
     /**
      * ビルダクラスのインスタンスを取得する。
@@ -59,7 +57,7 @@ public class MethodInfo implements Serializable {
             .append(String.format(" [name=%s]", getMethodName()))
             .append(String.format(" [override=%b]", isOverride()));
         
-        for(AnnotationInfo anno : annotationInfos.values()) {
+        for(AnnotationInfo anno : annotationInfos) {
             sb.append("  ").append(anno.toString());
         }
         
@@ -113,7 +111,9 @@ public class MethodInfo implements Serializable {
      */
     public void addAnnotationInfo(final AnnotationInfo annotationInfo) {
         ArgUtils.notNull(annotationInfo, "annotationInfo");
-        this.annotationInfos.put(annotationInfo.getClassName(), annotationInfo);
+        if (!this.containsAnnotationInfo(annotationInfo.getClassName())) {
+            this.annotationInfos.add(annotationInfo);
+        }
     }
     
     /**
@@ -122,7 +122,12 @@ public class MethodInfo implements Serializable {
      * @return 指定したクラスが存在しない場合は、nullを返す。
      */
     public AnnotationInfo getAnnotationInfo(final String annotationClassName){
-        return this.annotationInfos.get(annotationClassName);
+        for (AnnotationInfo annotationInfo : this.annotationInfos) {
+            if (annotationInfo.getClassName().equals(annotationClassName)) {
+                return annotationInfo;
+            }
+        }
+        return null;
     }
     
     /**
@@ -132,7 +137,12 @@ public class MethodInfo implements Serializable {
      * @return true:指定したクラスが存在する場合。
      */
     public boolean containsAnnotationInfo(final String annotationClassName) {
-        return this.annotationInfos.containsKey(annotationClassName);
+        for (AnnotationInfo annotationInfo : this.annotationInfos) {
+            if (annotationInfo.getClassName().equals(annotationClassName)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -144,10 +154,7 @@ public class MethodInfo implements Serializable {
      */
     @XmlElement(name="annotation")
     public void setAnnotationInfos(List<AnnotationInfo> annotationInfos) {
-        this.annotationInfos.clear();
-        for(AnnotationInfo item : annotationInfos) {
-            addAnnotationInfo(item);
-        }
+        this.annotationInfos = annotationInfos;
     }
     
     /**
@@ -157,9 +164,9 @@ public class MethodInfo implements Serializable {
      * @return アノテーション情報。
      */
     public List<AnnotationInfo> getAnnotationInfos() {
-        return new ArrayList<>(this.annotationInfos.values());
+        return this.annotationInfos;
     }
-    
+
     /**
      * {@link MethodInfo}を組み立てるためのクラス。
      *
