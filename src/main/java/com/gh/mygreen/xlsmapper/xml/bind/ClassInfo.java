@@ -2,9 +2,7 @@ package com.gh.mygreen.xlsmapper.xml.bind;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,11 +27,11 @@ public class ClassInfo implements Serializable {
     
     private boolean override;
     
-    private Map<String, AnnotationInfo> annotationInfos = new LinkedHashMap<>();
+    private List<AnnotationInfo> annotationInfos = new ArrayList<>();
     
-    private Map<String, MethodInfo> methodInfos = new LinkedHashMap<>();
+    private List<MethodInfo> methodInfos = new ArrayList<>();
     
-    private Map<String, FieldInfo> fieldInfos = new LinkedHashMap<>();
+    private List<FieldInfo> fieldInfos = new ArrayList<>();
     
     /**
      * ビルダクラスのインスタンスを取得する。
@@ -64,15 +62,15 @@ public class ClassInfo implements Serializable {
             .append(String.format(" [name=%s]", getClassName()))
             .append(String.format(" [override=%b]", isOverride()));
         
-        for(AnnotationInfo anno : annotationInfos.values()) {
+        for(AnnotationInfo anno : annotationInfos) {
             sb.append("  ").append(anno.toString());
         }
         
-        for(MethodInfo method : methodInfos.values()) {
+        for(MethodInfo method : methodInfos) {
             sb.append("  ").append(method.toString());
         }
         
-        for(FieldInfo field : fieldInfos.values()) {
+        for(FieldInfo field : fieldInfos) {
             sb.append("  ").append(field.toString());
         }
         
@@ -126,7 +124,9 @@ public class ClassInfo implements Serializable {
      */
     public void addAnnotationInfo(final AnnotationInfo annotationInfo) {
         ArgUtils.notNull(annotationInfo, "annotationInfo");
-        this.annotationInfos.put(annotationInfo.getClassName(), annotationInfo);
+        if (!this.containsAnnotationInfo(annotationInfo.getClassName())) {
+            this.annotationInfos.add(annotationInfo);
+        }
     }
     
     /**
@@ -135,7 +135,12 @@ public class ClassInfo implements Serializable {
      * @return 指定したクラスが存在しない場合は、nullを返す。
      */
     public AnnotationInfo getAnnotationInfo(final String annotationClassName){
-        return this.annotationInfos.get(annotationClassName);
+        for (AnnotationInfo annotationInfo : this.annotationInfos) {
+            if (annotationInfo.getClassName().equals(annotationClassName)) {
+                return annotationInfo;
+            }
+        }
+        return null;
     }
     
     /**
@@ -145,7 +150,13 @@ public class ClassInfo implements Serializable {
      * @return true:指定したクラスが存在する場合。
      */
     public boolean containsAnnotationInfo(final String annotationClassName) {
-        return this.annotationInfos.containsKey(annotationClassName);
+        for (AnnotationInfo annotationInfo : this.annotationInfos) {
+            if (annotationInfo.getClassName().equals(annotationClassName)) {
+                return true;
+            }
+        }
+        return false;
+
     }
     
     /**
@@ -155,7 +166,9 @@ public class ClassInfo implements Serializable {
      */
     public void addMethodInfo(final MethodInfo methodInfo) {
         ArgUtils.notNull(methodInfo, "methodInfo");
-        this.methodInfos.put(methodInfo.getMethodName(), methodInfo);
+        if (!this.containsMethodInfo(methodInfo.getMethodName())) {
+            this.methodInfos.add(methodInfo);
+        }
     }
     
     /**
@@ -164,7 +177,12 @@ public class ClassInfo implements Serializable {
      * @return 指定したメソッド名が存在しない場合は、nullを返す。
      */
     public MethodInfo getMethodInfo(final String methodName){
-        return this.methodInfos.get(methodName);
+        for (MethodInfo methodInfo : methodInfos) {
+            if (methodInfo.getMethodName().equals(methodName)) {
+                return methodInfo;
+            }
+        }
+        return null;
     }
     
     /**
@@ -173,7 +191,12 @@ public class ClassInfo implements Serializable {
      * @return true: 指定したメソッド名が存在する場合。
      */
     public boolean containsMethodInfo(final String methodName) {
-        return this.methodInfos.containsKey(methodName);
+        for (MethodInfo methodInfo : this.methodInfos) {
+            if (methodInfo.getMethodName().equals(methodName)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -183,7 +206,9 @@ public class ClassInfo implements Serializable {
      */
     public void addFieldInfo(final FieldInfo fieldInfo) {
         ArgUtils.notNull(fieldInfo, "fieldInfo");
-        this.fieldInfos.put(fieldInfo.getFieldName(), fieldInfo);
+        if (!this.containsFieldInfo(fieldInfo.getFieldName())) {
+            this.fieldInfos.add(fieldInfo);
+        }
     }
     
     /**
@@ -192,7 +217,12 @@ public class ClassInfo implements Serializable {
      * @return 指定したフィールド名が存在しない場合は、nullを返す。
      */
     public FieldInfo getFieldInfo(String fieldName){
-        return this.fieldInfos.get(fieldName);
+        for (FieldInfo fieldInfo : fieldInfos) {
+            if (fieldInfo.getFieldName().equals(fieldName)) {
+                return fieldInfo;
+            }
+        }
+        return null;
     }
     
     /**
@@ -201,7 +231,12 @@ public class ClassInfo implements Serializable {
      * @return true: 指定したフィールド名が存在する場合。
      */
     public boolean containsFieldInfo(final String fieldName) {
-        return this.fieldInfos.containsKey(fieldName);
+        for (FieldInfo fieldInfo : this.fieldInfos) {
+            if (fieldInfo.getFieldName().equals(fieldName)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -213,10 +248,7 @@ public class ClassInfo implements Serializable {
      */
     @XmlElement(name="annotation")
     public void setAnnotationInfos(List<AnnotationInfo> annotationInfos) {
-        this.annotationInfos.clear();
-        for(AnnotationInfo item : annotationInfos) {
-            addAnnotationInfo(item);
-        }
+        this.annotationInfos = annotationInfos;
     }
     
     /**
@@ -226,7 +258,7 @@ public class ClassInfo implements Serializable {
      * @return アノテーション情報。
      */
     public List<AnnotationInfo> getAnnotationInfos() {
-        return new ArrayList<>(this.annotationInfos.values());
+        return annotationInfos;
     }
     
     /**
@@ -238,12 +270,10 @@ public class ClassInfo implements Serializable {
      */
     @XmlElement(name="method")
     public void setMethodInfos(List<MethodInfo> methodInfos) {
-        this.methodInfos.clear();
-        for(MethodInfo item : methodInfos) {
-            addMethodInfo(item);
-        }
+        this.methodInfos = methodInfos;
     }
     
+
     /**
      * JAXB用のメソッド情報を全て取得するメソッド。
      * <p>XMLの書き込み時に呼ばれます。
@@ -251,9 +281,9 @@ public class ClassInfo implements Serializable {
      * @return メソッド情報。
      */
     public List<MethodInfo> getMethodInfos() {
-        return new ArrayList<>(this.methodInfos.values());
+        return methodInfos;
     }
-    
+
     /**
      * JAXB用のフィールド情報を設定するメソッド。
      * <p>XMLの読み込み時に呼ばれます。
@@ -263,12 +293,9 @@ public class ClassInfo implements Serializable {
      */
     @XmlElement(name="field")
     public void setFieldInfos(List<FieldInfo> fieldInfos) {
-        this.fieldInfos.clear();
-        for(FieldInfo item : fieldInfos) {
-            addFieldInfo(item);
-        }
+        this.fieldInfos = fieldInfos;
     }
-    
+
     /**
      * JAXB用のフィールド情報を全て取得するメソッド。
      * <p>XMLの書き込み時に呼ばれます。
@@ -276,7 +303,7 @@ public class ClassInfo implements Serializable {
      * @return フィールド情報。
      */
     public List<FieldInfo> getFieldInfos() {
-        return new ArrayList<>(this.fieldInfos.values());
+        return fieldInfos;
     }
     
     /**

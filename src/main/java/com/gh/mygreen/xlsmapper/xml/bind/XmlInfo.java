@@ -6,9 +6,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlElement;
@@ -40,9 +38,9 @@ public class XmlInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
-     * クラス名をキーとしたクラス情報のマップ
+     * クラス情報のリスト。
      */
-    private Map<String, ClassInfo> classInfos = new LinkedHashMap<>();
+    private List<ClassInfo> classInfos = new ArrayList<>();
     
     /**
      * ビルダクラスのインスタンスを取得する。
@@ -68,8 +66,9 @@ public class XmlInfo implements Serializable {
      */
     public void addClassInfo(final ClassInfo classInfo) {
         ArgUtils.notNull(classInfo, "classInfo");
-        
-        this.classInfos.put(classInfo.getClassName(), classInfo);
+        if (!this.containsClassInfo(classInfo.getClassName())) {
+            this.classInfos.add(classInfo);
+        }
     }
     
     /**
@@ -78,7 +77,12 @@ public class XmlInfo implements Serializable {
      * @return 存在しないクラス名の場合、nullを返します。
      */
     public ClassInfo getClassInfo(final String className) {
-        return classInfos.get(className);
+        for (ClassInfo classInfo : this.classInfos) {
+            if (classInfo.getClassName().equals(className)) {
+                return classInfo;
+            }
+        }
+        return null;
     }
     
     /**
@@ -88,7 +92,12 @@ public class XmlInfo implements Serializable {
      * @return true:指定したクラス名を含む場合。
      */
     public boolean containsClassInfo(final String className) {
-        return classInfos.containsKey(className);
+        for (ClassInfo classInfo : this.classInfos) {
+            if (classInfo.getClassName().equals(className)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     @Override
@@ -96,7 +105,7 @@ public class XmlInfo implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append("XmlInfo:");
         
-        for(ClassInfo clazz : classInfos.values()) {
+        for(ClassInfo clazz : classInfos) {
             sb.append("\n  ").append(clazz.toString());
         }
         
@@ -112,12 +121,9 @@ public class XmlInfo implements Serializable {
      */
     @XmlElement(name="class")
     public void setClassInfos(List<ClassInfo> classInfos) {
-        this.classInfos.clear();
-        for(ClassInfo item : classInfos) {
-            addClassInfo(item);
-        }
+        this.classInfos = classInfos;
     }
-    
+
     /**
      * JAXB用のクラス情報を取得するメソッド。
      * <p>XMLの書き込み時に呼ばれます。
@@ -125,9 +131,9 @@ public class XmlInfo implements Serializable {
      * @return
      */
     public List<ClassInfo> getClassInfos() {
-        return new ArrayList<>(this.classInfos.values());
+        return classInfos;
     }
-    
+
     /**
      * XML(テキスト)として返す。
      * <p>JAXB標準の設定でXMLを作成します。
