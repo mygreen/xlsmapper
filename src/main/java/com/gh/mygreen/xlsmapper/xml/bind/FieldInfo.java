@@ -2,9 +2,7 @@ package com.gh.mygreen.xlsmapper.xml.bind;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -30,7 +28,7 @@ public class FieldInfo implements Serializable {
     
     private boolean override;
     
-    private Map<String, AnnotationInfo> annotationInfos = new LinkedHashMap<>();
+    private List<AnnotationInfo> annotationInfos = new ArrayList<>();
     
     /**
      * ビルダクラスのインスタンスを取得する。
@@ -58,7 +56,7 @@ public class FieldInfo implements Serializable {
             .append(String.format(" [name=%s]", getFieldName()))
             .append(String.format(" [override=%b]", isOverride()));
         
-        for(AnnotationInfo anno : annotationInfos.values()) {
+        for(AnnotationInfo anno : annotationInfos) {
             sb.append("  ").append(anno.toString());
         }
         
@@ -79,14 +77,14 @@ public class FieldInfo implements Serializable {
      * @throws IllegalArgumentException fieldName is empty.
      */
     @XmlAttribute(name="name", required=true)
-    public void setFieldName(String fieldName) {
+    public void setFieldName(final String fieldName) {
         ArgUtils.notEmpty(fieldName, "fieldName");
         this.fieldName = fieldName;
     }
     
     /**
      * 既存のフィールドの定義にあるアノテーションの設定をXMLの定義で上書きするかどうか。
-     * <p>ただし、XMLに定義していないアノテーションは、既存のフィールドに定義にあるものを使用する。
+     * <p>ただし、XMLに定義していないアノテーションは、既存のフィールドに定義にあるものを使用する。</p>
      * @since 1.0
      * @return true:XMLの定義で上書きする。
      */
@@ -96,23 +94,26 @@ public class FieldInfo implements Serializable {
     
     /**
      * 既存のフィールドの定義にあるアノテーションの設定をXMLの定義で上書きするかどうか設定する。
-     * <p>ただし、XMLに定義していないアノテーションは、既存のフィールドに定義にあるものを使用する。
+     * <p>ただし、XMLに定義していないアノテーションは、既存のフィールドに定義にあるものを使用する。</p>
      * @since 1.0
      * @param override true:XMLの定義で上書きする。
      */
     @XmlAttribute(name="override", required=false)
-    public void setOverride(boolean override) {
+    public void setOverride(final boolean override) {
         this.override = override;
     }
     
     /**
      * アノテーション情報を追加する。
+     * <p>ただし、既に同じアノテーションが存在する場合は、それと入れ替えされます。</p>
      * @param annotationInfo アノテーション情報。
      * @throws IllegalArgumentException annotationInfo is null.
      */
     public void addAnnotationInfo(final AnnotationInfo annotationInfo) {
         ArgUtils.notNull(annotationInfo, "annotationInfo");
-        this.annotationInfos.put(annotationInfo.getClassName(), annotationInfo);
+        
+        removeAnnotationInfo(annotationInfo.getClassName());
+        this.annotationInfos.add(annotationInfo);
     }
     
     /**
@@ -120,8 +121,14 @@ public class FieldInfo implements Serializable {
      * @param annotationClassName アノテーションのクラス名(FQCN)。
      * @return 指定したクラスが存在しない場合は、nullを返す。
      */
-    public AnnotationInfo getAnnotationInfo(final String annotationClassName){
-        return this.annotationInfos.get(annotationClassName);
+    public AnnotationInfo getAnnotationInfo(final String annotationClassName) {
+        for(AnnotationInfo item : annotationInfos) {
+            if(item.getClassName().equals(annotationClassName)) {
+                return item;
+            }
+        }
+        
+        return null;
     }
     
     /**
@@ -131,18 +138,43 @@ public class FieldInfo implements Serializable {
      * @return true:指定したクラスが存在する場合。
      */
     public boolean containsAnnotationInfo(final String annotationClassName) {
-        return this.annotationInfos.containsKey(annotationClassName);
+        return getAnnotationInfo(annotationClassName) != null;
+    }
+    
+    /**
+     * 指定したアノテーション情報を削除します。
+     * @since 1.4.1
+     * @param annotationClassName アノテーションのクラス名(FQCN)。
+     * @return true:指定したアノテーション名を含み、それが削除できた場合。
+     */
+    public boolean removeAnnotationInfo(final String annotationClassName) {
+        
+        final AnnotationInfo existInfo = getAnnotationInfo(annotationClassName);
+        if(existInfo != null) {
+            this.annotationInfos.remove(existInfo);
+            return true;
+        }
+        
+        return false;
+        
     }
     
     /**
      * JAXB用のアノテーション情報を設定するメソッド。
      * <p>XMLの読み込み時に呼ばれます。
-     * <p>既存の情報はクリアされます。
+     *  <br>ただし、Java8からはこのメソッドは呼ばれず、{@link #getAnnotationInfos()} で取得したインスタンスに対して要素が追加されます。
+     * </p>
+     * <p>既存の情報はクリアされます。</p>
      * @since 1.1
      * @param annotationInfos アノテーション情報。
      */
     @XmlElement(name="annotation")
-    public void setAnnotationInfos(List<AnnotationInfo> annotationInfos) {
+    public void setAnnotationInfos(final List<AnnotationInfo> annotationInfos) {
+        if(annotationInfos == this.annotationInfos) {
+            // Java7の場合、getterで取得したインスタンスをそのまま設定するため、スキップする。
+            return;
+        }
+        
         this.annotationInfos.clear();
         for(AnnotationInfo item : annotationInfos) {
             addAnnotationInfo(item);
@@ -152,11 +184,13 @@ public class FieldInfo implements Serializable {
     /**
      * JAXB用のアノテーション情報を全て取得するメソッド。
      * <p>XMLの書き込み時に呼ばれます。
+     *  <br>ただし、Java8から読み込み時に呼ばれるようになり、取得したインスタンスに対して、読み込んだ要素が追加されます。
+     * </p>
      * @since 1.1
      * @return アノテーション情報。
      */
     public List<AnnotationInfo> getAnnotationInfos() {
-        return new ArrayList<>(this.annotationInfos.values());
+        return this.annotationInfos;
     }
     
     /**

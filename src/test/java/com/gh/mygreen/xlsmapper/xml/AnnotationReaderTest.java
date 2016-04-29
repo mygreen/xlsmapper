@@ -6,8 +6,6 @@ import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
 import java.awt.Point;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.util.Date;
@@ -16,9 +14,6 @@ import java.util.Map;
 
 import javax.xml.bind.JAXB;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
@@ -40,18 +35,6 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  */
 public class AnnotationReaderTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-    
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
-    }
-    
     /**
      * XMLの読み込みテスト - 文字コード指定
      */
@@ -60,6 +43,7 @@ public class AnnotationReaderTest {
         
         XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
         assertThat(xmlInfo, is(not(nullValue())));
+        assertThat(xmlInfo.getClassInfos(), hasSize(2));
     }
     
     /**
@@ -70,6 +54,7 @@ public class AnnotationReaderTest {
         
         XmlInfo xmlInfo = XmlIO.load(AnnotationReaderTest.class.getResourceAsStream("anno_resource.xml"));
         assertThat(xmlInfo, is(not(nullValue())));
+        assertThat(xmlInfo.getClassInfos(), hasSize(2));
     }
     
     /**
@@ -264,6 +249,59 @@ public class AnnotationReaderTest {
         
     }
     
+    /**
+     * XMLにもクラスにも定義されていない定義を取得しようとすると<code>null</code>が戻る場合のテスト。
+     * @since 1.4.1
+     * @throws Exception
+     */
+    @Test
+    public void test_readAnnotation_not_exists() throws Exception {
+        
+        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
+        AnnotationReader reader = new AnnotationReader(xmlInfo);
+        // クラス定義の読み込み
+        Annotation[] classAnnos = reader.getAnnotations(SimpleSheet.class);
+        Deprecated notExists = select(classAnnos, Deprecated.class);
+        assertThat(notExists, is(nullValue()));
+        
+        // クラス定義の読み込み（アノテーションを指定）
+        notExists = reader.getAnnotation(SimpleSheet.class, Deprecated.class);
+        assertThat(notExists, is(nullValue()));
+        
+        // フィールド定義の読み込み
+        Annotation[] nameAnnos = reader.getAnnotations(SimpleSheet.class, SimpleSheet.class.getDeclaredField("name"));
+        
+        notExists = select(nameAnnos, Deprecated.class);
+        assertThat(notExists, is(nullValue()));
+        
+        // フィールド定義の読み込み（アノテーションを指定）
+        notExists = reader.getAnnotation(SimpleSheet.class, SimpleSheet.class.getDeclaredField("name"), Deprecated.class);
+        assertThat(notExists, is(nullValue()));
+        
+        // クラスに存在しないフィールド定義の読み込み
+        notExists = reader.getAnnotation(SimpleSheet.class, AnnotationReader.class.getDeclaredField("xmlInfo"), Deprecated.class);
+        assertThat(notExists, is(nullValue()));
+        
+        // メソッドの定義の読み込み
+        Annotation[] recordsAnnos = reader.getAnnotations(SimpleSheet.class,
+                SimpleSheet.class.getDeclaredMethod("setRecords", List.class));
+        
+        notExists = select(recordsAnnos, Deprecated.class);
+        assertThat(notExists, is(nullValue()));
+        
+        // メソッドの定義の読み込み（アノテーションを指定）
+        notExists = reader.getAnnotation(SimpleSheet.class,
+                SimpleSheet.class.getDeclaredMethod("setRecords", List.class), Deprecated.class);
+        assertThat(notExists, is(nullValue()));
+        
+        // クラスに存在しないメソッド定義の読み込み
+        notExists = reader.getAnnotation(SimpleSheet.class,
+                AnnotationReader.class.getDeclaredMethod("getAnnotationBuilder"), Deprecated.class);
+        assertThat(notExists, is(nullValue()));
+        
+    }
+    
+    @SuppressWarnings("unchecked")
     private <A extends Annotation> A select(Annotation[] annos, Class<A> clazz) {
         
         for(Annotation anno : annos) {

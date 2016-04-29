@@ -6,9 +6,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,7 +26,7 @@ import com.gh.mygreen.xlsmapper.ArgUtils;
  * 
  * </pre>
  * 
- * @version 1.1
+ * @version 1.4.1
  * @since 0.5
  * @author T.TSUCHIE
  * 
@@ -39,10 +37,7 @@ public class XmlInfo implements Serializable {
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
     
-    /**
-     * クラス名をキーとしたクラス情報のマップ
-     */
-    private Map<String, ClassInfo> classInfos = new LinkedHashMap<>();
+    private List<ClassInfo> classInfos = new ArrayList<>();
     
     /**
      * ビルダクラスのインスタンスを取得する。
@@ -63,13 +58,15 @@ public class XmlInfo implements Serializable {
     
     /**
      * クラス情報を追加する。
+     * <p>ただし、既に同じクラス名が存在する場合は、それと入れ替えされます。</p>
      * @param classInfo FQCN（完全限定クラス名）を指定します。
      * @throws IllegalArgumentException classInfo is null.
      */
     public void addClassInfo(final ClassInfo classInfo) {
         ArgUtils.notNull(classInfo, "classInfo");
         
-        this.classInfos.put(classInfo.getClassName(), classInfo);
+        removeClassInfo(classInfo.getClassName());
+        this.classInfos.add(classInfo);
     }
     
     /**
@@ -78,7 +75,12 @@ public class XmlInfo implements Serializable {
      * @return 存在しないクラス名の場合、nullを返します。
      */
     public ClassInfo getClassInfo(final String className) {
-        return classInfos.get(className);
+        for(ClassInfo item : classInfos) {
+            if(item.getClassName().equals(className)) {
+                return item;
+            }
+        }
+        return null;
     }
     
     /**
@@ -88,7 +90,25 @@ public class XmlInfo implements Serializable {
      * @return true:指定したクラス名を含む場合。
      */
     public boolean containsClassInfo(final String className) {
-        return classInfos.containsKey(className);
+        return getClassInfo(className) != null;
+    }
+    
+    /**
+     * 指定したクラス情報を削除します。
+     * @since 1.4.1
+     * @param className FQCN（完全限定クラス名）を指定します。
+     * @return true:指定したクラス名を含み、それが削除できた場合。
+     */
+    public boolean removeClassInfo(final String className) {
+        
+        final ClassInfo existInfo = getClassInfo(className);
+        if(existInfo != null) {
+            this.classInfos.remove(existInfo);
+            return true;
+        }
+        
+        return false;
+        
     }
     
     @Override
@@ -96,7 +116,7 @@ public class XmlInfo implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append("XmlInfo:");
         
-        for(ClassInfo clazz : classInfos.values()) {
+        for(ClassInfo clazz : classInfos) {
             sb.append("\n  ").append(clazz.toString());
         }
         
@@ -106,31 +126,41 @@ public class XmlInfo implements Serializable {
     /**
      * JAXB用のクラス情報を設定するメソッド。
      * <p>XMLの読み込み時に呼ばれます。
-     * <p>既存の情報はクリアされます。
+     *  <br>ただし、Java8からはこのメソッドは呼ばれず、{@link #getClassInfos()} で取得したインスタンスに対して要素が追加されます。
+     * </p>
+     * <p>既存の情報はクリアされます。</p>
      * @since 1.1
      * @param classInfos クラス情報
      */
-    @XmlElement(name="class")
-    public void setClassInfos(List<ClassInfo> classInfos) {
+    public void setClassInfos(final List<ClassInfo> classInfos) {
+        if(classInfos == this.classInfos) {
+            // Java7の場合、getterで取得したインスタンスをそのまま設定するため、スキップする。
+            return;
+        }
+        
         this.classInfos.clear();
         for(ClassInfo item : classInfos) {
             addClassInfo(item);
         }
+        
     }
     
     /**
      * JAXB用のクラス情報を取得するメソッド。
      * <p>XMLの書き込み時に呼ばれます。
+     *  <br>Java8から読み込み時に呼ばれるようになり、取得したインスタンスに対して、読み込んだ要素が呼ばれます。
+     * </p>
      * @since 1.1
      * @return
      */
+    @XmlElement(name="class")
     public List<ClassInfo> getClassInfos() {
-        return new ArrayList<>(this.classInfos.values());
+        return classInfos;
     }
     
     /**
      * XML(テキスト)として返す。
-     * <p>JAXB標準の設定でXMLを作成します。
+     * <p>JAXB標準の設定でXMLを作成します。</p>
      * @since 1.1
      * @return XML情報。
      */
@@ -146,8 +176,8 @@ public class XmlInfo implements Serializable {
     
     /**
      * {@link InputStream}として返す。
-     * <p>XlsLoaderなどに直接渡せる形式。
-     * <p>{@link #toXml()}にてXMLに変換後に、InputStreamにサイド変換する。
+     * <p>XlsLoaderなどに直接渡せる形式。</p>
+     * <p>{@link #toXml()}にてXMLに変換後に、InputStreamにサイド変換する。</p>
      * @since 1.1
      * @return XML情報。
      */
@@ -184,7 +214,7 @@ public class XmlInfo implements Serializable {
          * @return
          * @throws IllegalArgumentException classInfo is null
          */
-        public Builder classInfo(ClassInfo classInfo) {
+        public Builder classInfo(final ClassInfo classInfo) {
             ArgUtils.notNull(classInfo, "classInfo");
             this.classInfos.add(classInfo);
             return this;
