@@ -3,6 +3,14 @@
 ======================================
 
 --------------------------------------------------------
+ver.1.4.1 - 2016-04-29
+--------------------------------------------------------
+* `#80 <https://github.com/mygreen/xlsmapper/issues/80>`_ : Java8の場合に、:doc:`XMLによるファイルによるマッピング <otheruse_xmlmapping>` で失敗する事象を修正しました。
+
+* セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.8に対応しました。
+
+
+--------------------------------------------------------
 ver.1.4 - 2016-03-21
 --------------------------------------------------------
 
@@ -34,7 +42,7 @@ ver.1.2 - 2016-03-12
 
 * `#71 <https://github.com/mygreen/xlsmapper/issues/71>`_ : アノテーション ``@XlsColumn`` などを付与したフィールドが、``java.util.LinkedList`` などの具象クラスの場合をサポートしました。
 
-* `#76 <https://github.com/mygreen/xlsmapper/issues/76>`_ : アノテーション :ref:`@XlsMapColumn <annotationXlsMapColumns>` に属性 ``nextColumnName`` を追加、マッピングの終了条件のセルを指定できるようにしました。
+* `#76 <https://github.com/mygreen/xlsmapper/issues/76>`_ : アノテーション :ref:`@XlsMapColumns <annotationXlsMapColumns>` に属性 ``nextColumnName`` を追加、マッピングの終了条件のセルを指定できるようにしました。
 
 
 --------------------------------------------------------
