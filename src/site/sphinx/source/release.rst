@@ -7,6 +7,8 @@ ver.1.4.1 - 2016-04-29
 --------------------------------------------------------
 * `#80 <https://github.com/mygreen/xlsmapper/issues/80>`_ : Java8の場合に、:doc:`XMLによるファイルによるマッピング <otheruse_xmlmapping>` で失敗する事象を修正しました。
 
+* セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.8に対応しました。
+
 
 --------------------------------------------------------
 ver.1.4 - 2016-03-21
