@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
  * 
  * 別名をマッピングする場合、属性{@link #valueMethodName()}で列挙型の要素の別名を取得するメソッド名を指定します。
  * 
- *  * <pre class="highlight"><code class="java">
+ * <pre class="highlight"><code class="java">
  * public class SampleRecord {
  * 
  *     {@literal @XlsColumn(columnName="権限")}
@@ -78,7 +78,7 @@ public @interface XlsEnumConverter {
     
     /**
      * 読み込み時に大文字／小文字を無視して比較するか指定します。
-     * @return
+     * @return trueの場合、大文字・小文字の区別は行いません。
      */
     boolean ignoreCase() default false;
     
