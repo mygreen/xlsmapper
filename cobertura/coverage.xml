@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.8293210711387612" branch-rate="0.7668493150684932" lines-covered="6132" lines-valid="7394" branches-covered="2799" branches-valid="3650" complexity="3.103252032520325" version="2.1.1" timestamp="1462593049945">
+<coverage line-rate="0.8293210711387612" branch-rate="0.7668493150684932" lines-covered="6132" lines-valid="7394" branches-covered="2799" branches-valid="3650" complexity="3.103252032520325" version="2.1.1" timestamp="1464388803384">
 	<sources>
 		<source>--source</source>
 		<source>D:/home/workspace4.5/git_xlsmapper/src/main/java</source>
@@ -731,7 +731,7 @@
 						</method>
 						<method name="getAdaptor" signature="()Lcom/gh/mygreen/xlsmapper/fieldprocessor/FieldAdaptor;" line-rate="1.0" branch-rate="1.0" complexity="0">
 							<lines>
-								<line number="57" hits="1840" branch="false"/>
+								<line number="57" hits="1812" branch="false"/>
 							</lines>
 						</method>
 						<method name="getAnnotation" signature="()Ljava/lang/annotation/Annotation;" line-rate="1.0" branch-rate="1.0" complexity="0">
@@ -784,7 +784,7 @@
 						<line number="45" hits="0" branch="false"/>
 						<line number="49" hits="426" branch="false"/>
 						<line number="53" hits="213" branch="false"/>
-						<line number="57" hits="1840" branch="false"/>
+						<line number="57" hits="1812" branch="false"/>
 						<line number="61" hits="426" branch="false"/>
 						<line number="62" hits="407" branch="false"/>
 						<line number="65" hits="213" branch="false"/>
@@ -802,15 +802,15 @@
 						</method>
 						<method name="compare" signature="(Lcom/gh/mygreen/xlsmapper/FieldAdaptorProxy;Lcom/gh/mygreen/xlsmapper/FieldAdaptorProxy;)I" line-rate="0.7692307692307693" branch-rate="0.6666666666666666" complexity="0">
 							<lines>
-								<line number="40" hits="566" branch="false"/>
-								<line number="41" hits="566" branch="false"/>
-								<line number="43" hits="566" branch="true" condition-coverage="75% (3/4)">
+								<line number="40" hits="559" branch="false"/>
+								<line number="41" hits="559" branch="false"/>
+								<line number="43" hits="559" branch="true" condition-coverage="75% (3/4)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 										<condition number="1" type="jump" coverage="50%"/>
 									</conditions>
 								</line>
-								<line number="45" hits="330" branch="false"/>
+								<line number="45" hits="323" branch="false"/>
 								<line number="46" hits="236" branch="true" condition-coverage="50% (1/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="50%"/>
@@ -840,7 +840,7 @@
 						</method>
 						<method name="compare" signature="(Ljava/lang/Object;Ljava/lang/Object;)I" line-rate="1.0" branch-rate="1.0" complexity="0">
 							<lines>
-								<line number="20" hits="566" branch="false"/>
+								<line number="20" hits="559" branch="false"/>
 							</lines>
 						</method>
 						<method name="createForLoading" signature="()Lcom/gh/mygreen/xlsmapper/HintOrderComparator;" line-rate="1.0" branch-rate="1.0" complexity="0">
@@ -855,39 +855,39 @@
 						</method>
 						<method name="getHintOrder" signature="(Lcom/gh/mygreen/xlsmapper/FieldAdaptorProxy;)I" line-rate="1.0" branch-rate="1.0" complexity="0">
 							<lines>
-								<line number="66" hits="1132" branch="true" condition-coverage="100% (2/2)">
+								<line number="66" hits="1118" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="67" hits="774" branch="false"/>
-								<line number="69" hits="358" branch="false"/>
-								<line number="72" hits="1132" branch="true" condition-coverage="100% (2/2)">
+								<line number="67" hits="770" branch="false"/>
+								<line number="69" hits="348" branch="false"/>
+								<line number="72" hits="1118" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="73" hits="660" branch="false"/>
+								<line number="73" hits="646" branch="false"/>
 								<line number="75" hits="472" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="20" hits="566" branch="false"/>
+						<line number="20" hits="559" branch="false"/>
 						<line number="26" hits="130" branch="false"/>
 						<line number="30" hits="111" branch="false"/>
 						<line number="33" hits="241" branch="false"/>
 						<line number="34" hits="241" branch="false"/>
 						<line number="35" hits="241" branch="false"/>
-						<line number="40" hits="566" branch="false"/>
-						<line number="41" hits="566" branch="false"/>
-						<line number="43" hits="566" branch="true" condition-coverage="75% (3/4)">
+						<line number="40" hits="559" branch="false"/>
+						<line number="41" hits="559" branch="false"/>
+						<line number="43" hits="559" branch="true" condition-coverage="75% (3/4)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 								<condition number="1" type="jump" coverage="50%"/>
 							</conditions>
 						</line>
-						<line number="45" hits="330" branch="false"/>
+						<line number="45" hits="323" branch="false"/>
 						<line number="46" hits="236" branch="true" condition-coverage="50% (1/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="50%"/>
@@ -913,19 +913,19 @@
 						</line>
 						<line number="56" hits="212" branch="false"/>
 						<line number="58" hits="0" branch="false"/>
-						<line number="66" hits="1132" branch="true" condition-coverage="100% (2/2)">
+						<line number="66" hits="1118" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="67" hits="774" branch="false"/>
-						<line number="69" hits="358" branch="false"/>
-						<line number="72" hits="1132" branch="true" condition-coverage="100% (2/2)">
+						<line number="67" hits="770" branch="false"/>
+						<line number="69" hits="348" branch="false"/>
+						<line number="72" hits="1118" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="73" hits="660" branch="false"/>
+						<line number="73" hits="646" branch="false"/>
 						<line number="75" hits="472" branch="false"/>
 					</lines>
 				</class>
@@ -16844,13 +16844,13 @@
 						</method>
 						<method name="getLoadingAnnotation" signature="(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;" line-rate="1.0" branch-rate="1.0" complexity="0">
 							<lines>
-								<line number="353" hits="104191" branch="true" condition-coverage="100% (2/2)">
+								<line number="353" hits="104187" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
 								<line number="354" hits="101510" branch="false"/>
-								<line number="356" hits="2681" branch="false"/>
+								<line number="356" hits="2677" branch="false"/>
 							</lines>
 						</method>
 						<method name="getLoadingAnnotations" signature="()Ljava/util/Collection;" line-rate="0.0" branch-rate="0.0" complexity="0">
@@ -16905,7 +16905,7 @@
 						</method>
 						<method name="getName" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0" complexity="0">
 							<lines>
-								<line number="501" hits="19385" branch="false"/>
+								<line number="501" hits="19371" branch="false"/>
 							</lines>
 						</method>
 						<method name="getNameWithClass" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0" complexity="0">
@@ -16920,13 +16920,13 @@
 						</method>
 						<method name="getSavingAnnotation" signature="(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;" line-rate="1.0" branch-rate="1.0" complexity="0">
 							<lines>
-								<line number="392" hits="14429" branch="true" condition-coverage="100% (2/2)">
+								<line number="392" hits="14419" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
 								<line number="393" hits="6649" branch="false"/>
-								<line number="395" hits="7780" branch="false"/>
+								<line number="395" hits="7770" branch="false"/>
 							</lines>
 						</method>
 						<method name="getSavingAnnotations" signature="()Ljava/util/Collection;" line-rate="0.0" branch-rate="0.0" complexity="0">
@@ -17420,13 +17420,13 @@
 						</line>
 						<line number="339" hits="0" branch="false"/>
 						<line number="341" hits="0" branch="false"/>
-						<line number="353" hits="104191" branch="true" condition-coverage="100% (2/2)">
+						<line number="353" hits="104187" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
 						<line number="354" hits="101510" branch="false"/>
-						<line number="356" hits="2681" branch="false"/>
+						<line number="356" hits="2677" branch="false"/>
 						<line number="367" hits="25782" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
@@ -17439,13 +17439,13 @@
 						</line>
 						<line number="378" hits="0" branch="false"/>
 						<line number="380" hits="0" branch="false"/>
-						<line number="392" hits="14429" branch="true" condition-coverage="100% (2/2)">
+						<line number="392" hits="14419" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
 						<line number="393" hits="6649" branch="false"/>
-						<line number="395" hits="7780" branch="false"/>
+						<line number="395" hits="7770" branch="false"/>
 						<line number="406" hits="2306" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
@@ -17525,7 +17525,7 @@
 						<line number="486" hits="4" branch="false"/>
 						<line number="487" hits="4" branch="false"/>
 						<line number="491" hits="0" branch="false"/>
-						<line number="501" hits="19385" branch="false"/>
+						<line number="501" hits="19371" branch="false"/>
 						<line number="511" hits="12" branch="false"/>
 						<line number="520" hits="76" branch="true" condition-coverage="50% (1/2)">
 							<conditions>

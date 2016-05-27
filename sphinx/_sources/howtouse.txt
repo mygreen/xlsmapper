@@ -13,7 +13,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
-        <version>1.4.2</version>
+        <version>1.4.3</version>
     </dependency>
 
 
@@ -200,7 +200,7 @@ XlsMapperはアノテーションを付与してJavaBeansとExcelをマッピン
         SampleSheet.class                   // アノテーションを付与したクラス。
         );
 
-なお、:ref:`@XlsCell <annotationXlsCell>`、 :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`、 :ref:`@XlsColumn <annotationXlsColumn>` アノテーションでマッピングするプロパティに関しては、マッピングできる型については、 :doc:`型変換用アノテーション <annotation_converter>` を使用することでカスタマイズできます。
+なお、:ref:`@XlsCell <annotationXlsCell>`、 :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`、 :ref:`@XlsColumn <annotationXlsColumn>` アノテーションでマッピングするプロパティにおいて、マッピングできる型は、 :doc:`型変換用アノテーション <annotation_converter>` を使用することでカスタマイズできます。
 
 より具体的な使用例はXlsMapperのディストリビューションに同梱されているテストケースのソースコードをご覧ください。
 
