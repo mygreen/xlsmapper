@@ -129,7 +129,8 @@ import java.lang.annotation.Target;
  * <div class="picture">
  *    <img src="doc-files/NestedRecords_oneToOne.png">
  *    <p>一対一の関係</p>
- * </div> *
+ * </div>
+ *
  * @since 1.4
  * @author T.TSUCHIE
  *

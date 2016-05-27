@@ -12,7 +12,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * 垂直方向に連続する列をCollection(List, Set)または配列にマッピングする際に指定します。
  * <p>アノテーション{@link XlsHorizontalRecords}を垂直方向にしたものであり、使い方はほとんど同じです。
  * <p>ここでは、アノテーション{@link XlsHorizontalRecords}と異なる部分を説明します。
- *    <br>詳細は、アノテーション{@link XlsHorizontalRecords}の説明を参照してください。
+ *    <br>共通の使い方は、アノテーション{@link XlsHorizontalRecords}の説明を参照してください。
  * </p>
  * 
  * <h3 class="description">基本的な使い方</h3>

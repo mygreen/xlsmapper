@@ -44,13 +44,17 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * 
  *
  * <h3 class="description">表の開始位置を指定する場合（表の名称がない場合）</h3>
- * <p>表の名称がない場合、属性{@link #headerColumn()}、{@link #headerColumn()}や{@link #headerAddress()}で表の開始位置をセルのアドレスで指定します。</p>
+ * <p>表の名称がない場合、表の開始位置をインデックスやアドレスで指定します。</p>
+ * <ul>
+ *  <li>属性{@link #headerColumn()}、{@link #headerRow()}で、インデックスで指定します。</li>
+ *  <li>{@link #headerAddress()}で、{@code B3}のようにシートのアドレス形式で指定します。</li>
+ * <ul>
  * 
  * <pre class="highlight"><code class="java">
  * {@literal @XlsSheet(name="Users")}
  * public class SampleSheet {
  *     
- *     // インデックス形式で表の開始位置を指定する
+ *     // インデックス形式で表の開始位置を指定する(値は0から始まります)
  *     {@literal @XlsHorizontalRecords(headerColumn=0, headerRow=1)}
  *     private {@literal List<UserRecord>} records1;
  *     
@@ -268,7 +272,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * <h3 class="description">表の見出しに空白がある場合</h3>
  * 
  * <p>表の走査は、まず指定したタイトルなどの表の開始位置を元に、見出し用セルを取得し、その後、データのレコードを取得します。
- *  <br>見出しセルを取得する際には、右方向に向かって検索をしますが、 通常は空白セルが見つかった時点で走査を終了します。
+ *  <br>見出し用セルを取得する際には、右方向に向かって検索をしますが、 通常は空白セルが見つかった時点で走査を終了します。
  * </p>
  * <p>空白セルの次にも見出し用セルがあるような場合、属性{@link #range()}を指定することで、指定した値分の空白セルを許容し、
  *   さらに先のセルの検索を試みます。

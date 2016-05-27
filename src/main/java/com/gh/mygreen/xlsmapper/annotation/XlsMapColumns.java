@@ -183,6 +183,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * }
  * </code></pre>
  *
+ * @version 1.2
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  */
