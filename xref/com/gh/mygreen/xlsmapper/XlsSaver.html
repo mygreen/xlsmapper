@@ -40,7 +40,7 @@
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * JavaBeanをExcelのシートにマッピングし出力するクラス。</em>
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * @version 1.1</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * @version 1.4.4</em>
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> */</em>
@@ -186,7 +186,7 @@
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>             <strong class="jxr_keyword">final</strong> Object beanObj = beanObjs[i];
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>             <strong class="jxr_keyword">final</strong> Class&lt;?&gt; clazz = beanObj.getClass();
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>             
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../com/gh/mygreen/xlsmapper/annotation/XlsSheet.html">XlsSheet</a> sheetAnno = clazz.getAnnotation(XlsSheet.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../com/gh/mygreen/xlsmapper/annotation/XlsSheet.html">XlsSheet</a> sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>             <strong class="jxr_keyword">if</strong>(sheetAnno == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/AnnotationInvalidException.html">AnnotationInvalidException</a>(<span class="jxr_string">"Cannot finld annoation '@XlsSheet'"</span>, sheetAnno);
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>             }

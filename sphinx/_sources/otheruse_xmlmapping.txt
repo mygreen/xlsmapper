@@ -298,7 +298,7 @@ XmlMapper#load()/save()に渡す形式である ``java.io.InputStream`` に、 `
         SimpleSheet sheet = new XlsMapper().load(
             new FileInputStream("example.xls"),
             SimpleSheet.class,
-            xmlIn;
+            xmlIn);
     }
 
 
