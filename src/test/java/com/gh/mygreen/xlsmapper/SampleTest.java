@@ -3,10 +3,12 @@ package com.gh.mygreen.xlsmapper;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -384,6 +386,44 @@ public class SampleTest {
         @XlsSheetName
         @XlsLabelledCell(label="シート名", type=LabelledCellType.Right)
         private String sheetName;
+    }
+    
+    /**
+     * アノテーションのシート名の動的な変更
+     */
+    @Test
+    public void test_overide_sheetName() throws Exception {
+        
+        InputStream xmlIn = createXml()
+                .classInfo(createClass(OverrideSheetName.class)
+                        .override(true)   // アノテーションを差分だけ反映する設定を有効にします。
+                        .annotation(createAnnotation(XlsSheet.class)
+                                .attribute("name", "シート2")
+                                .buildAnnotation())
+                        .buildClass())
+                .buildXml()
+                .toInputStream(); // XMLに変換後、さらにInputStreamに変換して取得します。。
+
+        // XmlMapperクラスに直接渡せます。
+        OverrideSheetName sheet = new XlsMapper().load(
+            new FileInputStream("src/test/data/sample_overrideSheetName.xlsx"),
+            OverrideSheetName.class,
+            xmlIn);
+        
+        assertThat(sheet.sheetName, is("シート2"));
+        assertThat(sheet.description, is("変更後のシートです。"));
+        
+    }
+    
+    @XlsSheet(name="シート1")
+    private static class OverrideSheetName {
+        
+        @XlsSheetName
+        private String sheetName;
+        
+        @XlsLabelledCell(label="説明", type=LabelledCellType.Right)
+        private String description;
+        
     }
     
 }

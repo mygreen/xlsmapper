@@ -32,7 +32,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 /**
  * ExcelのシートをJavaBeanにマッピングするクラス。
  * 
- * @version 1.3
+ * @version 1.4.4
  * @author T.TSUCHIE
  *
  */
@@ -141,7 +141,7 @@ public class XlsLoader {
             work.setErrors(new SheetBindingErrors(clazz));
         }
         
-        final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
+        final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
         if(sheetAnno == null) {
             throw new AnnotationInvalidException("Cannot finld annoation '@XlsSheet'", sheetAnno);
         }
