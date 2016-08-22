@@ -75,7 +75,8 @@ public class SheetFinder {
             return matches.toArray(new Sheet[matches.size()]);
         }
         
-        throw new AnnotationInvalidException("@XlsSheet requires name or number or regex parameter.", sheetAnno);
+        throw new AnnotationInvalidException(String.format("With '%s', @XlsSheet requires name or number or regex parameter.",
+                beanClass.getName()), sheetAnno);
     }
     
     /**
@@ -155,7 +156,8 @@ public class SheetFinder {
             }
         }
         
-        throw new AnnotationInvalidException("@XlsSheet requires name or number or regex parameter.", sheetAnno);
+        throw new AnnotationInvalidException(String.format("With '%s', @XlsSheet requires name or number or regex parameter.",
+                beanObj.getClass().getName()), sheetAnno);
     }
     
     /**

@@ -143,7 +143,8 @@ public class XlsLoader {
         
         final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
         if(sheetAnno == null) {
-            throw new AnnotationInvalidException("Cannot finld annoation '@XlsSheet'", sheetAnno);
+            throw new AnnotationInvalidException(String.format("With '%s', cannot find annoation '@XlsSheet'",
+                    clazz.getName()), sheetAnno);
         }
         
         final Workbook book;
@@ -241,7 +242,8 @@ public class XlsLoader {
         
         final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
         if(sheetAnno == null) {
-            throw new AnnotationInvalidException("Cannot finld annoation '@XlsSheet'", sheetAnno);
+            throw new AnnotationInvalidException(String.format("With '%s', cannot finld annoation '@XlsSheet'.",
+                    clazz.getName()), sheetAnno);
         }
         
         final SheetBindingErrorsContainer container;
@@ -343,7 +345,8 @@ public class XlsLoader {
         for(Class<?> clazz : classes) {
             final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
             if(sheetAnno == null) {
-                throw new AnnotationInvalidException("Cannot finld annoation '@XlsSheet'", sheetAnno);
+                throw new AnnotationInvalidException(String.format("With '%s', cannot finld annoation '@XlsSheet'.",
+                        clazz.getName()), sheetAnno);
             }
             
             try {

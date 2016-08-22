@@ -32,7 +32,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 /**
  * JavaBeanをExcelのシートにマッピングし出力するクラス。
  * 
- * @version 1.4.4
+ * @version 1.5
  * @author T.TSUCHIE
  *
  */
@@ -106,7 +106,8 @@ public class XlsSaver {
         final Class<?> clazz = beanObj.getClass();
         final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
         if(sheetAnno == null) {
-            throw new AnnotationInvalidException("Cannot finld annoation '@XlsSheet'", sheetAnno);
+            throw new AnnotationInvalidException(String.format("With '%s', cannot finld annoation '@XlsSheet'.",
+                    clazz.getName()), sheetAnno);
         }
         
         try {
@@ -119,6 +120,10 @@ public class XlsSaver {
             } else {
                 throw e;
             }
+        }
+        
+        if(config.isFormulaRecalcurationOnSave()) {
+            book.setForceFormulaRecalculation(true);
         }
         
         book.write(xlsOut);
@@ -180,7 +185,8 @@ public class XlsSaver {
             
             final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
             if(sheetAnno == null) {
-                throw new AnnotationInvalidException("Cannot finld annoation '@XlsSheet'", sheetAnno);
+                throw new AnnotationInvalidException(String.format("With '%s', cannot finld annoation '@XlsSheet'",
+                        clazz.getName()), sheetAnno);
             }
             
             final SavingWorkObject work = new SavingWorkObject();
@@ -198,6 +204,10 @@ public class XlsSaver {
                     throw e;
                 }
             }
+        }
+        
+        if(config.isFormulaRecalcurationOnSave()) {
+            book.setForceFormulaRecalculation(true);
         }
         
         book.write(xlsOut);
