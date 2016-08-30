@@ -275,7 +275,7 @@ $(document).ready(function() {
 		<dependency>
 			<groupId>com.github.mygreen</groupId>
 			<artifactId>standalone-el</artifactId>
-			<version>0.1</version>
+			<version>0.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.glassfish.web</groupId>
@@ -300,6 +300,12 @@ $(document).ready(function() {
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
 			<version>3.0.1-b08</version>
+		</dependency>
+			
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-jexl</artifactId>
+			<version>2.1.1</version>
 		</dependency>
 		
 		<!-- Bean Validation 1.1 系を利用する -->
