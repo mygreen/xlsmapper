@@ -37,7 +37,7 @@ import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
  *   <li>rowIndex : 処理対象のセルの行のインデックス。0から始まります。</li>
  *   <li>columnIndex : 処理対象のセルの列のインデックス。0から始まります。</li>
  *   <li>rowNumber : 処理対象のセルの行番号。1から始まります。</li>
- *   <li>columnIndex : 処理対象のセルの列番号。1から始まります。</li>
+ *   <li>columnNumber : 処理対象のセルの列番号。1から始まります。</li>
  *   <li>columnAlpha : 処理対象のセルの列の名前。Aから始まります。</li>
  *   <li>address : 処理対象のセルのアドレス。 A1 の形式です。</li>
  *   <li>targetBean : 処理対象のプロパティが定義されているJavaBeanのオブジェクトです。</li>
@@ -130,7 +130,7 @@ import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
  *     // 数式のメソッドの指定
  *     {@literal @XlsHint(order=1)}
  *     {@literal @XlsLabelledCell(label="更新日付", type=LabelledCellType.Right)}
- *     {@literal @XlsFormula(metodName="getDateFormula")}
+ *     {@literal @XlsFormula(methodName="getDateFormula")}
  *     private Date date;
  *     
  *     {@literal @XlsHint(order=2)}
@@ -157,7 +157,7 @@ import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
  *     {@literal @XlsColumn(columnName="算数")}
  *     private int sansu;
  *     
- *     // 数式の指定（変数、EL式を使用して指定）
+ *     // 数式の指定（メソッドを指定）
  *     {@literal @XlsColumn(columnName="合計")}
  *     {@literal @XlsFormula(methodName="getSumFormula", primary=true)}
  *     private int sum;
@@ -222,7 +222,7 @@ import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
  * 
  * // 数式をフォーマットするEL式の実装を変更する
  * XlsMapper mapper = new XlsMapper();
- * mapper.getConig().getFormulaFormatter.setExpressionLanguage(formulaEL); 
+ * mapper.getConig().getFormulaFormatter().setExpressionLanguage(formulaEL); 
  * </code></pre>
  * 
  * @since 1.5
@@ -252,7 +252,7 @@ public @interface XlsFormula {
      *   <li>rowIndex : 処理対象のセルの行のインデックス。0から始まります。</li>
      *   <li>columnIndex : 処理対象のセルの列のインデックス。0から始まります。</li>
      *   <li>rowNumber : 処理対象のセルの行番号。1から始まります。</li>
-     *   <li>columnIndex : 処理対象のセルの列番号。1から始まります。</li>
+     *   <li>columnNumber : 処理対象のセルの列番号。1から始まります。</li>
      *   <li>columnAlpha : 処理対象のセルの列の名前。Aから始まります。</li>
      *   <li>address : 処理対象のセルのアドレス。 A1 の形式です。</li>
      *   <li>targetBean : 処理対象のプロパティが定義されているJavaBeanのオブジェクトです。</li>
