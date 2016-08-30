@@ -194,6 +194,7 @@ XlsMapperはアノテーションを付与してJavaBeansとExcelをマッピン
 アノテーション :ref:`@XlsSheet <annotationXlsSheet>` を付与したJavaBeanを作成したうえで以下のようにして読み込みを行います。
 
 .. sourcecode:: java
+    
     XlsMapper xlsMapper = new XlsMapper();
     SampleSheet sheet = xlsMapper.load(
         new FileInputStream("example.xls"), // 読み込むExcelファイル
