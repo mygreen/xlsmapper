@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * <ul>
- *   <li>属性ignoreCaseの値をtrueにすると、読み込み時に大文字/小文字の区別なく変換します。
+ *   <li>属性{@link #ignoreCase()}の値をtrueにすると、読み込み時に大文字/小文字の区別なく変換します。
  * </ul>
  * 
  * <pre class="highlight"><code class="java">
