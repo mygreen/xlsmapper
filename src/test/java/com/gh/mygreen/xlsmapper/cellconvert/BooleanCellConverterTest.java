@@ -26,6 +26,7 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
@@ -35,7 +36,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 /**
  * {@link BooleanCellConverter}のテスタ
- * @version 0.5
+ * @version 1.5
  * @author T.TSUCHIE
  *
  */
@@ -74,6 +75,12 @@ public class BooleanCellConverterTest {
             
             if(sheet.formattedRecords != null) {
                 for(FormattedRecord record : sheet.formattedRecords) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                for(FormulaRecord record : sheet.formulaRecords) {
                     assertRecord(record, errors);
                 }
             }
@@ -190,6 +197,34 @@ public class BooleanCellConverterTest {
     }
     
     /**
+     * 入力用のシートのレコードの値を検証する。
+     * @param record
+     * @param errors
+     */
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            // 空文字
+            assertThat(record.b1, is(false));
+            assertThat(record.b2, is(nullValue()));
+            
+        } else if(record.no == 2) {
+            // Excelの型(true)
+            assertThat(record.b1, is(true));
+            assertThat(record.b2, is(Boolean.TRUE));
+            
+        } else if(record.no == 3) {
+            // Excelの型(false)
+            assertThat(record.b1, is(false));
+            assertThat(record.b2, is(Boolean.FALSE));
+
+        } else {
+            fail(String.format("not support test case. No=%d.", record.no));
+        }
+        
+    }
+    
+    /**
      * boolean/Boolean型の書き込みテスト
      */
     @Test
@@ -230,6 +265,10 @@ public class BooleanCellConverterTest {
                 .b4(false)
                 .comment("falseの値"));
         
+        // 数式のデータ作成
+        outSheet.add(new FormulaRecord().comment("1つ目"));
+        outSheet.add(new FormulaRecord().comment("2つ目"));
+        
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
@@ -262,6 +301,15 @@ public class BooleanCellConverterTest {
                 
                 for(int i=0; i < sheet.formattedRecords.size(); i++) {
                     assertRecord(sheet.formattedRecords.get(i), outSheet.formattedRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.formulaRecords != null) {
+                assertThat(sheet.formulaRecords, hasSize(outSheet.formulaRecords.size()));
+                
+                for(int i=0; i < sheet.formulaRecords.size(); i++) {
+                    assertRecord(sheet.formulaRecords.get(i), outSheet.formulaRecords.get(i), errors);
                 }
                 
             }
@@ -317,6 +365,38 @@ public class BooleanCellConverterTest {
         
     }
     
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.b1, is(false));
+            assertThat(inRecord.b2, is(Boolean.FALSE));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 2) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.b1, is(true));
+            assertThat(inRecord.b2, is(Boolean.TRUE));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.b1, is(outRecord.b1));
+            assertThat(inRecord.b2, is(outRecord.b2));
+            assertThat(inRecord.comment, is(outRecord.comment));
+        }
+        
+    }
+    
     @XlsSheet(name="ブール型")
     private static class BooleanSheet {
         
@@ -325,10 +405,15 @@ public class BooleanCellConverterTest {
                 overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
-        @XlsHint(order=1)
+        @XlsHint(order=2)
         @XlsHorizontalRecords(tableLabel="ブール型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="ブール型（数式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<FormulaRecord> formulaRecords;
         
         /**
          * noを自動的に付与する。
@@ -358,6 +443,22 @@ public class BooleanCellConverterTest {
             
             this.formattedRecords.add(record);
             record.no(formattedRecords.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public BooleanSheet add(FormulaRecord record) {
+            if(formulaRecords == null) {
+                this.formulaRecords = new ArrayList<>();
+            }
+            
+            this.formulaRecords.add(record);
+            record.no(formulaRecords.size());
             
             return this;
         }
@@ -478,6 +579,52 @@ public class BooleanCellConverterTest {
         }
         
         public FormattedRecord comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+    }
+    
+    private static class FormulaRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsConverter(defaultValue="false", trim=true)
+        @XlsBooleanConverter(failToFalse=true, ignoreCase=true)
+        @XlsColumn(columnName="boolean型")
+        @XlsFormula(value="MOD(A${rowNumber},2)=0", primary=true)
+        private boolean b1;
+        
+        @XlsConverter(trim=true)
+        @XlsBooleanConverter(loadForTrue={"偶数"}, loadForFalse={"奇数"}, saveAsTrue="偶数", saveAsFalse="奇数",
+            failToFalse=false, ignoreCase=false)
+        @XlsColumn(columnName="Boolean型(パターン)")
+        @XlsFormula(value="IF(MOD(A{rowNumber},2)=0, \"偶数\", \"奇数\")")
+        private Boolean b2;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
+        public FormulaRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public FormulaRecord b1(boolean b1) {
+            this.b1 = b1;
+            return this;
+        }
+        
+        public FormulaRecord b2(Boolean b2) {
+            this.b2 = b2;
+            return this;
+        }
+        
+        public FormulaRecord comment(String comment) {
             this.comment = comment;
             return this;
         }

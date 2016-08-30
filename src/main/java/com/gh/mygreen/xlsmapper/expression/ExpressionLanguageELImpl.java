@@ -1,7 +1,9 @@
 package com.gh.mygreen.xlsmapper.expression;
 
+import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -14,12 +16,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.ArgUtils;
+import com.gh.mygreen.xlsmapper.Utils;
 import com.github.mygreen.expression.el.FormatterWrapper;
+import com.github.mygreen.expression.el.tld.Function;
+import com.github.mygreen.expression.el.tld.Taglib;
+import com.github.mygreen.expression.el.tld.TldLoader;
 
 
 /**
  * 標準のEL式を使用するための実装。
  * <p>利用する際には、ELのライブラリが必要です。
+ * 
+ * @version 1.5
  * 
  */
 public class ExpressionLanguageELImpl implements ExpressionLanguage {
@@ -27,7 +35,7 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
     private static final Logger logger = LoggerFactory.getLogger(ExpressionLanguageELImpl.class);
     
     /** EL3.xが使用可能かどうか */
-    boolean availabledEl3;
+    private boolean availabledEl3;
     {
         try {
             Class.forName("javax.el.ELProcessor");
@@ -36,6 +44,9 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
             this.availabledEl3 = false;
         }
     }
+    
+    /** TLDファイルの定義内容 */
+    private List<Taglib> taglibList = new ArrayList<>();
     
     /**
      * {@inheritDoc}
@@ -77,6 +88,24 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
             
             elProc.getELManager().addBeanNameResolver(new LocalBeanNameResolver(beans));
             
+            // カスタムタグを登録する。
+            for(Taglib taglib : taglibList) {
+                final String prefix = Utils.trimToEmpty(taglib.getShortName());
+                
+                for(Function function : taglib.getFunctions()) {
+                    final String className = Utils.trimToEmpty(function.getFunctionClass());
+                    final String signature = Utils.trimToEmpty(function.getFunctionSignature());
+                    final String name = Utils.trimToEmpty(function.getName());
+                        
+                    try {
+                        elProc.defineFunction(prefix, name, className, signature);
+                        
+                    } catch(ClassNotFoundException | NoSuchMethodException ex) {
+                        throw new ExpressionEvaluationException(String.format("Faild defined with EL function : [%s:%s].", className, signature), ex);
+                    }
+                }
+            }
+            
             if(logger.isDebugEnabled()) {
                 logger.debug("Evaluating EL expression: {}", expression);
             }
@@ -104,6 +133,24 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
                     elProc.setVariable(entry.getKey(), new FormatterWrapper((Formatter) entry.getValue()));
                 } else {
                     elProc.setVariable(entry.getKey(), entry.getValue());
+                }
+            }
+            
+            // カスタムタグを登録する。
+            for(Taglib taglib : taglibList) {
+                final String prefix = Utils.trimToEmpty(taglib.getShortName());
+                
+                for(Function function : taglib.getFunctions()) {
+                    final String className = Utils.trimToEmpty(function.getFunctionClass());
+                    final String signature = Utils.trimToEmpty(function.getFunctionSignature());
+                    final String name = Utils.trimToEmpty(function.getName());
+                        
+                    try {
+                        elProc.defineFunction(prefix, name, className, signature);
+                        
+                    } catch(ClassNotFoundException | NoSuchMethodException ex) {
+                        throw new ExpressionEvaluationException(String.format("Faild defined with EL function : [%s:%s].", className, signature), ex);
+                    }
                 }
             }
             
@@ -165,6 +212,17 @@ public class ExpressionLanguageELImpl implements ExpressionLanguage {
             map.put(beanName, value );
         }
 
+    }
+    
+    /**
+     * カスタムタグの定義ファイル「TLD（Tag Library Defenitioin）」を登録する。
+     * <p>{@link TldLoader}クラスで読み込む。
+     * 
+     * @since 1.5
+     * @param taglib カスタムタグの定義内容。
+     */
+    public void register(final Taglib taglib) {
+        this.taglibList.add(taglib);
     }
     
 }

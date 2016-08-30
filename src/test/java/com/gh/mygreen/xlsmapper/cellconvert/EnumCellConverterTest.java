@@ -26,6 +26,7 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsEnumConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
@@ -37,6 +38,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link EnumCellConverter}のテスタ
  * 
+ * @version 1.5
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -76,6 +78,13 @@ public class EnumCellConverterTest {
             
             if(sheet.formattedRecords != null) {
                 for(FormattedRecord record : sheet.formattedRecords) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+
+            if(sheet.formulaRecords != null) {
+                for(FormulaRecord record : sheet.formulaRecords) {
                     assertRecord(record, errors);
                 }
             }
@@ -147,6 +156,24 @@ public class EnumCellConverterTest {
         
     }
     
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            // 空文字
+            assertThat(record.color, is(nullValue()));
+            assertThat(record.operate, is(nullValue()));
+            
+        } else if(record.no == 2) {
+            // 正しい値
+            assertThat(record.color, is(Color.Red));
+            assertThat(record.operate, is(Operate.Refer));
+            
+        } else {
+            fail(String.format("not support test case. No=%d.", record.no));
+        }
+        
+    }
+    
     /**
      * 列挙型の書き込みテスト
      */
@@ -173,6 +200,10 @@ public class EnumCellConverterTest {
                 .color(Color.Green)
                 .operate(Operate.Edit)
                 .comment("値"));
+        
+        // 数式のデータ作成
+        outSheet.add(new FormulaRecord().comment("空文字"));
+        outSheet.add(new FormulaRecord().comment("R"));
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
@@ -205,6 +236,14 @@ public class EnumCellConverterTest {
                 
                 for(int i=0; i < sheet.formattedRecords.size(); i++) {
                     assertRecord(sheet.formattedRecords.get(i), outSheet.formattedRecords.get(i), errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                assertThat(sheet.formulaRecords, hasSize(outSheet.formulaRecords.size()));
+                
+                for(int i=0; i < sheet.formulaRecords.size(); i++) {
+                    assertRecord(sheet.formulaRecords.get(i), outSheet.formulaRecords.get(i), errors);
                 }
             }
             
@@ -254,6 +293,31 @@ public class EnumCellConverterTest {
     }
     
     /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.color, is(nullValue()));
+            assertThat(inRecord.operate, is(nullValue()));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.color, is(Color.Red));
+            assertThat(inRecord.operate, is(Operate.Refer));
+            assertThat(inRecord.comment, is(outRecord.comment));
+        }
+    }
+    
+    /**
      * 列挙型 - 単純な列挙型
      */
     private enum Color {
@@ -297,6 +361,11 @@ public class EnumCellConverterTest {
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="列挙型（数式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<FormulaRecord> formulaRecords;
+        
         /**
          * レコードを追加する。noを自動的に付与する。
          * @param record
@@ -324,6 +393,20 @@ public class EnumCellConverterTest {
             record.no(formattedRecords.size());
             return this;
         }
+        
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public EnumSheet add(FormulaRecord record) {
+            if(formulaRecords == null) {
+                this.formulaRecords = new ArrayList<>();
+            }
+            this.formulaRecords.add(record);
+            record.no(formulaRecords.size());
+            return this;
+        }
     }
     
     /**
@@ -339,10 +422,10 @@ public class EnumCellConverterTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsColumn(columnName="Enum型（英字）")
+        @XlsColumn(columnName="Enum型（英字）1")
         private Color color;
         
-        @XlsColumn(columnName="Enum型（日本語）")
+        @XlsColumn(columnName="Enum型（英字）2")
         private Operate operate;
         
         @XlsColumn(columnName="備考")
@@ -421,6 +504,59 @@ public class EnumCellConverterTest {
         }
         
         public FormattedRecord comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+        
+    }
+    
+    /**
+     * 列挙型 - 数式
+     *
+     */
+    private static class FormulaRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsEnumConverter(ignoreCase=true)
+        @XlsColumn(columnName="Enum型（英字）")
+        @XlsFormula("IF(\\$D{rowNumber}=\"R\",\"Red\",\"\")")
+        private Color color;
+        
+        @XlsEnumConverter(ignoreCase=true, valueMethodName="localeName")
+        @XlsColumn(columnName="Enum型（日本語）")
+        @XlsFormula("IF(\\$D{rowNumber}=\"R\",\"参照\",\"\")")
+        private Operate operate;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public FormulaRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public FormulaRecord color(Color color) {
+            this.color = color;
+            return this;
+        }
+        
+        public FormulaRecord operate(Operate operate) {
+            this.operate = operate;
+            return this;
+        }
+        
+        public FormulaRecord comment(String comment) {
             this.comment = comment;
             return this;
         }

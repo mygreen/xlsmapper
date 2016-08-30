@@ -29,6 +29,7 @@ import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
@@ -39,6 +40,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * 数値型の変換のテスタ
  * 
+ * @version 1.5
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -90,6 +92,12 @@ public class NumberCellConverterTest {
             
             if(sheet.formattedRecords != null) {
                 for(FormattedRecord record : sheet.formattedRecords) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                for(FormulaRecord record : sheet.formulaRecords) {
                     assertRecord(record, errors);
                 }
             }
@@ -594,6 +602,59 @@ public class NumberCellConverterTest {
             fail(String.format("not support test case. No=%d.", record.no));
         }
         
+        
+        
+    }
+    
+    /**
+     * 数式のチェック
+     * @param record
+     * @param errors
+     */
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
+        
+        if(record.no == 1) {
+            // 空文字
+            assertThat(record.b, is(nullValue()));
+            assertThat(record.s, is(nullValue()));
+            assertThat(record.i, is(nullValue()));
+            assertThat(record.l, is(nullValue()));
+            assertThat(record.f, is(nullValue()));
+            assertThat(record.d, is(nullValue()));
+            assertThat(record.bd, is(nullValue()));
+            assertThat(record.bi, is(nullValue()));
+            
+        } else if(record.no == 2) {
+            // 正の数
+            assertThat(record.b, is((byte)12));
+            assertThat(record.s, is((short)12));
+            assertThat(record.i, is((int)12));
+            assertThat(record.l, is((long)12l));
+            assertThat(record.f, is((float)152.2756f));
+            assertThat(record.d, is((double)152.2756d));
+            assertThat(record.bd, is(new BigDecimal(152.2756d, new MathContext(15, RoundingMode.HALF_UP))));
+            assertThat(record.bi, is(new BigInteger("12")));
+            
+        } else if(record.no == 3) {
+            // 負の数
+            assertThat(record.b, is((byte)-4));
+            assertThat(record.s, is((short)-4));
+            assertThat(record.i, is((int)-4));
+            assertThat(record.l, is((long)-4l));
+            assertThat(record.f, is((float)11.9025f));
+            assertThat(record.d, is((double)11.9025d));
+            assertThat(record.bd, is(new BigDecimal(11.9025d, new MathContext(15, RoundingMode.HALF_UP))));
+            assertThat(record.bi, is(new BigInteger("-4")));
+            
+        } else {
+            fail(String.format("not support test case. No=%d.", record.no));
+        }
+        
+        
+        
     }
     
     /**
@@ -775,6 +836,11 @@ public class NumberCellConverterTest {
             .d(MIN_DOUBLE)
             .comment("最小値"));
         
+        // 数式の指定
+        outSheet.add(new FormulaRecord().comment("0"));
+        outSheet.add(new FormulaRecord().comment("12.34"));
+        outSheet.add(new FormulaRecord().comment("-3.45"));
+        
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
@@ -822,6 +888,14 @@ public class NumberCellConverterTest {
                 
                 for(int i=0; i < sheet.formattedRecords.size(); i++) {
                     assertRecord(sheet.formattedRecords.get(i), outSheet.formattedRecords.get(i), errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                assertThat(sheet.formulaRecords, hasSize(outSheet.formulaRecords.size()));
+                
+                for(int i=0; i < sheet.formulaRecords.size(); i++) {
+                    assertRecord(sheet.formulaRecords.get(i), outSheet.formulaRecords.get(i), errors);
                 }
             }
         }
@@ -946,6 +1020,63 @@ public class NumberCellConverterTest {
         
     }
     
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
+        if(inRecord.no == 1) {
+            assertThat(inRecord.b, is(nullValue()));
+            assertThat(inRecord.s, is(nullValue()));
+            assertThat(inRecord.i, is(nullValue()));
+            assertThat(inRecord.l, is(nullValue()));
+            assertThat(inRecord.f, is(nullValue()));
+            assertThat(inRecord.d, is(nullValue()));
+            assertThat(inRecord.bd, is(nullValue()));
+            assertThat(inRecord.bi, is(nullValue()));
+            
+        } else if(inRecord.no == 2) {
+            assertThat(inRecord.b, is((byte)12));
+            assertThat(inRecord.s, is((short)12));
+            assertThat(inRecord.i, is((int)12));
+            assertThat(inRecord.l, is((long)12l));
+            assertThat(inRecord.f, is((float)152.2756f));
+            assertThat(inRecord.d, is((double)152.2756d));
+            assertThat(inRecord.bd, is(new BigDecimal(152.2756d, new MathContext(15, RoundingMode.HALF_UP))));
+            assertThat(inRecord.bi, is(new BigInteger("12")));
+            
+        } else if(inRecord.no == 3) {
+            assertThat(inRecord.b, is((byte)-4));
+            assertThat(inRecord.s, is((short)-4));
+            assertThat(inRecord.i, is((int)-4));
+            assertThat(inRecord.l, is((long)-4l));
+            assertThat(inRecord.f, is((float)11.9025f));
+            assertThat(inRecord.d, is((double)11.9025d));
+            assertThat(inRecord.bd, is(new BigDecimal(11.9025d, new MathContext(15, RoundingMode.HALF_UP))));
+            assertThat(inRecord.bi, is(new BigInteger("-4")));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.b, is(outRecord.b));
+            assertThat(inRecord.s, is(outRecord.s));
+            assertThat(inRecord.i, is(outRecord.i));
+            assertThat(inRecord.l, is(outRecord.l));
+            assertThat(inRecord.f, is(outRecord.f));
+            assertThat(inRecord.d, is(outRecord.d));
+            assertThat(inRecord.bd, is(outRecord.bd));
+            assertThat(inRecord.bi, is(outRecord.bi));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        }
+        
+    }
+    
     @XlsSheet(name="数値型")
     private static class NumberSheet {
         
@@ -954,20 +1085,25 @@ public class NumberCellConverterTest {
                 overRecord=OverRecordOperate.Insert)
         private List<PrimitiveRecord> primitiveRecords;
         
-        @XlsHint(order=1)
+        @XlsHint(order=2)
         @XlsHorizontalRecords(tableLabel="ラッパークラス", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<WrapperRecord> wrapperRecords;
         
-        @XlsHint(order=1)
+        @XlsHint(order=3)
         @XlsHorizontalRecords(tableLabel="その他のクラス", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<OtherRecord> otherRecords;
         
-        @XlsHint(order=1)
+        @XlsHint(order=4)
         @XlsHorizontalRecords(tableLabel="初期値、書式指定", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
+        
+        @XlsHint(order=5)
+        @XlsHorizontalRecords(tableLabel="数式指定", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<FormulaRecord> formulaRecords;
         
         /**
          * レコードを追加する。noを自動的に付与する。
@@ -1022,6 +1158,20 @@ public class NumberCellConverterTest {
             }
             this.formattedRecords.add(record);
             record.no(formattedRecords.size());
+            return this;
+        }
+        
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public NumberSheet add(FormulaRecord record) {
+            if(formulaRecords == null) {
+                this.formulaRecords = new ArrayList<>();
+            }
+            this.formulaRecords.add(record);
+            record.no(formulaRecords.size());
             return this;
         }
         
@@ -1328,6 +1478,131 @@ public class NumberCellConverterTest {
         public FormattedRecord comment(String comment) {
             this.comment = comment;
             return this;
+        }
+        
+    }
+    
+    /**
+     * 数値型 - 数式のテスト
+     *
+     */
+    private static class FormulaRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="Byteクラス")
+        @XlsFormula(methodName="getIntFormula")
+        private Byte b;
+        
+        @XlsColumn(columnName="Shortクラス")
+        @XlsFormula(methodName="getIntFormula")
+        private Short s;
+        
+        @XlsColumn(columnName="Integerクラス")
+        @XlsFormula(methodName="getIntFormula")
+        private Integer i;
+        
+        @XlsColumn(columnName="Longクラス")
+        @XlsFormula(methodName="getIntFormula")
+        private Long l;
+        
+        @XlsColumn(columnName="Floatクラス")
+        @XlsFormula(methodName="getDecimalFormula")
+        private Float f;
+        
+        @XlsColumn(columnName="Doubleクラス")
+        @XlsFormula(methodName="getDecimalFormula")
+        private Double d;
+        
+        @XlsColumn(columnName="BigDecimalクラス")
+        @XlsFormula(methodName="getDecimalFormula")
+        private BigDecimal bd;
+        
+        @XlsColumn(columnName="BigIntegerクラス")
+        @XlsFormula(methodName="getIntFormula")
+        private BigInteger bi;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public FormulaRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public FormulaRecord b(Byte b) {
+            this.b = b;
+            return this;
+        }
+        
+        public FormulaRecord s(Short s) {
+            this.s = s;
+            return this;
+        }
+        
+        public FormulaRecord i(Integer i) {
+            this.i = i;
+            return this;
+        }
+        
+        public FormulaRecord l(Long l) {
+            this.l = l;
+            return this;
+        }
+        
+        public FormulaRecord f(Float f) {
+            this.f = f;
+            return this;
+        }
+        
+        public FormulaRecord d(Double d) {
+            this.d = d;
+            return this;
+        }
+        
+        public FormulaRecord bd(BigDecimal bd) {
+            this.bd = bd;
+            return this;
+        }
+        
+        public FormulaRecord bi(BigInteger bi) {
+            this.bi = bi;
+            return this;
+        }
+        
+        public FormulaRecord comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+        
+        public String getIntFormula(final Point point) {
+            final int rowNumber = point.y + 1;
+            
+            if(this.no == 1) {
+                return null;
+            }
+            
+            return String.format("INT($J%s)", rowNumber);
+        }
+        
+        public String getDecimalFormula(final Point point) {
+            final int rowNumber = point.y + 1;
+            
+            if(this.no == 1) {
+                return null;
+            }
+            
+            return String.format("POWER($J%s,2)", rowNumber);
         }
         
     }

@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,6 +22,7 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
@@ -33,7 +35,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link LabelledCellProcessor}のテスタ
  * アノテーション{@link XlsLabelledCell}のテスタ。
- * @version 1.1
+ * @version 1.5
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -255,6 +257,28 @@ public class AnnoLabelledCellTest {
         
     }
     
+    /**
+     * 読み込みのテスト - 数式のテスト
+     */
+    @Test
+    public void test_load_labelled_formula() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(new File("src/test/data/anno_LabelledCell.xlsx"))) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(FormulaSheet.class);
+            
+            FormulaSheet sheet = mapper.load(in, FormulaSheet.class, errors);
+            
+            assertThat(sheet.start, is(toUtilDate(toTimestamp("2016-05-22 00:00:00.000"))));
+            assertThat(sheet.end, is(toUtilDate(toTimestamp("2016-10-01 00:00:00.000"))));
+            assertThat(sheet.diff, is(132));
+            
+        }
+        
+    }
     
     /**
      * 書き込みのテスト - 通常のデータ
@@ -282,7 +306,7 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_LabelledCell.xlsx");
+        File outFile = new File("src/test/out/anno_LabelledCell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -348,7 +372,7 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_LabelledCell.xlsx");
+        File outFile = new File("src/test/out/anno_LabelledCell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -431,7 +455,7 @@ public class AnnoLabelledCellTest {
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        File outFile = new File("src/test/out/anno_LabelledCell.xlsx");
+        File outFile = new File("src/test/out/anno_LabelledCell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -458,6 +482,48 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.notRegexp, is(outSheet.notRegexp));
             assertThat(sheet.normalize, is(outSheet.normalize));
             assertThat(sheet.headerRegexp, is(outSheet.headerRegexp));
+            
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 数式のテスト
+     */
+    @Test
+    public void test_save_labelled_formula() throws Exception {
+        
+        // テストデータの作成
+        final FormulaSheet outSheet = new FormulaSheet();
+        
+        outSheet.start(toUtilDate(toTimestamp("2016-05-22 00:00:00.000")))
+            .end(toUtilDate(toTimestamp("2016-10-01 00:00:00.000")));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_LabelledCell_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(FormulaSheet.class);
+            
+            FormulaSheet sheet = mapper.load(in, FormulaSheet.class, errors);
+            
+            assertThat(sheet.positions, is(outSheet.positions));
+            assertThat(sheet.labels, is(outSheet.labels));
+            
+            assertThat(sheet.start, is(outSheet.start));
+            assertThat(sheet.end, is(outSheet.end));
+            assertThat(sheet.diff, is((int)TimeUnit.MILLISECONDS.toDays(outSheet.end.getTime() - outSheet.start.getTime())));
             
             
         }
@@ -1057,6 +1123,38 @@ public class AnnoLabelledCellTest {
         
         public RegexSheet headerRegexp(String headerRegexp) {
             this.headerRegexp = headerRegexp;
+            return this;
+        }
+        
+    }
+    
+    @XlsSheet(name="数式を指定")
+    private static class FormulaSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsHint(order=1)
+        @XlsLabelledCell(label="開始日", type=LabelledCellType.Bottom)
+        private Date start;
+        
+        @XlsHint(order=2)
+        @XlsLabelledCell(label="終了日", type=LabelledCellType.Bottom)
+        private Date end;
+        
+        @XlsHint(order=3)
+        @XlsLabelledCell(label="差", type=LabelledCellType.Bottom)
+        @XlsFormula(value="C5-B5")
+        private Integer diff;
+        
+        public FormulaSheet start(Date start) {
+            this.start = start;
+            return this;
+        }
+        
+        public FormulaSheet end(Date end) {
+            this.end = end;
             return this;
         }
         

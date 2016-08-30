@@ -30,6 +30,7 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
@@ -39,7 +40,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * リスト/集合/配列型の
  * 
- * @version 1.1
+ * @version 1.5
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -86,6 +87,12 @@ public class CollectionCellConveterTest {
             
             if(sheet.customRecords != null) {
                 for(CustomRecord record : sheet.customRecords) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                for(FormulaRecord record : sheet.formulaRecords) {
                     assertRecord(record, errors);
                 }
             }
@@ -298,6 +305,26 @@ public class CollectionCellConveterTest {
         
     }
     
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            // 空文字
+            assertThat(record.listStr, empty());
+            assertThat(record.arrayStr, emptyArray());
+            assertThat(record.setStr, empty());
+            
+        } else if(record.no == 2) {
+            // 項目が１つ
+            assertThat(record.listStr, contains("/dir1/index.html", "/dir2/sample.html"));
+            assertThat(record.arrayStr, arrayContaining("/dir1/index.html", "/dir2/sample.html"));
+            assertThat(record.setStr, contains("/dir1/index.html", "/dir2/sample.html"));
+            
+        } else {
+            fail(String.format("not support test case. No=%d.", record.no));
+        }
+        
+    }
+    
     /**
      * リスト、集合、配列型の書き込みテスト
      */
@@ -405,7 +432,6 @@ public class CollectionCellConveterTest {
                 .setInteger(toSet(123, 456))
                 .comment("空白がある"));
         
-        
         // リスト型（任意の型）
         Date date1 = toUtilDate(toTimestamp("2016-03-15 00:00:00.000"));
         Date date2 = toUtilDate(toTimestamp("2016-03-16 00:00:00.000"));
@@ -443,6 +469,10 @@ public class CollectionCellConveterTest {
                 .arrayDate(toArray(date1, date2))
                 .setDate(toSet(date1, date2))
                 .comment("空白がある（※テスト不可）"));
+        
+        // 数式のデータ
+        outSheet.add(new FormulaRecord().comment(";"));
+        outSheet.add(new FormulaRecord().comment("/dir1/index.html;/dir2/sample.html"));
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
@@ -483,6 +513,14 @@ public class CollectionCellConveterTest {
                 
                 for(int i=0; i < sheet.customRecords.size(); i++) {
                     assertRecord(sheet.customRecords.get(i), outSheet.customRecords.get(i), errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                assertThat(sheet.formulaRecords, hasSize(outSheet.formulaRecords.size()));
+                
+                for(int i=0; i < sheet.formulaRecords.size(); i++) {
+                    assertRecord(sheet.formulaRecords.get(i), outSheet.formulaRecords.get(i), errors);
                 }
             }
             
@@ -663,6 +701,35 @@ public class CollectionCellConveterTest {
         
     }
     
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.listStr, is(hasSize(0)));
+            assertThat(inRecord.arrayStr, is(arrayWithSize(0)));
+            assertThat(inRecord.setStr, is(hasSize(0)));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 2) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.listStr, is(contains("/dir1/index.html", "/dir2/sample.html")));
+            assertThat(inRecord.arrayStr, is(arrayContaining("/dir1/index.html", "/dir2/sample.html")));
+            assertThat(inRecord.setStr, is(contains("/dir1/index.html", "/dir2/sample.html")));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        }
+        
+    }
+    
     @XlsSheet(name="リスト型")
     private static class CollectionSheet {
         
@@ -680,6 +747,11 @@ public class CollectionCellConveterTest {
         @XlsHorizontalRecords(tableLabel="リスト型（任意の型）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<CustomRecord> customRecords;
+        
+        @XlsHint(order=4)
+        @XlsHorizontalRecords(tableLabel="リスト型（数式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<FormulaRecord> formulaRecords;
         
         /**
          * レコードを追加する。noを自動的に付与する。
@@ -720,6 +792,20 @@ public class CollectionCellConveterTest {
             }
             this.customRecords.add(record);
             record.no(customRecords.size());
+            return this;
+        }
+        
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public CollectionSheet add(FormulaRecord record) {
+            if(formulaRecords == null) {
+                this.formulaRecords = new ArrayList<>();
+            }
+            this.formulaRecords.add(record);
+            record.no(formulaRecords.size());
             return this;
         }
         
@@ -976,6 +1062,68 @@ public class CollectionCellConveterTest {
                 return formatter.format(value);
             }
             
+        }
+        
+    }
+    
+    private static class FormulaRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsConverter(trim=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
+        @XlsColumn(columnName="List（数式）")
+        @XlsFormula("E{rowNumber}")
+        private List<String> listStr;
+        
+        @XlsConverter(trim=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
+        @XlsColumn(columnName="Array（数式）")
+        @XlsFormula("E{rowNumber}")
+        private String[] arrayStr;
+        
+        @XlsConverter(trim=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
+        @XlsColumn(columnName="Set（数式）")
+        @XlsFormula("E{rowNumber}")
+        private Set<String> setStr;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public FormulaRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public FormulaRecord listStre(List<String> listStr) {
+            this.listStr = listStr;
+            return this;
+        }
+        
+        public FormulaRecord arrayStr(String[] arrayStr) {
+            this.arrayStr = arrayStr;
+            return this;
+        }
+        
+        public FormulaRecord setStr(Set<String> setStr) {
+            this.setStr = setStr;
+            return this;
+        }
+        
+        public FormulaRecord comment(String comment) {
+            this.comment = comment;
+            return this;
         }
         
     }

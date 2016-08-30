@@ -16,12 +16,23 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.mygreen.expression.el.FormatterWrapper;
+import com.github.mygreen.expression.el.tld.Taglib;
+import com.github.mygreen.expression.el.tld.TldLoader;
 
-
-public class ExpresionLanguageTest {
+/**
+ * {@link ExpressionLanguageELImpl}のテスタ
+ * 
+ * @version 1.5
+ * @author T.TSUCHIE
+ *
+ */
+public class ExpresionLanguageELTest {
+    
+    private ExpressionLanguageELImpl el;
     
     @Before
     public void setUp() throws Exception {
+        this.el = new ExpressionLanguageELImpl();
     }
     
     @After
@@ -30,8 +41,6 @@ public class ExpresionLanguageTest {
     
     @Test
     public void testEL3_empty() {
-        
-        ExpressionLanguageELImpl el = new ExpressionLanguageELImpl();
         
         String expression = "empty label ? '空です' : label";
         
@@ -45,8 +54,6 @@ public class ExpresionLanguageTest {
     
     @Test
     public void testEL3_format() {
-        
-        ExpressionLanguageELImpl el = new ExpressionLanguageELImpl();
         
         Date date = Timestamp.valueOf("2015-04-15 10:20:30.000");
 
@@ -66,8 +73,6 @@ public class ExpresionLanguageTest {
     @Test
     public void testEL3_lambda() {
         
-        ExpressionLanguageELImpl el = new ExpressionLanguageELImpl();
-        
         String expression = "sum=0;list.stream().forEach(x->(sum=sum+x));sum";
         
         Map<String, Object> vars = new HashMap<>();
@@ -82,8 +87,6 @@ public class ExpresionLanguageTest {
     @Test
     public void testEL3_escape() {
         
-        ExpressionLanguageELImpl el = new ExpressionLanguageELImpl();
-        
         Date date = Timestamp.valueOf("2015-04-15 10:20:30.000");
 
         String expression = "'Helo World}' += formatter.format('%1.1f', validatedValue)";
@@ -96,6 +99,47 @@ public class ExpresionLanguageTest {
         assertThat(eval, is("Helo World}12.3"));
 //        System.out.println(eval);
         
+        
+    }
+    
+    @Test
+    public void testEL3_formula() {
+        
+        String expression = "columnNumber == 7 ? 'COUNTIF(D' += rowNumber += ':F' += rowNumber += ', \"出席\")' : ''";
+        
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("columnNumber", 6);
+        vars.put("rowNumber", 10);
+        
+        String eval1 = (String) el.evaluateWithEL3(expression, vars);
+        assertThat(eval1, is(""));
+        
+        vars.clear();
+        vars.put("columnNumber", 7);
+        vars.put("rowNumber", 10);
+        
+        String eval2 = (String) el.evaluateWithEL3(expression, vars);
+        assertThat(eval2, is("COUNTIF(D10:F10, \"出席\")"));
+//        System.out.println(eval);
+        
+        
+    }
+    
+    @Test
+    public void testEL3_function() throws Exception {
+        
+        // EL関数の登録
+        TldLoader loader = new TldLoader();
+        Taglib taglib = loader.load(ExpresionLanguageELTest.class.getResourceAsStream("/com/gh/mygreen/xlsmapper/expression/xlsmapper.tld"));
+        el.register(taglib);
+        
+        String expression = "x:colToAlpha(columnNumber)";
+        
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("columnNumber", 1);
+        
+        String eval = (String) el.evaluateWithEL3(expression, vars);
+        assertThat(eval, is("A"));
         
     }
 

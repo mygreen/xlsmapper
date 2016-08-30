@@ -25,6 +25,7 @@ import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
@@ -35,6 +36,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * 文字列の変換処理のテスタ
  * 
+ * @version 1.5
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -72,6 +74,10 @@ public class TextCellConverterTest {
             }
             
             for(FormattedRecord record : sheet.formattedRecords) {
+                assertRecord(record, errors);
+            }
+            
+            for(FormulaRecord record : sheet.formulaRecords) {
                 assertRecord(record, errors);
             }
             
@@ -146,6 +152,31 @@ public class TextCellConverterTest {
         
     }
     
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            // 空文字
+            assertThat(record.t1, is(nullValue()));
+            assertThat(record.c1, is('\u0000'));
+            assertThat(record.c2, is(nullValue()));
+            
+        } else if(record.no == 2) {
+            assertThat(record.t1, is("ABCDEF"));
+            assertThat(record.c1, is('F'));
+            assertThat(record.c2, is('A'));
+            
+            
+        } else if(record.no == 3) {
+            assertThat(record.t1, is("こんにちは"));
+            assertThat(record.c1, is('は'));
+            assertThat(record.c2, is('こ'));
+            
+        } else {
+            fail(String.format("not support test case. No=%d.", record.no));
+        }
+        
+    }
+    
     /**
      * 文字列型の書き込みテスト
      */
@@ -189,6 +220,11 @@ public class TextCellConverterTest {
                 .c2("\n".charAt(0))
                 .comment("改行＋前後に空白"));
         
+        // 数式のデータ作成
+        outSheet.add(new FormulaRecord().comment(null));
+        outSheet.add(new FormulaRecord().comment("   AbCdeF   "));
+        outSheet.add(new FormulaRecord().comment("   こんにちは   "));
+        
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
@@ -220,6 +256,14 @@ public class TextCellConverterTest {
                 
                 for(int i=0; i < sheet.formattedRecords.size(); i++) {
                     assertRecord(sheet.formattedRecords.get(i), outSheet.formattedRecords.get(i), errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                assertThat(sheet.formulaRecords, hasSize(outSheet.formulaRecords.size()));
+                
+                for(int i=0; i < sheet.formulaRecords.size(); i++) {
+                    assertRecord(sheet.formulaRecords.get(i), outSheet.formulaRecords.get(i), errors);
                 }
             }
             
@@ -295,6 +339,50 @@ public class TextCellConverterTest {
         
     }
     
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
+        if(inRecord.no == 1) {
+            // 空文字の確認
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.t1, is(nullValue()));
+            assertThat(inRecord.c1, is('\u0000'));
+            assertThat(inRecord.c2, is(nullValue()));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 2) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.t1, is("ABCDEF"));
+            assertThat(inRecord.c1, is('F'));
+            assertThat(inRecord.c2, is('A'));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 3) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.t1, is("こんにちは"));
+            assertThat(inRecord.c1, is('は'));
+            assertThat(inRecord.c2, is('こ'));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.t1, is(outRecord.t1));
+            assertThat(inRecord.c1, is(outRecord.c1));
+            assertThat(inRecord.c2, is(outRecord.c2));
+            assertThat(inRecord.comment, is(outRecord.comment));
+        }
+        
+        
+    }
+    
     @XlsSheet(name="文字列型")
     private static class TextSheet {
         
@@ -307,6 +395,11 @@ public class TextCellConverterTest {
         @XlsHorizontalRecords(tableLabel="文字列型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="文字列型（数式）", terminal=RecordTerminal.Border,
+                overRecord=OverRecordOperate.Insert)
+        private List<FormulaRecord> formulaRecords;
         
         /**
          * レコードを追加する。noを自動的に付与する。
@@ -333,6 +426,20 @@ public class TextCellConverterTest {
             }
             this.formattedRecords.add(record);
             record.no(formattedRecords.size());
+            return this;
+        }
+        
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public TextSheet add(FormulaRecord record) {
+            if(formulaRecords == null) {
+                this.formulaRecords = new ArrayList<>();
+            }
+            this.formulaRecords.add(record);
+            record.no(formulaRecords.size());
             return this;
         }
     }
@@ -456,6 +563,60 @@ public class TextCellConverterTest {
         }
         
         public FormattedRecord comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+        
+    }
+    
+    /**
+     * 文字列型 - 数式
+     */
+    private static class FormulaRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="String型")
+        @XlsFormula("UPPER(TRIM(E{rowNumber}))")
+        private String t1;
+        
+        @XlsColumn(columnName="char型")
+        @XlsFormula("RIGHT(TRIM(E${rowNumber}))")
+        private char c1;
+        
+        @XlsColumn(columnName="Character型")
+        @XlsFormula("LEFT(TRIM(E${rowNumber}))")
+        private Character c2;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
+        public FormulaRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public FormulaRecord t1(String t1) {
+            this.t1 = t1;
+            return this;
+        }
+        
+        public FormulaRecord c1(char c1) {
+            this.c1 = c1;
+            return this;
+        }
+        
+        public FormulaRecord c2(Character c2) {
+            this.c2 = c2;
+            return this;
+        }
+        
+        public FormulaRecord comment(String comment) {
             this.comment = comment;
             return this;
         }

@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.Map;
 
+import org.apache.poi.ss.util.CellReference;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,6 +22,9 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
+import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.processor.CellProcessor;
@@ -29,7 +33,8 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link CellProcessor}のテスタ。
  * アノテーション{@link XlsCell}のテスタ。
- * @version 1.0
+ * 
+ * @version 1.5
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -147,6 +152,28 @@ public class AnnoCellTest {
     }
     
     /**
+     * 読み込みのテスト - 式を指定
+     * @since 1.5
+     */
+    @Test
+    public void test_load_cell_formula() throws Exception {
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(FormulaSheet.class);
+            
+            FormulaSheet sheet = mapper.load(in, FormulaSheet.class, errors);
+            
+            assertThat(sheet.c1,is("ABCDEFG"));
+            assertThat(sheet.c2,is(135.144d));
+            assertThat(sheet.c3,is(toUtilDate(toTimestamp("1900-01-07 20:00:00.000"))));
+            assertThat(sheet.c4, is(6));
+            
+        }
+    }    
+    
+    /**
      * 書き込みのテスト - 通常のデータ
      */
     @Test
@@ -189,6 +216,7 @@ public class AnnoCellTest {
         }
         
     }
+    
     
     /**
      * 書き込みのテスト - メソッドにアノテーションを付与
@@ -237,6 +265,49 @@ public class AnnoCellTest {
             assertThat(sheet.c2, is(outSheet.c2));
             assertThat(sheet.c3, is(outSheet.c3));
             assertThat(sheet.c4, is(outSheet.c4));
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 式を定義
+     * @since 1.5
+     */
+    @Test
+    public void test_save_formula() throws Exception {
+        
+        // テストデータの作成
+        final FormulaSheet outSheet = new FormulaSheet();
+        
+        outSheet.c3(toUtilDate(toTimestamp("2015-06-06 10:12:13.000")))
+                .c4(1234);
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_Cell_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(FormulaSheet.class);
+            
+            FormulaSheet sheet = mapper.load(in, FormulaSheet.class, errors);
+            
+            assertThat(sheet.positions, is(outSheet.positions));
+            assertThat(sheet.labels, is(outSheet.labels));
+            
+            assertThat(sheet.c1,is("ABCDEFG"));
+            assertThat(sheet.c2,is(135.144d));
+            assertThat(sheet.c3, is(toUtilDate(toTimestamp("1900-01-07 20:00:00.000"))));
+            assertThat(sheet.c4, is(1234));
             
         }
         
@@ -452,6 +523,74 @@ public class AnnoCellTest {
         
         public void setC4Label(String c4Label) {
             this.c4Label = c4Label;
+        }
+    }
+    
+    @XlsSheet(name="数式を指定")
+    private static class FormulaSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        /**
+         * 数式の指定
+         */
+        @XlsCell(address="B4")
+        @XlsFormula("UPPER(F4)")
+        private String c1;
+        
+        /**
+         * メソッドで指定
+         */
+        @XlsCell(address="C7")
+        @XlsFormula(methodName="getC2Formula")
+        @XlsNumberConverter(excelPattern="0.000;\"▲ \"0.000")
+        private Double c2;
+        
+        /**
+         * 優先 = true
+         */
+        @XlsCell(address="B10")
+        @XlsFormula(value="F10-G10", primary=true)
+        private Date c3;
+        
+        /**
+         * 優先 = false
+         */
+        @XlsCell(address="D12")
+        @XlsFormula(value="F12+G12", primary=false)
+        private Integer c4;
+        
+        public FormulaSheet c1(String c1) {
+            this.c1 = c1;
+            return this;
+        }
+        
+        public FormulaSheet c2(Double c2) {
+            this.c2 = c2;
+            return this;
+        }
+        
+        public FormulaSheet c3(Date c3) {
+            this.c3 = c3;
+            return this;
+        }
+        
+        public FormulaSheet c4(Integer c4) {
+            this.c4 = c4;
+            return this;
+        }
+        
+        private String getC2Formula(final Point address) {
+            
+            String formula = String.format("SUM(%s%s:%s%s)",
+                    CellReference.convertNumToColString(address.x + 3),
+                    address.y + 1,
+                    CellReference.convertNumToColString(address.x + 6),
+                    address.y + 1);
+            
+            return formula;
         }
     }
 }

@@ -1,17 +1,23 @@
 package com.gh.mygreen.xlsmapper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.cellconvert.CellConverterRegistry;
 import com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
+import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
+import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegstry;
+import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
 
 
 /**
  * マッピングする際の設定などを保持するクラス。
  * 
- * @version 1.1
+ * @version 1.5
  * @author T.TSUCHIE
  *
  */
@@ -41,6 +47,9 @@ public class XlsMapperConfig {
     /** 書き込み時にセルのコメントを修正するかどうか */
     private boolean correctCellCommentOnSave = false;
     
+    /** 書き込み時に式の再計算をするかどうか */
+    private boolean formulaRecalcurationOnSave = true;
+    
     /** POIのセルの値のフォーマッター */
     private CellFormatter cellFormatter = new DefaultCellFormatter();
     
@@ -57,7 +66,18 @@ public class XlsMapperConfig {
     /** 単純なクラスオブジェクトの変換するクラス */
     private ItemConverter<?> itemConverter = new DefaultItemConverter();
     
+    /** 数式をフォーマットするクラス */
+    private MessageInterpolator formulaFormatter = new MessageInterpolator();
+    
     public XlsMapperConfig() {
+        
+        // 数式をフォーマットする際のEL関数を登録する。
+        ExpressionLanguageJEXLImpl formulaEL = new ExpressionLanguageJEXLImpl();
+        Map<String, Object> funcs = new HashMap<>(); 
+        funcs.put("x", CustomFunctions.class);
+        formulaEL.getJexlEngine().setFunctions(funcs);
+        
+        formulaFormatter.setExpressionLanguage(formulaEL);
     }
     
     /**
@@ -220,16 +240,40 @@ public class XlsMapperConfig {
     }
     
     /**
-     * 書き込み時にセルノコメントを修正するかどうか設定します。
+     * 書き込み時にセルのコメントを修正するかどうか設定します。
      * <p>'true'の場合、修正します。
      * <p>POI-3.10以上の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
      * <p>アノテーションXlsHorizontalRecordsで行の追加などを行うときに補正します。
      * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
-     * @param correctCellCommentOnSave
+     * @param correctCellCommentOnSave 初期値は、'false'です。
      * @return 自身のインスタンス
      */
     public XlsMapperConfig setCorrectCellCommentOnSave(boolean correctCellCommentOnSave) {
         this.correctCellCommentOnSave = correctCellCommentOnSave;
+        return this;
+    }
+    
+    /**
+     * 書き込み時に式の再計算をするか設定します。
+     * <p>数式を含むシートを出力したファイルを開いた場合、一般的には数式が開いたときに再計算されます。
+     * <p>ただし、大量で複雑な数式が記述されていると、パフォーマンスが落ちるため無効にすることもできます。
+     * @since 1.5
+     * @return 初期値は、'true'です。
+     */
+    public boolean isFormulaRecalcurationOnSave() {
+        return formulaRecalcurationOnSave;
+    }
+    
+    /**
+     * 書き込み時に式の再計算をするか設定します。
+     * <p>数式を含むシートを出力したファイルを開いた場合、一般的には数式が開いたときに再計算されます。
+     * <p>ただし、大量で複雑な数式が記述されていると、パフォーマンスが落ちるため無効にすることもできます。
+     * @since 1.5
+     * @param formulaRecalcurationOnSave
+     * @return 自身のインスタンス
+     */
+    public XlsMapperConfig setFormulaRecalcurationOnSave(boolean formulaRecalcurationOnSave) {
+        this.formulaRecalcurationOnSave = formulaRecalcurationOnSave;
         return this;
     }
     
@@ -346,6 +390,30 @@ public class XlsMapperConfig {
      */
     public XlsMapperConfig setItemConverter(ItemConverter<?> itemConverter) {
         this.itemConverter = itemConverter;
+        return this;
+    }
+    
+    /**
+     * 数式をフォーマットするためのクラスを取得します。
+     * <p>出力するセルの数式を設定する際に、独自の変数やEL式を指定したときにフォーマットする際に利用します。
+     * 
+     * @since 1.5
+     * @return 数式をフォーマットするクラス。
+     */
+    public MessageInterpolator getFormulaFormatter() {
+        return formulaFormatter;
+    }
+    
+    /**
+     * 数式をフォーマットするためのクラスを取得します。
+     * <p>出力するセルの数式を設定する際に、独自の変数やEL式を指定したときにフォーマットする際に利用します。
+     * 
+     * @since 1.5
+     * @param formulaFormatter 数式をフォーマットするクラス。
+     * @return 自身のインスタンス
+     */
+    public XlsMapperConfig setFormulaFormatter(MessageInterpolator formulaFormatter) {
+        this.formulaFormatter = formulaFormatter;
         return this;
     }
     

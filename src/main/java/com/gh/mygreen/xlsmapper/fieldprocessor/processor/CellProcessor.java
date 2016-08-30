@@ -30,7 +30,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsCell anno, final FieldAdaptor adaptor,
             final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final Point cellPosition = getCellPosition(anno);
+        final Point cellPosition = getCellPosition(adaptor, anno);
         
         Utils.setPosition(cellPosition.x, cellPosition.y, beansObj, adaptor.getName());
         
@@ -50,25 +50,27 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
     
     /**
      * アノテーションから、セルのアドレスを取得する。
+     * @param adaptor
      * @param anno
      * @return
      * @throws AnnotationInvalidException
      */
-    private Point getCellPosition(final XlsCell anno) throws AnnotationInvalidException {
+    private Point getCellPosition(final FieldAdaptor adaptor, final XlsCell anno) throws AnnotationInvalidException {
         
         Point point = null;
         if(Utils.isNotEmpty(anno.address())) {
             point = Utils.parseCellAddress(anno.address());
             if(point == null) {
-                throw new AnnotationInvalidException("@XlsCell attribute 'address' cannot be valid address.", anno);
+                throw new AnnotationInvalidException(String.format("With '%s', @XlsCell attribute 'address' cannot be valid address.",
+                        adaptor.getNameWithClass()), anno);
             }
             return point;
         
         } else {
             if(anno.row() < 0 || anno.column() < 0) {
                 throw new AnnotationInvalidException(
-                        String.format("@XlsCell#column or row sould be greater than or equal zero. (column=%d, row=%d)",
-                                anno.column(), anno.row()), anno);
+                        String.format("With '%s', @XlsCell#column or row sould be greater than or equal zero. (column=%d, row=%d)",
+                                adaptor.getNameWithClass(), anno.column(), anno.row()), anno);
             }
             return new Point(anno.column(), anno.row());
         }
@@ -79,12 +81,12 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsCell anno, final FieldAdaptor adaptor,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        final Point cellPosition = getCellPosition(anno);
+        final Point cellPosition = getCellPosition(adaptor, anno);
         Utils.setPosition(cellPosition.x, cellPosition.y, targetObj, adaptor.getName());
         
         final CellConverter converter = getSavingCellConverter(adaptor, config.getConverterRegistry(), config);
         try {
-            converter.toCell(adaptor, adaptor.getValue(targetObj), sheet, cellPosition.x, cellPosition.y, config);
+            converter.toCell(adaptor, adaptor.getValue(targetObj), targetObj, sheet, cellPosition.x, cellPosition.y, config);
         } catch(TypeBindException e) {
             work.addTypeBindError(e, cellPosition, adaptor.getName(), null);
             if(!config.isContinueTypeBindFailure()) {

@@ -21,6 +21,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsEnumConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
@@ -30,6 +31,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
  * 列挙型のConverter。
  * <p>一度読み込んだ列挙型の情報はキャッシュする。列挙型はstaticであるため、動的に変更できないため。
  * 
+ * @version 1.5
  * @author T.TSUCHIE
  *
  */
@@ -251,11 +253,13 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Enum targetValue, final Sheet sheet,
-            final int column, final int row, final XlsMapperConfig config) throws XlsMapperException {
+    public Cell toCell(final FieldAdaptor adaptor, final Enum targetValue, final Object targetBean,
+            final Sheet sheet, final int column, final int row, final XlsMapperConfig config) throws XlsMapperException {
         
         final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
         final XlsEnumConverter anno = getSavingAnnotation(adaptor);
+        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
         
         final Class<Enum> taretClass = (Class<Enum>) adaptor.getTargetClass();
         final Cell cell = POIUtils.getCell(sheet, column, row);
@@ -279,9 +283,13 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
             }
         }
         
-        if(value != null) {
+        if(value != null && !primaryFormula) {
             final String cellValue = convertToString(value, (Class<Enum>) adaptor.getTargetClass(), anno);
             cell.setCellValue(cellValue);
+            
+        } else if(formulaAnno != null) {
+            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
+            
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);
         }

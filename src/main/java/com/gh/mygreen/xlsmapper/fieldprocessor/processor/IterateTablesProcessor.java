@@ -83,9 +83,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
         } else {
             throw new AnnotationInvalidException(
-                    String.format("Annotation '@%s' should only granted List or Array. : %s", 
-                            XlsIterateTables.class.getSimpleName(), clazz.getName()),
-                            anno);
+                    String.format("With '%s', '@XlsIterateTables' should only granted List or Array.", 
+                            adaptor.getNameWithClass()), anno);
         }
         
     }
@@ -303,9 +302,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
         } else {
             throw new AnnotationInvalidException(
-                    String.format("Annotation '@%s' should only granted List or Array. : %s", 
-                            XlsIterateTables.class.getSimpleName(), clazz.getName()),
-                            anno);
+                    String.format("With '%s', '@XlsIterateTables' should only granted List or Array. : %s", 
+                            adaptor.getNameWithClass()), anno);
         }
     }
     

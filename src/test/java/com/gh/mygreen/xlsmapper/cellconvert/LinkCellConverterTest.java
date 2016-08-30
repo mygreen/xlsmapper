@@ -16,17 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Hyperlink;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
@@ -41,6 +46,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  *   <li>{@link URICellConverter}
  *   <li>{@link CellLink}
  * 
+ * @version 1.5
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -80,6 +86,12 @@ public class LinkCellConverterTest {
             
             if(sheet.formattedRecords != null) {
                 for(FormattedRecord record : sheet.formattedRecords) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                for(FormulaRecord record : sheet.formulaRecords) {
                     assertRecord(record, errors);
                 }
             }
@@ -210,6 +222,22 @@ public class LinkCellConverterTest {
         }
     }
     
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) throws URISyntaxException {
+        if(record.no == 1) {
+            // 空文字
+            assertThat(record.uri, is(nullValue()));
+            assertThat(record.link, is(nullValue()));
+            
+        } else if(record.no == 2) {
+            // URL（ラベルが同じ）
+            assertThat(record.uri, is(new URI("http://www.google.co.jp/")));
+            assertThat(record.link, is(new CellLink("http://www.google.co.jp/", "リンク2")));
+            
+        } else {
+            fail(String.format("not support test case. No=%d.", record.no));
+        }
+    }
+    
     /**
      * リンク型の書き込みテスト
      */
@@ -297,6 +325,11 @@ public class LinkCellConverterTest {
             .link(new CellLink("http://www.google.co.jp/", "  "))
             .comment("ラベルが空白"));
                 
+        
+        // 数式のデータ
+        outSheet.add(new FormulaRecord().comment("空文字"));
+        outSheet.add(new FormulaRecord().comment("http://www.google.co.jp/"));
+        
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
@@ -328,6 +361,14 @@ public class LinkCellConverterTest {
                 
                 for(int i=0; i < sheet.formattedRecords.size(); i++) {
                     assertRecord(sheet.formattedRecords.get(i), outSheet.formattedRecords.get(i), errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                assertThat(sheet.formulaRecords, hasSize(outSheet.formulaRecords.size()));
+                
+                for(int i=0; i < sheet.formulaRecords.size(); i++) {
+                    assertRecord(sheet.formulaRecords.get(i), outSheet.formulaRecords.get(i), errors);
                 }
             }
             
@@ -387,6 +428,36 @@ public class LinkCellConverterTest {
             assertThat(inRecord.uri, is(outRecord.uri));
             assertThat(inRecord.link, is(outRecord.link));
             assertThat(inRecord.comment, is(outRecord.comment));
+            
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     * @throws URISyntaxException 
+     */
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) throws URISyntaxException {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.uri, is(nullValue()));
+            assertThat(inRecord.link, is(nullValue()));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 2) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.uri, is(new URI("http://www.google.co.jp/")));
+            assertThat(inRecord.link, is(new CellLink("http://www.google.co.jp/", "リンク2")));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else {
+            fail(String.format("not support test case. No=%d.", inRecord.no));
         }
     }
     
@@ -402,6 +473,11 @@ public class LinkCellConverterTest {
         @XlsHorizontalRecords(tableLabel="リンク型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="リンク型（数式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<FormulaRecord> formulaRecords;
         
         /**
          * レコードを追加する。noを自動的に付与する。
@@ -428,6 +504,20 @@ public class LinkCellConverterTest {
             }
             this.formattedRecords.add(record);
             record.no(formattedRecords.size());
+            return this;
+        }
+        
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public LinkSheet add(FormulaRecord record) {
+            if(formulaRecords == null) {
+                this.formulaRecords = new ArrayList<>();
+            }
+            this.formulaRecords.add(record);
+            record.no(formulaRecords.size());
             return this;
         }
     }
@@ -526,6 +616,84 @@ public class LinkCellConverterTest {
         }
         
         public FormattedRecord comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+        
+    }
+    
+    /**
+     * リンク型 - 数式な
+     *
+     */
+    private static class FormulaRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="URI")
+        @XlsFormula(methodName="getFormula1")
+        private URI uri;
+        
+        @XlsColumn(columnName="CellLink")
+        @XlsFormula(methodName="getFormula2")
+        private CellLink link;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public String getFormula1(Point point) {
+            if(Utils.equals(comment, "空文字")) {
+                return null;
+                
+            }
+            
+            final int rowNumber = point.y + 1;
+            return String.format("HYPERLINK(D%d)", rowNumber);
+        }
+        
+        public String getFormula2(Point point, Cell cell) {
+            
+            if(Utils.equals(comment, "空文字")) {
+                return null;
+                
+            }
+            
+            // ダミーでリンクも設定する
+            final CreationHelper helper = cell.getSheet().getWorkbook().getCreationHelper();
+            final Hyperlink link = helper.createHyperlink(Hyperlink.LINK_URL);
+            link.setAddress(comment);
+            cell.setHyperlink(link);
+            
+            final int rowNumber = point.y + 1;
+            return String.format("HYPERLINK(D%s,\"リンク\"&A%s)", rowNumber, rowNumber);
+        }
+        
+        public FormulaRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public FormulaRecord uri(URI uri) {
+            this.uri = uri;
+            return this;
+        }
+        
+        public FormulaRecord link(CellLink link) {
+            this.link = link;
+            return this;
+        }
+        
+        public FormulaRecord comment(String comment) {
             this.comment = comment;
             return this;
         }

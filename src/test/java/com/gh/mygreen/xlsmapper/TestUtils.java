@@ -67,7 +67,7 @@ public class TestUtils {
      * @param value
      * @return
      */
-    public static  Timestamp toTimestamp(String value) {
+    public static Timestamp toTimestamp(String value) {
         return Timestamp.valueOf(value);
     }
     
@@ -76,7 +76,7 @@ public class TestUtils {
      * @param timestamp
      * @return
      */
-    public static  Date toUtilDate(Timestamp timestamp) {
+    public static Date toUtilDate(Timestamp timestamp) {
         return new Date(timestamp.getTime());
     }
     

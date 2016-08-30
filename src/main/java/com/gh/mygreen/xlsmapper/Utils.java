@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -27,8 +28,10 @@ import org.apache.poi.ss.util.CellReference;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
+import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;
 import com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
@@ -40,7 +43,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * ユーティリティクラス。
  * 
- * @version 1.1
+ * @version 1.5
  * @author T.TSUCHIE
  * @author Naoki Takezoe
  * @author Mitsuyoshi Hasegawa
@@ -1829,6 +1832,18 @@ public class Utils {
     }
     
     /**
+     * 文字列をトリムする。値がnullの場合は、空文字にする。
+     * @param value
+     * @return
+     */
+    public static String trimToEmpty(final String value) {
+        
+        return value == null ? "" : value.trim();
+        
+        
+    }
+    
+    /**
      * デフォルト値がアノテーションに設定されているかどうか。
      * @param converterAnno
      * @return
@@ -2087,5 +2102,141 @@ public class Utils {
         return new ArrayList<>(collection);
         
     }
+    
+    /**
+     * セルに数式を設定する。
+     * @since 1.5
+     * 
+     * @param adaptor フィールド
+     * @param formulaAnno 数式定義用のアノテーション。
+     * @param config システム設定。
+     * @param cell 設定対象のセル。
+     * @param targetBean 処理対象のJavaBean.
+     * @throws XlsMapperException
+     */
+    public static void setupCellFormula(final FieldAdaptor adaptor, final XlsFormula formulaAnno, final XlsMapperConfig config, 
+            final Cell cell, final Object targetBean) throws XlsMapperException {
+        
+        ArgUtils.notNull(adaptor, "adaptor");
+        ArgUtils.notNull(formulaAnno, "formulaAnno");
+        ArgUtils.notNull(config, "config");
+        ArgUtils.notNull(cell, "cell");
+        
+        final String formula = getFormulaValue(adaptor, formulaAnno, config, cell, targetBean);
+        if(isEmpty(formula)) {
+            cell.setCellType(Cell.CELL_TYPE_BLANK);
+            return;
+        }
+        
+        try {
+            cell.setCellFormula(formula);
+            cell.setCellType(Cell.CELL_TYPE_FORMULA);
+            
+        } catch(FormulaParseException e) {
+            // 数式の解析に失敗した場合
+            final String message = new StringBuilder()
+                    .append(String.format("Fail parse formula '%s'.", formula))
+                    .append(String.format(" Cell '%s' map from '%s#%s'.", 
+                            formatCellAddress(cell), adaptor.getDeclaringClass().getName(), adaptor.getName()))
+                    .toString();
+                
+            throw new ConversionException(message, e, adaptor.getTargetClass());
+        }
+    }
+    
+    /**
+     * セルに設定する数式をアノテーションから組み立てる。
+     * 
+     * @since 1.5
+     * @param adaptor フィールド
+     * @param formulaAnno 数式定義用のアノテーション。
+     * @param config システム設定。
+     * @param cell 設定対象のセル。
+     * @param targetBean 処理対象のJavaBean.
+     * @return 数式。
+     * @throws XlsMapperException
+     */
+    public static String getFormulaValue(final FieldAdaptor adaptor, final XlsFormula formulaAnno, final XlsMapperConfig config, 
+            final Cell cell, final Object targetBean) throws XlsMapperException {
+        
+        if(isNotEmpty(formulaAnno.value())) {
+            final Map<String, Object> vars = new HashMap<>();
+            vars.put("rowIndex", cell.getRowIndex());
+            vars.put("columnIndex", cell.getColumnIndex());
+            vars.put("rowNumber", cell.getRowIndex()+1);
+            vars.put("columnNumber", cell.getColumnIndex()+1);
+            vars.put("columnAlpha", CellReference.convertNumToColString(cell.getColumnIndex()));
+            vars.put("address", POIUtils.formatCellAddress(cell));
+            vars.put("targetBean", targetBean);
+            vars.put("cell", cell);
+            
+            try {
+                return config.getFormulaFormatter().interpolate(formulaAnno.value(), vars);
+            } catch(Exception e) {
+                throw new AnnotationInvalidException(
+                        String.format("With '%s', @XlsFormula#value '%s' is wrong formula.",
+                                adaptor.getNameWithClass(), formulaAnno.value()), formulaAnno);
+            }
+            
+        } else if(isNotEmpty(formulaAnno.methodName())) {
+            
+            // 戻り値が文字列の数式を返すメソッドを探す
+            final Class<?> targetClass = targetBean.getClass();
+            Method method = null;
+            for(Method m : targetClass.getDeclaredMethods()) {
+                if(m.getName().equals(formulaAnno.methodName())
+                        && m.getReturnType().equals(String.class)) {
+                    method = m;
+                    break;
+                }
+            }
+            
+            if(method == null) {
+                throw new AnnotationInvalidException(
+                        String.format("With '%s', @XlsFormula#methodName '%s' is not found in class '%s'.",
+                                adaptor.getNameWithClass(), formulaAnno.methodName(), targetClass.getName()), formulaAnno);
+            }
+            
+            // メソッドの引数の組み立て
+            final Class<?>[] paramTypes = method.getParameterTypes();
+            final Object[] paramValues = new Object[paramTypes.length];
+            
+            for(int i=0; i < paramTypes.length; i++) {
+                if(Cell.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = cell;
+                    
+                } else if(Point.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = new Point(cell.getColumnIndex(), cell.getRowIndex());
+                    
+                } else if(Sheet.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = cell.getSheet();
+                    
+                } else if(XlsMapperConfig.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = config;
+                    
+                } else {
+                    paramValues[i] = null;
+                }
+            }
+            
+            // メソッドの実行
+            try {
+                method.setAccessible(true);
+                return (String) method.invoke(targetBean, paramValues);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                Throwable t = e.getCause() == null ? e : e.getCause();
+                throw new XlsMapperException(
+                        String.format("Fail execute method '%s#%s'.", targetClass.getName(), method.getName()),
+                        t);
+            }
+            
+        } else {
+            throw new AnnotationInvalidException(String.format("With '%s', @XlsFormula attribute 'value' or 'methodName' should not be required.",
+                    adaptor.getNameWithClass()), formulaAnno);
+        }
+        
+    }
+    
+    
     
 }

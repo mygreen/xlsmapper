@@ -65,7 +65,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * アノテーション{@link XlsHorizontalRecords}を処理するクラス。
  * 
- * @version 1.4
+ * @version 1.5
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -353,7 +353,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 break;
             }
             
-            if(!anno.ignoreEmptyRecord() || !isEmptyRecord(record, work.getAnnoReader())) {
+            if(!anno.ignoreEmptyRecord() || !isEmptyRecord(adaptor, record, work.getAnnoReader())) {
                 result.add(record);
                 
             }
@@ -624,13 +624,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     /**
      * レコードの値か空かどうか判定する。
      * <p>アノテーション<code>@XlsIsEmpty</code>のメソッドで判定を行う。
+     * @param adaptor
      * @param record
      * @param annoReader
      * @return アノテーションがない場合はfalseを返す。
      * @throws AnnotationReadException 
      * @throws AnnotationInvalidException 
      */
-    private boolean isEmptyRecord(final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
+    private boolean isEmptyRecord(final FieldAdaptor adaptor, final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
         
         for(Method method : record.getClass().getMethods()) {
             final XlsIsEmpty emptyAnno = annoReader.getAnnotation(record.getClass(), method, XlsIsEmpty.class);
@@ -643,7 +644,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 return (boolean) method.invoke(record);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 throw new AnnotationInvalidException(
-                        String.format("@XlsIsEmpty should be appended method that no args and returning boolean type."),
+                        String.format("With '%s', @XlsIsEmpty should be appended method that no args and returning boolean type.", adaptor.getNameWithClass()),
                         emptyAnno);
             }
         }
@@ -976,7 +977,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         Utils.setLabel(headerInfo.getLabel(), record, property.getName());
                         final CellConverter converter = getSavingCellConverter(property, config.getConverterRegistry(), config);
                         try {
-                            converter.toCell(property, property.getValue(record), sheet, valueCell.getColumnIndex(), valueCell.getRowIndex(), config);
+                            converter.toCell(property, property.getValue(record), record, sheet, valueCell.getColumnIndex(), valueCell.getRowIndex(), config);
                         } catch(TypeBindException e) {
                             work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getLabel());
                             if(!config.isContinueTypeBindFailure()) {
@@ -1261,7 +1262,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     Utils.setLabelWithMapColumn(headerInfo.getLabel(), record, property.getName(), headerInfo.getLabel());
                     try {
                         Object itemValue = property.getValueOfMap(headerInfo.getLabel(), record);
-                        converter.toCell(property, itemValue, sheet, cell.getColumnIndex(), cell.getRowIndex(), config);
+                        converter.toCell(property, itemValue, record, sheet, cell.getColumnIndex(), cell.getRowIndex(), config);
                         
                     } catch(TypeBindException e) {
                         

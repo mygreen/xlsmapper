@@ -16,6 +16,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;
 import com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter;
@@ -26,6 +27,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 /**
  * {@link List}型のConverter。
  * 
+ * @version 1.5
  * @author T.TSUCHIE
  *
  */
@@ -162,11 +164,14 @@ public class ListCellConverter extends AbstractCellConverter<List> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final List targetValue, final Sheet sheet, final int column, final int row,
+    public Cell toCell(final FieldAdaptor adaptor, final List targetValue, final Object targetBean,
+            final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) throws XlsMapperException {
         
         final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final XlsArrayConverter anno = getSavingAnnotation(adaptor);
+        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
         
         Class<?> itemClass = anno.itemClass();
         if(itemClass == Object.class) {
@@ -188,11 +193,14 @@ public class ListCellConverter extends AbstractCellConverter<List> {
             value = convertList(Utils.getDefaultValue(converterAnno), itemClass, converterAnno, anno, config);
         }
         
-        if(Utils.isNotEmpty(value)) {
+        if(Utils.isNotEmpty(value) && !primaryFormula) {
             final boolean trim = (converterAnno == null ? false : converterAnno.trim()); 
             final ItemConverter itemConverter = getItemConverter(anno.itemConverterClass(), config);
             final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trim, itemConverter);
             cell.setCellValue(cellValue);
+            
+        } else if(formulaAnno != null) {
+            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
             
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);

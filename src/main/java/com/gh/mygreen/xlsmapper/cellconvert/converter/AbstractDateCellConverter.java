@@ -23,6 +23,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 
@@ -31,7 +32,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
  * 日時型のConverterの抽象クラス。
  * <p>{@link Date}を継承している<code>javax.sql.Time/Date/Timestamp</code>はこのクラスを継承して作成します。
  * 
- * @version 1.0
+ * @version 1.5
  * @author T.TSUCHIE
  *
  */
@@ -217,11 +218,14 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Date targetValue, final Sheet sheet, final int column, final int row, 
+    public Cell toCell(final FieldAdaptor adaptor, final Date targetValue, final Object targetBean,
+            final Sheet sheet, final int column, final int row, 
             final XlsMapperConfig config) throws XlsMapperException {
          
         final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
         final XlsDateConverter anno = getSavingAnnotation(adaptor);
+        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
         
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
@@ -273,8 +277,12 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             
         }
         
-        if(value != null) {
+        if(value != null && !primaryFormula) {
             cell.setCellValue(value);
+            
+        } else if(formulaAnno != null) {
+            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
+            
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);
         }

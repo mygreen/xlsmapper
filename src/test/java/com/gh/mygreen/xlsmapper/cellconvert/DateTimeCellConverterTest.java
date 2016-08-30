@@ -30,6 +30,7 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
@@ -39,7 +40,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * 日付、時刻型のタイプのチェック
  * 
- * @version 1.0
+ * @version 1.5
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -69,12 +70,22 @@ public class DateTimeCellConverterTest {
             
             DateTimeSheet sheet = mapper.load(in, DateTimeSheet.class, errors);
             
-            for(SimpleRecord record : sheet.simpleRecords) {
-                assertRecord(record, errors);
+            if(sheet.simpleRecords != null) {
+                for(SimpleRecord record : sheet.simpleRecords) {
+                    assertRecord(record, errors);
+                }
             }
             
-            for(FormattedRecord record : sheet.formattedRecords) {
-                assertRecord(record, errors);
+            if(sheet.formattedRecords != null) {
+                for(FormattedRecord record : sheet.formattedRecords) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                for(FormulaRecord record : sheet.formulaRecords) {
+                    assertRecord(record, errors);
+                }
             }
             
         }
@@ -176,6 +187,30 @@ public class DateTimeCellConverterTest {
         
     }
     
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+        
+        if(record.no == 1) {
+            // 空文字
+            assertThat(record.utilDate, is(nullValue()));
+            assertThat(record.calendar, is(nullValue()));
+            assertThat(record.sqlDate, is(nullValue()));
+            assertThat(record.sqlTime, is(nullValue()));
+            assertThat(record.timestamp, is(nullValue()));
+            
+        } else if(record.no == 2) {
+            // 文字列型の場合（正常）
+            assertThat(record.utilDate, is(toUtilDate(toTimestamp("1904-01-26 23:04:00.000"))));
+            assertThat(record.calendar, is(toCalendar(toTimestamp("1904-01-26 23:04:00.000"))));
+            assertThat(record.sqlDate, is(toSqlDate(toTimestamp("1904-01-26 23:04:00.000"))));
+            assertThat(record.sqlTime, is(toSqlTime(toTimestamp("1904-01-26 23:04:00.000"))));
+            assertThat(record.timestamp, is(toTimestamp("1904-01-26 23:04:00.000")));
+            
+        } else {
+            fail(String.format("not support test case. No=%d.", record.no));
+        }
+        
+    }
+    
     /**
      * 日時型の書き込みテスト
      */
@@ -209,6 +244,10 @@ public class DateTimeCellConverterTest {
                 .timestamp(toTimestamp("2015-01-02 03:45:06.000"))
                 .comment("日時"));
         
+        // 数式データの作成
+        outSheet.add(new FormulaRecord().comment("空文字"));
+        outSheet.add(new FormulaRecord().start(toTimestamp("2012-08-01 10:32:00.000")).end(toTimestamp("2016-08-28 09:36:00.000")).comment("日時の差"));
+        
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
@@ -240,6 +279,14 @@ public class DateTimeCellConverterTest {
                 
                 for(int i=0; i < sheet.formattedRecords.size(); i++) {
                     assertRecord(sheet.formattedRecords.get(i), outSheet.formattedRecords.get(i), errors);
+                }
+            }
+            
+            if(sheet.formulaRecords != null) {
+                assertThat(sheet.formulaRecords, hasSize(outSheet.formulaRecords.size()));
+                
+                for(int i=0; i < sheet.formulaRecords.size(); i++) {
+                    assertRecord(sheet.formulaRecords.get(i), outSheet.formulaRecords.get(i), errors);
                 }
             }
             
@@ -299,18 +346,61 @@ public class DateTimeCellConverterTest {
         
     }
     
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
+        
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.utilDate, is(nullValue()));
+            assertThat(inRecord.calendar, is(nullValue()));
+            assertThat(inRecord.sqlDate, is(nullValue()));
+            assertThat(inRecord.sqlTime, is(nullValue()));
+            assertThat(inRecord.timestamp, is(nullValue()));
+            
+            assertThat(inRecord.start, is(outRecord.start));
+            assertThat(inRecord.end, is(outRecord.end));
+            assertThat(inRecord.comment, is(outRecord.comment));
+            
+        } else if(inRecord.no == 2) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.utilDate, is(toUtilDate(toTimestamp("1904-01-26 23:04:00.000"))));
+            assertThat(inRecord.calendar, is(toCalendar(toTimestamp("1904-01-26 23:04:00.000"))));
+            assertThat(inRecord.sqlDate, is(toSqlDate(toTimestamp("1904-01-26 23:04:00.000"))));
+            assertThat(inRecord.sqlTime, is(toSqlTime(toTimestamp("1904-01-26 23:04:00.000"))));
+            assertThat(inRecord.timestamp, is(toTimestamp("1904-01-26 23:04:00.000")));
+            
+            assertThat(inRecord.start, is(outRecord.start));
+            assertThat(inRecord.end, is(outRecord.end));
+            assertThat(inRecord.comment, is(outRecord.comment));
+        }
+        
+    }
+    
     @XlsSheet(name="日時型")
     private static class DateTimeSheet {
         
-        @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperate.Insert)
+//        @XlsHint(order=1)
+//        @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+//                overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
-        @XlsHint(order=1)
-        @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperate.Insert)
+//        @XlsHint(order=2)
+//        @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+//                overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="日時型（数式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<FormulaRecord> formulaRecords;
         
         /**
          * レコードを追加する。noを自動的に付与する。
@@ -337,6 +427,20 @@ public class DateTimeCellConverterTest {
             }
             this.formattedRecords.add(record);
             record.no(formattedRecords.size());
+            return this;
+        }
+        
+        /**
+         * レコードを追加する。noを自動的に付与する。
+         * @param record
+         * @return
+         */
+        public DateTimeSheet add(FormulaRecord record) {
+            if(formulaRecords == null) {
+                this.formulaRecords = new ArrayList<>();
+            }
+            this.formulaRecords.add(record);
+            record.no(formulaRecords.size());
             return this;
         }
     }
@@ -497,5 +601,108 @@ public class DateTimeCellConverterTest {
             return this;
         }
         
+    }
+    
+    /**
+     * 日時型 - 数式
+     *
+     */
+    private static class FormulaRecord {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="No.")
+        private int no;
+        
+        @XlsColumn(columnName="Dateクラス(util)")
+        @XlsFormula(methodName="getFormula")
+        private Date utilDate;
+        
+        @XlsColumn(columnName="Calendarクラス")
+        @XlsFormula(methodName="getFormula")
+        private Calendar calendar;
+        
+        @XlsColumn(columnName="Dateクラス(sql)")
+        @XlsFormula(methodName="getFormula")
+        private java.sql.Date sqlDate;
+        
+        @XlsColumn(columnName="Timeクラス(sql)")
+        @XlsFormula(methodName="getFormula")
+        private Time sqlTime;
+        
+        @XlsColumn(columnName="Timesamp(sql)")
+        @XlsFormula(methodName="getFormula")
+        private Timestamp timestamp;
+        
+        @XlsColumn(columnName="開始日時")
+        private Timestamp start;
+        
+        @XlsColumn(columnName="終了日時")
+        private Timestamp end;
+        
+        @XlsColumn(columnName="備考")
+        private String comment;
+        
+        @XlsIsEmpty
+        public boolean isEmpty() {
+            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+        }
+        
+        public String getFormula(final Point point) {
+            if(start == null || end == null) {
+                return null;
+            }
+            
+            final int rowNumber = point.y + 1;
+            
+            return String.format("$H%d - $G%d", rowNumber, rowNumber);
+        }
+        
+        public FormulaRecord no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public FormulaRecord utilDate(Date utilDate) {
+            this.utilDate = utilDate;
+            return this;
+        }
+        
+        public FormulaRecord calendar(Calendar calendar) {
+            this.calendar = calendar;
+            return this;
+        }
+        
+        public FormulaRecord sqlDate(java.sql.Date sqlDate) {
+            this.sqlDate = sqlDate;
+            return this;
+        }
+        
+        public FormulaRecord sqlTime(Time sqlTime) {
+            this.sqlTime = sqlTime;
+            return this;
+        }
+        
+        public FormulaRecord timestamp(Timestamp timestamp) {
+            this.timestamp = timestamp;
+            return this;
+        }
+        
+        public FormulaRecord start(Timestamp start) {
+            this.start = start;
+            return this;
+        }
+        
+        public FormulaRecord end(Timestamp end) {
+            this.end = end;
+            return this;
+        }
+        
+        public FormulaRecord comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
     }
 }

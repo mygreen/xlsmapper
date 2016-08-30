@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.poi.ss.util.CellReference;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,6 +39,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHint;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
@@ -53,7 +55,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * {@link VerticalRecordsProcessor}のテスタ
  * アノテーション{@link XlsVerticalRecords}のテスタ。
  * 
- * @version 1.4
+ * @version 1.5
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -2405,6 +2407,70 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
     }
     
     /**
+     * 書き込みのテスト - 数式のテスト
+     * @since 1.5
+     */
+    @Test
+    public void test_save_vr_formula() throws Exception {
+        // テストデータの作成
+        FormulaSheet outSheet = new FormulaSheet();
+        
+        outSheet.add(new FormulaSheet.GradeRecord().name("山田太郎").sansu(90).kokugo(70));
+        outSheet.add(new FormulaSheet.GradeRecord().name("鈴木次郎").sansu(80).kokugo(90));
+        outSheet.add(new FormulaSheet.GradeRecord().name("平均"));
+        
+        
+        outSheet.add(new FormulaSheet.EntryRecord()
+                    .name("山田太郎")
+                    .addDateAttended("4月1日", "出席").addDateAttended("4月2日", "出席").addDateAttended("出席可能数", "")
+                    .comment("とりあえず出席します。"));
+        
+        outSheet.add(new FormulaSheet.EntryRecord()
+                .name("鈴木次郎")
+                .addDateAttended("4月1日", "欠席").addDateAttended("4月2日", "-").addDateAttended("4月3日", "出席").addDateAttended("出席可能数", "")
+                .comment(""));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(FormulaSheet.class);
+            
+            FormulaSheet sheet = mapper.load(in, FormulaSheet.class, errors);
+            
+            if(sheet.gradeRecrods != null) {
+                assertThat(sheet.gradeRecrods, hasSize(outSheet.gradeRecrods.size()));
+                
+                for(int i=0; i < sheet.gradeRecrods.size(); i++) {
+                    assertRecord(sheet.gradeRecrods.get(i), outSheet.gradeRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.entryRecords != null) {
+                assertThat(sheet.entryRecords, hasSize(outSheet.entryRecords.size()));
+                
+                for(int i=0; i < sheet.entryRecords.size(); i++) {
+                    assertRecord(sheet.entryRecords.get(i), outSheet.entryRecords.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
      * 書き込んだレコードを検証するための
      * @param inRecord
      * @param outRecord
@@ -2853,6 +2919,66 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
             assertThat(inRecord.result.sum, is(outRecord.result.sum));
             
         }
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 1.5
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormulaSheet.GradeRecord inRecord, final FormulaSheet.GradeRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        
+        if(inRecord.name.equals("平均")) {
+            assertThat(inRecord.sansu, is(85));
+            assertThat(inRecord.kokugo, is(80));
+            
+        } else {
+            assertThat(inRecord.sansu, is(outRecord.sansu));
+            assertThat(inRecord.kokugo, is(outRecord.kokugo));
+            
+        }
+        
+        assertThat(inRecord.sum, is(inRecord.sansu + inRecord.kokugo));
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 1.5
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final FormulaSheet.EntryRecord inRecord, final FormulaSheet.EntryRecord outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(trim(inRecord.comment), is(trim(outRecord.comment)));
+        
+        Map<String, String> expected = new LinkedHashMap<>();
+        expected.put("4月1日", outRecord.dateAttended.get("4月1日"));
+        expected.put("4月2日", outRecord.dateAttended.get("4月2日"));
+        expected.put("4月3日", outRecord.dateAttended.get("4月3日"));
+        
+        if(inRecord.no == 1) {
+            expected.put("出席可能数", "2");
+        } else if(inRecord.no == 2) {
+            expected.put("出席可能数", "1");
+        }
+        
+        assertThat(inRecord.dateAttended, is(expected));
         
     }
     
@@ -5580,6 +5706,192 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            
        }
        
+   }
+   
+   @XlsSheet(name="数式を指定")
+   private static class FormulaSheet {
+       
+       @XlsHint(order=1)
+       @XlsVerticalRecords(tableLabel="成績一覧", headerRight=2, terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Copy)
+       private List<GradeRecord> gradeRecrods;
+       
+       @XlsHint(order=2)
+       @XlsVerticalRecords(tableLabel="出欠確認", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Copy)
+       private List<EntryRecord> entryRecords;
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public FormulaSheet add(GradeRecord record) {
+           if(gradeRecrods == null) {
+               this.gradeRecrods = new ArrayList<>();
+           }
+           
+           // 親をたどれるようにする
+           record.parent = this;
+           
+           this.gradeRecrods.add(record);
+           record.no(gradeRecrods.size());
+           
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public FormulaSheet add(EntryRecord record) {
+           if(entryRecords == null) {
+               this.entryRecords = new ArrayList<>();
+           }
+           
+           // 親をたどれるようにする
+           record.parent = this;
+           
+           this.entryRecords.add(record);
+           record.no(entryRecords.size());
+           
+           return this;
+       }
+       
+       private static class GradeRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           private FormulaSheet parent;
+           
+           @XlsColumn(columnName="No.")
+           private int no;
+           
+           @XlsColumn(columnName="氏名")
+           private String name;
+           
+           @XlsColumn(columnName="氏名", headerMerged=1)
+           @XlsFormula(methodName="getAverageFormula")
+           private Integer sansu;
+           
+           @XlsColumn(columnName="氏名", headerMerged=2)
+           @XlsFormula(methodName="getAverageFormula")
+           private Integer kokugo;
+           
+           @XlsColumn(columnName="氏名", headerMerged=3)
+           @XlsFormula("SUM({columnAlpha}6:{columnAlpha}7)")
+           private Integer sum;
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
+           }
+           
+           public GradeRecord no(int no) {
+               this.no = no;
+               return this;
+           }
+           
+           public GradeRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+           
+           public GradeRecord sansu(int sansu) {
+               this.sansu = sansu;
+               return this;
+           }
+           
+           public GradeRecord kokugo(int kokugo) {
+               this.kokugo = kokugo;
+               return this;
+           }
+           
+           public String getAverageFormula(final Point address) {
+               
+               final int rowNumber = address.y + 1;
+               
+               final String startColumnAlpha = CellReference.convertNumToColString(address.x + 1 - parent.gradeRecrods.size());
+               final String endColumnAlpha = CellReference.convertNumToColString(address.x - 1);
+               
+               String formula =  String.format("AVERAGE(%s%d:%s%d)", startColumnAlpha, rowNumber, endColumnAlpha, rowNumber);
+               return formula;
+               
+           }
+           
+       }
+       
+       private static class EntryRecord {
+           
+           private Map<String, Point> positions;
+           
+           private Map<String, String> labels;
+           
+           private FormulaSheet parent;
+           
+           @XlsColumn(columnName="No.")
+           private int no;
+           
+           @XlsColumn(columnName="氏名")
+           private String name;
+           
+           @XlsMapColumns(previousColumnName="氏名", nextColumnName="備考")
+           @XlsFormula("${rowNumber == 16 ? 'COUNTIF(' + columnAlpha + '13' + ':' + columnAlpha + '15' + ', \"出席\")' : ''}")
+           private Map<String, String> dateAttended;
+           
+           @XlsColumn(columnName="備考")
+           private String comment;
+           
+           @XlsIsEmpty
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
+           }
+           
+           public EntryRecord no(int no) {
+               this.no = no;
+               return this;
+           }
+           
+           public EntryRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+           
+           public EntryRecord dateAttended(Map<String, String> dateAttended) {
+               this.dateAttended = dateAttended;
+               return this;
+           }
+           
+           public EntryRecord addDateAttended(final String key, final String value) {
+               if(dateAttended == null) {
+                   this.dateAttended = new LinkedHashMap<>();
+               }
+               
+               this.dateAttended.put(key, value);
+               
+               return this;
+           }
+           
+           public EntryRecord comment(String comment) {
+               this.comment = comment;
+               return this;
+           }
+           
+           public String getCountFormula(final Point address) {
+               
+               final int rowNumber = address.y + 1;
+               if(rowNumber != 16) {
+                   return null;
+               }
+               final String columnAlpha = CellReference.convertNumToColString(address.x);
+               
+               
+               String formula =  String.format("COUNTIF(%s13:%s15, \"出席\")", columnAlpha, columnAlpha);
+               return formula;
+           }
+           
+       }
    }
    
    

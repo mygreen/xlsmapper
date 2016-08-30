@@ -10,6 +10,7 @@ import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.cellconvert.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconvert.CellLink;
 import com.gh.mygreen.xlsmapper.cellconvert.LinkType;
@@ -18,7 +19,8 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
 
 /**
  * CellLinkのConverter.
- *
+ * 
+ * @version 1.5
  * @author T.TSUCHIE
  *
  */
@@ -58,10 +60,12 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final CellLink targetValue, final Sheet sheet,
-            final int column, final int row, final XlsMapperConfig config) {
+    public Cell toCell(final FieldAdaptor adaptor, final CellLink targetValue, final Object targetBean,
+            final Sheet sheet, final int column, final int row, final XlsMapperConfig config) throws XlsMapperException {
         
         final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
+        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
         
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
@@ -73,12 +77,11 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
         
         final CellLink value = targetValue;
         
-        if(value != null && Utils.isNotEmpty(value.getLink())) {
-            
-            // 既存のハイパーリンクを削除
-            // 削除しないと、Excelの見た目上はリンクは変わっているが、データ上は2重にリンクが設定されている。
-            POIUtils.removeHyperlink(cell);
-            
+        // 既存のハイパーリンクを削除
+        // 削除しないと、Excelの見た目上はリンクは変わっているが、データ上は2重にリンクが設定されている。
+        POIUtils.removeHyperlink(cell);
+        
+        if(value != null && Utils.isNotEmpty(value.getLink()) && !primaryFormula) {
             final CreationHelper helper = sheet.getWorkbook().getCreationHelper();
             final LinkType type = POIUtils.judgeLinkType(value.getLink());
             final Hyperlink link = helper.createHyperlink(type.poiType());
@@ -87,15 +90,14 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
             cell.setHyperlink(link);
             cell.setCellValue(value.getLabel());
             
-        } else if(value != null && Utils.isNotEmpty(value.getLabel())) {
+        } else if(value != null && Utils.isNotEmpty(value.getLabel()) && !primaryFormula) {
             // 見出しのみ設定されている場合
             cell.setCellValue(value.getLabel());
             
-        } else {
-            // 既存のハイパーリンクを削除
-            // 削除しないと、Excelの見た目上はリンクは変わっているが、データ上は2重にリンクが設定されている。
-            POIUtils.removeHyperlink(cell);
+        } else if(formulaAnno != null) {
+            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
             
+        } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);
         }
         
