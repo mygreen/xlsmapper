@@ -8,7 +8,7 @@
 ``@XlsFormula``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-書き込み時にセルの数式を指定するために、使用するためのアノテーションです。
+書き込み時にセルの数式を指定するために、使用するためのアノテーションです。 `[ver.1.5+]`
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 数式を直接指定する場合（属性value）
@@ -44,7 +44,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
    * - ``rowNumber``
      - 処理対象のセルの行番号。1から始まります。
    
-   * - ``columnIndex``
+   * - ``columnNumber``
      - 処理対象のセルの列番号。1から始まります。
      
    * - ``columnAlpha``
@@ -156,7 +156,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
         // 数式のメソッドの指定
         @XlsHint(order=1)
         @XlsLabelledCell(label="更新日付", type=LabelledCellType.Right)
-        @XlsFormula(metodName="getDateFormula")
+        @XlsFormula(methodName="getDateFormula")
         private Date date;
         
         @XlsHint(order=2)
@@ -183,7 +183,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
         @XlsColumn(columnName="算数")
         private int sansu;
         
-        // 数式の指定（変数、EL式を使用して指定）
+        // 数式の指定（メソッドを指定）
         @XlsColumn(columnName="合計")
         @XlsFormula(methodName="getSumFormula", primary=true)
         private int sum;
@@ -244,7 +244,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
 実装方式は、 :ref:`入力値検証時のメッセージのフォーマットの方式 <validationCutomEL>` と同じです。 
 
 
-設定を変更したい場合は、 ``XlsMapperConfig#formulaFormatter`` の値を変更します。
+設定を変更したい場合は、 ``XlsMapperConfig#formulaFormatter()`` の値を変更します。
 
 .. sourcecode:: java
     
@@ -256,7 +256,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
     
     // 数式をフォーマットするEL式の実装を変更する
     XlsMapper mapper = new XlsMapper();
-    mapper.getConig().getFormulaFormatter.setExpressionLanguage(formulaEL);
+    mapper.getConig().getFormulaFormatter().setExpressionLanguage(formulaEL);
 
 
 
@@ -293,7 +293,7 @@ getter/stterのアクセッサメソッドの定義が面倒な場合は、動�
 .. figure:: ./_static/Formula_sample.png
    :align: center
    
-   Formual(sample)
+   Formula(sample)
 
 
 
