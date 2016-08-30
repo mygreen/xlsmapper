@@ -2,12 +2,12 @@
 アノテーションの使用方法
 ======================================
 
-本ライブラリでは、アノテーションは :doc:`マッピング用 <annotation_mapping>` 、:doc:`型変換用 <annotation_converter>` 、:doc:`ライフサイクル・コールバック用 <annotation_lifecycle>` の3種類が存在します。
+本ライブラリでは、アノテーションは :doc:`マッピング用 <annotation_mapping>` 、:doc:`型変換用 <annotation_converter>` 、 :doc:`数式指定用 <annotation_formula>` 、:doc:`ライフサイクル・コールバック用 <annotation_lifecycle>` の4種類が存在します。
 
 * マッピング用は、Excelのシート中の表とJavaクラスのプロパティとを関連づけるために使用します。
 * 型変換用は、Excelのシート中のセルの値をJavaのクラスに設定する際に、変換処理が必要な場合に使用します。
+* 数式指定用は、書き込み時のセルの数式を指定するために使用します。
 * ライフサイクルコールバック用は、読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。
-
 
 
 ----------------------------------------------------
@@ -57,5 +57,7 @@ XlsMapperでは、フィールドとメソッドの両方にアノテーショ�
 .. 以降は、埋め込んで作成する
 .. include::  ./annotation_mapping.rst
 .. include::  ./annotation_converter.rst
+.. include::  ./annotation_formula.rst
 .. include::  ./annotation_lifecycle.rst
+
 

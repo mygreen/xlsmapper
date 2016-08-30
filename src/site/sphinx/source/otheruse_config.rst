@@ -93,6 +93,14 @@ XlsMapperConfigでは以下の設定を行うことができます。
        | 初期値は'false'です。
        | **Ver.0.4以上** から利用可能です。
    
+   * - ``formulaRecalcurationOnSave``
+     - ``boolean``
+     - | 書き込み時に式の再計算をするか設定します。
+       | 数式を含むシートを出力したファイルを開いた場合、一般的には数式が開いたときに再計算されます。
+       | ただし、大量で複雑な数式が記述されていると、パフォーマンスが落ちるため 'false' 設定すると無効にすることもできます。
+       | 初期値は'true'です。
+       | **Ver.1.5以上** から利用可能です。
+   
    * - ``cellFormatter``
      - ``CellFormatter``
      - | POIのセルの値をフォーマットして文字列として取得するクラスです。
@@ -120,5 +128,10 @@ XlsMapperConfigでは以下の設定を行うことができます。
      - ``ItemConverter``
      - | アノテーション :ref:`@XlsArrayConverter <annotationXlsArrayConverter>` の属性 ``itemConverter`` で指定する、リストなどの要素を変換するための標準の処理クラスです。
        | **Ver.1.1以上** から利用可能です。
+
+   * - ``formulaFormatter``
+     - ``MessageInterpolator``
+     - | アノテーション :ref:`@XlsFormula <annotationFormula>` の属性 ``value`` で指定した数式を独自の変数やEL式をフォーマットする際に利用します。
+       | **Ver.1.5以上** から利用可能です。
 
 

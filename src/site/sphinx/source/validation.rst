@@ -243,6 +243,8 @@ Validatorは、 ``AbstractObjectValidator`` を継承して作成します。
     messageConverter.setMessageResolver(new SpringMessageResolver(messageSource));
 
 
+.. _validationCutomEL:
+
 --------------------------------------------------------
 EL式のカスタマイズ
 --------------------------------------------------------
@@ -250,18 +252,15 @@ EL式のカスタマイズ
 
 メッセージ中の式言語は、EL式以外も利用できます。
 
-EL式の他、MVELが利用できます。
+EL式の他、MVEL、JEXLが利用できます。
 
 使用する式言語を変更する場合、``MessageInterapolator#setExpressionLanguage(...)`` で式言語の実装を設定します。
 
-MVELを利用する場合、別途、ライブラリが必要になります。
+MVEL、JEXL(ver.1.5+)を利用する場合、別途、ライブラリが必要になります。
 
 .. sourcecode:: java
     
     SheetMessageConverter messageConverter = new SheetMessageConverter();
-    
-    // EL式の管理クラスの作成
-    ExpressionLanguageRegistry elRegistry = new ExpressionLanguageRegistry();
     
     // 式言語の設定をMVELに切り替える場合
     messageConverter.getMessageInterporlator()
@@ -289,6 +288,13 @@ MVELを利用する場合、別途、ライブラリが必要になります。
         <artifactId>mvel2</artifactId>
         <version>2.2.2.Final</version>
     </dependency>
+    
+    <!-- 式言語：JEXL -->
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-jexl</artifactId>
+        <version>2.1.1</version>
+    </dependency>
 
 
 .. list-table:: 式言語の実装クラス
@@ -303,6 +309,9 @@ MVELを利用する場合、別途、ライブラリが必要になります。
    
    * - com.gh.mygreen.xlsmapper.expression.ExpressionLanguageMVELImpl
      - MVELを利用するためのクラス。ライブラリMVELが別途必要になります。
+   
+   * - com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl
+     - `JEXL <http://commons.apache.org/proper/commons-jexl/>`_ を利用するためのクラス。ライブラリJEXLが別途必要になります。JEXLは、ver.1.5から利用可能です。
 
 --------------------------------------------------------
 Bean Validationを使用した入力値検証
