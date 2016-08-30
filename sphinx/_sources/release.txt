@@ -2,6 +2,19 @@
 リリースノート
 ======================================
 
+--------------------------------------------------------
+ver.1.5.0 - 2016-08-30
+--------------------------------------------------------
+
+* `#83 <https://github.com/mygreen/xlsmapper/issues/83>`_ 出力する際の数式を定義するアノテーション :ref:`@XlsFormula <annotationFormula>` を追加しました。
+
+  * 式の制御、処理を行う :doc:`システム設定のプロパティ<otheruse_config>` として、``formulaRecalcurationOnSave`` 、``formulaFormatter`` を追加しました。
+  
+  * EL式の実装である `JEXL <http://commons.apache.org/proper/commons-jexl/>`_ を依存ライブラリに追加しました。
+
+  * EL2.xをスタンドアローンで呼び出せるライブラリ `standalone-el <https://github.com/mygreen/standalone-el/>`_ の最新版ver.0.2に対応しました。
+
+* `#84 <https://github.com/mygreen/xlsmapper/issues/84>`_ Javadocの記述間違いを修正しました。
 
 --------------------------------------------------------
 ver.1.4.4 - 2016-07-02

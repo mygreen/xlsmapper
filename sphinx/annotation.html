@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. アノテーションの使用方法 &mdash; XlsMapper 1.4.4 ドキュメント</title>
+    <title>2. アノテーションの使用方法 &mdash; XlsMapper 1.5 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.4.4',
+        VERSION:     '1.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.4.4 ドキュメント" href="index.html" />
+    <link rel="top" title="XlsMapper 1.5 ドキュメント" href="index.html" />
     <link rel="next" title="3. その他の機能" href="otheruse.html" />
     <link rel="prev" title="1. 基本的な使い方" href="howtouse.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="howtouse.html" title="1. 基本的な使い方"
              accesskey="P">前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.4.4 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.5 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -73,7 +73,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#id2">2.2. アノテーションの定義位置</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id3">2.3. マッピング用のアノテーション</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id33">2.4. 型変換用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id54">2.5. ライフサイクル・コールバック用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id54">2.5. 数式指定用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id61">2.6. ライフサイクル・コールバック用のアノテーション</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
@@ -112,25 +113,26 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">8. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">8.1. ver.1.4.4 - 2016-07-02</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">8.2. ver.1.4.3 - 2016-05-28</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">8.3. ver.1.4.2 - 2016-05-07</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">8.4. ver.1.4.1 - 2016-04-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">8.5. ver.1.4 - 2016-03-21</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">8.6. ver.1.3 - 2016-03-13</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.7. ver.1.2.1 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.8. ver.1.2 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.9. ver.1.1 - 2016-03-08</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.10. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.11. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.12. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.13. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.14. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.15. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.16. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.17. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.18. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.19. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-0-2016-08-30">8.1. ver.1.5.0 - 2016-08-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">8.2. ver.1.4.4 - 2016-07-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">8.3. ver.1.4.3 - 2016-05-28</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">8.4. ver.1.4.2 - 2016-05-07</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">8.5. ver.1.4.1 - 2016-04-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">8.6. ver.1.4 - 2016-03-21</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">8.7. ver.1.3 - 2016-03-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.8. ver.1.2.1 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.9. ver.1.2 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.10. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.11. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.12. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.13. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.14. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.15. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.16. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.17. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.18. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.19. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.20. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -173,10 +175,11 @@
             
   <div class="section" id="id1">
 <h1>2. アノテーションの使用方法<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>本ライブラリでは、アノテーションは <a class="reference internal" href="annotation_mapping.html"><em>マッピング用</em></a> 、<a class="reference internal" href="annotation_converter.html"><em>型変換用</em></a> 、<a class="reference internal" href="annotation_lifecycle.html"><em>ライフサイクル・コールバック用</em></a> の3種類が存在します。</p>
+<p>本ライブラリでは、アノテーションは <a class="reference internal" href="annotation_mapping.html"><em>マッピング用</em></a> 、<a class="reference internal" href="annotation_converter.html"><em>型変換用</em></a> 、 <a class="reference internal" href="annotation_formula.html"><em>数式指定用</em></a> 、<a class="reference internal" href="annotation_lifecycle.html"><em>ライフサイクル・コールバック用</em></a> の4種類が存在します。</p>
 <ul class="simple">
 <li>マッピング用は、Excelのシート中の表とJavaクラスのプロパティとを関連づけるために使用します。</li>
 <li>型変換用は、Excelのシート中のセルの値をJavaのクラスに設定する際に、変換処理が必要な場合に使用します。</li>
+<li>数式指定用は、書き込み時のセルの数式を指定するために使用します。</li>
 <li>ライフサイクルコールバック用は、読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。</li>
 </ul>
 <div class="section" id="exceljava">
@@ -230,8 +233,8 @@
 </div>
 <div class="section" id="id3">
 <h2>2.3. マッピング用のアノテーション<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
-<table border="1" class="docutils" id="id56">
-<caption><span class="caption-text">マッピング用のアノテーション</span><a class="headerlink" href="#id56" title="このテーブルへのパーマリンク">¶</a></caption>
+<table border="1" class="docutils" id="id64">
+<caption><span class="caption-text">マッピング用のアノテーション</span><a class="headerlink" href="#id64" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="30%" />
 <col width="70%" />
@@ -404,7 +407,7 @@
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id57">
+<div class="figure align-center" id="id65">
 <img alt="_images/Cell.png" src="_images/Cell.png" />
 <p class="caption"><span class="caption-text">Cell</span></p>
 </div>
@@ -435,7 +438,7 @@
 </li>
 <li>属性 <code class="docutils literal"><span class="pre">optional</span></code> で、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。</li>
 </ul>
-<div class="figure align-center" id="id58">
+<div class="figure align-center" id="id66">
 <img alt="_images/LabelledCell.png" src="_images/LabelledCell.png" />
 <p class="caption"><span class="caption-text">LabelledCell</span></p>
 </div>
@@ -454,7 +457,7 @@
 <div class="section" id="range">
 <h4>2.3.3.1. ラベルセルから離れたセルを指定する方法（属性range）<a class="headerlink" href="#range" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>属性 <code class="docutils literal"><span class="pre">range</span></code> を指定すると、属性typeの方向に向かって指定した <strong>セル数分を検索</strong> し、最初に発見した空白以外のセルの値を取得します。</p>
-<div class="figure align-center" id="id59">
+<div class="figure align-center" id="id67">
 <img alt="_images/LabelledCell_range.png" src="_images/LabelledCell_range.png" />
 <p class="caption"><span class="caption-text">LabelledCell(range)</span></p>
 </div>
@@ -472,7 +475,7 @@
 <h4>2.3.3.2. ラベルセルから離れたセルを指定する方法（属性skip）<a class="headerlink" href="#skip" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>属性 <code class="docutils literal"><span class="pre">skip</span></code> を指定すると、属性typeの方向に向かって指定した <strong>セル数分離れた</strong> セルの値をマッピングすることができます。</p>
 <p>ラベルセルを結合してる場合、結合しているセル数-1分を指定することでマッピングできます。</p>
-<div class="figure align-center" id="id60">
+<div class="figure align-center" id="id68">
 <img alt="_images/LabelledCell_skip.png" src="_images/LabelledCell_skip.png" />
 <p class="caption"><span class="caption-text">LabelledCell(skip)</span></p>
 </div>
@@ -490,7 +493,7 @@
 <h4>2.3.3.3. ラベルセルが重複するセルを指定する方法<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>同じラベルのセルが複数ある場合は、領域の見出しを属性 <code class="docutils literal"><span class="pre">headerLabel</span></code> で指定します。
 属性headerLabelで指定されたセルからlabel属性で指定されたセルを下方向に検索し、最初に見つかったセルをラベルセルとして使用します。</p>
-<div class="figure align-center" id="id61">
+<div class="figure align-center" id="id69">
 <img alt="_images/LabelledCell_headerLabel.png" src="_images/LabelledCell_headerLabel.png" />
 <p class="caption"><span class="caption-text">LabelledCell(headerLabel)</span></p>
 </div>
@@ -607,7 +610,7 @@
 <span id="annotationxlshorizontalrecords"></span><h3>2.3.5. <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code><a class="headerlink" href="#xlshorizontalrecords" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>水平方向に連続する行をCollection(List、Set)または配列にマッピングします。</p>
 <p>標準では表には最上部に表の名称と列名を記述した行が必要になります。</p>
-<div class="figure align-center" id="id62">
+<div class="figure align-center" id="id70">
 <img alt="_images/HorizontalRecord.png" src="_images/HorizontalRecord.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords</span></p>
 </div>
@@ -687,7 +690,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <div class="section" id="id9">
 <h4>2.3.5.2. 表の名称から開始位置が離れた場所にある場合<a class="headerlink" href="#id9" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性 <code class="docutils literal"><span class="pre">bottom</span></code> で表の開始位置がどれだけ離れているか指定します。</p>
-<div class="figure align-center" id="id63">
+<div class="figure align-center" id="id71">
 <img alt="_images/HorizontalRecord_bottom.png" src="_images/HorizontalRecord_bottom.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(bottom)</span></p>
 </div>
@@ -705,7 +708,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h4>2.3.5.3. 表の見出しが縦に結合されデータレコードの開始位置が離れた場所にある場合<a class="headerlink" href="#id10" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>表の見出しセルが縦に結合され、データレコードの開始位置が離れている場合、属性 <code class="docutils literal"><span class="pre">headerBottom</span></code> でデータレコードの開始位置がどれだけ離れているか指定します。 <cite>[ver1.1+]</cite></p>
 <p>下記の例の場合、見出しの「テスト結果」は横に結合されているため <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumnheadermerged"><span>&#64;XlsColumn(headerMerged=N)</span></a> と組み合わせて利用します。</p>
-<div class="figure align-center" id="id64">
+<div class="figure align-center" id="id72">
 <img alt="_images/HorizontalRecord_headerBottom.png" src="_images/HorizontalRecord_headerBottom.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(headerBottom)</span></p>
 </div>
@@ -751,7 +754,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>デフォルトでは行に1つもデータが存在しない場合、その表の終端となります。
 行の一番左側の列の罫線によってテーブルの終端を検出する方法もあります。
 この場合は <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> の属性 <code class="docutils literal"><span class="pre">terminal</span></code> に <code class="docutils literal"><span class="pre">RecordTerminal.Border</span></code> を指定してください。</p>
-<div class="figure align-center" id="id65">
+<div class="figure align-center" id="id73">
 <img alt="_images/HorizontalRecord_terminal.png" src="_images/HorizontalRecord_terminal.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(terminal)</span></p>
 </div>
@@ -807,7 +810,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h4>2.3.5.6. 表の終端の指定（属性terminateLabel）<a class="headerlink" href="#terminatelabel" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>表が他の表と連続しており属性terminalでBorder、Emptyのいずれを指定しても終端を検出できない場合があります。
 このような場合は、属性 <code class="docutils literal"><span class="pre">terminateLabel</span></code> で終端を示すセルの文字列を指定します。</p>
-<div class="figure align-center" id="id66">
+<div class="figure align-center" id="id74">
 <img alt="_images/HorizontalRecord_terminateLabel.png" src="_images/HorizontalRecord_terminateLabel.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(terminateLabel)</span></p>
 </div>
@@ -829,7 +832,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>例えば、<a class="reference internal" href="annotation_mapping_iteratetables.html#annotationxlsiteratetables"><span>&#64;XlsIterateTables</span></a> において、
 テーブルが隣接しており終端を検出できないときに、カラム数を明示的に指定してテーブルを区切りたい場合に使用します。</p>
 <p>以下の例は、列の見出しセルを3つ分検出したところでそのテーブルの終端と見なします。</p>
-<div class="figure align-center" id="id67">
+<div class="figure align-center" id="id75">
 <img alt="_images/HorizontalRecord_headerLimit.png" src="_images/HorizontalRecord_headerLimit.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(headerLimit)</span></p>
 </div>
@@ -852,7 +855,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 さらに先のセルの検索を試みます。</p>
 <p>また、属性 <code class="docutils literal"><span class="pre">headerAddress</span></code> や <code class="docutils literal"><span class="pre">tableLabel</span></code> で指定した位置から表が開始しないような場合も、
 属性 <code class="docutils literal"><span class="pre">range</span></code> を指定することで、さらに先のセルの検索を試みます。</p>
-<div class="figure align-center" id="id68">
+<div class="figure align-center" id="id76">
 <img alt="_images/HorizontalRecord_range.png" src="_images/HorizontalRecord_range.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(range)</span></p>
 </div>
@@ -883,7 +886,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id69">
+<div class="figure align-center" id="id77">
 <img alt="_images/HorizontalRecord_overRecord.png" src="_images/HorizontalRecord_overRecord.png" />
 <p class="caption"><span class="caption-text">HorizontalRecords(overRecord/remainedRecord)</span></p>
 </div>
@@ -940,7 +943,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>メソッドに定義する場合、<a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> と同じくList型の引数を1つだけ取るsetterメソッドに対して付与します。</p>
 <p>ここでは、アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> と異なる部分を説明します。
 共通の使い方は、アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> の説明を参照してください。</p>
-<div class="figure align-center" id="id70">
+<div class="figure align-center" id="id78">
 <img alt="_images/VerticalRecord.png" src="_images/VerticalRecord.png" />
 <p class="caption"><span class="caption-text">VerticalRecords</span></p>
 </div>
@@ -968,7 +971,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h4>2.3.6.1. 表の名称位置の指定<a class="headerlink" href="#id15" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>実際に表を作る場合、垂直方向ですが表の名称は上方に設定することが一般的です。
 そのような場合、属性 <code class="docutils literal"><span class="pre">tableLabelAbove</span></code> の値を <code class="docutils literal"><span class="pre">true</span></code> に設定すると表のタイトルが上方に位置するとして処理します。 <cite>[ver1.0+]</cite></p>
-<div class="figure align-center" id="id71">
+<div class="figure align-center" id="id79">
 <img alt="_images/VerticalRecord_tableLabelAbove.png" src="_images/VerticalRecord_tableLabelAbove.png" />
 <p class="caption"><span class="caption-text">VerticalRecords（tableLabelAbove）</span></p>
 </div>
@@ -986,7 +989,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性 <code class="docutils literal"><span class="pre">right</span></code> で表の開始位置がどれだけ離れているか指定します。 <cite>[ver1.0]+</cite></p>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> の属性 <code class="docutils literal"><span class="pre">bottom</span></code> と同じような意味になります。</p>
 <p>さらに、属性 <code class="docutils literal"><span class="pre">tableLabelAbove=true</span></code> と組み合わせると、下方向にどれだけ離れているかの意味になります。</p>
-<div class="figure align-center" id="id72">
+<div class="figure align-center" id="id80">
 <img alt="_images/VerticalRecord_right.png" src="_images/VerticalRecord_right.png" />
 <p class="caption"><span class="caption-text">VerticalRecords（right）</span></p>
 </div>
@@ -1004,7 +1007,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>表の見出しセルが横に結合され、データレコードの開始位置が離れている場合、属性 <code class="docutils literal"><span class="pre">headerRight</span></code> でデータレコードの開始位置がどれだけ離れているか指定します。 <cite>[ver1.1+]</cite></p>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> の属性 <code class="docutils literal"><span class="pre">headerBottom</span></code> と同じような意味になります。</p>
 <p>下記の例の場合、見出しの「テスト結果」は横に結合されているため <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumnheadermerged"><span>&#64;XlsColumn(headerMerged=N)</span></a> と組み合わせて利用します。</p>
-<div class="figure align-center" id="id73">
+<div class="figure align-center" id="id81">
 <img alt="_images/VerticalRecord_headerRight.png" src="_images/VerticalRecord_headerRight.png" />
 <p class="caption"><span class="caption-text">VerticalRecords(headerRight)</span></p>
 </div>
@@ -1059,7 +1062,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>属性 <code class="docutils literal"><span class="pre">columnName</span></code> で、見出しとなるセルのラベルを指定します。</p>
 <p>フィールドやメソッドに対して付与します。</p>
 <p>セルが見つからない場合はエラーとなりますが、属性 <code class="docutils literal"><span class="pre">optional</span></code> を <code class="docutils literal"><span class="pre">true</span></code> とすることで無視して処理を続行します。</p>
-<div class="figure align-center" id="id74">
+<div class="figure align-center" id="id82">
 <img alt="_images/Column.png" src="_images/Column.png" />
 <p class="caption"><span class="caption-text">Column</span></p>
 </div>
@@ -1081,7 +1084,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h4>2.3.7.1. データの列が結合されている場合<a class="headerlink" href="#id19" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>同じ値がグループごとに結合されているカラムの場合は属性 <code class="docutils literal"><span class="pre">merged</span></code> をtrueに設定します。
 こうしておくと、前の列の値が引き継がれて設定されます。</p>
-<div class="figure align-center" id="id75">
+<div class="figure align-center" id="id83">
 <img alt="_images/Column_merged.png" src="_images/Column_merged.png" />
 <p class="caption"><span class="caption-text">Column(merged)</span></p>
 </div>
@@ -1111,7 +1114,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>見出し行が結合され、1つの見出しに対して複数の列が存在する場合は属性 <code class="docutils literal"><span class="pre">headerMerged</span></code> を使用します。</p>
 <p>属性headerMergedの値には列見出しから何セル分離れているかを指定します。</p>
 <p>属性columnNameで指定する見出しのセル名は、結合されているセルと同じ値を指定します。</p>
-<div class="figure align-center" id="id76">
+<div class="figure align-center" id="id84">
 <img alt="_images/Column_headerMerged.png" src="_images/Column_headerMerged.png" />
 <p class="caption"><span class="caption-text">Column(headerMerged)</span></p>
 </div>
@@ -1180,7 +1183,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 指定されたレコード用クラスのカラム数が可変の場合に、それらのカラムを <code class="docutils literal"><span class="pre">java.util.Map</span></code> として設定します。</p>
 <p>BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。</p>
 <p>属性 <code class="docutils literal"><span class="pre">previousColumnName</span></code> で、指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。</p>
-<div class="figure align-center" id="id77">
+<div class="figure align-center" id="id85">
 <img alt="_images/MapColumns.png" src="_images/MapColumns.png" />
 <p class="caption"><span class="caption-text">MapColumns</span></p>
 </div>
@@ -1201,7 +1204,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <div class="section" id="id23">
 <h4>2.3.8.2. 終了条件のセルを指定する場合<a class="headerlink" href="#id23" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>属性 <code class="docutils literal"><span class="pre">nextColumnName</span></code> で、指定した前のカラムまでが処理対象となり、マッピングの終了条件を指定することができます。 <cite>[ver1.2+]</cite></p>
-<div class="figure align-center" id="id78">
+<div class="figure align-center" id="id86">
 <img alt="_images/MapColumns_nextColumnName.png" src="_images/MapColumns_nextColumnName.png" />
 <p class="caption"><span class="caption-text">MapColumns(nextColumnName)</span></p>
 </div>
@@ -1252,7 +1255,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsMapColumns</span></code> でマッピングしたセルのキーは、 <cite>&lt;プロパティ名&gt;[&lt;セルの見出し&gt;]</cite> の形式になります。</p>
 <p>同様に、マッピング対象の見出しを取得する、フィールド <code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">labels</span></code> へのアクセスも、
 キーは、 <cite>&lt;プロパティ名&gt;[&lt;セルの見出し&gt;]</cite> の形式になります。</p>
-<div class="figure align-center" id="id79">
+<div class="figure align-center" id="id87">
 <img alt="_images/MapColumns_positions.png" src="_images/MapColumns_positions.png" />
 <p class="caption"><span class="caption-text">MapColumns(positions/labels)</span></p>
 </div>
@@ -1333,7 +1336,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>そのような場合、テンプレートファイルを書き込むデータに合わせて書き換えます。
 その際には、 <a class="reference internal" href="annotation_lifecycle.html"><em>ライフサイクル・コールバック用のアノテーション</em></a> <code class="docutils literal"><span class="pre">&#64;XlsPreSave</span></code> で、実装を行うことができます。</p>
 <p>実装処理は、Apache POIのAPIを使って行います。。</p>
-<div class="figure align-center" id="id80">
+<div class="figure align-center" id="id88">
 <img alt="_images/MapColumns_preSave.png" src="_images/MapColumns_preSave.png" />
 <p class="caption"><span class="caption-text">MapColumns(preSave)</span></p>
 </div>
@@ -1428,7 +1431,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>属性 <code class="docutils literal"><span class="pre">&#64;XlsHorizotanlRecords#terminalLabel</span></code> や <code class="docutils literal"><span class="pre">&#64;XlsHorizotanlRecords#ignoreEmptyRecord</span></code> などの終端や空のレコードの判定は、入れ子になったレコードごとに判定されます。</li>
 <li>読み込みの際、アノテーション <a class="reference internal" href="annotation_mapping_isempty.html#annotationxlsisempty"><span>&#64;XlsIsEmpty</span></a> で、空のレコードを読み飛ばした結果、レコード数が0件となった場合は、要素数0個リストや配列が設定されます。</li>
 </ul>
-<div class="figure align-center" id="id81">
+<div class="figure align-center" id="id89">
 <img alt="_images/NestedRecords_oneToMany.png" src="_images/NestedRecords_oneToMany.png" />
 <p class="caption"><span class="caption-text">NestedRecords(一対多の関係)</span></p>
 </div>
@@ -1488,7 +1491,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h4>2.3.9.2. 一対一の関係<a class="headerlink" href="#id29" title="このヘッドラインへのパーマリンク">¶</a></h4>
 <p>一対一の関係をマッピングする際には、ネストしたクラスを直接指定します。</p>
 <p>クラス定義などの制約は、基本的に一対多のときと同じです。</p>
-<div class="figure align-center" id="id82">
+<div class="figure align-center" id="id90">
 <img alt="_images/NestedRecords_oneToOne.png" src="_images/NestedRecords_oneToOne.png" />
 <p class="caption"><span class="caption-text">NestedRecords(一対一の関係)</span></p>
 </div>
@@ -1544,7 +1547,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>属性 <code class="docutils literal"><span class="pre">tableLabel</span></code> で繰り返し部分の表の名称を指定します。</p>
 <p>また、属性bottomは、<code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> 内で <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span>&#64;XlsHorizontalRecords</span></a> を使用する場合に、
 テーブルの開始位置が <code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> の表の名称セルからどれだけ離れているかを指定します。</p>
-<div class="figure align-center" id="id83">
+<div class="figure align-center" id="id91">
 <img alt="_images/IterateTables.png" src="_images/IterateTables.png" />
 <p class="caption"><span class="caption-text">IterateTables</span></p>
 </div>
@@ -1626,7 +1629,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>このようなときに、<code class="docutils literal"><span class="pre">&#64;XlsHint</span></code> の属性 <code class="docutils literal"><span class="pre">order</span></code> で書き込む処理順序を指定し一定に保つことができます。</p>
 <p><code class="docutils literal"><span class="pre">&#64;XlsHint</span></code> を付与しないフィールドは、付与しているフィールドよりも後から処理が実行されます。
 属性orderが同じ値を設定されているときは、 フィールド名の昇順で優先度を決めて処理されます。</p>
-<div class="figure align-center" id="id84">
+<div class="figure align-center" id="id92">
 <img alt="_images/Hint.png" src="_images/Hint.png" />
 <p class="caption"><span class="caption-text">Hint</span></p>
 </div>
@@ -1776,8 +1779,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<table border="1" class="docutils" id="id85">
-<caption><span class="caption-text">ExcelとJavaのマッピング可能な型</span><a class="headerlink" href="#id85" title="このテーブルへのパーマリンク">¶</a></caption>
+<table border="1" class="docutils" id="id93">
+<caption><span class="caption-text">ExcelとJavaのマッピング可能な型</span><a class="headerlink" href="#id93" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="30%" />
 <col width="30%" />
@@ -2400,12 +2403,455 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 </div>
 <div class="section" id="id54">
-<h2>2.5. ライフサイクル・コールバック用のアノテーション<a class="headerlink" href="#id54" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>2.5. 数式指定用のアノテーション<a class="headerlink" href="#id54" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="xlsformula">
+<span id="annotationformula"></span><h3>2.5.1. <code class="docutils literal"><span class="pre">&#64;XlsFormula</span></code><a class="headerlink" href="#xlsformula" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>書き込み時にセルの数式を指定するために、使用するためのアノテーションです。</p>
+<div class="section" id="value">
+<h4>2.5.1.1. 数式を直接指定する場合（属性value）<a class="headerlink" href="#value" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>数式を直接指定する場合は、属性 <code class="docutils literal"><span class="pre">value</span></code> で指定します。
+Javaのアノテーションの仕様上、属性valueのみを指定する時には、属性名の省略可能がです。</p>
+<p>数式を指定する際に、メッセージファイルと同様に、変数やEL式が利用可能です。</p>
+<ul class="simple">
+<li>変数は <code class="docutils literal"><span class="pre">{変数名}</span></code> で定義します。</li>
+<li>EL式は <code class="docutils literal"><span class="pre">${EL式}</span></code> で定義します。<ul>
+<li>EL式は、 <a class="reference external" href="http://commons.apache.org/proper/commons-jexl/">JEXL(Java Expression Language)</a> の形式で指定します。</li>
+<li>JEXLの仕様は、 <a class="reference external" href="http://commons.apache.org/proper/commons-jexl/reference/syntax.html">JEXL Reference</a> を参照してください。</li>
+</ul>
+</li>
+</ul>
+<p>変数、EL式中では、予め次の変数が登録されており、セルの値ごとに変わります。</p>
+<table border="1" class="docutils" id="id94">
+<caption><span class="caption-text">予め登録されている変数</span><a class="headerlink" href="#id94" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">変数名</th>
+<th class="head">説明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rowIndex</span></code></td>
+<td>処理対象のセルの行のインデックス。0から始まります。</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">columnIndex</span></code></td>
+<td>処理対象のセルの列のインデックス。0から始まります。</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rowNumber</span></code></td>
+<td>処理対象のセルの行番号。1から始まります。</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">columnIndex</span></code></td>
+<td>処理対象のセルの列番号。1から始まります。</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">columnAlpha</span></code></td>
+<td>処理対象のセルの列の名前。Aから始まります。</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">address</span></code></td>
+<td>処理対象のセルのアドレス。 <code class="docutils literal"><span class="pre">A1</span></code> の形式です。</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">targetBean</span></code></td>
+<td>処理対象のプロパティが定義されているJavaBeanのオブジェクトです。</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cell</span></code></td>
+<td>処理対象のセルのオブジェクトです。POIのクラス <code class="docutils literal"><span class="pre">org.apache.poi.ss.usermodel.Cell</span></code> のオブジェクトです。</td>
+</tr>
+</tbody>
+</table>
+<p>さらに、よく使う関数が登録されており、呼び出すことができます。
+関数の実態は、 <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.expression.CustomFunctions</span></code> です。</p>
+<table border="1" class="docutils" id="id95">
+<caption><span class="caption-text">予め登録されている関数</span><a class="headerlink" href="#id95" title="このテーブルへのパーマリンク">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">関数の形式</th>
+<th class="head">説明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">x:colToAlpha(&lt;列番号&gt;)</span></code></td>
+<td>1から始まる列番号を英字名に変換します。</td>
+</tr>
+</tbody>
+</table>
+<p>自身のJavaBeanも変数 <code class="docutils literal"><span class="pre">targetBean</span></code> として登録されているため、任意のメソッドを呼び出すこともできます。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;サンプル&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="c1">// 数式の指定</span>
+    <span class="nd">@XlsHint</span><span class="o">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="o">)</span>
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;更新日付&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="nd">@XlsFormula</span><span class="o">(</span><span class="s">&quot;TODAY()&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Date</span> <span class="n">date</span><span class="o">;</span>
+
+    <span class="nd">@XlsHint</span><span class="o">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;レコード&quot;</span><span class="o">,</span> <span class="n">terminal</span><span class="o">=</span><span class="n">RecordTerminal</span><span class="o">.</span><span class="na">Border</span><span class="o">,</span> <span class="n">overRecord</span><span class="o">=</span><span class="n">OverRecordOperate</span><span class="o">.</span><span class="na">Insert</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SampleRecord</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="c1">// マッピングした位置情報</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Point</span><span class="o">&gt;</span> <span class="n">positions</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;国語&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">kokugo</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;算数&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">sansu</span><span class="o">;</span>
+
+    <span class="c1">// 数式の指定（変数、EL式を使用して指定）</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;合計&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsFormula</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;SUM(${x:colToAlpha(targetBean.kokugoColNum)}{rowNumber}:${x:colToAlpha(targetBean.sansuColNum)}{rowNumber})&quot;</span><span class="o">,</span> <span class="n">primary</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">sum</span><span class="o">;</span>
+
+    <span class="c1">// プロパティ「kokugo」の列番号を返す。</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getKokugoColNum</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Point</span> <span class="n">point</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;kokugo&quot;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">;</span>
+
+    <span class="o">}</span>
+
+    <span class="c1">// プロパティ「sansu」の列番号を返す。</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getSansuColNum</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Point</span> <span class="n">point</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;sansu&quot;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="methodname">
+<h4>2.5.1.2. 数式を組み立てるメソッドを指定する場合（属性methodName）<a class="headerlink" href="#methodname" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>条件により数式を変更するような場合や、複雑な数式を組み立てる場合、数式を組み立てるメソッドを指定することができます。</p>
+<p>メソッドの条件は次のようになります。</p>
+<ul class="simple">
+<li>定義位置は、プロパティが定義してあるJavaBeanのクラスと同じ箇所。</li>
+<li>修飾子は、public/private/protected などなんでもよい。</li>
+<li>引数は、指定しないか、または次の値が指定可能。順番は任意。<ul>
+<li>セルのオブジェクト <code class="docutils literal"><span class="pre">org.apache.poi.ss.usermodel.Cell</span></code> 。</li>
+<li>シートのオブジェクト <code class="docutils literal"><span class="pre">org.apache.poi.ss.usermodel.Sheet</span></code> 。</li>
+<li>セルの座標 <code class="docutils literal"><span class="pre">java.awt.Point</span></code> 。0から始まります。</li>
+<li>システム設定 <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.XlsMapperConfig</span></code> 。</li>
+</ul>
+</li>
+<li>戻り値は、String型。<ul>
+<li>nullまたは空文字を返すと、ブランクセルとして出力されます。</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;サンプル&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="c1">// 数式のメソッドの指定</span>
+    <span class="nd">@XlsHint</span><span class="o">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="o">)</span>
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;更新日付&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="nd">@XlsFormula</span><span class="o">(</span><span class="n">metodName</span><span class="o">=</span><span class="s">&quot;getDateFormula&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Date</span> <span class="n">date</span><span class="o">;</span>
+
+    <span class="nd">@XlsHint</span><span class="o">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;レコード&quot;</span><span class="o">,</span> <span class="n">terminal</span><span class="o">=</span><span class="n">RecordTerminal</span><span class="o">.</span><span class="na">Border</span><span class="o">,</span> <span class="n">overRecord</span><span class="o">=</span><span class="n">OverRecordOperate</span><span class="o">.</span><span class="na">Insert</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SampleRecord</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+
+    <span class="c1">// 数式を組み立てるメソッド</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getDateFormula</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">&quot;TODAY()&quot;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="c1">// マッピングした位置情報</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Point</span><span class="o">&gt;</span> <span class="n">positions</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;国語&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">kokugo</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;算数&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">sansu</span><span class="o">;</span>
+
+    <span class="c1">// 数式の指定（変数、EL式を使用して指定）</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;合計&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsFormula</span><span class="o">(</span><span class="n">methodName</span><span class="o">=</span><span class="s">&quot;getSumFormula&quot;</span><span class="o">,</span> <span class="n">primary</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">sum</span><span class="o">;</span>
+
+    <span class="c1">// 数式を組み立てるメソッド</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="nf">getSumFormula</span><span class="o">(</span><span class="n">Point</span> <span class="n">point</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="kt">int</span> <span class="n">rowNumber</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="na">y</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+        <span class="n">String</span> <span class="n">colKokugo</span> <span class="o">=</span> <span class="n">CellReference</span><span class="o">.</span><span class="na">convertNumToColString</span><span class="o">(</span><span class="n">positions</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;kokugo&quot;</span><span class="o">).</span><span class="na">y</span><span class="o">);</span>
+        <span class="n">String</span> <span class="n">colSansu</span> <span class="o">=</span> <span class="n">CellReference</span><span class="o">.</span><span class="na">convertNumToColString</span><span class="o">(</span><span class="n">positions</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;sansu&quot;</span><span class="o">).</span><span class="na">y</span><span class="o">);</span>
+
+        <span class="k">return</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;SUM(%s%d:%s%d)&quot;</span><span class="o">,</span> <span class="n">colKokugo</span><span class="o">,</span> <span class="n">rowNumber</span><span class="o">,</span> <span class="n">colSansu</span><span class="o">,</span> <span class="n">rowNumber</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="primary">
+<h4>2.5.1.3. 数式を優先する場合（属性primary）<a class="headerlink" href="#primary" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>出力するオブジェクトのプロパティに値が設定されている場合、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsFormula</span></code> を指定していても、デフォルトでは値が出力されます。</p>
+<p>数式を優先して出力する場合、 属性 <code class="docutils literal"><span class="pre">primary=true</span></code> を指定すると数式が優先されます。
+特に、プリミティブ型など初期値が入っている場合や、 アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(defaultValue=&quot;&lt;初期値&gt;&quot;)</span></code> で初期値を指定している場合には、注意が必要です。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="c1">// マッピングした位置情報</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Point</span><span class="o">&gt;</span> <span class="n">positions</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;国語&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">kokugo</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;算数&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">sansu</span><span class="o">;</span>
+
+    <span class="c1">// 数式の指定（数式を優先する場合）</span>
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;合計&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsFormula</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;SUM(B{rowNumber}:C{rowNumber})&quot;</span><span class="o">,</span> <span class="n">primary</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">sum</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id55">
+<h4>2.5.1.4. 式言語処理のカスタマイズ<a class="headerlink" href="#id55" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>数式を直接指定する場合は、EL式の1つの実装である <a class="reference external" href="http://commons.apache.org/proper/commons-jexl/">JEXL</a> が利用できますが、実装を切り替えたり、デフォルトの関数を登録したりとカスタマイズができます。</p>
+<p>実装方式は、 <a class="reference internal" href="validation.html#validationcutomel"><span>入力値検証時のメッセージのフォーマットの方式</span></a> と同じです。</p>
+<p>設定を変更したい場合は、 <code class="docutils literal"><span class="pre">XlsMapperConfig#formulaFormatter</span></code> の値を変更します。</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// 数式をフォーマットする際のEL関数を登録する。</span>
+<span class="n">ExpressionLanguageJEXLImpl</span> <span class="n">formulaEL</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ExpressionLanguageJEXLImpl</span><span class="o">();</span>
+<span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">funcs</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+<span class="n">funcs</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;x&quot;</span><span class="o">,</span> <span class="n">CustomFunctions</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">formulaEL</span><span class="o">.</span><span class="na">getJexlEngine</span><span class="o">().</span><span class="na">setFunctions</span><span class="o">(</span><span class="n">funcs</span><span class="o">);</span>
+
+<span class="c1">// 数式をフォーマットするEL式の実装を変更する</span>
+<span class="n">XlsMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
+<span class="n">mapper</span><span class="o">.</span><span class="na">getConig</span><span class="o">().</span><span class="na">getFormulaFormatter</span><span class="o">.</span><span class="na">setExpressionLanguage</span><span class="o">(</span><span class="n">formulaEL</span><span class="o">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id56">
+<h4>2.5.1.5. 数式を設定する際のポイント<a class="headerlink" href="#id56" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<div class="section" id="id57">
+<h5>2.5.1.5.1. 処理順序を一定にすることによる数式中の座標のずれを防ぐ<a class="headerlink" href="#id57" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>数式にセルの座標を含む場合、セルを書き込んだ後に行を追加すると、セルの位置がずれる場合があります。
+これは、内部で使用しているExcelのライブラリ「Apaceh POI」は、行を追加しても数式中の座標は不変であるためです。</p>
+<p>このような場合、 アノテーション <a class="reference internal" href="annotation_mapping_hint.html#annotationxlshint"><span>&#64;XlsHint</span></a> を使い、処理順序を指定することで回避することができます。</p>
+</div>
+<div class="section" id="el">
+<h5>2.5.1.5.2. EL式中でプロパティを参照する場合<a class="headerlink" href="#el" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<p>どのようなEL式の処理系もプロパティの値を参照する場合、基本的にはJavaBeanの規約に基づくpublicなgetterメソッド経由でアクセスすることになります。
+ただし、JEXLは、publicフィールドも参照できます。</p>
+<p>getter/stterのアクセッサメソッドの定義が面倒な場合は、動的に生成する <a class="reference external" href="http://projectlombok.org/">Lombok</a> を利用することをお薦めします。</p>
+</div>
+</div>
+<div class="section" id="id59">
+<h4>2.5.1.6. 複雑な表を作成する<a class="headerlink" href="#id59" title="このヘッドラインへのパーマリンク">¶</a></h4>
+<p>最後のレコードの値が数式でデザインが異なるような表を作成する場合を例に説明します。</p>
+<div class="figure align-center" id="id96">
+<img alt="_images/Formula_sample.png" src="_images/Formula_sample.png" />
+<p class="caption"><span class="caption-text">Formual(sample)</span></p>
+</div>
+<div class="section" id="javabean">
+<h5>2.5.1.6.1. JavaBeanの定義<a class="headerlink" href="#javabean" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<ul class="simple">
+<li>平均値(AVERAGE関数)の数式を組み立てるには、レコードの件数が取得が必要です。<ul>
+<li>このようなときは、レコードのインスタンスを作成するときに、親のインスタンスを設定し、たどれるようにします。</li>
+</ul>
+</li>
+<li>プロパティの値が設定されている場合はプロパティの値を出力し、値がnullのときには数式を出力するようにするように、属性 <code class="docutils literal"><span class="pre">primary=false</span></code> を設定します。<ul>
+<li>数値などの場合、プリミティブ型だと初期値が設定されてしまうため、ラッパー型を使います。</li>
+</ul>
+</li>
+<li>レコードの色を変えたい場合は、<a class="reference internal" href="annotation_lifecycle.html"><em>ライフサイクル・コールバック用</em></a> のアノテーションを使います。<ul>
+<li><code class="docutils literal"><span class="pre">&#64;XlsPostSave</span></code> で書き込んだ後に実行されるメソッドに付与し、その実装を行います。</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;成績表&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="c1">// マッピングした位置情報</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Point</span><span class="o">&gt;</span> <span class="n">positions</span><span class="o">;</span>
+
+    <span class="nd">@XlsHint</span><span class="o">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+    <span class="nd">@XlsHorizontalRecords</span><span class="o">(</span><span class="n">tableLabel</span><span class="o">=</span><span class="s">&quot;成績一覧&quot;</span><span class="o">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">2</span><span class="o">,</span> <span class="n">terminal</span><span class="o">=</span><span class="n">RecordTerminal</span><span class="o">.</span><span class="na">Border</span><span class="o">,</span> <span class="n">overRecord</span><span class="o">=</span><span class="n">OverRecordOperate</span><span class="o">.</span><span class="na">Insert</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SampleRecord</span><span class="o">&gt;</span> <span class="n">records</span><span class="o">;</span>
+
+    <span class="c1">// レコードを追加する</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="n">SampleRecord</span> <span class="n">record</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">records</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">records</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+        <span class="o">}</span>
+
+        <span class="c1">// 自身のインスタンスを渡す</span>
+        <span class="n">record</span><span class="o">.</span><span class="na">setParent</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+
+        <span class="c1">// No.を自動的に振る</span>
+        <span class="n">record</span><span class="o">.</span><span class="na">setNo</span><span class="o">(</span><span class="n">records</span><span class="o">.</span><span class="na">size</span><span class="o">()+</span><span class="mi">1</span><span class="o">);</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">records</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">record</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SampleRecord</span><span class="o">&gt;</span> <span class="nf">getRecords</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">records</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+
+    <span class="c1">// マッピングした位置情報</span>
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Point</span><span class="o">&gt;</span> <span class="n">positions</span><span class="o">;</span>
+
+    <span class="c1">// 親のBean情報</span>
+    <span class="kd">private</span> <span class="n">SampleSheet</span> <span class="n">parent</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;国語&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsFormula</span><span class="o">(</span><span class="n">methodName</span><span class="o">=</span><span class="s">&quot;getKyokaAvgFormula&quot;</span><span class="o">,</span> <span class="n">primary</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">kokugo</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;算数&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsFormula</span><span class="o">(</span><span class="n">methodName</span><span class="o">=</span><span class="s">&quot;getKyokaAvgFormula&quot;</span><span class="o">,</span> <span class="n">primary</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">sansu</span><span class="o">;</span>
+
+    <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;合計&quot;</span><span class="o">)</span>
+    <span class="nd">@XlsFormula</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;SUM(C{rowNumber}:D{rowNumber})&quot;</span><span class="o">,</span> <span class="n">primary</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">sum</span><span class="o">;</span>
+
+    <span class="c1">// 各教科の平均の数式を組み立てる</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getKyokaAvgFormula</span><span class="o">(</span><span class="n">Point</span> <span class="n">point</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="c1">// レコード名が平均のときのみ数式を出力する</span>
+        <span class="k">if</span><span class="o">(!</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;平均&quot;</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="c1">// レコードのサイズ（平均用のレコード行を覗いた値）</span>
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">dataSize</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="na">getRecords</span><span class="o">().</span><span class="na">size</span><span class="o">()</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+
+        <span class="c1">// 列名</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">colAlpha</span> <span class="o">=</span> <span class="n">CellReference</span><span class="o">.</span><span class="na">convertNumToColString</span><span class="o">(</span><span class="n">point</span><span class="o">.</span><span class="na">x</span><span class="o">);</span>
+
+        <span class="c1">// 平均値の開始/終了の行番号</span>
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">startRowNumber</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="na">y</span> <span class="o">-</span> <span class="n">dataSize</span> <span class="o">+</span><span class="mi">1</span><span class="o">;</span>
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">endRowNumber</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="na">y</span><span class="o">;</span>
+
+        <span class="k">return</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;AVERAGE(%s%d:%s%d)&quot;</span><span class="o">,</span> <span class="n">colAlpha</span><span class="o">,</span> <span class="n">startRowNumber</span><span class="o">,</span> <span class="n">colAlpha</span><span class="o">,</span> <span class="n">endRowNumber</span><span class="o">);</span>
+
+    <span class="o">}</span>
+
+    <span class="c1">// 最後のレコードのときにセルの色を変更</span>
+    <span class="nd">@XlsPostSave</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handlePostSave</span><span class="o">(</span><span class="kd">final</span> <span class="n">Sheet</span> <span class="n">sheet</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="k">if</span><span class="o">(!</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;平均&quot;</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">final</span> <span class="n">Workbook</span> <span class="n">book</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="na">getWorkbook</span><span class="o">();</span>
+
+        <span class="k">for</span><span class="o">(</span><span class="n">Point</span> <span class="n">address</span> <span class="o">:</span> <span class="n">positions</span><span class="o">.</span><span class="na">values</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">Cell</span> <span class="n">cell</span> <span class="o">=</span> <span class="n">POIUtils</span><span class="o">.</span><span class="na">getCell</span><span class="o">(</span><span class="n">sheet</span><span class="o">,</span> <span class="n">address</span><span class="o">);</span>
+
+            <span class="n">CellStyle</span> <span class="n">style</span> <span class="o">=</span> <span class="n">book</span><span class="o">.</span><span class="na">createCellStyle</span><span class="o">();</span>
+            <span class="n">style</span><span class="o">.</span><span class="na">cloneStyleFrom</span><span class="o">(</span><span class="n">cell</span><span class="o">.</span><span class="na">getCellStyle</span><span class="o">());</span>
+
+            <span class="c1">// 塗りつぶし</span>
+            <span class="n">style</span><span class="o">.</span><span class="na">setFillForegroundColor</span><span class="o">(</span><span class="n">IndexedColors</span><span class="o">.</span><span class="na">GREY_25_PERCENT</span><span class="o">.</span><span class="na">getIndex</span><span class="o">());</span>
+            <span class="n">style</span><span class="o">.</span><span class="na">setFillPattern</span><span class="o">(</span><span class="n">CellStyle</span><span class="o">.</span><span class="na">SOLID_FOREGROUND</span><span class="o">);</span>
+
+            <span class="c1">// 罫線の上部を変更</span>
+            <span class="n">style</span><span class="o">.</span><span class="na">setBorderTop</span><span class="o">(</span><span class="n">CellStyle</span><span class="o">.</span><span class="na">BORDER_DOUBLE</span><span class="o">);</span>
+
+            <span class="n">cell</span><span class="o">.</span><span class="na">setCellStyle</span><span class="o">(</span><span class="n">style</span><span class="o">);</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setParent</span><span class="o">(</span><span class="n">SampleSheet</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setNo</span><span class="o">(</span><span class="kt">int</span> <span class="n">no</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">no</span> <span class="o">=</span> <span class="n">no</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">SampleRecord</span> <span class="nf">name</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">SampleRecord</span> <span class="nf">kokugo</span><span class="o">(</span><span class="kd">final</span> <span class="n">Integer</span> <span class="n">kokugo</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">kokugo</span> <span class="o">=</span> <span class="n">kokugo</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">SampleRecord</span> <span class="nf">sansu</span><span class="o">(</span><span class="kd">final</span> <span class="n">Integer</span> <span class="n">sansu</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sansu</span> <span class="o">=</span> <span class="n">sansu</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id60">
+<h5>2.5.1.6.2. データの作成とファイルの出力<a class="headerlink" href="#id60" title="このヘッドラインへのパーマリンク">¶</a></h5>
+<ul class="simple">
+<li>計算式を出力するプロパティの値は、省略します。</li>
+<li>特に、平均値を設定するレコードは、名前以外の値は省略します。</li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// データの作成</span>
+<span class="kd">final</span> <span class="n">SampleSheet</span> <span class="n">outSheet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SampleSheet</span><span class="o">();</span>
+
+<span class="c1">// 各人のレコードの作成（合計値の設定は行わない。）</span>
+<span class="n">outSheet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">SampleRecord</span><span class="o">().</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;山田太郎&quot;</span><span class="o">).</span><span class="na">kokugo</span><span class="o">(</span><span class="mi">90</span><span class="o">).</span><span class="na">sansu</span><span class="o">(</span><span class="mi">85</span><span class="o">));</span>
+<span class="n">outSheet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">SampleRecord</span><span class="o">().</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;鈴木一郎&quot;</span><span class="o">).</span><span class="na">kokugo</span><span class="o">(</span><span class="mi">85</span><span class="o">).</span><span class="na">sansu</span><span class="o">(</span><span class="mi">80</span><span class="o">));</span>
+<span class="n">outSheet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">SampleRecord</span><span class="o">().</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;林三郎&quot;</span><span class="o">).</span><span class="na">kokugo</span><span class="o">(</span><span class="mi">80</span><span class="o">).</span><span class="na">sansu</span><span class="o">(</span><span class="mi">60</span><span class="o">));</span>
+
+<span class="c1">// 平均値用のレコード(点数などのデータ部分はなし)</span>
+<span class="n">outSheet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">SampleRecord</span><span class="o">().</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;平均&quot;</span><span class="o">));</span>
+
+<span class="c1">// ファイルへの書き込み</span>
+<span class="n">XlsMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
+<span class="n">mapper</span><span class="o">.</span><span class="na">getConig</span><span class="o">().</span><span class="na">setContinueTypeBindFailure</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+<span class="n">File</span> <span class="n">outFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;seiseki.xlsx&quot;</span><span class="o">);</span>
+<span class="k">try</span><span class="o">(</span><span class="n">InputStream</span> <span class="n">template</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="s">&quot;template.xlsx&quot;</span><span class="o">);</span>
+        <span class="n">OutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">outFile</span><span class="o">))</span> <span class="o">{</span>
+
+    <span class="n">mapper</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">template</span><span class="o">,</span> <span class="n">out</span><span class="o">,</span> <span class="n">outSheet</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="id61">
+<h2>2.6. ライフサイクル・コールバック用のアノテーション<a class="headerlink" href="#id61" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>読み込みと書き込み処理の前、後それぞれの処理イベントにおいて、任意の処理を実装できます。</p>
 <p>実装方法として、JavaBeanに直接処理を実装する方法と、リスナークラスを指定して別のクラスで実装する方法の2種類があります。</p>
 <p><strong>publicメソッドに付与</strong> する必要があります。</p>
-<table border="1" class="docutils" id="id86">
-<caption><span class="caption-text">ライフサイクル・コールバック用のアノテーション一覧</span><a class="headerlink" href="#id86" title="このテーブルへのパーマリンク">¶</a></caption>
+<table border="1" class="docutils" id="id97">
+<caption><span class="caption-text">ライフサイクル・コールバック用のアノテーション一覧</span><a class="headerlink" href="#id97" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="30%" />
 <col width="70%" />
@@ -2446,8 +2892,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>引数は、とらなくても可能です。</li>
 <li>引数の順番は任意で指定可能です。</li>
 </ul>
-<table border="1" class="docutils" id="id87">
-<caption><span class="caption-text">コールバック用アノテーションのメソッドに指定可能な引数一覧</span><a class="headerlink" href="#id87" title="このテーブルへのパーマリンク">¶</a></caption>
+<table border="1" class="docutils" id="id98">
+<caption><span class="caption-text">コールバック用アノテーションのメソッドに指定可能な引数一覧</span><a class="headerlink" href="#id98" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="50%" />
 <col width="50%" />
@@ -2500,8 +2946,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<div class="section" id="javabean">
-<h3>2.5.1. JavaBeanクラスに実装する場合<a class="headerlink" href="#javabean" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id62">
+<h3>2.6.1. JavaBeanクラスに実装する場合<a class="headerlink" href="#id62" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>シート用クラス、レコード用クラスのどちらにも定義できます。</p>
 <p>実行順は、親であるシートクラスの処理が先に処理されます。</p>
 <div class="highlight-java"><div class="highlight"><pre><span class="c1">// シートクラス</span>
@@ -2538,7 +2984,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 </div>
 <div class="section" id="annotationxlslistener">
-<span id="id55"></span><h3>2.5.2. リスナークラスに実装する場合<a class="headerlink" href="#annotationxlslistener" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<span id="id63"></span><h3>2.6.2. リスナークラスに実装する場合<a class="headerlink" href="#annotationxlslistener" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>クラスにアノテーション <code class="docutils literal"><span class="pre">&#64;XlsListener</span></code> を付与し、属性 <code class="docutils literal"><span class="pre">listenerClass</span></code> で処理が実装されたクラスを指定します。 <cite>[ver1.3+]</cite></p>
 <p>指定したリスナークラスのインスタンスは、システム設定「beanFactory」経由で作成されるため、<a class="reference internal" href="extension_beanfactory.html"><em>SpringFrameworkのコンテナからインスタンスを取得</em></a> することもできます。</p>
 <div class="highlight-java"><div class="highlight"><pre><span class="c1">// シートクラス</span>
@@ -2606,7 +3052,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
         <li class="right" >
           <a href="howtouse.html" title="1. 基本的な使い方"
              >前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.4.4 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.5 ドキュメント</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

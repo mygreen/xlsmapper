@@ -19,7 +19,7 @@
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> * Cellの値を変換するインタフェース。</em>
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * @version 1.0</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * @version 1.5</em>
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * @param &lt;T&gt; 変換対象のJavaのオブジェクト</em>
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> */</em>
@@ -40,16 +40,17 @@
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">     * シート書き込み時のJavaオブジェクト =&gt; Excel Cellに変換する。</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">     * @param adaptor  マッピング対象のフィールド情報。</em>
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">     * @param targetValue 書き込み対象のオブジェクト。</em>
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">     * @param sheet 書き込み先のシート</em>
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment">     * @param column 書き込み先のセルの列番号。0から始まる。</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">     * @param row 書き込み先のセルの行番号。0から始まる。</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">     * @param config 設定情報</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">     * @return  書き込んだセル</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">     * @throws XlsMapperException </em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      Cell toCell(<a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/FieldAdaptor.html">FieldAdaptor</a> adaptor, T targetValue, Sheet sheet, <strong class="jxr_keyword">int</strong> column, <strong class="jxr_keyword">int</strong> row, <a href="../../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> config) <strong class="jxr_keyword">throws</strong> XlsMapperException;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>      
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  }
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">     * @param targetBean 書き込み対象のフィールドが設定されているJavaBeanオブジェクト。</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment">     * @param sheet 書き込み先のシート</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">     * @param column 書き込み先のセルの列番号。0から始まる。</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">     * @param row 書き込み先のセルの行番号。0から始まる。</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">     * @param config 設定情報</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">     * @return 書き込んだセル</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">     * @throws XlsMapperException </em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      Cell toCell(<a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/FieldAdaptor.html">FieldAdaptor</a> adaptor, T targetValue, Object targetBean, Sheet sheet, <strong class="jxr_keyword">int</strong> column, <strong class="jxr_keyword">int</strong> row, <a href="../../../../../com/gh/mygreen/xlsmapper/XlsMapperConfig.html">XlsMapperConfig</a> config) <strong class="jxr_keyword">throws</strong> XlsMapperException;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
