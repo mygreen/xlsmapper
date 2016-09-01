@@ -114,14 +114,14 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
         // プロパティ「kokugo」の列番号を返す。
         public String getKokugoColNum() {
             Point point = positions.get("kokugo");
-            return point.y;
+            return point.y + 1;
         
         }
         
         // プロパティ「sansu」の列番号を返す。
         public String getSansuColNum() {
             Point point = positions.get("sansu");
-            return point.y;
+            return point.y + 1;
         }
 
     }
