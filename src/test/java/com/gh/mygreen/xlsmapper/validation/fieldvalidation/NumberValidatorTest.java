@@ -8,9 +8,6 @@ import java.awt.Point;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.validation.CellFieldError;
@@ -21,27 +18,16 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * 数値型に関するテスタ。
  * <p>テスト対象のValidator。
  * <ul>
- *  <li>{@link MinValidator}
- *  <li>{@link MaxValidator}
- *  <li>{@link RangeValidator}
+ *  <li>{@link MinValidator}</li>
+ *  <li>{@link MaxValidator}</li>
+ *  <li>{@link RangeValidator}</li>
+ * </ul>
  * 
  * @since 0.5
  * @author T.TSUCHIE
  *
  */
 public class NumberValidatorTest {
-    
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-    
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
-    }
     
     /**
      * 数値型の必須チェック - Integer型

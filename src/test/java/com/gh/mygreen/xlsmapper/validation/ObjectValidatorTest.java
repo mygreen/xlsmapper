@@ -11,14 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,16 +39,11 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.StringValidator;
  */
 public class ObjectValidatorTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    private SheetMessageConverter messageConverter;
     
     @Before
     public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+        this.messageConverter = new SheetMessageConverter();
     }
     
     /**
@@ -104,9 +91,9 @@ public class ObjectValidatorTest {
         }
         
         // データの書き換え
-        sheet.className = null;
+//        sheet.className = null;
         sheet.list.get(1).email = "test";
-        sheet.list.get(2).birthday = getDateByDay(new Date(), 1);
+//        sheet.list.get(2).birthday = getDateByDay(new Date(), 1);
         
         // 入力値検証
         SampleSheetValidator validator = new SampleSheetValidator();
@@ -114,49 +101,50 @@ public class ObjectValidatorTest {
         
         printErrors(errors);
         
-        CellFieldError fieldError;
-        String fieldName;
-        PersonRecord record;
-        
-        fieldName = "className";
-        fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
-        assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
-        assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
-        assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.className));
-        
-        try {
-            errors.pushNestedPath("list", 1);
-            record = sheet.list.get(1);
-            fieldName = "email";
-            fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
-            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.pattern"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.email));
-        } finally {
-            errors.popNestedPath();
+        {
+            String fieldName = "className";
+            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
+            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.className));
         }
         
-        try {
-            errors.pushNestedPath("list", 2);
-            record = sheet.list.get(2);
-            fieldName = "birthday";
-            fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
-            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.birthday));
-            
-        } finally {
-            errors.popNestedPath();
+        {
+            try {
+                errors.pushNestedPath("list", 1);
+                PersonRecord record = sheet.list.get(1);
+                String fieldName = "email";
+                CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+                assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
+                assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
+                assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.pattern"));
+                assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.email));
+            } finally {
+                errors.popNestedPath();
+            }
+        }
+        
+        {
+            try {
+                errors.pushNestedPath("list", 2);
+                PersonRecord record = sheet.list.get(2);
+                String fieldName = "birthday";
+                CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+                assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
+                assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
+                assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
+                assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.birthday));
+                
+            } finally {
+                errors.popNestedPath();
+            }
         }
         
     }
     
     private void printErrors(SheetBindingErrors errors) {
         
-        SheetMessageConverter messageConverter = new SheetMessageConverter();
         for(ObjectError error : errors.getAllErrors()) {
             String message = messageConverter.convertMessage(error);
             System.out.println(message);
@@ -270,7 +258,7 @@ public class ObjectValidatorTest {
             
             CellField<String> emailField = new CellField<String>(targetObj, "email")
                     .setRequired(true)
-                    .add(new PatternValidator(".*@.*"))
+                    .add(new PatternValidator(".*@.*", "メールアドレス"))
                     .validate(errors);
             
             CellField<Date> birthdayField = new CellField<Date>(targetObj, "birthday")
