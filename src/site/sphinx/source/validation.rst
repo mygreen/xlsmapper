@@ -171,12 +171,10 @@ Validatorは、 ``AbstractObjectValidator`` を継承して作成します。
 
 メッセージファイルは、クラスパスのルートに ``SheetValidationMessages.properties`` というプロパティファイルを配置しておくと、自動的に読み込まれます。
  
-* 型変換エラーは、読み込み時に自動的にチェックされ、エラーコードは、 ``cellTypeMismatch`` と決まっています。
- 
-  * フィールドのクラスタイプごとに、メッセージを指定することもでき、 `cellTypeMismatch.\<クラス名\>` で定義します。
-  * さらに、フィールド名でも指定することができ、 `cellTypeMismatch.\<フィールド名\>` で定義します。
-  * クラスタイプよりもフィールド名で指定する方が優先されます。
- 
+* エラーメッセージは、下記の表「エラーメッセージの一致順」に従い一致したものが用いれます。
+  
+  * 型変換エラーは、読み込み時に自動的にチェックされ、エラーコードは、 ``cellTypeMismatch`` と決まっています。
+
 * メッセージ中ではEL式を利用することができます。
 * メッセージ中の通常の変数は、``{変数名}`` で定義し、EL式は ``${EL式}`` で定義します。
   
@@ -193,6 +191,9 @@ Validatorは、 ``AbstractObjectValidator`` を継承して作成します。
     # {cellAddress} : セルのアドレス。'A1'などの形式。
     # {label} : フィールドの見出し。
     
+    # フィールドエラー
+    cellFieldError.patern==[{sheetName}]:${empty label ? '' : label} - {cellAddress}は'書式に一致しませんでした。
+    
     # 型変換エラー
     cellTypeMismatch=[{sheetName}]:${empty label ? '' : label} - {cellAddress}の型変換に失敗しました。
     
@@ -203,6 +204,59 @@ Validatorは、 ``AbstractObjectValidator`` を継承して作成します。
     # フィールド名で指定する場合
     cellTypeMismatch.updateTime=[{sheetName}]:${empty label ? '' : label} - {cellAddress}は'yyyy/MM/dd'の書式で指定してください。
 
+
+
+.. list-table:: エラーメッセージの一致順
+   :widths: 10 40 50
+   :header-rows: 1
+   
+   * - 優先順位
+     - エラーコードの形式
+     - サンプル
+   
+   * - 1
+     - `\<エラーコード\>.\<完全オブジェクト名\>.\<完全パス\>.\<フィールド名\>`
+     - `cellFieldError.pattern.com.sample.SampleBean.list[1].address`
+   
+   * - 2
+     - `\<エラーコード\>.\<完全オブジェクト名\>.\<パス\>.\<フィールド名\>`
+     - `cellFieldError.pattern.com.sample.SampleBean.list.address`
+     
+   * - 3
+     - `\<エラーコード\>.\<完全オブジェクト名\>.\<フィールド名\>`
+     - `cellFieldError.pattern.com.sample.SampleBean.address`
+   
+   * - 4
+     - `\<エラーコード\>.\<オブジェクト名\>.\<完全パス\>.\<フィールド名\>`
+     - `cellFieldError.pattern.SampleBean.list[1].address`
+   
+   * - 5
+     - `\<エラーコード\>.\<オブジェクト名\>.\<パス\>.\<フィールド名\>`
+     - `cellFieldError.pattern.SampleBean.list.address`
+   
+   * - 5
+     - `\<エラーコード\>.\<オブジェクト名\>.\<フィールド名\>`
+     - `cellFieldError.pattern.SampleBean.address`
+   
+   * - 6
+     - `\<エラーコード\>.\<完全パス\>.\<フィールド名\>`
+     - `cellFieldError.pattern.list[1].address`
+   
+   * - 7
+     - `\<エラーコード\>.\<パス\>.\<フィールド名\>`
+     - `cellFieldError.pattern.list.address`
+   
+   * - 8
+     - `\<エラーコード\>.\<フィールド名\>`
+     - `cellFieldError.pattern.address`
+   
+   * - 9
+     - `\<エラーコード\>.\<フィールドのクラスタイプ\>`
+     - `cellFieldError.pattern.java.lang.String`
+   
+   * - 10
+     - `\<エラーコード\>`
+     - `cellFieldError.pattern`
 
 .. note::
     
