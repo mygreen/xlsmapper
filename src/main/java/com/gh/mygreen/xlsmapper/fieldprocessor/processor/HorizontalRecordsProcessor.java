@@ -952,7 +952,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                                 // すでに他の列の処理に対して行を追加している場合は行の追加は行わない。
                                 if(!insertRows) {
                                     // 行を下に追加する
-                                    POIUtils.insertRow(sheet, valueCell.getRowIndex()+1);
+                                    POIUtils.insertRow(sheet, valueCell.getRowIndex());
+                                    
+                                    // 現在のセルがずれるため、1つ上のセルを再取得する
+                                    valueCell = POIUtils.getCell(sheet, valueCell.getColumnIndex(), valueCell.getRowIndex()-1);
+                                    
                                     insertRows = true;
                                     recordOperation.incrementInsertRecord();
                                     inserteRowsIdx.add(valueCell.getRowIndex()+1);
@@ -1094,7 +1098,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     
     /**
      * 表の見出しから、レコードのJavaクラスの定義にあるカラムの定義で初めて見つかるリストのインデックスを取得する。
-     * ・カラムの定義とは、アノテーション「@XlsColumn」が付与されたもの。
+     * <p>カラムの定義とは、アノテーション「@XlsColumn」が付与されたもの。</p>
      * @param headers 表の見出し情報。
      * @param recordClass アノテーション「@XlsColumn」が定義されたフィールドを持つレコード用のクラス。
      * @param annoReader AnnotationReader

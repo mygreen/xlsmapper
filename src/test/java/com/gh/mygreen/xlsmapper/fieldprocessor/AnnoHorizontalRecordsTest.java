@@ -61,7 +61,7 @@ import com.github.mygreen.cellformatter.lang.Utils;
  * {@link HorizontalRecordsProcessor}のテスタ。
  * アノテーション{@link XlsHorizontalRecords}のテスタ。
  * 
- * @version 1.5
+ * @version 1.5.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -2571,6 +2571,132 @@ public class AnnoHorizontalRecordsTest {
             
         }
         
+    }
+    
+    /**
+     * 書き込みのテスト - 余分なレコード／足りないレコードの制御 - 終端の判定
+     * @since 1.5.1
+     */
+    @Test
+    public void test_save_hr_over_remained_terminal_record() throws Exception {
+        
+        // テストデータの作成
+        final RemainedOverAndTerminalSheet outSheet = new RemainedOverAndTerminalSheet();
+        
+        // 足りないレコード（Break）
+        outSheet.addOverBreak(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addOverBreak(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        outSheet.addOverBreak(new RemainedOverRecord().name("山本花子").addDateAttended("A", "×").addDateAttended("B", "レ"));
+        
+        // 足りないレコード（Inert）
+        outSheet.addOverInsert(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addOverInsert(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        outSheet.addOverInsert(new RemainedOverRecord().name("山本花子").addDateAttended("A", "×").addDateAttended("B", "レ"));
+        
+        // 足りないレコード（Copy）
+        outSheet.addOverCopy(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addOverCopy(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        outSheet.addOverCopy(new RemainedOverRecord().name("山本花子").addDateAttended("A", "×").addDateAttended("B", "レ"));
+        
+        // 余分なレコード（None）
+        outSheet.addRemainedNone(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addRemainedNone(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        
+        // 余分なレコード（Clear）
+        outSheet.addRemainedClear(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addRemainedClear(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        
+        // 余分なレコード（Delete）
+        outSheet.addRemainedDelete1(new RemainedOverRecord().name("山田太郎").addDateAttended("A", "○").addDateAttended("B", "×"));
+        outSheet.addRemainedDelete1(new RemainedOverRecord().name("鈴木次郎").addDateAttended("A", "-").addDateAttended("B", "-"));
+        
+        // 余分なレコード（Delete）(データなし)
+        outSheet.remainedDeleteRecrods2 = new ArrayList<>();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true)
+            .setCorrectCellDataValidationOnSave(true)
+            .setCorrectNameRangeOnSave(true);
+        
+        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(RemainedOverAndTerminalSheet.class);
+            
+            RemainedOverAndTerminalSheet sheet = mapper.load(in, RemainedOverAndTerminalSheet.class, errors);
+            
+            if(sheet.overBreakRecrods != null) {
+                assertThat(sheet.overBreakRecrods, hasSize(2));
+                
+                for(int i=0; i < sheet.overBreakRecrods.size(); i++) {
+                    assertRecord(sheet.overBreakRecrods.get(i), outSheet.overBreakRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.overInsertRecrods != null) {
+                assertThat(sheet.overInsertRecrods, hasSize(outSheet.overInsertRecrods.size()));
+                
+                for(int i=0; i < sheet.overInsertRecrods.size(); i++) {
+                    assertRecord(sheet.overInsertRecrods.get(i), outSheet.overInsertRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.overCopyRecrods != null) {
+                assertThat(sheet.overCopyRecrods, hasSize(outSheet.overCopyRecrods.size()));
+                
+                for(int i=0; i < sheet.overCopyRecrods.size(); i++) {
+                    assertRecord(sheet.overCopyRecrods.get(i), outSheet.overCopyRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.remainedNoneRecrods != null) {
+                assertThat(sheet.remainedNoneRecrods, hasSize(outSheet.remainedNoneRecrods.size()));
+                
+                for(int i=0; i < sheet.remainedNoneRecrods.size(); i++) {
+                    assertRecord(sheet.remainedNoneRecrods.get(i), outSheet.remainedNoneRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.remainedClearRecrods != null) {
+                assertThat(sheet.remainedClearRecrods, hasSize(outSheet.remainedClearRecrods.size()));
+                
+                for(int i=0; i < sheet.remainedClearRecrods.size(); i++) {
+                    assertRecord(sheet.remainedClearRecrods.get(i), outSheet.remainedClearRecrods.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.remainedDeleteRecrods1 != null) {
+                assertThat(sheet.remainedDeleteRecrods1, hasSize(outSheet.remainedDeleteRecrods1.size()));
+                
+                for(int i=0; i < sheet.remainedDeleteRecrods1.size(); i++) {
+                    assertRecord(sheet.remainedDeleteRecrods1.get(i), outSheet.remainedDeleteRecrods1.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.remainedDeleteRecrods2 != null) {
+                assertThat(sheet.remainedDeleteRecrods2, hasSize(outSheet.remainedDeleteRecrods2.size()));
+                
+                for(int i=0; i < sheet.remainedDeleteRecrods2.size(); i++) {
+                    assertRecord(sheet.remainedDeleteRecrods2.get(i), outSheet.remainedDeleteRecrods2.get(i), errors);
+                }
+                
+            }
+            
+        }
     }
     
     /**
@@ -6098,6 +6224,157 @@ public class AnnoHorizontalRecordsTest {
                 return formula;
             }
             
+        }
+    }
+    
+    @XlsSheet(name="余分なレコードの制御と終端の判定")
+    private static class RemainedOverAndTerminalSheet {
+        
+        @XlsHint(order=1)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Break)
+        private List<RemainedOverRecord> overBreakRecrods;
+        
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        private List<RemainedOverRecord> overInsertRecrods;
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Copy)
+        private List<RemainedOverRecord> overCopyRecrods;
+        
+        @XlsHint(order=4)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.None)
+        private List<RemainedOverRecord> remainedNoneRecrods;
+        
+        @XlsHint(order=5)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.Clear)
+        private List<RemainedOverRecord> remainedClearRecrods;
+        
+        @XlsHint(order=6)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.Delete)
+        private List<RemainedOverRecord> remainedDeleteRecrods1;
+        
+        @XlsHint(order=7)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.Delete)
+        private List<RemainedOverRecord> remainedDeleteRecrods2;
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverAndTerminalSheet addOverBreak(RemainedOverRecord record) {
+            if(overBreakRecrods == null) {
+                this.overBreakRecrods = new ArrayList<>();
+            }
+            
+            this.overBreakRecrods.add(record);
+            record.no(overBreakRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverAndTerminalSheet addOverInsert(RemainedOverRecord record) {
+            if(overInsertRecrods == null) {
+                this.overInsertRecrods = new ArrayList<>();
+            }
+            
+            this.overInsertRecrods.add(record);
+            record.no(overInsertRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverAndTerminalSheet addOverCopy(RemainedOverRecord record) {
+            if(overCopyRecrods == null) {
+                this.overCopyRecrods = new ArrayList<>();
+            }
+            
+            this.overCopyRecrods.add(record);
+            record.no(overCopyRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverAndTerminalSheet addRemainedNone(RemainedOverRecord record) {
+            if(remainedNoneRecrods == null) {
+                this.remainedNoneRecrods = new ArrayList<>();
+            }
+            
+            this.remainedNoneRecrods.add(record);
+            record.no(remainedNoneRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverAndTerminalSheet addRemainedClear(RemainedOverRecord record) {
+            if(remainedClearRecrods == null) {
+                this.remainedClearRecrods = new ArrayList<>();
+            }
+            
+            this.remainedClearRecrods.add(record);
+            record.no(remainedClearRecrods.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverAndTerminalSheet addRemainedDelete1(RemainedOverRecord record) {
+            if(remainedDeleteRecrods1 == null) {
+                this.remainedDeleteRecrods1 = new ArrayList<>();
+            }
+            
+            this.remainedDeleteRecrods1.add(record);
+            record.no(remainedDeleteRecrods1.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public RemainedOverAndTerminalSheet addRemmainedDelete2(RemainedOverRecord record) {
+            if(remainedDeleteRecrods2 == null) {
+                this.remainedDeleteRecrods2 = new ArrayList<>();
+            }
+            
+            this.remainedDeleteRecrods2.add(record);
+            record.no(remainedDeleteRecrods2.size());
+            
+            return this;
         }
     }
     
