@@ -724,7 +724,7 @@ public class SheetBindingErrors {
     public void rejectValue(final String field, final String errorCode) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field))
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)))
                 .build());
     }
     
@@ -737,7 +737,7 @@ public class SheetBindingErrors {
     public void rejectValue(final String field, final String errorCode, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field))
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)))
                 .defaultMessage(defaultMessage)
                 .build());
     }
@@ -752,7 +752,7 @@ public class SheetBindingErrors {
     public void rejectValue(final String field, final String errorCode, final Object[] errorArgs) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field), errorArgs)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorArgs)
                 .build());
     }
     
@@ -767,7 +767,7 @@ public class SheetBindingErrors {
     public void rejectValue(final String field, final String errorCode, final Object[] errorArgs, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field), errorArgs)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorArgs)
                 .defaultMessage(defaultMessage)
                 .build());
     }
@@ -781,7 +781,7 @@ public class SheetBindingErrors {
     public void rejectValue(final String field, final String errorCode, final Map<String, Object> errorVars) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field), errorVars)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorVars)
                 .build());
     }
     
@@ -795,7 +795,7 @@ public class SheetBindingErrors {
     public void rejectValue(final String field, final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field), errorVars)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorVars)
                 .defaultMessage(defaultMessage)
                 .build());
     }
@@ -809,7 +809,7 @@ public class SheetBindingErrors {
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field))
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)))
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .build());
     }
@@ -827,7 +827,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
-                .codes(generateMessageCodes(errorCode, field, fieldType), errorVars)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field), fieldType), errorVars)
                 .build());
     }
     
@@ -844,7 +844,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
-                .codes(generateMessageCodes(errorCode, field, fieldType))
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field), fieldType))
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .build());
     }
@@ -863,7 +863,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
-                .codes(generateMessageCodes(errorCode, field, fieldType))
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field), fieldType))
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .defaultMessage(defaultMessage)
                 .build());
@@ -879,7 +879,7 @@ public class SheetBindingErrors {
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field))
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)))
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .defaultMessage(defaultMessage)
                 .build());
@@ -896,7 +896,7 @@ public class SheetBindingErrors {
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Object[] errorArgs) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field), errorArgs)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorArgs)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .build());
     }
@@ -913,7 +913,7 @@ public class SheetBindingErrors {
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Object[] errorArgs, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field), errorArgs)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorArgs)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .defaultMessage(defaultMessage)
                 .build());
@@ -929,7 +929,7 @@ public class SheetBindingErrors {
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Map<String, Object> errorVars) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field), errorVars)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorVars)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .build());
     }
@@ -945,7 +945,7 @@ public class SheetBindingErrors {
     public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
-                .codes(generateMessageCodes(errorCode, field), errorVars)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorVars)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .defaultMessage(defaultMessage)
                 .build());
@@ -966,7 +966,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
-                .codes(generateMessageCodes(errorCode, field, fieldType), errorArgs)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field), fieldType), errorArgs)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .build());
     }
@@ -987,7 +987,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
-                .codes(generateMessageCodes(errorCode, field, fieldType), errorArgs)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field), fieldType), errorArgs)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .defaultMessage(defaultMessage)
                 .build());
@@ -1007,7 +1007,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
-                .codes(generateMessageCodes(errorCode, field, fieldType), errorVars)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field), fieldType), errorVars)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .build());
     }
@@ -1027,7 +1027,7 @@ public class SheetBindingErrors {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
-                .codes(generateMessageCodes(errorCode, field, fieldType), errorVars)
+                .codes(generateMessageCodes(errorCode, buildFieldPath(field), fieldType), errorVars)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .defaultMessage(defaultMessage)
                 .build());
@@ -1045,7 +1045,7 @@ public class SheetBindingErrors {
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
                 .typeBindFailure(true)
-                .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), field, fieldType), errorVars)
+                .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), buildFieldPath(field), fieldType), errorVars)
                 .build());
     }
     
@@ -1064,7 +1064,7 @@ public class SheetBindingErrors {
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
                 .typeBindFailure(true)
-                .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), field, fieldType), errorVars)
+                .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), buildFieldPath(field), fieldType), errorVars)
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .label(label)
                 .build());
@@ -1081,7 +1081,7 @@ public class SheetBindingErrors {
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
                 .typeBindFailure(true)
-                .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), field, fieldType))
+                .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), buildFieldPath(field), fieldType))
                 .build());
     }
     
@@ -1099,7 +1099,7 @@ public class SheetBindingErrors {
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
                 .typeBindFailure(true)
-                .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), field, fieldType))
+                .codes(getMessageCodeGenerator().generateTypeMismatchCodes(getObjectName(), buildFieldPath(field), fieldType))
                 .sheetName(getSheetName()).cellAddress(cellAddress)
                 .label(label)
                 .build());

@@ -128,16 +128,21 @@ public class MessageCodeGenerator {
         
         final String baseCode = getPrefix().isEmpty() ? code : getPrefix() + code;
         final List<String> codeList = new ArrayList<>();
+        
+        final List<String> objectNameList = Arrays.asList(generateObjectNameCodes(objectName));
         final List<String> fieldList = new ArrayList<>();
         buildFieldList(field, fieldList);
         
-        addCodes(codeList, baseCode, objectName, fieldList);
-        
         if(Utils.isNotEmpty(field)) {
+            // 最後のフィールド名のみを取得する
             int dotIndex = field.lastIndexOf('.');
             if(dotIndex > 0) {
                 buildFieldList(field.substring(dotIndex + 1), fieldList);
             }
+        }
+        
+        for(final String name : objectNameList) {
+            addCodes(codeList, baseCode, name, fieldList);
         }
         
         addCodes(codeList, code, null, fieldList);

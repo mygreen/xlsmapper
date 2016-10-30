@@ -91,9 +91,9 @@ public class ObjectValidatorTest {
         }
         
         // データの書き換え
-//        sheet.className = null;
+        sheet.className = null;
         sheet.list.get(1).email = "test";
-//        sheet.list.get(2).birthday = getDateByDay(new Date(), 1);
+        sheet.list.get(2).birthday = getDateByDay(new Date(), 1);
         
         // 入力値検証
         SampleSheetValidator validator = new SampleSheetValidator();
