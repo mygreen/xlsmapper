@@ -41,7 +41,7 @@ public class XlsMapperConfig {
     /** 書き込み時に名前の定義範囲を修正するかどうか */
     private boolean correctNameRangeOnSave = false;
     
-    /** 書き込み時に名前のセルの入力規則を修正するかどうか */
+    /** 書き込み時にセルの入力規則を修正するかどうか */
     private boolean correctCellDataValidationOnSave = false;
     
     /** 書き込み時にセルのコメントを修正するかどうか */
@@ -209,7 +209,7 @@ public class XlsMapperConfig {
     }
     
     /**
-     * 書き込み時に名前のセルの入力規則を修正するかどうか。
+     * 書き込み時にセルの入力規則を修正するかどうか。
      * @since 0.3
      * @return 初期値は、'false'です。
      */
@@ -218,7 +218,7 @@ public class XlsMapperConfig {
     }
     
     /**
-     * 書き込み時に名前のセルの入力規則を修正するかどうか設定します。
+     * 書き込み時にセルの入力規則を修正するかどうか設定します。
      * <p>trueの場合（修正する場合）、POI-3.11以上が必要になります。
      * <p>POI-3.10以前の場合、データの修正は行われません。
      * @param correctCellDataValidationOnSave 初期値は、'false'です。
