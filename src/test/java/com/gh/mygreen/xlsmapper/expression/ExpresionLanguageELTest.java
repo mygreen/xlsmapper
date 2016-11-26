@@ -28,11 +28,11 @@ import com.github.mygreen.expression.el.tld.TldLoader;
  */
 public class ExpresionLanguageELTest {
     
-    private ExpressionLanguageELImpl el;
+    private AbstractExpressionLanguageELImpl el;
     
     @Before
     public void setUp() throws Exception {
-        this.el = new ExpressionLanguageELImpl();
+        this.el = new ExpressionLanguageELImpl3();
     }
     
     @After
@@ -46,7 +46,7 @@ public class ExpresionLanguageELTest {
         
         Map<String, Object> vars = new HashMap<>();
         
-        String eval = (String) el.evaluateWithEL3(expression, vars);
+        String eval = (String) el.evaluate(expression, vars);
         assertThat(eval, is("空です"));
 //        System.out.println(eval);
         
@@ -64,7 +64,7 @@ public class ExpresionLanguageELTest {
         vars.put("formatter", new FormatterWrapper(Locale.getDefault()));
 //        vars.put("formatter", new Formatter());
         
-        String eval = (String) el.evaluateWithEL3(expression, vars);
+        String eval = (String) el.evaluate(expression, vars);
         assertThat(eval, is("2015/04/15"));
 //        System.out.println(eval);
         
@@ -78,7 +78,7 @@ public class ExpresionLanguageELTest {
         Map<String, Object> vars = new HashMap<>();
         vars.put("list", Arrays.asList(1, 2, 3, 4, 5, 6));
         
-        long eval = (long) el.evaluateWithEL3(expression, vars);
+        long eval = (long) el.evaluate(expression, vars);
         assertThat(eval, is(21L));
 //        System.out.println(val);
         
@@ -95,7 +95,7 @@ public class ExpresionLanguageELTest {
         vars.put("validatedValue", 12.34);
         vars.put("formatter", new FormatterWrapper(Locale.getDefault()));
         
-        String eval = (String) el.evaluateWithEL3(expression, vars);
+        String eval = (String) el.evaluate(expression, vars);
         assertThat(eval, is("Helo World}12.3"));
 //        System.out.println(eval);
         
@@ -111,14 +111,14 @@ public class ExpresionLanguageELTest {
         vars.put("columnNumber", 6);
         vars.put("rowNumber", 10);
         
-        String eval1 = (String) el.evaluateWithEL3(expression, vars);
+        String eval1 = (String) el.evaluate(expression, vars);
         assertThat(eval1, is(""));
         
         vars.clear();
         vars.put("columnNumber", 7);
         vars.put("rowNumber", 10);
         
-        String eval2 = (String) el.evaluateWithEL3(expression, vars);
+        String eval2 = (String) el.evaluate(expression, vars);
         assertThat(eval2, is("COUNTIF(D10:F10, \"出席\")"));
 //        System.out.println(eval);
         
@@ -138,7 +138,7 @@ public class ExpresionLanguageELTest {
         Map<String, Object> vars = new HashMap<>();
         vars.put("columnNumber", 1);
         
-        String eval = (String) el.evaluateWithEL3(expression, vars);
+        String eval = (String) el.evaluate(expression, vars);
         assertThat(eval, is("A"));
         
     }
