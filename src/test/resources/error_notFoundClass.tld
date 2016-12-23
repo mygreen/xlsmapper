@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+  version="2.1">
+
+	<description>存在しないEL関数の定義</description>
+	<tlib-version>2.1</tlib-version>
+	<short-name>x</short-name>
+	<uri>https://github.com/mygreen/xlsmapper/functions</uri>
+	
+	<function>
+		<description><![CDATA[
+			列番号を英字名に変換します。
+		]]></description>
+		<name>colToAlpha</name>
+		<function-class>com.gh.mygreen.xlsmapper.expression.SampleFunctions</function-class>
+		<function-signature>java.lang.String test(int)</function-signature>
+	</function>
+
+</taglib>
