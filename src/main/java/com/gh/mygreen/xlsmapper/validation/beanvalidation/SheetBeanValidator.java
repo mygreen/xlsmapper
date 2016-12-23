@@ -103,8 +103,8 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
         
         for(ConstraintViolation<Object> violation : violations) {
             
-            final String field = violation.getPropertyPath().toString();
-            final FieldError fieldError = errors.getFirstFieldError(field);
+            final String fieldName = violation.getPropertyPath().toString();
+            final FieldError fieldError = errors.getFirstFieldError(fieldName);
             
             if(fieldError != null && fieldError.isTypeBindFailure()) {
                 // 型変換エラーが既存のエラーにある場合は、処理をスキップする。
@@ -115,10 +115,10 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
             final String errorCode = cd.getAnnotation().annotationType().getSimpleName();
             final Map<String, Object> errorVars = createVariableForConstraint(cd);
             
-            final String nestedPath = errors.buildFieldPath(field);
+            final String nestedPath = errors.buildFieldPath(fieldName);
             if(Utils.isEmpty(nestedPath)) {
                 // オブジェクトエラーの場合
-                errors.rejectSheet(errorCode, errorVars);
+                errors.rejectSheet(errorCode, errorVars, violation.getMessage());
                 
             } else {
                 // フィールドエラーの場合
@@ -143,8 +143,8 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 Class<?> fieldType = fieldValue != null ? fieldValue.getClass() : null;
                 
                 errors.addError(FieldErrorBuilder.create()
-                        .objectName(errors.getObjectName()).fieldPath(errors.buildFieldPath(field))
-                        .codes(errors.generateMessageCodes(errorCode, field, fieldType), errorVars)
+                        .objectName(errors.getObjectName()).fieldPath(errors.buildFieldPath(fieldName))
+                        .codes(errors.generateMessageCodes(errorCode, fieldName, fieldType), errorVars)
                         .sheetName(errors.getSheetName()).cellAddress(cellAddress)
                         .label(label)
                         .defaultMessage(violation.getMessage())

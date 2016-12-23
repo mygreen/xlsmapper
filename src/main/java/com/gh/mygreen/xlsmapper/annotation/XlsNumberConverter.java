@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
  * public class SampleRecord {
  * 
  *     {@literal @XlsColumn(columnName="給料")}
- *     {@literal @XlsNumberConverter(pattern="#,##0.0000", locale="ja_JP", currency="USD")}
+ *     {@literal @XlsNumberConverter(pattern="\u00A4\u00A4 #,##0.0000", locale="ja_JP", currency="USD")}
  *     private double salary;
  * 
  * }
