@@ -417,7 +417,7 @@ public class AnnoFormulaTest {
                         .field(createField("c1")
                                 .override(true)
                                 .annotation(createAnnotation(XlsFormula.class)
-                                        .attribute("value", "TEST(A1)")
+                                        .attribute("value", ")1+TESTA1)")
                                         .buildAnnotation())
                                 .buildField())
                         .buildClass())
