@@ -296,12 +296,20 @@ $(document).ready(function() {
 			<scope>provided</scope>
 		</dependency>
 		
+		<!-- EL 2.x
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>el-impl</artifactId>
+			<version>2.2.1-b05</version>
+		</dependency>
+		-->
+		<!-- EL 3.x -->
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
 			<version>3.0.1-b08</version>
 		</dependency>
-			
+		 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-jexl</artifactId>
