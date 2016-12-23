@@ -43,7 +43,7 @@
     public class SampleRecord {
         
         @XlsColumn(name="給与")
-        @XlsNumberConverter(javaPattern="#,##0.0000", locale="ja_JP", currency="USD")
+        @XlsNumberConverter(javaPattern="\u00A4\u00A4 #,##0.0000", locale="ja_JP", currency="USD")
         private double salary;
         
     }
