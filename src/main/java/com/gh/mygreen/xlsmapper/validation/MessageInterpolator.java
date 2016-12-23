@@ -33,6 +33,8 @@ public class MessageInterpolator {
     
     private static final Logger logger = LoggerFactory.getLogger(MessageInterpolator.class);
     
+    private final Formatter formatter = new Formatter();
+    
     private ExpressionLanguage expressionLanguage = new ExpressionLanguageELImpl();
     
     public MessageInterpolator() {
@@ -246,7 +248,7 @@ public class MessageInterpolator {
         
         // フォーマッターの追加
         if(!context.containsKey("formatter")) {
-            context.put("formatter", new Formatter());
+            context.put("formatter", formatter);
         }
         
         final String value = expressionLanguage.evaluate(expression, context).toString();
