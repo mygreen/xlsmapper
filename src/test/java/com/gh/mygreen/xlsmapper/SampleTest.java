@@ -9,11 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -26,6 +21,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
@@ -38,7 +34,6 @@ import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
-import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 
 /**
  * マニュアルなどに明記するためのサンプル
@@ -48,6 +43,15 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
  */
 public class SampleTest {
     
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
+    
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
+    }
     
     /**
      * マッピングの基本 - 読み込み
@@ -131,13 +135,13 @@ public class SampleTest {
         XlsMapper xlsMapper = new XlsMapper();
         xlsMapper.save(
             new FileInputStream("src/test/data/sample_template.xlsx"), // テンプレートのExcelファイル
-            new FileOutputStream("src/test/out/sample_out.xlsx"),     // 書き込むExcelファイル
+            new FileOutputStream(new File(OUT_DIR, "sample_out.xlsx")),     // 書き込むExcelファイル
             sheet                                // 作成したデータ
             );
         
         
         // assertion
-        UserSheet inSheet = xlsMapper.load(new FileInputStream("src/test/out/sample_out.xlsx"), UserSheet.class);
+        UserSheet inSheet = xlsMapper.load(new FileInputStream(new File(OUT_DIR, "sample_out.xlsx")), UserSheet.class);
         assertThat(inSheet.createDate, is(sheet.createDate));
         assertThat(inSheet.users, hasSize(sheet.users.size()));
         for(int i=0; i < inSheet.users.size(); i++) {
@@ -207,7 +211,7 @@ public class SampleTest {
         XlsMapper xlsMapper = new XlsMapper();
         xlsMapper.save(
             new FileInputStream("src/test/data/sample_template.xlsx"),
-            new FileOutputStream("src/test/out/sample_out.xlsx"),
+            new FileOutputStream(new File(OUT_DIR, "sample_out.xlsx")),
             sheet
             );
         
@@ -254,7 +258,7 @@ public class SampleTest {
             
         }
         
-        workbook.write(new FileOutputStream("src/test/out/sample_out.xlsx"));
+        workbook.write(new FileOutputStream(new File(OUT_DIR, "sample_out.xlsx")));
     }
     
     // シート用クラス
@@ -375,7 +379,7 @@ public class SampleTest {
         XlsMapper xlsMapper = new XlsMapper();
         xlsMapper.saveMultiple(
                 new FileInputStream(cloneTemplateFile), // クローンしたシートを持つファイルを指定する
-                new FileOutputStream("src/test/out/sample_out.xlsx"),
+                new FileOutputStream(new File(OUT_DIR, "sample_out.xlsx")),
                 sheets);
         
     }

@@ -19,9 +19,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Hyperlink;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
@@ -53,16 +51,14 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  */
 public class LinkCellConverterTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
     
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
     }
     
     /**
@@ -334,7 +330,7 @@ public class LinkCellConverterTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/convert_link.xlsx");
+        File outFile = new File(OUT_DIR, "convert_link.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             

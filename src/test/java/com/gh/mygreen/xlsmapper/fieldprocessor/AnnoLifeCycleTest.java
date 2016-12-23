@@ -15,9 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Sheet;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
@@ -51,16 +49,14 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  */
 public class AnnoLifeCycleTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
     
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
     }
     
     /**
@@ -202,7 +198,7 @@ public class AnnoLifeCycleTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_LifeCycle_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_LifeCycle_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LifeCycle_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -268,7 +264,7 @@ public class AnnoLifeCycleTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_LifeCycle_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_LifeCycle_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LifeCycle_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             

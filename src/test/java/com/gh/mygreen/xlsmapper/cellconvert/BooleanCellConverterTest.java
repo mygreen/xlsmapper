@@ -14,12 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.TestUtils;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
@@ -42,16 +41,14 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  */
 public class BooleanCellConverterTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
     
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
     }
     
     /**
@@ -273,7 +270,7 @@ public class BooleanCellConverterTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/convert_boolean.xlsx");
+        File outFile = new File(OUT_DIR, "convert_boolean.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             

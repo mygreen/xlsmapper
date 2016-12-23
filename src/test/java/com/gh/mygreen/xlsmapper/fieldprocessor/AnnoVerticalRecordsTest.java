@@ -20,9 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.poi.ss.util.CellReference;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
@@ -62,16 +60,14 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  */
 public class AnnoVerticalRecordsTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
     
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
     }
     
     /**
@@ -1096,7 +1092,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1169,7 +1165,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1197,7 +1193,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1225,7 +1221,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1261,7 +1257,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1339,7 +1335,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1478,7 +1474,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
                 .name("  鈴木次郎  ").birthday(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
         
         // ファイルへの書き込み
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1581,7 +1577,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1661,7 +1657,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1765,7 +1761,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1886,7 +1882,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1979,7 +1975,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2049,7 +2045,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2125,7 +2121,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2192,7 +2188,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2352,7 +2348,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2434,7 +2430,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_VerticalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             

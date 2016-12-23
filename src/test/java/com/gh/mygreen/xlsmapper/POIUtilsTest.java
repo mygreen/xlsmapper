@@ -1,8 +1,10 @@
 package com.gh.mygreen.xlsmapper;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -15,20 +17,29 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.POIUtils;
 import com.gh.mygreen.xlsmapper.cellconvert.LinkType;
 
-
+/**
+ * {@link POIUtils}のテスタ
+ *
+ * @version 1.0
+ * @author T.TSUCHIE
+ *
+ */
 public class POIUtilsTest {
     
-    @Before
-    public void setUp() throws Exception {
-    }
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
     
-    @After
-    public void tearDown() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
     }
     
     @Test
@@ -91,7 +102,7 @@ public class POIUtilsTest {
         
         assertThat(found, is(true));
         
-        workbook.write(new FileOutputStream("src/test/out/utils_out.xlsx"));
+        workbook.write(new FileOutputStream(new File(OUT_DIR, "utils_out.xlsx")));
         
     }
     
@@ -138,7 +149,7 @@ public class POIUtilsTest {
         
         assertThat(found, is(true));
         
-        workbook.write(new FileOutputStream("src/test/out/utils_out.xlsx"));
+        workbook.write(new FileOutputStream(new File(OUT_DIR, "utils_out.xlsx")));
         
     }
     
@@ -185,7 +196,7 @@ public class POIUtilsTest {
         
         assertThat(found, is(true));
         
-        workbook.write(new FileOutputStream("src/test/out/utils_out.xls"));
+        workbook.write(new FileOutputStream(new File(OUT_DIR, "utils_out.xls")));
         
     }
     
@@ -216,9 +227,9 @@ public class POIUtilsTest {
 //        
 //        assertThat(removed, is(true));
 //        
-//        workbook.write(new FileOutputStream("src/test/out/utils_out.xls"));
+//        workbook.write(new FileOutputStream(OUT_DIR, "utils_out.xls"));
 //        
-//        workbook = WorkbookFactory.create(new FileInputStream("src/test/out/utils_out.xls"));
+//        workbook = WorkbookFactory.create(new FileInputStream(new File(OUT_DIR, "utils_out.xls")));
 //        sheet = workbook.getSheet("入力規則");
 //        
 //        // 書き換わったかどうか確認する

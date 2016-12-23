@@ -1,6 +1,7 @@
 package com.gh.mygreen.xlsmapper;
 
 import java.awt.Point;
+import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -225,6 +226,24 @@ public class TestUtils {
         cal.add(Calendar.DAY_OF_MONTH, days);
         
         return cal.getTime();
+        
+    }
+    
+    /**
+     * テスト用の結果出力ディレクトリを作成します。
+     * <p>target/test_out</p> を作成します。
+     * 
+     * @return
+     */
+    public static File createOutDir() {
+        
+        final File dir = new File("target/test_out");
+        
+        if(!dir.exists()) {
+            dir.mkdirs();
+        }
+        
+        return dir;
         
     }
 }

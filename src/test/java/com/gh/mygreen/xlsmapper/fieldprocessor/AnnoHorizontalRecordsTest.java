@@ -20,11 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellReference;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
@@ -33,7 +30,6 @@ import com.gh.mygreen.xlsmapper.IsEmptyComparator;
 import com.gh.mygreen.xlsmapper.IsEmptyConfig;
 import com.gh.mygreen.xlsmapper.POIUtils;
 import com.gh.mygreen.xlsmapper.XlsMapper;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
@@ -68,16 +64,14 @@ import com.github.mygreen.cellformatter.lang.Utils;
  */
 public class AnnoHorizontalRecordsTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
     
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
     }
     
     /**
@@ -1213,7 +1207,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1286,7 +1280,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1314,7 +1308,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1342,7 +1336,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1378,7 +1372,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1456,7 +1450,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1595,7 +1589,7 @@ public class AnnoHorizontalRecordsTest {
                 .name("  鈴木次郎  ").birthday(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
         
         // ファイルへの書き込み
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1698,7 +1692,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1778,7 +1772,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -1882,7 +1876,7 @@ public class AnnoHorizontalRecordsTest {
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2003,7 +1997,7 @@ public class AnnoHorizontalRecordsTest {
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2098,7 +2092,7 @@ public class AnnoHorizontalRecordsTest {
         mapper.getConig().setContinueTypeBindFailure(true)
             .setCorrectCellCommentOnSave(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2173,7 +2167,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2237,7 +2231,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2295,7 +2289,7 @@ public class AnnoHorizontalRecordsTest {
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2455,7 +2449,7 @@ public class AnnoHorizontalRecordsTest {
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2537,7 +2531,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -2619,7 +2613,7 @@ public class AnnoHorizontalRecordsTest {
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File("src/test/out/anno_HorizonalRecords_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             

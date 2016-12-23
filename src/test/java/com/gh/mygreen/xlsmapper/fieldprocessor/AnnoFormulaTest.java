@@ -22,12 +22,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellReference;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.CellFormatter;
-import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
 import com.gh.mygreen.xlsmapper.POIUtils;
 import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.XlsMapper;
@@ -55,9 +54,14 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  */
 public class AnnoFormulaTest {
     
-    @Before
-    public void setUp() throws Exception {
-        
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
+    
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
     }
     
     /**
@@ -86,7 +90,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -138,7 +142,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -193,7 +197,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -249,7 +253,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -300,7 +304,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -350,7 +354,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -387,7 +391,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -424,7 +428,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -461,7 +465,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -493,7 +497,7 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Formula_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             

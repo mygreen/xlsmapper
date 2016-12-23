@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 
-
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
@@ -43,6 +43,16 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  *
  */
 public class XmlBuilderTest {
+    
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
+    
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
+    }
     
     /**
      * アノテーションがないクラスに設定する。
@@ -253,7 +263,7 @@ public class XmlBuilderTest {
                 .buildXml();
         
         
-        File file = new File("src/test/out/anno_test.xml");
+        File file = new File(OUT_DIR, "anno_test.xml");
         XmlIO.save(xmlInfo, file, "Windows-31j");
         
         XmlInfo readInfo = XmlIO.load(file, "Windows-31j");
