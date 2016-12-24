@@ -118,6 +118,25 @@ public class POIUtils {
     }
     
     /**
+     * セルのコメントの設定方法を示す列挙型「AnchorType」が利用可能か。
+     * POI-3.15委譲の場合、trueとなる。
+     * @since 1.6
+     */
+    public static final boolean AVAILABLE_ANCHOR_TYPE_ENUM;
+    static {
+        boolean available = false;
+        try {
+            //POI-3.15以降
+            Class.forName("org.apache.poi.ss.usermodel.ClientAnchor$AnchorType");
+            available = true;
+        } catch(Exception e) {
+            available = false;
+        }
+        
+        AVAILABLE_ANCHOR_TYPE_ENUM = available;
+    }
+    
+    /**
      * シートの結合セルノ削除メソッドが利用可能かどうか。
      * POI-3.15以上の場合、trueとなる。
      * @since 1.6
@@ -1076,6 +1095,33 @@ public class POIUtils {
             link.setAddress("");
             cell.setHyperlink(link);
             return true;
+        }
+        
+    }
+    
+    /**
+     * セルのコメントのanchorTypeを設定する。
+     * <p>POI-3.15からタイプがint型から列挙型に変わったため、列挙型利用可能であれば自動的に切り替える。</p>
+     * @since 1.6
+     * @param anchor
+     * @param type アンカーのタイプ
+     */
+    public static void setClientAnchorType(final ClientAnchor anchor, final Object type) {
+        
+        try {
+            final Method method;
+            if(AVAILABLE_ANCHOR_TYPE_ENUM) {
+                // AnchorTypeが利用可能なとき
+                method = ClientAnchor.class.getMethod("setAnchorType", Class.forName("org.apache.poi.ss.usermodel.ClientAnchor$AnchorType"));
+            } else {
+                method = ClientAnchor.class.getMethod("setAnchorType", int.class);
+                
+            }
+            
+            method.invoke(anchor, type);
+            
+        } catch(Exception e) {
+            throw new RuntimeException("fail invoke method ClientAnchor#setAnchorType(type).", e);
         }
         
     }

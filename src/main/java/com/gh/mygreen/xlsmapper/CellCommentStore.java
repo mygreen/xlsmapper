@@ -17,7 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
 /**
  * セルのコメント情報を保持するクラス。
- * <p>POI-3.10～3.12の場合、コメント付きのシートに対して行をずらす処理を行うとファイルが壊れるため、一時的に取得するために利用する。
+ * <p>POI-3.10～3.11の場合、コメント付きのシートに対して行をずらす処理を行うとファイルが壊れるため、一時的に取得するために利用する。
  * <p>POIの不良情報：<a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=56017" target="_blank">Bug 56017</a>
  * 
  * @since 0.4
@@ -46,7 +46,7 @@ public class CellCommentStore implements Serializable {
      */
     public static class AnchorStore {
         
-        private int type;
+        private Object type;
         
         private int dx1;
         
@@ -212,7 +212,7 @@ public class CellCommentStore implements Serializable {
                 anchor.dx1, anchor.dy1, anchor.dx2, anchor.dy2,
                 col1, row1, col2, row2
                 );
-        clientAnchor.setAnchorType(anchor.type);
+        POIUtils.setClientAnchorType(clientAnchor, anchor.type);
         
         final Comment comment = drawing.createCellComment(clientAnchor);
         comment.setColumn(column);
