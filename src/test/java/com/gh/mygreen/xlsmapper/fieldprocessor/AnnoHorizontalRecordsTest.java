@@ -57,7 +57,7 @@ import com.github.mygreen.cellformatter.lang.Utils;
  * {@link HorizontalRecordsProcessor}のテスタ。
  * アノテーション{@link XlsHorizontalRecords}のテスタ。
  * 
- * @version 1.5.1
+ * @version 1.6
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -2694,6 +2694,116 @@ public class AnnoHorizontalRecordsTest {
     }
     
     /**
+     * POI-3.15以上の場合、結合した表の補正を確認する。
+     * @since 1.6
+     */
+    @Test
+    public void test_save_hr_correctMergedCell() throws Exception {
+        
+        // テストデータの作成
+        final CorrectMergedCellSheet outSheet = new CorrectMergedCellSheet();
+        
+        // 挿入より上にある表
+        outSheet.addInsertAbove(new CorrectMergedCellSheet.Record().name("挿入-上-1").tel("01-01").mail("insert_above@sample.com").comment("挿入より上"));
+        
+        // 挿入する表
+        outSheet.addInsert(new CorrectMergedCellSheet.Record().name("挿入-する-1").tel("02-01").mail("insert@sample.com").comment("挿入する"));
+        outSheet.addInsert(new CorrectMergedCellSheet.Record().name("挿入-する-2").tel("02-02").mail("insert@sample.com").comment("挿入する"));
+        outSheet.addInsert(new CorrectMergedCellSheet.Record().name("挿入-する-3").tel("02-03").mail("insert@sample.com").comment("挿入する"));
+        
+        // 挿入より下にある表
+        outSheet.addInsertBelow(new CorrectMergedCellSheet.Record().name("挿入-下-1").tel("03-01").mail("insert_below@sample.com").comment("挿入より下"));
+        
+        // 削除より上にある表
+        outSheet.addDeleteAbove(new CorrectMergedCellSheet.Record().name("削除-上-1").tel("04-01").mail("delete_above@sample.com").comment("削除より上"));
+        
+        // 削除する表
+        outSheet.addDelete(new CorrectMergedCellSheet.Record().name("削除-する-1").tel("05-01").mail("delete@sample.com").comment("削除する"));
+        
+        // 削除より下にある表
+        outSheet.addDeleteBelow(new CorrectMergedCellSheet.Record().name("削除-下-1").tel("06-01").mail("delete_below@sample.com").comment("削除より下"));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true)
+            .setCorrectMergedCellOnSave(true);
+        
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(CorrectMergedCellSheet.class);
+            
+            CorrectMergedCellSheet sheet = mapper.load(in, CorrectMergedCellSheet.class, errors);
+            
+            if(sheet.insertAbobeRecords != null) {
+                assertThat(sheet.insertAbobeRecords, hasSize(1));
+                
+                for(int i=0; i < sheet.insertAbobeRecords.size(); i++) {
+                    assertRecord(sheet.insertAbobeRecords.get(i), outSheet.insertAbobeRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.insertRecords != null) {
+                assertThat(sheet.insertRecords, hasSize(3));
+                
+                for(int i=0; i < sheet.insertRecords.size(); i++) {
+                    assertRecord(sheet.insertRecords.get(i), outSheet.insertRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.insertBelowRecords != null) {
+                assertThat(sheet.insertBelowRecords, hasSize(1));
+                
+                for(int i=0; i < sheet.insertBelowRecords.size(); i++) {
+                    assertRecord(sheet.insertBelowRecords.get(i), outSheet.insertBelowRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.deleteAbobeRecords != null) {
+                assertThat(sheet.deleteAbobeRecords, hasSize(1));
+                
+                for(int i=0; i < sheet.deleteAbobeRecords.size(); i++) {
+                    assertRecord(sheet.deleteAbobeRecords.get(i), outSheet.deleteAbobeRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.deleteRecords != null) {
+                assertThat(sheet.deleteRecords, hasSize(1));
+                
+                for(int i=0; i < sheet.deleteRecords.size(); i++) {
+                    assertRecord(sheet.deleteRecords.get(i), outSheet.deleteRecords.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.deleteBelowRecords != null) {
+                assertThat(sheet.deleteBelowRecords, hasSize(1));
+                
+                for(int i=0; i < sheet.deleteBelowRecords.size(); i++) {
+                    assertRecord(sheet.deleteBelowRecords.get(i), outSheet.deleteBelowRecords.get(i), errors);
+                }
+                
+            }
+            
+            
+        }
+        
+        
+        
+    }
+    
+    /**
      * 書き込んだレコードを検証するための
      * @param inRecord
      * @param outRecord
@@ -3219,6 +3329,27 @@ public class AnnoHorizontalRecordsTest {
         }
         
         assertThat(inRecord.dateAttended, is(expected));
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 1.6
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final CorrectMergedCellSheet.Record inRecord, final CorrectMergedCellSheet.Record outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.tel, is(trim(outRecord.tel)));
+        assertThat(inRecord.mail, is(trim(outRecord.mail)));
+        assertThat(trim(inRecord.comment), is(trim(outRecord.comment)));
+        
         
     }
     
@@ -6370,6 +6501,193 @@ public class AnnoHorizontalRecordsTest {
             
             return this;
         }
+    }
+    
+    @XlsSheet(name="結合セルの補正")
+    private static class CorrectMergedCellSheet {
+        
+        @XlsHint(order=1)
+        @XlsHorizontalRecords(tableLabel="挿入より上にある表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Break)
+        List<Record> insertAbobeRecords; 
+        
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="挿入する表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
+        List<Record> insertRecords;
+        
+        @XlsHint(order=3)
+        @XlsHorizontalRecords(tableLabel="挿入より下にある表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Break)
+        List<Record> insertBelowRecords;
+        
+        @XlsHint(order=4)
+        @XlsHorizontalRecords(tableLabel="削除より上にある表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.None)
+        List<Record> deleteAbobeRecords; 
+        
+        @XlsHint(order=5)
+        @XlsHorizontalRecords(tableLabel="削除する表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.Delete)
+        List<Record> deleteRecords;
+        
+        @XlsHint(order=6)
+        @XlsHorizontalRecords(tableLabel="削除より下にある表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                remainedRecord=RemainedRecordOperate.None)
+        List<Record> deleteBelowRecords;
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public CorrectMergedCellSheet addInsertAbove(Record record) {
+            if(insertAbobeRecords == null) {
+                this.insertAbobeRecords = new ArrayList<>();
+            }
+            
+            this.insertAbobeRecords.add(record);
+            record.no(insertAbobeRecords.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public CorrectMergedCellSheet addInsert(Record record) {
+            if(insertRecords == null) {
+                this.insertRecords = new ArrayList<>();
+            }
+            
+            this.insertRecords.add(record);
+            record.no(insertRecords.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public CorrectMergedCellSheet addInsertBelow(Record record) {
+            if(insertBelowRecords == null) {
+                this.insertBelowRecords = new ArrayList<>();
+            }
+            
+            this.insertBelowRecords.add(record);
+            record.no(insertBelowRecords.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public CorrectMergedCellSheet addDeleteAbove(Record record) {
+            if(deleteAbobeRecords == null) {
+                this.deleteAbobeRecords = new ArrayList<>();
+            }
+            
+            this.deleteAbobeRecords.add(record);
+            record.no(deleteAbobeRecords.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public CorrectMergedCellSheet addDelete(Record record) {
+            if(deleteRecords == null) {
+                this.deleteRecords = new ArrayList<>();
+            }
+            
+            this.deleteRecords.add(record);
+            record.no(deleteRecords.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record
+         * @return 自身のインスタンス
+         */
+        public CorrectMergedCellSheet addDeleteBelow(Record record) {
+            if(deleteBelowRecords == null) {
+                this.deleteBelowRecords = new ArrayList<>();
+            }
+            
+            this.deleteBelowRecords.add(record);
+            record.no(deleteBelowRecords.size());
+            
+            return this;
+        }
+        
+        /**
+         * 見出しが結合されているセル
+         *
+         */
+        static class Record {
+            
+            private Map<String, Point> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsColumn(columnName="No.")
+            private int no;
+            
+            @XlsColumn(columnName="氏名")
+            private String name;
+            
+            @XlsColumn(columnName="連絡先")
+            private String mail;
+            
+            @XlsColumn(columnName="連絡先", headerMerged=1)
+            private String tel;
+            
+            @XlsColumn(columnName="備考")
+            private String comment;
+            
+            @XlsIsEmpty
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+            }
+            
+            public Record no(int no) {
+                this.no = no;
+                return this;
+            }
+            
+            public Record name(String name) {
+                this.name = name;
+                return this;
+            }
+            
+            public Record mail(String mail) {
+                this.mail = mail;
+                return this;
+            }
+            
+            public Record tel(String tel) {
+                this.tel = tel;
+                return this;
+            }
+            
+            public Record comment(String comment) {
+                this.comment = comment;
+                return this;
+            }
+        }
+        
     }
     
 }

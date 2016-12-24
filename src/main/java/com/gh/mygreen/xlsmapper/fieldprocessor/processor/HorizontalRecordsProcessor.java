@@ -758,6 +758,19 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final RecordOperation recordOperation = new RecordOperation();
         recordOperation.setupCellPositoin(hRow+1, initColumn);
         
+        /*
+         * 結合セルの補完
+         * POI-3.15より、レコードの挿入や削除を行うと、その範囲にある結合が解除されるようになったため、補完する。
+         */
+        final List<CellRangeAddress> mergedRegionList = new ArrayList<>();
+        if(config.isCorrectMergedCellOnSave()
+                && (anno.overRecord().equals(OverRecordOperate.Insert) || anno.remainedRecord().equals(RemainedRecordOperate.Delete))) {
+            final int mergedNum = sheet.getNumMergedRegions();
+            for(int i=0; i < mergedNum; i++) {
+                mergedRegionList.add(sheet.getMergedRegion(i));
+            }
+        }
+        
         // コメントの補完
         final List<CellCommentStore> commentStoreList;
         if(config.isCorrectCellCommentOnSave()
@@ -788,6 +801,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         if(config.isCorrectCellCommentOnSave()) {
             correctComment(sheet, recordOperation, commentStoreList);
+        }
+        
+        // 結合情報の補完 - POI 3.15以上のときに行う
+        if(config.isCorrectMergedCellOnSave()) {
+            correctMergedCell(sheet, recordOperation, mergedRegionList);
         }
         
     }
@@ -906,7 +924,6 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         Cell valueCell = cell;
                         final XlsColumn column = property.getSavingAnnotation(XlsColumn.class);
                         
-                        //TODO: マージを考慮する必要はないかも
                         if(column.headerMerged() > 0) {
                             hColumn = hColumn + column.headerMerged();
                             valueCell = POIUtils.getCell(sheet, hColumn, hRow);
@@ -1645,4 +1662,86 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         }
         
     }
+    
+    /**
+     * 挿入・削除前の情報を元に結合を再設定する
+     * 
+     * @since 1.6
+     * @param sheet っしーと
+     * @param recordOperation 挿入・削除処理の情報
+     * @param mergedRegionList 挿入・削除処理を行う前の結合情報
+     */
+    private void correctMergedCell(final Sheet sheet, final RecordOperation recordOperation, final List<CellRangeAddress> mergedRegionList) {
+        
+        if(recordOperation.isNotExecuteRecordOperation()) {
+            return;
+        }
+        
+        // 操作をしていないセルの範囲の取得
+        final CellRangeAddress notOperateRange = new CellRangeAddress(
+                recordOperation.getTopLeftPoisitoin().y,
+                recordOperation.getBottomRightPosition().y - recordOperation.getCountInsertRecord(),
+                recordOperation.getTopLeftPoisitoin().x,
+                recordOperation.getBottomRightPosition().x
+                );
+        
+        for(CellRangeAddress mergedRange : mergedRegionList) {
+            
+            if(notOperateRange.getLastRow() >= mergedRange.getFirstRow()) {
+                // 行の追加・削除をしている上方の範囲の場合
+                continue;
+                
+            } else {
+                // 追加・削除をしている下方の範囲の場合、影響を受けているため修正する。
+                if(recordOperation.isInsertRecord()) {
+                    CellRangeAddress correctedRange = new CellRangeAddress(
+                            mergedRange.getFirstRow() + recordOperation.getCountInsertRecord(),
+                            mergedRange.getLastRow() + recordOperation.getCountInsertRecord(),
+                            mergedRange.getFirstColumn(),
+                            mergedRange.getLastColumn());
+                    
+                    if(!isOverMergedRegion(sheet, correctedRange)) {
+                        sheet.addMergedRegion(correctedRange);
+                    }
+                    
+                } else if(recordOperation.isDeleteRecord()) {
+                    CellRangeAddress correctedRange = new CellRangeAddress(
+                            mergedRange.getFirstRow() - recordOperation.getCountDeleteRecord(),
+                            mergedRange.getLastRow() - recordOperation.getCountDeleteRecord(),
+                            mergedRange.getFirstColumn(),
+                            mergedRange.getLastColumn());
+                    
+                    if(!isOverMergedRegion(sheet, correctedRange)) {
+                        sheet.addMergedRegion(correctedRange);
+                    }
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
+     * 結合する反映が既にシート情報に存在しているかどうか判定する。
+     * @param sheet シート情報
+     * @param region 結合領域の情報
+     * @return trueの場合、結合情報が既に存在する。
+     */
+    private boolean isOverMergedRegion(final Sheet sheet, final CellRangeAddress region) {
+        
+        final int mergedCount = sheet.getNumMergedRegions();
+        for(int i=0; i < mergedCount; i++) {
+            final CellRangeAddress existsRegion = sheet.getMergedRegion(i);
+            
+            if(POIUtils.intersectsRegion(existsRegion, region) || POIUtils.intersectsRegion(region, existsRegion)) {
+                return true;
+            }
+            
+        }
+        
+        return false;
+        
+    }
+    
 }

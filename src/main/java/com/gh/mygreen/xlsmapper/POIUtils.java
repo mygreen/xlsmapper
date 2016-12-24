@@ -19,6 +19,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
@@ -29,6 +30,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressBase;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -46,7 +48,7 @@ import com.github.mygreen.cellformatter.POICell;
 /**
  * Apache POIとJExcel APIの差を埋めるユーティリティクラス。
  * 
- * @version 0.4
+ * @version 1.6
  * @author T.TSUCHIE
  *
  */
@@ -113,6 +115,26 @@ public class POIUtils {
         }
         
         AVAILABLE_METHOD_CELL_REMOVE_HYPERLINK = available;
+    }
+    
+    /**
+     * シートの結合セルノ削除メソッドが利用可能かどうか。
+     * POI-3.15以上の場合、trueとなる。
+     * @since 1.6
+     */
+    public static final boolean AVAILABLE_METHOD_SHEET_REMOVE_MERGE_REGIONS;
+    static {
+        boolean available = false;
+        try {
+            //POI-3.15以降
+            final Method method = Sheet.class.getMethod("removeMergedRegions", Collection.class);
+            method.setAccessible(true);
+            available = true;
+        } catch(Exception e) {
+            available = false;
+        }
+        
+        AVAILABLE_METHOD_SHEET_REMOVE_MERGE_REGIONS = available;
     }
     
     /**
@@ -1056,6 +1078,21 @@ public class POIUtils {
             return true;
         }
         
+    }
+    
+    /**
+     * セルの範囲が重複（交錯）しているかどうか判定する。
+     * <p>このメソッドは、POI-3.14で追加されたメソッド{@literal Sheet#intersects(...)}と後方互換性を保つためのもの。</p>
+     *
+     * @param my
+     * @param other
+     * @return trueの場合、1つでもセルの範囲が重複している。
+     */
+    public static boolean intersectsRegion(final CellRangeAddressBase my, final CellRangeAddressBase other) {
+        return my.getFirstRow() <= other.getLastRow() &&
+                my.getFirstColumn() <= other.getLastColumn() &&
+                other.getFirstRow() <= my.getLastRow() &&
+                other.getFirstColumn() <= my.getLastColumn();
     }
     
 }
