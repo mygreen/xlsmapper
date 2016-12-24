@@ -93,6 +93,13 @@ XlsMapperConfigでは以下の設定を行うことができます。
        | 初期値は'false'です。
        | **Ver.0.4以上** から利用可能です。
    
+   * - ``correctMergedCellOnSave``
+     - ``boolean``
+     - | ``@XlsHorizontalRecords`` で行の追加や削除を行ったレコードよりも下方にある結合したセルが解除される事象を回避するために設定します。
+       | POI-3.15( `Bug 59740 <https://bz.apache.org/bugzilla/show_bug.cgi?id=59740>`_ )により、``Sheet#shiftRows(...)`` の仕様が変更になった。
+       | 初期値は使用するPOIのバージョンによってかわり、POI-3.15以上の場合は'true'で、POI-3.14以前緒場合は'false'です。
+       | **Ver.1.6以上** から利用可能です。
+   
    * - ``formulaRecalcurationOnSave``
      - ``boolean``
      - | 書き込み時に式の再計算をするか設定します。
