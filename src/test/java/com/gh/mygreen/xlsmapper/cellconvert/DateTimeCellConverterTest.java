@@ -383,14 +383,14 @@ public class DateTimeCellConverterTest {
     @XlsSheet(name="日時型")
     private static class DateTimeSheet {
         
-//        @XlsHint(order=1)
-//        @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-//                overRecord=OverRecordOperate.Insert)
+        @XlsHint(order=1)
+        @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
-//        @XlsHint(order=2)
-//        @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-//                overRecord=OverRecordOperate.Insert)
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsHint(order=3)
@@ -653,7 +653,7 @@ public class DateTimeCellConverterTest {
             
             final int rowNumber = point.y + 1;
             
-            return String.format("$H%d - $G%d", rowNumber, rowNumber);
+            return String.format("$H%d-$G%d", rowNumber, rowNumber);
         }
         
         public FormulaRecord no(int no) {
