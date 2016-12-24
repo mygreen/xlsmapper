@@ -1692,8 +1692,24 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 continue;
                 
             } else {
-                // 追加・削除をしている下方の範囲の場合、影響を受けているため修正する。
-                if(recordOperation.isInsertRecord()) {
+                /*
+                 * 追加・削除をしている下方の範囲の場合、影響を受けているため修正する。
+                 * ネストしている場合は、追加と削除の両方を行っているので考慮する
+                 */
+                
+                if(recordOperation.isInsertRecord() || recordOperation.isDeleteRecord()) {
+                    // 
+                    CellRangeAddress correctedRange = new CellRangeAddress(
+                            mergedRange.getFirstRow() + recordOperation.getCountInsertRecord() - recordOperation.getCountDeleteRecord(),
+                            mergedRange.getLastRow() + recordOperation.getCountInsertRecord() - recordOperation.getCountDeleteRecord(),
+                            mergedRange.getFirstColumn(),
+                            mergedRange.getLastColumn());
+                    
+                    if(!isOverMergedRegion(sheet, correctedRange)) {
+                        sheet.addMergedRegion(correctedRange);
+                    }
+                    
+                } /*else if(recordOperation.isInsertRecord()) {
                     CellRangeAddress correctedRange = new CellRangeAddress(
                             mergedRange.getFirstRow() + recordOperation.getCountInsertRecord(),
                             mergedRange.getLastRow() + recordOperation.getCountInsertRecord(),
@@ -1714,7 +1730,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     if(!isOverMergedRegion(sheet, correctedRange)) {
                         sheet.addMergedRegion(correctedRange);
                     }
-                }
+                }*/
                 
             }
             

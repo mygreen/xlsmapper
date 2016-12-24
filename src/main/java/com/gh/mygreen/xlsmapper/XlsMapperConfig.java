@@ -235,7 +235,7 @@ public class XlsMapperConfig {
     
     /**
      * 書き込み時にセルノコメントを修正するかどうか。
-     * <p>POI-3.10以上の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
+     * <p>POI-3.10～3.11の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
      * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補正します。
      * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
      * @return 初期値は、'false'です。
@@ -247,7 +247,7 @@ public class XlsMapperConfig {
     /**
      * 書き込み時にセルのコメントを修正するかどうか設定します。
      * <p>'true'の場合、修正します。
-     * <p>POI-3.10以上の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
+     * <p>POI-3.10～3.11の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
      * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補正します。
      * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
      * @param correctCellCommentOnSave 初期値は、'false'です。
@@ -282,9 +282,11 @@ public class XlsMapperConfig {
      * </p>
      * @since 1.6
      * @param correctMergedCellOnSave trueの場合、セルの結合を修正します。
+     * @return 自身のインスタンス
      */
-    public void setCorrectMergedCellOnSave(boolean correctMergedCellOnSave) {
+    public XlsMapperConfig setCorrectMergedCellOnSave(boolean correctMergedCellOnSave) {
         this.correctMergedCellOnSave = correctMergedCellOnSave;
+        return this;
     }
     
     
