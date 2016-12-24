@@ -1709,28 +1709,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         sheet.addMergedRegion(correctedRange);
                     }
                     
-                } /*else if(recordOperation.isInsertRecord()) {
-                    CellRangeAddress correctedRange = new CellRangeAddress(
-                            mergedRange.getFirstRow() + recordOperation.getCountInsertRecord(),
-                            mergedRange.getLastRow() + recordOperation.getCountInsertRecord(),
-                            mergedRange.getFirstColumn(),
-                            mergedRange.getLastColumn());
-                    
-                    if(!isOverMergedRegion(sheet, correctedRange)) {
-                        sheet.addMergedRegion(correctedRange);
-                    }
-                    
-                } else if(recordOperation.isDeleteRecord()) {
-                    CellRangeAddress correctedRange = new CellRangeAddress(
-                            mergedRange.getFirstRow() - recordOperation.getCountDeleteRecord(),
-                            mergedRange.getLastRow() - recordOperation.getCountDeleteRecord(),
-                            mergedRange.getFirstColumn(),
-                            mergedRange.getLastColumn());
-                    
-                    if(!isOverMergedRegion(sheet, correctedRange)) {
-                        sheet.addMergedRegion(correctedRange);
-                    }
-                }*/
+                }
                 
             }
             

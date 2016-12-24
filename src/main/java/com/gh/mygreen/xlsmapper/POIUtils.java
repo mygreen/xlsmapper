@@ -657,6 +657,10 @@ public class POIUtils {
             // !A1のアドレスを含むかどうか
             return LinkType.DOCUMENT;
             
+        } else if(linkAddress.matches("[\\p{Alpha}]+[0-9]+")) {
+            // A1の通常のアドレスの形式
+            return LinkType.DOCUMENT;
+            
         } else if(linkAddress.matches(".+@.+")) {
             // @を含むかどうか
             return LinkType.EMAIL;
@@ -668,6 +672,7 @@ public class POIUtils {
         } else if(linkAddress.matches(".+\\.[\\p{Alnum}]+")) {
             // 拡張子付きかどうか
             return LinkType.FILE;
+            
         } else {
             return LinkType.UNKNOWN;
         }
