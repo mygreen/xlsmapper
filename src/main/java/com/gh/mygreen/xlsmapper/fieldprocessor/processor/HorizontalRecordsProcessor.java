@@ -1028,7 +1028,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         clearCell.setCellType(Cell.CELL_TYPE_BLANK);
                         
                     } else if(anno.remainedRecord().equals(RemainedRecordOperate.Delete)) {
-                        if(initRow == hRow -1) {
+                        if(initRow == hRow) {
                             // 1行目は残しておき、値をクリアする
                             final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
                             clearCell.setCellType(Cell.CELL_TYPE_BLANK);
