@@ -13,11 +13,41 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
-        <version>1.5.2</version>
+        <version>1.6</version>
     </dependency>
 
 
 .. _howtouseSheetLoad:
+
+
+----------------------------------------
+前提条件
+----------------------------------------
+
+本ライブラリの前提条件を以下に示します。
+
+
+.. list-table:: 前提条件
+   :widths: 50 50
+   :header-rows: 1
+   
+   * - 項目
+     - 値
+     
+   * - Java
+     - ver.1.7/1.8
+     
+   * - `Apache POI <https://poi.apache.org/>`_
+     - ver.3.11-3.15
+
+   * - `Spring Framework <https://projects.spring.io/spring-framework/>`_ (option)
+     - ver.3.0+
+
+   * - | Bean Validation  (option)
+       | ( `Hibernate Validator <http://hibernate.org/validator/>`_ )
+     - | ver.1.0/1.1
+       | (Hibernate Validator 4.x/5.x)
+
 
 
 ----------------------------

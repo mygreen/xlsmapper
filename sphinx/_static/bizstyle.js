@@ -36,6 +36,6 @@ $(window).resize(function(){
         $("li.nav-item-0 a").text("Top");
     }
     else {
-        $("li.nav-item-0 a").text("XlsMapper 1.5.2 ドキュメント");
+        $("li.nav-item-0 a").text("XlsMapper 1.6 ドキュメント");
     }
 });

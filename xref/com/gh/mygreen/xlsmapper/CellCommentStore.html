@@ -25,7 +25,7 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * セルのコメント情報を保持するクラス。</em>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;POI-3.10～3.12の場合、コメント付きのシートに対して行をずらす処理を行うとファイルが壊れるため、一時的に取得するために利用する。</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;POI-3.10～3.11の場合、コメント付きのシートに対して行をずらす処理を行うとファイルが壊れるため、一時的に取得するために利用する。</em>
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;POIの不良情報：&lt;a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=56017" target="_blank"&gt;Bug 56017&lt;/a&gt;</em>
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * @since 0.4</em>
@@ -54,7 +54,7 @@
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/gh/mygreen/xlsmapper/CellCommentStore.html">AnchorStore</a> {
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>          
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> type;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          <strong class="jxr_keyword">private</strong> Object type;
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> dx1;
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>          
@@ -220,7 +220,7 @@
 <a class="jxr_linenumber" name="L212" href="#L212">212</a>                 anchor.dx1, anchor.dy1, anchor.dx2, anchor.dy2,
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>                 col1, row1, col2, row2
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>                 );
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>         clientAnchor.setAnchorType(anchor.type);
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>         POIUtils.setClientAnchorType(clientAnchor, anchor.type);
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>         
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         <strong class="jxr_keyword">final</strong> Comment comment = drawing.createCellComment(clientAnchor);
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>         comment.setColumn(column);
@@ -284,6 +284,6 @@
 <a class="jxr_linenumber" name="L276" href="#L276">276</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2017 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

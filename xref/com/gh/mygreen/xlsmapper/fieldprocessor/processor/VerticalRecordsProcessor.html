@@ -1353,162 +1353,166 @@
 <a class="jxr_linenumber" name="L1345" href="#L1345">1345</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> processSavingNestedMergedRecord(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> mergedSize,
 <a class="jxr_linenumber" name="L1346" href="#L1346">1346</a>             <strong class="jxr_keyword">final</strong> List&lt;CellAddress&gt; valueCellPositions) {
 <a class="jxr_linenumber" name="L1347" href="#L1347">1347</a>         
-<a class="jxr_linenumber" name="L1348" href="#L1348">1348</a>         <em class="jxr_comment">// ネストした場合、上のセルのスタイルをコピーして、結合する</em>
-<a class="jxr_linenumber" name="L1349" href="#L1349">1349</a>         <strong class="jxr_keyword">for</strong>(<a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/CellAddress.html">CellAddress</a> position : valueCellPositions) {
-<a class="jxr_linenumber" name="L1350" href="#L1350">1350</a>             Cell valueCell = POIUtils.getCell(sheet, position);
-<a class="jxr_linenumber" name="L1351" href="#L1351">1351</a>             <strong class="jxr_keyword">if</strong>(valueCell == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L1352" href="#L1352">1352</a>                 <strong class="jxr_keyword">continue</strong>;
-<a class="jxr_linenumber" name="L1353" href="#L1353">1353</a>             }
-<a class="jxr_linenumber" name="L1354" href="#L1354">1354</a>             
-<a class="jxr_linenumber" name="L1355" href="#L1355">1355</a>             <strong class="jxr_keyword">final</strong> CellStyle style = valueCell.getCellStyle();
-<a class="jxr_linenumber" name="L1356" href="#L1356">1356</a>             
-<a class="jxr_linenumber" name="L1357" href="#L1357">1357</a>             <em class="jxr_comment">// 結合するセルに対して、上のセルのスタイルをコピーする。</em>
-<a class="jxr_linenumber" name="L1358" href="#L1358">1358</a>             <em class="jxr_comment">// 列を挿入するときなどに必要になるため、スタイルを設定する。</em>
-<a class="jxr_linenumber" name="L1359" href="#L1359">1359</a>             <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i=1; i &lt; mergedSize; i++) {
-<a class="jxr_linenumber" name="L1360" href="#L1360">1360</a>                 Cell mergedCell = POIUtils.getCell(sheet, position.getColumn() + i, position.getRow());
-<a class="jxr_linenumber" name="L1361" href="#L1361">1361</a>                 mergedCell.setCellStyle(style);
-<a class="jxr_linenumber" name="L1362" href="#L1362">1362</a>                 mergedCell.setCellType(Cell.CELL_TYPE_BLANK);
-<a class="jxr_linenumber" name="L1363" href="#L1363">1363</a>             }
-<a class="jxr_linenumber" name="L1364" href="#L1364">1364</a>             
-<a class="jxr_linenumber" name="L1365" href="#L1365">1365</a>             <strong class="jxr_keyword">final</strong> CellRangeAddress range = <strong class="jxr_keyword">new</strong> CellRangeAddress(position.getRow(), position.getRow(),
-<a class="jxr_linenumber" name="L1366" href="#L1366">1366</a>                     position.getColumn(), position.getColumn() + mergedSize -1);
-<a class="jxr_linenumber" name="L1367" href="#L1367">1367</a>             
-<a class="jxr_linenumber" name="L1368" href="#L1368">1368</a>             <em class="jxr_comment">// 既に結合済みのセルがある場合、外す。</em>
-<a class="jxr_linenumber" name="L1369" href="#L1369">1369</a>             <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> colIdx=range.getFirstColumn(); colIdx &lt;= range.getLastColumn(); colIdx++) {
-<a class="jxr_linenumber" name="L1370" href="#L1370">1370</a>                 CellRangeAddress r = POIUtils.getMergedRegion(sheet, position.getRow(), colIdx);
-<a class="jxr_linenumber" name="L1371" href="#L1371">1371</a>                 <strong class="jxr_keyword">if</strong>(r != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L1372" href="#L1372">1372</a>                     POIUtils.removeMergedRange(sheet, r);
-<a class="jxr_linenumber" name="L1373" href="#L1373">1373</a>                 }
-<a class="jxr_linenumber" name="L1374" href="#L1374">1374</a>             }
-<a class="jxr_linenumber" name="L1375" href="#L1375">1375</a>             
-<a class="jxr_linenumber" name="L1376" href="#L1376">1376</a>             sheet.addMergedRegion(range);
-<a class="jxr_linenumber" name="L1377" href="#L1377">1377</a>         }
-<a class="jxr_linenumber" name="L1378" href="#L1378">1378</a>         
-<a class="jxr_linenumber" name="L1379" href="#L1379">1379</a>     }
-<a class="jxr_linenumber" name="L1380" href="#L1380">1380</a>     
-<a class="jxr_linenumber" name="L1381" href="#L1381">1381</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1382" href="#L1382">1382</a> <em class="jxr_javadoccomment">     * セルの入力規則の範囲を修正する。</em>
-<a class="jxr_linenumber" name="L1383" href="#L1383">1383</a> <em class="jxr_javadoccomment">     * @param sheet</em>
-<a class="jxr_linenumber" name="L1384" href="#L1384">1384</a> <em class="jxr_javadoccomment">     * @param recordOperation</em>
-<a class="jxr_linenumber" name="L1385" href="#L1385">1385</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L1386" href="#L1386">1386</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> correctDataValidation(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/processor/RecordOperation.html">RecordOperation</a> recordOperation) {
-<a class="jxr_linenumber" name="L1387" href="#L1387">1387</a>         
-<a class="jxr_linenumber" name="L1388" href="#L1388">1388</a>         <strong class="jxr_keyword">if</strong>(!POIUtils.AVAILABLE_METHOD_SHEET_DAVA_VALIDATION) {
-<a class="jxr_linenumber" name="L1389" href="#L1389">1389</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L1390" href="#L1390">1390</a>         }
+<a class="jxr_linenumber" name="L1348" href="#L1348">1348</a>         <strong class="jxr_keyword">if</strong>(mergedSize &lt;= 1) {
+<a class="jxr_linenumber" name="L1349" href="#L1349">1349</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L1350" href="#L1350">1350</a>         }
+<a class="jxr_linenumber" name="L1351" href="#L1351">1351</a>         
+<a class="jxr_linenumber" name="L1352" href="#L1352">1352</a>         <em class="jxr_comment">// ネストした場合、上のセルのスタイルをコピーして、結合する</em>
+<a class="jxr_linenumber" name="L1353" href="#L1353">1353</a>         <strong class="jxr_keyword">for</strong>(<a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/CellAddress.html">CellAddress</a> position : valueCellPositions) {
+<a class="jxr_linenumber" name="L1354" href="#L1354">1354</a>             Cell valueCell = POIUtils.getCell(sheet, position);
+<a class="jxr_linenumber" name="L1355" href="#L1355">1355</a>             <strong class="jxr_keyword">if</strong>(valueCell == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L1356" href="#L1356">1356</a>                 <strong class="jxr_keyword">continue</strong>;
+<a class="jxr_linenumber" name="L1357" href="#L1357">1357</a>             }
+<a class="jxr_linenumber" name="L1358" href="#L1358">1358</a>             
+<a class="jxr_linenumber" name="L1359" href="#L1359">1359</a>             <strong class="jxr_keyword">final</strong> CellStyle style = valueCell.getCellStyle();
+<a class="jxr_linenumber" name="L1360" href="#L1360">1360</a>             
+<a class="jxr_linenumber" name="L1361" href="#L1361">1361</a>             <em class="jxr_comment">// 結合するセルに対して、上のセルのスタイルをコピーする。</em>
+<a class="jxr_linenumber" name="L1362" href="#L1362">1362</a>             <em class="jxr_comment">// 列を挿入するときなどに必要になるため、スタイルを設定する。</em>
+<a class="jxr_linenumber" name="L1363" href="#L1363">1363</a>             <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i=1; i &lt; mergedSize; i++) {
+<a class="jxr_linenumber" name="L1364" href="#L1364">1364</a>                 Cell mergedCell = POIUtils.getCell(sheet, position.getColumn() + i, position.getRow());
+<a class="jxr_linenumber" name="L1365" href="#L1365">1365</a>                 mergedCell.setCellStyle(style);
+<a class="jxr_linenumber" name="L1366" href="#L1366">1366</a>                 mergedCell.setCellType(Cell.CELL_TYPE_BLANK);
+<a class="jxr_linenumber" name="L1367" href="#L1367">1367</a>             }
+<a class="jxr_linenumber" name="L1368" href="#L1368">1368</a>             
+<a class="jxr_linenumber" name="L1369" href="#L1369">1369</a>             <strong class="jxr_keyword">final</strong> CellRangeAddress range = <strong class="jxr_keyword">new</strong> CellRangeAddress(position.getRow(), position.getRow(),
+<a class="jxr_linenumber" name="L1370" href="#L1370">1370</a>                     position.getColumn(), position.getColumn() + mergedSize -1);
+<a class="jxr_linenumber" name="L1371" href="#L1371">1371</a>             
+<a class="jxr_linenumber" name="L1372" href="#L1372">1372</a>             <em class="jxr_comment">// 既に結合済みのセルがある場合、外す。</em>
+<a class="jxr_linenumber" name="L1373" href="#L1373">1373</a>             <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> colIdx=range.getFirstColumn(); colIdx &lt;= range.getLastColumn(); colIdx++) {
+<a class="jxr_linenumber" name="L1374" href="#L1374">1374</a>                 CellRangeAddress r = POIUtils.getMergedRegion(sheet, position.getRow(), colIdx);
+<a class="jxr_linenumber" name="L1375" href="#L1375">1375</a>                 <strong class="jxr_keyword">if</strong>(r != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L1376" href="#L1376">1376</a>                     POIUtils.removeMergedRange(sheet, r);
+<a class="jxr_linenumber" name="L1377" href="#L1377">1377</a>                 }
+<a class="jxr_linenumber" name="L1378" href="#L1378">1378</a>             }
+<a class="jxr_linenumber" name="L1379" href="#L1379">1379</a>             
+<a class="jxr_linenumber" name="L1380" href="#L1380">1380</a>             sheet.addMergedRegion(range);
+<a class="jxr_linenumber" name="L1381" href="#L1381">1381</a>         }
+<a class="jxr_linenumber" name="L1382" href="#L1382">1382</a>         
+<a class="jxr_linenumber" name="L1383" href="#L1383">1383</a>     }
+<a class="jxr_linenumber" name="L1384" href="#L1384">1384</a>     
+<a class="jxr_linenumber" name="L1385" href="#L1385">1385</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1386" href="#L1386">1386</a> <em class="jxr_javadoccomment">     * セルの入力規則の範囲を修正する。</em>
+<a class="jxr_linenumber" name="L1387" href="#L1387">1387</a> <em class="jxr_javadoccomment">     * @param sheet</em>
+<a class="jxr_linenumber" name="L1388" href="#L1388">1388</a> <em class="jxr_javadoccomment">     * @param recordOperation</em>
+<a class="jxr_linenumber" name="L1389" href="#L1389">1389</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L1390" href="#L1390">1390</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> correctDataValidation(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/processor/RecordOperation.html">RecordOperation</a> recordOperation) {
 <a class="jxr_linenumber" name="L1391" href="#L1391">1391</a>         
-<a class="jxr_linenumber" name="L1392" href="#L1392">1392</a>         <strong class="jxr_keyword">if</strong>(recordOperation.isNotExecuteRecordOperation()) {
+<a class="jxr_linenumber" name="L1392" href="#L1392">1392</a>         <strong class="jxr_keyword">if</strong>(!POIUtils.AVAILABLE_METHOD_SHEET_DAVA_VALIDATION) {
 <a class="jxr_linenumber" name="L1393" href="#L1393">1393</a>             <strong class="jxr_keyword">return</strong>;
 <a class="jxr_linenumber" name="L1394" href="#L1394">1394</a>         }
 <a class="jxr_linenumber" name="L1395" href="#L1395">1395</a>         
-<a class="jxr_linenumber" name="L1396" href="#L1396">1396</a>         <em class="jxr_comment">//TODO: セルの結合も考慮する</em>
-<a class="jxr_linenumber" name="L1397" href="#L1397">1397</a>         
-<a class="jxr_linenumber" name="L1398" href="#L1398">1398</a>         <em class="jxr_comment">// 操作をしていないセルの範囲の取得</em>
-<a class="jxr_linenumber" name="L1399" href="#L1399">1399</a>         <strong class="jxr_keyword">final</strong> CellRangeAddress notOperateRange = <strong class="jxr_keyword">new</strong> CellRangeAddress(
-<a class="jxr_linenumber" name="L1400" href="#L1400">1400</a>                 recordOperation.getTopLeftPoisitoin().y,
-<a class="jxr_linenumber" name="L1401" href="#L1401">1401</a>                 recordOperation.getBottomRightPosition().y,
-<a class="jxr_linenumber" name="L1402" href="#L1402">1402</a>                 recordOperation.getTopLeftPoisitoin().x,
-<a class="jxr_linenumber" name="L1403" href="#L1403">1403</a>                 recordOperation.getBottomRightPosition().x - recordOperation.getCountInsertRecord()
-<a class="jxr_linenumber" name="L1404" href="#L1404">1404</a>                 );
-<a class="jxr_linenumber" name="L1405" href="#L1405">1405</a>         
-<a class="jxr_linenumber" name="L1406" href="#L1406">1406</a>         <strong class="jxr_keyword">final</strong> List&lt;? <strong class="jxr_keyword">extends</strong> DataValidation&gt; list = sheet.getDataValidations();
-<a class="jxr_linenumber" name="L1407" href="#L1407">1407</a>         <strong class="jxr_keyword">for</strong>(DataValidation validation : list) {
-<a class="jxr_linenumber" name="L1408" href="#L1408">1408</a>             
-<a class="jxr_linenumber" name="L1409" href="#L1409">1409</a>             <strong class="jxr_keyword">final</strong> CellRangeAddressList region = validation.getRegions().copy();
-<a class="jxr_linenumber" name="L1410" href="#L1410">1410</a>             <strong class="jxr_keyword">boolean</strong> changedRange = false;
-<a class="jxr_linenumber" name="L1411" href="#L1411">1411</a>             <strong class="jxr_keyword">for</strong>(CellRangeAddress range : region.getCellRangeAddresses()) {
-<a class="jxr_linenumber" name="L1412" href="#L1412">1412</a>                 
-<a class="jxr_linenumber" name="L1413" href="#L1413">1413</a>                 <strong class="jxr_keyword">if</strong>(notOperateRange.isInRange(range.getFirstRow(), range.getFirstColumn())) {
-<a class="jxr_linenumber" name="L1414" href="#L1414">1414</a>                     <em class="jxr_comment">// 自身のセルの範囲の場合は、行の範囲を広げる</em>
-<a class="jxr_linenumber" name="L1415" href="#L1415">1415</a>                     range.setLastColumn(recordOperation.getBottomRightPosition().x);
-<a class="jxr_linenumber" name="L1416" href="#L1416">1416</a>                     changedRange = <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L1417" href="#L1417">1417</a>                     
-<a class="jxr_linenumber" name="L1418" href="#L1418">1418</a>                 } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(notOperateRange.getLastColumn() &lt; range.getFirstColumn()) {
-<a class="jxr_linenumber" name="L1419" href="#L1419">1419</a>                     <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L1420" href="#L1420">1420</a> <em class="jxr_comment">                     * VerticalRecordsの場合は、挿入・削除はないので、自身以外の範囲は修正しない。</em>
-<a class="jxr_linenumber" name="L1421" href="#L1421">1421</a> <em class="jxr_comment">                     */</em>
-<a class="jxr_linenumber" name="L1422" href="#L1422">1422</a>                 }
-<a class="jxr_linenumber" name="L1423" href="#L1423">1423</a>                 
-<a class="jxr_linenumber" name="L1424" href="#L1424">1424</a>             }
-<a class="jxr_linenumber" name="L1425" href="#L1425">1425</a>             
-<a class="jxr_linenumber" name="L1426" href="#L1426">1426</a>             <em class="jxr_comment">// 修正した規則を、再度シートに追加する</em>
-<a class="jxr_linenumber" name="L1427" href="#L1427">1427</a>             <strong class="jxr_keyword">if</strong>(changedRange) {
-<a class="jxr_linenumber" name="L1428" href="#L1428">1428</a>                 <strong class="jxr_keyword">boolean</strong> updated = POIUtils.updateDataValidationRegion(sheet, validation.getRegions(), region);
-<a class="jxr_linenumber" name="L1429" href="#L1429">1429</a>                 assert updated == <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L1430" href="#L1430">1430</a>             }
-<a class="jxr_linenumber" name="L1431" href="#L1431">1431</a>         }
-<a class="jxr_linenumber" name="L1432" href="#L1432">1432</a>         
-<a class="jxr_linenumber" name="L1433" href="#L1433">1433</a>     }
-<a class="jxr_linenumber" name="L1434" href="#L1434">1434</a>     
-<a class="jxr_linenumber" name="L1435" href="#L1435">1435</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L1436" href="#L1436">1436</a> <em class="jxr_javadoccomment">     * 名前の定義の範囲を修正する。</em>
-<a class="jxr_linenumber" name="L1437" href="#L1437">1437</a> <em class="jxr_javadoccomment">     * @param sheet</em>
-<a class="jxr_linenumber" name="L1438" href="#L1438">1438</a> <em class="jxr_javadoccomment">     * @param recordOperation</em>
-<a class="jxr_linenumber" name="L1439" href="#L1439">1439</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L1440" href="#L1440">1440</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> correctNameRange(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/processor/RecordOperation.html">RecordOperation</a> recordOperation) {
-<a class="jxr_linenumber" name="L1441" href="#L1441">1441</a>         
-<a class="jxr_linenumber" name="L1442" href="#L1442">1442</a>         <strong class="jxr_keyword">if</strong>(recordOperation.isNotExecuteRecordOperation()) {
-<a class="jxr_linenumber" name="L1443" href="#L1443">1443</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L1444" href="#L1444">1444</a>         }
+<a class="jxr_linenumber" name="L1396" href="#L1396">1396</a>         <strong class="jxr_keyword">if</strong>(recordOperation.isNotExecuteRecordOperation()) {
+<a class="jxr_linenumber" name="L1397" href="#L1397">1397</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L1398" href="#L1398">1398</a>         }
+<a class="jxr_linenumber" name="L1399" href="#L1399">1399</a>         
+<a class="jxr_linenumber" name="L1400" href="#L1400">1400</a>         <em class="jxr_comment">//TODO: セルの結合も考慮する</em>
+<a class="jxr_linenumber" name="L1401" href="#L1401">1401</a>         
+<a class="jxr_linenumber" name="L1402" href="#L1402">1402</a>         <em class="jxr_comment">// 操作をしていないセルの範囲の取得</em>
+<a class="jxr_linenumber" name="L1403" href="#L1403">1403</a>         <strong class="jxr_keyword">final</strong> CellRangeAddress notOperateRange = <strong class="jxr_keyword">new</strong> CellRangeAddress(
+<a class="jxr_linenumber" name="L1404" href="#L1404">1404</a>                 recordOperation.getTopLeftPoisitoin().y,
+<a class="jxr_linenumber" name="L1405" href="#L1405">1405</a>                 recordOperation.getBottomRightPosition().y,
+<a class="jxr_linenumber" name="L1406" href="#L1406">1406</a>                 recordOperation.getTopLeftPoisitoin().x,
+<a class="jxr_linenumber" name="L1407" href="#L1407">1407</a>                 recordOperation.getBottomRightPosition().x - recordOperation.getCountInsertRecord()
+<a class="jxr_linenumber" name="L1408" href="#L1408">1408</a>                 );
+<a class="jxr_linenumber" name="L1409" href="#L1409">1409</a>         
+<a class="jxr_linenumber" name="L1410" href="#L1410">1410</a>         <strong class="jxr_keyword">final</strong> List&lt;? <strong class="jxr_keyword">extends</strong> DataValidation&gt; list = sheet.getDataValidations();
+<a class="jxr_linenumber" name="L1411" href="#L1411">1411</a>         <strong class="jxr_keyword">for</strong>(DataValidation validation : list) {
+<a class="jxr_linenumber" name="L1412" href="#L1412">1412</a>             
+<a class="jxr_linenumber" name="L1413" href="#L1413">1413</a>             <strong class="jxr_keyword">final</strong> CellRangeAddressList region = validation.getRegions().copy();
+<a class="jxr_linenumber" name="L1414" href="#L1414">1414</a>             <strong class="jxr_keyword">boolean</strong> changedRange = false;
+<a class="jxr_linenumber" name="L1415" href="#L1415">1415</a>             <strong class="jxr_keyword">for</strong>(CellRangeAddress range : region.getCellRangeAddresses()) {
+<a class="jxr_linenumber" name="L1416" href="#L1416">1416</a>                 
+<a class="jxr_linenumber" name="L1417" href="#L1417">1417</a>                 <strong class="jxr_keyword">if</strong>(notOperateRange.isInRange(range.getFirstRow(), range.getFirstColumn())) {
+<a class="jxr_linenumber" name="L1418" href="#L1418">1418</a>                     <em class="jxr_comment">// 自身のセルの範囲の場合は、行の範囲を広げる</em>
+<a class="jxr_linenumber" name="L1419" href="#L1419">1419</a>                     range.setLastColumn(recordOperation.getBottomRightPosition().x);
+<a class="jxr_linenumber" name="L1420" href="#L1420">1420</a>                     changedRange = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L1421" href="#L1421">1421</a>                     
+<a class="jxr_linenumber" name="L1422" href="#L1422">1422</a>                 } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(notOperateRange.getLastColumn() &lt; range.getFirstColumn()) {
+<a class="jxr_linenumber" name="L1423" href="#L1423">1423</a>                     <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L1424" href="#L1424">1424</a> <em class="jxr_comment">                     * VerticalRecordsの場合は、挿入・削除はないので、自身以外の範囲は修正しない。</em>
+<a class="jxr_linenumber" name="L1425" href="#L1425">1425</a> <em class="jxr_comment">                     */</em>
+<a class="jxr_linenumber" name="L1426" href="#L1426">1426</a>                 }
+<a class="jxr_linenumber" name="L1427" href="#L1427">1427</a>                 
+<a class="jxr_linenumber" name="L1428" href="#L1428">1428</a>             }
+<a class="jxr_linenumber" name="L1429" href="#L1429">1429</a>             
+<a class="jxr_linenumber" name="L1430" href="#L1430">1430</a>             <em class="jxr_comment">// 修正した規則を、再度シートに追加する</em>
+<a class="jxr_linenumber" name="L1431" href="#L1431">1431</a>             <strong class="jxr_keyword">if</strong>(changedRange) {
+<a class="jxr_linenumber" name="L1432" href="#L1432">1432</a>                 <strong class="jxr_keyword">boolean</strong> updated = POIUtils.updateDataValidationRegion(sheet, validation.getRegions(), region);
+<a class="jxr_linenumber" name="L1433" href="#L1433">1433</a>                 assert updated == <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L1434" href="#L1434">1434</a>             }
+<a class="jxr_linenumber" name="L1435" href="#L1435">1435</a>         }
+<a class="jxr_linenumber" name="L1436" href="#L1436">1436</a>         
+<a class="jxr_linenumber" name="L1437" href="#L1437">1437</a>     }
+<a class="jxr_linenumber" name="L1438" href="#L1438">1438</a>     
+<a class="jxr_linenumber" name="L1439" href="#L1439">1439</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L1440" href="#L1440">1440</a> <em class="jxr_javadoccomment">     * 名前の定義の範囲を修正する。</em>
+<a class="jxr_linenumber" name="L1441" href="#L1441">1441</a> <em class="jxr_javadoccomment">     * @param sheet</em>
+<a class="jxr_linenumber" name="L1442" href="#L1442">1442</a> <em class="jxr_javadoccomment">     * @param recordOperation</em>
+<a class="jxr_linenumber" name="L1443" href="#L1443">1443</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L1444" href="#L1444">1444</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> correctNameRange(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/processor/RecordOperation.html">RecordOperation</a> recordOperation) {
 <a class="jxr_linenumber" name="L1445" href="#L1445">1445</a>         
-<a class="jxr_linenumber" name="L1446" href="#L1446">1446</a>         <strong class="jxr_keyword">final</strong> Workbook workbook = sheet.getWorkbook();
-<a class="jxr_linenumber" name="L1447" href="#L1447">1447</a>         <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> numName = workbook.getNumberOfNames();
-<a class="jxr_linenumber" name="L1448" href="#L1448">1448</a>         <strong class="jxr_keyword">if</strong>(numName == 0) {
-<a class="jxr_linenumber" name="L1449" href="#L1449">1449</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L1450" href="#L1450">1450</a>         }
-<a class="jxr_linenumber" name="L1451" href="#L1451">1451</a>         
-<a class="jxr_linenumber" name="L1452" href="#L1452">1452</a>         <em class="jxr_comment">// 操作をしていないセルの範囲の取得</em>
-<a class="jxr_linenumber" name="L1453" href="#L1453">1453</a>         <strong class="jxr_keyword">final</strong> CellRangeAddress notOperateRange = <strong class="jxr_keyword">new</strong> CellRangeAddress(
-<a class="jxr_linenumber" name="L1454" href="#L1454">1454</a>                 recordOperation.getTopLeftPoisitoin().y,
-<a class="jxr_linenumber" name="L1455" href="#L1455">1455</a>                 recordOperation.getBottomRightPosition().y,
-<a class="jxr_linenumber" name="L1456" href="#L1456">1456</a>                 recordOperation.getTopLeftPoisitoin().x,
-<a class="jxr_linenumber" name="L1457" href="#L1457">1457</a>                 recordOperation.getBottomRightPosition().x - recordOperation.getCountInsertRecord()
-<a class="jxr_linenumber" name="L1458" href="#L1458">1458</a>                 );
-<a class="jxr_linenumber" name="L1459" href="#L1459">1459</a>         
-<a class="jxr_linenumber" name="L1460" href="#L1460">1460</a>         <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i=0; i &lt; numName; i++) {
-<a class="jxr_linenumber" name="L1461" href="#L1461">1461</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/PropertyPath.html">Name</a> name = workbook.getNameAt(i);
-<a class="jxr_linenumber" name="L1462" href="#L1462">1462</a>             
-<a class="jxr_linenumber" name="L1463" href="#L1463">1463</a>             <strong class="jxr_keyword">if</strong>(name.isDeleted() || name.isFunctionName()) {
-<a class="jxr_linenumber" name="L1464" href="#L1464">1464</a>                 <em class="jxr_comment">// 削除されている場合、関数の場合はスキップ</em>
-<a class="jxr_linenumber" name="L1465" href="#L1465">1465</a>                 <strong class="jxr_keyword">continue</strong>;
-<a class="jxr_linenumber" name="L1466" href="#L1466">1466</a>             }
-<a class="jxr_linenumber" name="L1467" href="#L1467">1467</a>             
-<a class="jxr_linenumber" name="L1468" href="#L1468">1468</a>             <strong class="jxr_keyword">if</strong>(!sheet.getSheetName().equals(name.getSheetName())) {
-<a class="jxr_linenumber" name="L1469" href="#L1469">1469</a>                 <em class="jxr_comment">// 自身のシートでない名前は、修正しない。</em>
-<a class="jxr_linenumber" name="L1470" href="#L1470">1470</a>                 <strong class="jxr_keyword">continue</strong>;
-<a class="jxr_linenumber" name="L1471" href="#L1471">1471</a>             }
-<a class="jxr_linenumber" name="L1472" href="#L1472">1472</a>             
-<a class="jxr_linenumber" name="L1473" href="#L1473">1473</a>             AreaReference areaRef = <strong class="jxr_keyword">new</strong> AreaReference(name.getRefersToFormula());
-<a class="jxr_linenumber" name="L1474" href="#L1474">1474</a>             CellReference firstCellRef = areaRef.getFirstCell();
-<a class="jxr_linenumber" name="L1475" href="#L1475">1475</a>             CellReference lastCellRef = areaRef.getLastCell();
+<a class="jxr_linenumber" name="L1446" href="#L1446">1446</a>         <strong class="jxr_keyword">if</strong>(recordOperation.isNotExecuteRecordOperation()) {
+<a class="jxr_linenumber" name="L1447" href="#L1447">1447</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L1448" href="#L1448">1448</a>         }
+<a class="jxr_linenumber" name="L1449" href="#L1449">1449</a>         
+<a class="jxr_linenumber" name="L1450" href="#L1450">1450</a>         <strong class="jxr_keyword">final</strong> Workbook workbook = sheet.getWorkbook();
+<a class="jxr_linenumber" name="L1451" href="#L1451">1451</a>         <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> numName = workbook.getNumberOfNames();
+<a class="jxr_linenumber" name="L1452" href="#L1452">1452</a>         <strong class="jxr_keyword">if</strong>(numName == 0) {
+<a class="jxr_linenumber" name="L1453" href="#L1453">1453</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L1454" href="#L1454">1454</a>         }
+<a class="jxr_linenumber" name="L1455" href="#L1455">1455</a>         
+<a class="jxr_linenumber" name="L1456" href="#L1456">1456</a>         <em class="jxr_comment">// 操作をしていないセルの範囲の取得</em>
+<a class="jxr_linenumber" name="L1457" href="#L1457">1457</a>         <strong class="jxr_keyword">final</strong> CellRangeAddress notOperateRange = <strong class="jxr_keyword">new</strong> CellRangeAddress(
+<a class="jxr_linenumber" name="L1458" href="#L1458">1458</a>                 recordOperation.getTopLeftPoisitoin().y,
+<a class="jxr_linenumber" name="L1459" href="#L1459">1459</a>                 recordOperation.getBottomRightPosition().y,
+<a class="jxr_linenumber" name="L1460" href="#L1460">1460</a>                 recordOperation.getTopLeftPoisitoin().x,
+<a class="jxr_linenumber" name="L1461" href="#L1461">1461</a>                 recordOperation.getBottomRightPosition().x - recordOperation.getCountInsertRecord()
+<a class="jxr_linenumber" name="L1462" href="#L1462">1462</a>                 );
+<a class="jxr_linenumber" name="L1463" href="#L1463">1463</a>         
+<a class="jxr_linenumber" name="L1464" href="#L1464">1464</a>         <strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i=0; i &lt; numName; i++) {
+<a class="jxr_linenumber" name="L1465" href="#L1465">1465</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/PropertyPath.html">Name</a> name = workbook.getNameAt(i);
+<a class="jxr_linenumber" name="L1466" href="#L1466">1466</a>             
+<a class="jxr_linenumber" name="L1467" href="#L1467">1467</a>             <strong class="jxr_keyword">if</strong>(name.isDeleted() || name.isFunctionName()) {
+<a class="jxr_linenumber" name="L1468" href="#L1468">1468</a>                 <em class="jxr_comment">// 削除されている場合、関数の場合はスキップ</em>
+<a class="jxr_linenumber" name="L1469" href="#L1469">1469</a>                 <strong class="jxr_keyword">continue</strong>;
+<a class="jxr_linenumber" name="L1470" href="#L1470">1470</a>             }
+<a class="jxr_linenumber" name="L1471" href="#L1471">1471</a>             
+<a class="jxr_linenumber" name="L1472" href="#L1472">1472</a>             <strong class="jxr_keyword">if</strong>(!sheet.getSheetName().equals(name.getSheetName())) {
+<a class="jxr_linenumber" name="L1473" href="#L1473">1473</a>                 <em class="jxr_comment">// 自身のシートでない名前は、修正しない。</em>
+<a class="jxr_linenumber" name="L1474" href="#L1474">1474</a>                 <strong class="jxr_keyword">continue</strong>;
+<a class="jxr_linenumber" name="L1475" href="#L1475">1475</a>             }
 <a class="jxr_linenumber" name="L1476" href="#L1476">1476</a>             
-<a class="jxr_linenumber" name="L1477" href="#L1477">1477</a>             <strong class="jxr_keyword">if</strong>(notOperateRange.isInRange(firstCellRef.getRow(), firstCellRef.getCol())) {
-<a class="jxr_linenumber" name="L1478" href="#L1478">1478</a>                 <em class="jxr_comment">// 自身のセルの範囲の場合は、行の範囲を広げる。</em>
-<a class="jxr_linenumber" name="L1479" href="#L1479">1479</a>                 
-<a class="jxr_linenumber" name="L1480" href="#L1480">1480</a>                 lastCellRef= <strong class="jxr_keyword">new</strong> CellReference(
-<a class="jxr_linenumber" name="L1481" href="#L1481">1481</a>                         lastCellRef.getSheetName(),
-<a class="jxr_linenumber" name="L1482" href="#L1482">1482</a>                         lastCellRef.getRow(), recordOperation.getBottomRightPosition().x,
-<a class="jxr_linenumber" name="L1483" href="#L1483">1483</a>                         lastCellRef.isRowAbsolute(), lastCellRef.isColAbsolute());
-<a class="jxr_linenumber" name="L1484" href="#L1484">1484</a>                 areaRef = <strong class="jxr_keyword">new</strong> AreaReference(firstCellRef, lastCellRef);
-<a class="jxr_linenumber" name="L1485" href="#L1485">1485</a>                 
-<a class="jxr_linenumber" name="L1486" href="#L1486">1486</a>                 <em class="jxr_comment">// 修正した範囲を再設定する</em>
-<a class="jxr_linenumber" name="L1487" href="#L1487">1487</a>                 name.setRefersToFormula(areaRef.formatAsString());
-<a class="jxr_linenumber" name="L1488" href="#L1488">1488</a>                 
-<a class="jxr_linenumber" name="L1489" href="#L1489">1489</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(notOperateRange.getLastColumn() &lt; firstCellRef.getCol()) {
-<a class="jxr_linenumber" name="L1490" href="#L1490">1490</a>                 <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L1491" href="#L1491">1491</a> <em class="jxr_comment">                 * 名前の定義の場合、自身のセルノ範囲より右方にあるセルの範囲の場合、</em>
-<a class="jxr_linenumber" name="L1492" href="#L1492">1492</a> <em class="jxr_comment">                 * 自動的に修正されるため、修正は必要なし。</em>
-<a class="jxr_linenumber" name="L1493" href="#L1493">1493</a> <em class="jxr_comment">                 */</em>
-<a class="jxr_linenumber" name="L1494" href="#L1494">1494</a>                 
-<a class="jxr_linenumber" name="L1495" href="#L1495">1495</a>             }
-<a class="jxr_linenumber" name="L1496" href="#L1496">1496</a>             
-<a class="jxr_linenumber" name="L1497" href="#L1497">1497</a>         }
-<a class="jxr_linenumber" name="L1498" href="#L1498">1498</a>         
-<a class="jxr_linenumber" name="L1499" href="#L1499">1499</a>     }
-<a class="jxr_linenumber" name="L1500" href="#L1500">1500</a>     
-<a class="jxr_linenumber" name="L1501" href="#L1501">1501</a> }
+<a class="jxr_linenumber" name="L1477" href="#L1477">1477</a>             AreaReference areaRef = <strong class="jxr_keyword">new</strong> AreaReference(name.getRefersToFormula());
+<a class="jxr_linenumber" name="L1478" href="#L1478">1478</a>             CellReference firstCellRef = areaRef.getFirstCell();
+<a class="jxr_linenumber" name="L1479" href="#L1479">1479</a>             CellReference lastCellRef = areaRef.getLastCell();
+<a class="jxr_linenumber" name="L1480" href="#L1480">1480</a>             
+<a class="jxr_linenumber" name="L1481" href="#L1481">1481</a>             <strong class="jxr_keyword">if</strong>(notOperateRange.isInRange(firstCellRef.getRow(), firstCellRef.getCol())) {
+<a class="jxr_linenumber" name="L1482" href="#L1482">1482</a>                 <em class="jxr_comment">// 自身のセルの範囲の場合は、行の範囲を広げる。</em>
+<a class="jxr_linenumber" name="L1483" href="#L1483">1483</a>                 
+<a class="jxr_linenumber" name="L1484" href="#L1484">1484</a>                 lastCellRef= <strong class="jxr_keyword">new</strong> CellReference(
+<a class="jxr_linenumber" name="L1485" href="#L1485">1485</a>                         lastCellRef.getSheetName(),
+<a class="jxr_linenumber" name="L1486" href="#L1486">1486</a>                         lastCellRef.getRow(), recordOperation.getBottomRightPosition().x,
+<a class="jxr_linenumber" name="L1487" href="#L1487">1487</a>                         lastCellRef.isRowAbsolute(), lastCellRef.isColAbsolute());
+<a class="jxr_linenumber" name="L1488" href="#L1488">1488</a>                 areaRef = <strong class="jxr_keyword">new</strong> AreaReference(firstCellRef, lastCellRef);
+<a class="jxr_linenumber" name="L1489" href="#L1489">1489</a>                 
+<a class="jxr_linenumber" name="L1490" href="#L1490">1490</a>                 <em class="jxr_comment">// 修正した範囲を再設定する</em>
+<a class="jxr_linenumber" name="L1491" href="#L1491">1491</a>                 name.setRefersToFormula(areaRef.formatAsString());
+<a class="jxr_linenumber" name="L1492" href="#L1492">1492</a>                 
+<a class="jxr_linenumber" name="L1493" href="#L1493">1493</a>             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(notOperateRange.getLastColumn() &lt; firstCellRef.getCol()) {
+<a class="jxr_linenumber" name="L1494" href="#L1494">1494</a>                 <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L1495" href="#L1495">1495</a> <em class="jxr_comment">                 * 名前の定義の場合、自身のセルノ範囲より右方にあるセルの範囲の場合、</em>
+<a class="jxr_linenumber" name="L1496" href="#L1496">1496</a> <em class="jxr_comment">                 * 自動的に修正されるため、修正は必要なし。</em>
+<a class="jxr_linenumber" name="L1497" href="#L1497">1497</a> <em class="jxr_comment">                 */</em>
+<a class="jxr_linenumber" name="L1498" href="#L1498">1498</a>                 
+<a class="jxr_linenumber" name="L1499" href="#L1499">1499</a>             }
+<a class="jxr_linenumber" name="L1500" href="#L1500">1500</a>             
+<a class="jxr_linenumber" name="L1501" href="#L1501">1501</a>         }
+<a class="jxr_linenumber" name="L1502" href="#L1502">1502</a>         
+<a class="jxr_linenumber" name="L1503" href="#L1503">1503</a>     }
+<a class="jxr_linenumber" name="L1504" href="#L1504">1504</a>     
+<a class="jxr_linenumber" name="L1505" href="#L1505">1505</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2017 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

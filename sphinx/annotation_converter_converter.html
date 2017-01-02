@@ -3,19 +3,20 @@
 <!doctype html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>@XlsConverter &mdash; XlsMapper 1.5.2 ドキュメント</title>
+    <title>@XlsConverter &#8212; XlsMapper 1.6 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/mycustom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.2',
+        VERSION:     '1.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,8 +27,11 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/mytheme.js"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.5.2 ドキュメント" href="index.html" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="top" title="XlsMapper 1.6 ドキュメント" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -40,24 +44,27 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.5.2 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.6 ドキュメント</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper"><div id="toc" class="sidebarRow">
-<h3><a href="../index.html">プロジェクト情報</a></h3>
+<h3><a href="../index.html">関連リンク</a></h3>
 <ul>
-	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">Javadoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">JavaDoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="https://github.com/mygreen/xlsmapper">GitHub</a></li>
 	<li class="toctree-l1"><a class="reference internal" href="../project-info.html">プロジェクト情報</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../project-reports.html">プロジェクトレポート</a></li>
 </ul>
 
 <h3><a href="index.html">目次</a></h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.2. マッピングの基本</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 読み込み方</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.4. 書き込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.2. 前提条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id4">1.3. マッピングの基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id7">1.4. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.5. 書き込み方</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
@@ -105,28 +112,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">8. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-2-2016-10-30">8.1. ver.1.5.2 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-1-2016-10-30">8.2. ver.1.5.1 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-0-2016-08-30">8.3. ver.1.5.0 - 2016-08-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">8.4. ver.1.4.4 - 2016-07-02</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">8.5. ver.1.4.3 - 2016-05-28</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">8.6. ver.1.4.2 - 2016-05-07</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">8.7. ver.1.4.1 - 2016-04-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">8.8. ver.1.4 - 2016-03-21</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">8.9. ver.1.3 - 2016-03-13</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.10. ver.1.2.1 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.11. ver.1.2 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.12. ver.1.1 - 2016-03-08</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.13. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.14. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.15. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.16. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.17. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.18. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.19. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.20. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.21. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.22. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-6-2017-01-02">8.1. ver.1.6 - 2017-01-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-2-2016-10-30">8.2. ver.1.5.2 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-1-2016-10-30">8.3. ver.1.5.1 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-0-2016-08-30">8.4. ver.1.5.0 - 2016-08-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">8.5. ver.1.4.4 - 2016-07-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">8.6. ver.1.4.3 - 2016-05-28</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">8.7. ver.1.4.2 - 2016-05-07</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">8.8. ver.1.4.1 - 2016-04-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">8.9. ver.1.4 - 2016-03-21</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">8.10. ver.1.3 - 2016-03-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.11. ver.1.2.1 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.12. ver.1.2 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.13. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.14. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.15. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.16. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.17. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.18. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.19. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.20. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.21. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.22. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.23. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -143,14 +151,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>クイック検索</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="検索" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="検索" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    モジュール、クラス、または関数名を入力してください
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -178,7 +183,7 @@
 <li>指定したデフォルト値がマッピング先の型として不正な場合は、通常の型変換エラーと同様に、例外 <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.cellconvert.TypeBindException</span></code> がスローされます。<cite>[ver0.5]</cite></li>
 <li>char型にマッピングする場合、デフォルト値が2文字以上でも、先頭の一文字がマッピングされます。</li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
     <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
     <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">defaultValue</span><span class="o">=</span><span class="s">&quot;-1&quot;</span><span class="o">)</span>
@@ -204,7 +209,7 @@
 </li>
 <li>値が空のセルをString型に読み込む場合、<code class="docutils literal"><span class="pre">trim=false</span></code> のときはnull設定されますが、<code class="docutils literal"><span class="pre">trim=true</span></code> のきは、空文字が設定されます。<cite>[ver0.5+]</cite></li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
     <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
     <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">defaultValue</span><span class="o">=</span><span class="s">&quot; 123 &quot;</span><span class="o">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span> <span class="c1">// 属性defaultValueもトリム対象となる。</span>
@@ -232,7 +237,7 @@
 </ul>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
 
     <span class="nd">@XlsColumn</span><span class="o">(</span><span class="n">columnName</span><span class="o">=</span><span class="s">&quot;ID&quot;</span><span class="o">)</span>
     <span class="nd">@XlsConverter</span><span class="o">(</span><span class="n">wrapText</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span> <span class="c1">// 「縮小して全体を表示する」が有効になる。</span>
@@ -258,8 +263,8 @@
 <h2>独自の変換規則を指定する場合<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>本ライブラリで対応していない型に変換したい時など、属性 <code class="docutils literal"><span class="pre">converterClass</span></code> で独自のセルの値を変換するクラスを指定します。</p>
 <p>変換用クラスは、インタフェース <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.cellconvert.CellConverter</span></code> を実装する必要があります。</p>
-<p>詳細は、 <a class="reference internal" href="extension_cellconverter.html"><em>CellConverterの拡張</em></a> を参照してください。</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="c1">// CellConverterの定義</span>
+<p>詳細は、 <a class="reference internal" href="extension_cellconverter.html"><span class="doc">CellConverterの拡張</span></a> を参照してください。</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// CellConverterの定義</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">LocaleDateConverter</span> <span class="kd">extends</span> <span class="n">CellConverter</span><span class="o">&lt;</span><span class="n">LocaleDate</span><span class="o">&gt;</span> <span class="o">{</span>
 
     <span class="c1">// シート読み込み時のExcel Cell =&gt; Javaオブジェクトに変換する。</span>
@@ -302,12 +307,35 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.5.2 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.6 ドキュメント</a> &#187;</li> 
       </ul>
     </div>
+<!-- my theme custom extrahead beacon -->
+<script type="text/javascript" src="_static/jquery.externallink.js" charset="UTF-8"></script>
+<script type="text/javascript">
+	jQuery(function () {
+		// コンテンツ用
+		$('body').externalLink({cssClass : 'externalink', iconUrl:'', startUrl:'../apidocs/'});
+		
+	});
+</script>
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-37313068-2', 'auto');
+  ga('send', 'pageview');
+  
+</script>
+
+
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, T.TSUCHIE.
-      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1 で生成しました。
+        &#169; Copyright 2015-2017, T.TSUCHIE.
+      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9 で生成しました。
     </div>
+
   </body>
 </html>

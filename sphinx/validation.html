@@ -3,19 +3,20 @@
 <!doctype html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4. 読み込んだ値の入力値検証 &mdash; XlsMapper 1.5.2 ドキュメント</title>
+    <title>4. 読み込んだ値の入力値検証 &#8212; XlsMapper 1.6 ドキュメント</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/mycustom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.5.2',
+        VERSION:     '1.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,8 +27,11 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/translations.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/mytheme.js"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="XlsMapper 1.5.2 ドキュメント" href="index.html" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="top" title="XlsMapper 1.6 ドキュメント" href="index.html" />
     <link rel="next" title="5. 拡張方法" href="extension.html" />
     <link rel="prev" title="3. その他の機能" href="otheruse.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -48,24 +52,27 @@
         <li class="right" >
           <a href="otheruse.html" title="3. その他の機能"
              accesskey="P">前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.5.2 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.6 ドキュメント</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper"><div id="toc" class="sidebarRow">
-<h3><a href="../index.html">プロジェクト情報</a></h3>
+<h3><a href="../index.html">関連リンク</a></h3>
 <ul>
-	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">Javadoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">JavaDoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="https://github.com/mygreen/xlsmapper">GitHub</a></li>
 	<li class="toctree-l1"><a class="reference internal" href="../project-info.html">プロジェクト情報</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../project-reports.html">プロジェクトレポート</a></li>
 </ul>
 
 <h3><a href="index.html">目次</a></h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.2. マッピングの基本</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id6">1.3. 読み込み方</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.4. 書き込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.2. 前提条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id4">1.3. マッピングの基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id7">1.4. 読み込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.5. 書き込み方</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
@@ -84,7 +91,7 @@
 <li class="toctree-l2"><a class="reference internal" href="otheruse.html#xml">3.4. XMLファイルによるマッピング</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">4. 読み込んだ値の入力値検証</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. 読み込んだ値の入力値検証</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id2">4.1. 入力値検証の基本</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id3">4.2. 独自の入力値検証</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id4">4.3. フィールド（プロパティ）の入力値検証</a></li>
@@ -113,28 +120,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">8. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-2-2016-10-30">8.1. ver.1.5.2 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-1-2016-10-30">8.2. ver.1.5.1 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-0-2016-08-30">8.3. ver.1.5.0 - 2016-08-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">8.4. ver.1.4.4 - 2016-07-02</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">8.5. ver.1.4.3 - 2016-05-28</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">8.6. ver.1.4.2 - 2016-05-07</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">8.7. ver.1.4.1 - 2016-04-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">8.8. ver.1.4 - 2016-03-21</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">8.9. ver.1.3 - 2016-03-13</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.10. ver.1.2.1 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.11. ver.1.2 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.12. ver.1.1 - 2016-03-08</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.13. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.14. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.15. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.16. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.17. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.18. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.19. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.20. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.21. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.22. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-6-2017-01-02">8.1. ver.1.6 - 2017-01-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-2-2016-10-30">8.2. ver.1.5.2 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-1-2016-10-30">8.3. ver.1.5.1 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-0-2016-08-30">8.4. ver.1.5.0 - 2016-08-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">8.5. ver.1.4.4 - 2016-07-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">8.6. ver.1.4.3 - 2016-05-28</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">8.7. ver.1.4.2 - 2016-05-07</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">8.8. ver.1.4.1 - 2016-04-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">8.9. ver.1.4 - 2016-03-21</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">8.10. ver.1.3 - 2016-03-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">8.11. ver.1.2.1 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">8.12. ver.1.2 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">8.13. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">8.14. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">8.15. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">8.16. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">8.17. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">8.18. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">8.19. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">8.20. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">8.21. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">8.22. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">8.23. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -157,14 +165,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>クイック検索</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="検索" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="検索" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    モジュール、クラス、または関数名を入力してください
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -187,7 +192,7 @@
 </ul>
 </li>
 <li>セルの値をJavaオブジェクトに変換の失敗情報は、読み込み時に自動的に作成されます。<ul>
-<li>1つのセルの型変換に失敗しても処理を続行するよう、 <a class="reference internal" href="otheruse_config.html"><em>システム設定XlsMapperConfig</em></a> のプロパティ <code class="docutils literal"><span class="pre">continueTypeBindFailure</span></code> を&#8217;true&#8217;に設定します。</li>
+<li>1つのセルの型変換に失敗しても処理を続行するよう、 <a class="reference internal" href="otheruse_config.html"><span class="doc">システム設定XlsMapperConfig</span></a> のプロパティ <code class="docutils literal"><span class="pre">continueTypeBindFailure</span></code> を&#8217;true&#8217;に設定します。</li>
 </ul>
 </li>
 <li>別途用意したBeanに対するValidatorにより、値を検証します。<ul>
@@ -197,7 +202,7 @@
 </li>
 <li>エラーがある場合、 <code class="docutils literal"><span class="pre">SheetMessageConverter</span></code> を使用して、エラーオブジェクトを文字列に変換します。</li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="n">XlsMapper</span> <span class="n">xlsMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">XlsMapper</span> <span class="n">xlsMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
 
 <span class="c1">// 型変換エラーが起きても処理を続行するよう設定</span>
 <span class="n">xlsMapper</span><span class="o">.</span><span class="na">getConig</span><span class="o">().</span><span class="na">setContinueTypeBindFailure</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
@@ -237,7 +242,7 @@
 </ul>
 </li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EmployerValidator</span> <span class="kd">extends</span> <span class="n">AbstractObjectValidator</span><span class="o">&lt;</span><span class="n">Employer</span><span class="o">&gt;{</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EmployerValidator</span> <span class="kd">extends</span> <span class="n">AbstractObjectValidator</span><span class="o">&lt;</span><span class="n">Employer</span><span class="o">&gt;{</span>
 
     <span class="c1">// ネストしたBeanのValidator</span>
     <span class="kd">private</span> <span class="n">EmployerHistoryValidator</span> <span class="n">historyValidator</span><span class="o">;</span>
@@ -298,7 +303,7 @@
 </li>
 <li>フィールドに対してエラーがある場合、 <cite>CellField#hasErrors(...)/hasNotErrors(...)</cite> で検証できます。</li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EmployerHistoryValidator</span> <span class="kd">extends</span> <span class="n">AbstractObjectValidator</span><span class="o">&lt;</span><span class="n">EmployerHistory</span><span class="o">&gt;{</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EmployerHistoryValidator</span> <span class="kd">extends</span> <span class="n">AbstractObjectValidator</span><span class="o">&lt;</span><span class="n">EmployerHistory</span><span class="o">&gt;{</span>
 
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">validate</span><span class="o">(</span><span class="kd">final</span> <span class="n">EmployerHistory</span> <span class="n">targetObj</span><span class="o">,</span> <span class="kd">final</span> <span class="n">SheetBindingErrors</span> <span class="n">errors</span><span class="o">)</span> <span class="o">{</span>
@@ -340,7 +345,7 @@
 </ul>
 </li>
 </ul>
-<div class="highlight-properties"><div class="highlight"><pre><span class="c">## メッセージの定義</span>
+<div class="highlight-properties"><div class="highlight"><pre><span></span><span class="c">## メッセージの定義</span>
 <span class="c">## SheetValidationMessages.properties</span>
 
 <span class="c"># 共通変数</span>
@@ -363,7 +368,7 @@
 </pre></div>
 </div>
 <table border="1" class="docutils" id="id8">
-<caption><span class="caption-text">エラーメッセージの一致順</span><a class="headerlink" href="#id8" title="このテーブルへのパーマリンク">¶</a></caption>
+<caption><span class="caption-number">表 - 4.4.1 </span><span class="caption-text">エラーメッセージの一致順</span><a class="headerlink" href="#id8" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="10%" />
 <col width="40%" />
@@ -434,7 +439,7 @@ Beanクラスに位置情報を保持するフィールド <code class="docutils
 <p>メッセージファイルは、ResourceBundleやProperties、またSpringのMessageSourceからも取得できます。
 設定する場合、<code class="docutils literal"><span class="pre">SheetMessageConverter#setMessageResolver(...)</span></code> で対応するクラスを設定します。</p>
 <table border="1" class="docutils" id="id9">
-<caption><span class="caption-text">メッセージファイルのブリッジ用クラス</span><a class="headerlink" href="#id9" title="このテーブルへのパーマリンク">¶</a></caption>
+<caption><span class="caption-number">表 - 4.5.1 </span><span class="caption-text">メッセージファイルのブリッジ用クラス</span><a class="headerlink" href="#id9" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="50%" />
 <col width="50%" />
@@ -456,7 +461,7 @@ Beanクラスに位置情報を保持するフィールド <code class="docutils
 </tr>
 </tbody>
 </table>
-<div class="highlight-java"><div class="highlight"><pre><span class="c1">// SpringのMessageSourceからメッセージを取得する場合</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// SpringのMessageSourceからメッセージを取得する場合</span>
 <span class="n">MessageSource</span> <span class="n">messageSource</span> <span class="o">=</span> <span class="cm">/*...*/</span><span class="o">;</span>
 
 <span class="n">SheetMessageConverter</span> <span class="n">messageConverter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetMessageConverter</span><span class="o">();</span>
@@ -470,7 +475,7 @@ Beanクラスに位置情報を保持するフィールド <code class="docutils
 <p>EL式の他、MVEL、JEXLが利用できます。</p>
 <p>使用する式言語を変更する場合、<code class="docutils literal"><span class="pre">MessageInterapolator#setExpressionLanguage(...)</span></code> で式言語の実装を設定します。</p>
 <p>MVEL、JEXL(ver.1.5+)を利用する場合、別途、ライブラリが必要になります。</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="n">SheetMessageConverter</span> <span class="n">messageConverter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetMessageConverter</span><span class="o">();</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">SheetMessageConverter</span> <span class="n">messageConverter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetMessageConverter</span><span class="o">();</span>
 
 <span class="c1">// 式言語の設定をMVELに切り替える場合</span>
 <span class="n">messageConverter</span><span class="o">.</span><span class="na">getMessageInterporlator</span><span class="o">()</span>
@@ -481,7 +486,7 @@ Beanクラスに位置情報を保持するフィールド <code class="docutils
 <p class="first admonition-title">注釈</p>
 <p class="last">式言語を変更した場合、メッセージ中の${EL式}を、言語特有のものに変更する必要があります。</p>
 </div>
-<div class="highlight-xml"><div class="highlight"><pre><span class="c">&lt;!-- ====================== 各式言語のライブラリ ===============--&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="c">&lt;!-- ====================== 各式言語のライブラリ ===============--&gt;</span>
 <span class="c">&lt;!-- EL式を利用する場合 --&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>org.glassfish<span class="nt">&lt;/groupId&gt;</span>
@@ -505,7 +510,7 @@ Beanクラスに位置情報を保持するフィールド <code class="docutils
 </pre></div>
 </div>
 <table border="1" class="docutils" id="id10">
-<caption><span class="caption-text">式言語の実装クラス</span><a class="headerlink" href="#id10" title="このテーブルへのパーマリンク">¶</a></caption>
+<caption><span class="caption-number">表 - 4.6.1 </span><span class="caption-text">式言語の実装クラス</span><a class="headerlink" href="#id10" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="50%" />
 <col width="50%" />
@@ -543,7 +548,7 @@ Beanクラスに位置情報を保持するフィールド <code class="docutils
 </li>
 <li>メッセー時を出力する場合は、SheetMessageConverterを使用します。</li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span class="c1">// シートの読み込み</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// シートの読み込み</span>
 <span class="n">SheetBindingErrors</span> <span class="n">errors</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SheetBindingErrors</span><span class="o">(</span><span class="n">Employer</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 <span class="n">Employer</span> <span class="n">beanObj</span> <span class="o">=</span> <span class="n">loadSheet</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;./src/test/data/employer.xlsx&quot;</span><span class="o">),</span> <span class="n">errors</span><span class="o">);</span>
 
@@ -560,7 +565,7 @@ Beanクラスに位置情報を保持するフィールド <code class="docutils
 <span class="o">}</span>
 </pre></div>
 </div>
-<div class="highlight-xml"><div class="highlight"><pre><span class="c">&lt;!-- ====================== Bean Validationのライブラリ ===============--&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="c">&lt;!-- ====================== Bean Validationのライブラリ ===============--&gt;</span>
 <span class="c">&lt;!-- Bean Validation 1.1 系を利用する --&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>javax.validation<span class="nt">&lt;/groupId&gt;</span>
@@ -581,7 +586,7 @@ Beanクラスに位置情報を保持するフィールド <code class="docutils
 <p>BeanValidationのメッセージファイルを他のファイルやSpringのMessageSourcesから取得することもできます。</p>
 <p>XlsMapperのクラス <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.validation.beanvalidation.MessageResolverInterpolator</span></code> を利用することで、BeanValidationのメッセージ処理クラスをブリッジすることができます。</p>
 <p>上記の「メッセージファイルのブリッジ用クラス」を渡すことができます。</p>
-<div class="highlight-java"><div class="highlight"><pre> <span class="c1">// BeanValidationのValidatorの定義</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span> <span class="c1">// BeanValidationのValidatorの定義</span>
  <span class="n">ValidatorFactory</span> <span class="n">validatorFactory</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="na">buildDefaultValidatorFactory</span><span class="o">();</span>
  <span class="n">Validator</span> <span class="n">validator</span> <span class="o">=</span> <span class="n">validatorFactory</span><span class="o">.</span><span class="na">usingContext</span><span class="o">()</span>
          <span class="o">.</span><span class="na">messageInterpolator</span><span class="o">(</span><span class="k">new</span> <span class="n">MessageResolverInterpolator</span><span class="o">(</span><span class="k">new</span> <span class="n">ResourceBundleMessageResolver</span><span class="o">()))</span>
@@ -594,7 +599,7 @@ Beanクラスに位置情報を保持するフィールド <code class="docutils
 <p>Bean Validation1.1から式中にEL式が利用できるようになりましたが、その参照実装であるHibernate Validator5.xでは、EL2.x系を利用し、EL3.xの書式は利用できません。
 EL式の処理系をXlsMapperのクラス <code class="docutils literal"><span class="pre">com.gh.mygreen.xlsmapper.validation.MessageInterpolator</span></code> を利用することでEL式の処理系を変更することができます。</p>
 <p>XslMapperの <code class="docutils literal"><span class="pre">ExpressionLanguageELImpl</span></code> は、EL3.0のライブラリが読み込まれている場合、3.x系の処理に切り替えます。</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="c1">// BeanValidatorの式言語の実装を独自のものにする。</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// BeanValidatorの式言語の実装を独自のものにする。</span>
 <span class="n">ValidatorFactory</span> <span class="n">validatorFactory</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="na">buildDefaultValidatorFactory</span><span class="o">();</span>
 <span class="n">Validator</span> <span class="n">beanValidator</span> <span class="o">=</span> <span class="n">validatorFactory</span><span class="o">.</span><span class="na">usingContext</span><span class="o">()</span>
         <span class="o">.</span><span class="na">messageInterpolator</span><span class="o">(</span><span class="k">new</span> <span class="n">MessageInterpolatorAdapter</span><span class="o">(</span>
@@ -631,12 +636,35 @@ EL式の処理系をXlsMapperのクラス <code class="docutils literal"><span c
         <li class="right" >
           <a href="otheruse.html" title="3. その他の機能"
              >前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.5.2 ドキュメント</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.6 ドキュメント</a> &#187;</li> 
       </ul>
     </div>
+<!-- my theme custom extrahead beacon -->
+<script type="text/javascript" src="_static/jquery.externallink.js" charset="UTF-8"></script>
+<script type="text/javascript">
+	jQuery(function () {
+		// コンテンツ用
+		$('body').externalLink({cssClass : 'externalink', iconUrl:'', startUrl:'../apidocs/'});
+		
+	});
+</script>
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-37313068-2', 'auto');
+  ga('send', 'pageview');
+  
+</script>
+
+
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, T.TSUCHIE.
-      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1 で生成しました。
+        &#169; Copyright 2015-2017, T.TSUCHIE.
+      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9 で生成しました。
     </div>
+
   </body>
 </html>

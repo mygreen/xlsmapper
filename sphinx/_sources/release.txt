@@ -3,6 +3,32 @@
 ======================================
 
 --------------------------------------------------------
+ver.1.6 - 2017-01-02
+--------------------------------------------------------
+
+* `#88 <https://github.com/mygreen/xlsmapper/issues/88>`_ POI-3.15で、クラス ``CellCommentStore`` コンパイルエラーが発生する事象を修正しました。
+
+* `#89 <https://github.com/mygreen/xlsmapper/issues/89>`_ JSP-EL 2.x使用時に、例外 ``NoClassDefFoundError`` が発生する事象を修正しました。
+
+* `#90 <https://github.com/mygreen/xlsmapper/issues/90>`_ テスタにおいて、テスト結果ファイルを書き込む場所を ``src/test/out`` から ``target/test_out`` に変更しました。
+
+* `#91 <https://github.com/mygreen/xlsmapper/issues/91>`_ セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.9.1に対応しました。
+
+* `#92 <https://github.com/mygreen/xlsmapper/issues/92>`_ POI-3.14以降で、ネストする表を出力するときに例外が発生する事象を修正しました。
+
+* `#93 <https://github.com/mygreen/xlsmapper/issues/93>`_ 不正な数式を書き込んだときのテスタを修正しました。
+
+  * POI-3.14以降で、POIで使用できない関数を設定したときにエラーが発生しなくなったため、数式を他のケースに変更しました。
+
+* `#94 <https://github.com/mygreen/xlsmapper/issues/94>`_ POI-3.15で、``@XlsHorizotnalRecords`` において、レコードの挿入や削除を行ったレコードより下方にある結合したセルが解除される事象を修正しました。
+
+* `#95 <https://github.com/mygreen/xlsmapper/issues/95>`_ ``@XlsHorizotnalRecords`` において、レコードの削除を行う設定のとき、空のレコードを書き込むとデータ行が全て削除される事象を改善し、必ず、1レコードは残るように修正しました。
+
+* `#96 <https://github.com/mygreen/xlsmapper/issues/96>`_ POI-3.15 で、``CellLink`` や ``java.net.URL`` 型において、``A1`` 形式のセルに対するリンクを書き込んだ場合、例外が発生する事象を修正しました。
+
+
+
+--------------------------------------------------------
 ver.1.5.2 - 2016-10-30
 --------------------------------------------------------
 
