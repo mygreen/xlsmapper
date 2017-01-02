@@ -39,33 +39,6 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * </div>
  *
  *
- * <h3 class="description">終了条件のセルを指定する場合</h3>
- * <p>属性{@link #nextColumnName()}で指定した前のカラムまでが処理対象となり、マッピングの終了条件を指定することができます。</p>
- * 
- * <pre class="highlight"><code class="java">
- * public class SampleRecord {
- *     
- *     {@literal @XlsColumn(columnName="ID")}
- *     private int id;
- *     
- *     {@literal @XlsColumn(columnName="名前")}
- *     private String name;
- *     
- *     {@literal @XlsMapColumns(previousColumnName="名前", nextColumnName="備考")}
- *     private {@literal Map<String, String>} attendedMap;
- *     
- *     {@literal @XlsColumn(columnName="備考")}
- *     private String comment;
- *     
- * }
- * </code></pre>
- * 
- * <div class="picture">
- *    <img src="doc-files/MapColumns_nextColumnName.png">
- *    <p>マッピングの終了条件の指定</p>
- * </div>
-
- *
  *
  * <h3 class="description">型変換する場合</h3>
  * <p>アノテーション{@link com.gh.mygreen.xlsmapper.annotation.XlsConverter}などで型変換を適用するときは、Mapの値が変換対象となります。
@@ -202,6 +175,29 @@ public @interface XlsMapColumns {
     /**
      * この属性で指定した前のカラムまでが処理対象となり、マッピングの終了条件を指定することができます。
      * <p>システム設定により、正規表現による指定や正規化（改行、空白、タブの削除）による比較の対象となります。</p>
+     * 
+     * <pre class="highlight"><code class="java">
+     * public class SampleRecord {
+     *     
+     *     {@literal @XlsColumn(columnName="ID")}
+     *     private int id;
+     *     
+     *     {@literal @XlsColumn(columnName="名前")}
+     *     private String name;
+     *     
+     *     {@literal @XlsMapColumns(previousColumnName="名前", nextColumnName="備考")}
+     *     private {@literal Map<String, String>} attendedMap;
+     *     
+     *     {@literal @XlsColumn(columnName="備考")}
+     *     private String comment;
+     *     
+     * }
+     * </code></pre>
+     * 
+     * <div class="picture">
+     *    <img src="doc-files/MapColumns_nextColumnName.png">
+     *    <p>マッピングの終了条件の指定</p>
+     * </div>
      * 
      * @since 1.2
      * @return

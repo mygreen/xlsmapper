@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 
 /**
  * ラベルセルを指定し、その左右もしくは下側のセルの値をマッピングします。
@@ -33,72 +34,6 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  *    <img src="doc-files/LabelledCell.png">
  *    <p>基本的な使い方</p>
  * </div>
- * 
- * 
- * <h3 class="description">ラベルセルから離れたセルを指定する方法（属性{@link #range()}）</h3>
- * <p>属性{@link #range()}を指定すると、属性{@link #type()}の方向に向かって指定したセル数分を検索し、
- *    最初に発見した空白以外のセルの値を取得します。
- * </p>
- * <pre class="highlight"><code class="java">
- * {@literal @XlsSheet(name="Users")}
- * public class SampleSheet {
- *     
- *     {@literal @XlsLabelledCell(label="ラベル", type=LabelledCellType.Right), range=3)}
- *     private String title;
- * 
- * }
- * </code></pre>
- * 
- * <div class="picture">
- *    <img src="doc-files/LabelledCell_range.png">
- *    <p>属性rangeの概要</p>
- * </div>
- * 
- * 
- * <h3 class="description">ラベルセルから離れたセルを指定する方法（属性{@link #skip()}）</h3>
- * <p>属性{@link #skip()}を指定すると、属性{@link #type()}の方向に向かってラベルセルから指定したセル数分離れたセルの値をマッピングすることができます。
- *    <br>ラベルセルを結合してる場合、結合しているセル数-1分を指定することでマッピングできます。
- * </p>
- * <pre class="highlight"><code class="java">
- * {@literal @XlsSheet(name="Users")}
- * public class SampleSheet {
- *     
- *     {@literal @XlsLabelledCell(label="ラベル", type=LabelledCellType.Right), skip=2)}
- *     private String title;
- * 
- * }
- * </code></pre>
- * 
- * <div class="picture">
- *    <img src="doc-files/LabelledCell_skip.png">
- *    <p>属性skipの概要</p>
- * </div>
- * 
- * 
- * <h3 class="description">ラベルセルが重複するセルを指定する方法</h3>
- * 
- * <p>同じラベルのセルが複数ある場合は、領域の見出しを属性{@link #headerLabel()}で指定します。
- *    <br>属性{@link #headerLabel()}で指定されたセルから属性{@link #label()}で指定されたセルを下方向に検索し、最初に見つかったセルをラベルセルとして使用します。
- * </p>
- * 
- * <pre class="highlight"><code class="java">
- * {@literal @XlsSheet(name="Users")}
- * public class SampleSheet {
- *     
- *     {@literal @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, headerLabel="アクション")}
- *     private String actionClassName;
- *     
- *     {@literal @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, headerLabel="アクションフォーム")}
- *     private String formClassName;
- * 
- * }
- * </code></pre>
- * 
- * <div class="picture">
- *    <img src="doc-files/LabelledCell_headerLabel.png">
- *    <p>属性headerLabelの概要</p>
- * </div>
- * 
  * 
  * <h3 class="description">ラベルセルを正規表現、正規化して指定する場合</h3>
  * 
@@ -150,11 +85,29 @@ public @interface XlsLabelledCell {
     
     /**
      * セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。
+     * <p>falseを指定し、セルが見つからない場合は、例外{@link CellNotFoundException}がスローされます。</p>
      */
     boolean optional() default false;
     
     /**
      * 属性{@link #type()}の方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルの値を取得します。
+     * <p>ラベルセルから離れたセルを指定する場合に使用します。</p>
+     * 
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * public class SampleSheet {
+     *     
+     *     {@literal @XlsLabelledCell(label="ラベル", type=LabelledCellType.Right), range=3)}
+     *     private String title;
+     * 
+     * }
+     * </code></pre>
+     * 
+     * <div class="picture">
+     *    <img src="doc-files/LabelledCell_range.png">
+     *    <p>属性rangeの概要</p>
+     * </div>
+     * 
      * @return 値は1から始まり、指定しない場合は1を指定します。
      */
     int range() default 1;
@@ -197,12 +150,50 @@ public @interface XlsLabelledCell {
      *   最初に見つかったセルをラベルセルとして使用します。
      * </p>
      * <p>システム設定により、正規表現による指定や正規化（改行、空白、タブの削除）による比較の対象となります。</p>
+     * 
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * public class SampleSheet {
+     *     
+     *     {@literal @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, headerLabel="アクション")}
+     *     private String actionClassName;
+     *     
+     *     {@literal @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, headerLabel="アクションフォーム")}
+     *     private String formClassName;
+     * 
+     * }
+     * </code></pre>
+     * 
+     * <div class="picture">
+     *    <img src="doc-files/LabelledCell_headerLabel.png">
+     *    <p>属性headerLabelの概要</p>
+     * </div>
+     * 
      * @return 
      */
     String headerLabel() default "";
     
     /**
      * ラベルセルから指定したセル数分離れたセルの値をマッピングする際に指定します。
+     * <p>属性{@link #type()}の方向に向かってラベルセルから指定したセル数分離れたセルの値をマッピングすることができます。
+     *    <br>ラベルセルを結合してる場合、結合しているセル数-1分を指定することでマッピングできます。
+     * </p>
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * public class SampleSheet {
+     *     
+     *     {@literal @XlsLabelledCell(label="ラベル", type=LabelledCellType.Right), skip=2)}
+     *     private String title;
+     * 
+     * }
+     * </code></pre>
+     * 
+     * <div class="picture">
+     *    <img src="doc-files/LabelledCell_skip.png">
+     *    <p>属性skipの概要</p>
+     * </div>
+     * 
+     * 
      * @return 値は0から始まり、指定しない場合は0を指定します。
      */
     int skip() default 0;
