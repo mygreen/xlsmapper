@@ -43,6 +43,18 @@ extensions = [
 [extensions]
 todo_include_todos=True
 
+
+# auto numbering for HTML and LaTeX builder.
+# see: http://docs.sphinx-users.jp/markup/inline.html#cross-referencing-figures-by-figure-number
+# see: http://docs.sphinx-users.jp/config.html#confval-numfig
+numfig = True
+numfig_format = {
+  'figure'      : u'図 - %s',
+  'table'       : u'表 - %s',
+  'code-block'  : u'コード - %s',
+}
+numfig_secnum_depth = 2
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -57,7 +69,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'XlsMapper'
-copyright = u'2015-2016, T.TSUCHIE'
+copyright = u'2015-2017, T.TSUCHIE'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
