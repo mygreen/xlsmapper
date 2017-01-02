@@ -45,121 +45,6 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  *    <p>基本的な使い方</p>
  * </div>
  *
- *
- * <h3 class="description">表の名称の位置の指定</h3>
- * <p>実際に表を作る場合、垂直方向ですが表の名称は上方に設定することが一般的です。</p>
- * <p>そのような場合、属性 {@link #tableLabelAbove()} の値を'true' に設定すると表のタイトルが上方に位置するとして処理します。</p>
- * 
- * <pre class="highlight"><code class="java">
- * // シート用クラス
- * {@literal @XlsSheet(name="Weather")}
- * public class SampleSheet {
- *     
- *     {@literal @XlsVerticalRecords(tableLabel="天気情報", tableLabelAbove=true)}
- *     private {@literal List<WeatherRecord>} records;
- * }
- * </code></pre>
- * 
- * <div class="picture">
- *    <img src="doc-files/VerticalRecord_tableLabelAbove.png">
- *    <p>表の名称が上方にある場合</p>
- * </div>
- * 
- * 
- * <h3 class="description">表の名称から開始位置が離れた場所にある場合</h3>
- * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #right()}で表の開始位置がどれだけ離れているか指定します。</p>
- * <p>{@link XlsHorizontalRecords#bottom()} と同じような意味になります。</p>
- * <p>さらに、属性 {@link #tableLabelAbove()} と組み合わせると、下方向にどれだけ離れているかの意味になります。
- * 
- * <pre class="highlight"><code class="java">
- * {@literal @XlsSheet(name="Users")}
- * public class SampleSheet {
- *     
- *     {@literal @XlsHorizontalRecords(tableLabel="天気情報", right=3)}
- *     private {@literal List<WeatherRecord>} records;
- * }
- * </code></pre>
- * 
- * <div class="picture">
- *    <img src="doc-files/VerticalRecord_right.png">
- *    <p>表の名称から離れている際の開始位置の指定</p>
- * </div>
- * 
- * 
- * <h3 class="description">表の名称から開始位置が離れた場所にある場合</h3>
- * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #bottom()}で表の開始位置がどれだけ離れているか指定します。</p>
- * 
- * <pre class="highlight"><code class="java">
- * {@literal @XlsSheet(name="Users")}
- * public class SampleSheet {
- *     
- *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧", bottom=3)}
- *     private {@literal List<UserRecord>} records;
- * }
- * </code></pre>
- * 
- * <div class="picture">
- *    <img src="doc-files/HorizontalRecord_bottom.png">
- *    <p>表の名称から離れている際の開始位置の指定</p>
- * </div>
- * 
- * 
- * <h3 class="description">表の見出しが横に結合されデータレコードの開始位置が離れた場所にある場合</h3>
- * <p>表の見出しセルが横に結合され、データレコードの開始位置が離れている場合、属性{@link #headerRight()}でデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1]`</p>
- * <p>下記の例の場合、見出しの「測定結果」は縦に結合されているため {@link XlsColumn#headerMerged()}と組み合わせて利用します。
- * 
- * <pre class="highlight"><code class="java">
- * // シート用クラス
- * {@literal @XlsSheet(name="Weather")}
- * public class SampleSheet {
- *     
- *     // 見出しが横に結合され、データのレコードの開始位置が離れている場合
- *     {@literal XlsVerticalRecords(tableLabel="クラス情報", headerRight=2)}
- *         private {@literal List<SampleRecord>} records;
- *     
- *     }
- * }
- *   
- * // レコード用クラス
- * public class SampleRecord {
- *     
- *     {@literal @XlsColumn(columnName="時間")}
- *     private String name;
- *     
- *     // セル「降水」のマッピング
- *     {@literal @XlsColumn(columnName="測定結果")}
- *     private double precipitation;
- *     
- *     // セル「気温」のマッピング
- *     // 結合されている見出しから離れている数を指定する
- *     {@literal @XlsColumn(columnName="測定結果", headerMerged=1)}
- *     private int temperature;
- *     
- *     / セル「天気」のマッピング
- *     // 結合されている見出しから離れている数を指定する
- *     {@literal @XlsColumn(columnName="測定結果", headerMerged=2)}
- *     private String wather;
- *     
- * }
- * </code></pre>
- * 
- * <div class="picture">
- *    <img src="doc-files/VerticalRecord_headerRight.png">
- *    <p>表の見出しからデータレコードが離れているときの指定</p>
- * </div>
- * 
- *  
- * 
- * <h3 class="description">書き込み時にレコードが不足、余分である場合の操作の指定</h3>
- * <p>属性{@link #overRecord()}、属性{@link #remainedRecord()}で、書き込み時のレコードの操作を指定することができますが、
- *    {@link XlsHorizontalRecords}の場合は一部の設定が使用できません。
- * </p>
- * 
- * <p>{@link XlsVerticalRecords#overRecord()} の場合、列の挿入を行う{@link OverRecordOperate#Insert}は使用できません。
- *   <br>また、{@link XlsVerticalRecords#remainedRecord()} の場合、列の削除を行う{@link RemainedRecordOperate#Delete}は使用できません。
- *   <br>これは、Apache POIが一括で列の挿入や削除の処理を行うことをサポートしていないためです。
- *</p>
- * 
  * 
  * <h3 class="description">表の名称を正規表現、正規化して指定する場合</h3>
  * 
@@ -224,6 +109,25 @@ public @interface XlsVerticalRecords {
     
     /**
      * 表の名称（タイトル）ラベルの位置が上方に位置するかどうか指定します。
+     * <p>実際に表を作る場合、垂直方向ですが表の名称は上方に設定することが一般的です。</p>
+     * <p>そのような場合、属性 {@link #tableLabelAbove()} の値を'true' に設定すると表のタイトルが上方に位置するとして処理します。</p>
+     * 
+     * <pre class="highlight"><code class="java">
+     * // シート用クラス
+     * {@literal @XlsSheet(name="Weather")}
+     * public class SampleSheet {
+     *     
+     *     {@literal @XlsVerticalRecords(tableLabel="天気情報", tableLabelAbove=true)}
+     *     private {@literal List<WeatherRecord>} records;
+     * }
+     * </code></pre>
+     * 
+     * <div class="picture">
+     *    <img src="doc-files/VerticalRecord_tableLabelAbove.png">
+     *    <p>表の名称が上方にある場合</p>
+     * </div>
+     * 
+     * 
      * @since 1.0
      * @return trueの場合、表の名称（タイトル）が上方にあるとして処理をします。
      */
@@ -282,9 +186,45 @@ public @interface XlsVerticalRecords {
     int range() default 1;
     
     /**
-     * {@link #tableLabel()}で指定した表のタイトルから、実際の表の開始位置がどれだけ離れているか指定する。
-     * <p>右方向の列数を指定する。
-     * <p>{@link #tableLabelAbove()}の値がtrueの場合は、下方向に行数になる。
+     * {@link #tableLabel()}で指定した表のタイトルから、実際の表の開始位置がどれだけ離れているか指定します。
+     * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #right()}で表の開始位置がどれだけ離れているか指定します。
+     *  <br>右方向の列数を指定します。
+     * </p>
+     * <p>{@link XlsHorizontalRecords#bottom()} と同じような意味になります。</p>
+     * <p>さらに、属性 {@link #tableLabelAbove()} と組み合わせると、下方向にどれだけ離れているかの意味になります。
+     * 
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * public class SampleSheet {
+     *     
+     *     {@literal @XlsHorizontalRecords(tableLabel="天気情報", right=3)}
+     *     private {@literal List<WeatherRecord>} records;
+     * }
+     * </code></pre>
+     * 
+     * <div class="picture">
+     *    <img src="doc-files/VerticalRecord_right.png">
+     *    <p>表の名称から離れている際の開始位置の指定</p>
+     * </div>
+     * 
+     * 
+     * <h3 class="description">表の名称から開始位置が離れた場所にある場合</h3>
+     * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #bottom()}で表の開始位置がどれだけ離れているか指定します。</p>
+     * 
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * public class SampleSheet {
+     *     
+     *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧", bottom=3)}
+     *     private {@literal List<UserRecord>} records;
+     * }
+     * </code></pre>
+     * 
+     * <div class="picture">
+     *    <img src="doc-files/HorizontalRecord_bottom.png">
+     *    <p>表の名称から離れている際の開始位置の指定</p>
+     * </div>
+     * 
      * @since 1.0
      * @return 値は1から始まり、指定しない場合は1を指定します。
      */
@@ -301,8 +241,49 @@ public @interface XlsVerticalRecords {
     
     /**
      * 見出し用セルから、データ行の開始位置がどれだけ離れているかを指定します。
-     * <p>右方向の列数を指定します。</p>
-     * <p>見出しが横に結合されているような場合に指定します。</p>
+     * <p>表の見出しセルが横に結合され、データレコードの開始位置が離れている場合、属性{@link #headerRight()}でデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1]`</p>
+     * <p>下記の例の場合、見出しの「測定結果」は縦に結合されているため {@link XlsColumn#headerMerged()}と組み合わせて利用します。
+     * 
+     * <pre class="highlight"><code class="java">
+     * // シート用クラス
+     * {@literal @XlsSheet(name="Weather")}
+     * public class SampleSheet {
+     *     
+     *     // 見出しが横に結合され、データのレコードの開始位置が離れている場合
+     *     {@literal XlsVerticalRecords(tableLabel="クラス情報", headerRight=2)}
+     *         private {@literal List<SampleRecord>} records;
+     *     
+     *     }
+     * }
+     *   
+     * // レコード用クラス
+     * public class SampleRecord {
+     *     
+     *     {@literal @XlsColumn(columnName="時間")}
+     *     private String name;
+     *     
+     *     // セル「降水」のマッピング
+     *     {@literal @XlsColumn(columnName="測定結果")}
+     *     private double precipitation;
+     *     
+     *     // セル「気温」のマッピング
+     *     // 結合されている見出しから離れている数を指定する
+     *     {@literal @XlsColumn(columnName="測定結果", headerMerged=1)}
+     *     private int temperature;
+     *     
+     *     / セル「天気」のマッピング
+     *     // 結合されている見出しから離れている数を指定する
+     *     {@literal @XlsColumn(columnName="測定結果", headerMerged=2)}
+     *     private String wather;
+     *     
+     * }
+     * </code></pre>
+     * 
+     * <div class="picture">
+     *    <img src="doc-files/VerticalRecord_headerRight.png">
+     *    <p>表の見出しからデータレコードが離れているときの指定</p>
+     * </div>
+     * 
      * @since 1.1
      * @return 値は1から始まり、指定しない場合は1を指定します。
      */

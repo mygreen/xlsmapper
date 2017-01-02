@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+/**
+ * 外部リンクのアイコン
+ */
+img.icon_externallink {
+	margin-left: 3px;
+	margin-bottom: 3px;
+	
+	vertical-align: middle;
+}
+
+a.externalink[target="_blank"] {
+	padding-right:15px;
+	background: url(external-link-12.png)no-repeat right;
+}
+
+

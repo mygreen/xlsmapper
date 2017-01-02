@@ -18,9 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
@@ -47,16 +45,14 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  */
 public class DateTimeCellConverterTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
     
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
     }
     
     @Test
@@ -252,7 +248,7 @@ public class DateTimeCellConverterTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/convert_datetime.xlsx");
+        File outFile = new File(OUT_DIR, "convert_datetime.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -387,14 +383,14 @@ public class DateTimeCellConverterTest {
     @XlsSheet(name="日時型")
     private static class DateTimeSheet {
         
-//        @XlsHint(order=1)
-//        @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-//                overRecord=OverRecordOperate.Insert)
+        @XlsHint(order=1)
+        @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
-//        @XlsHint(order=2)
-//        @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-//                overRecord=OverRecordOperate.Insert)
+        @XlsHint(order=2)
+        @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
+                overRecord=OverRecordOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsHint(order=3)
@@ -657,7 +653,7 @@ public class DateTimeCellConverterTest {
             
             final int rowNumber = point.y + 1;
             
-            return String.format("$H%d - $G%d", rowNumber, rowNumber);
+            return String.format("$H%d-$G%d", rowNumber, rowNumber);
         }
         
         public FormulaRecord no(int no) {

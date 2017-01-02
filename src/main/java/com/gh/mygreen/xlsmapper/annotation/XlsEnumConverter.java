@@ -35,38 +35,6 @@ import java.lang.annotation.Target;
  * }
  * </code></pre>
  * 
- * 
- * <h3 class="description">別名でマッピングする場合</h3>
- * 
- * 別名をマッピングする場合、属性{@link #valueMethodName()}で列挙型の要素の別名を取得するメソッド名を指定します。
- * 
- * <pre class="highlight"><code class="java">
- * public class SampleRecord {
- * 
- *     {@literal @XlsColumn(columnName="権限")}
- *     {@literal @XlsEnumConverter(valueMethodName="localeName"}
- *     private RoleType role;
- * 
- * }
- * 
- * // 列挙型の定義
- * public enum RoleType {
- *     Normal("一般権限"), Admin("管理者権限");
- *     
- *     // 別名の設定
- *     private String localeName;
- *     
- *     private RoleType(String localeName) {
- *         this.localeName = localeName;
- *     }
- *   
- *     // 別名の取得用メソッド
- *     public String localeName() {
- *         return this.localeName;
- *     }
- * }
- * </code></pre>
- * 
  *
  * @author T.TSUCHIE
  *
@@ -83,8 +51,35 @@ public @interface XlsEnumConverter {
     boolean ignoreCase() default false;
     
     /**
-     * 列挙型のをname()メソッド以外から取得するときに指定します。
-     * <p>例). Color.label()のlabel()メソッドを指定するときには、'label'と指定します。
+     * 列挙型のをname()メソッド以外から取得し、別名でマッピングするときに指定します。
+     * <p>例). RoleType.localeName()のlocaleName()メソッドを指定するときには、'localeName'と指定します。</p>
+     * 
+     * <pre class="highlight"><code class="java">
+     * public class SampleRecord {
+     * 
+     *     {@literal @XlsColumn(columnName="権限")}
+     *     {@literal @XlsEnumConverter(valueMethodName="localeName")}
+     *     private RoleType role;
+     * 
+     * }
+     * 
+     * // 列挙型の定義
+     * public enum RoleType {
+     *     Normal("一般権限"), Admin("管理者権限");
+     *     
+     *     // 別名の設定
+     *     private String localeName;
+     *     
+     *     private RoleType(String localeName) {
+     *         this.localeName = localeName;
+     *     }
+     *   
+     *     // 別名の取得用メソッド
+     *     public String localeName() {
+     *         return this.localeName;
+     *     }
+     * }
+     * </code></pre>
      */
     String valueMethodName() default "";
 }

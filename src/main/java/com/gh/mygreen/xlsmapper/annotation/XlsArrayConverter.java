@@ -51,62 +51,6 @@ import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
  * }
  * </code></pre>
  * 
- * <h3 class="description">空の要素を無視する場合</h3>
- * 
- * <p>属性{@link #ignoreEmptyItem()}で、区切った項目の値が空文字の場合、無視するか指定します。</p>
- * 
- * <p>例えば、区切り文字が「,」のとき、セルの値が「{@code a,,b}」の場合、
- *    trueを設定すると、空の項目は覗き、{@code ["a", "b"]}として読み込みます。
- *   <br>書き込み時も同様に、値が空またはnullの項目を無視します。
- * </p>
- * 
- * <pre class="highlight"><code class="java">
- * public class SampleRecord {
- * 
- *     {@literal @XlsColumn(columnName="集合")}
- *     {@literal @XlsArrayConverter(ignoreEmptyItem=true)}
- *     private {@literal Set<String>} set;
- *     
- * }
- * </code></pre>
- * 
- * 
- * <h3 class="description">要素の値を変換するクラスを指定する</h3>
- * <p>属性{@link #itemConverterClass()}で要素の値を変換するクラスを指定することができます。</p>
- * <p>変換するクラスは、インタフェース{@link ItemConverter}を実装している必要があります。
- *   <br>標準では、{@link DefaultItemConverter} が使用され、基本的な型のみサポートしています。
- * </p>
- * <p>インスタンスは、システム設定{@link XlsMapperConfig#getBeanFactory()}経由で作成されるため、
- *   SpringFrameworkのコンテナからインスタンスを取得することもできます。
- * </p>
- * 
- * <pre class="highlight"><code class="java">
- * // 変換用クラス
- * public class CustomItemConverter implements {@literal ItemConverter<User>} {
- *     
- *     {@literal @Override}
- *     public User convertToObject(final String str, final {@literal Class<User>} targetClass) throws ConversionException {
- *         //TODO: 文字列 => オブジェクトに変換する処理
- *     }
- *     
- *     {@literal @Override}
- *     public String convertToString(final User value) {
- *         //TODO: オブジェクト => 文字列に変換する処理
- *     }
- *     
- * }
- * 
- * // レコード用クラス
- * public class SampleRecord {
- * 
- *     // 任意のクラス型の要素の値を変換するConverterを指定します。
- *     {@literal @XlsColumn(columnName="リスト")}
- *     {@literal @XlsArrayConverter(itemConverterClass=CustomItemConverter.class)}
- *     private {@literal List<User>} list;
- *     
- * }
- * </code></pre>
- * 
  * 
  * @version 1.1
  * @author T.TSUCHIE
@@ -118,13 +62,29 @@ import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
 public @interface XlsArrayConverter {
     
     /**
-     * 区切り文字
+     * 区切り文字を指定します。
      * @return
      */
     String separator() default ",";
     
     /**
-     * 空またはnullの項目は無視するか指定します。
+     * 区切った項目の値が空文字または、nullの場合、無視するか指定します。
+     * 
+     * <p>例えば、区切り文字が「,」のとき、セルの値が「{@code a,,b}」の場合、
+     *    trueを設定すると、空の項目は覗き、{@code ["a", "b"]}として読み込みます。
+     *   <br>書き込み時も同様に、値が空またはnullの項目を無視します。
+     * </p>
+     * 
+     * <pre class="highlight"><code class="java">
+     * public class SampleRecord {
+     * 
+     *     {@literal @XlsColumn(columnName="集合")}
+     *     {@literal @XlsArrayConverter(ignoreEmptyItem=true)}
+     *     private {@literal Set<String>} set;
+     *     
+     * }
+     * </code></pre>
+     * 
      * @return
      */
     boolean ignoreEmptyItem() default false;
@@ -138,7 +98,41 @@ public @interface XlsArrayConverter {
     
     /**
      * 配列やリストの要素に対する変換用のクラスを指定します。
-     * <p>インタフェース{@link ItemConverter}を実装している必要があります。</p>
+     * <p>変換するクラスは、インタフェース{@link ItemConverter}を実装している必要があります。
+     *   <br>標準では、{@link DefaultItemConverter} が使用され、基本的な型のみサポートしています。
+     * </p>
+     * <p>インスタンスは、システム設定{@link XlsMapperConfig#getBeanFactory()}経由で作成されるため、
+     *   SpringFrameworkのコンテナからインスタンスを取得することもできます。
+     * </p>
+     * 
+     * <pre class="highlight"><code class="java">
+     * // 変換用クラス
+     * public class CustomItemConverter implements {@literal ItemConverter<User>} {
+     *     
+     *     {@literal @Override}
+     *     public User convertToObject(final String str, final {@literal Class<User>} targetClass) throws ConversionException {
+     *         //TODO: 文字列 => オブジェクトに変換する処理
+     *     }
+     *     
+     *     {@literal @Override}
+     *     public String convertToString(final User value) {
+     *         //TODO: オブジェクト => 文字列に変換する処理
+     *     }
+     *     
+     * }
+     * 
+     * // レコード用クラス
+     * public class SampleRecord {
+     * 
+     *     // 任意のクラス型の要素の値を変換するConverterを指定します。
+     *     {@literal @XlsColumn(columnName="リスト")}
+     *     {@literal @XlsArrayConverter(itemConverterClass=CustomItemConverter.class)}
+     *     private {@literal List<User>} list;
+     *     
+     * }
+     * </code></pre>
+     * 
+     * 
      * @since 1.1
      * @return
      */

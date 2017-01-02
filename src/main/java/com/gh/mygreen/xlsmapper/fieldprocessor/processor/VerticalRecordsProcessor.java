@@ -1345,6 +1345,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     private void processSavingNestedMergedRecord(final Sheet sheet, final int mergedSize,
             final List<CellAddress> valueCellPositions) {
         
+        if(mergedSize <= 1) {
+            return;
+        }
+        
         // ネストした場合、上のセルのスタイルをコピーして、結合する
         for(CellAddress position : valueCellPositions) {
             Cell valueCell = POIUtils.getCell(sheet, position);

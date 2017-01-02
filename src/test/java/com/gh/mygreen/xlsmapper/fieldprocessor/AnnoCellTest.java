@@ -14,15 +14,12 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.poi.ss.util.CellReference;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
@@ -41,16 +38,14 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  */
 public class AnnoCellTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    /**
+     * テスト結果ファイルの出力ディレクトリ
+     */
+    private static File OUT_DIR;
     
-    @Before
-    public void setUp() throws Exception {
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        OUT_DIR = createOutDir();
     }
     
     /**
@@ -191,7 +186,7 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Cell_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Cell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -237,7 +232,7 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Cell_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Cell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
@@ -287,7 +282,7 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(true);
         
-        File outFile = new File("src/test/out/anno_Cell_out.xlsx");
+        File outFile = new File(OUT_DIR, "anno_Cell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             

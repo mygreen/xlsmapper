@@ -70,25 +70,6 @@ import java.lang.annotation.Target;
  * </code></pre> 
  * 
  * 
- * <h3 class="description">変換に失敗した際の処理</h3>
- * <p>読み込み時にセルの値が、属性{@link #loadForTrue()}と{@link #loadForFalse()}で指定した中に、
- *    該当するものがない場合、例外{@link com.gh.mygreen.xlsmapper.cellconvert.TypeBindException}が発生します。</p>
- * <p>属性{@link #failToFalse()}をtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、
- *    例外を発生しなくできます。</p>
- * 
- * <pre class="highlight"><code class="java">
- * public class SampleRecord {
- * 
- *     {@literal @XlsColumn(columnName="ステータス")}
- *     {@literal @XlsBooleanConverter(
- *             loadForTrue={"○", "有効", "レ"},
- *             loadForFalse={"×", "無効", "-", ""},
- *             failToFalse=true)}
- *     private boolean availabled;
- * 
- * }
- * </code></pre>
- * 
  * @author T.TSUCHIE
  *
  */
@@ -129,6 +110,25 @@ public @interface XlsBooleanConverter {
     
     /**
      * セルの読み込み時に、{@link #loadForTrue()}、{@link #loadForFalse()}で指定した候補と一致しない場合、値をfalseとして読み込みます。
+     * 
+     * <p>読み込み時にセルの値が、属性{@link #loadForTrue()}と{@link #loadForFalse()}で指定した中に、
+     *    該当するものがない場合、例外{@link com.gh.mygreen.xlsmapper.cellconvert.TypeBindException}が発生します。</p>
+     * <p>属性{@link #failToFalse()}をtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、
+     *    例外を発生しなくできます。</p>
+     * 
+     * <pre class="highlight"><code class="java">
+     * public class SampleRecord {
+     * 
+     *     {@literal @XlsColumn(columnName="ステータス")}
+     *     {@literal @XlsBooleanConverter(
+     *             loadForTrue={"○", "有効", "レ"},
+     *             loadForFalse={"×", "無効", "-", ""},
+     *             failToFalse=true)}
+     *     private boolean availabled;
+     * 
+     * }
+     * </code></pre>
+     * 
      * @return
      */
     boolean failToFalse() default false;

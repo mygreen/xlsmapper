@@ -3,6 +3,8 @@ package com.gh.mygreen.xlsmapper;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Sheet;
+
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.cellconvert.CellConverterRegistry;
@@ -17,7 +19,7 @@ import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
 /**
  * マッピングする際の設定などを保持するクラス。
  * 
- * @version 1.5
+ * @version 1.6
  * @author T.TSUCHIE
  *
  */
@@ -46,6 +48,9 @@ public class XlsMapperConfig {
     
     /** 書き込み時にセルのコメントを修正するかどうか */
     private boolean correctCellCommentOnSave = false;
+    
+    /** 書き込み時にセルの結合を修正するかどうか */
+    private boolean correctMergedCellOnSave = POIUtils.AVAILABLE_METHOD_SHEET_REMOVE_MERGE_REGIONS;
     
     /** 書き込み時に式の再計算をするかどうか */
     private boolean formulaRecalcurationOnSave = true;
@@ -161,7 +166,7 @@ public class XlsMapperConfig {
     }
     
     /**
-     * 型変換エラーが発生しても処理を続けるかどうか設定します。
+     * 型変換エラーが発生しても処理を続けるかどうか。
      * @param continueTypeBindFailure 初期値は、'false'です。
      * @return
      */
@@ -218,7 +223,7 @@ public class XlsMapperConfig {
     }
     
     /**
-     * 書き込み時にセルの入力規則を修正するかどうか設定します。
+     * 書き込み時にセルの入力規則を修正するかどうか。
      * <p>trueの場合（修正する場合）、POI-3.11以上が必要になります。
      * <p>POI-3.10以前の場合、データの修正は行われません。
      * @param correctCellDataValidationOnSave 初期値は、'false'です。
@@ -229,9 +234,9 @@ public class XlsMapperConfig {
     }
     
     /**
-     * 書き込み時にセルノコメントを修正するかどうか設定します。
-     * <p>POI-3.10以上の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
-     * <p>アノテーションXlsHorizontalRecordsで行の追加などを行うときに補正します。
+     * 書き込み時にセルノコメントを修正するかどうか。
+     * <p>POI-3.10～3.11の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
+     * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補正します。
      * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
      * @return 初期値は、'false'です。
      */
@@ -242,8 +247,8 @@ public class XlsMapperConfig {
     /**
      * 書き込み時にセルのコメントを修正するかどうか設定します。
      * <p>'true'の場合、修正します。
-     * <p>POI-3.10以上の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
-     * <p>アノテーションXlsHorizontalRecordsで行の追加などを行うときに補正します。
+     * <p>POI-3.10～3.11の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
+     * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補正します。
      * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
      * @param correctCellCommentOnSave 初期値は、'false'です。
      * @return 自身のインスタンス
@@ -252,6 +257,38 @@ public class XlsMapperConfig {
         this.correctCellCommentOnSave = correctCellCommentOnSave;
         return this;
     }
+    
+    /**
+     * 書き込み時にセルの結合を修正するか。
+     * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補試します。</p>
+     * <p>POI-3.15以上の場合の<a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=59740" target="_blank">BUg 59740</a>において、
+     *   行を挿入する際に、{@link Sheet#shiftRows(int, int, int)}メソッドをでレコードをずらすときにその範囲に結合したセルがあると、
+     *   自動的に解除されるのを補正します。
+     * </p>
+     * @since 1.6
+     * @return trueのとき、セルノ結合を修正します。
+     *         初期値は、POI-3.15以上のときtrueとな、POI 3.14以前はfalseになります。
+     */
+    public boolean isCorrectMergedCellOnSave() {
+        return correctMergedCellOnSave;
+    }
+    
+    /**
+     * 書き込み時にセルの結合を修正するかどうか設定します。
+     * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補試します。</p>
+     * <p>POI-3.15以上の場合の<a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=59740" target="_blank">BUg 59740</a>において、
+     *   行を挿入する際に、{@link Sheet#shiftRows(int, int, int)}メソッドをでレコードをずらすときにその範囲に結合したセルがあると、
+     *   自動的に解除されるのを補正します。
+     * </p>
+     * @since 1.6
+     * @param correctMergedCellOnSave trueの場合、セルの結合を修正します。
+     * @return 自身のインスタンス
+     */
+    public XlsMapperConfig setCorrectMergedCellOnSave(boolean correctMergedCellOnSave) {
+        this.correctMergedCellOnSave = correctMergedCellOnSave;
+        return this;
+    }
+    
     
     /**
      * 書き込み時に式の再計算をするか設定します。

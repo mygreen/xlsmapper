@@ -5,7 +5,7 @@
 	<groupId>com.github.mygreen</groupId>
 	<artifactId>xlsmapper</artifactId>
 	<packaging>jar</packaging>
-	<version>1.5.2</version>
+	<version>1.6</version>
 	<name>XlsMapper</name>
 	<url>http://mygreen.github.io/xlsmapper/</url>
 	<description><![CDATA[
@@ -62,7 +62,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 	
 	<properties>
 		<java.version>1.7</java.version>
-		<poi.version>3.11</poi.version>
+		<poi.version>3.15</poi.version>
 		<slf4j.version>1.7.1</slf4j.version>
 	</properties>
 	<build>
@@ -249,7 +249,7 @@ $(document).ready(function() {
 		<dependency>
 			<groupId>com.github.mygreen</groupId>
 			<artifactId>excel-cellformatter</artifactId>
-			<version>0.8.3</version>
+			<version>0.9.1</version>
 		</dependency>
 		
 		<!-- Logger -->
@@ -296,12 +296,20 @@ $(document).ready(function() {
 			<scope>provided</scope>
 		</dependency>
 		
+		<!-- EL 2.x
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>el-impl</artifactId>
+			<version>2.2.1-b05</version>
+		</dependency>
+		-->
+		<!-- EL 3.x -->
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
 			<version>3.0.1-b08</version>
 		</dependency>
-			
+		 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-jexl</artifactId>
