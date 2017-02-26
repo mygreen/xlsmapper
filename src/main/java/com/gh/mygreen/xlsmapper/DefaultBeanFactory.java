@@ -10,7 +10,7 @@ import java.lang.reflect.Constructor;
  * @author T.TSUCHIE
  *
  */
-public class DefaultBeanFactory implements FactoryCallback<Class<?>, Object> {
+public class DefaultBeanFactory implements BeanFactory<Class<?>, Object> {
     
     @Override
     public Object create(final Class<?> clazz) {

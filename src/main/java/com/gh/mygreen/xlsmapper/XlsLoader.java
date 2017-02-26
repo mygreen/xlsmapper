@@ -21,8 +21,11 @@ import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
-import com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.LoadingFieldProcessor;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 import com.gh.mygreen.xlsmapper.xml.XmlIO;
@@ -143,8 +146,10 @@ public class XlsLoader {
         
         final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
         if(sheetAnno == null) {
-            throw new AnnotationInvalidException(String.format("With '%s', cannot find annoation '@XlsSheet'",
-                    clazz.getName()), sheetAnno);
+            throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
+                    .varWithClass("property", clazz)
+                    .varWithAnno("anno", XlsSheet.class)
+                    .format());
         }
         
         final Workbook book;
@@ -242,8 +247,10 @@ public class XlsLoader {
         
         final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
         if(sheetAnno == null) {
-            throw new AnnotationInvalidException(String.format("With '%s', cannot finld annoation '@XlsSheet'.",
-                    clazz.getName()), sheetAnno);
+            throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
+                    .varWithClass("property", clazz)
+                    .varWithAnno("anno", XlsSheet.class)
+                    .format());
         }
         
         final SheetBindingErrorsContainer container;
@@ -345,8 +352,10 @@ public class XlsLoader {
         for(Class<?> clazz : classes) {
             final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
             if(sheetAnno == null) {
-                throw new AnnotationInvalidException(String.format("With '%s', cannot finld annoation '@XlsSheet'.",
-                        clazz.getName()), sheetAnno);
+                throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
+                        .varWithClass("property", clazz)
+                        .varWithAnno("anno", XlsSheet.class)
+                        .format());
             }
             
             try {
@@ -449,7 +458,7 @@ public class XlsLoader {
         }
         
         // 順番を並び替えて保存処理を実行する
-        Collections.sort(adaptorProxies, HintOrderComparator.createForLoading());
+        Collections.sort(adaptorProxies, FieldAdaptorComparator.createForLoading());
         for(FieldAdaptorProxy adaptorProxy : adaptorProxies) {
             adaptorProxy.loadProcess(sheet, beanObj, config, work);
         }

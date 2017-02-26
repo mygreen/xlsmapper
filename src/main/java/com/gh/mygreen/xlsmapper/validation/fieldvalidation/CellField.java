@@ -8,9 +8,9 @@ import java.util.Map;
 
 import org.springframework.validation.Errors;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
-import com.gh.mygreen.xlsmapper.PropertyNavigator;
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.PropertyNavigator;
+import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 

@@ -4,10 +4,10 @@ import java.lang.annotation.Annotation;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
-import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
-import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessor;
-import com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor;
-import com.gh.mygreen.xlsmapper.fieldprocessor.SavingFieldProcessor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldProcessor;
+import com.gh.mygreen.xlsmapper.processor.LoadingFieldProcessor;
+import com.gh.mygreen.xlsmapper.processor.SavingFieldProcessor;
 
 
 /**

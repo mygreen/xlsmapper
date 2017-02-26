@@ -291,21 +291,21 @@ public @interface XlsVerticalRecords {
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
-     * {@link XlsVerticalRecords}の場合、{@link OverRecordOperate#Insert}は対応していません。
-     * @return {@link OverRecordOperate#Break}の場合、足りないレコードがあるとそこで処理を終了します。
+     * {@link XlsVerticalRecords}の場合、{@link OverRecordOperation#Insert}は対応していません。
+     * @return {@link OverRecordOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。
      */
-    OverRecordOperate overRecord() default OverRecordOperate.Break;
+    OverRecordOperation overRecord() default OverRecordOperation.Break;
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
-     * {@link XlsVerticalRecords}の場合、{@link RemainedRecordOperate#Delete}は対応していません。
-     * @return {@link RemainedRecordOperate#None}の場合、余っているレコードがあっても何もしません。
+     * {@link XlsVerticalRecords}の場合、{@link RemainedRecordOperation#Delete}は対応していません。
+     * @return {@link RemainedRecordOperation#None}の場合、余っているレコードがあっても何もしません。
      */
-    RemainedRecordOperate remainedRecord() default RemainedRecordOperate.None; 
+    RemainedRecordOperation remainedRecord() default RemainedRecordOperation.None; 
     
     /**
      * 空のレコードの場合、処理を無視するかどうか。
-     * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsEmpty}を付与する必要があります。
+     * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsIgnored}を付与する必要があります。
      * @since 0.2
      * @return trueの場合、空のレコードを無視します。
      */

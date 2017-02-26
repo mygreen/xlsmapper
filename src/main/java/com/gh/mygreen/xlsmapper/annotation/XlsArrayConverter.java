@@ -7,8 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
-import com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter;
-import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
+import com.gh.mygreen.xlsmapper.converter.DefaultItemConverter;
+import com.gh.mygreen.xlsmapper.converter.ItemConverter;
 
 
 /**

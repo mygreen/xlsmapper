@@ -2,7 +2,7 @@ package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
 import java.util.LinkedHashMap;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 /**
  * 値が指定した値以下かどうかの最大値のチェックする。

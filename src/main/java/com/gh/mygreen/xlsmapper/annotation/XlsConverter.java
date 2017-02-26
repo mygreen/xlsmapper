@@ -6,9 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.gh.mygreen.xlsmapper.cellconvert.CellConverter;
-import com.gh.mygreen.xlsmapper.cellconvert.DefaultCellConverter;
-import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
+import com.gh.mygreen.xlsmapper.converter.CellConverter;
+import com.gh.mygreen.xlsmapper.converter.DefaultCellConverter;
+import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 
 
 /**

@@ -2,7 +2,7 @@ package com.gh.mygreen.xlsmapper.validation;
 
 import java.util.Map;
 
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**

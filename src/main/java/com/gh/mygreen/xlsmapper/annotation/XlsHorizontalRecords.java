@@ -366,7 +366,7 @@ public @interface XlsHorizontalRecords {
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
-     * <p>値は、列挙型{@link OverRecordOperate}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
+     * <p>値は、列挙型{@link OverRecordOperation}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
      *    <br>デフォルトでは何もしません。
      * </p>
      * 
@@ -387,13 +387,13 @@ public @interface XlsHorizontalRecords {
      *    <p>表の書き込み時の不足するレコードの操作の指定</p>
      * </div>
      * 
-     * @return {@link OverRecordOperate#Break}の場合、足りないレコードがあるとそこで処理を終了します。
+     * @return {@link OverRecordOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。
      */
-    OverRecordOperate overRecord() default OverRecordOperate.Break;
+    OverRecordOperation overRecord() default OverRecordOperation.Break;
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
-     * <p>値は、列挙型{@link RemainedRecordOperate}で指定し、行の値のクリアや、行の削除を指定することができます。
+     * <p>値は、列挙型{@link RemainedRecordOperation}で指定し、行の値のクリアや、行の削除を指定することができます。
      *   <br>デフォルトでは何もしません。
      * </p>
      * 
@@ -414,9 +414,9 @@ public @interface XlsHorizontalRecords {
      *    <p>表の書き込み時の余分なレコードの操作の指定</p>
      * </div>
      * 
-     * @return {@link RemainedRecordOperate#None}の場合、余っているレコードがあっても何もしません。
+     * @return {@link RemainedRecordOperation#None}の場合、余っているレコードがあっても何もしません。
      */
-    RemainedRecordOperate remainedRecord() default RemainedRecordOperate.None;
+    RemainedRecordOperation remainedRecord() default RemainedRecordOperation.None;
     
     /**
      * 空のレコードの場合、処理を無視するかどうか。
@@ -424,7 +424,7 @@ public @interface XlsHorizontalRecords {
      * <p>空のレコードが存在すると無駄なレコードをとなり、読み込んだ後に除外する処理をわざわざ行う必要があります。
      *   <br>そのような場合、属性{@link #ignoreEmptyRecord()}を'true'に設定することで、予め空のレコードを読み飛ばしておく方法もあります。
      * </p>
-     * <p>レコード用クラスには、空を判定するメソッドを用意し、アノテーション {@link XlsIsEmpty}を付与します。
+     * <p>レコード用クラスには、空を判定するメソッドを用意し、アノテーション {@link XlsIsIgnored}を付与します。
      *    <br>publicかつ引数なしの戻り値がboolean形式の書式にする必要があります。
      * </p>
      * <p>ただし、書き込み時にはこの設定は無効で、空のレコードも出力されます。</p>
@@ -469,7 +469,7 @@ public @interface XlsHorizontalRecords {
      * </code></pre>
      * 
      * 
-     * アノテーション{@link XlsIsEmpty}を付与したメソッドの実装において、{@link com.gh.mygreen.xlsmapper.IsEmptyBuilder}を使用すると、
+     * アノテーション{@link XlsIsIgnored}を付与したメソッドの実装において、{@link com.gh.mygreen.xlsmapper.util.IsEmptyBuilder}を使用すると、
      * より簡潔に記述することができます。
      * 
      * <pre class="highlight"><code class="java">

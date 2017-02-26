@@ -17,7 +17,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.constraints.DecimalMin;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
@@ -28,17 +27,17 @@ import org.hibernate.validator.constraints.Range;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
+import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageELImpl;
+import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
+import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
 import com.gh.mygreen.xlsmapper.validation.ObjectError;
@@ -66,7 +65,8 @@ public class SheetBeanValidatorTest {
         
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator validator = validatorFactory.usingContext()
-                .messageInterpolator(new MessageResolverInterpolator(new ResourceBundleMessageResolver()))
+                .messageInterpolator(new MessageInterpolatorAdapter(
+                        new ResourceBundleMessageResolver(), new MessageInterpolator()))
                 .getValidator();
         
         return validator;
@@ -285,7 +285,7 @@ public class SheetBeanValidatorTest {
         Validator beanValidator = validatorFactory.usingContext()
                 .messageInterpolator(new MessageInterpolatorAdapter(
                         new ResourceBundleMessageResolver(ResourceBundle.getBundle("com.gh.mygreen.xlsmapper.validation.beanvalidation.OtherElMessages")),
-                        new MessageInterpolator(new ExpressionLanguageELImpl())))
+                        new MessageInterpolator(new ExpressionLanguageJEXLImpl())))
                 .getValidator();
         
         // 入力値検証
@@ -419,7 +419,7 @@ public class SheetBeanValidatorTest {
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
-        @XlsIsEmpty
+        @XlsIsIgnored
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }

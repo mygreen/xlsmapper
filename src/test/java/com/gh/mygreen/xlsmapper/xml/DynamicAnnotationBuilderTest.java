@@ -11,9 +11,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
+import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperate;
+import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
@@ -79,8 +79,8 @@ public class DynamicAnnotationBuilderTest {
         assertThat(records.bottom(), is(1));
         
         assertThat(records.headerAddress(), is(""));
-        assertThat(records.overRecord(), is(OverRecordOperate.Break));
-        assertThat(records.remainedRecord(), is(RemainedRecordOperate.None));
+        assertThat(records.overRecord(), is(OverRecordOperation.Break));
+        assertThat(records.remainedRecord(), is(RemainedRecordOperation.None));
         assertThat(records.ignoreEmptyRecord(), is(false));
         
     }

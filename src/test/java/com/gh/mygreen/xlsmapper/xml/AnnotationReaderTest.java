@@ -19,7 +19,7 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
-import com.gh.mygreen.xlsmapper.annotation.XlsHint;
+import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
@@ -154,7 +154,7 @@ public class AnnotationReaderTest {
         XlsConverter converterAnno = select(nameAnnos, XlsConverter.class);
         assertThat(converterAnno, is(nullValue()));
         
-        XlsHint hintAnno1 = select(nameAnnos, XlsHint.class);
+        XlsOrder hintAnno1 = select(nameAnnos, XlsOrder.class);
         assertThat(hintAnno1, is(nullValue()));
         
         // メソッド定義の読み込み
@@ -166,7 +166,7 @@ public class AnnotationReaderTest {
         assertThat(horizontalRecordsAnno.terminal(), is(RecordTerminal.Border));
         
         // メソッド - XMLに定義していない
-        XlsHint hintAnno2 = select(recordsAnnos, XlsHint.class);
+        XlsOrder hintAnno2 = select(recordsAnnos, XlsOrder.class);
         assertThat(hintAnno2, is(nullValue()));
         
     }
@@ -200,8 +200,8 @@ public class AnnotationReaderTest {
         assertThat(converterAnno.shrinkToFit(), is(true));
         assertThat(converterAnno.defaultValue(), is("－"));
         
-        XlsHint hintAnno1 = select(nameAnnos, XlsHint.class);
-        assertThat(hintAnno1.order(), is(1));
+        XlsOrder hintAnno1 = select(nameAnnos, XlsOrder.class);
+        assertThat(hintAnno1.value(), is(1));
         
         // メソッド定義の読み込み
         Annotation[] recordsAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredMethod("setRecords", List.class));
@@ -212,8 +212,8 @@ public class AnnotationReaderTest {
         assertThat(horizontalRecordsAnno.terminal(), is(RecordTerminal.Border));
         
         // メソッド - XMLに定義していない
-        XlsHint hintAnno2 = select(recordsAnnos, XlsHint.class);
-        assertThat(hintAnno2.order(), is(2));
+        XlsOrder hintAnno2 = select(recordsAnnos, XlsOrder.class);
+        assertThat(hintAnno2.value(), is(2));
         
     }
     
@@ -353,7 +353,7 @@ public class AnnotationReaderTest {
         @XlsSheetName
         private String sheetName;
         
-        @XlsHint(order=1)
+        @XlsOrder(value=1)
         @XlsConverter(trim=true, shrinkToFit=true, defaultValue="－")
         @XlsLabelledCell(label="名称", type=LabelledCellType.Right)
         private String name;
@@ -364,7 +364,7 @@ public class AnnotationReaderTest {
             return records;
         }
         
-        @XlsHint(order=2)
+        @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="クラス名", terminal=RecordTerminal.Empty)
         public void setRecords(List<NormalRecord> records) {
             this.records = records;

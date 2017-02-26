@@ -10,8 +10,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
+import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReadException;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
@@ -75,8 +77,10 @@ public class SheetFinder {
             return matches.toArray(new Sheet[matches.size()]);
         }
         
-        throw new AnnotationInvalidException(String.format("With '%s', @XlsSheet requires name or number or regex parameter.",
-                beanClass.getName()), sheetAnno);
+        throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.attr.required.any")
+                .varWithAnno("anno", XlsSheet.class)
+                .varWithArrays("attrNames", "name", "number", "regex")
+                .format());
     }
     
     /**
@@ -156,8 +160,11 @@ public class SheetFinder {
             }
         }
         
-        throw new AnnotationInvalidException(String.format("With '%s', @XlsSheet requires name or number or regex parameter.",
-                beanObj.getClass().getName()), sheetAnno);
+        throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.attr.required.any")
+                .varWithAnno("anno", XlsSheet.class)
+                .varWithArrays("attrNames", "name", "number", "regex")
+                .format());
+        
     }
     
     /**

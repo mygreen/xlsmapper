@@ -17,7 +17,7 @@
 	<context:component-scan base-package="com.gh.mygreen.xlsmapper.spring" />
 	
 	<!-- 作成したSpringBeanFactoryの登録 -->
-	<bean id="springBeanFactory" class="com.gh.mygreen.xlsmapper.spring.SpringBeanFactory" />
+	<bean id="springBeanFactory" class="com.gh.mygreen.xlsmapper.SpringBeanFactory" />
 	
 
 </beans>

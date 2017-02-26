@@ -2,24 +2,24 @@ package com.gh.mygreen.xlsmapper;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.poi.ss.usermodel.Sheet;
+import java.util.Optional;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.cellconvert.CellConverterRegistry;
-import com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter;
-import com.gh.mygreen.xlsmapper.cellconvert.ItemConverter;
+import com.gh.mygreen.xlsmapper.converter.CellConverterRegistry;
+import com.gh.mygreen.xlsmapper.converter.DefaultItemConverter;
+import com.gh.mygreen.xlsmapper.converter.ItemConverter;
 import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
-import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegstry;
+import com.gh.mygreen.xlsmapper.processor.FieldProcessorRegstry;
 import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 
 /**
  * マッピングする際の設定などを保持するクラス。
  * 
- * @version 1.6
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -46,12 +46,6 @@ public class XlsMapperConfig {
     /** 書き込み時にセルの入力規則を修正するかどうか */
     private boolean correctCellDataValidationOnSave = false;
     
-    /** 書き込み時にセルのコメントを修正するかどうか */
-    private boolean correctCellCommentOnSave = false;
-    
-    /** 書き込み時にセルの結合を修正するかどうか */
-    private boolean correctMergedCellOnSave = POIUtils.AVAILABLE_METHOD_SHEET_REMOVE_MERGE_REGIONS;
-    
     /** 書き込み時に式の再計算をするかどうか */
     private boolean formulaRecalcurationOnSave = true;
     
@@ -63,7 +57,7 @@ public class XlsMapperConfig {
     private CellConverterRegistry converterRegistry = new CellConverterRegistry();
     
     /** 読み込み時のBeanのインスタンスの作成クラス */
-    private FactoryCallback<Class<?>, Object> beanFactory = new DefaultBeanFactory();
+    private BeanFactory<Class<?>, Object> beanFactory = new DefaultBeanFactory();
     
     /** 処理対象のシートを取得するクラス */
     private SheetFinder sheetFinder = new SheetFinder();
@@ -73,6 +67,9 @@ public class XlsMapperConfig {
     
     /** 数式をフォーマットするクラス */
     private MessageInterpolator formulaFormatter = new MessageInterpolator();
+    
+    /** Beanに対するアノテーションのマッピング情報 */
+    private XmlInfo annotationMapping = null;
     
     public XlsMapperConfig() {
         
@@ -233,64 +230,7 @@ public class XlsMapperConfig {
         return this;
     }
     
-    /**
-     * 書き込み時にセルノコメントを修正するかどうか。
-     * <p>POI-3.10～3.11の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
-     * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補正します。
-     * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
-     * @return 初期値は、'false'です。
-     */
-    public boolean isCorrectCellCommentOnSave() {
-        return correctCellCommentOnSave;
-    }
-    
-    /**
-     * 書き込み時にセルのコメントを修正するかどうか設定します。
-     * <p>'true'の場合、修正します。
-     * <p>POI-3.10～3.11の場合、コメント付きのシートに対して行を追加すると、ファイルが壊れるため、それらを補正します。
-     * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補正します。
-     * <p>ただし、この機能を有効にするとシートのセルを全て走査するため処理時間がかかります。
-     * @param correctCellCommentOnSave 初期値は、'false'です。
-     * @return 自身のインスタンス
-     */
-    public XlsMapperConfig setCorrectCellCommentOnSave(boolean correctCellCommentOnSave) {
-        this.correctCellCommentOnSave = correctCellCommentOnSave;
-        return this;
-    }
-    
-    /**
-     * 書き込み時にセルの結合を修正するか。
-     * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補試します。</p>
-     * <p>POI-3.15以上の場合の<a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=59740" target="_blank">BUg 59740</a>において、
-     *   行を挿入する際に、{@link Sheet#shiftRows(int, int, int)}メソッドをでレコードをずらすときにその範囲に結合したセルがあると、
-     *   自動的に解除されるのを補正します。
-     * </p>
-     * @since 1.6
-     * @return trueのとき、セルノ結合を修正します。
-     *         初期値は、POI-3.15以上のときtrueとな、POI 3.14以前はfalseになります。
-     */
-    public boolean isCorrectMergedCellOnSave() {
-        return correctMergedCellOnSave;
-    }
-    
-    /**
-     * 書き込み時にセルの結合を修正するかどうか設定します。
-     * <p>アノテーション{@literal @XlsHorizontalRecords}で行の追加などを行うときに補試します。</p>
-     * <p>POI-3.15以上の場合の<a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=59740" target="_blank">BUg 59740</a>において、
-     *   行を挿入する際に、{@link Sheet#shiftRows(int, int, int)}メソッドをでレコードをずらすときにその範囲に結合したセルがあると、
-     *   自動的に解除されるのを補正します。
-     * </p>
-     * @since 1.6
-     * @param correctMergedCellOnSave trueの場合、セルの結合を修正します。
-     * @return 自身のインスタンス
-     */
-    public XlsMapperConfig setCorrectMergedCellOnSave(boolean correctMergedCellOnSave) {
-        this.correctMergedCellOnSave = correctMergedCellOnSave;
-        return this;
-    }
-    
-    
-    /**
+     /**
      * 書き込み時に式の再計算をするか設定します。
      * <p>数式を含むシートを出力したファイルを開いた場合、一般的には数式が開いたときに再計算されます。
      * <p>ただし、大量で複雑な数式が記述されていると、パフォーマンスが落ちるため無効にすることもできます。
@@ -316,7 +256,7 @@ public class XlsMapperConfig {
     
     /**
      * POIのセルのフォーマッターを取得します。
-     * @return
+     * @return セルのフォーマッタ。
      */
     public CellFormatter getCellFormatter() {
         return cellFormatter;
@@ -324,7 +264,7 @@ public class XlsMapperConfig {
     
     /**
      * POIのセルのフォーマッターを指定します。
-     * @param cellFormatter
+     * @param cellFormatter セルのフォーマッタ
      * @return 自身のインスタンス
      */
     public XlsMapperConfig setCellFormatter(CellFormatter cellFormatter) {
@@ -371,7 +311,7 @@ public class XlsMapperConfig {
      * Beanを生成するためのFactoryクラスを設定します。
      * @return
      */
-    public XlsMapperConfig setBeanFactory(FactoryCallback<Class<?>, Object> beanFactory) {
+    public XlsMapperConfig setBeanFactory(BeanFactory<Class<?>, Object> beanFactory) {
         this.beanFactory = beanFactory;
         return this;
     }
@@ -381,7 +321,7 @@ public class XlsMapperConfig {
      * @since 1.0
      * @return
      */
-    public FactoryCallback<Class<?>, Object> getBeanFactory() {
+    public BeanFactory<Class<?>, Object> getBeanFactory() {
         return beanFactory;
     }
     
@@ -452,6 +392,24 @@ public class XlsMapperConfig {
     public XlsMapperConfig setFormulaFormatter(MessageInterpolator formulaFormatter) {
         this.formulaFormatter = formulaFormatter;
         return this;
+    }
+    
+    /**
+     * アノテーションのマッピング情報を取得する。
+     * @since 2.0
+     * @return 設定されていない場合は、nullを返す。
+     */
+    public Optional<XmlInfo> getAnnotationMapping() {
+        return Optional.ofNullable(annotationMapping);
+    }
+    
+    /**
+     * アノテーションのマッピング情報を設定します。
+     * @since 2.0
+     * @param annotationMapping アノテーションの設定情報
+     */
+    public void setAnnotationMapping(XmlInfo annotationMapping) {
+        this.annotationMapping = annotationMapping;
     }
     
 }

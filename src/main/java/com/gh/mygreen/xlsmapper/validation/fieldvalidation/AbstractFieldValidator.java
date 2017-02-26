@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 /**

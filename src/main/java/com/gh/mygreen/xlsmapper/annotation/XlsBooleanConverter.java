@@ -112,7 +112,7 @@ public @interface XlsBooleanConverter {
      * セルの読み込み時に、{@link #loadForTrue()}、{@link #loadForFalse()}で指定した候補と一致しない場合、値をfalseとして読み込みます。
      * 
      * <p>読み込み時にセルの値が、属性{@link #loadForTrue()}と{@link #loadForFalse()}で指定した中に、
-     *    該当するものがない場合、例外{@link com.gh.mygreen.xlsmapper.cellconvert.TypeBindException}が発生します。</p>
+     *    該当するものがない場合、例外{@link com.gh.mygreen.xlsmapper.converter.TypeBindException}が発生します。</p>
      * <p>属性{@link #failToFalse()}をtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、
      *    例外を発生しなくできます。</p>
      * 

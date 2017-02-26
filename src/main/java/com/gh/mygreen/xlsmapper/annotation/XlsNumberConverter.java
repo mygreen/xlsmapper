@@ -50,7 +50,7 @@ public @interface XlsNumberConverter {
      *   <li>属性{@link #currency()}で、通貨コード（ISO-4217コード）を指定します。
      *       <br>Javaのクラス {@link java.util.Currency} で解釈可能なコードを指定します。
      *   </li>
-     *   <li>書式に合わない値をパースした場合、例外{@link com.gh.mygreen.xlsmapper.cellconvert.TypeBindException}が発生します。</li>
+     *   <li>書式に合わない値をパースした場合、例外{@link com.gh.mygreen.xlsmapper.converter.TypeBindException}が発生します。</li>
      * </ul>
      * 
      * <pre class="highlight"><code class="java">

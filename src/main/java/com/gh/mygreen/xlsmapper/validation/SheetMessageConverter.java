@@ -7,9 +7,10 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
@@ -209,10 +210,11 @@ public class SheetMessageConverter {
     public String getMessage(final String[] codes, final String defaultMessage) {
         for(String code : codes) {
             try {
-                final String message = messageResolver.getMessage(code);
-                if(message != null) {
-                    return message;
+                final Optional<String> message = messageResolver.getMessage(code);
+                if(message.isPresent()) {
+                    return message.get();
                 }
+                
             } catch(Throwable e) {
                 continue;
             }

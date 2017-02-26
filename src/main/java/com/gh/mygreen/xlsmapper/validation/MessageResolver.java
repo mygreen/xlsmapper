@@ -1,8 +1,9 @@
 package com.gh.mygreen.xlsmapper.validation;
 
+import java.util.Optional;
 
 /**
- * Strategy interface for resolving messages.
+ * メッセージを解決する機能を提供するインターフェース。
  * 
  * @author T.TSUCHIE
  *
@@ -10,10 +11,10 @@ package com.gh.mygreen.xlsmapper.validation;
 public interface MessageResolver {
     
     /**
-     * try to resolve message.
-     * @param code
-     * @return the resolved message. if the message wasn't found, return null.
+     * コードを指定してメッセージを取得する。
+     * @param code メッセージのコード。
+     * @return 指定したコードが見つからない場合は、空を返す。
      */
-    public String getMessage(String code);
+    public Optional<String> getMessage(String code);
     
 }

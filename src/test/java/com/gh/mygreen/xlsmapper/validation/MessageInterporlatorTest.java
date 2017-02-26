@@ -10,8 +10,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageMVELImpl;
-
 /**
  * {@link MessageInterpolator}のテスタ
  * 
@@ -117,7 +115,7 @@ public class MessageInterporlatorTest {
         
         MessageInterpolator interpolator = new MessageInterpolator();
         
-        String message = "${'Helo World\\}' += formatter.format('%1.1f', validatedValue)}は、{min}～${max}の範囲で入力してください。";
+        String message = "${'Helo World\\}' + formatter.format('%1.1f', validatedValue)}は、{min}～${max}の範囲で入力してください。";
         
         double validatedValue = 3;
         
@@ -193,27 +191,5 @@ public class MessageInterporlatorTest {
         
     }
     
-    /**
-     * MVELに切り替えて実行する
-     */
-    @Test
-    public void testInterpolate_mvel() {
-        
-        MessageInterpolator interpolator = new MessageInterpolator(new ExpressionLanguageMVELImpl());
-        assertThat(interpolator.getExpressionLanguage(), instanceOf(ExpressionLanguageMVELImpl.class));
-        
-        String message = "${formatter.format('%1.1f', validatedValue)}は、${min}～${max}の範囲で入力してください。";
-        
-        double validatedValue = 3;
-        
-        Map<String, Object> vars = new HashMap<>();
-        vars.put("validatedValue", validatedValue);
-        vars.put("min", 1);
-        vars.put("max", 10);
-        
-        String actual = interpolator.interpolate(message, vars);
-        assertThat(actual, is("3.0は、1～10の範囲で入力してください。"));
-        
-    }
    
 }

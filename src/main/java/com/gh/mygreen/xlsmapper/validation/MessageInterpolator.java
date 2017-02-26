@@ -1,19 +1,22 @@
 package com.gh.mygreen.xlsmapper.validation;
 
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
-import com.gh.mygreen.xlsmapper.StackUtils;
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
 import com.gh.mygreen.xlsmapper.expression.ExpressionEvaluationException;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguage;
-import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageELImpl;
+import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.StackUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
@@ -25,7 +28,7 @@ import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageELImpl;
  * <p>{@link MessageResolver}を指定した場合、メッセージ中の変数<code>{...}</code>をメッセージ定義コードとして解決する。
  *    ただし、メッセージ変数で指定されている変数が優先される。
  * 
- * @version 1.0
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -35,9 +38,19 @@ public class MessageInterpolator {
     
     private final Formatter formatter = new Formatter();
     
-    private ExpressionLanguage expressionLanguage = new ExpressionLanguageELImpl();
+    private ExpressionLanguage expressionLanguage;
     
     public MessageInterpolator() {
+        
+        // EL式中で使用可能な関数の登録
+        ExpressionLanguageJEXLImpl el = new ExpressionLanguageJEXLImpl();
+        
+        Map<String, Object> funcs = new HashMap<>(); 
+        funcs.put("f", CustomFunctions.class);
+        el.getJexlEngine().setFunctions(funcs);
+        
+        setExpressionLanguage(el);
+        
     }
     
     /**
@@ -201,16 +214,16 @@ public class MessageInterpolator {
                 
             } else if(messageResolver != null) {
                 // メッセージコードをとして解決をする。
-                final String eval = messageResolver.getMessage(varName);
-                if(eval == null) {
+                final Optional<String> eval = messageResolver.getMessage(varName);
+                if(!eval.isPresent()) {
                     // 該当するキーが存在しない場合は、値をそのまま返す。
                     return String.format("{%s}", varName);
                 }
                 
                 if(recursive) {
-                    return parse(eval, values, recursive, messageResolver);
+                    return parse(eval.get(), values, recursive, messageResolver);
                 } else {
-                    return eval;
+                    return eval.get();
                 }
                 
             } else {
@@ -247,9 +260,7 @@ public class MessageInterpolator {
         context.putAll(values);
         
         // フォーマッターの追加
-        if(!context.containsKey("formatter")) {
-            context.put("formatter", formatter);
-        }
+        context.computeIfAbsent("formatter", key -> formatter);
         
         final String value = expressionLanguage.evaluate(expression, context).toString();
         if(logger.isTraceEnabled()) {

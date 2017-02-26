@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
+import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 

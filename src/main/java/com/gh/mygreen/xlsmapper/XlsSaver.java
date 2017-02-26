@@ -21,8 +21,11 @@ import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.fieldprocessor.FieldAdaptor;
-import com.gh.mygreen.xlsmapper.fieldprocessor.SavingFieldProcessor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.SavingFieldProcessor;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 import com.gh.mygreen.xlsmapper.xml.XmlIO;
@@ -83,7 +86,7 @@ public class XlsSaver {
         ArgUtils.notNull(xlsOut, "xlsOut");
         ArgUtils.notNull(beanObj, "beanObj");
         
-        // Xmls情報の出力
+        // Xml情報の出力
         XmlInfo xmlInfo = null;
         if(xmlIn != null) {
             xmlInfo = XmlIO.load(xmlIn);
@@ -106,8 +109,11 @@ public class XlsSaver {
         final Class<?> clazz = beanObj.getClass();
         final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
         if(sheetAnno == null) {
-            throw new AnnotationInvalidException(String.format("With '%s', cannot finld annoation '@XlsSheet'.",
-                    clazz.getName()), sheetAnno);
+            throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
+                    .varWithClass("property", clazz)
+                    .varWithAnno("anno", XlsSheet.class)
+                    .format());
+            
         }
         
         try {
@@ -185,8 +191,10 @@ public class XlsSaver {
             
             final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
             if(sheetAnno == null) {
-                throw new AnnotationInvalidException(String.format("With '%s', cannot finld annoation '@XlsSheet'",
-                        clazz.getName()), sheetAnno);
+                throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
+                        .varWithClass("property", clazz)
+                        .varWithAnno("anno", XlsSheet.class)
+                        .format());
             }
             
             final SavingWorkObject work = new SavingWorkObject();
@@ -297,7 +305,7 @@ public class XlsSaver {
         }
         
         // 順番を並び替えて保存処理を実行する
-        Collections.sort(adaptorProxies, HintOrderComparator.createForSaving());
+        Collections.sort(adaptorProxies, FieldAdaptorComparator.createForSaving());
         for(FieldAdaptorProxy adaptorProxy : adaptorProxies) {
             adaptorProxy.saveProcess(sheet, beanObj, config, work);
         }

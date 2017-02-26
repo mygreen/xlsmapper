@@ -12,7 +12,7 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 
 /**
