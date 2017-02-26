@@ -26,12 +26,14 @@ import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -1397,12 +1399,12 @@ public class NumberCellConverterTest {
         private int no;
         
         /** 初期値 */
-        @XlsConverter(defaultValue="1")
+        @XlsDefaultValue("1")
         @XlsColumn(columnName="byte型")
         private Byte b;
         
         /** 初期値 */
-        @XlsConverter(defaultValue="1")
+        @XlsDefaultValue("1")
         @XlsColumn(columnName="short型")
         private Short s;
         
@@ -1412,7 +1414,8 @@ public class NumberCellConverterTest {
         private Integer i;
         
         /** トリム */
-        @XlsConverter(defaultValue="-1", trim=true)
+        @XlsTrim
+        @XlsDefaultValue("-1")
         @XlsNumberConverter(javaPattern="#,###,##0")
         @XlsColumn(columnName="long型")
         private Long l;
@@ -1423,7 +1426,7 @@ public class NumberCellConverterTest {
         private Float f;
         
         /** 正と負の数 */
-        @XlsConverter(defaultValue="10,000.00")
+        @XlsDefaultValue("10,000.00")
         @XlsNumberConverter(javaPattern="#,##0.00;(#,##0.00)", excelPattern="#,##0.00;(#,##0.00)")
         @XlsColumn(columnName="double型")
         private Double d;

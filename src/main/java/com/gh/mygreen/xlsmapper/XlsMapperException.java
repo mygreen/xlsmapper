@@ -7,7 +7,7 @@ package com.gh.mygreen.xlsmapper;
  * @author T.TSUCHIE
  *
  */
-public class XlsMapperException extends Exception {
+public class XlsMapperException extends RuntimeException {
     
     /** serialVersionUID */
     private static final long serialVersionUID = -5739922099089739224L;

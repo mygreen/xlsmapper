@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
-import com.gh.mygreen.xlsmapper.FieldAdaptorProxy;
-import com.gh.mygreen.xlsmapper.FieldAdaptorComparator;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
@@ -30,7 +29,10 @@ import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
 import com.gh.mygreen.xlsmapper.processor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.processor.CellNotFoundException;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapterProxy;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapterProxyComparator;
+import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 
@@ -47,16 +49,16 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 
     @Override
     public void loadProcess(final Sheet sheet, final Object obj, final XlsIterateTables anno,
-            final FieldAdaptor adaptor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final FieldAdapter adaptor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final Class<?> clazz = adaptor.getTargetClass();
+        final Class<?> clazz = adaptor.getType();
         
         // create multi-table objects.
         if(List.class.isAssignableFrom(clazz)) {
             
             Class<?> tableClass = anno.tableClass();
             if(tableClass == Object.class) {
-                tableClass = adaptor.getLoadingGenericClassType();
+                tableClass = adaptor.getComponentType();
             }
             
             List<?> value = loadTables(sheet, anno, adaptor, tableClass, config, work);
@@ -68,7 +70,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             Class<?> tableClass = anno.tableClass();
             if(tableClass == Object.class) {
-                tableClass = adaptor.getLoadingGenericClassType();
+                tableClass = adaptor.getComponentType();
             }
             
             final List<?> value = loadTables(sheet, anno, adaptor, tableClass, config, work);
@@ -93,7 +95,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         
     }
     
-    protected List<?> loadTables(final Sheet sheet, final XlsIterateTables iterateTablesAnno, final FieldAdaptor adaptor,
+    protected List<?> loadTables(final Sheet sheet, final XlsIterateTables iterateTablesAnno, final FieldAdapter adaptor,
             final Class<?> tableClass, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
         final List<Object> resultTableList = new ArrayList<>();
@@ -116,7 +118,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             if(listenerAnno != null) {
                 Object listenerObj = config.createBean(listenerAnno.listenerClass());
                 for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPreLoad.class);
+                    final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
                     if(preProcessAnno != null) {
                         Utils.invokeNeedProcessMethod(listenerObj, method, tableObj, sheet, config, work.getErrors());
                     }
@@ -125,7 +127,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             // execute PreProcess method
             for(Method method : tableObj.getClass().getMethods()) {
-                final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(tableObj.getClass(), method, XlsPreLoad.class);
+                final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
                 if(preProcessAnno != null) {
                     Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors());                    
                 }
@@ -149,7 +151,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             if(listenerAnno != null) {
                 Object listenerObj = config.createBean(listenerAnno.listenerClass());
                 for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPostLoad.class);
+                    final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
                     if(postProcessAnno != null) {
                         work.addNeedPostProcess(new NeedProcess(tableObj, listenerObj, method));
                     }
@@ -158,7 +160,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             // set PostProcess method
             for(Method method : tableObj.getClass().getMethods()) {
-                final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(tableObj.getClass(), method, XlsPostLoad.class);
+                final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
                 if(postProcessAnno != null) {
                     work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));
                 }
@@ -185,11 +187,15 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         
         final LabelledCellProcessor labelledCellProcessor = 
                 (LabelledCellProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsLabelledCell.class);
-        final List<FieldAdaptor> properties = Utils.getLoadingPropertiesWithAnnotation(
-                tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class);
         
-        for(FieldAdaptor property : properties) {
-            final XlsLabelledCell ann = property.getLoadingAnnotation(XlsLabelledCell.class);
+        final List<FieldAdapter> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+                tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)
+                .stream()
+                .filter(p -> p.isReadable())
+                .collect(Collectors.toList());
+        
+        for(FieldAdapter property : properties) {
+            final XlsLabelledCell ann = property.getAnnotation(XlsLabelledCell.class).get();
             
             Cell titleCell = null;
             try {
@@ -224,23 +230,27 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         
         final HorizontalRecordsProcessor processor = 
                 (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsHorizontalRecords.class);
-        final List<FieldAdaptor> properties = Utils.getLoadingPropertiesWithAnnotation(
-                tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class);
         
-        final List<FieldAdaptorProxy> adaptorProxies = new ArrayList<>();
-        for(FieldAdaptor property : properties) {
-            final XlsHorizontalRecords anno = property.getLoadingAnnotation(XlsHorizontalRecords.class);
+        final List<FieldAdapter> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+                tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)
+                .stream()
+                .filter(p -> p.isReadable())
+                .collect(Collectors.toList());
+        
+        final List<FieldAdapterProxy> adaptorProxies = new ArrayList<>();
+        for(FieldAdapter property : properties) {
+            final XlsHorizontalRecords anno = property.getAnnotation(XlsHorizontalRecords.class).get();
             
             if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {
                 
                 final XlsHorizontalRecords recordsAnno = new XlsHorizontalRecordsForIterateTables(anno, headerColumn, headerRow);
-                adaptorProxies.add(new FieldAdaptorProxy(recordsAnno, processor, property));
+                adaptorProxies.add(new FieldAdapterProxy(recordsAnno, processor, property));
             }
         }
         
         // 順番を並び替えて保存処理を実行する
-        Collections.sort(adaptorProxies, FieldAdaptorComparator.createForSaving());
-        for(FieldAdaptorProxy adaptorProxy : adaptorProxies) {
+        Collections.sort(adaptorProxies, new FieldAdapterProxyComparator());
+        for(FieldAdapterProxy adaptorProxy : adaptorProxies) {
             adaptorProxy.loadProcess(sheet, tableObj, config, work);
         }
         
@@ -277,18 +287,18 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 //    }
     
     @Override
-    public void saveProcess(final Sheet sheet, final Object obj, final XlsIterateTables anno, final FieldAdaptor adaptor,
+    public void saveProcess(final Sheet sheet, final Object obj, final XlsIterateTables anno, final FieldAdapter adaptor,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
         final Object result = adaptor.getValue(obj);
-        final Class<?> clazz = adaptor.getTargetClass();
+        final Class<?> clazz = adaptor.getType();
         
         // create multi-table objects.
         if(List.class.isAssignableFrom(clazz)) {
             
             Class<?> tableClass = anno.tableClass();
             if(tableClass == Object.class) {
-                tableClass = adaptor.getSavingGenericClassType();
+                tableClass = adaptor.getComponentType();
             }
             
             final List<Object> list = (result == null ? new ArrayList<Object>() : (List<Object>) result);
@@ -298,7 +308,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             Class<?> tableClass = anno.tableClass();
             if(tableClass == Object.class) {
-                tableClass = adaptor.getSavingGenericClassType();
+                tableClass = adaptor.getComponentType();
             }
             
             final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
@@ -314,7 +324,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                     }
     }
     
-    protected void saveTables(final Sheet sheet, final XlsIterateTables iterateTablesAnno, final FieldAdaptor adaptor,
+    protected void saveTables(final Sheet sheet, final XlsIterateTables iterateTablesAnno, final FieldAdapter adaptor,
             final Class<?> tableClass, final List<Object> resultTableList,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
@@ -334,7 +344,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             if(listenerAnno != null) {
                 Object listenerObj = config.createBean(listenerAnno.listenerClass());
                 for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPreSave.class);
+                    final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
                     if(preProcessAnno != null) {
                         Utils.invokeNeedProcessMethod(listenerObj, method, tableObj, sheet, config, work.getErrors());
                     }
@@ -343,7 +353,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             // execute PreProcess method
             for(Method method : tableObj.getClass().getMethods()) {
-                final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(tableObj.getClass(), method, XlsPreSave.class);
+                final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
                 if(preProcessAnno != null) {
                     Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors());                    
                 }
@@ -373,7 +383,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             if(listenerAnno != null) {
                 Object listenerObj = config.createBean(listenerAnno.listenerClass());
                 for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPostSave.class);
+                    final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
                     if(postProcessAnno != null) {
                         work.addNeedPostProcess(new NeedProcess(tableObj, listenerObj, method));
                     }
@@ -382,7 +392,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             // set PreProcess method
             for(Method method : tableObj.getClass().getMethods()) {
-                final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(tableObj.getClass(), method, XlsPostSave.class);
+                final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
                 if(postProcessAnno != null) {
                     work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));
                 }
@@ -400,12 +410,16 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         
         final LabelledCellProcessor labelledCellProcessor = 
                 (LabelledCellProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsLabelledCell.class);
-        final List<FieldAdaptor> properties = Utils.getSavingPropertiesWithAnnotation(
-                tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class);
         
-        for(FieldAdaptor property : properties) {
+        final List<FieldAdapter> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+                tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)
+                .stream()
+                .filter(p -> p.isWritable())
+                .collect(Collectors.toList());
+        
+        for(FieldAdapter property : properties) {
             
-            final XlsLabelledCell anno = property.getSavingAnnotation(XlsLabelledCell.class);
+            final XlsLabelledCell anno = property.getAnnotation(XlsLabelledCell.class).get();
             
             Cell titleCell = null;
             try {
@@ -439,26 +453,30 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         }
         
         final HorizontalRecordsProcessor processor = (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsHorizontalRecords.class);
-        final List<FieldAdaptor> properties = Utils.getSavingPropertiesWithAnnotation(
-                tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class);
         
-        final List<FieldAdaptorProxy> adaptorProxies = new ArrayList<>();
-        for(FieldAdaptor property : properties) {
+        final List<FieldAdapter> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+                tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)
+                .stream()
+                .filter(p -> p.isWritable())
+                .collect(Collectors.toList());
+        
+        final List<FieldAdapterProxy> adaptorProxies = new ArrayList<>();
+        for(FieldAdapter property : properties) {
             
-            final XlsHorizontalRecords anno = property.getSavingAnnotation(XlsHorizontalRecords.class);
+            final XlsHorizontalRecords anno = property.getAnnotation(XlsHorizontalRecords.class).get();
             
             // 処理対象と同じテーブルラベルのとき、マッピングを実行する。
             if(iterateTables.tableLabel().equals(anno.tableLabel())) {
                 final XlsHorizontalRecords recordsAnno = new XlsHorizontalRecordsForIterateTables(anno, headerColumn, headerRow);
-                adaptorProxies.add(new FieldAdaptorProxy(recordsAnno, processor, property));
+                adaptorProxies.add(new FieldAdapterProxy(recordsAnno, processor, property));
                 
             }
             
         }
         
         // 順番を並び替えて保存処理を実行する
-        Collections.sort(adaptorProxies, FieldAdaptorComparator.createForSaving());
-        for(FieldAdaptorProxy adaptorProxy : adaptorProxies) {
+        Collections.sort(adaptorProxies, new FieldAdapterProxyComparator());
+        for(FieldAdapterProxy adaptorProxy : adaptorProxies) {
             adaptorProxy.saveProcess(sheet, tableObj, config, work);
         }
         

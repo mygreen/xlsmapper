@@ -53,7 +53,7 @@ public class POIUtils {
     
     /**
      * シートの最大列数を取得する。
-     * @see jxl.Sheet.getColumns()
+     * <p>{@literal jxl.Sheet.getColumns()}</p>
      * @param sheet
      * @return
      */
@@ -81,7 +81,7 @@ public class POIUtils {
     /**
      * シートの最大行数を取得する
      * 
-     * @see jxl.Sheet.getRows()
+     * <p>{@literal jxl.Sheet.getRows()}</p>
      * @param sheet
      * @return
      */
@@ -119,7 +119,7 @@ public class POIUtils {
     /**
      * シートから任意のセルを取得する。
      * 
-     * @see jxl.Sheet.getCell(int column, int row)
+     * <p>{@literal jxl.Sheet.getCell(int column, int row)}</p>
      * @param sheet
      * @param column
      * @param row
@@ -143,7 +143,7 @@ public class POIUtils {
     
     /**
      * 任意の行のセルを全て取得する。
-     * @see jxl.Seet.getRow(int row)
+     * <p> {@literal jxl.Seet.getRow(int row)}</p>
      * @param sheet
      * @param row
      * @return
@@ -170,7 +170,7 @@ public class POIUtils {
     
     /**
      * 任意の列のセルを全て取得する。
-     * @see jxl.Seet.getColumn(int col)
+     * <p> {@literal jxl.Seet.getColumn(int col)}</p>
      * @param sheet
      * @param col
      * @return
@@ -215,7 +215,7 @@ public class POIUtils {
     
     /**
      * 指定してセルの値が空かどうか判定する。
-     * <p>ブランクセルなどの判定は優先的に行う。
+     * <p>ブランクセルなどの判定は優先的に行う。</p>
      * @param cell
      * @return
      */
@@ -225,8 +225,8 @@ public class POIUtils {
     
     /**
      * フォーマッターを指定してセルの値が空かどうか判定する。
-     * <p>ブランクセルなどの判定は優先的に行う。
-     * @param sheet シート
+     * <p>ブランクセルなどの判定は優先的に行う。</p>
+     * @param cell セル
      * @param cellFormatter
      * @throws IllegalArgumentException {@literal sheet == null.}
      * @throws IllegalArgumentException {@literal cellFormatter == null.}

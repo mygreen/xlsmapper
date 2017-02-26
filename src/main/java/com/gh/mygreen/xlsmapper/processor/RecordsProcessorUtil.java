@@ -3,6 +3,7 @@ package com.gh.mygreen.xlsmapper.processor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -14,6 +15,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.processor.impl.HorizontalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.processor.impl.VerticalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
@@ -34,14 +36,16 @@ public class RecordsProcessorUtil {
      * @param headers
      * @param reader
      * @param config
-     * @throws Exception
+     * @throws XlsMapperException
      */
     public static void checkColumns(final Sheet sheet, final Class<?> recordClass,
             final List<RecordHeader> headers, final AnnotationReader reader, final XlsMapperConfig config)
                     throws XlsMapperException {
         
-        for(FieldAdaptor property : Utils.getLoadingColumnProperties(recordClass, null, reader, config)) {
-            final XlsColumn column = property.getLoadingAnnotation(XlsColumn.class);
+        List<FieldAdapter> properties = FieldAdapterUtils.getPropertiesWithAnnotation(recordClass, reader, XlsColumn.class);
+        
+        for(FieldAdapter property : properties) {
+            final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
             
             if(!column.optional()){
                 String columnName = column.columnName();
@@ -62,14 +66,14 @@ public class RecordsProcessorUtil {
     
     /**
      * マッピング対象となるセルの結合サイズが、全て同じかチェックする。
-     * 
      * @since 1.4
      * @param sheet
      * @param records
-     * @param 結合したセルのサイズを返す。
-     * @throws NestMergedSizeException 
+     * @return 結合したセルのサイズを返す。
+     * @throws NestMergedSizeException
      */
-    public static int checkNestedMergedSizeRecords(final Sheet sheet, final List<MergedRecord> records) throws NestMergedSizeException {
+    public static int checkNestedMergedSizeRecords(final Sheet sheet, final List<MergedRecord> records) 
+            throws NestMergedSizeException {
         
         int mergedSize = -1;
         
@@ -100,7 +104,7 @@ public class RecordsProcessorUtil {
      * @param reader {@link AnnotationReader}のインスタンス。
      * @throws AnnotationInvalidException 入れ子構造になっている場合
      */
-    public static void checkLoadingNestedRecordClass(final Class<?> recordClass, final FieldAdaptor adaptor, 
+    public static void checkLoadingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adaptor, 
             final AnnotationReader reader) throws AnnotationInvalidException {
         
         ArgUtils.notNull(recordClass, "recordClass");
@@ -114,7 +118,7 @@ public class RecordsProcessorUtil {
         
     }
     
-    private static void checkLoadingNestedRecordClass(final Class<?> recordClass, final FieldAdaptor adaptor, 
+    private static void checkLoadingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adaptor, 
             final AnnotationReader reader, final List<Class<?>> nestedRecordClasses) throws AnnotationInvalidException {
         
         if(recordClass == Object.class) {
@@ -127,20 +131,24 @@ public class RecordsProcessorUtil {
                     .format());
         }
         
-        final List<FieldAdaptor> nestedProperties = Utils.getLoadingNestedRecordsProperties(recordClass, reader);
-        for(FieldAdaptor property : nestedProperties) {
+        final List<FieldAdapter> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)
+                .stream()
+                .filter(p -> p.isReadable())
+                .collect(Collectors.toList());
+        
+        for(FieldAdapter property : nestedProperties) {
             
             nestedRecordClasses.add(recordClass);
             
-            final XlsNestedRecords nestedAnno = property.getLoadingAnnotation(XlsNestedRecords.class);
-            final Class<?> clazz = property.getTargetClass();
+            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+            final Class<?> clazz = property.getType();
             
             if(Collection.class.isAssignableFrom(clazz)) {
                 // mapping by one-to-many
                 
                 Class<?> nestedDecordClass = nestedAnno.recordClass();
                 if(nestedDecordClass == Object.class) {
-                    nestedDecordClass = property.getLoadingGenericClassType();
+                    nestedDecordClass = property.getComponentType();
                 }
                 
                 checkLoadingNestedRecordClass(nestedDecordClass, property, reader, nestedRecordClasses);
@@ -150,7 +158,7 @@ public class RecordsProcessorUtil {
                 
                 Class<?> nestedDecordClass = nestedAnno.recordClass();
                 if(nestedDecordClass == Object.class) {
-                    nestedDecordClass = property.getLoadingGenericClassType();
+                    nestedDecordClass = property.getComponentType();
                 }
                 
                 checkLoadingNestedRecordClass(nestedDecordClass, property, reader, nestedRecordClasses);
@@ -160,7 +168,7 @@ public class RecordsProcessorUtil {
                 
                 Class<?> nestedDecordClass = nestedAnno.recordClass();
                 if(nestedDecordClass == Object.class) {
-                    nestedDecordClass = property.getTargetClass();
+                    nestedDecordClass = property.getType();
                 }
                 
                 checkLoadingNestedRecordClass(nestedDecordClass, property, reader, nestedRecordClasses);
@@ -179,7 +187,7 @@ public class RecordsProcessorUtil {
      * @param reader {@link AnnotationReader}のインスタンス。
      * @throws AnnotationInvalidException 入れ子構造になっている場合
      */
-    public static void checkSavingNestedRecordClass(final Class<?> recordClass, final FieldAdaptor adaptor, 
+    public static void checkSavingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adaptor, 
             final AnnotationReader reader) throws AnnotationInvalidException {
         
         ArgUtils.notNull(recordClass, "recordClass");
@@ -193,7 +201,7 @@ public class RecordsProcessorUtil {
         
     }
     
-    private static void checkSavingNestedRecordClass(final Class<?> recordClass, final FieldAdaptor adaptor, 
+    private static void checkSavingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adaptor, 
             final AnnotationReader reader, final List<Class<?>> nestedRecordClasses) throws AnnotationInvalidException {
         
         if(recordClass == Object.class) {
@@ -206,20 +214,24 @@ public class RecordsProcessorUtil {
                     .format());
         }
         
-        final List<FieldAdaptor> nestedProperties = Utils.getSavingNestedRecordsProperties(recordClass, reader);
-        for(FieldAdaptor property : nestedProperties) {
+        final List<FieldAdapter> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)
+                .stream()
+                .filter(p -> p.isWritable())
+                .collect(Collectors.toList());
+        
+        for(FieldAdapter property : nestedProperties) {
             
             nestedRecordClasses.add(recordClass);
             
-            final XlsNestedRecords nestedAnno = property.getSavingAnnotation(XlsNestedRecords.class);
-            final Class<?> clazz = property.getTargetClass();
+            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+            final Class<?> clazz = property.getType();
             
             if(Collection.class.isAssignableFrom(clazz)) {
                 // mapping by one-to-many
                 
                 Class<?> nestedDecordClass = nestedAnno.recordClass();
                 if(nestedDecordClass == Object.class) {
-                    nestedDecordClass = property.getSavingGenericClassType();
+                    nestedDecordClass = property.getComponentType();
                 }
                 
                 checkSavingNestedRecordClass(nestedDecordClass, property, reader, nestedRecordClasses);
@@ -229,7 +241,7 @@ public class RecordsProcessorUtil {
                 
                 Class<?> nestedDecordClass = nestedAnno.recordClass();
                 if(nestedDecordClass == Object.class) {
-                    nestedDecordClass = property.getSavingGenericClassType();
+                    nestedDecordClass = property.getComponentType();
                 }
                 
                 checkSavingNestedRecordClass(nestedDecordClass, property, reader, nestedRecordClasses);
@@ -239,7 +251,7 @@ public class RecordsProcessorUtil {
                 
                 Class<?> nestedDecordClass = nestedAnno.recordClass();
                 if(nestedDecordClass == Object.class) {
-                    nestedDecordClass = property.getTargetClass();
+                    nestedDecordClass = property.getType();
                 }
                 
                 checkSavingNestedRecordClass(nestedDecordClass, property, reader, nestedRecordClasses);

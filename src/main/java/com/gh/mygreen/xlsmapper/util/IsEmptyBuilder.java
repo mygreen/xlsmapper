@@ -11,9 +11,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 値が全て空かどかチェックするためのクラス。
- * <p>アノテーション{@link com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored}を付与したメソッドの実装に利用します。
+ * <p>アノテーション{@link com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored}を付与したメソッドの実装に利用します。</p>
  * 
- * <p>リフレクションを利用して判定する場合は、位置情報のフィールドpositions、ラベル情報のフィールドlabelsを除外します。
+ * <p>リフレクションを利用して判定する場合は、位置情報のフィールドpositions、ラベル情報のフィールドlabelsを除外します。</p>
  * <pre class="highlight"><code class="java">
  * // リフレクションを使用する場合
  * {@literal @XlsIsEmpty}
@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * }
  * </code></pre>
  * 
- * <p>フィールドを1つずつ判定する場合は、{@code append(...)}メソッドを利用します。
+ * <p>フィールドを1つずつ判定する場合は、{@code append(...)}メソッドを利用します。</p>
  * メソッド{@link #compare(IsEmptyComparator)}を利用することで、独自の実装も可能で、その際にLambda式を利用することもできます。
  * 
  * <pre class="highlight"><code class="java">
@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *     return new IsEmptyBuilder()
  *         .append(name)
  *         .append(age)
- *         .compare(() -> StringUtils.isBlank(address))
+ *         .compare(() {@literal ->} StringUtils.isBlank(address))
  *         .isEmpty();
  * }
  * </code></pre>
@@ -765,7 +765,7 @@ public class IsEmptyBuilder {
      * public boolean isEmpty() {
      *      return new IsEmptyBuilder()
      *          .append(age)
-     *          .compare(() -> StringUtils.isBlank(address))
+     *          .compare(() {@literal ->} StringUtils.isBlank(address))
      *          .isEmpty();
      *  }
      * </code></pre>

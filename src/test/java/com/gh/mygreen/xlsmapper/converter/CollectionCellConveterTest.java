@@ -30,11 +30,13 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.ConversionException;
 import com.gh.mygreen.xlsmapper.converter.ItemConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
@@ -902,32 +904,35 @@ public class CollectionCellConveterTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsArrayConverter(separator="\n", ignoreEmptyItem=true)
         @XlsColumn(columnName="List（文字列）")
         private List<String> listText;
         
-        @XlsConverter(trim=true, defaultValue="0")
+        @XlsDefaultValue("0")
+        @XlsTrim
         @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
         @XlsColumn(columnName="List（数値）")
         private List<Integer> listInteger;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsArrayConverter(separator="\n", ignoreEmptyItem=true)
         @XlsColumn(columnName="Array（文字列）")
         private String[] arrayText;
         
-        @XlsConverter(trim=true, defaultValue="0")
+        @XlsDefaultValue("0")
+        @XlsTrim
         @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
         @XlsColumn(columnName="Array（数値）")
         private Integer[] arrayInteger;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsArrayConverter(separator="\n", ignoreEmptyItem=true)
         @XlsColumn(columnName="Set（文字列）")
         private Set<String> setText;
         
-        @XlsConverter(trim=true, defaultValue="0")
+        @XlsDefaultValue("0")
+        @XlsTrim
         @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
         @XlsColumn(columnName="Set（数値）")
         private Set<Integer> setInteger;
@@ -991,17 +996,17 @@ public class CollectionCellConveterTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsArrayConverter(separator="\n", ignoreEmptyItem=true, itemConverterClass=DateItemConverter.class)
         @XlsColumn(columnName="List（Date型）")
         private List<Date> listDate;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsArrayConverter(separator=";", ignoreEmptyItem=true, itemConverterClass=DateItemConverter.class)
         @XlsColumn(columnName="Array（Date型）")
         private Date[] arrayDate;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsArrayConverter(separator=",", ignoreEmptyItem=true, itemConverterClass=DateItemConverter.class)
         @XlsColumn(columnName="Set（Date型）")
         private Set<Date> setDate;
@@ -1076,19 +1081,19 @@ public class CollectionCellConveterTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
         @XlsColumn(columnName="List（数式）")
         @XlsFormula("E{rowNumber}")
         private List<String> listStr;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
         @XlsColumn(columnName="Array（数式）")
         @XlsFormula("E{rowNumber}")
         private String[] arrayStr;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
         @XlsColumn(columnName="Set（数式）")
         @XlsFormula("E{rowNumber}")

@@ -18,12 +18,15 @@ import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.ClassInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
@@ -97,32 +100,32 @@ public class AnnotationReaderTest {
         assertThat(sheetAnno.name(), is("単純なシート"));
         
         // フィールド定義の読み込み
-        Annotation[] nameAnnos = reader.getAnnotations(SimpleSheet.class, SimpleSheet.class.getDeclaredField("name"));
+        Annotation[] nameAnnos = reader.getAnnotations(SimpleSheet.class.getDeclaredField("name"));
         
         XlsLabelledCell labeldCellAnno = select(nameAnnos, XlsLabelledCell.class);
         assertThat(labeldCellAnno.label(), is("名称"));
         assertThat(labeldCellAnno.type(), is(LabelledCellType.Right));
         
-        XlsConverter converterAnno = select(nameAnnos, XlsConverter.class);
-        assertThat(converterAnno.trim(), is(true));
-        assertThat(converterAnno.defaultValue(), is("－"));
+        XlsTrim trimAnno = select(nameAnnos, XlsTrim.class);
+        assertThat(trimAnno, is(not(nullValue())));
+        
+        XlsDefaultValue defaultValueAnno = select(nameAnnos, XlsDefaultValue.class);
+        assertThat(defaultValueAnno.value(), is("－"));
         
         // フィールド定義の読み込み（アノテーションを指定）
-        labeldCellAnno = reader.getAnnotation(SimpleSheet.class, SimpleSheet.class.getDeclaredField("name"), XlsLabelledCell.class);
+        labeldCellAnno = reader.getAnnotation(SimpleSheet.class.getDeclaredField("name"), XlsLabelledCell.class);
         assertThat(labeldCellAnno.label(), is("名称"));
         assertThat(labeldCellAnno.type(), is(LabelledCellType.Right));
         
         // メソッドの定義の読み込み
-        Annotation[] recordsAnnos = reader.getAnnotations(SimpleSheet.class,
-                SimpleSheet.class.getDeclaredMethod("setRecords", List.class));
+        Annotation[] recordsAnnos = reader.getAnnotations(SimpleSheet.class.getDeclaredMethod("setRecords", List.class));
         
         XlsHorizontalRecords horizontalRecordsAnno = select(recordsAnnos, XlsHorizontalRecords.class);
         assertThat(horizontalRecordsAnno.tableLabel(), is("名簿一覧"));
         assertThat(horizontalRecordsAnno.terminal(), is(RecordTerminal.Border));
         
         // メソッドの定義の読み込み（アノテーションを指定）
-        horizontalRecordsAnno = reader.getAnnotation(SimpleSheet.class,
-                SimpleSheet.class.getDeclaredMethod("setRecords", List.class), XlsHorizontalRecords.class);
+        horizontalRecordsAnno = reader.getAnnotation(SimpleSheet.class.getDeclaredMethod("setRecords", List.class), XlsHorizontalRecords.class);
         assertThat(horizontalRecordsAnno.tableLabel(), is("名簿一覧"));
         assertThat(horizontalRecordsAnno.terminal(), is(RecordTerminal.Border));
     }
@@ -143,7 +146,7 @@ public class AnnotationReaderTest {
         assertThat(sheetAnno.regex(), is("リスト.+"));
         
         // フィールド定義の読み込み
-        Annotation[] nameAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredField("name"));
+        Annotation[] nameAnnos = reader.getAnnotations(OrverrideSheet.class.getDeclaredField("name"));
         
         // フィールド - XMLに定義している
         XlsLabelledCell labeldCellAnno = select(nameAnnos, XlsLabelledCell.class);
@@ -158,7 +161,7 @@ public class AnnotationReaderTest {
         assertThat(hintAnno1, is(nullValue()));
         
         // メソッド定義の読み込み
-        Annotation[] recordsAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredMethod("setRecords", List.class));
+        Annotation[] recordsAnnos = reader.getAnnotations(OrverrideSheet.class.getDeclaredMethod("setRecords", List.class));
         
         // メソッド - XMLに定義している
         XlsHorizontalRecords horizontalRecordsAnno = select(recordsAnnos, XlsHorizontalRecords.class);
@@ -187,24 +190,30 @@ public class AnnotationReaderTest {
         assertThat(sheetAnno.regex(), is("リスト.+"));
         
         // フィールド定義の読み込み
-        Annotation[] nameAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredField("name"));
+        Annotation[] nameAnnos = reader.getAnnotations(OrverrideSheet.class.getDeclaredField("name"));
         
         // フィールド - XMLに定義している
         XlsLabelledCell labeldCellAnno = select(nameAnnos, XlsLabelledCell.class);
         assertThat(labeldCellAnno.label(), is("クラス名"));
         assertThat(labeldCellAnno.type(), is(LabelledCellType.Bottom));
         
-        // フィールド - XMLに定義していない
-        XlsConverter converterAnno = select(nameAnnos, XlsConverter.class);
-        assertThat(converterAnno.trim(), is(true));
-        assertThat(converterAnno.shrinkToFit(), is(true));
-        assertThat(converterAnno.defaultValue(), is("－"));
+        {
+            // フィールド - XMLに定義していない
+            XlsCellOption cellOptionAnno = select(nameAnnos, XlsCellOption.class);
+            assertThat(cellOptionAnno.shrinkToFit(), is(true));
+            
+            XlsTrim trimAnno = select(nameAnnos, XlsTrim.class);
+            assertThat(trimAnno, is(not(nullValue())));
+            
+            XlsDefaultValue defaultValueANno = select(nameAnnos, XlsDefaultValue.class);
+            assertThat(defaultValueANno.value(), is("－"));
+        }
         
         XlsOrder hintAnno1 = select(nameAnnos, XlsOrder.class);
         assertThat(hintAnno1.value(), is(1));
         
         // メソッド定義の読み込み
-        Annotation[] recordsAnnos = reader.getAnnotations(OrverrideSheet.class, OrverrideSheet.class.getDeclaredMethod("setRecords", List.class));
+        Annotation[] recordsAnnos = reader.getAnnotations(OrverrideSheet.class.getDeclaredMethod("setRecords", List.class));
         
         // メソッド - XMLに定義している
         XlsHorizontalRecords horizontalRecordsAnno = select(recordsAnnos, XlsHorizontalRecords.class);
@@ -269,34 +278,31 @@ public class AnnotationReaderTest {
         assertThat(notExists, is(nullValue()));
         
         // フィールド定義の読み込み
-        Annotation[] nameAnnos = reader.getAnnotations(SimpleSheet.class, SimpleSheet.class.getDeclaredField("name"));
+        Annotation[] nameAnnos = reader.getAnnotations(SimpleSheet.class.getDeclaredField("name"));
         
         notExists = select(nameAnnos, Deprecated.class);
         assertThat(notExists, is(nullValue()));
         
         // フィールド定義の読み込み（アノテーションを指定）
-        notExists = reader.getAnnotation(SimpleSheet.class, SimpleSheet.class.getDeclaredField("name"), Deprecated.class);
+        notExists = reader.getAnnotation(SimpleSheet.class.getDeclaredField("name"), Deprecated.class);
         assertThat(notExists, is(nullValue()));
         
         // クラスに存在しないフィールド定義の読み込み
-        notExists = reader.getAnnotation(SimpleSheet.class, AnnotationReader.class.getDeclaredField("xmlInfo"), Deprecated.class);
+        notExists = reader.getAnnotation(AnnotationReader.class.getDeclaredField("xmlInfo"), Deprecated.class);
         assertThat(notExists, is(nullValue()));
         
         // メソッドの定義の読み込み
-        Annotation[] recordsAnnos = reader.getAnnotations(SimpleSheet.class,
-                SimpleSheet.class.getDeclaredMethod("setRecords", List.class));
+        Annotation[] recordsAnnos = reader.getAnnotations(SimpleSheet.class.getDeclaredMethod("setRecords", List.class));
         
         notExists = select(recordsAnnos, Deprecated.class);
         assertThat(notExists, is(nullValue()));
         
         // メソッドの定義の読み込み（アノテーションを指定）
-        notExists = reader.getAnnotation(SimpleSheet.class,
-                SimpleSheet.class.getDeclaredMethod("setRecords", List.class), Deprecated.class);
+        notExists = reader.getAnnotation(SimpleSheet.class.getDeclaredMethod("setRecords", List.class), Deprecated.class);
         assertThat(notExists, is(nullValue()));
         
         // クラスに存在しないメソッド定義の読み込み
-        notExists = reader.getAnnotation(SimpleSheet.class,
-                AnnotationReader.class.getDeclaredMethod("getAnnotationBuilder"), Deprecated.class);
+        notExists = reader.getAnnotation(AnnotationReader.class.getDeclaredMethod("getAnnotationBuilder"), Deprecated.class);
         assertThat(notExists, is(nullValue()));
         
     }
@@ -354,7 +360,9 @@ public class AnnotationReaderTest {
         private String sheetName;
         
         @XlsOrder(value=1)
-        @XlsConverter(trim=true, shrinkToFit=true, defaultValue="－")
+        @XlsTrim
+        @XlsCellOption(shrinkToFit=true)
+        @XlsDefaultValue("－")
         @XlsLabelledCell(label="名称", type=LabelledCellType.Right)
         private String name;
         

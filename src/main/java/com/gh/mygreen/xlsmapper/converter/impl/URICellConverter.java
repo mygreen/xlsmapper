@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.converter.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -10,10 +11,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.ConversionUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
@@ -28,36 +32,37 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 public class URICellConverter extends AbstractCellConverter<URI> {
     
     @Override
-    public URI toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config)
+    public URI toObject(final Cell cell, final FieldAdapter adapter, final XlsMapperConfig config)
             throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
         
         if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
             
-            if(Utils.hasNotDefaultValue(converterAnno)) {
+            if(!defaultValueAnno.isPresent()) {
                 return null;
             } else {
-                final String defaultValue = converterAnno.defaultValue();
+                final String defaultValue = defaultValueAnno.get().value();
                 try {
                     return new URI(defaultValue);
                 } catch (URISyntaxException e) {
-                    throw newTypeBindException(e, cell, adaptor, defaultValue);
+                    throw newTypeBindException(e, cell, adapter, defaultValue);
                 }
             }
             
         } else if(cell.getHyperlink() != null) {
             // リンクが設定されているセルは、リンクの内容を値とする
-            final String address = Utils.trim(cell.getHyperlink().getAddress(), converterAnno);
+            final String address = Utils.trim(cell.getHyperlink().getAddress(), trimAnno);
             try {
                 return new URI(address);
             } catch (URISyntaxException e) {
-                throw newTypeBindException(e, cell, adaptor, address);
+                throw newTypeBindException(e, cell, adapter, address);
             }
             
         } else {
             // リンクがないセルは、セルの文字列を値とする
-            final String str = Utils.trim(POIUtils.getCellContents(cell, config.getCellFormatter()), converterAnno);
+            final String str = Utils.trim(POIUtils.getCellContents(cell, config.getCellFormatter()), trimAnno);
             if(Utils.isEmpty(str)) {
                 return null;
             }
@@ -65,28 +70,28 @@ public class URICellConverter extends AbstractCellConverter<URI> {
             try {
                 return new URI(str);
             } catch (URISyntaxException e) {
-                throw newTypeBindException(cell, adaptor, str);
+                throw newTypeBindException(cell, adapter, str);
             }
             
         }
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final URI targetValue, final Object targetBean,
+    public Cell toCell(final FieldAdapter adapter, final URI targetValue, final Object targetBean,
             final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
-        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
-        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
+        
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        
+        final Optional<XlsFormula> formulaAnno = adapter.getAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno.map(a -> a.primary()).orElse(false);
         
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
         // セルの書式設定
-        if(converterAnno != null) {
-            cell.getCellStyle().setWrapText(converterAnno.wrapText());
-            cell.getCellStyle().setShrinkToFit(converterAnno.shrinkToFit());
-        }
+        ConversionUtils.setupCellOption(cell, adapter.getAnnotation(XlsCellOption.class));
         
         URI value = targetValue;
         
@@ -94,7 +99,15 @@ public class URICellConverter extends AbstractCellConverter<URI> {
         // 削除しないと、Excelの見た目上はリンクは変わっているが、データ上は2重にリンクが設定されている。
         cell.removeHyperlink();
         
-        if(value != null && !primaryFormula) {
+        if(value == null && defaultValueAnno.isPresent()) {
+            final CreationHelper helper = sheet.getWorkbook().getCreationHelper();
+            final Hyperlink link = helper.createHyperlink(Hyperlink.LINK_URL);
+            link.setAddress(defaultValueAnno.get().value());
+            cell.setHyperlink(link);
+            
+            cell.setCellValue(defaultValueAnno.get().value());
+            
+        } else if(value != null && !primaryFormula) {
             
             final CreationHelper helper = sheet.getWorkbook().getCreationHelper();
             final Hyperlink link = helper.createHyperlink(Hyperlink.LINK_URL);
@@ -103,8 +116,8 @@ public class URICellConverter extends AbstractCellConverter<URI> {
             
             cell.setCellValue(value.toString());
             
-        } else if(formulaAnno != null) {
-            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
+        } else if(formulaAnno.isPresent()) {
+            Utils.setupCellFormula(adapter, formulaAnno.get(), config, cell, targetBean);
             
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);

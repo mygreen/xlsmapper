@@ -31,9 +31,11 @@ import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
@@ -42,6 +44,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.processor.impl.HorizontalRecordsProcessor;
@@ -4049,7 +4052,7 @@ public class AnnoHorizontalRecordsTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsColumn(columnName="氏名")
         private String name;
         
@@ -4871,7 +4874,7 @@ public class AnnoHorizontalRecordsTest {
         private Map<String, String> labels;
         
         @XlsOrder(value=1)
-        @XlsConverter(wrapText=true)
+        @XlsCellOption(wrapText=true)
         @XlsLabelledCell(label="文字装飾のコメント", type=LabelledCellType.Right)
         private String value1;
         
@@ -5000,23 +5003,21 @@ public class AnnoHorizontalRecordsTest {
         private MethodAnnoMapRecord[] mapRecords;
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="名簿", overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="名簿", overRecord=OverRecordOperation.Insert, ignoreEmptyRecord=true)
         public List<MethodAnnoRecord> getRecords() {
             return records;
         }
         
-        @XlsHorizontalRecords(tableLabel="名簿", ignoreEmptyRecord=true)
         public void setRecords(List<MethodAnnoRecord> records) {
             this.records = records;
         }
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="出欠", overRecord=OverRecordOperation.Insert)
         public MethodAnnoMapRecord[] getMapRecords() {
             return mapRecords;
         }
         
-        @XlsHorizontalRecords(tableLabel="出欠", ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="出欠", overRecord=OverRecordOperation.Insert, ignoreEmptyRecord=true)
         public void setMapRecords(MethodAnnoMapRecord[] mapRecords) {
             this.mapRecords = mapRecords;
         }
@@ -5084,7 +5085,6 @@ public class AnnoHorizontalRecordsTest {
             return no;
         }
         
-        @XlsColumn(columnName="No.")
         public void setNo(int no) {
             this.no = no;
         }
@@ -5094,7 +5094,6 @@ public class AnnoHorizontalRecordsTest {
             return name;
         }
         
-        @XlsColumn(columnName="氏名")
         public void setName(String name) {
             this.name = name;
         }
@@ -5105,7 +5104,6 @@ public class AnnoHorizontalRecordsTest {
         }
         
         @XlsDateConverter(javaPattern="yyyy年M月d日")
-        @XlsColumn(columnName="生年月日")
         public void setBirthday(Date birthday) {
             this.birthday = birthday;
         }
@@ -5188,7 +5186,6 @@ public class AnnoHorizontalRecordsTest {
             return no;
         }
         
-        @XlsColumn(columnName="No.")
         public void setNo(int no) {
             this.no = no;
         }
@@ -5198,18 +5195,15 @@ public class AnnoHorizontalRecordsTest {
             return name;
         }
         
-        @XlsColumn(columnName="氏名")
         public void setName(String name) {
             this.name = name;
         }
         
-        @XlsBooleanConverter(saveAsTrue="出席", saveAsFalse="欠席")
-        @XlsMapColumns(previousColumnName="氏名")
+        @XlsBooleanConverter(saveAsTrue="出席", saveAsFalse="欠席", loadForTrue="出席", loadForFalse="欠席")
         public Map<String, Boolean> getDateAttended() {
             return dateAttended;
         }
         
-        @XlsBooleanConverter(loadForTrue="出席", loadForFalse="欠席")
         @XlsMapColumns(previousColumnName="氏名")
         public void setDateAttended(Map<String, Boolean> dateAttended) {
             this.dateAttended = dateAttended;
@@ -5329,7 +5323,7 @@ public class AnnoHorizontalRecordsTest {
             
             private Map<String, String> labels;
             
-            @XlsConverter(defaultValue="99")
+            @XlsDefaultValue("99")
             @XlsColumn(columnName="No.", optional=true)
             private int no;
             
@@ -5409,7 +5403,7 @@ public class AnnoHorizontalRecordsTest {
             
             private Map<String, String> labels;
             
-            @XlsConverter(defaultValue="99")
+            @XlsDefaultValue("99")
             @XlsColumn(columnName="No.", optional=true)
             private int no;
             
@@ -5467,7 +5461,7 @@ public class AnnoHorizontalRecordsTest {
             
             private Map<String, String> labels;
             
-            @XlsConverter(defaultValue="99")
+            @XlsDefaultValue("99")
             @XlsColumn(columnName="No.", optional=true)
             private int no;
             

@@ -41,7 +41,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/VerticalRecord.png">
+ *    <img src="doc-files/VerticalRecord.png" alt="">
  *    <p>基本的な使い方</p>
  * </div>
  *
@@ -123,7 +123,7 @@ public @interface XlsVerticalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/VerticalRecord_tableLabelAbove.png">
+     *    <img src="doc-files/VerticalRecord_tableLabelAbove.png" alt="">
      *    <p>表の名称が上方にある場合</p>
      * </div>
      * 
@@ -203,27 +203,10 @@ public @interface XlsVerticalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/VerticalRecord_right.png">
+     *    <img src="doc-files/VerticalRecord_right.png" alt="">
      *    <p>表の名称から離れている際の開始位置の指定</p>
      * </div>
      * 
-     * 
-     * <h3 class="description">表の名称から開始位置が離れた場所にある場合</h3>
-     * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #bottom()}で表の開始位置がどれだけ離れているか指定します。</p>
-     * 
-     * <pre class="highlight"><code class="java">
-     * {@literal @XlsSheet(name="Users")}
-     * public class SampleSheet {
-     *     
-     *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧", bottom=3)}
-     *     private {@literal List<UserRecord>} records;
-     * }
-     * </code></pre>
-     * 
-     * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_bottom.png">
-     *    <p>表の名称から離れている際の開始位置の指定</p>
-     * </div>
      * 
      * @since 1.0
      * @return 値は1から始まり、指定しない場合は1を指定します。
@@ -280,7 +263,7 @@ public @interface XlsVerticalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/VerticalRecord_headerRight.png">
+     *    <img src="doc-files/VerticalRecord_headerRight.png" alt="">
      *    <p>表の見出しからデータレコードが離れているときの指定</p>
      * </div>
      * 

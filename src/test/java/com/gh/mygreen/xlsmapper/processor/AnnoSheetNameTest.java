@@ -178,7 +178,6 @@ public class AnnoSheetNameTest {
             return sheetName;
         }
         
-        @XlsSheetName
         public void setSheetName(String sheetName) {
             this.sheetName = sheetName;
         }

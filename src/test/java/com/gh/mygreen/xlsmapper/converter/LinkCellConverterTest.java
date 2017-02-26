@@ -27,11 +27,13 @@ import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.CellLink;
 import com.gh.mygreen.xlsmapper.converter.impl.URICellConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
@@ -162,7 +164,7 @@ public class LinkCellConverterTest {
         if(record.no == 1) {
             // 空文字
             assertThat(record.uri, is(new URI("http://myhome.com/")));
-            assertThat(record.link, is(new CellLink("http://myhome.com/", "http://myhome.com/")));
+            assertThat(record.link, is(new CellLink("http://myhome.com", "http://myhome.com")));
             
         } else if(record.no == 2) {
             // URL（ラベルが同じ）
@@ -288,9 +290,9 @@ public class LinkCellConverterTest {
                 .comment("空文字"));
         
         outSheet.add(new FormattedRecord()
-        .uri(new URI("http://www.google.co.jp/"))
-        .link(new CellLink("http://www.google.co.jp/", "http://www.google.co.jp/"))
-        .comment("URL（ラベルが同じ）"));
+                .uri(new URI("http://www.google.co.jp/"))
+                .link(new CellLink("http://www.google.co.jp/", "http://www.google.co.jp/"))
+                .comment("URL（ラベルが同じ）"));
         
         outSheet.add(new FormattedRecord()
                 .uri(new URI("http://www.google.co.jp/"))
@@ -405,7 +407,7 @@ public class LinkCellConverterTest {
         if(inRecord.no == 1) {
             assertThat(inRecord.no, is(outRecord.no));
             assertThat(inRecord.uri, is(new URI("http://myhome.com/")));
-            assertThat(inRecord.link, is(new CellLink("http://myhome.com/", "http://myhome.com/")));
+            assertThat(inRecord.link, is(new CellLink("http://myhome.com", "http://myhome.com")));
             assertThat(inRecord.comment, is(outRecord.comment));
             
         } else if(inRecord.no == 7) {
@@ -581,11 +583,13 @@ public class LinkCellConverterTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsConverter(trim=true, defaultValue="http://myhome.com/")
+        @XlsDefaultValue("http://myhome.com/")
+        @XlsTrim
         @XlsColumn(columnName="URI")
         private URI uri;
         
-        @XlsConverter(trim=true, defaultValue="http://myhome.com/")
+        @XlsDefaultValue("http://myhome.com")
+        @XlsTrim
         @XlsColumn(columnName="CellLink")
         private CellLink link;
         

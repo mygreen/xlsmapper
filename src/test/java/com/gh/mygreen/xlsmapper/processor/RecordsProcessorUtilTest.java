@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
@@ -13,8 +13,6 @@ import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
-import com.gh.mygreen.xlsmapper.processor.RecordsProcessorUtil;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 /**
@@ -26,17 +24,21 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
  */
 public class RecordsProcessorUtilTest {
     
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+    private AnnotationReader reader;
+    private FieldAdapterBuilder adapterBuilder;
+    
+    @Before
+    public void setupBefore() {
+         this.reader = new AnnotationReader(null);
+         this.adapterBuilder = new FieldAdapterBuilder(reader);
+    } 
     
     @Test
     public void testCheckLoadingNestedRecordClass_success() throws Exception {
         
-        AnnotationReader reader = new AnnotationReader(null);
         Field field = NormalNestedSheet.class.getDeclaredField("largeRecords");
         field.setAccessible(true);
-        FieldAdaptor adaptor = new FieldAdaptor(NormalNestedSheet.class, field);
+        FieldAdapter adaptor = adapterBuilder.of(field);
         
         Class<?> recordClass = NormalNestedSheet.LargeRecord.class;
         RecordsProcessorUtil.checkLoadingNestedRecordClass(recordClass, adaptor, reader);
@@ -48,7 +50,7 @@ public class RecordsProcessorUtilTest {
         AnnotationReader reader = new AnnotationReader(null);
         Field field = WrongNestedSheet.class.getDeclaredField("largeRecords");
         field.setAccessible(true);
-        FieldAdaptor adaptor = new FieldAdaptor(WrongNestedSheet.class, field);
+        FieldAdapter adaptor = adapterBuilder.of(field);
         
         Class<?> recordClass = WrongNestedSheet.LargeRecord.class;
         RecordsProcessorUtil.checkLoadingNestedRecordClass(recordClass, adaptor, reader);
@@ -62,7 +64,7 @@ public class RecordsProcessorUtilTest {
         AnnotationReader reader = new AnnotationReader(null);
         Field field = NormalNestedSheet.class.getDeclaredField("largeRecords");
         field.setAccessible(true);
-        FieldAdaptor adaptor = new FieldAdaptor(NormalNestedSheet.class, field);
+        FieldAdapter adaptor = adapterBuilder.of(field);
         
         Class<?> recordClass = NormalNestedSheet.LargeRecord.class;
         RecordsProcessorUtil.checkSavingNestedRecordClass(recordClass, adaptor, reader);
@@ -74,7 +76,7 @@ public class RecordsProcessorUtilTest {
         AnnotationReader reader = new AnnotationReader(null);
         Field field = WrongNestedSheet.class.getDeclaredField("largeRecords");
         field.setAccessible(true);
-        FieldAdaptor adaptor = new FieldAdaptor(WrongNestedSheet.class, field);
+        FieldAdapter adaptor = adapterBuilder.of(field);
         
         Class<?> recordClass = WrongNestedSheet.LargeRecord.class;
         RecordsProcessorUtil.checkSavingNestedRecordClass(recordClass, adaptor, reader);

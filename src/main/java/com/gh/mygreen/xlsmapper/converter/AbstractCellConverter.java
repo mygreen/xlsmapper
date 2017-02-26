@@ -2,7 +2,7 @@ package com.gh.mygreen.xlsmapper.converter;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 
@@ -21,41 +21,42 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
      * @since 0.5
      * @param error
      * @param cell
-     * @param adaptor
+     * @param adapter
      * @param targetValue
      * @return
      */
     public TypeBindException newTypeBindException(final Exception error, 
-            final Cell cell, final FieldAdaptor adaptor, final Object targetValue) {
-        
+            final Cell cell, final FieldAdapter adapter, final Object targetValue) {
+        //TODO:メッセージのコード化
         final String message = new StringBuilder()
             .append(String.format("Fail conversion field value '%s' => type '%s'.",
-                    Utils.convertToString(targetValue), adaptor.getTargetClass()))
+                    Utils.convertToString(targetValue), adapter.getType()))
             .append(String.format(" Cell '%s' map to '%s#%s'.", 
-                    Utils.formatCellAddress(cell), adaptor.getDeclaringClass().getName(), adaptor.getName()))
+                    Utils.formatCellAddress(cell), adapter.getDeclaringClass().getName(), adapter.getName()))
             .toString();
         
-        return new TypeBindException(error, message, adaptor.getTargetClass(), targetValue);
+        return new TypeBindException(error, message, adapter.getType(), targetValue);
         
     }
     
     /**
      * 型変換失敗したときの例外{@link TypeBindException}をスローします。
      * @param cell
-     * @param adaptor
+     * @param adapter
      * @param targetValue
      * @return
      */
-    public TypeBindException newTypeBindException(final Cell cell, final FieldAdaptor adaptor, final Object targetValue) {
+    public TypeBindException newTypeBindException(final Cell cell, final FieldAdapter adapter, final Object targetValue) {
         
+        //TODO:メッセージのコード化
         final String message = new StringBuilder()
             .append(String.format("Fail conversion field value '%s' => type '%s'.",
-                    Utils.convertToString(targetValue), adaptor.getTargetClass()))
+                    Utils.convertToString(targetValue), adapter.getType()))
             .append(String.format(" Cell '%s' map to '%s#%s'.", 
-                    Utils.formatCellAddress(cell), adaptor.getDeclaringClass().getName(), adaptor.getName()))
+                    Utils.formatCellAddress(cell), adapter.getDeclaringClass().getName(), adapter.getName()))
             .toString();
         
-        return new TypeBindException(message, adaptor.getTargetClass(), targetValue);
+        return new TypeBindException(message, adapter.getType(), targetValue);
         
     }
     

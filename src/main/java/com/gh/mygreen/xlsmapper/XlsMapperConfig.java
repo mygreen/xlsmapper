@@ -340,7 +340,7 @@ public class XlsMapperConfig {
      * <p>アノテーション{@link XlsSheet} を処理します。
      * @since 1.1
      * @param sheetFinder シートを処理するクラスのインタンス。
-     * @param 自身のインスタンス
+     * @return 自身のインスタンス
      */
     public XlsMapperConfig setSheetFinder(SheetFinder sheetFinder) {
         this.sheetFinder = sheetFinder;

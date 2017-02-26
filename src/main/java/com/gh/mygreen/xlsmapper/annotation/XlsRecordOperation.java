@@ -37,7 +37,7 @@ public @interface XlsRecordOperation {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_overRecord.png">
+     *    <img src="doc-files/HorizontalRecord_overRecord.png" alt="">
      *    <p>表の書き込み時の不足するレコードの操作の指定</p>
      * </div>
      * 
@@ -65,7 +65,7 @@ public @interface XlsRecordOperation {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_remainedRecord.png">
+     *    <img src="doc-files/HorizontalRecord_remainedRecord.png" alt="">
      *    <p>表の書き込み時の余分なレコードの操作の指定</p>
      * </div>
      * 

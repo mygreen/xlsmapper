@@ -27,7 +27,7 @@ import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
  * <pre class="highlight"><code class="java">
  * // 数式をフォーマットする際のEL関数を登録する。
  * ExpressionLanguageJEXLImpl formulaEL = new ExpressionLanguageJEXLImpl();
- * Map<String, Object> funcs = new HashMap<>(); 
+ * {@literal Map<String, Object>} funcs = new {@literal HashMap<>}(); 
  * funcs.put("x", CustomFunctions.class);
  * formulaEL.getJexlEngine().setFunctions(funcs);
  * 
@@ -93,7 +93,7 @@ public @interface XlsFormula {
      * public class SampleRecord {
      *     
      *     // マッピングした位置情報
-     *     private Map<String, Point> positions;
+     *     private {@literal Map<String, Point>} positions;
      *     
      *     {@literal @XlsColumn(columnName="名前")}
      *     private String name;
@@ -174,7 +174,7 @@ public @interface XlsFormula {
      * public class SampleRecord {
      *     
      *     // マッピングした位置情報
-     *     private Map<String, Point> positions;
+     *     private {@literal Map<String, Point>} positions;
      *     
      *     {@literal @XlsColumn(columnName="名前")}
      *     private String name;
@@ -218,7 +218,7 @@ public @interface XlsFormula {
      * public class SampleRecord {
      *     
      *     // マッピングした位置情報
-     *     private Map<String, Point> positions;
+     *     private {@literal Map<String, Point>} positions;
      *     
      *     {@literal @XlsColumn(columnName="名前")}
      *     private String name;

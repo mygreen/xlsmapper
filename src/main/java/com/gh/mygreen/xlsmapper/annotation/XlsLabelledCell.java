@@ -31,7 +31,7 @@ import com.gh.mygreen.xlsmapper.processor.CellNotFoundException;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/LabelledCell.png">
+ *    <img src="doc-files/LabelledCell.png" alt="">
  *    <p>基本的な使い方</p>
  * </div>
  * 
@@ -104,7 +104,7 @@ public @interface XlsLabelledCell {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/LabelledCell_range.png">
+     *    <img src="doc-files/LabelledCell_range.png" alt="">
      *    <p>属性rangeの概要</p>
      * </div>
      * 
@@ -165,7 +165,7 @@ public @interface XlsLabelledCell {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/LabelledCell_headerLabel.png">
+     *    <img src="doc-files/LabelledCell_headerLabel.png" alt="">
      *    <p>属性headerLabelの概要</p>
      * </div>
      * 
@@ -189,7 +189,7 @@ public @interface XlsLabelledCell {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/LabelledCell_skip.png">
+     *    <img src="doc-files/LabelledCell_skip.png" alt="">
      *    <p>属性skipの概要</p>
      * </div>
      * 

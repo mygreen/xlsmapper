@@ -13,6 +13,7 @@ import java.util.Currency;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -23,12 +24,15 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.ConversionUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
@@ -44,26 +48,29 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 public abstract class AbstractNumberCellConverter<T extends Number> extends AbstractCellConverter<T> {
     
     @Override
-    public T toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config) throws TypeBindException {
+    public T toObject(final Cell cell, final FieldAdapter adapter, final XlsMapperConfig config) throws TypeBindException {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
-        final XlsNumberConverter anno = getLoadingAnnotation(adaptor);
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        
+        final XlsNumberConverter anno = adapter.getAnnotation(XlsNumberConverter.class)
+                .orElseGet(() -> getDefaultNumberConverterAnnotation());
         
         T resultValue = null;
         if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
             
-            if(Utils.hasNotDefaultValue(converterAnno)) {
+            if(!defaultValueAnno.isPresent()) {
                 // デフォルト値を持たない場合
-                if(adaptor.getTargetClass().isPrimitive()) {
+                if(adapter.getType().isPrimitive()) {
                     resultValue = getZeroValue();
                 }
                 
             } else {
-                String defaultValue = converterAnno.defaultValue();
+                String defaultValue = defaultValueAnno.get().value();
                 try {
                     resultValue = parseNumber(defaultValue, createNumberFormat(anno), createMathContext(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(e, cell, adaptor, defaultValue)
+                    throw newTypeBindException(e, cell, adapter, defaultValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
@@ -73,7 +80,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             try {
                 resultValue = convertNumber(cell.getNumericCellValue(), createMathContext(anno));
             } catch(ArithmeticException e) {
-                throw newTypeBindException(e, cell, adaptor, cell)
+                throw newTypeBindException(e, cell, adapter, cell)
                     .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
             
@@ -85,21 +92,21 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             try {
                 // 再帰的に処理する
                 final Cell evalCell = evaluator.evaluateInCell(cell);
-                return toObject(evalCell, adaptor, config);
+                return toObject(evalCell, adapter, config);
                 
             } catch(Exception e) {
-                throw newTypeBindException(e, cell, adaptor, cell)
+                throw newTypeBindException(e, cell, adapter, cell)
                     .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
             
         } else {
             String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-            cellValue = Utils.trim(cellValue, converterAnno);
+            cellValue = Utils.trim(cellValue, trimAnno);
             if(Utils.isNotEmpty(cellValue)) {
                 try {
                     resultValue = parseNumber(cellValue, createNumberFormat(anno), createMathContext(anno));
                 } catch(ParseException | ArithmeticException e) {
-                    throw newTypeBindException(e, cell, adaptor, cellValue)
+                    throw newTypeBindException(e, cell, adapter, cellValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
@@ -108,7 +115,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         if(resultValue != null) {
             return resultValue;
             
-        } else if(adaptor.getTargetClass().isPrimitive()) {
+        } else if(adapter.getType().isPrimitive()) {
             return getZeroValue();
         }
         
@@ -315,47 +322,29 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         };
     }
     
-    private XlsNumberConverter getLoadingAnnotation(final FieldAdaptor adaptor) {
-        XlsNumberConverter anno = adaptor.getLoadingAnnotation(XlsNumberConverter.class);
-        if(anno == null) {
-            anno = getDefaultNumberConverterAnnotation();
-        }
-        
-        return anno;
-    }
-    
-    private XlsNumberConverter getSavingAnnotation(final FieldAdaptor adaptor) {
-        XlsNumberConverter anno = adaptor.getSavingAnnotation(XlsNumberConverter.class);
-        if(anno == null) {
-            anno = getDefaultNumberConverterAnnotation();
-        }
-        
-        return anno;
-    }
-    
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Number targetValue, final Object targetBean,
+    public Cell toCell(final FieldAdapter adapter, final Number targetValue, final Object targetBean,
             final Sheet sheet, final int column, final int row, 
             final XlsMapperConfig config) throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
-        final XlsNumberConverter anno = getSavingAnnotation(adaptor);
-        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
-        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        
+        final XlsNumberConverter anno = adapter.getAnnotation(XlsNumberConverter.class)
+                .orElseGet(() -> getDefaultNumberConverterAnnotation());
+        
+        final Optional<XlsFormula> formulaAnno = adapter.getAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno.map(a -> a.primary()).orElse(false);
         
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
         // セルの書式設定
-        if(converterAnno != null) {
-            cell.getCellStyle().setWrapText(converterAnno.wrapText());
-            cell.getCellStyle().setShrinkToFit(converterAnno.shrinkToFit());
-        }
+        ConversionUtils.setupCellOption(cell, adapter.getAnnotation(XlsCellOption.class));
         
         Number value = targetValue;
         
         // デフォルト値から値を設定する
-        if(value == null && Utils.hasDefaultValue(converterAnno)) {
-            final String defaultValue = converterAnno.defaultValue();
+        if(value == null && defaultValueAnno.isPresent()) {
+            final String defaultValue = defaultValueAnno.get().value();
             final NumberFormat formatter;
             final MathContext context;
             
@@ -370,7 +359,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
             try {
                 value = parseNumber(defaultValue, formatter, context);
             } catch (ParseException e) {
-                throw newTypeBindException(e, cell, adaptor, defaultValue)
+                throw newTypeBindException(e, cell, adapter, defaultValue)
                     .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
             
@@ -390,8 +379,8 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         if(value != null && !primaryFormula) {
             cell.setCellValue(value.doubleValue());
             
-        } else if(formulaAnno != null) {
-            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
+        } else if(formulaAnno.isPresent()) {
+            Utils.setupCellFormula(adapter, formulaAnno.get(), config, cell, targetBean);
             
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);

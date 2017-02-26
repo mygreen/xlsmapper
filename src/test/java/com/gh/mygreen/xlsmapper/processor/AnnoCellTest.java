@@ -433,7 +433,6 @@ public class AnnoCellTest {
             return c1;
         }
         
-        @XlsCell(column=1, row=3)
         public void setC1(String c1) {
             this.c1 = c1;
         }
@@ -443,7 +442,6 @@ public class AnnoCellTest {
             return c2;
         }
         
-        @XlsCell(address="C7")
         public void setC2(Double c2) {
             this.c2 = c2;
         }
@@ -453,7 +451,6 @@ public class AnnoCellTest {
             return c3;
         }
         
-        @XlsCell(column=0, row=0, address="B10")
         public void setC3(Date c3) {
             this.c3 = c3;
         }
@@ -463,7 +460,6 @@ public class AnnoCellTest {
             return c4;
         }
         
-        @XlsCell(address="D12")
         public void setC4(Integer c4) {
             this.c4 = c4;
         }

@@ -24,11 +24,13 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.impl.BooleanCellConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -520,23 +522,27 @@ public class BooleanCellConverterTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsConverter(defaultValue="true", trim=true)
+        @XlsDefaultValue("true")
+        @XlsTrim
         @XlsBooleanConverter(failToFalse=true, ignoreCase=true)
         @XlsColumn(columnName="boolean型")
         private boolean b1;
         
-        @XlsConverter(defaultValue="true", trim=true)
+        @XlsDefaultValue("true")
+        @XlsTrim
         @XlsBooleanConverter(failToFalse=true, ignoreCase=true)
         @XlsColumn(columnName="Boolean型")
         private Boolean b2;
         
-        @XlsConverter(defaultValue="abc", trim=true)
+        @XlsDefaultValue("abc")
+        @XlsTrim
         @XlsBooleanConverter(loadForTrue={"○", "真"}, loadForFalse={"×", "偽", ""}, saveAsTrue="○", saveAsFalse="×",
             failToFalse=true, ignoreCase=true)
         @XlsColumn(columnName="boolean型(パターン)")
         private boolean b3;
         
-        @XlsConverter(defaultValue="def", trim=true)
+        @XlsDefaultValue("def")
+        @XlsTrim
         @XlsBooleanConverter(loadForTrue={"OK", "RIGHT"}, loadForFalse={"NOT", "-", ""}, saveAsTrue="OK", saveAsFalse="NOT",
             failToFalse=true, ignoreCase=false)
         @XlsColumn(columnName="Boolean型(パターン)")
@@ -590,13 +596,14 @@ public class BooleanCellConverterTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsConverter(defaultValue="false", trim=true)
+        @XlsDefaultValue("false")
+        @XlsTrim
         @XlsBooleanConverter(failToFalse=true, ignoreCase=true)
         @XlsColumn(columnName="boolean型")
         @XlsFormula(value="MOD(A${rowNumber},2)=0", primary=true)
         private boolean b1;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsBooleanConverter(loadForTrue={"偶数"}, loadForFalse={"奇数"}, saveAsTrue="偶数", saveAsFalse="奇数",
             failToFalse=false, ignoreCase=false)
         @XlsColumn(columnName="Boolean型(パターン)")

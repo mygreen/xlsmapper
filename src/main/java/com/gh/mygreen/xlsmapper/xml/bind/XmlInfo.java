@@ -18,13 +18,13 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 /**
  * XMLで定義したアノテーションの設定情報。
  * 
- * <pre>
- *   XMLの使用：
- *   <annotations> <- ルート要素
- *     
- *   </annotations>
- * 
- * </pre>
+ * XMLの使用：
+ * <pre class="highlight"><code class="xml">
+ * {@literal <!-- ルート要素--> }
+ * {@literal <annotations>}
+ *     ・・・
+ * {@literal </annotations>}
+ * </code></pre>
  * 
  * @version 1.4.1
  * @since 0.5

@@ -34,7 +34,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/MapColumns.png">
+ *    <img src="doc-files/MapColumns.png" alt="">
  *    <p>基本的な使い方</p>
  * </div>
  *
@@ -105,7 +105,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * 
  * 
  * <div class="picture">
- *    <img src="doc-files/MapColumns_positions.png">
+ *    <img src="doc-files/MapColumns_positions.png" alt="">
  *    <p>位置情報・見出し情報の取得</p>
  * </div>
  * 
@@ -148,7 +148,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  *     
  *     // 正規表現による指定
  *     {@literal @XlsMapColumns(previousColumnName="/名前.+/", nextColumnName="/備考.+/")}
- *     private Map<String, String> attendedMap;
+ *     private {@literal Map<String, String>} attendedMap;
  *     
  *     {@literal @XlsColumn(columnName="/備考.+/")}
  *     private String comment;
@@ -195,7 +195,7 @@ public @interface XlsMapColumns {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/MapColumns_nextColumnName.png">
+     *    <img src="doc-files/MapColumns_nextColumnName.png" alt="">
      *    <p>マッピングの終了条件の指定</p>
      * </div>
      * 

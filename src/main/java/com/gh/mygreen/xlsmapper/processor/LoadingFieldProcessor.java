@@ -22,11 +22,11 @@ public interface LoadingFieldProcessor<A extends Annotation> extends FieldProces
      * @param sheet Excelのシート
      * @param beansObj マッピング対象のBean。
      * @param anno 処理対象のアノテーション。
-     * @param adaptor マッピング対象のフィールド情報
+     * @param adapter マッピング対象のフィールド情報
      * @param config システム設定
      * @param work 一時オブジェクト
      * @throws XlsMapperException 
      */
-    void loadProcess(Sheet sheet, Object beansObj, A anno, FieldAdaptor adaptor, XlsMapperConfig config, LoadingWorkObject work) throws XlsMapperException;
+    void loadProcess(Sheet sheet, Object beansObj, A anno, FieldAdapter adapter, XlsMapperConfig config, LoadingWorkObject work) throws XlsMapperException;
     
 }

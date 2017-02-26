@@ -21,9 +21,13 @@ import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapterBuilder;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapterProxy;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapterProxyComparator;
 import com.gh.mygreen.xlsmapper.processor.LoadingFieldProcessor;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -35,7 +39,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 /**
  * ExcelのシートをJavaBeanにマッピングするクラス。
  * 
- * @version 1.4.4
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -64,7 +68,8 @@ public class XlsLoader {
      * @throws IllegalArgumentException clazz == null.
      * 
      */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz) throws XlsMapperException, IOException {
+    public <P> P load(final InputStream xlsIn, final Class<P> clazz) 
+            throws XlsMapperException, IOException {
         
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notNull(clazz, "clazz");
@@ -83,7 +88,9 @@ public class XlsLoader {
      * @throws IllegalArgumentException xlsIn == null.
      * @throws IllegalArgumentException clazz == null.
      */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn) throws XlsMapperException, IOException {
+    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn) 
+            throws XlsMapperException, IOException {
+        
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notNull(clazz, "clazz");
         
@@ -102,7 +109,8 @@ public class XlsLoader {
      * @throws IllegalArgumentException clazz == null.
      * 
      */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final SheetBindingErrors errors) throws XlsMapperException, IOException {
+    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final SheetBindingErrors errors) 
+            throws XlsMapperException, IOException {
         
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notNull(clazz, "clazz");
@@ -125,6 +133,7 @@ public class XlsLoader {
     public <P> P load(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn, 
             final SheetBindingErrors errors)
             throws XlsMapperException, IOException {
+        
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notNull(clazz, "clazz");
         
@@ -245,7 +254,7 @@ public class XlsLoader {
         
         final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
         
-        final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
+        final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
         if(sheetAnno == null) {
             throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
                     .varWithClass("property", clazz)
@@ -389,7 +398,6 @@ public class XlsLoader {
      * @throws Exception 
      * 
      */
-    @SuppressWarnings({"rawtypes"})
     private <P> P loadSheet(final Sheet sheet, final Class<P> clazz, final LoadingWorkObject work) throws XlsMapperException {
         
         // 値の読み込み対象のJavaBeanオブジェクトの作成
@@ -397,15 +405,16 @@ public class XlsLoader {
         
         work.getErrors().setSheetName(sheet.getSheetName());
         
-        final List<FieldAdaptorProxy> adaptorProxies = new ArrayList<>();
+        final AnnotationReader annoReader = work.getAnnoReader();
+        final FieldAdapterBuilder adapterBuilder = new FieldAdapterBuilder(annoReader);
         
         // リスナークラスの@PreLoadd用メソッドの実行
-        final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(beanObj.getClass(), XlsListener.class);
+        final XlsListener listenerAnno = annoReader.getAnnotation(beanObj.getClass(), XlsListener.class);
         if(listenerAnno != null) {
-            Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            final Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            
             for(Method method : listenerObj.getClass().getMethods()) {
-                final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPreLoad.class);
-                if(preProcessAnno != null) {
+                if(annoReader.hasAnnotation(method, XlsPreLoad.class)) {
                     Utils.invokeNeedProcessMethod(listenerObj, method, beanObj, sheet, config, work.getErrors());
                 }
             }
@@ -415,21 +424,27 @@ public class XlsLoader {
         // @PreLoad用のメソッドの実行
         for(Method method : clazz.getMethods()) {
             
-            final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(beanObj.getClass(), method, XlsPreLoad.class);
-            if(preProcessAnno != null) {
+            if(annoReader.hasAnnotation(method, XlsPreLoad.class)) {
                 Utils.invokeNeedProcessMethod(beanObj, method, beanObj, sheet, config, work.getErrors());
             }
         }
+        
+        final List<FieldAdapterProxy> adapterProxies = new ArrayList<>();
         
         // public メソッドの処理
         for(Method method : clazz.getMethods()) {
             method.setAccessible(true);
             
-            for(Annotation anno : work.getAnnoReader().getAnnotations(clazz, method)) {
-                final LoadingFieldProcessor processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);
-                if(Utils.isSetterMethod(method) && processor != null) {
-                    final FieldAdaptor adaptor = new FieldAdaptor(clazz, method, work.getAnnoReader());
-                    adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
+            for(Annotation anno : annoReader.getAnnotations(method)) {
+                final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);
+                
+                if(processor != null && ClassUtils.isAccessorMethod(method)) {
+                    final FieldAdapter adapter = adapterBuilder.of(method);
+                    
+                    final FieldAdapterProxy adapterProxy = new FieldAdapterProxy(anno, processor, adapter);
+                    if(!adapterProxies.contains(adapterProxy)) {
+                        adapterProxies.add(adapterProxy);
+                    }
                     
                 } else if(anno instanceof XlsPostLoad) {
                     work.addNeedPostProcess(new NeedProcess(beanObj, beanObj, method));
@@ -438,37 +453,37 @@ public class XlsLoader {
             
         }
         
-        // public / private / protected / default フィールドの処理
+        // フィールドの処理
         for(Field field : clazz.getDeclaredFields()) {
             
             field.setAccessible(true);
-            final FieldAdaptor adaptor = new FieldAdaptor(clazz, field, work.getAnnoReader());
+            final FieldAdapter adapter = adapterBuilder.of(field);
             
-            // メソッドを重複している場合は排除する。
-            if(adaptorProxies.contains(adaptor)) {
-                continue;
-            }
-            
-            for(Annotation anno : work.getAnnoReader().getAnnotations(clazz, field)) {
-                final LoadingFieldProcessor processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);
+            for(Annotation anno : annoReader.getAnnotations(field)) {
+                final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);
+                
                 if(processor != null) {
-                    adaptorProxies.add(new FieldAdaptorProxy(anno, processor, adaptor));
+                    
+                    final FieldAdapterProxy adapterProxy = new FieldAdapterProxy(anno, processor, adapter);
+                    if(!adapterProxies.contains(adapterProxy)) {
+                        adapterProxies.add(adapterProxy);
+                    }
+                    
                 }
             }
         }
         
         // 順番を並び替えて保存処理を実行する
-        Collections.sort(adaptorProxies, FieldAdaptorComparator.createForLoading());
-        for(FieldAdaptorProxy adaptorProxy : adaptorProxies) {
-            adaptorProxy.loadProcess(sheet, beanObj, config, work);
+        Collections.sort(adapterProxies, new FieldAdapterProxyComparator());
+        for(FieldAdapterProxy adapterProxy : adapterProxies) {
+            adapterProxy.loadProcess(sheet, beanObj, config, work);
         }
         
         // リスナークラスの@PostLoadの取得
         if(listenerAnno != null) {
             Object listenerObj = config.createBean(listenerAnno.listenerClass());
             for(Method method : listenerObj.getClass().getMethods()) {
-                final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPostLoad.class);
-                if(postProcessAnno != null) {
+                if(annoReader.hasAnnotation(method, XlsPostLoad.class)) {
                     work.addNeedPostProcess(new NeedProcess(beanObj, listenerObj, method));
                 }
             }

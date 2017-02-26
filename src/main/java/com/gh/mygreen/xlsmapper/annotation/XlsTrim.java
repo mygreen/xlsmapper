@@ -15,8 +15,8 @@ import java.lang.annotation.Target;
  *       <br>ただし、シートのセルタイプが文字列型で、Javaの型がString型以外の数値型やDate型などの場合は、
  *          変換する前にトリム処理を行います。
  *   </li>
- *   <li>値が空のセルをString型に読み込む場合、{@link #trim()}がfalseのときはnull設定されますが、
- *       トリムを有効にしていると空文字が設定されます。
+ *   <li>値が空のセルをString型に読み込む場合、アノテーション{@link XlsTrim}を付与していないとはnullが設定されますが、
+ *       付与していると空文字が設定されます。
  *   </li>
  * </ul>
  * 

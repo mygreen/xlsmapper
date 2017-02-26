@@ -1476,7 +1476,6 @@ public class AnnoIterateTablesTest {
             return classTables;
         }
         
-        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
         public void setClassTables(List<MethodAnnoTable> classTables) {
             this.classTables = classTables;
         }
@@ -1508,31 +1507,26 @@ public class AnnoIterateTablesTest {
         
         private List<PersonRecord> persons;
         
-        @XlsOrder(value=1)
         @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
         public int getNo() {
             return no;
         }
         
         @XlsOrder(value=1)
-        @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
         public void setNo(int no) {
             this.no = no;
         }
         
         @XlsOrder(value=2)
-        @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         public String getName() {
             return name;
         }
         
-        @XlsOrder(value=2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         public void setName(String name) {
             this.name = name;
         }
         
-        @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
                 overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
         public List<PersonRecord> getPersons() {
@@ -1540,7 +1534,6 @@ public class AnnoIterateTablesTest {
         }
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true)
         public void setPersons(List<PersonRecord> persons) {
             this.persons = persons;
         }

@@ -22,12 +22,14 @@ import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsEnumConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.impl.EnumCellConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -466,12 +468,14 @@ public class EnumCellConverterTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsConverter(defaultValue="Red", trim=true)
+        @XlsDefaultValue("Red")
+        @XlsTrim
         @XlsEnumConverter(ignoreCase=true)
         @XlsColumn(columnName="Enum型（英字）")
         private Color color;
         
-        @XlsConverter(defaultValue="参照", trim=true)
+        @XlsDefaultValue("参照")
+        @XlsTrim
         @XlsEnumConverter(ignoreCase=true, valueMethodName="localeName")
         @XlsColumn(columnName="Enum型（日本語）")
         private Operate operate;

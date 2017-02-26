@@ -16,11 +16,11 @@ public class ArgUtils {
      * 値がnullでないかどうか検証する。
      * @param arg 検証対象の値
      * @param name 検証対象の引数の名前
-     * @throws IllegalArgumentException {@literal arg == null.}
+     * @throws NullPointerException {@literal arg == null.}
      */
     public static void notNull(final Object arg, final String name) {
         if(arg == null) {
-            throw new IllegalArgumentException(String.format("%s should not be null.", name));
+            throw new NullPointerException(String.format("%s should not be null.", name));
         }
     }
     

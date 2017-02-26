@@ -6,13 +6,14 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 /**
  * 値が指定した値以下かどうかの最大値のチェックする。
- * <p>メッセージキーは、「cellFieldError.max」。
- * <p>メッセージ中で利用可能な変数は次の通り。
- *   <ul>
- *    <li>「validatedValue」：検証対象の値のオブジェクト。
- *    <li>「formattedValidatedValue」：{@link FieldFormatter}により、文字列にフォーマットした検証対象の値。
- *    <li>「max」：上限値となる最大値。
- *    <li>「formattedMax」：{@link FieldFormatter}により、文字列にフォーマットした上限値となる最大値。
+ * <p>メッセージキーは、「cellFieldError.max」。</p>
+ * <p>メッセージ中で利用可能な変数は次の通り。</p>
+ * <ul>
+ *   <li>「validatedValue」：検証対象の値のオブジェクト。</li>
+ *   <li>「formattedValidatedValue」：{@link FieldFormatter}により、文字列にフォーマットした検証対象の値。</li>
+ *   <li>「max」：上限値となる最大値。</li>
+ *   <li>「formattedMax」：{@link FieldFormatter}により、文字列にフォーマットした上限値となる最大値。</li>
+ * </ul>
  * 
  * @version 1.0
  * @author T.TSUCHIE

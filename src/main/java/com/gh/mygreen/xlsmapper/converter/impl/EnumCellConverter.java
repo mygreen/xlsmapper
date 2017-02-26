@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,21 +18,24 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsEnumConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.converter.ConversionException;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.ConversionUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
  * 列挙型のConverter。
- * <p>一度読み込んだ列挙型の情報はキャッシュする。列挙型はstaticであるため、動的に変更できないため。
+ * <p>一度読み込んだ列挙型の情報はキャッシュする。列挙型はstaticであるため、動的に変更できないため。</p>
  * 
- * @version 1.5
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -50,22 +54,26 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
     
     @SuppressWarnings({"unchecked"})
     @Override
-    public Enum<?> toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config) throws XlsMapperException {
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
-        final XlsEnumConverter anno = getLoadingAnnotation(adaptor);
+    public Enum<?> toObject(final Cell cell, final FieldAdapter adapter, final XlsMapperConfig config) throws XlsMapperException {
+        
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        
+        final XlsEnumConverter anno = adapter.getAnnotation(XlsEnumConverter.class)
+                .orElseGet(() -> getDefaultEnumConverterAnnotation());
         
         String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-        cellValue = Utils.trim(cellValue, converterAnno);
-        if(Utils.isEmpty(cellValue) && Utils.hasNotDefaultValue(converterAnno)) {
+        cellValue = Utils.trim(cellValue, trimAnno);
+        if(Utils.isEmpty(cellValue) && !defaultValueAnno.isPresent()) {
             return null;
         }
-        cellValue = Utils.getDefaultValueIfEmpty(cellValue, converterAnno);
+        cellValue = Utils.getDefaultValueIfEmpty(cellValue, defaultValueAnno);
         
-        final Class<Enum> taretClass = (Class<Enum>) adaptor.getTargetClass();
+        final Class<Enum> taretClass = (Class<Enum>) adapter.getType();
         Enum<?> resultValue = convertToObject(cellValue, taretClass, anno);
         if(resultValue == null && Utils.isNotEmpty(cellValue)) {
             // 値があり変換できない場合
-            throw newTypeBindException(cell, adaptor, cellValue)
+            throw newTypeBindException(cell, adapter, cellValue)
                 .addAllMessageVars(createTypeErrorMessageVars(taretClass, anno));
         }
         
@@ -104,22 +112,6 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
             }
             
         };
-    }
-    
-    private XlsEnumConverter getLoadingAnnotation(final FieldAdaptor adaptor) {
-        XlsEnumConverter anno = adaptor.getLoadingAnnotation(XlsEnumConverter.class);
-        if(anno == null) {
-            anno = getDefaultEnumConverterAnnotation();
-        }
-        return anno;
-    }
-    
-    private XlsEnumConverter getSavingAnnotation(final FieldAdaptor adaptor) {
-        XlsEnumConverter anno = adaptor.getSavingAnnotation(XlsEnumConverter.class);
-        if(anno == null) {
-            anno = getDefaultEnumConverterAnnotation();
-        }
-        return anno;
     }
     
     /**
@@ -253,42 +245,43 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Enum targetValue, final Object targetBean,
+    public Cell toCell(final FieldAdapter adapter, final Enum targetValue, final Object targetBean,
             final Sheet sheet, final int column, final int row, final XlsMapperConfig config) throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
-        final XlsEnumConverter anno = getSavingAnnotation(adaptor);
-        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
-        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
         
-        final Class<Enum> taretClass = (Class<Enum>) adaptor.getTargetClass();
+        final XlsEnumConverter anno = adapter.getAnnotation(XlsEnumConverter.class)
+                .orElseGet(() -> getDefaultEnumConverterAnnotation());
+        
+        final Optional<XlsFormula> formulaAnno = adapter.getAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno.map(a -> a.primary()).orElse(false);
+        
+        final Class<Enum> taretClass = (Class<Enum>) adapter.getType();
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
         // セルの書式設定
-        if(converterAnno != null) {
-            cell.getCellStyle().setWrapText(converterAnno.wrapText());
-            cell.getCellStyle().setShrinkToFit(converterAnno.shrinkToFit());
-        }
+        ConversionUtils.setupCellOption(cell, adapter.getAnnotation(XlsCellOption.class));
         
         Enum value = targetValue;
         
         // デフォルト値から値を設定する
-        if(value == null && Utils.hasDefaultValue(converterAnno)) {
-            value = convertToObject(Utils.getDefaultValue(converterAnno), (Class<Enum>) adaptor.getTargetClass(), anno);
+        if(value == null && defaultValueAnno.isPresent()) {
+            value = convertToObject(defaultValueAnno.get().value(), (Class<Enum>) adapter.getType(), anno);
             
             // 初期値が設定されているが、変換できないような時はエラーとする
             if(value == null) {
-                throw newTypeBindException(cell, adaptor, Utils.getDefaultValue(converterAnno))
+                throw newTypeBindException(cell, adapter, defaultValueAnno.get().value())
                         .addAllMessageVars(createTypeErrorMessageVars(taretClass, anno));
             }
         }
         
         if(value != null && !primaryFormula) {
-            final String cellValue = convertToString(value, (Class<Enum>) adaptor.getTargetClass(), anno);
+            final String cellValue = convertToString(value, (Class<Enum>) adapter.getType(), anno);
             cell.setCellValue(cellValue);
             
-        } else if(formulaAnno != null) {
-            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
+        } else if(formulaAnno.isPresent()) {
+            Utils.setupCellFormula(adapter, formulaAnno.get(), config, cell, targetBean);
             
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);

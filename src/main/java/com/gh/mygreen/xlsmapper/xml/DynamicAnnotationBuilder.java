@@ -91,7 +91,7 @@ public class DynamicAnnotationBuilder {
         
         final Map<String, Object> defaultValues = new HashMap<>();
         for(Method method : annoClass.getMethods()) {
-            Object defaultValue = method.getDefaultValue();
+            final Object defaultValue = method.getDefaultValue();
             if(defaultValue != null) {
                 defaultValues.put(method.getName(), defaultValue);
             }

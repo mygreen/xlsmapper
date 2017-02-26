@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -47,11 +48,12 @@ import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.processor.CellAddress;
 import com.gh.mygreen.xlsmapper.processor.CellNotFoundException;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
 import com.gh.mygreen.xlsmapper.processor.MergedRecord;
 import com.gh.mygreen.xlsmapper.processor.NestMergedSizeException;
 import com.gh.mygreen.xlsmapper.processor.RecordHeader;
 import com.gh.mygreen.xlsmapper.processor.RecordsProcessorUtil;
+import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -62,7 +64,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * アノテーション{@link XlsVerticalRecords}を処理するクラス。
  * 
- * @version 1.5
+ * @version 2.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -71,7 +73,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
-            final FieldAdaptor adaptor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final FieldAdapter adaptor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
@@ -83,12 +85,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
         }
         
-        final Class<?> clazz = adaptor.getTargetClass();
+        final Class<?> clazz = adaptor.getType();
         if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getLoadingGenericClassType();
+                recordClass = adaptor.getComponentType();
             }
             
             final List<?> value = loadRecords(sheet, anno, adaptor, recordClass, config, work);
@@ -101,7 +103,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getLoadingGenericClassType();
+                recordClass = adaptor.getComponentType();
             }
             
             final List<?> value = loadRecords(sheet, anno, adaptor, recordClass, config, work);
@@ -125,7 +127,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
     }
     
-   private List<?> loadRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAdaptor adaptor,
+   private List<?> loadRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAdapter adaptor,
            final Class<?> recordClass, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
         // get table starting position
@@ -192,7 +194,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
    private List<?> loadRecords(final Sheet sheet, final List<RecordHeader> headers,
            final XlsVerticalRecords anno,
            final CellAddress initPosition, final int parentMergedSize,
-           final FieldAdaptor adaptor, final Class<?> recordClass,
+           final FieldAdapter adaptor, final Class<?> recordClass,
            final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
        
         final List<Object> result = new ArrayList<>();
@@ -233,7 +235,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             if(listenerAnno != null) {
                 Object listenerObj = config.createBean(listenerAnno.listenerClass());
                 for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPreLoad.class);
+                    final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
                     if(preProcessAnno != null) {
                         Utils.invokeNeedProcessMethod(listenerObj, method, record, sheet, config, work.getErrors());
                     }
@@ -242,7 +244,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             // execute PreProcess method
             for(Method method : record.getClass().getMethods()) {
-                final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(record.getClass(), method, XlsPreLoad.class);
+                final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
                 if(preProcessAnno != null) {
                     Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors());
                 }
@@ -280,11 +282,15 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 }
                 
                 // mapping from Excel columns to Object properties.
-                final List<FieldAdaptor> propeties = Utils.getLoadingColumnProperties(
-                        record.getClass(), headerInfo.getLabel(), work.getAnnoReader(), config);
-                for(FieldAdaptor property : propeties) {
+                final List<FieldAdapter> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+                        record.getClass(), work.getAnnoReader(), config, headerInfo.getLabel())
+                        .stream()
+                        .filter(p -> p.isReadable())
+                        .collect(Collectors.toList());
+                
+                for(FieldAdapter property : propeties) {
                     Cell valueCell = cell;
-                    final XlsColumn column = property.getLoadingAnnotation(XlsColumn.class);
+                    final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
                     
                     if(column.headerMerged() > 0){
                         hRow = hRow + column.headerMerged();
@@ -327,7 +333,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     // set for value
                     Utils.setPosition(valueCell.getColumnIndex(), valueCell.getRowIndex(), record, property.getName());
                     Utils.setLabel(headerInfo.getLabel(), record, property.getName());
-                    final CellConverter<?> converter = getLoadingCellConverter(property, config.getConverterRegistry(), config);
+                    final CellConverter<?> converter = getCellConverter(property, config.getConverterRegistry(), config);
                     try {
                         final Object value = converter.toObject(valueCell, property, config);
                         property.setValue(record, value);
@@ -366,7 +372,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 Object listenerObj = config.createBean(listenerAnno.listenerClass());
                 for(Method method : listenerObj.getClass().getMethods()) {
                     
-                    final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPostLoad.class);
+                    final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
                     if(postProcessAnno != null) {
                         work.addNeedPostProcess(new NeedProcess(record, listenerObj, method));
                     }
@@ -375,7 +381,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             // set PostProcess method
             for(Method method : record.getClass().getMethods()) {
-                final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(record.getClass(), method, XlsPostLoad.class);
+                final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
                 if(postProcessAnno != null) {
                     work.addNeedPostProcess(new NeedProcess(record, record, method));
                 }
@@ -407,7 +413,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * @throws CellNotFoundException 指定したラベルが見つからない場合。
      */
     private CellAddress getHeaderPosition(final Sheet sheet, final XlsVerticalRecords anno,
-            final FieldAdaptor adaptor, final XlsMapperConfig config) throws AnnotationInvalidException, CellNotFoundException {
+            final FieldAdapter adaptor, final XlsMapperConfig config) throws AnnotationInvalidException, CellNotFoundException {
         
         if(Utils.isNotEmpty(anno.headerAddress())) {
             Point address = Utils.parseCellAddress(anno.headerAddress());
@@ -491,8 +497,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAdaptor> propeties = Utils.getLoadingColumnProperties(
-                    recordClass, headerInfo.getLabel(), annoReader, config);
+            final List<FieldAdapter> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+                    recordClass, annoReader, config, headerInfo.getLabel())
+                    .stream()
+                    .filter(p -> p.isReadable())
+                    .collect(Collectors.toList());
             if(!propeties.isEmpty()) {
                 return i;
             }
@@ -505,14 +514,18 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     private void loadMapColumns(final Sheet sheet, final List<RecordHeader> headers, final List<MergedRecord> mergedRecords,
             final CellAddress beginPosition, final Object record, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final List<FieldAdaptor> properties = Utils.getLoadingMapColumnProperties(record.getClass(), work.getAnnoReader());
+        final List<FieldAdapter> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+                record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
+                .stream()
+                .filter(p -> p.isReadable())
+                .collect(Collectors.toList());
         
-        for(FieldAdaptor property : properties) {
-            final XlsMapColumns mapAnno = property.getLoadingAnnotation(XlsMapColumns.class);
+        for(FieldAdapter property : properties) {
+            final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();
             
             Class<?> itemClass = mapAnno.itemClass();
             if(itemClass == Object.class) {
-                itemClass = property.getLoadingGenericClassType();
+                itemClass = property.getComponentType();
             }
             
             // get converter (map key class)
@@ -576,11 +589,15 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // 基本的に結合している個数による。
         int skipSize = 0;
         
-        final List<FieldAdaptor> nestedProperties = Utils.getLoadingNestedRecordsProperties(record.getClass(), work.getAnnoReader());
-        for(FieldAdaptor property : nestedProperties) {
+        final List<FieldAdapter> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(
+                record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
+                .stream()
+                .filter(p -> p.isReadable())
+                .collect(Collectors.toList());
+        for(FieldAdapter property : nestedProperties) {
             
-            final XlsNestedRecords nestedAnno = property.getLoadingAnnotation(XlsNestedRecords.class);
-            final Class<?> clazz = property.getTargetClass();
+            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+            final Class<?> clazz = property.getType();
             if(Collection.class.isAssignableFrom(clazz)) {
                 // mapping by one-to-many
                 
@@ -591,7 +608,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 Class<?> recordClass = nestedAnno.recordClass();
                 if(recordClass == Object.class) {
-                    recordClass = property.getLoadingGenericClassType();
+                    recordClass = property.getComponentType();
                 }
                 
                 List<?> value = loadRecords(sheet, headers, anno, beginPosition, mergedSize, property, recordClass, config, work);
@@ -610,7 +627,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 Class<?> recordClass = anno.recordClass();
                 if(recordClass == Object.class) {
-                    recordClass = property.getLoadingGenericClassType();
+                    recordClass = property.getComponentType();
                 }
                 
                 List<?> value = loadRecords(sheet, headers, anno, beginPosition, mergedSize, property, recordClass, config, work);
@@ -633,7 +650,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 Class<?> recordClass = anno.recordClass();
                 if(recordClass == Object.class) {
-                    recordClass = property.getTargetClass();
+                    recordClass = property.getType();
                 }
                 
                 List<?> value = loadRecords(sheet, headers, anno, beginPosition, mergedSize, property, recordClass, config, work);
@@ -657,10 +674,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * @throws AnnotationReadException 
      * @throws AnnotationInvalidException 
      */
-    private boolean isEmptyRecord(final FieldAdaptor adaptor, final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
+    private boolean isEmptyRecord(final FieldAdapter adaptor, final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
         
         for(Method method : record.getClass().getMethods()) {
-            final XlsIsIgnored emptyAnno = annoReader.getAnnotation(record.getClass(), method, XlsIsIgnored.class);
+            final XlsIsIgnored emptyAnno = annoReader.getAnnotation(method, XlsIsIgnored.class);
             if(emptyAnno == null) {
                 continue;
             }
@@ -682,7 +699,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     
     @Override
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
-            final FieldAdaptor adaptor, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final FieldAdapter adaptor, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
@@ -694,13 +711,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
         }
         
-        final Class<?> clazz = adaptor.getTargetClass();
+        final Class<?> clazz = adaptor.getType();
         final Object result = adaptor.getValue(beansObj);
         if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getSavingGenericClassType();
+                recordClass = adaptor.getComponentType();
             }
             
             final Collection<Object> value = (result == null ? new ArrayList<Object>() : (Collection<Object>) result);
@@ -711,7 +728,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getSavingGenericClassType();
+                recordClass = adaptor.getComponentType();
             }
             
             final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
@@ -728,7 +745,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
     }
     
-    private void saveRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAdaptor adaptor, 
+    private void saveRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAdapter adaptor, 
             final Class<?> recordClass, final List<Object> result,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
@@ -815,7 +832,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     private void saveRecords(final Sheet sheet, final List<RecordHeader> headers,
             final XlsVerticalRecords anno,
             final CellAddress initPosition, final AtomicInteger nestedRecordSize,
-            final FieldAdaptor adaptor, final Class<?> recordClass, final List<Object> result,
+            final FieldAdapter adaptor, final Class<?> recordClass, final List<Object> result,
             final XlsMapperConfig config, final SavingWorkObject work,
             final List<CellRangeAddress> mergedRanges, final RecordOperation recordOperation) throws XlsMapperException {
 
@@ -861,7 +878,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 if(listenerAnno != null) {
                     Object listenerObj = config.createBean(listenerAnno.listenerClass());
                     for(Method method : listenerObj.getClass().getMethods()) {
-                        final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPreSave.class);
+                        final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
                         if(preProcessAnno != null) {
                             Utils.invokeNeedProcessMethod(listenerObj, method, record, sheet, config, work.getErrors());
                         }
@@ -870,7 +887,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 // execute PreProcess/PostProcess method
                 for(Method method : record.getClass().getMethods()) {
-                    final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(record.getClass(), method, XlsPreSave.class);
+                    final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
                     if(preProcessAnno != null) {
                         Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors());                    
                     }
@@ -918,11 +935,14 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 // mapping from Excel columns to Object properties.
                 if(record != null) {
-                    final List<FieldAdaptor> propeties = Utils.getSavingColumnProperties(
-                            record.getClass(), headerInfo.getLabel(), work.getAnnoReader(), config);
-                    for(FieldAdaptor property : propeties) {
+                    final List<FieldAdapter> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+                            record.getClass(), work.getAnnoReader(), config, headerInfo.getLabel())
+                            .stream()
+                            .filter(p -> p.isWritable())
+                            .collect(Collectors.toList());
+                    for(FieldAdapter property : propeties) {
                         Cell valueCell = cell;
-                        final XlsColumn column = property.getSavingAnnotation(XlsColumn.class);
+                        final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
                         
                         //TODO: マージを考慮する必要はないかも
                         if(column.headerMerged() > 0) {
@@ -986,7 +1006,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         // set for cell value
                         Utils.setPosition(valueCell.getColumnIndex(), valueCell.getRowIndex(), record, property.getName());
                         Utils.setLabel(headerInfo.getLabel(), record, property.getName());
-                        final CellConverter converter = getSavingCellConverter(property, config.getConverterRegistry(), config);
+                        final CellConverter converter = getCellConverter(property, config.getConverterRegistry(), config);
                         try {
                             converter.toCell(property, property.getValue(record), record, sheet, valueCell.getColumnIndex(), valueCell.getRowIndex(), config);
                         } catch(TypeBindException e) {
@@ -1051,7 +1071,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     Object listenerObj = config.createBean(listenerAnno.listenerClass());
                     for(Method method : listenerObj.getClass().getMethods()) {
                         
-                        final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(listenerAnno.listenerClass(), method, XlsPostSave.class);
+                        final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
                         if(postProcessAnno != null) {
                             work.addNeedPostProcess(new NeedProcess(record, listenerObj, method));
                         }
@@ -1061,7 +1081,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 // set PostProcess method
                 for(Method method : record.getClass().getMethods()) {
                     
-                    final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(record.getClass(), method, XlsPostSave.class);
+                    final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
                     if(postProcessAnno != null) {
                         work.addNeedPostProcess(new NeedProcess(record, record, method));
                     }
@@ -1105,8 +1125,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAdaptor> propeties = Utils.getSavingColumnProperties(
-                    recordClass, headerInfo.getLabel(), annoReader, config);
+            final List<FieldAdapter> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+                    recordClass,annoReader, config,  headerInfo.getLabel())
+                    .stream()
+                    .filter(p -> p.isWritable())
+                    .collect(Collectors.toList());
             if(!propeties.isEmpty()) {
                 return i;
             }
@@ -1178,14 +1201,18 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             final XlsVerticalRecords anno, final XlsMapperConfig config, final SavingWorkObject work,
             final RecordOperation recordOperation) throws XlsMapperException {
         
-        final List<FieldAdaptor> properties = Utils.getSavingMapColumnProperties(record.getClass(), work.getAnnoReader());
-        for(FieldAdaptor property : properties) {
+        final List<FieldAdapter> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+                record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
+                .stream()
+                .filter(p -> p.isWritable())
+                .collect(Collectors.toList());
+        for(FieldAdapter property : properties) {
             
-            final XlsMapColumns mapAnno = property.getSavingAnnotation(XlsMapColumns.class);
+            final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();
             
             Class<?> itemClass = mapAnno.itemClass();
             if(itemClass == Object.class) {
-                itemClass = property.getSavingGenericClassType();
+                itemClass = property.getComponentType();
             }
             
             // get converter (map key class)
@@ -1282,17 +1309,21 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         int skipSize = 0;
         
-        final List<FieldAdaptor> nestedProperties = Utils.getSavingNestedRecordsProperties(record.getClass(), work.getAnnoReader());
-        for(FieldAdaptor property : nestedProperties) {
+        final List<FieldAdapter> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(
+                record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
+                .stream()
+                .filter(p -> p.isWritable())
+                .collect(Collectors.toList());
+        for(FieldAdapter property : nestedProperties) {
             
-            final XlsNestedRecords nestedAnno = property.getSavingAnnotation(XlsNestedRecords.class);
-            final Class<?> clazz = property.getTargetClass();
+            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+            final Class<?> clazz = property.getType();
             if(Collection.class.isAssignableFrom(clazz)) {
                 // mapping by one-to-many
                 
                 Class<?> recordClass = nestedAnno.recordClass();
                 if(recordClass == Object.class) {
-                    recordClass = property.getSavingGenericClassType();
+                    recordClass = property.getComponentType();
                 }
                 
                 Collection<Object> value = (Collection<Object>) property.getValue(record);
@@ -1322,7 +1353,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 Class<?> recordClass = nestedAnno.recordClass();
                 if(recordClass == Object.class) {
-                    recordClass = property.getSavingGenericClassType();
+                    recordClass = property.getComponentType();
                 }
                 
                 Object[] value = (Object[])property.getValue(record);
@@ -1349,7 +1380,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 // mapping by one-to-many
                 Class<?> recordClass = anno.recordClass();
                 if(recordClass == Object.class) {
-                    recordClass = property.getTargetClass();
+                    recordClass = property.getType();
                 }
                 
                 Object value = property.getValue(record);

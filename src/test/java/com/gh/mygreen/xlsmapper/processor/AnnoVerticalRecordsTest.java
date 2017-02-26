@@ -32,12 +32,14 @@ import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.CellNotFoundException;
@@ -3672,7 +3674,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        @XlsColumn(columnName="No.")
        private int no;
        
-       @XlsConverter(trim=true)
+       @XlsTrim
        @XlsColumn(columnName="氏名")
        private String name;
        
@@ -4500,23 +4502,21 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        private MethodAnnoMapRecord[] mapRecords;
        
        @XlsOrder(value=1)
-       @XlsVerticalRecords(tableLabel="名簿", overRecord=OverRecordOperation.Copy)
+       @XlsVerticalRecords(tableLabel="名簿", overRecord=OverRecordOperation.Copy, ignoreEmptyRecord=true)
        public List<MethodAnnoRecord> getRecords() {
            return records;
        }
        
-       @XlsVerticalRecords(tableLabel="名簿", ignoreEmptyRecord=true)
        public void setRecords(List<MethodAnnoRecord> records) {
            this.records = records;
        }
        
        @XlsOrder(value=2)
-       @XlsVerticalRecords(tableLabel="出欠", overRecord=OverRecordOperation.Copy)
        public MethodAnnoMapRecord[] getMapRecords() {
            return mapRecords;
        }
        
-       @XlsVerticalRecords(tableLabel="出欠", ignoreEmptyRecord=true)
+       @XlsVerticalRecords(tableLabel="出欠", overRecord=OverRecordOperation.Copy, ignoreEmptyRecord=true)
        public void setMapRecords(MethodAnnoMapRecord[] mapRecords) {
            this.mapRecords = mapRecords;
        }
@@ -4584,7 +4584,6 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            return no;
        }
        
-       @XlsColumn(columnName="No.")
        public void setNo(int no) {
            this.no = no;
        }
@@ -4594,7 +4593,6 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            return name;
        }
        
-       @XlsColumn(columnName="氏名")
        public void setName(String name) {
            this.name = name;
        }
@@ -4605,7 +4603,6 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        }
        
        @XlsDateConverter(javaPattern="yyyy年M月d日")
-       @XlsColumn(columnName="生年月日")
        public void setBirthday(Date birthday) {
            this.birthday = birthday;
        }
@@ -4688,7 +4685,6 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            return no;
        }
        
-       @XlsColumn(columnName="No.")
        public void setNo(int no) {
            this.no = no;
        }
@@ -4698,18 +4694,15 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            return name;
        }
        
-       @XlsColumn(columnName="氏名")
        public void setName(String name) {
            this.name = name;
        }
        
-       @XlsBooleanConverter(saveAsTrue="出席", saveAsFalse="欠席")
-       @XlsMapColumns(previousColumnName="氏名")
+       @XlsBooleanConverter(saveAsTrue="出席", saveAsFalse="欠席", loadForTrue="出席", loadForFalse="欠席")
        public Map<String, Boolean> getDateAttended() {
            return dateAttended;
        }
        
-       @XlsBooleanConverter(loadForTrue="出席", loadForFalse="欠席")
        @XlsMapColumns(previousColumnName="氏名")
        public void setDateAttended(Map<String, Boolean> dateAttended) {
            this.dateAttended = dateAttended;
@@ -4950,7 +4943,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            
            private Map<String, String> labels;
            
-           @XlsConverter(defaultValue="99")
+           @XlsDefaultValue("99")
            @XlsColumn(columnName="No.", optional=true)
            private int no;
            
@@ -5008,7 +5001,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            
            private Map<String, String> labels;
            
-           @XlsConverter(defaultValue="99")
+           @XlsDefaultValue("99")
            @XlsColumn(columnName="No.", optional=true)
            private int no;
            

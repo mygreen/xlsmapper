@@ -20,7 +20,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * <p>次のような表のExcelシートをマッピングする例を説明します。</p>
  * 
  * <div class="picture">
- *    <img src="doc-files/howto_load.png">
+ *    <img src="doc-files/howto_load.png" alt="">
  *    <p>基本的なマッピング</p>
  * </div>
  * 
@@ -96,7 +96,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * </p>
  * 
  * <div class="picture">
- *    <img src="doc-files/howto_save.png">
+ *    <img src="doc-files/howto_save.png" alt="">
  *    <p>データが空のテンプレートファイル</p>
  * </div>
  * 

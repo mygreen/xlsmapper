@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  * </code></pre>
  *
  * <div class="picture">
- *    <img src="doc-files/Cell.png">
+ *    <img src="doc-files/Cell.png" alt="">
  *    <p>概要</p>
  * </div>
  * 

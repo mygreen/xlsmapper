@@ -74,7 +74,7 @@ import java.lang.annotation.Target;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/NestedRecords_oneToMany.png">
+ *    <img src="doc-files/NestedRecords_oneToMany.png" alt="">
  *    <p>一対多の関係</p>
  * </div>
  * 
@@ -127,7 +127,7 @@ import java.lang.annotation.Target;
  * 
  * 
  * <div class="picture">
- *    <img src="doc-files/NestedRecords_oneToOne.png">
+ *    <img src="doc-files/NestedRecords_oneToOne.png" alt="">
  *    <p>一対一の関係</p>
  * </div>
  *

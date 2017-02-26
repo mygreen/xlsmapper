@@ -38,7 +38,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/HorizontalRecord.png">
+ *    <img src="doc-files/HorizontalRecord.png" alt="">
  *    <p>基本的な使い方</p>
  * </div>
  * 
@@ -126,7 +126,7 @@ public @interface XlsHorizontalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_terminateLabel.png">
+     *    <img src="doc-files/HorizontalRecord_terminateLabel.png" alt="">
      *    <p>表の終端セルの指定</p>
      * </div>
      * 
@@ -167,7 +167,7 @@ public @interface XlsHorizontalRecords {
      * }
      * </code></pre>
      * 
-     * @return 値は0から始まり、指定しない場合は-1を指定します。</p>
+     * @return 値は0から始まり、指定しない場合は-1を指定します。
      */
     int headerColumn() default -1;
     
@@ -217,7 +217,7 @@ public @interface XlsHorizontalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_terminal.png">
+     *    <img src="doc-files/HorizontalRecord_terminal.png" alt="">
      *    <p>表の終端の指定</p>
      * </div>
      * 
@@ -248,7 +248,7 @@ public @interface XlsHorizontalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_range.png">
+     *    <img src="doc-files/HorizontalRecord_range.png" alt="">
      *    <p>表の見出しに空白がある場合</p>
      * </div>
      * 
@@ -272,7 +272,7 @@ public @interface XlsHorizontalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_bottom.png">
+     *    <img src="doc-files/HorizontalRecord_bottom.png" alt="">
      *    <p>表の名称から離れている際の開始位置の指定</p>
      * </div>
      * 
@@ -301,7 +301,7 @@ public @interface XlsHorizontalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_headerLimit.png">
+     *    <img src="doc-files/HorizontalRecord_headerLimit.png" alt="">
      *    <p>表の見出しの走査の終了条件の指定</p>
      * </div>
      * 
@@ -355,7 +355,7 @@ public @interface XlsHorizontalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_headerBottom.png">
+     *    <img src="doc-files/HorizontalRecord_headerBottom.png" alt="">
      *    <p>表の見出しからデータレコードが離れているときの指定</p>
      * </div>
      * 
@@ -383,7 +383,7 @@ public @interface XlsHorizontalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_overRecord.png">
+     *    <img src="doc-files/HorizontalRecord_overRecord.png" alt="">
      *    <p>表の書き込み時の不足するレコードの操作の指定</p>
      * </div>
      * 
@@ -410,7 +410,7 @@ public @interface XlsHorizontalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_remainedRecord.png">
+     *    <img src="doc-files/HorizontalRecord_remainedRecord.png" alt="">
      *    <p>表の書き込み時の余分なレコードの操作の指定</p>
      * </div>
      * 

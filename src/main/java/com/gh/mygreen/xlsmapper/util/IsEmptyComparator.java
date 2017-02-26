@@ -7,6 +7,7 @@ package com.gh.mygreen.xlsmapper.util;
  * @author T.TSUCHIE
  *
  */
+@FunctionalInterface
 public interface IsEmptyComparator {
     
     /**

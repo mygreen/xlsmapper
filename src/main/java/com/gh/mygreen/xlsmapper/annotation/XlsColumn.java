@@ -35,7 +35,7 @@ import com.gh.mygreen.xlsmapper.processor.CellNotFoundException;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/Column.png">
+ *    <img src="doc-files/Column.png" alt="">
  *    <p>基本的な使い方</p>
  * </div>
  * 
@@ -118,7 +118,7 @@ public @interface XlsColumn {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/Column_merged.png">
+     *    <img src="doc-files/Column_merged.png" alt="">
      *    <p>データの列が結合されている場合</p>
      * </div>
      * 
@@ -151,7 +151,7 @@ public @interface XlsColumn {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/Column_headerMerged.png">
+     *    <img src="doc-files/Column_headerMerged.png" alt="">
      *    <p>見出し行が結合されている場合</p>
      * </div>
      * 

@@ -43,7 +43,7 @@ import java.lang.annotation.Target;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/Hint.png">
+ *    <img src="doc-files/Hint.png" alt="">
  *    <p>書き込み時にセルの位置がずれる場合</p>
  * </div>
  * 

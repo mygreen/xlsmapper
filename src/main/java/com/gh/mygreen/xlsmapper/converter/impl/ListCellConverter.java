@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -13,13 +14,16 @@ import org.apache.poi.ss.usermodel.Sheet;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.converter.ConversionException;
 import com.gh.mygreen.xlsmapper.converter.DefaultItemConverter;
 import com.gh.mygreen.xlsmapper.converter.ItemConverter;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.ConversionUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
@@ -35,36 +39,38 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 public class ListCellConverter extends AbstractCellConverter<List> {
     
     @Override
-    public List toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config)
+    public List toObject(final Cell cell, final FieldAdapter adapter, final XlsMapperConfig config)
             throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
-        final XlsArrayConverter anno = getLoadingAnnotation(adaptor);
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        
+        final XlsArrayConverter anno = adapter.getAnnotation(XlsArrayConverter.class)
+                .orElseGet(() -> getDefaultArrayConverterAnnotation());
         
         String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-        cellValue = Utils.getDefaultValueIfEmpty(cellValue, converterAnno);
+        cellValue = Utils.getDefaultValueIfEmpty(cellValue, defaultValueAnno);
         
-        Class<?> fieldClass = adaptor.getTargetClass();
-        
+        Class<?> fieldClass = adapter.getType();
         Class<?> itemClass = anno.itemClass();
         if(itemClass == Object.class) {
-            itemClass = adaptor.getLoadingGenericClassType();
+            itemClass = adapter.getComponentType();
         }
         
         try {
-            List list = convertList(cellValue, itemClass, converterAnno, anno, config);
+            List list = convertList(cellValue, itemClass, trimAnno, anno, config);
             if(List.class.isAssignableFrom(fieldClass)) {
                 list = (List) Utils.convertListToCollection(list, (Class<Collection>)fieldClass, config.getBeanFactory());
             }
             return list;
         } catch(NumberFormatException e) {
-            throw newTypeBindException(e, cell, adaptor, cellValue)
+            throw newTypeBindException(e, cell, adapter, cellValue)
                 .addAllMessageVars(createTypeErrorMessageVars(anno));
         }
     }
     
     @SuppressWarnings("unchecked")
-    protected List<?> convertList(final String value, Class<?> itemClass, final XlsConverter converterAnno,
+    protected List<?> convertList(final String value, Class<?> itemClass, final Optional<XlsTrim> trimAnno,
             final XlsArrayConverter anno, final XlsMapperConfig config) throws ConversionException {
         
         final String[] split = value.split(anno.separator());
@@ -77,7 +83,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         
         for(String item : split) {
             
-            String strVal = Utils.trim(item, converterAnno);
+            String strVal = Utils.trim(item, trimAnno);
             if(anno.ignoreEmptyItem() && Utils.isEmpty(strVal)) {
                 continue;
             }
@@ -147,60 +153,44 @@ public class ListCellConverter extends AbstractCellConverter<List> {
         return vars;
     }
     
-    protected XlsArrayConverter getLoadingAnnotation(final FieldAdaptor adaptor) {
-        XlsArrayConverter anno = adaptor.getLoadingAnnotation(XlsArrayConverter.class);
-        if(anno == null) {
-            anno = getDefaultArrayConverterAnnotation();
-        }
-        return anno;
-    }
-    
-    protected XlsArrayConverter getSavingAnnotation(final FieldAdaptor adaptor) {
-        XlsArrayConverter anno = adaptor.getSavingAnnotation(XlsArrayConverter.class);
-        if(anno == null) {
-            anno = getDefaultArrayConverterAnnotation();
-        }
-        return anno;
-    }
-    
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final List targetValue, final Object targetBean,
+    public Cell toCell(final FieldAdapter adapter, final List targetValue, final Object targetBean,
             final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
-        final XlsArrayConverter anno = getSavingAnnotation(adaptor);
-        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
-        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        
+        final XlsArrayConverter anno = adapter.getAnnotation(XlsArrayConverter.class)
+                .orElseGet(() -> getDefaultArrayConverterAnnotation());
+        
+        final Optional<XlsFormula> formulaAnno = adapter.getAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno.map(a -> a.primary()).orElse(false);
         
         Class<?> itemClass = anno.itemClass();
         if(itemClass == Object.class) {
-            itemClass = adaptor.getSavingGenericClassType();
+            itemClass = adapter.getComponentType();
         }
         
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
         // セルの書式設定
-        if(converterAnno != null) {
-            cell.getCellStyle().setWrapText(converterAnno.wrapText());
-            cell.getCellStyle().setShrinkToFit(converterAnno.shrinkToFit());
-        }
+        ConversionUtils.setupCellOption(cell, adapter.getAnnotation(XlsCellOption.class));
         
         List value = targetValue;
         
         // デフォルト値から値を設定する
-        if(Utils.isEmpty(value) && Utils.hasDefaultValue(converterAnno)) {
-            value = convertList(Utils.getDefaultValue(converterAnno), itemClass, converterAnno, anno, config);
+        if(Utils.isEmpty(value) && defaultValueAnno.isPresent()) {
+            value = convertList(defaultValueAnno.get().value(), itemClass, trimAnno, anno, config);
         }
         
         if(Utils.isNotEmpty(value) && !primaryFormula) {
-            final boolean trim = (converterAnno == null ? false : converterAnno.trim()); 
             final ItemConverter itemConverter = getItemConverter(anno.itemConverterClass(), config);
-            final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trim, itemConverter);
+            final String cellValue = Utils.join(value, anno.separator(), anno.ignoreEmptyItem(), trimAnno.isPresent(), itemConverter);
             cell.setCellValue(cellValue);
             
-        } else if(formulaAnno != null) {
-            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
+        } else if(formulaAnno.isPresent()) {
+            Utils.setupCellFormula(adapter, formulaAnno.get(), config, cell, targetBean);
             
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);

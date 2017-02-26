@@ -91,8 +91,8 @@ public @interface XlsArrayConverter {
     
     /** 
      * 配列やリストの要素のクラス型を指定します。
-     * <p>プリミティブ型とそのラッパークラスのみ指定できます。
-     * <p>省略した場合、Genericsから自動的に判断してます。
+     * <p>プリミティブ型とそのラッパークラスのみ指定できます。</p>
+     * <p>省略した場合、Genericsから自動的に判断してます。</p>
      */
     Class<?> itemClass() default Object.class;
     
@@ -111,12 +111,12 @@ public @interface XlsArrayConverter {
      *     
      *     {@literal @Override}
      *     public User convertToObject(final String str, final {@literal Class<User>} targetClass) throws ConversionException {
-     *         //TODO: 文字列 => オブジェクトに変換する処理
+     *         //TODO: 文字列 {@literal =>} オブジェクトに変換する処理
      *     }
      *     
      *     {@literal @Override}
      *     public String convertToString(final User value) {
-     *         //TODO: オブジェクト => 文字列に変換する処理
+     *         //TODO: オブジェクト {@literal =>} 文字列に変換する処理
      *     }
      *     
      * }

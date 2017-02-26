@@ -37,7 +37,7 @@ public @interface XlsSheet {
     
     /**
      * シート名を正規表現で指定します。
-     * <p>同じ形式の複数のシートを同時にマッピングする際に指定します。<p>
+     * <p>同じ形式の複数のシートを同時にマッピングする際に指定します。</p>
      * 
      * <pre class="highlight"><code class="java">
      * {@literal @XlsSheet(regex="Sheet_[0-9]+")}

@@ -268,7 +268,7 @@ public class ClassInfo implements Serializable {
     /**
      * 指定したフィールド情報を削除します。
      * @since 1.4.1
-     * @param annotationClassName フィールドのクラス名(FQCN)。
+     * @param fieldName フィールドのクラス名(FQCN)。
      * @return true:指定したフィールド名を含み、それが削除できた場合。
      */
     public boolean removeFieldInfo(final String fieldName) {

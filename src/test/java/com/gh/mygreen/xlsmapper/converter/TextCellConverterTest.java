@@ -22,11 +22,13 @@ import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -508,19 +510,21 @@ public class TextCellConverterTest {
         @XlsColumn(columnName="No.")
         private int no;
         
-        @XlsConverter(defaultValue="Hello")
+        @XlsDefaultValue("Hello")
         @XlsColumn(columnName="String型(初期値)")
         private String t1;
         
-        @XlsConverter(trim=true)
+        @XlsTrim
         @XlsColumn(columnName="String型（トリム）")
         private String t2;
         
-        @XlsConverter(defaultValue="abc", trim=true)
+        @XlsTrim
+        @XlsDefaultValue("abc")
         @XlsColumn(columnName="char型")
         private char c1;
         
-        @XlsConverter(defaultValue="def", trim=true)
+        @XlsTrim
+        @XlsDefaultValue("def")
         @XlsColumn(columnName="Character型")
         private Character c2;
         

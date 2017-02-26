@@ -38,7 +38,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 
 /**
- * ExcelのCell <=> Javaオブジェクト の相互変換をする{@link CellConverter}を管理するクラス。
+ * ExcelのCell {@literal <=>} Javaオブジェクト の相互変換をする{@link CellConverter}を管理するクラス。
  * 独自の{@link CellConverter}を登録したりする場合は、このクラスを経由する。
  * 
  * @version 1.0

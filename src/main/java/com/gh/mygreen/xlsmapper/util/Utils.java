@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -32,14 +33,16 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.ConversionException;
 import com.gh.mygreen.xlsmapper.converter.DefaultItemConverter;
 import com.gh.mygreen.xlsmapper.converter.ItemConverter;
 import com.gh.mygreen.xlsmapper.processor.CellNotFoundException;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
@@ -234,7 +237,7 @@ public class Utils {
     
     /**
      * 先頭の文字を小文字にする。
-     * @param str
+     * @param str 変換対象の文字
      * @return 引数がnull、空文字の場合、そのまま返す。
      */
     public static String uncapitalize(final String str) {
@@ -311,46 +314,46 @@ public class Utils {
         return null;
     }
     
-    /**
-     * 指定してたメソッドがBooleanのGetterかどうかチェックする。
-     * @param method
-     * @return メソッド名がisから始まり、戻り値が booleanの場合trueを返す。
-     */
-    public static boolean isBooleanGetterMethod(final Method method) {
-        if(!method.getName().startsWith("is")) {
-            return false;
-        }
-        
-        final Class<?> returnType = method.getReturnType();
-        return isPrimitiveBoolean(returnType);
-    }
+//    /**
+//     * 指定してたメソッドがBooleanのGetterかどうかチェックする。
+//     * @param method
+//     * @return メソッド名がisから始まり、戻り値が booleanの場合trueを返す。
+//     */
+//    public static boolean isBooleanGetterMethod(final Method method) {
+//        if(!method.getName().startsWith("is")) {
+//            return false;
+//        }
+//        
+//        final Class<?> returnType = method.getReturnType();
+//        return isPrimitiveBoolean(returnType);
+//    }
+//    
+//    /**
+//     * 指定してたメソッドがBooleanのGetterでないかどうかチェックする。
+//     * @param method
+//     * @return メソッド名がisから始まり、戻り値が booleanの場合falseを返す。
+//     */
+//    public static boolean isNotBooleanGetterMethod(final Method method) {
+//        return !isBooleanGetterMethod(method);
+//    }
+//    
+//    public static boolean isPrimitiveBoolean(final Class<?> clazzType) {
+//        if(clazzType.isPrimitive() && boolean.class.isAssignableFrom(clazzType)) {
+//            return true;
+//        }
+//        
+//        return false;
+//    }
     
-    /**
-     * 指定してたメソッドがBooleanのGetterでないかどうかチェックする。
-     * @param method
-     * @return メソッド名がisから始まり、戻り値が booleanの場合falseを返す。
-     */
-    public static boolean isNotBooleanGetterMethod(final Method method) {
-        return !isBooleanGetterMethod(method);
-    }
-    
-    public static boolean isPrimitiveBoolean(final Class<?> clazzType) {
-        if(clazzType.isPrimitive() && boolean.class.isAssignableFrom(clazzType)) {
-            return true;
-        }
-        
-        return false;
-    }
-    
-    /**
-     * フィールドのタイプがboolean型がどうかチェックする。
-     * @param field
-     * @return プリミティブ型のboolean型の場合trueを返す。
-     */
-    public static boolean isBooleanField(final Field field) {
-        final Class<?> clazzType = field.getType();
-        return isPrimitiveBoolean(clazzType);
-    }
+//    /**
+//     * フィールドのタイプがboolean型がどうかチェックする。
+//     * @param field
+//     * @return プリミティブ型のboolean型の場合trueを返す。
+//     */
+//    public static boolean isBooleanField(final Field field) {
+//        final Class<?> clazzType = field.getType();
+//        return isPrimitiveBoolean(clazzType);
+//    }
     
     
     /**
@@ -418,8 +421,8 @@ public class Utils {
     
     /**
      * セルの位置を設定する。
-     * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。
-     * <p>フィールド「Map<String, Point> positions」に、設定する。
+     * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。</p>
+     * <p>フィールド「{@literal Map<String, Point>} positions」に、設定する。</p>
      * @param x 列のインデックス番号
      * @param y 行のインデックス番号
      * @param obj メソッドが定義されているオブジェクト
@@ -503,8 +506,8 @@ public class Utils {
     
     /**
      * セルの位置を取得する
-     * <p>「get + 'フィールド名' + Position」のgetterか「'フィールド名' + Position」というフィールド名で決める。
-     * <p>フィールド「Map<String, Point> positions」に、設定する。
+     * <p>「get + 'フィールド名' + Position」のgetterか「'フィールド名' + Position」というフィールド名で決める。</p>
+     * <p>フィールド「{{@literal Map<String, Point>} positions」に、設定する。</p>
      * @param obj メソッドが定義されているオブジェクト
      * @param fieldName フィールド名
      * @return 座標が取得できない場合はnullを返す。
@@ -585,8 +588,8 @@ public class Utils {
     
     /**
      * MapColumn形式の場合のセルの位置を設定する。
-     * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。
-     * <p>フィールド「Map<String, Point> positions」に、設定する。
+     * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。</p>
+     * <p>フィールド「{@literal Map<String, Point>} positions」に、設定する。</p>
      * @param x 列のインデックス
      * @param y 行のインデックス
      * @param obj メソッドが定義されているオブジェクト
@@ -679,8 +682,8 @@ public class Utils {
     
     /**
      * セルの見出しを設定する。
-     * <p>「set + 'フィールド名' + Label」のsetterか「'フィールド名' + Label」というフィールド名で決める。
-     * <p>フィールド「Map<String, String> labels」に、設定する。
+     * <p>「set + 'フィールド名' + Label」のsetterか「'フィールド名' + Label」というフィールド名で決める。</p>
+     * <p>フィールド「{@literal Map<String, String>} labels」に、設定する。</p>
      * @param label 設定する見出し
      * @param obj メソッドが定義されているオブジェクト
      * @param fieldName フィールド名
@@ -747,8 +750,8 @@ public class Utils {
     
     /**
      * セルの見出しを取得する。
-     * <p>「get + 'フィールド名' + Label」のgetterか「'フィールド名' + Label」というフィールド名で決める。
-     * <p>フィールド「Map<String, String> labels」に、設定する。
+     * <p>「get + 'フィールド名' + Label」のgetterか「'フィールド名' + Label」というフィールド名で決める。</p>
+     * <p>フィールド「{@literal Map<String, String>} labels」に、設定する。</p>
      * @param obj メソッドが定義されているオブジェクト
      * @param fieldName フィールド名
      * @return セルの見出し。
@@ -826,8 +829,8 @@ public class Utils {
     
     /**
      * セルの見出しを設定する。
-     * <p>「set + 'フィールド名' + Label」のsetterか「'フィールド名' + Label」というフィールド名で決める。
-     * <p>フィールド「Map<String, String> labels」に、設定する。
+     * <p>「set + 'フィールド名' + Label」のsetterか「'フィールド名' + Label」というフィールド名で決める。</p>
+     * <p>フィールド「{@literal Map<String, String>} labels」に、設定する。</p>
      * @param label 設定する見出し
      * @param obj メソッドが定義されているオブジェクト
      * @param fieldName フィールド名
@@ -1228,531 +1231,535 @@ public class Utils {
      * @param after A lower right cell is scanned from this cell object.
      * @param config api configuration.
      * @return Target JExcel Api cell object.
-     * @throws XlsMapperException This occures when the cell is not found.
+     * @throws CellNotFoundException This occures when the cell is not found.
      */
     public static Cell getCell(final Sheet sheet, final String label, final Cell after, final XlsMapperConfig config) throws CellNotFoundException {
         return getCell(sheet, label, after, false, config);
     }
     
-    /**
-     * Setterメソッドか判定を行う。
-     * <ol>判定基準は次の通り。
-     *  <li>メソッド名が'set'から始まる。
-     *  <li>メソッドの引数が1つのみ。
-     *  
-     * @param method
-     * @return
-     * @throws IllegalArgumentException arg 'method' == null.
-     */
-    public static boolean isSetterMethod(final Method method) {
-        ArgUtils.notNull(method, "method");
-        
-        method.setAccessible(true);
-        
-        if(!method.getName().startsWith("set")) {
-            return false;
-        }
-        
-        if(method.getParameterTypes().length != 1) {
-            return false;
-        }
-        
-        return true;
-    }
+//    /**
+//     * Setterメソッドか判定を行う。
+//     * 判定基準は次の通り。
+//     * <ol>
+//     *  <li>メソッド名が'set'から始まる。</li>
+//     *  <li>メソッドの引数が1つのみ。</li>
+//     * </ol>
+//     *  
+//     * @param method
+//     * @return
+//     * @throws IllegalArgumentException arg 'method' == null.
+//     */
+//    public static boolean isSetterMethod(final Method method) {
+//        ArgUtils.notNull(method, "method");
+//        
+//        method.setAccessible(true);
+//        
+//        if(!method.getName().startsWith("set")) {
+//            return false;
+//        }
+//        
+//        if(method.getParameterTypes().length != 1) {
+//            return false;
+//        }
+//        
+//        return true;
+//    }
+//    
+//    /**
+//     * Setterメソッドでないか判定を行う。
+//     * {@link #isSetterMethod(Method)}の否定。
+//     * @param method
+//     * @return
+//     */
+//    public static boolean isNotSetterMethod(final Method method) {
+//        return !isSetterMethod(method);
+//    }
     
-    /**
-     * Setterメソッドでないか判定を行う。
-     * {@link #isSetterMethod(Method)}の否定。
-     * @param method
-     * @return
-     */
-    public static boolean isNotSetterMethod(final Method method) {
-        return !isSetterMethod(method);
-    }
+//    /**
+//     * Getterメソッドか判定を行う。
+//     * 判定基準は次の通り。
+//     * <ol>
+//     *  <li>メソッド名が'get'から始まる。</li>
+//     *  <li>メソッドの引数が0個。</li>
+//     * </ol>
+//     *  
+//     * @param method
+//     * @return
+//     * @throws IllegalArgumentException arg 'method' == null.
+//     */
+//    public static boolean isGetterMethod(final Method method) {
+//        ArgUtils.notNull(method, "method");
+//        
+//        method.setAccessible(true);
+//        
+//        if(!method.getName().startsWith("get")) {
+//            return false;
+//        }
+//        
+//        if(method.getParameterTypes().length != 0) {
+//            return false;
+//        }
+//        
+//        return true;
+//    }
+//    
+//    /**
+//     * Getterメソッドでないか判定を行う。
+//     * {@link #isGetterMethod(Method)}の否定。
+//     * @param method
+//     * @return
+//     */
+//    public static boolean isNotGetterMethod(final Method method) {
+//        return !isGetterMethod(method);
+//    }
     
-    /**
-     * Getterメソッドか判定を行う。
-     * <ol>判定基準は次の通り。
-     *  <li>メソッド名が'get'から始まる。
-     *  <li>メソッドの引数が0個。
-     *  
-     * @param method
-     * @return
-     * @throws IllegalArgumentException arg 'method' == null.
-     */
-    public static boolean isGetterMethod(final Method method) {
-        ArgUtils.notNull(method, "method");
-        
-        method.setAccessible(true);
-        
-        if(!method.getName().startsWith("get")) {
-            return false;
-        }
-        
-        if(method.getParameterTypes().length != 0) {
-            return false;
-        }
-        
-        return true;
-    }
+//    /**
+//     * アノテーション{@link XlsColumn}が付与されている読み込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
+//     * <p>フィールドは、public以外の全てのメソッドを対象とする。
+//     * 
+//     * @param clazz
+//     * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
+//     * @param reader
+//     * @param config
+//     * @return
+//     */
+//    public static List<FieldAdapter> getLoadingColumnProperties(final Class<?> clazz, final String name,
+//            final AnnotationReader reader, final XlsMapperConfig config) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        ArgUtils.notNull(reader, "reader");
+//        ArgUtils.notNull(config, "config");
+//        
+//        final List<FieldAdapter> list = new ArrayList<>();
+//        
+//        for(FieldAdapter adaptor : getSetterColumnMethods(clazz, name, reader, config)) {
+//            list.add(adaptor);
+//        }
+//        
+//        for(FieldAdapter adaptor : getColumnFields(clazz, name, reader, config)) {
+//            if(list.contains(adaptor)) {
+//                continue;
+//            }
+//            
+//            list.add(adaptor);
+//        }
+//        
+//        return list;
+//    }
     
-    /**
-     * Getterメソッドでないか判定を行う。
-     * {@link #isGetterMethod(Method)}の否定。
-     * @param method
-     * @return
-     */
-    public static boolean isNotGetterMethod(final Method method) {
-        return !isGetterMethod(method);
-    }
+//    /**
+//     * アノテーション{@link XlsColumn}が付与されている書き込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
+//     * <p>フィールドは、public以外の全てのメソッドを対象とする。
+//     * 
+//     * @param clazz
+//     * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
+//     * @param reader
+//     * @param config
+//     * @return
+//     */
+//    public static List<FieldAdapter> getSavingColumnProperties(final Class<?> clazz, final String name,
+//            final AnnotationReader reader, final XlsMapperConfig config) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        ArgUtils.notNull(reader, "reader");
+//        ArgUtils.notNull(config, "config");
+//        
+//        final List<FieldAdapter> list = new ArrayList<>();
+//        
+//        for(FieldAdapter adaptor : getGetterColumnMethods(clazz, name, reader, config)) {
+//            list.add(adaptor);
+//        }
+//        
+//        for(FieldAdapter adaptor : getColumnFields(clazz, name, reader, config)) {
+//            if(list.contains(adaptor)) {
+//                continue;
+//            }
+//            
+//            list.add(adaptor);
+//        }
+//        
+//        return list;
+//    }
     
-    /**
-     * アノテーション{@link XlsColumn}が付与されている読み込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
-     * <p>フィールドは、public以外の全てのメソッドを対象とする。
-     * 
-     * @param clazz
-     * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
-     * @param reader
-     * @param config
-     * @return
-     */
-    public static List<FieldAdaptor> getLoadingColumnProperties(final Class<?> clazz, final String name,
-            final AnnotationReader reader, final XlsMapperConfig config) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        ArgUtils.notNull(reader, "reader");
-        ArgUtils.notNull(config, "config");
-        
-        final List<FieldAdaptor> list = new ArrayList<>();
-        
-        for(FieldAdaptor adaptor : getSetterColumnMethods(clazz, name, reader, config)) {
-            list.add(adaptor);
-        }
-        
-        for(FieldAdaptor adaptor : getColumnFields(clazz, name, reader, config)) {
-            if(list.contains(adaptor)) {
-                continue;
-            }
-            
-            list.add(adaptor);
-        }
-        
-        return list;
-    }
+//    /**
+//     * アノテーション{@link XlsColumn}が付与されているSetterメソッドを取得する。
+//     * さらに、引数nameで指定した値と属性columnNameと一致するものを取得する。
+//     * ただし、引数nameがnullの場合は、一致するものを判断する。
+//     * <p>publicメソッドを取得する。
+//     * @param clazz
+//     * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
+//     * @param reader
+//     * @param config
+//     * @return
+//     */
+//    public static FieldAdapter[] getSetterColumnMethods(final Class<?> clazz, final String name,
+//            final AnnotationReader reader, final XlsMapperConfig config) {
+//        ArgUtils.notNull(clazz, "clazz");
+//        
+//        //TODO: 例外のスロー内容を見直す。
+//        
+//        final List<FieldAdapter> result = new ArrayList<>();
+//        for(Method method : clazz.getMethods()) {
+//            if(isNotSetterMethod(method)) {
+//                continue;
+//            }
+//            
+//            final FieldAdapter adaptor = new FieldAdapter(clazz, method, reader);
+//            final XlsColumn column = adaptor.getLoadingAnnotation(XlsColumn.class);
+//            if(column == null) {
+//                continue;
+//            }
+//            
+//            final String columnName = column.columnName();
+//            if(name == null) {
+//                result.add(adaptor);
+//            } else if(Utils.matches(name, columnName, config)) {
+//                result.add(adaptor);
+//            }
+//            
+//        }
+//        
+//        return result.toArray(new FieldAdapter[result.size()]);
+//    }
     
-    /**
-     * アノテーション{@link XlsColumn}が付与されている書き込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
-     * <p>フィールドは、public以外の全てのメソッドを対象とする。
-     * 
-     * @param clazz
-     * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
-     * @param reader
-     * @param config
-     * @return
-     */
-    public static List<FieldAdaptor> getSavingColumnProperties(final Class<?> clazz, final String name,
-            final AnnotationReader reader, final XlsMapperConfig config) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        ArgUtils.notNull(reader, "reader");
-        ArgUtils.notNull(config, "config");
-        
-        final List<FieldAdaptor> list = new ArrayList<>();
-        
-        for(FieldAdaptor adaptor : getGetterColumnMethods(clazz, name, reader, config)) {
-            list.add(adaptor);
-        }
-        
-        for(FieldAdaptor adaptor : getColumnFields(clazz, name, reader, config)) {
-            if(list.contains(adaptor)) {
-                continue;
-            }
-            
-            list.add(adaptor);
-        }
-        
-        return list;
-    }
+//    /**
+//     * アノテーション{@link XlsColumn}が付与されているGetterメソッドを取得する。
+//     * さらに、引数nameで指定した値と属性columnNameと一致するものを取得する。
+//     * ただし、引数nameがnullの場合は、一致するものを判断する。
+//     * <p>publicメソッドを取得する。
+//     * @param clazz
+//     * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
+//     * @param reader
+//     * @param config
+//     * @return
+//     */
+//    public static FieldAdapter[] getGetterColumnMethods(final Class<?> clazz, final String name,
+//            final AnnotationReader reader, final XlsMapperConfig config) {
+//        ArgUtils.notNull(clazz, "clazz");
+//        
+//        //TODO: 例外のスロー内容を見直す。
+//        
+//        final List<FieldAdapter> result = new ArrayList<>();
+//        for(Method method : clazz.getMethods()) {
+//            if(isNotGetterMethod(method) && isNotBooleanGetterMethod(method)) {
+//                continue;
+//            }
+//            
+//            final FieldAdapter adaptor = new FieldAdapter(clazz, method, reader);
+//            final XlsColumn column = adaptor.getSavingAnnotation(XlsColumn.class);
+//            if(column == null) {
+//                continue;
+//            }
+//            
+//            final String columnName = column.columnName();
+//            if(name == null) {
+//                result.add(adaptor);
+//            } else if(matches(name, columnName, config)) {
+//                result.add(adaptor);
+//            }
+//            
+//        }
+//        
+//        return result.toArray(new FieldAdapter[result.size()]);
+//    }
     
-    /**
-     * アノテーション{@link XlsColumn}が付与されているSetterメソッドを取得する。
-     * さらに、引数nameで指定した値と属性columnNameと一致するものを取得する。
-     * ただし、引数nameがnullの場合は、一致するものを判断する。
-     * <p>publicメソッドを取得する。
-     * @param clazz
-     * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
-     * @param reader
-     * @param config
-     * @return
-     */
-    public static FieldAdaptor[] getSetterColumnMethods(final Class<?> clazz, final String name,
-            final AnnotationReader reader, final XlsMapperConfig config) {
-        ArgUtils.notNull(clazz, "clazz");
-        
-        //TODO: 例外のスロー内容を見直す。
-        
-        final List<FieldAdaptor> result = new ArrayList<>();
-        for(Method method : clazz.getMethods()) {
-            if(isNotSetterMethod(method)) {
-                continue;
-            }
-            
-            final FieldAdaptor adaptor = new FieldAdaptor(clazz, method, reader);
-            final XlsColumn column = adaptor.getLoadingAnnotation(XlsColumn.class);
-            if(column == null) {
-                continue;
-            }
-            
-            final String columnName = column.columnName();
-            if(name == null) {
-                result.add(adaptor);
-            } else if(Utils.matches(name, columnName, config)) {
-                result.add(adaptor);
-            }
-            
-        }
-        
-        return result.toArray(new FieldAdaptor[result.size()]);
-    }
+//    /**
+//     * アノテーション{@link XlsColumn}が付与されているフィールドを取得する。
+//     * さらに、引数nameで指定した値と属性columnNameと一致するものを取得する。
+//     * ただし、引数nameがnullの場合は、一致するものを判断する。
+//     * <p>publicメソッド以外も対象とする。
+//     * @param clazz
+//     * @param name 名前を指定しない場合はnullを設定。
+//     * @param reader
+//     * @param config
+//     * @return
+//     */
+//    public static FieldAdapter[] getColumnFields(final Class<?> clazz, final String name,
+//            final AnnotationReader reader, final XlsMapperConfig config) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        
+//        final List<FieldAdapter> result = new ArrayList<>();
+//        for(Field field : clazz.getDeclaredFields()) {
+//            field.setAccessible(true);
+//            
+//            FieldAdapter adaptor = new FieldAdapter(clazz, field, reader);
+//            final XlsColumn column = adaptor.getLoadingAnnotation(XlsColumn.class);
+//            if(column == null) {
+//                continue;
+//            }
+//            
+//            final String columnName = column.columnName();
+//            if(name == null) {
+//                result.add(adaptor);
+//            } else if(Utils.matches(name, columnName, config)) {
+//                result.add(adaptor);
+//            }
+//            
+//        }
+//        
+//        return result.toArray(new FieldAdapter[result.size()]);
+//    }
     
-    /**
-     * アノテーション{@link XlsColumn}が付与されているGetterメソッドを取得する。
-     * さらに、引数nameで指定した値と属性columnNameと一致するものを取得する。
-     * ただし、引数nameがnullの場合は、一致するものを判断する。
-     * <p>publicメソッドを取得する。
-     * @param clazz
-     * @param name 属性columnNameと比較する値。名前がない場合はnullを指定する。
-     * @param reader
-     * @param config
-     * @return
-     */
-    public static FieldAdaptor[] getGetterColumnMethods(final Class<?> clazz, final String name,
-            final AnnotationReader reader, final XlsMapperConfig config) {
-        ArgUtils.notNull(clazz, "clazz");
-        
-        //TODO: 例外のスロー内容を見直す。
-        
-        final List<FieldAdaptor> result = new ArrayList<>();
-        for(Method method : clazz.getMethods()) {
-            if(isNotGetterMethod(method) && isNotBooleanGetterMethod(method)) {
-                continue;
-            }
-            
-            final FieldAdaptor adaptor = new FieldAdaptor(clazz, method, reader);
-            final XlsColumn column = adaptor.getSavingAnnotation(XlsColumn.class);
-            if(column == null) {
-                continue;
-            }
-            
-            final String columnName = column.columnName();
-            if(name == null) {
-                result.add(adaptor);
-            } else if(matches(name, columnName, config)) {
-                result.add(adaptor);
-            }
-            
-        }
-        
-        return result.toArray(new FieldAdaptor[result.size()]);
-    }
+//    /**
+//     * アノテーション{@link XlsMapColumns}が付与されている読み込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
+//     * <p>フィールドは、public以外の全てのメソッドを対象とする。
+//     * 
+//     * @param clazz
+//     * @param reader
+//     * @return
+//     */
+//    public static List<FieldAdapter> getLoadingMapColumnProperties(final Class<?> clazz, final AnnotationReader reader) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        
+//        final List<FieldAdapter> list = new ArrayList<>();
+//        
+//        for(FieldAdapter adaptor : getSetterMethodsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
+//            list.add(adaptor);
+//        }
+//        
+//        for(FieldAdapter adaptor : getFieldsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
+//            if(list.contains(adaptor)) {
+//                continue;
+//            }
+//            
+//            list.add(adaptor);
+//        }
+//        
+//        return list;
+//        
+//    }
+//    
+//    /**
+//     * アノテーション{@link XlsMapColumns}が付与されている書き込み系の指定したオブジェクトのメソッド（Getter）とフィールド情報を取得する。
+//     * <p>フィールドは、public以外の全てのメソッドを対象とする。
+//     * 
+//     * @param clazz
+//     * @param reader
+//     * @return
+//     */
+//    public static List<FieldAdapter> getSavingMapColumnProperties(final Class<?> clazz, final AnnotationReader reader) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        
+//        final List<FieldAdapter> list = new ArrayList<>();
+//        
+//        for(FieldAdapter adaptor : getGetterMethodsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
+//            list.add(adaptor);
+//        }
+//        
+//        for(FieldAdapter adaptor : getFieldsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
+//            if(list.contains(adaptor)) {
+//                continue;
+//            }
+//            
+//            list.add(adaptor);
+//        }
+//        
+//        return list;
+//        
+//    }
     
-    /**
-     * アノテーション{@link XlsColumn}が付与されているフィールドを取得する。
-     * さらに、引数nameで指定した値と属性columnNameと一致するものを取得する。
-     * ただし、引数nameがnullの場合は、一致するものを判断する。
-     * <p>publicメソッド以外も対象とする。
-     * @param clazz
-     * @param name 名前を指定しない場合はnullを設定。
-     * @param reader
-     * @param config
-     * @return
-     */
-    public static FieldAdaptor[] getColumnFields(final Class<?> clazz, final String name,
-            final AnnotationReader reader, final XlsMapperConfig config) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        
-        final List<FieldAdaptor> result = new ArrayList<>();
-        for(Field field : clazz.getDeclaredFields()) {
-            field.setAccessible(true);
-            
-            FieldAdaptor adaptor = new FieldAdaptor(clazz, field, reader);
-            final XlsColumn column = adaptor.getLoadingAnnotation(XlsColumn.class);
-            if(column == null) {
-                continue;
-            }
-            
-            final String columnName = column.columnName();
-            if(name == null) {
-                result.add(adaptor);
-            } else if(Utils.matches(name, columnName, config)) {
-                result.add(adaptor);
-            }
-            
-        }
-        
-        return result.toArray(new FieldAdaptor[result.size()]);
-    }
+//    /**
+//     * アノテーション{@link XlsNestedRecords}が付与されている読み込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
+//     * <p>フィールドは、public以外の全てのメソッドを対象とする。
+//     * 
+//     * @since 1.4
+//     * @param clazz レコードのクラス情報
+//     * @param reader アノテーションリーダ。
+//     * @return
+//     */
+//    public static List<FieldAdapter> getLoadingNestedRecordsProperties(final Class<?> clazz, final AnnotationReader reader) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        
+//        final List<FieldAdapter> list = new ArrayList<>();
+//        
+//        for(FieldAdapter adaptor : getSetterMethodsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
+//            list.add(adaptor);
+//        }
+//        
+//        for(FieldAdapter adaptor : getFieldsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
+//            if(list.contains(adaptor)) {
+//                continue;
+//            }
+//            
+//            list.add(adaptor);
+//        }
+//        
+//        return list;
+//        
+//    }
     
-    /**
-     * アノテーション{@link XlsMapColumns}が付与されている読み込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
-     * <p>フィールドは、public以外の全てのメソッドを対象とする。
-     * 
-     * @param clazz
-     * @param reader
-     * @return
-     */
-    public static List<FieldAdaptor> getLoadingMapColumnProperties(final Class<?> clazz, final AnnotationReader reader) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        
-        final List<FieldAdaptor> list = new ArrayList<>();
-        
-        for(FieldAdaptor adaptor : getSetterMethodsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
-            list.add(adaptor);
-        }
-        
-        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
-            if(list.contains(adaptor)) {
-                continue;
-            }
-            
-            list.add(adaptor);
-        }
-        
-        return list;
-        
-    }
+//    /**
+//     * アノテーション{@link XlsNestedRecords}が付与されている書き込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
+//     * <p>フィールドは、public以外の全てのメソッドを対象とする。
+//     * 
+//     * @since 1.4
+//     * @param clazz レコードのクラス情報
+//     * @param reader アノテーションリーダ。
+//     * @return
+//     */
+//    public static List<FieldAdapter> getSavingNestedRecordsProperties(final Class<?> clazz, final AnnotationReader reader) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        
+//        final List<FieldAdapter> list = new ArrayList<>();
+//        
+//        for(FieldAdapter adaptor : getGetterMethodsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
+//            list.add(adaptor);
+//        }
+//        
+//        for(FieldAdapter adaptor : getFieldsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
+//            if(list.contains(adaptor)) {
+//                continue;
+//            }
+//            
+//            list.add(adaptor);
+//        }
+//        
+//        return list;
+//        
+//    }
     
-    /**
-     * アノテーション{@link XlsMapColumns}が付与されている書き込み系の指定したオブジェクトのメソッド（Getter）とフィールド情報を取得する。
-     * <p>フィールドは、public以外の全てのメソッドを対象とする。
-     * 
-     * @param clazz
-     * @param reader
-     * @return
-     */
-    public static List<FieldAdaptor> getSavingMapColumnProperties(final Class<?> clazz, final AnnotationReader reader) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        
-        final List<FieldAdaptor> list = new ArrayList<>();
-        
-        for(FieldAdaptor adaptor : getGetterMethodsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
-            list.add(adaptor);
-        }
-        
-        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, XlsMapColumns.class)) {
-            if(list.contains(adaptor)) {
-                continue;
-            }
-            
-            list.add(adaptor);
-        }
-        
-        return list;
-        
-    }
+//    /**
+//     * 指定したアノテーションを持つ読み込み系メソッド（Setter）とフィールド情報を取得する。
+//     * @param clazz
+//     * @param reader
+//     * @param annoClass
+//     * @return
+//     */
+//    public static List<FieldAdapter> getLoadingPropertiesWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
+//            final Class<? extends Annotation> annoClass) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        ArgUtils.notNull(annoClass, "annoClass");
+//        
+//        final List<FieldAdapter> list = new ArrayList<>();
+//        for(FieldAdapter adaptor : getSetterMethodsWithAnnotation(clazz, reader, annoClass)) {
+//            list.add(adaptor);
+//        }
+//        
+//        for(FieldAdapter adaptor : getFieldsWithAnnotation(clazz, reader, annoClass)) {
+//            if(list.contains(adaptor)) {
+//                continue;
+//            }
+//            
+//            list.add(adaptor);
+//        }
+//        return list;
+//    }
     
-    /**
-     * アノテーション{@link XlsNestedRecords}が付与されている読み込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
-     * <p>フィールドは、public以外の全てのメソッドを対象とする。
-     * 
-     * @since 1.4
-     * @param clazz レコードのクラス情報
-     * @param reader アノテーションリーダ。
-     * @return
-     */
-    public static List<FieldAdaptor> getLoadingNestedRecordsProperties(final Class<?> clazz, final AnnotationReader reader) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        
-        final List<FieldAdaptor> list = new ArrayList<>();
-        
-        for(FieldAdaptor adaptor : getSetterMethodsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
-            list.add(adaptor);
-        }
-        
-        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
-            if(list.contains(adaptor)) {
-                continue;
-            }
-            
-            list.add(adaptor);
-        }
-        
-        return list;
-        
-    }
+//    /**
+//     * 指定したアノテーションを持つ読み込み系メソッド（Setter）とフィールド情報を取得する。
+//     * @param clazz
+//     * @param reader
+//     * @param annoClass
+//     * @return
+//     */
+//    public static List<FieldAdapter> getSavingPropertiesWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
+//            final Class<? extends Annotation> annoClass) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        ArgUtils.notNull(annoClass, "annoClass");
+//        
+//        final List<FieldAdapter> list = new ArrayList<>();
+//        for(FieldAdapter adaptor : getGetterMethodsWithAnnotation(clazz, reader, annoClass)) {
+//            list.add(adaptor);
+//        }
+//        
+//        for(FieldAdapter adaptor : getFieldsWithAnnotation(clazz, reader, annoClass)) {
+//            if(list.contains(adaptor)) {
+//                continue;
+//            }
+//            
+//            list.add(adaptor);
+//        }
+//        return list;
+//    }
     
-    /**
-     * アノテーション{@link XlsNestedRecords}が付与されている書き込み系の指定したオブジェクトのメソッド（Setter）とフィールド情報を取得する。
-     * <p>フィールドは、public以外の全てのメソッドを対象とする。
-     * 
-     * @since 1.4
-     * @param clazz レコードのクラス情報
-     * @param reader アノテーションリーダ。
-     * @return
-     */
-    public static List<FieldAdaptor> getSavingNestedRecordsProperties(final Class<?> clazz, final AnnotationReader reader) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        
-        final List<FieldAdaptor> list = new ArrayList<>();
-        
-        for(FieldAdaptor adaptor : getGetterMethodsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
-            list.add(adaptor);
-        }
-        
-        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, XlsNestedRecords.class)) {
-            if(list.contains(adaptor)) {
-                continue;
-            }
-            
-            list.add(adaptor);
-        }
-        
-        return list;
-        
-    }
+//    /**
+//     * 指定したアノテーションが付与されたSetterメソッド情報を取得する。
+//     * @param clazz
+//     * @param reader
+//     * @param annoClass
+//     * @return
+//     */
+//    public static FieldAdapter[] getSetterMethodsWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
+//            final Class<? extends Annotation> annoClass) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        ArgUtils.notNull(annoClass, "annoClass");
+//        
+//        final List<FieldAdapter> result = new ArrayList<>();
+//        for(Method method : clazz.getMethods()) {
+//            if(isNotSetterMethod(method)) {
+//                continue;
+//            }
+//            
+//            final FieldAdapter adaptor = new FieldAdapter(clazz, method, reader);
+//            if(adaptor.hasLoadingAnnotation(annoClass)) {
+//                result.add(adaptor);
+//            }
+//        }
+//        
+//        return result.toArray(new FieldAdapter[result.size()]);
+//    }
+//    
+//    /**
+//     * 指定したアノテーションが付与されたGetterメソッド情報を取得する。
+//     * @param clazz
+//     * @param reader
+//     * @param annoClass
+//     * @return
+//     */
+//    public static FieldAdapter[] getGetterMethodsWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
+//            final Class<? extends Annotation> annoClass) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        ArgUtils.notNull(annoClass, "annoClass");
+//        
+//        final List<FieldAdapter> result = new ArrayList<>();
+//        for(Method method : clazz.getMethods()) {
+//            if(isNotGetterMethod(method) && isNotBooleanGetterMethod(method)) {
+//                continue;
+//            }
+//            
+//            final FieldAdapter adaptor = new FieldAdapter(clazz, method, reader);
+//            if(adaptor.hasSavingAnnotation(annoClass)) {
+//                result.add(adaptor);
+//            }
+//        }
+//        
+//        return result.toArray(new FieldAdapter[result.size()]);
+//    }
     
-    /**
-     * 指定したアノテーションを持つ読み込み系メソッド（Setter）とフィールド情報を取得する。
-     * @param clazz
-     * @param reader
-     * @param annoClass
-     * @return
-     */
-    public static List<FieldAdaptor> getLoadingPropertiesWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
-            final Class<? extends Annotation> annoClass) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        ArgUtils.notNull(annoClass, "annoClass");
-        
-        final List<FieldAdaptor> list = new ArrayList<>();
-        for(FieldAdaptor adaptor : getSetterMethodsWithAnnotation(clazz, reader, annoClass)) {
-            list.add(adaptor);
-        }
-        
-        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, annoClass)) {
-            if(list.contains(adaptor)) {
-                continue;
-            }
-            
-            list.add(adaptor);
-        }
-        return list;
-    }
-    
-    /**
-     * 指定したアノテーションを持つ読み込み系メソッド（Setter）とフィールド情報を取得する。
-     * @param clazz
-     * @param reader
-     * @param annoClass
-     * @return
-     */
-    public static List<FieldAdaptor> getSavingPropertiesWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
-            final Class<? extends Annotation> annoClass) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        ArgUtils.notNull(annoClass, "annoClass");
-        
-        final List<FieldAdaptor> list = new ArrayList<>();
-        for(FieldAdaptor adaptor : getGetterMethodsWithAnnotation(clazz, reader, annoClass)) {
-            list.add(adaptor);
-        }
-        
-        for(FieldAdaptor adaptor : getFieldsWithAnnotation(clazz, reader, annoClass)) {
-            if(list.contains(adaptor)) {
-                continue;
-            }
-            
-            list.add(adaptor);
-        }
-        return list;
-    }
-    
-    /**
-     * 指定したアノテーションが付与されたSetterメソッド情報を取得する。
-     * @param clazz
-     * @param reader
-     * @param annoClass
-     * @return
-     */
-    public static FieldAdaptor[] getSetterMethodsWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
-            final Class<? extends Annotation> annoClass) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        ArgUtils.notNull(annoClass, "annoClass");
-        
-        final List<FieldAdaptor> result = new ArrayList<>();
-        for(Method method : clazz.getMethods()) {
-            if(isNotSetterMethod(method)) {
-                continue;
-            }
-            
-            final FieldAdaptor adaptor = new FieldAdaptor(clazz, method, reader);
-            if(adaptor.hasLoadingAnnotation(annoClass)) {
-                result.add(adaptor);
-            }
-        }
-        
-        return result.toArray(new FieldAdaptor[result.size()]);
-    }
-    
-    /**
-     * 指定したアノテーションが付与されたGetterメソッド情報を取得する。
-     * @param clazz
-     * @param reader
-     * @param annoClass
-     * @return
-     */
-    public static FieldAdaptor[] getGetterMethodsWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
-            final Class<? extends Annotation> annoClass) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        ArgUtils.notNull(annoClass, "annoClass");
-        
-        final List<FieldAdaptor> result = new ArrayList<>();
-        for(Method method : clazz.getMethods()) {
-            if(isNotGetterMethod(method) && isNotBooleanGetterMethod(method)) {
-                continue;
-            }
-            
-            final FieldAdaptor adaptor = new FieldAdaptor(clazz, method, reader);
-            if(adaptor.hasSavingAnnotation(annoClass)) {
-                result.add(adaptor);
-            }
-        }
-        
-        return result.toArray(new FieldAdaptor[result.size()]);
-    }
-    
-    /**
-     * 指定したアノテーションが付与されたフィールド情報を取得する。
-     * @param clazz
-     * @param reader
-     * @param annoClass
-     * @return
-     */
-    public static FieldAdaptor[] getFieldsWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
-            final Class<? extends Annotation> annoClass) {
-        
-        ArgUtils.notNull(clazz, "clazz");
-        ArgUtils.notNull(annoClass, "annoClass");
-        
-        final List<FieldAdaptor> result = new ArrayList<>();
-        for(Field field : clazz.getDeclaredFields()) {
-            field.setAccessible(true);
-            
-            final FieldAdaptor adaptor = new FieldAdaptor(clazz, field, reader);
-            if(adaptor.hasLoadingAnnotation(annoClass)) {
-                result.add(adaptor);
-            }
-        }
-        
-        return result.toArray(new FieldAdaptor[result.size()]);
-    }
+//    /**
+//     * 指定したアノテーションが付与されたフィールド情報を取得する。
+//     * @param clazz
+//     * @param reader
+//     * @param annoClass
+//     * @return
+//     */
+//    public static FieldAdapter[] getFieldsWithAnnotation(final Class<?> clazz, final AnnotationReader reader,
+//            final Class<? extends Annotation> annoClass) {
+//        
+//        ArgUtils.notNull(clazz, "clazz");
+//        ArgUtils.notNull(annoClass, "annoClass");
+//        
+//        final List<FieldAdapter> result = new ArrayList<>();
+//        for(Field field : clazz.getDeclaredFields()) {
+//            field.setAccessible(true);
+//            
+//            final FieldAdapter adaptor = new FieldAdapter(clazz, field, reader);
+//            if(adaptor.hasLoadingAnnotation(annoClass)) {
+//                result.add(adaptor);
+//            }
+//        }
+//        
+//        return result.toArray(new FieldAdapter[result.size()]);
+//    }
     
     /**
      * オブジェクトの比較を行う。
@@ -1803,12 +1810,12 @@ public class Utils {
     /**
      * アノテーションの属性trimに従い、文字列をトリムする。
      * @param value
-     * @param converterAnno
+     * @param trimAnno
      * @return
      */
-    public static String trim(final String value, final XlsConverter converterAnno) {
+    public static String trim(final String value, final Optional<XlsTrim> trimAnno) {
         
-        if(converterAnno == null || !converterAnno.trim() || value == null) {
+        if(!trimAnno.isPresent()|| value == null) {
             return value;
         }
         
@@ -1822,13 +1829,13 @@ public class Utils {
      * @param converterAnno
      * @return
      */
-    public static String trim(final Character value, final XlsConverter converterAnno) {
+    public static String trim(final Character value, final Optional<XlsTrim> trimAnno) {
         
         if(value == null) {
             return "";
         }
         
-        if(converterAnno == null || !converterAnno.trim()) {
+        if(!trimAnno.isPresent()) {
             return String.valueOf(value);
         }
         
@@ -1848,74 +1855,74 @@ public class Utils {
         
     }
     
-    /**
-     * デフォルト値がアノテーションに設定されているかどうか。
-     * @param converterAnno
-     * @return
-     */
-    public static boolean hasDefaultValue(final XlsConverter converterAnno) {
-        if(converterAnno == null || isEmpty(converterAnno.defaultValue())) {
-            return false;
-        }
-        
-        return true;
-    }
+//    /**
+//     * デフォルト値がアノテーションに設定されているかどうか。
+//     * @param converterAnno
+//     * @return
+//     */
+//    public static boolean hasDefaultValue(final XlsConverter converterAnno) {
+//        if(converterAnno == null || isEmpty(converterAnno.defaultValue())) {
+//            return false;
+//        }
+//        
+//        return true;
+//    }
+//    
+//    /**
+//     * デフォルト値がアノテーションに設定されていないかどうか。
+//     * @param converterAnno
+//     * @return
+//     */
+//    public static boolean hasNotDefaultValue(final XlsConverter converterAnno) {
+//        return !hasDefaultValue(converterAnno);
+//    }
     
-    /**
-     * デフォルト値がアノテーションに設定されていないかどうか。
-     * @param converterAnno
-     * @return
-     */
-    public static boolean hasNotDefaultValue(final XlsConverter converterAnno) {
-        return !hasDefaultValue(converterAnno);
-    }
-    
-    /**
-     * デフォルト値がアノテーションに設定されているかどうか。
-     * @param converterAnno
-     * @return
-     */
-    public static String getDefaultValue(final XlsConverter converterAnno) {
-        if(converterAnno == null || isEmpty(converterAnno.defaultValue())) {
-            return null;
-        }
-        
-        return converterAnno.defaultValue();
-    }
+//    /**
+//     * デフォルト値がアノテーションに設定されているかどうか。
+//     * @param converterAnno
+//     * @return
+//     */
+//    public static String getDefaultValue(final Optional<XlsDefaultValue> converterAnno) {
+//        if(converterAnno == null || isEmpty(converterAnno.defaultValue())) {
+//            return null;
+//        }
+//        
+//        return converterAnno.defaultValue();
+//    }
     
     /**
      * 引数「value」がnullまたは空文字であれば初期値を取得する。
      * @param value
-     * @param converterAnno
+     * @param defaultValueAnno
      * @return
      */
-    public static String getDefaultValueIfEmpty(final String value, final XlsConverter converterAnno) {
+    public static String getDefaultValueIfEmpty(final String value, final Optional<XlsDefaultValue> defaultValueAnno) {
         
         if(isNotEmpty(value)) {
             return value;
         }
         
-        if(hasDefaultValue(converterAnno)) {
-            return converterAnno.defaultValue();
+        if(defaultValueAnno.isPresent()) {
+            return defaultValueAnno.get().value();
         }
         
         return value;
     }
     
-    /**
-     * アノテーションXlsConverterの属性のtrimの値を取得する。
-     * @param converterAnno
-     * @return 引数converterAnnoの値がnullの場合、falseを返す。
-     */
-    public static boolean getTrimValue(final XlsConverter converterAnno) {
-        
-        if(converterAnno == null) {
-            return false;
-        }
-        
-        return converterAnno.trim();
-        
-    }
+//    /**
+//     * アノテーションXlsConverterの属性のtrimの値を取得する。
+//     * @param converterAnno
+//     * @return 引数converterAnnoの値がnullの場合、falseを返す。
+//     */
+//    public static boolean getTrimValue(final XlsConverter converterAnno) {
+//        
+//        if(converterAnno == null) {
+//            return false;
+//        }
+//        
+//        return converterAnno.trim();
+//        
+//    }
     
     /**
      * PostProcessなどのメソッドを実行する。
@@ -2112,22 +2119,22 @@ public class Utils {
      * セルに数式を設定する。
      * @since 1.5
      * 
-     * @param adaptor フィールド
+     * @param adapter フィールド
      * @param formulaAnno 数式定義用のアノテーション。
      * @param config システム設定。
      * @param cell 設定対象のセル。
      * @param targetBean 処理対象のJavaBean.
      * @throws XlsMapperException
      */
-    public static void setupCellFormula(final FieldAdaptor adaptor, final XlsFormula formulaAnno, final XlsMapperConfig config, 
-            final Cell cell, final Object targetBean) throws XlsMapperException {
+    public static void setupCellFormula(final FieldAdapter adapter, final XlsFormula formulaAnno,
+            final XlsMapperConfig config, final Cell cell, final Object targetBean) throws XlsMapperException {
         
-        ArgUtils.notNull(adaptor, "adaptor");
+        ArgUtils.notNull(adapter, "adaptor");
         ArgUtils.notNull(formulaAnno, "formulaAnno");
         ArgUtils.notNull(config, "config");
         ArgUtils.notNull(cell, "cell");
         
-        final String formula = getFormulaValue(adaptor, formulaAnno, config, cell, targetBean);
+        final String formula = getFormulaValue(adapter, formulaAnno, config, cell, targetBean);
         if(isEmpty(formula)) {
             cell.setCellType(Cell.CELL_TYPE_BLANK);
             return;
@@ -2142,10 +2149,10 @@ public class Utils {
             final String message = new StringBuilder()
                     .append(String.format("Fail parse formula '%s'.", formula))
                     .append(String.format(" Cell '%s' map from '%s#%s'.", 
-                            formatCellAddress(cell), adaptor.getDeclaringClass().getName(), adaptor.getName()))
+                            formatCellAddress(cell), adapter.getDeclaringClass().getName(), adapter.getName()))
                     .toString();
                 
-            throw new ConversionException(message, e, adaptor.getTargetClass());
+            throw new ConversionException(message, e, adapter.getType());
         }
     }
     
@@ -2161,8 +2168,8 @@ public class Utils {
      * @return 数式。
      * @throws XlsMapperException
      */
-    public static String getFormulaValue(final FieldAdaptor adaptor, final XlsFormula formulaAnno, final XlsMapperConfig config, 
-            final Cell cell, final Object targetBean) throws XlsMapperException {
+    public static String getFormulaValue(final FieldAdapter adaptor, final XlsFormula formulaAnno,
+            final XlsMapperConfig config, final Cell cell, final Object targetBean) throws XlsMapperException {
         
         if(isNotEmpty(formulaAnno.value())) {
             final Map<String, Object> vars = new HashMap<>();

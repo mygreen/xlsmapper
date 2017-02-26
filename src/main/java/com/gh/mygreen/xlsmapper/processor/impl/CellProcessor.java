@@ -14,7 +14,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.converter.CellConverter;
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.AbstractFieldProcessor;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -28,21 +28,21 @@ import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
     
     @Override
-    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsCell anno, final FieldAdaptor adaptor,
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsCell anno, final FieldAdapter adapter,
             final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final Point cellPosition = getCellPosition(adaptor, anno);
+        final Point cellPosition = getCellPosition(adapter, anno);
         
-        Utils.setPosition(cellPosition.x, cellPosition.y, beansObj, adaptor.getName());
+        Utils.setPosition(cellPosition.x, cellPosition.y, beansObj, adapter.getName());
         
         final Cell xlsCell = POIUtils.getCell(sheet, cellPosition.x, cellPosition.y);
-        final CellConverter<?> converter = getLoadingCellConverter(adaptor, config.getConverterRegistry(), config);
+        final CellConverter<?> converter = getCellConverter(adapter, config.getConverterRegistry(), config);
         
         try {
-            final Object value = converter.toObject(xlsCell, adaptor, config);
-            adaptor.setValue(beansObj, value);
+            final Object value = converter.toObject(xlsCell, adapter, config);
+            adapter.setValue(beansObj, value);
         } catch(TypeBindException e) {
-            work.addTypeBindError(e, cellPosition, adaptor.getName(), null);
+            work.addTypeBindError(e, cellPosition, adapter.getName(), null);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }
@@ -56,7 +56,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
      * @return
      * @throws AnnotationInvalidException
      */
-    private Point getCellPosition(final FieldAdaptor adaptor, final XlsCell anno) throws AnnotationInvalidException {
+    private Point getCellPosition(final FieldAdapter adaptor, final XlsCell anno) throws AnnotationInvalidException {
         
         Point point = null;
         if(Utils.isNotEmpty(anno.address())) {
@@ -99,22 +99,24 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
         
     }
     
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public void saveProcess(final Sheet sheet, final Object targetObj, final XlsCell anno, final FieldAdaptor adaptor,
+    public void saveProcess(final Sheet sheet, final Object targetObj, final XlsCell anno, final FieldAdapter adapter,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        final Point cellPosition = getCellPosition(adaptor, anno);
-        Utils.setPosition(cellPosition.x, cellPosition.y, targetObj, adaptor.getName());
+        final Point cellPosition = getCellPosition(adapter, anno);
+        Utils.setPosition(cellPosition.x, cellPosition.y, targetObj, adapter.getName());
         
-        final CellConverter converter = getSavingCellConverter(adaptor, config.getConverterRegistry(), config);
+        final CellConverter converter = getCellConverter(adapter, config.getConverterRegistry(), config);
         try {
-            converter.toCell(adaptor, adaptor.getValue(targetObj), targetObj, sheet, cellPosition.x, cellPosition.y, config);
+            converter.toCell(adapter, adapter.getValue(targetObj), targetObj, sheet, cellPosition.x, cellPosition.y, config);
         } catch(TypeBindException e) {
-            work.addTypeBindError(e, cellPosition, adaptor.getName(), null);
+            work.addTypeBindError(e, cellPosition, adapter.getName(), null);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }  
         }
         
     }
+
 }

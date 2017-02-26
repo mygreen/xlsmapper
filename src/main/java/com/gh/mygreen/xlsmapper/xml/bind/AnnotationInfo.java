@@ -17,15 +17,16 @@ import com.gh.mygreen.xlsmapper.xml.OgnlValueFormatter;
 
 
 /**
- * XMLのアノテーション情報を保持する
+ * XMLのアノテーション情報を保持する。
  * 
- * <pre>
- *  XMLの使用：
- *  <annotation name="net.java.amateras.xlsbeans.annotation.Sheet"> <- 属性 「name」を持ち必須。
- *  <attribute name="name">'Users'</attribute> <- 
- *  </annotation>
+ * XMLの使用例：
  * 
- * </pre>
+ * <pre class="highlight"><code class="xml">
+ * {@literal <!-- 属性 「name」を持ち必須。--> }
+ * {@literal <annotation name="net.java.amateras.xlsbeans.annotation.Sheet">}
+ *     {@literal <attribute name="name">'Users'</attribute>}
+ * {@literal </annotation>}
+ * </code></pre>
  * 
  * @version 1.4.1
  * @since 0.5

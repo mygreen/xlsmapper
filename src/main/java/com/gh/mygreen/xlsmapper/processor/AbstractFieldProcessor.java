@@ -1,6 +1,7 @@
 package com.gh.mygreen.xlsmapper.processor;
 
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
@@ -8,7 +9,6 @@ import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.converter.CellConverter;
 import com.gh.mygreen.xlsmapper.converter.CellConverterRegistry;
 import com.gh.mygreen.xlsmapper.converter.ConversionException;
-import com.gh.mygreen.xlsmapper.converter.DefaultCellConverter;
 
 
 /**
@@ -36,57 +36,29 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Lo
      * 読み込み時用のConveterを取得する。
      * <p>アノテーション「{@link XlsConverter#converterClass()}」が設定されていた場合を考慮した、個別のConverterを考慮する。
      * 
-     * @param adaptor フィールド情報
+     * @param adapter フィールド情報
      * @param converterResolver Converterを登録しているクラス。
      * @param config XlsMapperの設定クラス。Converterクラスのインスタンスを生成する際に利用する。
      * @return
      * @throws XlsMapperException Converterが見つからない場合。
      */
-    protected CellConverter<?> getLoadingCellConverter(final FieldAdaptor adaptor, final CellConverterRegistry converterResolver,
+    protected CellConverter<?> getCellConverter(final FieldAdapter adapter, final CellConverterRegistry converterResolver,
             final XlsMapperConfig config) throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
+        final Optional<XlsConverter> converterAnno = adapter.getAnnotation(XlsConverter.class);
         final CellConverter<?> converter;
         
-        if(converterAnno != null && !converterAnno.converterClass().equals(DefaultCellConverter.class)) {
-            converter = config.createBean(converterAnno.converterClass());
+        if(converterAnno.isPresent()) {
+            converter = config.createBean(converterAnno.get().converter());
             
         } else {
-            converter = converterResolver.getConverter(adaptor.getTargetClass());
+            converter = converterResolver.getConverter(adapter.getType());
             if(converter == null) {
-                throw newNotFoundConverterExpcetion(adaptor.getTargetClass());
+                throw newNotFoundConverterExpcetion(adapter.getType());
             }
         }
         
         return converter;
     }
     
-    /**
-     * 書き込み時用のConveterを取得する。
-     * <p>アノテーション「{@link XlsConverter#converterClass()}」が設定されていた場合を考慮した、個別のConverterを考慮する。
-     * 
-     * @param adaptor フィールド情報
-     * @param converterResolver Converterを登録しているクラス。
-     * @param config XlsMapperの設定クラス。Converterクラスのインスタンスを生成する際に利用する。
-     * @return
-     * @throws XlsMapperException Converterが見つからない場合。
-     */
-    protected CellConverter<?> getSavingCellConverter(final FieldAdaptor adaptor, final CellConverterRegistry converterResolver,
-            final XlsMapperConfig config) throws XlsMapperException {
-        
-        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
-        final CellConverter<?> converter;
-        
-        if(converterAnno != null && !converterAnno.converterClass().equals(DefaultCellConverter.class)) {
-            converter = config.createBean(converterAnno.converterClass());
-            
-        } else {
-            converter = converterResolver.getConverter(adaptor.getTargetClass());
-            if(converter == null) {
-                throw newNotFoundConverterExpcetion(adaptor.getTargetClass());
-            }
-        }
-        
-        return converter;
-    }
 }

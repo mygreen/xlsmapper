@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -14,11 +15,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.ConversionUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
@@ -26,30 +30,33 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 /**
  * Boolean/boolean型を処理するConverter.
  * 
- * @version 1.5
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
 public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
     
     @Override
-    public Boolean toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config) throws TypeBindException {
+    public Boolean toObject(final Cell cell, final FieldAdapter adapter, final XlsMapperConfig config) throws TypeBindException {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
-        final XlsBooleanConverter anno = getLoadingAnnotation(adaptor);
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        
+        final XlsBooleanConverter anno = adapter.getAnnotation(XlsBooleanConverter.class)
+                .orElseGet(() -> getDefaultBooleanConverterAnnotation());
         
         if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
             return cell.getBooleanCellValue();
             
         } else {
             String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-            cellValue = Utils.trim(cellValue, converterAnno);
-            cellValue = Utils.getDefaultValueIfEmpty(cellValue, converterAnno);
+            cellValue = Utils.trim(cellValue, trimAnno);
+            cellValue = Utils.getDefaultValueIfEmpty(cellValue, defaultValueAnno);
             
             final Boolean result = convertFromString(cellValue, anno);
             if(result == null && Utils.isNotEmpty(cellValue)) {
                 // 値が入っていて変換できない場合
-                throw newTypeBindException(cell, adaptor, cellValue)
+                throw newTypeBindException(cell, adapter, cellValue)
                     .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
             
@@ -58,7 +65,7 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
             }
         }
         
-        if(adaptor.getTargetClass().isPrimitive()) {
+        if(adapter.getType().isPrimitive()) {
             return Boolean.FALSE;
         }
         
@@ -122,24 +129,6 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
         };
     }
     
-    private XlsBooleanConverter getLoadingAnnotation(final FieldAdaptor adaptor) {
-        XlsBooleanConverter anno = adaptor.getLoadingAnnotation(XlsBooleanConverter.class);
-        if(anno == null) {
-            anno = getDefaultBooleanConverterAnnotation();
-        }
-        
-        return anno;
-    }
-    
-    private XlsBooleanConverter getSavingAnnotation(final FieldAdaptor adaptor) {
-        XlsBooleanConverter anno = adaptor.getSavingAnnotation(XlsBooleanConverter.class);
-        if(anno == null) {
-            anno = getDefaultBooleanConverterAnnotation();
-        }
-        
-        return anno;
-    }
-    
     /**
      * 読み込み時の入力の候補となる値を取得する
      * @param anno
@@ -182,32 +171,33 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
     }
     
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Boolean targetValue, final Object targetBean,
+    public Cell toCell(final FieldAdapter adapter, final Boolean targetValue, final Object targetBean,
             final Sheet sheet, final int column, final int row,
             final XlsMapperConfig config) throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
-        final XlsBooleanConverter anno = getSavingAnnotation(adaptor);
-        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
-        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        
+        final XlsBooleanConverter anno = adapter.getAnnotation(XlsBooleanConverter.class)
+                .orElseGet(() -> getDefaultBooleanConverterAnnotation());
+        
+        final Optional<XlsFormula> formulaAnno = adapter.getAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno.map(a -> a.primary()).orElse(false);
         
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
         // セルの書式設定
-        if(converterAnno != null) {
-            cell.getCellStyle().setWrapText(converterAnno.wrapText());
-            cell.getCellStyle().setShrinkToFit(converterAnno.shrinkToFit());
-        }
+        ConversionUtils.setupCellOption(cell, adapter.getAnnotation(XlsCellOption.class));
         
         Boolean value = targetValue;
         
         // デフォルト値から値を設定する
-        if(value == null && Utils.hasDefaultValue(converterAnno)) {
-            value = convertFromString(Utils.getDefaultValue(converterAnno), anno);
+        if(value == null && defaultValueAnno.isPresent()) {
+            value = convertFromString(defaultValueAnno.get().value(), anno);
             
             // 初期値が設定されているが、変換できないような時はエラーとする
             if(value == null) {
-                throw newTypeBindException(cell, adaptor, Utils.getDefaultValue(converterAnno))
+                throw newTypeBindException(cell, adapter, defaultValueAnno.get().value())
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
         }
@@ -224,8 +214,8 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
                 cell.setCellValue(anno.saveAsFalse());
             }
             
-        } else if(formulaAnno != null) {
-            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
+        } else if(formulaAnno.isPresent()) {
+            Utils.setupCellFormula(adapter, formulaAnno.get(), config, cell, targetBean);
             
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);

@@ -4,14 +4,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapterBuilder;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReadException;
@@ -117,9 +120,9 @@ public class SheetFinder {
         } else if(sheetAnno.regex().length() > 0) {
             // シート名（正規表現）をもとにして、取得する。
             String sheetNameValue = null;
-            FieldAdaptor sheetNameField = getSheetNameField(beanObj, annoReader);
-            if(sheetNameField != null && sheetNameField.getValue(beanObj) != null) {
-                sheetNameValue = sheetNameField.getValue(beanObj).toString();
+            Optional<FieldAdapter> sheetNameField = getSheetNameField(beanObj, annoReader);
+            if(sheetNameField.isPresent()) {
+                sheetNameValue = (String)sheetNameField.get().getValue(beanObj);
             }
             
             final Pattern pattern = Pattern.compile(sheetAnno.regex());
@@ -172,39 +175,40 @@ public class SheetFinder {
      * @param beanObj
      * @param config
      * @param annoReader
-     * @return
+     * @return 見つからない場合、空を返す。
      * @throws AnnotationReadException 
      */
-    private FieldAdaptor getSheetNameField(final Object beanObj, final AnnotationReader annoReader) throws AnnotationReadException {
+    private Optional<FieldAdapter> getSheetNameField(final Object beanObj, final AnnotationReader annoReader) throws AnnotationReadException {
+        
+        FieldAdapterBuilder fieldBuilder = new FieldAdapterBuilder(annoReader);
         
         Class<?> clazz = beanObj.getClass();
         for(Method method : clazz.getMethods()) {
             method.setAccessible(true);
-            if(!Utils.isGetterMethod(method)) {
+            if(!ClassUtils.isGetterMethod(method)) {
                 continue;
             }
             
-            XlsSheetName sheetNameAnno = annoReader.getAnnotation(clazz, method, XlsSheetName.class);
-            if(sheetNameAnno == null) {
+            if(!annoReader.hasAnnotation(method, XlsSheetName.class)) {
                 continue;
             }
             
-            return new FieldAdaptor(clazz, method, annoReader);
+            return Optional.of(fieldBuilder.of(method));
         }
         
         for(Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
             
-            XlsSheetName sheetNameAnno = annoReader.getAnnotation(clazz, field, XlsSheetName.class);
-            if(sheetNameAnno == null) {
+            if(!annoReader.hasAnnotation(field, XlsSheetName.class)) {
                 continue;
             }
             
-            return new FieldAdaptor(clazz, field, annoReader);
+            return Optional.of(fieldBuilder.of(field));
+            
         }
         
         // not found
-        return null;
+        return Optional.empty();
     }
     
 }

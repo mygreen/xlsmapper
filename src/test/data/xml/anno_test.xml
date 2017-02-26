@@ -15,9 +15,10 @@
 				<attribute name="label">'名称'</attribute>
 				<attribute name="type">@com.gh.mygreen.xlsmapper.annotation.LabelledCellType@Right</attribute>
 			</annotation>
-			<annotation name="com.gh.mygreen.xlsmapper.annotation.XlsConverter">
-				<attribute name="trim">true</attribute>
-				<attribute name="defaultValue">"－"</attribute>
+			<annotation name="com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue">
+				<attribute name="value">"－"</attribute>
+			</annotation>
+			<annotation name="com.gh.mygreen.xlsmapper.annotation.XlsTrim">
 			</annotation>
 		</field>
 		

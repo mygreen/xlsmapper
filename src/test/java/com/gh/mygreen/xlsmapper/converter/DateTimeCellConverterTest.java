@@ -27,11 +27,13 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -529,27 +531,28 @@ public class DateTimeCellConverterTest {
         private int no;
         
         /** 初期値 */
-        @XlsConverter(defaultValue="2000-12-31 03:41:12")
+        @XlsDefaultValue("2000-12-31 03:41:12")
         @XlsColumn(columnName="Dateクラス(util)")
         private Date utilDate;
         
-        @XlsConverter(defaultValue="2000-12-31 03:41:12")
+        @XlsDefaultValue("2000-12-31 03:41:12")
         @XlsColumn(columnName="Calendarクラス")
         private Calendar calendar;
         
         /** トリム */
-        @XlsConverter(defaultValue=" 2000-12-31 ", trim=true)
+        @XlsTrim
+        @XlsDefaultValue(" 2000-12-31 ")
         @XlsColumn(columnName="Dateクラス(sql)")
         private java.sql.Date sqlDate;
         
         /** 書式付き（初期値のフォーマットが不正） */
-        @XlsConverter(defaultValue="abc")
+        @XlsDefaultValue("abc")
         @XlsDateConverter(javaPattern="H時m分")
         @XlsColumn(columnName="Timeクラス(sql)")
         private Time sqlTime;
         
         /** 書式付き(lenient=true) */
-        @XlsConverter(defaultValue="1999/12/31 10:12")
+        @XlsDefaultValue("1999/12/31 10:12")
         @XlsDateConverter(javaPattern="yyyy/M/d H:mm", lenient=true, locale="ja_JP", excelPattern="yyyy/m/d h:mm")
         @XlsColumn(columnName="Timesamp(sql)")
         private Timestamp timestamp;

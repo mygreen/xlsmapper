@@ -11,7 +11,6 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * 標準のフィールドのフォーマッタ。
- * <p
  *
  * @since 1.0
  * @author T.TSUCHIE

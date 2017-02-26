@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -19,43 +20,49 @@ import org.apache.poi.ss.usermodel.Workbook;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.processor.FieldAdaptor;
+import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.ConversionUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
  * 日時型のConverterの抽象クラス。
- * <p>{@link Date}を継承している<code>javax.sql.Time/Date/Timestamp</code>はこのクラスを継承して作成します。
+ * <p>{@link Date}を継承している<code>javax.sql.Time/Date/Timestamp</code>はこのクラスを継承して作成します。</p>
  * 
- * @version 1.5
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
 public abstract class AbstractDateCellConverter<T extends Date> extends AbstractCellConverter<T> {
     
     @Override
-    public T toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config) throws XlsMapperException {
+    public T toObject(final Cell cell, final FieldAdapter adapter, final XlsMapperConfig config) throws XlsMapperException {
         
-        final XlsConverter converterAnno = adaptor.getLoadingAnnotation(XlsConverter.class);
-        final XlsDateConverter anno = getLoadingAnnotation(adaptor);
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        
+        final XlsDateConverter anno = adapter.getAnnotation(XlsDateConverter.class)
+                .orElseGet(() -> getDefaultDateConverterAnnotation());
         
         T resultValue = null;
         if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
             
-            if(Utils.hasNotDefaultValue(converterAnno)) {
+            if(!defaultValueAnno.isPresent()) {
                 return null;
                 
             } else if(Utils.isNotEmpty(anno.javaPattern())) {
-                final String defaultValue = converterAnno.defaultValue();
+                final String defaultValue = defaultValueAnno.get().value();
                 try {
                     resultValue = parseDate(defaultValue, createDateFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(e, cell, adaptor, defaultValue)
+                    throw newTypeBindException(e, cell, adapter, defaultValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
@@ -72,21 +79,21 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             try {
                 // 再帰的に処理する
                 final Cell evalCell = evaluator.evaluateInCell(cell);
-                return toObject(evalCell, adaptor, config);
+                return toObject(evalCell, adapter, config);
                 
             } catch(Exception e) {
-                throw newTypeBindException(e, cell, adaptor, cell)
+                throw newTypeBindException(e, cell, adapter, cell)
                     .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
             
         } else {
             String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-            cellValue = Utils.trim(cellValue, converterAnno);
+            cellValue = Utils.trim(cellValue, trimAnno);
             if(Utils.isNotEmpty(cellValue)) {
                 try {
                     resultValue = parseDate(cellValue,  createDateFormat(anno));
                 } catch(ParseException e) {
-                    throw newTypeBindException(e, cell, adaptor, cellValue)
+                    throw newTypeBindException(e, cell, adapter, cellValue)
                         .addAllMessageVars(createTypeErrorMessageVars(anno));
                 }
             }
@@ -199,47 +206,30 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         };
     }
     
-    XlsDateConverter getLoadingAnnotation(final FieldAdaptor adaptor) {
-        XlsDateConverter anno = adaptor.getLoadingAnnotation(XlsDateConverter.class);
-        if(anno == null) {
-            anno = getDefaultDateConverterAnnotation();
-        }
-        
-        return anno;
-    }
-    
-    XlsDateConverter getSavingAnnotation(final FieldAdaptor adaptor) {
-        XlsDateConverter anno = adaptor.getSavingAnnotation(XlsDateConverter.class);
-        if(anno == null) {
-            anno = getDefaultDateConverterAnnotation();
-        }
-        
-        return anno;
-    }
-    
     @Override
-    public Cell toCell(final FieldAdaptor adaptor, final Date targetValue, final Object targetBean,
+    public Cell toCell(final FieldAdapter adapter, final Date targetValue, final Object targetBean,
             final Sheet sheet, final int column, final int row, 
             final XlsMapperConfig config) throws XlsMapperException {
          
-        final XlsConverter converterAnno = adaptor.getSavingAnnotation(XlsConverter.class);
-        final XlsDateConverter anno = getSavingAnnotation(adaptor);
-        final XlsFormula formulaAnno = adaptor.getSavingAnnotation(XlsFormula.class);
-        final boolean primaryFormula = formulaAnno == null ? false : formulaAnno.primary();
+        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        
+        final XlsDateConverter anno = adapter.getAnnotation(XlsDateConverter.class)
+                .orElseGet(() -> getDefaultDateConverterAnnotation());
+        
+        final Optional<XlsFormula> formulaAnno = adapter.getAnnotation(XlsFormula.class);
+        final boolean primaryFormula = formulaAnno.map(a -> a.primary()).orElse(false);
         
         final Cell cell = POIUtils.getCell(sheet, column, row);
         
         // セルの書式設定
-        if(converterAnno != null) {
-            cell.getCellStyle().setWrapText(converterAnno.wrapText());
-            cell.getCellStyle().setShrinkToFit(converterAnno.shrinkToFit());
-        }
+        ConversionUtils.setupCellOption(cell, adapter.getAnnotation(XlsCellOption.class));
         
         Date value = targetValue;
         
         // デフォルト値から値を設定する
-        if(value == null && Utils.hasDefaultValue(converterAnno)) {
-            final String defaultValue = converterAnno.defaultValue();
+        if(value == null && defaultValueAnno.isPresent()) {
+            final String defaultValue = defaultValueAnno.get().value();
             
             final DateFormat formatter;
             if(Utils.isNotEmpty(anno.javaPattern())) {
@@ -251,7 +241,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             try {
                 value = parseDate(defaultValue, formatter);
             } catch (ParseException e) {
-                throw newTypeBindException(e, cell, adaptor, defaultValue)
+                throw newTypeBindException(e, cell, adapter, defaultValue)
                     .addAllMessageVars(createTypeErrorMessageVars(anno));
             }
             
@@ -280,8 +270,8 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         if(value != null && !primaryFormula) {
             cell.setCellValue(value);
             
-        } else if(formulaAnno != null) {
-            Utils.setupCellFormula(adaptor, formulaAnno, config, cell, targetBean);
+        } else if(formulaAnno.isPresent()) {
+            Utils.setupCellFormula(adapter, formulaAnno.get(), config, cell, targetBean);
             
         } else {
             cell.setCellType(Cell.CELL_TYPE_BLANK);
