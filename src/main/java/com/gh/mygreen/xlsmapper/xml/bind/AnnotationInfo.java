@@ -43,7 +43,7 @@ public class AnnotationInfo implements Serializable {
      */
     private String className;
     
-     private List<AttributeInfo> attributes = new ArrayList<>();
+    private List<AttributeInfo> attributes = new ArrayList<>();
     
     /**
      * ビルダクラスのインスタンスを取得する。
@@ -194,7 +194,10 @@ public class AnnotationInfo implements Serializable {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class AttributeInfo {
+    public static class AttributeInfo implements Serializable {
+        
+        /** serialVersionUID */
+        private static final long serialVersionUID = 5570368711168203217L;
         
         @XmlAttribute(name="name", required=true)
         String name;

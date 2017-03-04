@@ -202,7 +202,7 @@ public class MessageCodeGenerator {
     
     private void addCode(final List<String> codeList, final String code, final String objectName, final String field) {
         final String formattedCode = formatCode(code, objectName, field);
-        if(!codeList.contains(codeList)) {
+        if(!codeList.contains(formattedCode)) {
             codeList.add(formattedCode);
         }
     }

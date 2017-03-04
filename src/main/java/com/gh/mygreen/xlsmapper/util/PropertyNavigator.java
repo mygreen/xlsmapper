@@ -148,13 +148,11 @@ public class PropertyNavigator {
         
         PropertyPath path = null;
         if(isCacheWithPath()) {
-            synchronized (cacheData) {
-                path = cacheData.get(property);
-                
-                if(path == null) {
-                    path = tokenizer.parse(property);
-                    cacheData.put(property, path);
-                }
+            path = cacheData.get(property);
+            
+            if(path == null) {
+                path = tokenizer.parse(property);
+                cacheData.put(property, path);
             }
             
             return path;
@@ -169,9 +167,7 @@ public class PropertyNavigator {
      * 今までのキャッシュデータをクリアする。
      */
     public void clearCache() {
-        synchronized (cacheData) {
-            this.cacheData.clear();
-        }
+        this.cacheData.clear();
     }
     
     private Object accessProperty(final Object targetObj, final Token token) {
