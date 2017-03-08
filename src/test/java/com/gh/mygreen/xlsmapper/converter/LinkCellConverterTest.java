@@ -26,7 +26,6 @@ import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
@@ -213,8 +212,8 @@ public class LinkCellConverterTest {
             
         } else if(record.no == 11) {
             // 空白の文字
-            assertThat(record.uri, is(nullValue()));
-            assertThat(record.link, is(nullValue()));
+            assertThat(record.uri, is(new URI("http://myhome.com/")));
+            assertThat(record.link, is(new CellLink("http://myhome.com", "http://myhome.com")));
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));

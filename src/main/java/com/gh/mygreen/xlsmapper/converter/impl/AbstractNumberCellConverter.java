@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper.converter.impl;
 
-import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -10,29 +9,21 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Currency;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
-import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
-import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
-import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
-import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
-import com.gh.mygreen.xlsmapper.util.ConversionUtils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
@@ -41,352 +32,251 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  * 数値型のConverterの抽象クラス。
  * <p>数値型のConverterは、基本的にこのクラスを継承して作成する。
  * 
- * @version 1.5
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
 public abstract class AbstractNumberCellConverter<T extends Number> extends AbstractCellConverter<T> {
     
     @Override
-    public T toObject(final Cell cell, final FieldAdapter adapter, final XlsMapperConfig config) throws TypeBindException {
+    protected T parseDefaultValue(final String defaultValue, final FieldAdapter adapter, final XlsMapperConfig config) 
+            throws TypeBindException {
         
-        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
-        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
+        final Optional<XlsNumberConverter> convertAnno = adapter.getAnnotation(XlsNumberConverter.class);
         
-        final XlsNumberConverter anno = adapter.getAnnotation(XlsNumberConverter.class)
-                .orElseGet(() -> getDefaultNumberConverterAnnotation());
+        final Optional<NumberFormat> formatter = createFormatter(convertAnno);
+        final MathContext mathContext = createMathContext(convertAnno);
         
-        T resultValue = null;
-        if(POIUtils.isEmptyCellContents(cell, config.getCellFormatter())) {
+        try {
+            return parseNumber(defaultValue, formatter, mathContext);
             
-            if(!defaultValueAnno.isPresent()) {
-                // デフォルト値を持たない場合
-                if(adapter.getType().isPrimitive()) {
-                    resultValue = getZeroValue();
-                }
-                
-            } else {
-                String defaultValue = defaultValueAnno.get().value();
-                try {
-                    resultValue = parseNumber(defaultValue, createNumberFormat(anno), createMathContext(anno));
-                } catch(ParseException e) {
-                    throw newTypeBindException(e, cell, adapter, defaultValue)
-                        .addAllMessageVars(createTypeErrorMessageVars(anno));
-                }
+        } catch(ParseException | NumberFormatException | ArithmeticException e) {
+            throw newTypeBindExceptionWithDefaultValue(e, adapter, defaultValue)
+                .addAllMessageVars(createTypeErrorMessageVars(convertAnno));
+        }
+        
+    }
+    
+    /**
+     * 文字列を数値に変換する。
+     * @param strValue
+     * @param formatter
+     * @param mathContext
+     * @return
+     * @throws ParseException 書式が不正な場合
+     * @throws NumberFormatException 書式が不正な場合
+     * @throws ArithmeticException オーバフローした場合など
+     */
+    private T parseNumber(final String strValue, final Optional<NumberFormat> formatter, final MathContext mathContext) 
+            throws ParseException, NumberFormatException, ArithmeticException {
+        
+        if(formatter.isPresent()) {
+            // 書式が指定されている場合
+            final ParsePosition position = new ParsePosition(0);
+            BigDecimal value = (BigDecimal)formatter.get().parse(strValue, position);
+            
+            if(position.getIndex() != strValue.length()) {
+                throw new ParseException(strValue, position.getErrorIndex());
             }
             
-        } else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-            // セルのタイプが数値型の場合はそのまま取得する。
-            try {
-                resultValue = convertNumber(cell.getNumericCellValue(), createMathContext(anno));
-            } catch(ArithmeticException e) {
-                throw newTypeBindException(e, cell, adapter, cell)
-                    .addAllMessageVars(createTypeErrorMessageVars(anno));
-            }
-            
-        } else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
-            // 式を評価して再帰的に処理する。
-            final Workbook workbook = cell.getSheet().getWorkbook();
-            final CreationHelper helper = workbook.getCreationHelper();
-            final FormulaEvaluator evaluator = helper.createFormulaEvaluator();
-            try {
-                // 再帰的に処理する
-                final Cell evalCell = evaluator.evaluateInCell(cell);
-                return toObject(evalCell, adapter, config);
-                
-            } catch(Exception e) {
-                throw newTypeBindException(e, cell, adapter, cell)
-                    .addAllMessageVars(createTypeErrorMessageVars(anno));
-            }
+            value = value.setScale(mathContext.getPrecision(), mathContext.getRoundingMode());
+            return convertTypeValue(value);
             
         } else {
-            String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-            cellValue = Utils.trim(cellValue, trimAnno);
-            if(Utils.isNotEmpty(cellValue)) {
-                try {
-                    resultValue = parseNumber(cellValue, createNumberFormat(anno), createMathContext(anno));
-                } catch(ParseException | ArithmeticException e) {
-                    throw newTypeBindException(e, cell, adapter, cellValue)
-                        .addAllMessageVars(createTypeErrorMessageVars(anno));
-                }
+            /*
+             * 有効桁数15桁を超えている場合、Excelの場合は、切り捨てによる丸めが入るが、
+             * Javaではそのまま、HALF_UPとなり、オーバーフローが起こる場合がある。
+             */
+            BigDecimal value = new BigDecimal(strValue, mathContext);
+            return convertTypeValue(value);
+        }   
+        
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    protected T parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAdapter adapter, final XlsMapperConfig config) 
+            throws TypeBindException {
+        
+        final Optional<XlsNumberConverter> convertAnno = adapter.getAnnotation(XlsNumberConverter.class);
+        final MathContext mathContext = createMathContext(convertAnno);
+        
+        if(evaluatedCell.getCellTypeEnum() == CellType.NUMERIC) {
+            try {
+                return convertTypeValue(new BigDecimal(evaluatedCell.getNumericCellValue(), mathContext));
+                
+            } catch(ArithmeticException e) {
+                
+                throw newTypeBindExceptionWithParse(e, evaluatedCell, adapter, evaluatedCell.getNumericCellValue())
+                    .addAllMessageVars(createTypeErrorMessageVars(convertAnno));
+            }
+            
+        } else if(!formattedValue.isEmpty()) {
+            final Optional<NumberFormat> formatter = createFormatter(convertAnno);
+            
+            try {
+                return parseNumber(formattedValue, formatter, mathContext);
+                
+            } catch(ParseException | NumberFormatException | ArithmeticException e) {
+                throw newTypeBindExceptionWithParse(e, evaluatedCell, adapter, formattedValue)
+                    .addAllMessageVars(createTypeErrorMessageVars(convertAnno));
             }
         }
         
-        if(resultValue != null) {
-            return resultValue;
-            
-        } else if(adapter.getType().isPrimitive()) {
-            return getZeroValue();
+        // プリミティブ型の場合、値がnullの時は初期値を設定する
+        if(adapter.getType().isPrimitive()) {
+            return (T)getPrimitiveDefaultValue(adapter.getType());
         }
         
         return null;
+        
+    }
+    
+    /**
+     * プリミティブ型の初期値を取得する。
+     * @param type プリミティブ型のクラス型。
+     * @return 非プリミティブ型や該当するクラスがない場合はnullを返す。
+     * @throws NullPointerException type is null.
+     */
+    protected Object getPrimitiveDefaultValue(final Class<?> type) {
+        ArgUtils.notNull(type, "type");
+        
+        if(byte.class.isAssignableFrom(type)) {
+            return (byte)0;
+            
+        } else if(short.class.isAssignableFrom(type)) {
+            return (short)0;
+            
+        } else if(int.class.isAssignableFrom(type)) {
+            return 0;
+            
+        } else if(long.class.isAssignableFrom(type)) {
+            return 0l;
+            
+        } else if(float.class.isAssignableFrom(type)) {
+            return 0.0f;
+            
+        } else if(double.class.isAssignableFrom(type)) {
+            return 0.0d;
+        }
+        
+        return null;
+        
     }
     
     /**
      * アノテーションから数値のフォーマッタを取得する。
-     * @param anno 引数がnull(アノテーションが設定されていない場合)は、nullを返す。
-     * @return アノテーションに書式が設定されていない場合はnullを返す。
+     * @param convertAnno 引数がnull(アノテーションが設定されていない場合)は、nullを返す。
+     * @return アノテーションに書式が設定されていない場合は空を返す。
      */
-    protected NumberFormat createNumberFormat(final XlsNumberConverter anno) {
+    private Optional<NumberFormat> createFormatter(final Optional<XlsNumberConverter> convertAnno) {
         
-        final Locale locale;
-        if(anno.locale().isEmpty()) {
-            locale = Locale.getDefault();
-        } else {
-            locale = Utils.getLocale(anno.locale());
+        if(!convertAnno.isPresent()) {
+            return Optional.empty();
         }
         
-        if(anno.javaPattern().isEmpty()) {
-            if(anno.currency().isEmpty()) {
-                return null;
-            } else {
+        final String javaPattern = convertAnno.get().javaPattern();
+        final Locale locale = Utils.getLocale(convertAnno.get().locale());
+        final DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+        final Optional<Currency> currency = convertAnno.get().currency().isEmpty() ? Optional.empty()
+                : Optional.of(Currency.getInstance(convertAnno.get().currency()));
+        
+        if(javaPattern.isEmpty()) {
+            if(!convertAnno.get().currency().isEmpty()) {
                 // 通貨の場合
-                return NumberFormat.getCurrencyInstance(locale);
+                DecimalFormat formatter = (DecimalFormat)NumberFormat.getCurrencyInstance(locale);
+                formatter.setParseBigDecimal(true);
+                formatter.setDecimalFormatSymbols(symbols);
+                currency.ifPresent(c -> formatter.setCurrency(c));
+                
+                return Optional.of(formatter);
+                
+            } else {
+                return Optional.empty();
             }
         }
         
-        final DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-        final DecimalFormat format = new DecimalFormat(anno.javaPattern(), symbols);
+        final DecimalFormat formatter = new DecimalFormat(javaPattern, symbols);
         
-        format.setRoundingMode(RoundingMode.HALF_UP);
-        format.setParseBigDecimal(true);
+        formatter.setRoundingMode(RoundingMode.HALF_UP);
+        formatter.setParseBigDecimal(true);
+        currency.ifPresent(c -> formatter.setCurrency(c));
         
-        if(Utils.isNotEmpty(anno.currency())) {
-            format.setCurrency(Currency.getInstance(anno.currency()));
-        }
-        
-        return format;
+        return Optional.of(formatter);
         
     }
     
-    /**
-     * 型変換エラー時のメッセージ変数の作成
-     */
-    private Map<String, Object> createTypeErrorMessageVars(final XlsNumberConverter anno) {
-        
-        final Map<String, Object> vars = new LinkedHashMap<>();
-        vars.put("javaPattern", anno.javaPattern());
-        vars.put("currency", anno.currency());
-        vars.put("locale", anno.locale());
-        vars.put("precision", anno.precision());
-        return vars;
-    }
     
     /**
      * アノテーションを元に、{@link MathContext}のインスタンスを取得する。
      * <p>有効桁数、丸め方法を設定したものを返す。
-     * <p>有効桁数は、デフォルトではExcelに仕様に合わせて15桁。
+     * <p>有効桁数は、デフォルトでは無期限にする。
      * <p>丸め方法は、Excelに合わせて、{@link RoundingMode#HALF_UP}で固定。
-     * @param anno
+     * @param convertAnno
      * @return
      */
-    protected MathContext createMathContext(final XlsNumberConverter anno) {
+    private MathContext createMathContext(final Optional<XlsNumberConverter> convertAnno) {
         
-        if(anno.precision() > 0) {
-            return new MathContext(anno.precision(), RoundingMode.HALF_UP);
+        if(convertAnno.isPresent() && convertAnno.get().precision() > 0) {
+            return new MathContext(convertAnno.get().precision(), RoundingMode.HALF_UP);
+            
         } else {
-            return new MathContext(15, RoundingMode.HALF_UP);
-        }
-        
-    }
-    
-    /**
-     * その型における数値型を返す。
-     * @param value
-     * @param context
-     * @return
-     */
-    protected abstract T convertNumber(double value, MathContext context);
-    
-    /**
-     * その型における数値型を返す。
-     * @param value
-     * @param context
-     * @return
-     */
-    protected abstract T convertNumber(Number value, MathContext context);
-    
-    /**
-     * その型における数値型を返す。
-     * @param value
-     * @return
-     */
-    protected abstract T convertNumber(BigDecimal value);
-    
-    /**
-     * 文字列をその型における数値型を返す。
-     * <p>アノテーション{@link XlsNumberConverter}でフォーマットが与えられている場合は、パースして返す。
-     * @param value
-     * @param format フォーマットが指定されていない場合はnullが渡される
-     * @param context 数値変換する際の設定
-     * @return
-     * @throws ParseException 
-     */
-    protected T parseNumber(final String value, final NumberFormat format, final MathContext context) throws ParseException {
-        
-        if(format == null) {
-            final BigDecimal bg;
-            try {
-                // 文字列の時は、精度指定しない。
-                bg = new BigDecimal(value);
-            } catch(NumberFormatException e) {
-                throw new ParseException(String.format("Cannot parse '%s'", value), 0);
-            }
-            
-            if(bg.doubleValue() < getMinValue()) {
-                throw new ParseException(String.format("'%s' cannot less than %f", value, getMinValue()), 0);
-            }
-            
-            if(bg.doubleValue() > getMaxValue()) {
-                throw new ParseException(String.format("'%s' cannot greater than %f", value, getMaxValue()), 0);
-            }
-            
-            return convertNumber(bg);
-        }
-        
-        final ParsePosition position = new ParsePosition(0);
-        final Number result = (Number) format.parseObject(value, position);
-        
-        if(position.getIndex() != value.length()) {
-            throw new ParseException(
-                    String.format("Cannot parse '%s' using fromat %s", value, format.toString()), position.getIndex());
-        }
-        
-        if(result.doubleValue() < getMinValue()) {
-            throw new ParseException(String.format("'%s' cannot less than %f", value, getMinValue()), 0);
-        }
-        
-        if(result.doubleValue() > getMaxValue()) {
-            throw new ParseException(String.format("'%s' cannot greater than %f", value, getMaxValue()), 0);
-        }
-        
-        if(result instanceof BigDecimal) {
-            // NumberFormatのインスタンスを作成する際に、DecimalFormat#setParseBigDecimal(true)としているため、戻り値がBigDecimalになる。
-            return convertNumber((BigDecimal) result);
-        } else {
-            return convertNumber(result, context);
+            //アノテーションがない場合は、制限なし。
+            return MathContext.UNLIMITED;
         }
     }
     
     /**
-     * その型におけるゼロ値を返す。
-     * @return
+     * 型変換エラー時のメッセージ変数の作成
+     * @param convertAnno 変換用のアノテーション
+     * @return メッセージの変数
      */
-    protected abstract T getZeroValue();
-    
-    /**
-     * その型における最大値を返す。
-     * @return
-     */
-    protected abstract double getMaxValue();
-    
-    /**
-     * その型における最小値を返す。
-     * @return
-     */
-    protected abstract double getMinValue();
-    
-    private XlsNumberConverter getDefaultNumberConverterAnnotation() {
-        return new XlsNumberConverter() {
+    private Map<String, Object> createTypeErrorMessageVars(final Optional<XlsNumberConverter> convertAnno) {
+        
+        final Map<String, Object> vars = new HashMap<>();
+        
+        convertAnno.ifPresent(anno -> {
+            vars.put("javaPattern", anno.javaPattern());
+            vars.put("currency", anno.currency());
+            vars.put("locale", anno.locale());
+            vars.put("precision", anno.precision());
             
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return XlsNumberConverter.class;
-            }
-            
-            @Override
-            public String javaPattern() {
-                return "";
-            }
-            
-            @Override
-            public String locale() {
-                return "";
-            }
-            
-            @Override
-            public String currency() {
-                return "";
-            }
-            
-            @Override
-            public int precision() {
-                return 15;
-            }
-            
-            @Override
-            public String excelPattern() {
-                return "";
-            }
-            
-        };
+        });
+        return vars;
     }
+    
+    /**
+     * その型における型に変換する
+     * BigDecimalから変換する際には、exactXXX()メソッドを呼ぶ。
+     * 
+     * @param bg 変換対象のBigDecimal
+     * @return 変換した値
+     * @throws ArithmeticException 変換する数値型に合わない場合
+     */
+    protected abstract T convertTypeValue(final BigDecimal value) throws ArithmeticException;
     
     @Override
-    public Cell toCell(final FieldAdapter adapter, final Number targetValue, final Object targetBean,
-            final Sheet sheet, final int column, final int row, 
-            final XlsMapperConfig config) throws XlsMapperException {
+    protected void setupCell(final Cell cell, final Optional<T> cellValue, final FieldAdapter adapter, final XlsMapperConfig config) 
+            throws TypeBindException {
         
-        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
+        Optional<XlsNumberConverter> converterAnno = adapter.getAnnotation(XlsNumberConverter.class);
         
-        final XlsNumberConverter anno = adapter.getAnnotation(XlsNumberConverter.class)
-                .orElseGet(() -> getDefaultNumberConverterAnnotation());
+        final String excelPattern = converterAnno.map(a -> a.excelPattern()).orElse("");
         
-        final Optional<XlsFormula> formulaAnno = adapter.getAnnotation(XlsFormula.class);
-        final boolean primaryFormula = formulaAnno.map(a -> a.primary()).orElse(false);
-        
-        final Cell cell = POIUtils.getCell(sheet, column, row);
-        
-        // セルの書式設定
-        ConversionUtils.setupCellOption(cell, adapter.getAnnotation(XlsCellOption.class));
-        
-        Number value = targetValue;
-        
-        // デフォルト値から値を設定する
-        if(value == null && defaultValueAnno.isPresent()) {
-            final String defaultValue = defaultValueAnno.get().value();
-            final NumberFormat formatter;
-            final MathContext context;
-            
-            if(Utils.isNotEmpty(anno.javaPattern())) {
-                formatter = createNumberFormat(anno);
-                context = createMathContext(anno);
-            } else {
-                formatter = createNumberFormat(getDefaultNumberConverterAnnotation());
-                context = createMathContext(getDefaultNumberConverterAnnotation());
-            }
-            
-            try {
-                value = parseNumber(defaultValue, formatter, context);
-            } catch (ParseException e) {
-                throw newTypeBindException(e, cell, adapter, defaultValue)
-                    .addAllMessageVars(createTypeErrorMessageVars(anno));
-            }
-            
-        }
-        
-        // セルの書式の設定
-        if(Utils.isNotEmpty(anno.excelPattern()) && !POIUtils.getCellFormatPattern(cell).equalsIgnoreCase(anno.excelPattern())) {
-            
-            // 既にCell中に書式が設定され、それが異なる場合
-            CellStyle style = sheet.getWorkbook().createCellStyle();
+        // 現在設定されている書式が異なる場合、変更する。
+        if(!excelPattern.isEmpty() && !POIUtils.getCellFormatPattern(cell).equalsIgnoreCase(excelPattern)) {
+            CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
             style.cloneStyleFrom(cell.getCellStyle());
-            style.setDataFormat(POIUtils.getDataFormatIndex(sheet, anno.excelPattern()));
+            style.setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), excelPattern));
             cell.setCellStyle(style);
-            
         }
         
-        if(value != null && !primaryFormula) {
-            cell.setCellValue(value.doubleValue());
-            
-        } else if(formulaAnno.isPresent()) {
-            Utils.setupCellFormula(adapter, formulaAnno.get(), config, cell, targetBean);
+        if(cellValue.isPresent()) {
+            cell.setCellValue(cellValue.get().doubleValue());
             
         } else {
-            cell.setCellType(Cell.CELL_TYPE_BLANK);
+            cell.setCellType(CellType.BLANK);
         }
-        
-        return cell;
         
     }
     

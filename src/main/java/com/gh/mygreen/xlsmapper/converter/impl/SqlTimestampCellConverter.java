@@ -15,7 +15,7 @@ import java.util.Date;
 public class SqlTimestampCellConverter extends AbstractDateCellConverter<Timestamp> {
     
     @Override
-    protected Timestamp convertDate(Date value) {
+    protected Timestamp convertTypeValue(Date value) {
         
         return new Timestamp(value.getTime());
     }

@@ -2,6 +2,8 @@ package com.gh.mygreen.xlsmapper.util;
 
 import java.awt.Point;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,11 +11,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.poi.hssf.model.InternalSheet;
+import org.apache.poi.hssf.model.InternalWorkbook;
 import org.apache.poi.hssf.record.DVRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.record.aggregates.DataValidityTable;
 import org.apache.poi.hssf.record.aggregates.RecordAggregate.RecordVisitor;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
@@ -28,9 +32,12 @@ import org.apache.poi.ss.util.CellRangeAddressBase;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDataValidation;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDataValidations;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.CellFormatter;
 import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
@@ -41,11 +48,13 @@ import com.github.mygreen.cellformatter.POICell;
 /**
  * Apache POIとJExcel APIの差を埋めるユーティリティクラス。
  * 
- * @version 1.6
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
 public class POIUtils {
+    
+    private static final Logger logger = LoggerFactory.getLogger(POIUtils.class);
     
     /** 標準のセルフォーマッター */
     private static CellFormatter defaultCellFormatter = new DefaultCellFormatter();
@@ -885,6 +894,53 @@ public class POIUtils {
                 my.getFirstColumn() <= other.getLastColumn() &&
                 other.getFirstRow() <= my.getLastRow() &&
                 other.getFirstColumn() <= my.getLastColumn();
+    }
+    
+    /**
+     * 日時の開始日が1904年かどうか。
+     * 通常は、1900年始まり。
+     * @param workbook ワークブック
+     * @return trueの場合は、1904年始まり。falseの場合は、1900年始まり。
+     */
+    public static boolean isDateStart1904(final Workbook workbook) {
+        
+        if(workbook instanceof HSSFWorkbook) {
+            try {
+                Method method = HSSFWorkbook.class.getDeclaredMethod("getWorkbook");
+                method.setAccessible(true);
+                
+                InternalWorkbook iw = (InternalWorkbook) method.invoke(workbook);
+                return iw.isUsing1904DateWindowing();
+                
+            } catch(NoSuchMethodException | SecurityException e) {
+                logger.warn("fail access method HSSFWorkbook.getWorkbook.", e);
+                return false;
+            } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                logger.warn("fail invoke method HSSFWorkbook.getWorkbook.", e);
+                return false;
+            }
+            
+        } else if(workbook instanceof XSSFWorkbook) {
+            try {
+                Method method = XSSFWorkbook.class.getDeclaredMethod("isDate1904");
+                method.setAccessible(true);
+                
+                boolean value = (boolean) method.invoke(workbook);
+                return value;
+                
+            } catch(NoSuchMethodException | SecurityException e) {
+                logger.warn("fail access method XSSFWorkbook.isDate1904.", e);
+                return false;
+            } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                logger.warn("fail invoke method XSSFWorkbook.isDate1904.", e);
+                return false;
+            }
+            
+        } else {
+            logger.warn("unknown workbook type.", workbook.getClass().getName());
+        }
+        
+        return false;
     }
     
 }

@@ -1803,13 +1803,13 @@ public class Utils {
     
     /**
      * アノテーションの属性trimに従い、文字列をトリムする。
-     * @param value
-     * @param trimAnno
-     * @return
+     * @param value トリム対象の文字
+     * @param trimAnno トリムのアノテーション
+     * @return トリミングした結果。
      */
     public static String trim(final String value, final Optional<XlsTrim> trimAnno) {
         
-        if(!trimAnno.isPresent()|| value == null) {
+        if(!trimAnno.isPresent() || value == null) {
             return value;
         }
         

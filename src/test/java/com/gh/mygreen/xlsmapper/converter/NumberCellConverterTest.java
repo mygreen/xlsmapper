@@ -25,7 +25,6 @@ import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
@@ -496,7 +495,7 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 5) {
             // 小数
-            assertThat(record.bd, is(new BigDecimal(Double.parseDouble("12.345"), new MathContext(15))));
+            assertThat(record.bd, is(new BigDecimal(Double.parseDouble("12.345"))));
             assertThat(record.bi, is(new BigInteger("12")));
             
         } else if(record.no == 6) {
@@ -633,7 +632,7 @@ public class NumberCellConverterTest {
             assertThat(record.l, is((long)12l));
             assertThat(record.f, is((float)152.2756f));
             assertThat(record.d, is((double)152.2756d));
-            assertThat(record.bd, is(new BigDecimal(152.2756d, new MathContext(15, RoundingMode.HALF_UP))));
+            assertThat(record.bd, is(new BigDecimal(152.2756d)));
             assertThat(record.bi, is(new BigInteger("12")));
             
         } else if(record.no == 3) {
@@ -643,8 +642,8 @@ public class NumberCellConverterTest {
             assertThat(record.i, is((int)-4));
             assertThat(record.l, is((long)-4l));
             assertThat(record.f, is((float)11.9025f));
-            assertThat(record.d, is((double)11.9025d));
-            assertThat(record.bd, is(new BigDecimal(11.9025d, new MathContext(15, RoundingMode.HALF_UP))));
+            assertThat(record.d, is(3.45d*3.45d));
+            assertThat(record.bd, is(new BigDecimal(3.45d*3.45d)));
             assertThat(record.bi, is(new BigInteger("-4")));
             
         } else {
@@ -975,7 +974,7 @@ public class NumberCellConverterTest {
             
         } else {
             assertThat(inRecord.no, is(outRecord.no));
-            assertThat(inRecord.bd, is(outRecord.bd));
+            assertThat(inRecord.bd, is(new BigDecimal(outRecord.bd.doubleValue())));
             assertThat(inRecord.bi, is(outRecord.bi));
             assertThat(inRecord.comment, is(outRecord.comment));
             
@@ -1046,7 +1045,7 @@ public class NumberCellConverterTest {
             assertThat(inRecord.l, is((long)12l));
             assertThat(inRecord.f, is((float)152.2756f));
             assertThat(inRecord.d, is((double)152.2756d));
-            assertThat(inRecord.bd, is(new BigDecimal(152.2756d, new MathContext(15, RoundingMode.HALF_UP))));
+            assertThat(inRecord.bd, is(new BigDecimal(12.34d*12.34d)));
             assertThat(inRecord.bi, is(new BigInteger("12")));
             
         } else if(inRecord.no == 3) {
@@ -1055,8 +1054,8 @@ public class NumberCellConverterTest {
             assertThat(inRecord.i, is((int)-4));
             assertThat(inRecord.l, is((long)-4l));
             assertThat(inRecord.f, is((float)11.9025f));
-            assertThat(inRecord.d, is((double)11.9025d));
-            assertThat(inRecord.bd, is(new BigDecimal(11.9025d, new MathContext(15, RoundingMode.HALF_UP))));
+            assertThat(inRecord.d, is((double)3.45d*3.45d));
+            assertThat(inRecord.bd, is(new BigDecimal(3.45d*3.45d)));
             assertThat(inRecord.bi, is(new BigInteger("-4")));
             
         } else {

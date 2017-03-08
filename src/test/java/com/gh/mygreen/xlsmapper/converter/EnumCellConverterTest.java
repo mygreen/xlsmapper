@@ -21,7 +21,6 @@ import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsEnumConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;

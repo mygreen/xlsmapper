@@ -25,7 +25,6 @@ import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
@@ -517,8 +516,6 @@ public class DateTimeCellConverterTest {
     
     /**
      * 日時型 - 初期値、書式
-     *
-     * @author T.TSUCHIE
      *
      */
     private static class FormattedRecord {

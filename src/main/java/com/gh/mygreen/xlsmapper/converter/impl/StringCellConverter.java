@@ -3,19 +3,13 @@ package com.gh.mygreen.xlsmapper.converter.impl;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
-import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
-import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
-import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.AbstractCellConverter;
+import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
-import com.gh.mygreen.xlsmapper.util.ConversionUtils;
-import com.gh.mygreen.xlsmapper.util.POIUtils;
-import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
@@ -28,62 +22,35 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 public class StringCellConverter extends AbstractCellConverter<String> {
 
     @Override
-    public String toObject(final Cell cell, final FieldAdapter adapter, final XlsMapperConfig config) {
+    protected String parseDefaultValue(final String strValue, final FieldAdapter adapter,
+            final XlsMapperConfig config) throws TypeBindException {
         
-        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
-        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
-        
-        String resultValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-        resultValue = Utils.trim(resultValue, adapter.getAnnotation(XlsTrim.class));
-        
-        if(resultValue.isEmpty()) {
-            if(defaultValueAnno.isPresent()) {
-                resultValue = defaultValueAnno.get().value();
-                
-            } else if(trimAnno.isPresent()) {
-                // trimが有効な場合、空文字を設定する。
-                resultValue = "";
-                
-            } else {
-                resultValue = null;
-            }
-        }
-        
-        return resultValue;
+        return strValue;
     }
     
     @Override
-    public Cell toCell(final FieldAdapter adapter, final String targetValue, final Object targetBean,
-            final Sheet sheet, final int column, final int row,
-            final XlsMapperConfig config) throws XlsMapperException {
+    protected String parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAdapter adapter,
+            final XlsMapperConfig config) throws TypeBindException {
         
-        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
-        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
-        
-        final Optional<XlsFormula> formulaAnno = adapter.getAnnotation(XlsFormula.class);
-        final boolean primaryFormula =formulaAnno.map(a -> a.primary()).orElse(false);
-        
-        final Cell cell = POIUtils.getCell(sheet, column, row);
-        
-        // セルの書式設定
-        ConversionUtils.setupCellOption(cell, adapter.getAnnotation(XlsCellOption.class));
-        
-        String value = targetValue;
-        
-        value = Utils.trim(value, trimAnno);
-        value = Utils.getDefaultValueIfEmpty(value, defaultValueAnno);
-        
-        if(Utils.isNotEmpty(value) && !primaryFormula) {
-            cell.setCellValue(value);
-            
-        } else if(formulaAnno.isPresent()) {
-            Utils.setupCellFormula(adapter, formulaAnno.get(), config, cell, targetBean);
-            
-        } else {
-            cell.setCellType(Cell.CELL_TYPE_BLANK);
+        if(formattedValue.isEmpty() && !adapter.hasAnnotation(XlsTrim.class)) {
+            // トリムを行わない場合は、空文字をnullに補完する。
+            return null;
         }
         
-        return cell;
+        return formattedValue;
+    }
+    
+    @Override
+    protected void setupCell(final Cell cell, final Optional<String> cellValue, final FieldAdapter adapter,
+            final XlsMapperConfig config) throws TypeBindException {
+        
+        if(cellValue.isPresent() && !cellValue.get().isEmpty()) {
+            cell.setCellValue(cellValue.get());
+            
+        } else {
+            cell.setCellType(CellType.BLANK);
+        }
+        
     }
     
 }

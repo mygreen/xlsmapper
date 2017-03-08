@@ -14,7 +14,7 @@ import java.util.Date;
 public class SqlDateCellConverter extends AbstractDateCellConverter<java.sql.Date> {
     
     @Override
-    protected java.sql.Date convertDate(Date value) {
+    protected java.sql.Date convertTypeValue(Date value) {
         return new java.sql.Date(value.getTime());
     }
     

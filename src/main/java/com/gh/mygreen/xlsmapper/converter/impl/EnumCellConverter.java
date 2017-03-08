@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper.converter.impl;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,20 +13,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
-import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
-import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsEnumConverter;
-import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
-import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.converter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.converter.ConversionException;
+import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
-import com.gh.mygreen.xlsmapper.util.ConversionUtils;
-import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 
@@ -42,6 +35,8 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 @SuppressWarnings("rawtypes")
 public class EnumCellConverter extends AbstractCellConverter<Enum> {
     
+    //TODO: キャッシュは、FieldAdapterのgetNameWithClassをキーとする。
+    
     /**
      * 列挙科型のクラスとその値とのマップ。(キャッシュデータ)
      * <p>key=列挙型のクラスタイプ、value=列挙型の各項目の文字列形式とオブジェクト形式の値のマップ。
@@ -52,92 +47,92 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
         this.cacheData =  new ConcurrentHashMap<Class<?>, Map<String,Enum>>();
     }
     
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     @Override
-    public Enum<?> toObject(final Cell cell, final FieldAdapter adapter, final XlsMapperConfig config) throws XlsMapperException {
+    protected Enum<?> parseDefaultValue(final String defaultValue, final FieldAdapter adapter, final XlsMapperConfig config) 
+            throws TypeBindException {
         
-        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
-        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
-        
-        final XlsEnumConverter anno = adapter.getAnnotation(XlsEnumConverter.class)
-                .orElseGet(() -> getDefaultEnumConverterAnnotation());
-        
-        String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());
-        cellValue = Utils.trim(cellValue, trimAnno);
-        if(Utils.isEmpty(cellValue) && !defaultValueAnno.isPresent()) {
-            return null;
-        }
-        cellValue = Utils.getDefaultValueIfEmpty(cellValue, defaultValueAnno);
+        final Optional<XlsEnumConverter> convertAnno = adapter.getAnnotation(XlsEnumConverter.class);
         
         final Class<Enum> taretClass = (Class<Enum>) adapter.getType();
-        Enum<?> resultValue = convertToObject(cellValue, taretClass, anno);
-        if(resultValue == null && Utils.isNotEmpty(cellValue)) {
-            // 値があり変換できない場合
-            throw newTypeBindException(cell, adapter, cellValue)
-                .addAllMessageVars(createTypeErrorMessageVars(taretClass, anno));
+        try {
+            Enum<?> value = convertToObject(defaultValue, taretClass, convertAnno);
+            return value;
+            
+        } catch(ConversionException e) {
+            throw newTypeBindExceptionWithDefaultValue(e, adapter, defaultValue)
+                .addAllMessageVars(createTypeErrorMessageVars(taretClass, convertAnno));
         }
         
-        return resultValue;
     }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Enum parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAdapter adapter,
+            final XlsMapperConfig config) throws TypeBindException {
+        
+        if(!formattedValue.isEmpty()) {
+            
+            final Optional<XlsEnumConverter> convertAnno = adapter.getAnnotation(XlsEnumConverter.class);
+            
+            final Class<Enum> taretClass = (Class<Enum>) adapter.getType();
+            try {
+                Enum<?> value = convertToObject(formattedValue, taretClass, convertAnno);
+                return value;
+                
+            } catch(ConversionException e) {
+                throw newTypeBindExceptionWithParse(e, evaluatedCell, adapter, formattedValue)
+                    .addAllMessageVars(createTypeErrorMessageVars(taretClass, convertAnno));
+            }
+            
+        }
+        
+        return null;
+        
+    }
+    
     
     /**
      * 型変換エラー時のメッセージ変数の作成
      * @throws ConversionException 
      */
-    private Map<String, Object> createTypeErrorMessageVars(final Class<Enum> taretClass, final XlsEnumConverter anno) throws ConversionException {
+    private Map<String, Object> createTypeErrorMessageVars(final Class<Enum> taretClass, final Optional<XlsEnumConverter> convertAnno) 
+            throws ConversionException {
+        
+        final String valueMethodName = convertAnno.map(a -> a.valueMethodName()).orElse("");
+        final boolean ignoreCase = convertAnno.map(a -> a.ignoreCase()).orElse(false);
         
         final Map<String, Object> vars = new LinkedHashMap<>();
-        vars.put("candidateValues", Utils.join(getLoadingAvailableValue(taretClass, anno), ", "));
-        vars.put("ignoreCase", anno.ignoreCase());
+        vars.put("candidateValues", Utils.join(getLoadingAvailableValue(taretClass, valueMethodName), ", "));
+        vars.put("ignoreCase", ignoreCase);
         
         return vars;
-    }
-    
-    private XlsEnumConverter getDefaultEnumConverterAnnotation() {
-        return new XlsEnumConverter() {
-            
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return XlsEnumConverter.class;
-            }
-            
-            @Override
-            public boolean ignoreCase() {
-                return false;
-            }
-            
-            @Override
-            public String valueMethodName() {
-                return "";
-            }
-            
-        };
     }
     
     /**
      * 読み込み時の入力の候補となる値を取得する
      * @param clazz 列挙型の値
-     * @param anno
+     * @param valueMethodName
      * @return
      * @throws ConversionException 
      */
-    private Collection<String> getLoadingAvailableValue(final Class<Enum> clazz, final XlsEnumConverter anno) throws ConversionException {
+    private Collection<String> getLoadingAvailableValue(final Class<Enum> clazz, final String valueMethodName) throws ConversionException {
         
         final Set<String> values = new LinkedHashSet<String>();
         
         final Map<String, Enum> map = getEnumValueMapFromCache(clazz);
         for(Map.Entry<String, Enum> entry : map.entrySet()) {
-            if(anno.valueMethodName().isEmpty()) {
+            if(valueMethodName.isEmpty()) {
                 values.add(entry.getKey());
             } else {
                 try {
-                    final Method method = clazz.getMethod(anno.valueMethodName(), new Class[]{});
+                    final Method method = clazz.getMethod(valueMethodName, new Class[]{});
                     method.setAccessible(true);
                     final String value = method.invoke(entry.getValue(), new Object[]{}).toString();
                     values.add(value);
                 } catch(Exception e) {
                     throw new ConversionException(
-                            String.format("Not found Enum method '%s#%s()'.", clazz.getName(), anno.valueMethodName()),
+                            String.format("Not found Enum method '%s#%s()'.", clazz.getName(), valueMethodName),
                             e, clazz);
                 }
             }
@@ -184,27 +179,31 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
         return Collections.unmodifiableMap(map);
     }
     
-    private Enum<?> convertToObject(final String value, final Class<Enum> clazz, final XlsEnumConverter anno) throws ConversionException {
+    private Enum<?> convertToObject(final String value, final Class<Enum> clazz, final Optional<XlsEnumConverter> convertAnno)
+            throws ConversionException {
+        
+        final String valueMethodName = convertAnno.map(a -> a.valueMethodName()).orElse("");
+        final boolean ignoreCase = convertAnno.map(a -> a.ignoreCase()).orElse(false);
         
         final Map<String, Enum> map = getEnumValueMapFromCache(clazz);
         for(Map.Entry<String, Enum> entry : map.entrySet()) {
             
             final String key;
-            if(anno.valueMethodName().isEmpty()) {
+            if(valueMethodName.isEmpty()) {
                 key = entry.getKey();
             } else {
                 try {
-                    final Method method = clazz.getMethod(anno.valueMethodName(), new Class[]{});
+                    final Method method = clazz.getMethod(valueMethodName, new Class[]{});
                     method.setAccessible(true);
                     key = method.invoke(entry.getValue(), new Object[]{}).toString();
                 } catch(Exception e) {
                     throw new ConversionException(
-                            String.format("Not found Enum method '%s#%s()'.", clazz.getName(), anno.valueMethodName()),
+                            String.format("Not found Enum method '%s#%s()'.", clazz.getName(), valueMethodName),
                             e, clazz);
                 }
             }
             
-            if(anno.ignoreCase() && value.equalsIgnoreCase(key)) {
+            if(ignoreCase && value.equalsIgnoreCase(key)) {
                 return entry.getValue();
                 
             } else if(value.equals(key)) {
@@ -212,11 +211,14 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
             }
         }
         
-        return null;
+        throw new ConversionException(String.format("fail parse '%s' => %s.", value, clazz.getName()), clazz);
         
     }
     
-    private String convertToString(final Enum<?> value, final Class<Enum> clazz, final XlsEnumConverter anno) throws ConversionException {
+    private String convertToString(final Enum<?> value, final Class<Enum> clazz, final Optional<XlsEnumConverter> convertAnno)
+            throws ConversionException {
+        
+        final String valueMethodName = convertAnno.map(a -> a.valueMethodName()).orElse("");
         
         final Map<String, Enum> map = getEnumValueMapFromCache(clazz);
         for(Map.Entry<String, Enum> entry : map.entrySet()) {
@@ -225,69 +227,42 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
                 continue;
             }
             
-            if(anno.valueMethodName().isEmpty()) {
+            if(valueMethodName.isEmpty()) {
                 return value.name();
             } else {
                 try {
-                    final Method method = clazz.getMethod(anno.valueMethodName(), new Class[]{});
+                    final Method method = clazz.getMethod(valueMethodName, new Class[]{});
                     method.setAccessible(true);
                     return method.invoke(entry.getValue(), new Object[]{}).toString();
                 } catch(Exception e) {
                     throw new ConversionException(
-                            String.format("Not found Enum method '%s#%s()'.", clazz.getName(), anno.valueMethodName()),
+                            String.format("Not found Enum method '%s#%s()'.", clazz.getName(), valueMethodName),
                             e, clazz);
                 }
             }
         }
         
-        return null;
+        throw new ConversionException(String.format("fail format '%s'.", value.name()), clazz);
         
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public Cell toCell(final FieldAdapter adapter, final Enum targetValue, final Object targetBean,
-            final Sheet sheet, final int column, final int row, final XlsMapperConfig config) throws XlsMapperException {
+    protected void setupCell(final Cell cell, final Optional<Enum> cellValue, final FieldAdapter adapter, final XlsMapperConfig config)
+            throws TypeBindException {
         
-        final Optional<XlsDefaultValue> defaultValueAnno = adapter.getAnnotation(XlsDefaultValue.class);
-        final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
-        
-        final XlsEnumConverter anno = adapter.getAnnotation(XlsEnumConverter.class)
-                .orElseGet(() -> getDefaultEnumConverterAnnotation());
-        
-        final Optional<XlsFormula> formulaAnno = adapter.getAnnotation(XlsFormula.class);
-        final boolean primaryFormula = formulaAnno.map(a -> a.primary()).orElse(false);
+        final Optional<XlsEnumConverter> convertAnno = adapter.getAnnotation(XlsEnumConverter.class);
         
         final Class<Enum> taretClass = (Class<Enum>) adapter.getType();
-        final Cell cell = POIUtils.getCell(sheet, column, row);
         
-        // セルの書式設定
-        ConversionUtils.setupCellOption(cell, adapter.getAnnotation(XlsCellOption.class));
-        
-        Enum value = targetValue;
-        
-        // デフォルト値から値を設定する
-        if(value == null && defaultValueAnno.isPresent()) {
-            value = convertToObject(defaultValueAnno.get().value(), (Class<Enum>) adapter.getType(), anno);
-            
-            // 初期値が設定されているが、変換できないような時はエラーとする
-            if(value == null) {
-                throw newTypeBindException(cell, adapter, defaultValueAnno.get().value())
-                        .addAllMessageVars(createTypeErrorMessageVars(taretClass, anno));
-            }
-        }
-        
-        if(value != null && !primaryFormula) {
-            final String cellValue = convertToString(value, (Class<Enum>) adapter.getType(), anno);
-            cell.setCellValue(cellValue);
-            
-        } else if(formulaAnno.isPresent()) {
-            Utils.setupCellFormula(adapter, formulaAnno.get(), config, cell, targetBean);
+        if(cellValue.isPresent()) {
+            final String value = convertToString(cellValue.get(), taretClass, convertAnno);
+            cell.setCellValue(value);
             
         } else {
-            cell.setCellType(Cell.CELL_TYPE_BLANK);
+            cell.setCellType(CellType.BLANK);
         }
         
-        return cell;
     }
     
 }

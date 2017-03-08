@@ -1,8 +1,10 @@
 package com.gh.mygreen.xlsmapper.converter.impl;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -24,27 +26,27 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
- * 日時型のConverterの抽象クラス。
- * <p>{@link Date}を継承している<code>javax.sql.Time/Date/Timestamp</code>はこのクラスを継承して作成します。</p>
+ * JSR-310 'Date and Time API' の{@link TemporalAccessor}のテンプレートクラス。
+ * <p>基本的に、{@link TemporalAccessor}のサブクラスのビルダは、このクラスを継承して作成する。</p>
  * 
- * @version 2.0
+ * @since 2.0
  * @author T.TSUCHIE
  *
  */
-public abstract class AbstractDateCellConverter<T extends Date> extends AbstractCellConverter<T> {
+public abstract class AbstractTemporalCellConverter<T extends TemporalAccessor & Comparable<? super T>> extends AbstractCellConverter<T> {
     
     @Override
     protected T parseDefaultValue(final String defaultValue, final FieldAdapter adapter, final XlsMapperConfig config) 
             throws TypeBindException {
         
         final Optional<XlsDateConverter> convertAnno = adapter.getAnnotation(XlsDateConverter.class);
-        final DateFormat formatter = createFormatter(convertAnno);
+        final DateTimeFormatter formatter = createFormatter(convertAnno);
         
         try {
-            Date value = formatter.parse(defaultValue);
-            return convertTypeValue(value);
             
-        } catch(ParseException e) {
+            return parseTemporal(defaultValue, formatter);
+            
+        } catch(DateTimeParseException e) {
             throw newTypeBindExceptionWithDefaultValue(e, adapter, defaultValue)
                 .addAllMessageVars(createTypeErrorMessageVars(convertAnno));
         }
@@ -56,17 +58,16 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
             throws TypeBindException {
         
         if(evaluatedCell.getCellTypeEnum() == CellType.NUMERIC) {
-            return convertTypeValue(evaluatedCell.getDateCellValue());
+            return convertFromDate(evaluatedCell.getDateCellValue());
             
         } else if(!formattedValue.isEmpty()) {
             
             final Optional<XlsDateConverter> convertAnno = adapter.getAnnotation(XlsDateConverter.class);
-            final DateFormat formatter = createFormatter(convertAnno);
+            final DateTimeFormatter formatter = createFormatter(convertAnno);
             try {
-                Date value = formatter.parse(formattedValue);
-                return convertTypeValue(value);
+                return parseTemporal(formattedValue, formatter);
                 
-            } catch (ParseException e) {
+            } catch (DateTimeParseException e) {
                 
                 throw newTypeBindExceptionWithParse(e, evaluatedCell, adapter, formattedValue)
                     .addAllMessageVars(createTypeErrorMessageVars(convertAnno));
@@ -77,6 +78,30 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         
         return null;
     }
+    
+    /**
+     * 文字列を解析してJavaオブジェクトに変換します。
+     * @param str 解析対象の文字列
+     * @param formatter フォーマッタ
+     * @return パースした結果
+     * @throws DateTimeParseException パースに失敗した場合
+     */
+    protected abstract T parseTemporal(String str, DateTimeFormatter formatter) throws DateTimeParseException;
+    
+    /**
+     * 日時型から各タイプに変換する。
+     * @param date 日時型
+     * @return 変換した値
+     */
+    protected abstract T convertFromDate(Date date);
+    
+    /**
+     * 日時型に変換する。
+     * @param value 変換対象の値
+     * @param dateStart1904 1904年始まりのシートかどうか
+     * @return 変換した値
+     */
+    protected abstract Date convertToDate(T value, boolean dateStart1904);
     
     @Override
     protected void setupCell(final Cell cell, final Optional<T> cellValue, final FieldAdapter adapter, final XlsMapperConfig config) 
@@ -98,42 +123,14 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         }
         
         if(cellValue.isPresent()) {
-            cell.setCellValue(cellValue.get());
+            boolean isStartDate1904 = POIUtils.isDateStart1904(cell.getSheet().getWorkbook());
+            Date date = convertToDate(cellValue.get(), isStartDate1904);
+            cell.setCellValue(date);
             
         } else {
             cell.setCellType(CellType.BLANK);
         }
         
-    }
-    
-    /**
-     * アノテーションを元にフォーマッタを作成する。
-     * @param converterAnno 変換用のアノテーション。
-     * @return フォーマッタ
-     */
-    protected DateFormat createFormatter(final Optional<XlsDateConverter> converterAnno) {
-        
-        final boolean lenient = converterAnno.map(a -> a.lenient()).orElse(false);
-        if(!converterAnno.isPresent()) {
-            SimpleDateFormat formatter = new SimpleDateFormat(getDefaultJavaPattern());
-            formatter.setLenient(lenient);
-            return formatter;
-        }
-        
-        String pattern = converterAnno.get().javaPattern();
-        if(pattern.isEmpty()) {
-            pattern = getDefaultJavaPattern();
-        }
-        
-        final Locale locale = Utils.getLocale(converterAnno.get().locale());
-        final TimeZone timeZone = converterAnno.get().timezone().isEmpty() ? TimeZone.getDefault()
-                : TimeZone.getTimeZone(converterAnno.get().timezone());
-        
-        final SimpleDateFormat formatter = new SimpleDateFormat(pattern, locale);
-        formatter.setLenient(lenient);
-        formatter.setTimeZone(timeZone);
-        
-        return formatter;
     }
     
     /**
@@ -157,25 +154,45 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     }
     
     /**
-     * その型における型に変換する
-     * @param value 変換対象の値
-     * @return 変換後の値
-     */
-    protected abstract T convertTypeValue(final Date value);
-    
-    /**
      * その型における標準のJavaの書式を返す。
-     * @since 0.5
-     * @return {@link SimpleDateFormat}で処理可能な形式。
+     * @return {@link DateTimeFormatter}で処理可能な形式。
      */
     protected abstract String getDefaultJavaPattern();
     
     /**
      * その型における標準のExcelの書式を返す。
-     * @since 1.1
      * @return Excelの書式
      */
     protected abstract String getDefaultExcelPattern();
+    
+    /**
+     * アノテーションを元にフォーマッタを作成する。
+     * @param converterAnno 変換用のアノテーション。
+     * @return フォーマッタ
+     */
+    protected DateTimeFormatter createFormatter(final Optional<XlsDateConverter> converterAnno) {
+        
+        final boolean lenient = converterAnno.map(a -> a.lenient()).orElse(false);
+        final ResolverStyle style = lenient ? ResolverStyle.LENIENT : ResolverStyle.STRICT;
+        if(!converterAnno.isPresent()) {
+            return DateTimeFormatter.ofPattern(getDefaultJavaPattern())
+                    .withResolverStyle(style);
+        }
+        
+        String pattern = converterAnno.get().javaPattern();
+        if(pattern.isEmpty()) {
+            pattern = getDefaultJavaPattern();
+        }
+        
+        final Locale locale = Utils.getLocale(converterAnno.get().locale());
+        final ZoneId zone = converterAnno.get().timezone().isEmpty() ? ZoneId.systemDefault()
+                : TimeZone.getTimeZone(converterAnno.get().timezone()).toZoneId();
+        
+        return DateTimeFormatter.ofPattern(pattern, locale)
+                .withResolverStyle(style)
+                .withZone(zone);
+        
+    }
     
     
 }

@@ -14,7 +14,7 @@ import java.util.Date;
 public class DateCellConverter extends AbstractDateCellConverter<Date> {
 
     @Override
-    protected Date convertDate(Date value) {
+    protected Date convertTypeValue(Date value) {
         return value;
     }
     

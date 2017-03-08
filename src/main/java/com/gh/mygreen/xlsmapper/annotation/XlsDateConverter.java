@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 
 /**
@@ -94,6 +95,16 @@ public @interface XlsDateConverter {
      * @return
      */
     String locale() default "";
+    
+    /**
+     * タイムゾーンを指定します。
+     * <p>{@link TimeZone#getTimeZone(String)}で解釈可能な値を指定する必要があります。</p>
+     * <p>{@literal Asia/Tokyo, GMT, GMT+09:00}などの値を指定します。</p>
+     * <p>ただし、オフセットを持たないクラスタイプ{@literal LocalDateTime, LocalDate, LocalTime}の時は、指定しても意味がありません。</p>
+     * @since 2.0
+     * @return 省略した場合、システム標準の値を使用します。
+     */
+    String timezone() default "";
     
     /**
      * 書き込み時にセルの書式を直接設定したい場合に指定します。
