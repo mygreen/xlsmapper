@@ -29,9 +29,9 @@ import com.gh.mygreen.xlsmapper.converter.impl.EnumCellConverter;
 import com.gh.mygreen.xlsmapper.converter.impl.FloatCellConverter;
 import com.gh.mygreen.xlsmapper.converter.impl.IntegerCellConverter;
 import com.gh.mygreen.xlsmapper.converter.impl.ListCellConverter;
-import com.gh.mygreen.xlsmapper.converter.impl.LocalDateConverter;
-import com.gh.mygreen.xlsmapper.converter.impl.LocalDateTimeConverter;
-import com.gh.mygreen.xlsmapper.converter.impl.LocalTimeConverter;
+import com.gh.mygreen.xlsmapper.converter.impl.LocalDateCellConverter;
+import com.gh.mygreen.xlsmapper.converter.impl.LocalDateTimeCellConverter;
+import com.gh.mygreen.xlsmapper.converter.impl.LocalTimeCellConverter;
 import com.gh.mygreen.xlsmapper.converter.impl.LongCellConverter;
 import com.gh.mygreen.xlsmapper.converter.impl.SetCellConverter;
 import com.gh.mygreen.xlsmapper.converter.impl.ShortCellConverter;
@@ -121,9 +121,9 @@ public class CellConverterRegistry {
         registerConverter(URI.class, new URICellConverter());
         registerConverter(CellLink.class, new CellLinkCellConverter());
         
-        registerConverter(LocalDateTime.class, new LocalDateTimeConverter());
-        registerConverter(LocalDate.class, new LocalDateConverter());
-        registerConverter(LocalTime.class, new LocalTimeConverter());
+        registerConverter(LocalDateTime.class, new LocalDateTimeCellConverter());
+        registerConverter(LocalDate.class, new LocalDateCellConverter());
+        registerConverter(LocalTime.class, new LocalTimeCellConverter());
         
     }
     

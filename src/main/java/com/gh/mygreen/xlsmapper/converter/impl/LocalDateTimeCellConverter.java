@@ -14,7 +14,7 @@ import java.util.Date;
  * @author T.TSUCHIE
  *
  */
-public class LocalDateTimeConverter extends AbstractTemporalCellConverter<LocalDateTime> {
+public class LocalDateTimeCellConverter extends AbstractTemporalCellConverter<LocalDateTime> {
 
     @Override
     protected LocalDateTime parseTemporal(final String str, final DateTimeFormatter formatter) throws DateTimeParseException {
