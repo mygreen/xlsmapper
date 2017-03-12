@@ -46,7 +46,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         Utils.setPosition(info.position.x, info.position.y, beansObj, adaptor.getName());
         Utils.setLabel(info.label, beansObj, adaptor.getName());
         
-        final CellConverter<?> converter = getCellConverter(adaptor, config.getConverterRegistry(), config);
+        final CellConverter<?> converter = getCellConverter(adaptor, config);
         try {
             final Object value = converter.toObject(info.targetCell, adaptor, config);
             adaptor.setValue(beansObj, value);
@@ -197,7 +197,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         Utils.setPosition(info.position.x, info.position.y, targetObj, adaptor.getName());
         Utils.setLabel(info.label, targetObj, adaptor.getName());
         
-        final CellConverter converter = getCellConverter(adaptor, config.getConverterRegistry(), config);
+        final CellConverter converter = getCellConverter(adaptor, config);
         try {
             final Cell xlsCell = converter.toCell(adaptor, adaptor.getValue(targetObj), targetObj, sheet, info.position.x, info.position.y, config);
         } catch(TypeBindException e) {

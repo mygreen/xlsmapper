@@ -332,7 +332,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     // set for value
                     Utils.setPosition(valueCell.getColumnIndex(), valueCell.getRowIndex(), record, property.getName());
                     Utils.setLabel(headerInfo.getLabel(), record, property.getName());
-                    final CellConverter<?> converter = getCellConverter(property, config.getConverterRegistry(), config);
+                    final CellConverter<?> converter = getCellConverter(property, config);
                     try {
                         final Object value = converter.toObject(valueCell, property, config);
                         property.setValue(record, value);
@@ -525,7 +525,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             // get converter (map key class)
             final CellConverter<?> converter = config.getConverterRegistry().getConverter(itemClass);
             if(converter == null) {
-                throw newNotFoundConverterExpcetion(itemClass);
+                throw newNotFoundCellConverterExpcetion(itemClass);
             }
             
             boolean foundPreviousColumn = false;
@@ -1028,7 +1028,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         // set for cell value
                         Utils.setPosition(valueCell.getColumnIndex(), valueCell.getRowIndex(), record, property.getName());
                         Utils.setLabel(headerInfo.getLabel(), record, property.getName());
-                        final CellConverter converter = getCellConverter(property, config.getConverterRegistry(), config);
+                        final CellConverter converter = getCellConverter(property, config);
                         try {
                             converter.toCell(property, property.getValue(record), record, sheet, valueCell.getColumnIndex(), valueCell.getRowIndex(), config);
                         } catch(TypeBindException e) {
@@ -1260,7 +1260,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             // get converter (map key class)
             final CellConverter converter = config.getConverterRegistry().getConverter(itemClass);
             if(converter == null) {
-                throw newNotFoundConverterExpcetion(itemClass);
+                throw newNotFoundCellConverterExpcetion(itemClass);
             }
             
             boolean foundPreviousColumn = false;
