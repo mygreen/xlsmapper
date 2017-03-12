@@ -436,7 +436,7 @@ public class XlsLoader {
             method.setAccessible(true);
             
             for(Annotation anno : annoReader.getAnnotations(method)) {
-                final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);
+                final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
                 
                 if(processor != null && ClassUtils.isAccessorMethod(method)) {
                     final FieldAdapter adapter = adapterBuilder.of(method);
@@ -460,7 +460,7 @@ public class XlsLoader {
             final FieldAdapter adapter = adapterBuilder.of(field);
             
             for(Annotation anno : annoReader.getAnnotations(field)) {
-                final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno);
+                final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
                 
                 if(processor != null) {
                     

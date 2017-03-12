@@ -11,7 +11,7 @@ import com.gh.mygreen.xlsmapper.converter.DefaultItemConverter;
 import com.gh.mygreen.xlsmapper.converter.ItemConverter;
 import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
-import com.gh.mygreen.xlsmapper.processor.FieldProcessorRegstry;
+import com.gh.mygreen.xlsmapper.processor.FieldProcessorRegistry;
 import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
@@ -52,7 +52,7 @@ public class XlsMapperConfig {
     /** POIのセルの値のフォーマッター */
     private CellFormatter cellFormatter = new DefaultCellFormatter();
     
-    private FieldProcessorRegstry fieldProcessorRegistry = new FieldProcessorRegstry();
+    private FieldProcessorRegistry fieldProcessorRegistry = new FieldProcessorRegistry();
     
     private CellConverterRegistry converterRegistry = new CellConverterRegistry();
     
@@ -294,7 +294,7 @@ public class XlsMapperConfig {
      * アノテーションを処理するプロセッサの管理クラスを取得します。
      * @return
      */
-    public FieldProcessorRegstry getFieldProcessorRegistry() {
+    public FieldProcessorRegistry getFieldProcessorRegistry() {
         return fieldProcessorRegistry;
     }
     
@@ -302,7 +302,7 @@ public class XlsMapperConfig {
      * アノテーションを処理するプロセッサの管理クラスを設定します。
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setFieldProcessorRegistry(FieldProcessorRegstry fieldProcessorRegistry) {
+    public XlsMapperConfig setFieldProcessorRegistry(FieldProcessorRegistry fieldProcessorRegistry) {
         this.fieldProcessorRegistry = fieldProcessorRegistry;
         return this;
     }

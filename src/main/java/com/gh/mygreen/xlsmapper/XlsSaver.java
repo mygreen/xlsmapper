@@ -281,7 +281,7 @@ public class XlsSaver {
             
             for(Annotation anno : work.getAnnoReader().getAnnotations(method)) {
                 
-                final SavingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getSavingProcessor(anno);
+                final SavingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getSavingProcessor(anno.annotationType());
                 
                 if(processor != null && ClassUtils.isAccessorMethod(method)) {
                     final FieldAdapter adapter = adapterBuilder.of(method);
@@ -304,7 +304,7 @@ public class XlsSaver {
             final FieldAdapter adapter = adapterBuilder.of(field);
             
             for(Annotation anno : work.getAnnoReader().getAnnotations(field)) {
-                final SavingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getSavingProcessor(anno);
+                final SavingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getSavingProcessor(anno.annotationType());
                 
                 if(processor != null) {
                     final FieldAdapterProxy adapterProxy = new FieldAdapterProxy(anno, processor, adapter);

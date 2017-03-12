@@ -9,7 +9,7 @@ import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
 
 
 /**
- * Cellの値を変換するインタフェース。
+ * ExcelのCellの値とJavaオブジェクトを相互に変換するインタフェース。
  *
  * @version 1.5
  * @author T.TSUCHIE

@@ -13,7 +13,7 @@ import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
  * 各種アノテーションを処理するためのクラスの抽象クラス。
  * <p>通常はこのクラスを継承して作成します。</p>
  * 
- * @param <A> 処理対象のアノテーション
+ * @param <A> サポートするアノテーション
  * @version 2.0
  * @author T.TSUCHIE
  *
@@ -48,7 +48,7 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Lo
         
         if(adapter.hasAnnotation(XlsConverter.class)) {
             XlsConverter converterAnno = adapter.getAnnotation(XlsConverter.class).get();
-            converter = config.createBean(converterAnno.converter());
+            converter = config.createBean(converterAnno.converterClass());
             
         } else {
             converter = config.getConverterRegistry().getConverter(adapter.getType());
