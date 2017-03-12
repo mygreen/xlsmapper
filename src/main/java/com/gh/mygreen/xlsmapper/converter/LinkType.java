@@ -1,5 +1,6 @@
 package com.gh.mygreen.xlsmapper.converter;
 
+import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Hyperlink;
 
 /**
@@ -13,35 +14,35 @@ public enum LinkType {
     /**
      * ドキュメント形式。例：<code>Sheet0!A1</code>
      */
-    DOCUMENT(Hyperlink.LINK_DOCUMENT),
+    DOCUMENT(HyperlinkType.DOCUMENT),
     
     /**
      * メールアドレスの形式。例：<code>usr@example.jp</code>
      */
-    EMAIL(Hyperlink.LINK_EMAIL),
+    EMAIL(HyperlinkType.EMAIL),
     
     /**
      * ファイル形式のアドレス。例:<code>sample.xls</code>
      */
-    FILE(Hyperlink.LINK_FILE),
+    FILE(HyperlinkType.FILE),
     
     /**
      * URLの形式のアドレス。例:<code>sample.xls</code>
      */
-    URL(Hyperlink.LINK_URL),
+    URL(HyperlinkType.URL),
     
     /**
      * 不明な場合。
      */
-    UNKNOWN(-1),
+    UNKNOWN(HyperlinkType.NONE),
     ;
     
     /**
      * POIの形式のタイプ
      */
-    private final int poiType;
+    private final HyperlinkType poiType;
     
-    private LinkType(final int poiType) {
+    private LinkType(final HyperlinkType poiType) {
         this.poiType = poiType;
         
     }
@@ -50,7 +51,7 @@ public enum LinkType {
      * POIの{@link Hyperlink}のタイプ
      * @return
      */
-    public int poiType() {
+    public HyperlinkType poiType() {
         return this.poiType;
     }
     
@@ -59,7 +60,7 @@ public enum LinkType {
      * @param poiType POIのリンクタイプ。{@link Hyperlink}の<code>LINK_XXXX</code>の値。
      * @return 指定されたリンクのタイプを持つ{@link LinkType}の列挙型。不明な場合は、{@link #UNKNOWN}を返す。
      */
-    public LinkType valueOfPoiType(final int poiType) {
+    public LinkType valueOfPoiType(final HyperlinkType poiType) {
         
         if(poiType == DOCUMENT.poiType()) {
             return DOCUMENT;
