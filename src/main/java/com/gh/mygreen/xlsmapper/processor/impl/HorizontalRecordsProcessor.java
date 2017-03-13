@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper.processor.impl;
 
-import java.awt.Point;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -49,13 +48,13 @@ import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
 import com.gh.mygreen.xlsmapper.converter.CellConverter;
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.AbstractFieldProcessor;
-import com.gh.mygreen.xlsmapper.processor.CellAddress;
 import com.gh.mygreen.xlsmapper.processor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
 import com.gh.mygreen.xlsmapper.processor.MergedRecord;
 import com.gh.mygreen.xlsmapper.processor.NestMergedSizeException;
 import com.gh.mygreen.xlsmapper.processor.RecordHeader;
 import com.gh.mygreen.xlsmapper.processor.RecordsProcessorUtil;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
@@ -190,7 +189,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // データ行の開始位置の調整
         hRow += anno.headerBottom();
         
-        return loadRecords(sheet, headers, anno, new CellAddress(hRow, initColumn), 0, adaptor, recordClass, config, work);
+        return loadRecords(sheet, headers, anno, CellAddress.of(hRow, initColumn), 0, adaptor, recordClass, config, work);
         
     }
     
@@ -255,7 +254,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             final List<MergedRecord> mergedRecords = new ArrayList<>();
             
-            loadMapColumns(sheet, headers, mergedRecords, new CellAddress(hRow, initColumn), record, config, work);
+            loadMapColumns(sheet, headers, mergedRecords, CellAddress.of(hRow, initColumn), record, config, work);
             
             for(int i=0; i < headers.size() && hRow < POIUtils.getRows(sheet); i++){
                 final RecordHeader headerInfo = headers.get(i);
@@ -330,7 +329,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     }
                     
                     // set for value
-                    Utils.setPosition(valueCell.getColumnIndex(), valueCell.getRowIndex(), record, property.getName());
+                    Utils.setPosition(CellAddress.of(valueCell), record, property.getName());
                     Utils.setLabel(headerInfo.getLabel(), record, property.getName());
                     final CellConverter<?> converter = getCellConverter(property, config);
                     try {
@@ -347,7 +346,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             }
             
             // execute nested record
-            final int skipSize = loadNestedRecords(sheet, headers, mergedRecords, anno, new CellAddress(hRow, initColumn), record, config, work);
+            final int skipSize = loadNestedRecords(sheet, headers, mergedRecords, anno, CellAddress.of(hRow, initColumn), record, config, work);
             if(parentMergedSize > 0 && skipSize > 0 && (hRow + skipSize) > maxRow) {
                 // check over merged cell.
                 String message = String.format("Over merged size. In sheet '%s' with rowIndex=%d, over the rowIndex=%s.",
@@ -414,7 +413,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             final FieldAdapter adaptor, final XlsMapperConfig config) throws AnnotationInvalidException, CellNotFoundException {
         
         if(Utils.isNotEmpty(anno.headerAddress())) {
-            final Point address = Utils.parseCellAddress(anno.headerAddress());
+            final CellAddress address = Utils.parseCellAddress(anno.headerAddress());
             if(address == null) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
                         .var("property", adaptor.getNameWithClass())
@@ -425,7 +424,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
             }
             
-            return new CellAddress(address);
+            return address;
             
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
@@ -433,7 +432,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 int initColumn = labelCell.getColumnIndex();
                 int initRow = labelCell.getRowIndex() + anno.bottom();
                 
-                return new CellAddress(initRow, initColumn);
+                return CellAddress.of(initRow, initColumn);
                 
             } catch(CellNotFoundException ex) {
                 if(anno.optional()) {
@@ -466,7 +465,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
             }
             
-            return new CellAddress(anno.headerRow(), anno.headerColumn());
+            return CellAddress.of(anno.headerRow(), anno.headerColumn());
         }
         
     }
@@ -817,7 +816,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // データ行の開始位置の調整
         hRow += anno.headerBottom();
         
-        saveRecords(sheet, headers, anno, new CellAddress(hRow, initColumn), new AtomicInteger(0), adaptor, recordClass, result, config,
+        saveRecords(sheet, headers, anno, CellAddress.of(hRow, initColumn), new AtomicInteger(0), adaptor, recordClass, result, config,
                 work, mergedRanges, recordOperation, new ArrayList<Integer>());
         
         // 書き込むデータがない場合は、1行目の終端を操作範囲とする。
@@ -1023,14 +1022,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                             
                         }
                         
-                        valueCellPositions.add(new CellAddress(valueCell));
+                        valueCellPositions.add(CellAddress.of(valueCell));
                         
                         // set for cell value
-                        Utils.setPosition(valueCell.getColumnIndex(), valueCell.getRowIndex(), record, property.getName());
+                        Utils.setPosition(CellAddress.of(valueCell), record, property.getName());
                         Utils.setLabel(headerInfo.getLabel(), record, property.getName());
                         final CellConverter converter = getCellConverter(property, config);
                         try {
-                            converter.toCell(property, property.getValue(record), record, sheet, valueCell.getColumnIndex(), valueCell.getRowIndex(), config);
+                            converter.toCell(property, property.getValue(record), record, sheet, CellAddress.of(valueCell), config);
                         } catch(TypeBindException e) {
                             work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getLabel());
                             if(!config.isContinueTypeBindFailure()) {
@@ -1084,13 +1083,13 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             // マップ形式のカラムを出力する
             if(record != null) {
-                saveMapColumn(sheet, headers, valueCellPositions, new CellAddress(hRow, initColumn), record, terminal, anno, config, work, recordOperation);
+                saveMapColumn(sheet, headers, valueCellPositions, CellAddress.of(hRow, initColumn), record, terminal, anno, config, work, recordOperation);
             }
             
             // execute nested record.
             int skipSize = 0;
             if(record != null) {
-                skipSize = saveNestedRecords(sheet, headers, valueCellPositions, anno, new CellAddress(hRow, initColumn), record,
+                skipSize = saveNestedRecords(sheet, headers, valueCellPositions, anno, CellAddress.of(hRow, initColumn), record,
                         config, work, mergedRanges, recordOperation, inserteRowsIdx);
                 nestedRecordSize.addAndGet(skipSize);
             }
@@ -1316,14 +1315,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         }
                     }
                     
-                    valueCellPositions.add(new CellAddress(cell));
+                    valueCellPositions.add(CellAddress.of(cell));
                     
                     // セルの値を出力する
                     Utils.setPositionWithMapColumn(cell.getColumnIndex(), cell.getRowIndex(), record, property.getName(), headerInfo.getLabel());
                     Utils.setLabelWithMapColumn(headerInfo.getLabel(), record, property.getName(), headerInfo.getLabel());
                     try {
                         Object itemValue = property.getValueOfMap(headerInfo.getLabel(), record);
-                        converter.toCell(property, itemValue, record, sheet, cell.getColumnIndex(), cell.getRowIndex(), config);
+                        converter.toCell(property, itemValue, record, sheet, CellAddress.of(cell), config);
                         
                     } catch(TypeBindException e) {
                         

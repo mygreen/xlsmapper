@@ -104,7 +104,7 @@ public class ObjectValidatorTest {
         {
             String fieldName = "className";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.className));
@@ -116,7 +116,7 @@ public class ObjectValidatorTest {
                 PersonRecord record = sheet.list.get(1);
                 String fieldName = "email";
                 CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-                assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
+                assertThat(fieldError.getCellAddress().toPoint(), is(record.positions.get(fieldName)));
                 assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
                 assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.pattern"));
                 assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.email));
@@ -131,7 +131,7 @@ public class ObjectValidatorTest {
                 PersonRecord record = sheet.list.get(2);
                 String fieldName = "birthday";
                 CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-                assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
+                assertThat(fieldError.getCellAddress().toPoint(), is(record.positions.get(fieldName)));
                 assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
                 assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
                 assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.birthday));

@@ -132,7 +132,7 @@ public class SheetBeanValidatorTest {
         {
             String fieldName = "description";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Length"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.description));
@@ -143,7 +143,7 @@ public class SheetBeanValidatorTest {
         {
             String fieldName = "age";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Range"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.age));
@@ -154,7 +154,7 @@ public class SheetBeanValidatorTest {
         {
             String fieldName = "email";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.email));
@@ -221,7 +221,7 @@ public class SheetBeanValidatorTest {
         {
             String fieldName = "className";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("NotBlank"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.className));
@@ -232,7 +232,7 @@ public class SheetBeanValidatorTest {
             PersonRecord record = sheet.list.get(1);
             String fieldName = "email";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(record.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.email));
@@ -245,7 +245,7 @@ public class SheetBeanValidatorTest {
             PersonRecord record = sheet.list.get(2);
             String fieldName = "birthday";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(record.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Past"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.birthday));
@@ -297,7 +297,7 @@ public class SheetBeanValidatorTest {
         {
             String fieldName = "updateTime";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Past"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.updateTime));
@@ -306,7 +306,7 @@ public class SheetBeanValidatorTest {
         {
             String fieldName = "description";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Length"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.description));
@@ -317,7 +317,7 @@ public class SheetBeanValidatorTest {
         {
             String fieldName = "age";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Range"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.age));
@@ -328,7 +328,7 @@ public class SheetBeanValidatorTest {
         {
             String fieldName = "email";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.email));

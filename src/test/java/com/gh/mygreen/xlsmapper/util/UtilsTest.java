@@ -3,7 +3,6 @@ package com.gh.mygreen.xlsmapper.util;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.awt.Point;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,16 +116,23 @@ public class UtilsTest {
     
     @Test
     public void testParseCellAddress() {
-        Point p1 = Utils.parseCellAddress("A1");
-        assertEquals(0, p1.x);
-        assertEquals(0, p1.y);
+        {
+            CellAddress address = Utils.parseCellAddress("A1");
+            assertEquals(0, address.getRow());
+            assertEquals(0, address.getColumn());
+        }
         
-        Point p2 = Utils.parseCellAddress("AX232");
-        assertEquals(49, p2.x);
-        assertEquals(231, p2.y);
+        {
+            CellAddress address = Utils.parseCellAddress("AX232");
+            assertEquals(231, address.getRow());
+            assertEquals(49, address.getColumn());
+        }
         
-        Point p3 = Utils.parseCellAddress("a32A132");
-        assertNull(p3);
+        {
+            CellAddress address = Utils.parseCellAddress("a32A132");
+            assertNull(address);
+        }
+
     }
     
     @Test

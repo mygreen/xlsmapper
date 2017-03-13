@@ -17,6 +17,8 @@ import javax.validation.metadata.ConstraintDescriptor;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.FieldErrorBuilder;
@@ -145,7 +147,7 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 errors.addError(FieldErrorBuilder.create()
                         .objectName(errors.getObjectName()).fieldPath(errors.buildFieldPath(fieldName))
                         .codes(errors.generateMessageCodes(errorCode, fieldName, fieldType), errorVars)
-                        .sheetName(errors.getSheetName()).cellAddress(cellAddress)
+                        .sheetName(errors.getSheetName()).cellAddress(CellAddress.of(cellAddress))
                         .label(label)
                         .defaultMessage(violation.getMessage())
                         .fieldValue(fieldValue)

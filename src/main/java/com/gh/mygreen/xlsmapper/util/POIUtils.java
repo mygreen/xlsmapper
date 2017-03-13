@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
 import com.gh.mygreen.xlsmapper.CellFormatter;
 import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
 import com.gh.mygreen.xlsmapper.converter.LinkType;
-import com.gh.mygreen.xlsmapper.processor.CellAddress;
 import com.github.mygreen.cellformatter.POICell;
 
 /**
@@ -58,7 +57,6 @@ public class POIUtils {
     
     /** 標準のセルフォーマッター */
     private static CellFormatter defaultCellFormatter = new DefaultCellFormatter();
-    
     
     /**
      * シートの最大列数を取得する。

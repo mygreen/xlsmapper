@@ -166,7 +166,7 @@ public class SheetMessageConverter {
             if(error instanceof CellFieldError) {
                 final CellFieldError cellFieldError = (CellFieldError) error;
                 vars.put("sheetName", cellFieldError.getSheetName());
-                vars.put("cellAddress", Utils.formatCellAddress(cellFieldError.getCellAddress()));
+                vars.put("cellAddress", cellFieldError.getCellAddress().formatAsString());
             }
             
         } else {

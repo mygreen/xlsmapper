@@ -6,12 +6,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 
 
 /**
  * ExcelのCellの値とJavaオブジェクトを相互に変換するインタフェース。
  *
- * @version 1.5
+ * @version 2.0
  * @author T.TSUCHIE
  * @param <T> 変換対象のJavaのオブジェクト
  */
@@ -23,10 +24,9 @@ public interface CellConverter<T> {
      * @param adapter マッピング対象のフィールド情報。
      * @param config 設定情報
      * @return 変換したJavaオブジェクト
-     * @throws XlsMapperException
+     * @throws XlsMapperException 変換に失敗した場合
      */
     T toObject(Cell cell, FieldAdapter adapter, XlsMapperConfig config) throws XlsMapperException;
-    
     
     /**
      * シート書き込み時のJavaオブジェクト {@literal =>} Excel Cellに変換する。
@@ -34,12 +34,12 @@ public interface CellConverter<T> {
      * @param targetValue 書き込み対象のオブジェクト。
      * @param targetBean 書き込み対象のフィールドが設定されているJavaBeanオブジェクト。
      * @param sheet 書き込み先のシート
-     * @param column 書き込み先のセルの列番号。0から始まる。
-     * @param row 書き込み先のセルの行番号。0から始まる。
+     * @param address 書き込み先のセルのアドレス
      * @param config 設定情報
      * @return 書き込んだセル
-     * @throws XlsMapperException 
+     * @throws XlsMapperException 変換に失敗した場合
      */
-    Cell toCell(FieldAdapter adapter, T targetValue, Object targetBean, Sheet sheet, int column, int row, XlsMapperConfig config) throws XlsMapperException;
+    Cell toCell(FieldAdapter adapter, T targetValue, Object targetBean, Sheet sheet, CellAddress address, XlsMapperConfig config)
+            throws XlsMapperException;
     
 }

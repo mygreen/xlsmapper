@@ -1,12 +1,12 @@
 package com.gh.mygreen.xlsmapper;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
@@ -46,13 +46,13 @@ public class SavingWorkObject {
         this.errors = errors;
     }
     
-    public void addTypeBindError(final TypeBindException e, final Point position, final String fieldName, final String label) {
+    public void addTypeBindError(final TypeBindException e, final CellAddress adddress, final String fieldName, final String label) {
         this.errors.rejectSheetTypeBind(fieldName, e.getTargetValue(), e.getBindClass(),
-                position, label);
+                adddress, label);
     }
     
     public void addTypeBindError(final TypeBindException e, final Cell cell, final String fieldName, final String label) {
         this.errors.rejectSheetTypeBind(fieldName, e.getTargetValue(), e.getBindClass(),
-                new Point(cell.getColumnIndex(), cell.getRowIndex()), label);
+                CellAddress.of(cell), label);
     }
 }

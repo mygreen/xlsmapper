@@ -37,7 +37,7 @@ public class TestUtils {
      */
     public static CellFieldError cellFieldError(final SheetBindingErrors errors, final String address) {
         for(CellFieldError error : errors.getCellFieldErrors()) {
-            if(error.getFormattedCellAddress().equalsIgnoreCase(address)) {
+            if(error.getCellAddress().formatAsString().equalsIgnoreCase(address)) {
                 return error;
             }
         }

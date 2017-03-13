@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
@@ -49,15 +49,15 @@ public class LoadingWorkObject {
         this.errors = errors;
     }
     
-    public void addTypeBindError(final TypeBindException e, final Point position, final String fieldName, final String label) {
+    public void addTypeBindError(final TypeBindException e, final CellAddress address, final String fieldName, final String label) {
         final Map<String, Object> vars = new LinkedHashMap<>(e.getMessageVars());
         vars.put("validatedValue", e.getTargetValue());
         
         this.errors.rejectSheetTypeBind(fieldName, e.getTargetValue(), e.getBindClass(), vars,
-                position, label);
+                address, label);
     }
     
     public void addTypeBindError(final TypeBindException e, final Cell cell, final String fieldName, final String label) {
-        addTypeBindError(e, new Point(cell.getColumnIndex(), cell.getRowIndex()), fieldName, label);
+        addTypeBindError(e, CellAddress.of(cell), fieldName, label);
     }
 }

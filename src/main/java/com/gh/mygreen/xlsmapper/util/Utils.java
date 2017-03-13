@@ -413,17 +413,20 @@ public class Utils {
         
     }
     
+    public static Point toPoint(CellAddress address) {
+        return new Point(address.getColumn(), address.getRow());
+    }
+    
     /**
      * セルの位置を設定する。
      * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。</p>
      * <p>フィールド「{@literal Map<String, Point>} positions」に、設定する。</p>
-     * @param x 列のインデックス番号
-     * @param y 行のインデックス番号
+     * @param address アドレス情報
      * @param obj メソッドが定義されているオブジェクト
      * @param fieldName フィールド名
      */
     @SuppressWarnings("unchecked")
-    public static void setPosition(final int x, final int y, final Object obj, final String fieldName) {
+    public static void setPosition(final CellAddress address, final Object obj, final String fieldName) {
         
         final Class<?> clazz = obj.getClass();
         final String positionFieldName = fieldName + "Position";
@@ -440,7 +443,7 @@ public class Utils {
                     positionMapField.set(obj, positionMapValue);
                 }
                 
-                ((Map<String, Point>) positionMapValue).put(fieldName, new Point(x, y));
+                ((Map<String, Point>) positionMapValue).put(fieldName, toPoint(address));
                 return;
             }
         } catch (NoSuchFieldException | SecurityException e) {
@@ -458,7 +461,7 @@ public class Utils {
         final Method positionMethod1 = getSetter(clazz, positionFieldName, Integer.TYPE, Integer.TYPE);
         if(positionMethod1 != null) {
             try {
-                positionMethod1.invoke(obj, x, y);
+                positionMethod1.invoke(obj, address.getColumn(), address.getRow());
                 return;
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 throw new RuntimeException(
@@ -472,7 +475,7 @@ public class Utils {
         final Method positionMethod2 = getSetter(clazz, positionFieldName, Point.class);
         if(positionMethod2 != null) {
             try {
-                positionMethod2.invoke(obj, new Point(x, y));
+                positionMethod2.invoke(obj, toPoint(address));
                 return;
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 throw new RuntimeException(
@@ -487,7 +490,7 @@ public class Utils {
         if(positionField != null) {
             try {
                 positionField.setAccessible(true);
-                positionField.set(obj, new Point(x, y));
+                positionField.set(obj, toPoint(address));
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new RuntimeException(
                         String.format("fail set position with '%s' field", positionField.getName()),
@@ -968,11 +971,11 @@ public class Utils {
     private static final Pattern PATTERN_CELL_ADREESS = Pattern.compile("^([a-zA-Z]+)([0-9]+)$");
     
     /**
-     * Excelのアドレス形式'A1'を、Pointに変換する。
-     * @param address
+     * Excelのアドレス形式'A1'を、{@link CellAddress}に変換する。
+     * @param address 処理対象のアドレス
      * @return 変換できない場合は、nullを返す。
      */
-    public static Point parseCellAddress(final String address) {
+    public static CellAddress parseCellAddress(final String address) {
         
         if(isEmpty(address)) {
             return null;
@@ -983,8 +986,7 @@ public class Utils {
             return null;
         }
         
-        final CellReference ref = new CellReference(address.toUpperCase());
-        return new Point(ref.getCol(), ref.getRow());
+        return CellAddress.of(address);
     }
     
     /**
@@ -995,16 +997,6 @@ public class Utils {
      */
     public static String formatCellAddress(final int rowIndex, final int colIndex) {
         return POIUtils.formatCellAddress(rowIndex, colIndex);
-    }
-    
-    /**
-     * 座標をExcelのアドレス形式'A1'になどに変換する。
-     * @param cellAddress
-     * @return
-     * @throws IllegalArgumentException address == null.
-     */
-    public static String formatCellAddress(final Point cellAddress) {
-        return POIUtils.formatCellAddress(cellAddress);
     }
     
     /**

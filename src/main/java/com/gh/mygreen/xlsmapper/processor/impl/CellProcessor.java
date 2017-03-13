@@ -1,7 +1,5 @@
 package com.gh.mygreen.xlsmapper.processor.impl;
 
-import java.awt.Point;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -15,6 +13,7 @@ import com.gh.mygreen.xlsmapper.converter.CellConverter;
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -31,18 +30,18 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsCell anno, final FieldAdapter adapter,
             final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final Point cellPosition = getCellPosition(adapter, anno);
+        final CellAddress cellAddress = getCellPosition(adapter, anno);
         
-        Utils.setPosition(cellPosition.x, cellPosition.y, beansObj, adapter.getName());
+        Utils.setPosition(cellAddress, beansObj, adapter.getName());
         
-        final Cell xlsCell = POIUtils.getCell(sheet, cellPosition.x, cellPosition.y);
+        final Cell xlsCell = POIUtils.getCell(sheet, cellAddress);
         final CellConverter<?> converter = getCellConverter(adapter, config);
         
         try {
             final Object value = converter.toObject(xlsCell, adapter, config);
             adapter.setValue(beansObj, value);
         } catch(TypeBindException e) {
-            work.addTypeBindError(e, cellPosition, adapter.getName(), null);
+            work.addTypeBindError(e, cellAddress, adapter.getName(), null);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }
@@ -56,13 +55,11 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
      * @return
      * @throws AnnotationInvalidException
      */
-    private Point getCellPosition(final FieldAdapter adaptor, final XlsCell anno) throws AnnotationInvalidException {
+    private CellAddress getCellPosition(final FieldAdapter adaptor, final XlsCell anno) throws AnnotationInvalidException {
         
-        Point point = null;
         if(Utils.isNotEmpty(anno.address())) {
-            point = Utils.parseCellAddress(anno.address());
-            //TODO: パース時に例外をスローして、キャッチするようにする。
-            if(point == null) {
+            CellAddress address = Utils.parseCellAddress(anno.address());
+            if(address == null) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
                         .var("property", adaptor.getNameWithClass())
                         .varWithAnno("anno", XlsCell.class)
@@ -70,7 +67,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
                         .var("attrValue", anno.address())
                         .format());
             }
-            return point;
+            return address;
         
         } else {
             if(anno.row() < 0) {
@@ -94,7 +91,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
                 
             }
             
-            return new Point(anno.column(), anno.row());
+            return CellAddress.of(anno.row(), anno.column());
         }
         
     }
@@ -104,14 +101,14 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsCell anno, final FieldAdapter adapter,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        final Point cellPosition = getCellPosition(adapter, anno);
-        Utils.setPosition(cellPosition.x, cellPosition.y, targetObj, adapter.getName());
+        final CellAddress cellAddress = getCellPosition(adapter, anno);
+        Utils.setPosition(cellAddress, targetObj, adapter.getName());
         
         final CellConverter converter = getCellConverter(adapter, config);
         try {
-            converter.toCell(adapter, adapter.getValue(targetObj), targetObj, sheet, cellPosition.x, cellPosition.y, config);
+            converter.toCell(adapter, adapter.getValue(targetObj), targetObj, sheet, cellAddress, config);
         } catch(TypeBindException e) {
-            work.addTypeBindError(e, cellPosition, adapter.getName(), null);
+            work.addTypeBindError(e, cellAddress, adapter.getName(), null);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }  

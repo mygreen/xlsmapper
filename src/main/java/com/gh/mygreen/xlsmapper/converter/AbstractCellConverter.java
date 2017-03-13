@@ -18,6 +18,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.util.ConversionUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
@@ -107,9 +108,9 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
     
     @Override
     public Cell toCell(final FieldAdapter adapter, final T targetValue, final Object targetBean, final Sheet sheet,
-            final int column, final int row, final XlsMapperConfig config) throws XlsMapperException {
+            final CellAddress address, final XlsMapperConfig config) throws XlsMapperException {
         
-        final Cell cell = POIUtils.getCell(sheet, column, row);
+        final Cell cell = POIUtils.getCell(sheet, address);
         
         final Optional<XlsTrim> trimAnno = adapter.getAnnotation(XlsTrim.class);
         

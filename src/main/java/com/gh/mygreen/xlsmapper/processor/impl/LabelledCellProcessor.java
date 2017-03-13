@@ -16,6 +16,7 @@ import com.gh.mygreen.xlsmapper.converter.CellConverter;
 import com.gh.mygreen.xlsmapper.converter.TypeBindException;
 import com.gh.mygreen.xlsmapper.processor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -33,9 +34,9 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
 
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno,
-            final FieldAdapter adaptor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final FieldAdapter adapter, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final FindInfo info = findCell(adaptor, sheet, anno, config);
+        final FindInfo info = findCell(adapter, sheet, anno, config);
         if(info == null) {
             /*
              * ラベル用のセルが見つからない場合
@@ -43,37 +44,37 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
              */
             return;
         }
-        Utils.setPosition(info.position.x, info.position.y, beansObj, adaptor.getName());
-        Utils.setLabel(info.label, beansObj, adaptor.getName());
+        Utils.setPosition(info.address, beansObj, adapter.getName());
+        Utils.setLabel(info.label, beansObj, adapter.getName());
         
-        final CellConverter<?> converter = getCellConverter(adaptor, config);
+        final CellConverter<?> converter = getCellConverter(adapter, config);
         try {
-            final Object value = converter.toObject(info.targetCell, adaptor, config);
-            adaptor.setValue(beansObj, value);
+            final Object value = converter.toObject(info.targetCell, adapter, config);
+            adapter.setValue(beansObj, value);
         } catch(TypeBindException e) {
-            work.addTypeBindError(e, info.position, adaptor.getName(), info.label);
+            work.addTypeBindError(e, info.address, adapter.getName(), info.label);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }
         }
     }
     
-    private class FindInfo {
+    private static class FindInfo {
         Cell targetCell;
-        Point position;
+        CellAddress address;
         String label;
     }
     
-    private FindInfo findCell(final FieldAdapter adaptor, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config)
+    private FindInfo findCell(final FieldAdapter adapter, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config)
             throws XlsMapperException {
         
-        final Point labelPosition = getLabelPosition(adaptor, sheet, anno, config);
+        final CellAddress labelPosition = getLabelPosition(adapter, sheet, anno, config);
         if(labelPosition == null) {
             return null;
         }
         
-        final int column = labelPosition.x;
-        final int row = labelPosition.y;
+        final int column = labelPosition.getColumn();
+        final int row = labelPosition.getRow();
         
         int range = anno.range();
         if(range < 1){
@@ -109,16 +110,16 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         
         final FindInfo info = new FindInfo();
         info.targetCell = targetCell;
-        info.position = targetPosition;
+        info.address = CellAddress.of(targetPosition);
         info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());
         
         return info;
     }
     
-    private Point getLabelPosition(final FieldAdapter adaptor, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config) throws XlsMapperException {
+    private CellAddress getLabelPosition(final FieldAdapter adaptor, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config) throws XlsMapperException {
         
         if(Utils.isNotEmpty(anno.labelAddress())) {
-            final Point address = Utils.parseCellAddress(anno.labelAddress());
+            final CellAddress address = Utils.parseCellAddress(anno.labelAddress());
             if(address == null) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
                         .var("property", adaptor.getNameWithClass())
@@ -135,15 +136,11 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
                 if(Utils.isNotEmpty(anno.headerLabel())){
                     Cell headerCell = Utils.getCell(sheet, anno.headerLabel(), 0, 0, config);
                     Cell labelCell = Utils.getCell(sheet, anno.label(), headerCell.getColumnIndex(), headerCell.getRowIndex() + 1, config);
-                    int column = labelCell.getColumnIndex();
-                    int row = labelCell.getRowIndex();
-                    return new Point(column, row);
+                    return CellAddress.of(labelCell);
                     
                 } else {
                     Cell labelCell = Utils.getCell(sheet, anno.label(), 0, config);
-                    int column = labelCell.getColumnIndex();
-                    int row = labelCell.getRowIndex();
-                    return new Point(column, row);
+                    return CellAddress.of(labelCell);
                 }
             } catch(XlsMapperException ex){
                 if(anno.optional()){
@@ -176,7 +173,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
                 
             }
             
-            return new Point(anno.labelColumn(), anno.labelRow());
+            return CellAddress.of(anno.labelRow(), anno.labelColumn());
         }
         
     }
@@ -194,14 +191,14 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             return;
         }
         
-        Utils.setPosition(info.position.x, info.position.y, targetObj, adaptor.getName());
+        Utils.setPosition(info.address, targetObj, adaptor.getName());
         Utils.setLabel(info.label, targetObj, adaptor.getName());
         
         final CellConverter converter = getCellConverter(adaptor, config);
         try {
-            final Cell xlsCell = converter.toCell(adaptor, adaptor.getValue(targetObj), targetObj, sheet, info.position.x, info.position.y, config);
+            final Cell xlsCell = converter.toCell(adaptor, adaptor.getValue(targetObj), targetObj, sheet, info.address, config);
         } catch(TypeBindException e) {
-            work.addTypeBindError(e, info.position, adaptor.getName(), info.label);
+            work.addTypeBindError(e, info.address, adaptor.getName(), info.label);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }

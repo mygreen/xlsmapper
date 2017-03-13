@@ -11,6 +11,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.gh.mygreen.xlsmapper.util.CellAddress;
+
 /**
  * {@link SheetBindingErrors}のテスタ
  * 
@@ -194,10 +196,10 @@ public class SheetBindingErrorsTest {
         
         errors.addError(new SheetObjectError("obj01", sheetName));
         errors.addError(new SheetObjectError("obj02", sheetName));
-        errors.addError(new CellFieldError("obj03", "list[0].f01", sheetName, toPointAddress("A2")));
-        errors.addError(new CellFieldError("obj03", "list[0].f02", sheetName, toPointAddress("B2")));
-        errors.addError(new CellFieldError("obj03", "list[1].f01", sheetName, toPointAddress("A3")));
-        errors.addError(new CellFieldError("obj04", "map[a01].f01", sheetName, toPointAddress("D3")));
+        errors.addError(new CellFieldError("obj03", "list[0].f01", sheetName, CellAddress.of("A2")));
+        errors.addError(new CellFieldError("obj03", "list[0].f02", sheetName, CellAddress.of("B2")));
+        errors.addError(new CellFieldError("obj03", "list[1].f01", sheetName, CellAddress.of("A3")));
+        errors.addError(new CellFieldError("obj04", "map[a01].f01", sheetName, CellAddress.of("D3")));
         
         assertThat(errors.hasSheetGlobalErrors(), is(true));
         assertThat(errors.getSheetGlobalErrorCount(), is(2));
@@ -218,12 +220,12 @@ public class SheetBindingErrorsTest {
         CellFieldError fieldError01 = errors.getFirstCellFieldError("list[0].*");
         assertThat(fieldError01.getFieldPath(), is("list[0].f01"));
         assertThat(fieldError01.getSheetName(), is(sheetName));
-        assertThat(fieldError01.getCellAddress(), is(toPointAddress("A2")));
+        assertThat(fieldError01.getCellAddress().toPoint(), is(toPointAddress("A2")));
         
         CellFieldError fieldError02 = errors.getFirstCellFieldError();
         assertThat(fieldError02.getFieldPath(), is("list[0].f01"));
         assertThat(fieldError01.getSheetName(), is(sheetName));
-        assertThat(fieldError01.getCellAddress(), is(toPointAddress("A2")));
+        assertThat(fieldError01.getCellAddress().toPoint(), is(toPointAddress("A2")));
         
         assertThat(errors.hasCellFieldErrors("list*"), is(true));
         assertThat(errors.getCellFieldErrorCount("list*"), is(3));
@@ -336,14 +338,14 @@ public class SheetBindingErrorsTest {
         SheetBindingErrors errors = new SheetBindingErrors("SampleSheet");
         errors.setSheetName("名簿用シート");
         
-        errors.rejectSheetValue("name01[0]", toPointAddress("A2"), "error001");
-        errors.rejectSheetValue("name01[1]", toPointAddress("A3"), "error002", "error02.default");
+        errors.rejectSheetValue("name01[0]", CellAddress.of("A2"), "error001");
+        errors.rejectSheetValue("name01[1]", CellAddress.of("A3"), "error002", "error02.default");
         
-        errors.rejectSheetValue("name02[1]", toPointAddress("B2"), "error003", new HashMap<String, Object>());
-        errors.rejectSheetValue("name02[2]", toPointAddress("B2"), "error004", new HashMap<String, Object>(), "error03.default");
+        errors.rejectSheetValue("name02[1]", CellAddress.of("B2"), "error003", new HashMap<String, Object>());
+        errors.rejectSheetValue("name02[2]", CellAddress.of("B2"), "error004", new HashMap<String, Object>(), "error03.default");
         
-        errors.rejectSheetValue("family[mother].age", toPointAddress("C2"), "error005", new Object[]{});
-        errors.rejectSheetValue("family[father].age", toPointAddress("C3"), "error006", new Object[]{}, "error06.default");
+        errors.rejectSheetValue("family[mother].age", CellAddress.of("C2"), "error005", new Object[]{});
+        errors.rejectSheetValue("family[father].age", CellAddress.of("C3"), "error006", new Object[]{}, "error06.default");
         
         assertThat(errors.hasGlobalErrors(), is(false));
         
@@ -362,7 +364,7 @@ public class SheetBindingErrorsTest {
         assertThat(fieldError001.getFieldPath(), is("name01[0]"));
         assertThat(fieldError001.getCodes(), is(hasItemInArray("error001")));
         assertThat(fieldError001.getSheetName(), is("名簿用シート"));
-        assertThat(fieldError001.getCellAddress(), is(toPointAddress("A2")));
+        assertThat(fieldError001.getCellAddress().toPoint(), is(toPointAddress("A2")));
         
         
     }
@@ -377,14 +379,14 @@ public class SheetBindingErrorsTest {
         SheetBindingErrors errors = new SheetBindingErrors("SampleSheet");
         errors.setSheetName("名簿用シート");
         
-        errors.rejectSheetValue("name01[0]", "山田太郎", String.class, toPointAddress("A2"), "error001");
-        errors.rejectSheetValue("name01[1]", "山田次郎", String.class, toPointAddress("A3"), "error002", "error02.default");
+        errors.rejectSheetValue("name01[0]", "山田太郎", String.class, CellAddress.of("A2"), "error001");
+        errors.rejectSheetValue("name01[1]", "山田次郎", String.class, CellAddress.of("A3"), "error002", "error02.default");
         
-        errors.rejectSheetValue("name02[1]", "鈴木一郎", String.class, toPointAddress("B2"), "error003", new HashMap<String, Object>());
-        errors.rejectSheetValue("name02[2]", "鈴木次郎", String.class, toPointAddress("B2"), "error004", new HashMap<String, Object>(), "error03.default");
+        errors.rejectSheetValue("name02[1]", "鈴木一郎", String.class, CellAddress.of("B2"), "error003", new HashMap<String, Object>());
+        errors.rejectSheetValue("name02[2]", "鈴木次郎", String.class, CellAddress.of("B2"), "error004", new HashMap<String, Object>(), "error03.default");
         
-        errors.rejectSheetValue("family[mother].age", 40, Integer.class, toPointAddress("C2"), "error005", new Object[]{});
-        errors.rejectSheetValue("family[father].age", 50, Integer.class, toPointAddress("C3"), "error006", new Object[]{}, "error06.default");
+        errors.rejectSheetValue("family[mother].age", 40, Integer.class, CellAddress.of("C2"), "error005", new Object[]{});
+        errors.rejectSheetValue("family[father].age", 50, Integer.class, CellAddress.of("C3"), "error006", new Object[]{}, "error06.default");
         
         assertThat(errors.hasGlobalErrors(), is(false));
         
@@ -403,7 +405,7 @@ public class SheetBindingErrorsTest {
         assertThat(fieldError001.getFieldPath(), is("name01[0]"));
         assertThat(fieldError001.getCodes(), is(hasItemInArray("error001")));
         assertThat(fieldError001.getSheetName(), is("名簿用シート"));
-        assertThat(fieldError001.getCellAddress(), is(toPointAddress("A2")));
+        assertThat(fieldError001.getCellAddress().toPoint(), is(toPointAddress("A2")));
         assertThat(fieldError001.getFieldValue(), is((Object)"山田太郎"));
         assertThat(fieldError001.getFieldType(), is(typeCompatibleWith(String.class)));
         
@@ -446,8 +448,8 @@ public class SheetBindingErrorsTest {
         SheetBindingErrors errors = new SheetBindingErrors("SampleSheet");
         errors.setSheetName("名簿用シート");
         
-        errors.rejectSheetTypeBind("name01[0]", "山田太郎", String.class, toPointAddress("A2"), "名前01");
-        errors.rejectSheetTypeBind("name01[2]", "山田次郎", String.class, new HashMap<String, Object>(), toPointAddress("A3"), "名前02");
+        errors.rejectSheetTypeBind("name01[0]", "山田太郎", String.class, CellAddress.of("A2"), "名前01");
+        errors.rejectSheetTypeBind("name01[2]", "山田次郎", String.class, new HashMap<String, Object>(), CellAddress.of("A3"), "名前02");
         
         assertThat(errors.hasGlobalErrors(), is(false));
         
@@ -461,7 +463,7 @@ public class SheetBindingErrorsTest {
         assertThat(fieldError001.getObjectName(), is("SampleSheet"));
         assertThat(fieldError001.getFieldPath(), is("name01[0]"));
         assertThat(fieldError001.getSheetName(), is("名簿用シート"));
-        assertThat(fieldError001.getCellAddress(), is(toPointAddress("A2")));
+        assertThat(fieldError001.getCellAddress().toPoint(), is(toPointAddress("A2")));
         assertThat(fieldError001.getLabel(), is("名前01"));
         assertThat(fieldError001.getCodes(), is(hasItemInArray("cellTypeMismatch")));
         assertThat(fieldError001.getFieldValue(), is((Object)"山田太郎"));
