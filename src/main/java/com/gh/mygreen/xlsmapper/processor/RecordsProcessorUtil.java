@@ -100,25 +100,25 @@ public class RecordsProcessorUtil {
      * アノテーション{@link XlsNestedRecords}の定義が、同じBeanに対して、入れ子構造になっていないかチェックする。
      * @since 1.4
      * @param recordClass チェック対象のレコードクラス
-     * @param adaptor アノテーションが付与されているフィールド
+     * @param adapter アノテーションが付与されているフィールド
      * @param reader {@link AnnotationReader}のインスタンス。
      * @throws AnnotationInvalidException 入れ子構造になっている場合
      */
-    public static void checkLoadingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adaptor, 
+    public static void checkLoadingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adapter, 
             final AnnotationReader reader) throws AnnotationInvalidException {
         
         ArgUtils.notNull(recordClass, "recordClass");
-        ArgUtils.notNull(adaptor, "adaptor");
+        ArgUtils.notNull(adapter, "adapter");
         ArgUtils.notNull(reader, "reader");
         
         // 再帰的にチェックしていく。
         List<Class<?>> nestedRecordClasses = new ArrayList<>();
-        checkLoadingNestedRecordClass(recordClass, adaptor, reader, nestedRecordClasses);
+        checkLoadingNestedRecordClass(recordClass, adapter, reader, nestedRecordClasses);
         
         
     }
     
-    private static void checkLoadingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adaptor, 
+    private static void checkLoadingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adapter, 
             final AnnotationReader reader, final List<Class<?>> nestedRecordClasses) throws AnnotationInvalidException {
         
         if(recordClass == Object.class) {
@@ -127,7 +127,7 @@ public class RecordsProcessorUtil {
         
         if(nestedRecordClasses.contains(recordClass)) {
             throw new AnnotationInvalidException(MessageBuilder.create("anno.XlsNestedRecords.recursive")
-                    .var("property", adaptor.getNameWithClass())
+                    .var("property", adapter.getNameWithClass())
                     .format());
         }
         
@@ -183,25 +183,25 @@ public class RecordsProcessorUtil {
      * アノテーション{@link XlsNestedRecords}の定義が、同じBeanに対して、入れ子構造になっていないかチェックする。
      * @since 1.4
      * @param recordClass チェック対象のレコードクラス
-     * @param adaptor アノテーションが付与されているフィールド
+     * @param adapter アノテーションが付与されているフィールド
      * @param reader {@link AnnotationReader}のインスタンス。
      * @throws AnnotationInvalidException 入れ子構造になっている場合
      */
-    public static void checkSavingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adaptor, 
+    public static void checkSavingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adapter, 
             final AnnotationReader reader) throws AnnotationInvalidException {
         
         ArgUtils.notNull(recordClass, "recordClass");
-        ArgUtils.notNull(adaptor, "adaptor");
+        ArgUtils.notNull(adapter, "adapter");
         ArgUtils.notNull(reader, "reader");
         
         // 再帰的にチェックしていく。
         List<Class<?>> nestedRecordClasses = new ArrayList<>();
-        checkSavingNestedRecordClass(recordClass, adaptor, reader, nestedRecordClasses);
+        checkSavingNestedRecordClass(recordClass, adapter, reader, nestedRecordClasses);
         
         
     }
     
-    private static void checkSavingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adaptor, 
+    private static void checkSavingNestedRecordClass(final Class<?> recordClass, final FieldAdapter adapter, 
             final AnnotationReader reader, final List<Class<?>> nestedRecordClasses) throws AnnotationInvalidException {
         
         if(recordClass == Object.class) {
@@ -210,7 +210,7 @@ public class RecordsProcessorUtil {
         
         if(nestedRecordClasses.contains(recordClass)) {
             throw new AnnotationInvalidException(MessageBuilder.create("anno.XlsNestedRecords.recursive")
-                    .var("property", adaptor.getNameWithClass())
+                    .var("property", adapter.getNameWithClass())
                     .format());
         }
         

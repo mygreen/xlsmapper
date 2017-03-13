@@ -1,6 +1,7 @@
 package com.gh.mygreen.xlsmapper.processor.impl;
 
 import java.awt.Point;
+import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -36,23 +37,23 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno,
             final FieldAdapter adapter, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final FindInfo info = findCell(adapter, sheet, anno, config);
-        if(info == null) {
+        final Optional<FindInfo> info = findCell(adapter, sheet, anno, config);
+        if(!info.isPresent()) {
             /*
              * ラベル用のセルが見つからない場合
              * optional=falseの場合は、例外がスローされここには到達しない。
              */
             return;
         }
-        Utils.setPosition(info.address, beansObj, adapter.getName());
-        Utils.setLabel(info.label, beansObj, adapter.getName());
+        Utils.setPosition(info.get().address, beansObj, adapter.getName());
+        Utils.setLabel(info.get().label, beansObj, adapter.getName());
         
         final CellConverter<?> converter = getCellConverter(adapter, config);
         try {
-            final Object value = converter.toObject(info.targetCell, adapter, config);
+            final Object value = converter.toObject(info.get().targetCell, adapter, config);
             adapter.setValue(beansObj, value);
         } catch(TypeBindException e) {
-            work.addTypeBindError(e, info.address, adapter.getName(), info.label);
+            work.addTypeBindError(e, info.get().address, adapter.getName(), info.get().label);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }
@@ -65,16 +66,16 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         String label;
     }
     
-    private FindInfo findCell(final FieldAdapter adapter, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config)
+    private Optional<FindInfo> findCell(final FieldAdapter adapter, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config)
             throws XlsMapperException {
         
-        final CellAddress labelPosition = getLabelPosition(adapter, sheet, anno, config);
-        if(labelPosition == null) {
-            return null;
+        final Optional<CellAddress> labelPosition = getLabelPosition(adapter, sheet, anno, config);
+        if(!labelPosition.isPresent()) {
+            return Optional.empty();
         }
         
-        final int column = labelPosition.getColumn();
-        final int row = labelPosition.getRow();
+        final int column = labelPosition.get().getColumn();
+        final int row = labelPosition.get().getRow();
         
         int range = anno.range();
         if(range < 1){
@@ -113,38 +114,39 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         info.address = CellAddress.of(targetPosition);
         info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());
         
-        return info;
+        return Optional.of(info);
     }
     
-    private CellAddress getLabelPosition(final FieldAdapter adaptor, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config) throws XlsMapperException {
+    private Optional<CellAddress> getLabelPosition(final FieldAdapter adapter, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config) throws XlsMapperException {
         
         if(Utils.isNotEmpty(anno.labelAddress())) {
-            final CellAddress address = Utils.parseCellAddress(anno.labelAddress());
-            if(address == null) {
+            try {
+                return Optional.of(CellAddress.of(anno.labelAddress()));
+            
+            } catch(IllegalArgumentException e) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsLabelledCell.class)
                         .var("attrName", "labelAddress")
                         .var("attrValue", anno.labelAddress())
                         .format());
                 
             }
-            return address;
             
         } else if(Utils.isNotEmpty(anno.label())) {
             try {
                 if(Utils.isNotEmpty(anno.headerLabel())){
                     Cell headerCell = Utils.getCell(sheet, anno.headerLabel(), 0, 0, config);
                     Cell labelCell = Utils.getCell(sheet, anno.label(), headerCell.getColumnIndex(), headerCell.getRowIndex() + 1, config);
-                    return CellAddress.of(labelCell);
+                    return Optional.of(CellAddress.of(labelCell));
                     
                 } else {
                     Cell labelCell = Utils.getCell(sheet, anno.label(), 0, config);
-                    return CellAddress.of(labelCell);
+                    return Optional.of(CellAddress.of(labelCell));
                 }
             } catch(XlsMapperException ex){
                 if(anno.optional()){
-                    return null;
+                    return Optional.empty();
                 } else {
                     throw ex;
                 }
@@ -154,7 +156,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             // column, rowのアドレスを直接指定の場合
             if(anno.labelRow() < 0) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsLabelledCell.class)
                         .var("attrName", "row")
                         .var("attrValue", anno.labelRow())
@@ -164,7 +166,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             
             if(anno.labelColumn() < 0) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsLabelledCell.class)
                         .var("attrName", "column")
                         .var("attrValue", anno.labelColumn())
@@ -173,17 +175,17 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
                 
             }
             
-            return CellAddress.of(anno.labelRow(), anno.labelColumn());
+            return Optional.of(CellAddress.of(anno.labelRow(), anno.labelColumn()));
         }
         
     }
     
     @Override
-    public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledCell anno, final FieldAdapter adaptor,
+    public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledCell anno, final FieldAdapter adapter,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        final FindInfo info = findCell(adaptor, sheet, anno, config);
-        if(info == null) {
+        final Optional<FindInfo> info = findCell(adapter, sheet, anno, config);
+        if(!info.isPresent()) {
             /*
              * ラベル用のセルが見つからない場合
              * optional=falseの場合は、例外がスローされここには到達しない。
@@ -191,14 +193,14 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             return;
         }
         
-        Utils.setPosition(info.address, targetObj, adaptor.getName());
-        Utils.setLabel(info.label, targetObj, adaptor.getName());
+        Utils.setPosition(info.get().address, targetObj, adapter.getName());
+        Utils.setLabel(info.get().label, targetObj, adapter.getName());
         
-        final CellConverter converter = getCellConverter(adaptor, config);
+        final CellConverter converter = getCellConverter(adapter, config);
         try {
-            final Cell xlsCell = converter.toCell(adaptor, adaptor.getValue(targetObj), targetObj, sheet, info.address, config);
+            final Cell xlsCell = converter.toCell(adapter, adapter.getValue(targetObj), targetObj, sheet, info.get().address, config);
         } catch(TypeBindException e) {
-            work.addTypeBindError(e, info.address, adaptor.getName(), info.label);
+            work.addTypeBindError(e, info.get().address, adapter.getName(), info.get().label);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }

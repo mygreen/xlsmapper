@@ -115,27 +115,6 @@ public class UtilsTest {
     }
     
     @Test
-    public void testParseCellAddress() {
-        {
-            CellAddress address = Utils.parseCellAddress("A1");
-            assertEquals(0, address.getRow());
-            assertEquals(0, address.getColumn());
-        }
-        
-        {
-            CellAddress address = Utils.parseCellAddress("AX232");
-            assertEquals(231, address.getRow());
-            assertEquals(49, address.getColumn());
-        }
-        
-        {
-            CellAddress address = Utils.parseCellAddress("a32A132");
-            assertNull(address);
-        }
-
-    }
-    
-    @Test
     public void testConvertListToCollection() {
         
         final BeanFactory<Class<?>, Object> beanFactory = new XlsMapperConfig().getBeanFactory();

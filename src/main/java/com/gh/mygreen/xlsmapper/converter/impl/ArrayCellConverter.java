@@ -61,6 +61,7 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
         
     }
     
+    @SuppressWarnings("rawtypes")
     @Override
     protected void setupCell(final Cell cell, final Optional<Object[]> cellValue, final FieldAdapter adapter,
             final XlsMapperConfig config) throws TypeBindException {

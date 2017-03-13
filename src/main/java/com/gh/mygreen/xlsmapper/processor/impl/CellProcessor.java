@@ -50,29 +50,29 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
     
     /**
      * アノテーションから、セルのアドレスを取得する。
-     * @param adaptor
+     * @param adapter
      * @param anno
      * @return
      * @throws AnnotationInvalidException
      */
-    private CellAddress getCellPosition(final FieldAdapter adaptor, final XlsCell anno) throws AnnotationInvalidException {
+    private CellAddress getCellPosition(final FieldAdapter adapter, final XlsCell anno) throws AnnotationInvalidException {
         
         if(Utils.isNotEmpty(anno.address())) {
-            CellAddress address = Utils.parseCellAddress(anno.address());
-            if(address == null) {
+            try {
+                return CellAddress.of(anno.address());
+            } catch(IllegalArgumentException e) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsCell.class)
                         .var("attrName", "address")
                         .var("attrValue", anno.address())
                         .format());
             }
-            return address;
         
         } else {
             if(anno.row() < 0) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsCell.class)
                         .var("attrName", "row")
                         .var("attrValue", anno.row())
@@ -82,7 +82,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
             
             if(anno.column() < 0) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsCell.class)
                         .var("attrName", "column")
                         .var("attrValue", anno.column())

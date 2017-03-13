@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -72,52 +73,52 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
-            final FieldAdapter adaptor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final FieldAdapter adapter, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
                 final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), beansObj, adaptor.getName());
+                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), beansObj, adapter.getName());
             } catch(CellNotFoundException e) {
                 
             }
         }
         
-        final Class<?> clazz = adaptor.getType();
+        final Class<?> clazz = adapter.getType();
         if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getComponentType();
+                recordClass = adapter.getComponentType();
             }
             
-            final List<?> value = loadRecords(sheet, anno, adaptor, recordClass, config, work);
+            final List<?> value = loadRecords(sheet, anno, adapter, recordClass, config, work);
             if(value != null) {
                 @SuppressWarnings({"unchecked", "rawtypes"})
                 Collection<?> collection = Utils.convertListToCollection(value, (Class<Collection>)clazz, config.getBeanFactory());
-                adaptor.setValue(beansObj, collection);
+                adapter.setValue(beansObj, collection);
             }
         } else if(clazz.isArray()) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getComponentType();
+                recordClass = adapter.getComponentType();
             }
             
-            final List<?> value = loadRecords(sheet, anno, adaptor, recordClass, config, work);
+            final List<?> value = loadRecords(sheet, anno, adapter, recordClass, config, work);
             if(value != null) {
                 final Object array = Array.newInstance(recordClass, value.size());
                 for(int i=0; i < value.size(); i++) {
                     Array.set(array, i, value.get(i));
                 }
                 
-                adaptor.setValue(beansObj, array);
+                adapter.setValue(beansObj, array);
             }
             
         } else {
             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
-                    .var("property", adaptor.getNameWithClass())
+                    .var("property", adapter.getNameWithClass())
                     .varWithAnno("anno", XlsVerticalRecords.class)
                     .varWithClass("actualType", clazz)
                     .var("expectedType", "Collection(List/Set) or Array")
@@ -126,17 +127,17 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
     }
     
-   private List<?> loadRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAdapter adaptor,
+   private List<?> loadRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAdapter adapter,
            final Class<?> recordClass, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
         // get table starting position
-        final CellAddress initPosition = getHeaderPosition(sheet, anno, adaptor, config);
-        if(initPosition == null) {
+        final Optional<CellAddress> initPosition = getHeaderPosition(sheet, anno, adapter, config);
+        if(!initPosition.isPresent()) {
             return null;
         }
         
-        final int initColumn = initPosition.getColumn();
-        final int initRow = initPosition.getRow();
+        final int initColumn = initPosition.get().getColumn();
+        final int initRow = initPosition.get().getRow();
         
         int hColumn = initColumn;
         int hRow = initRow;
@@ -187,13 +188,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // データ行の開始位置の調整
         hColumn += anno.headerRight();
         
-        return loadRecords(sheet, headers, anno, CellAddress.of(initRow, hColumn), 0, adaptor, recordClass, config, work);
+        return loadRecords(sheet, headers, anno, CellAddress.of(initRow, hColumn), 0, adapter, recordClass, config, work);
    }
    
    private List<?> loadRecords(final Sheet sheet, final List<RecordHeader> headers,
            final XlsVerticalRecords anno,
            final CellAddress initPosition, final int parentMergedSize,
-           final FieldAdapter adaptor, final Class<?> recordClass,
+           final FieldAdapter adapter, final Class<?> recordClass,
            final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
        
         final List<Object> result = new ArrayList<>();
@@ -227,7 +228,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             final Object record = config.createBean(recordClass);
             
             // パスの位置の変更
-            work.getErrors().pushNestedPath(adaptor.getName(), result.size());
+            work.getErrors().pushNestedPath(adapter.getName(), result.size());
             
             // execute PreProcess listener
             final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(record.getClass(), XlsListener.class);
@@ -361,7 +362,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 break;
             }
             
-            if(!anno.ignoreEmptyRecord() || !isEmptyRecord(adaptor, record, work.getAnnoReader())) {
+            if(!anno.ignoreEmptyRecord() || !isEmptyRecord(adapter, record, work.getAnnoReader())) {
                 result.add(record);
                 
             }
@@ -405,27 +406,28 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * 
      * @param sheet
      * @param anno
-     * @param adaptor
+     * @param adapter
      * @param config
      * @return 表の開始位置。指定したラベルが見つからない場合、設定によりnullを返す。
      * @throws AnnotationInvalidException アノテーションの値が不正で、表の開始位置が位置が見つからない場合。
      * @throws CellNotFoundException 指定したラベルが見つからない場合。
      */
-    private CellAddress getHeaderPosition(final Sheet sheet, final XlsVerticalRecords anno,
-            final FieldAdapter adaptor, final XlsMapperConfig config) throws AnnotationInvalidException, CellNotFoundException {
+    private Optional<CellAddress> getHeaderPosition(final Sheet sheet, final XlsVerticalRecords anno,
+            final FieldAdapter adapter, final XlsMapperConfig config) throws AnnotationInvalidException, CellNotFoundException {
         
         if(Utils.isNotEmpty(anno.headerAddress())) {
-            CellAddress address = Utils.parseCellAddress(anno.headerAddress());
-            if(address == null) {
+            try {
+                return Optional.of(CellAddress.of(anno.headerAddress()));
+                
+            } catch(IllegalArgumentException e) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsVerticalRecords.class)
                         .var("attrName", "headerAddress")
                         .var("attrValue", anno.headerAddress())
                         .format());
                 
             }
-            return address;
             
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
@@ -435,19 +437,19 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     // 表の見出しが上にある場合。HorizontalRecordsを同じ。
                     int initColumn = labelCell.getColumnIndex();
                     int initRow = labelCell.getRowIndex() + anno.right();
-                    return CellAddress.of(initRow, initColumn);
+                    return Optional.of(CellAddress.of(initRow, initColumn));
                     
                 } else {
                     
                     int initColumn = labelCell.getColumnIndex() + anno.right();
                     int initRow = labelCell.getRowIndex();
-                    return CellAddress.of(initRow, initColumn);
+                    return Optional.of(CellAddress.of(initRow, initColumn));
                     
                 }
                 
             } catch(CellNotFoundException ex) {
                 if(anno.optional()) {
-                    return null;
+                    return Optional.empty();
                 } else {
                     throw ex;
                 }
@@ -455,7 +457,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         } else {
             if(anno.headerRow() < 0) {
                 throw  new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsVerticalRecords.class)
                         .var("attrName", "headerRow")
                         .var("attrValue", anno.headerRow())
@@ -465,7 +467,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             if(anno.headerColumn() < 0) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsVerticalRecords.class)
                         .var("attrName", "column")
                         .var("attrValue", anno.headerColumn())
@@ -473,7 +475,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         .format());
                 
             }
-            return CellAddress.of(anno.headerRow(), anno.headerColumn());
+            return Optional.of(CellAddress.of(anno.headerRow(), anno.headerColumn()));
         }
     }
     
@@ -666,14 +668,14 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     /**
      * レコードの値か空かどうか判定する。
      * <p>アノテーション<code>@XlsIsEmpty</code>のメソッドで判定を行う。
-     * @param adaptor
+     * @param adapter
      * @param record
      * @param annoReader
      * @return アノテーションがない場合はfalseを返す。
      * @throws AnnotationReadException 
      * @throws AnnotationInvalidException 
      */
-    private boolean isEmptyRecord(final FieldAdapter adaptor, final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
+    private boolean isEmptyRecord(final FieldAdapter adapter, final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
         
         for(Method method : record.getClass().getMethods()) {
             final XlsIsIgnored emptyAnno = annoReader.getAnnotation(method, XlsIsIgnored.class);
@@ -698,44 +700,44 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     
     @Override
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
-            final FieldAdapter adaptor, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final FieldAdapter adapter, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
                 final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), beansObj, adaptor.getName());
+                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), beansObj, adapter.getName());
             } catch(CellNotFoundException e) {
                 
             }
         }
         
-        final Class<?> clazz = adaptor.getType();
-        final Object result = adaptor.getValue(beansObj);
+        final Class<?> clazz = adapter.getType();
+        final Object result = adapter.getValue(beansObj);
         if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getComponentType();
+                recordClass = adapter.getComponentType();
             }
             
             final Collection<Object> value = (result == null ? new ArrayList<Object>() : (Collection<Object>) result);
             final List<Object> list = Utils.convertCollectionToList(value);
-            saveRecords(sheet, anno, adaptor, recordClass, list, config, work);
+            saveRecords(sheet, anno, adapter, recordClass, list, config, work);
             
         } else if(clazz.isArray()) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getComponentType();
+                recordClass = adapter.getComponentType();
             }
             
             final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
-            saveRecords(sheet, anno, adaptor, recordClass, list, config, work);
+            saveRecords(sheet, anno, adapter, recordClass, list, config, work);
             
         } else {
             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
-                    .var("property", adaptor.getNameWithClass())
+                    .var("property", adapter.getNameWithClass())
                     .varWithAnno("anno", XlsVerticalRecords.class)
                     .varWithClass("actualType", clazz)
                     .var("expectedType", "Collection(List/Set) or Array")
@@ -744,20 +746,20 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
     }
     
-    private void saveRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAdapter adaptor, 
+    private void saveRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAdapter adapter, 
             final Class<?> recordClass, final List<Object> result,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        RecordsProcessorUtil.checkSavingNestedRecordClass(recordClass, adaptor, work.getAnnoReader());
+        RecordsProcessorUtil.checkSavingNestedRecordClass(recordClass, adapter, work.getAnnoReader());
         
         // get table starting position
-        final CellAddress initPosition = getHeaderPosition(sheet, anno, adaptor, config);
-        if(initPosition == null) {
+        final Optional<CellAddress> initPosition = getHeaderPosition(sheet, anno, adapter, config);
+        if(!initPosition.isPresent()) {
             return;
         }
         
-        final int initColumn = initPosition.getColumn();
-        final int initRow = initPosition.getRow();
+        final int initColumn = initPosition.get().getColumn();
+        final int initRow = initPosition.get().getRow();
         
         int hColumn = initColumn;
         int hRow = initRow;
@@ -810,7 +812,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         saveRecords(sheet, headers,
                 anno,
                 CellAddress.of(initRow, hColumn), new AtomicInteger(0),
-                adaptor, recordClass, result,
+                adapter, recordClass, result,
                 config, work,
                 mergedRanges, recordOperation);
         
@@ -831,7 +833,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     private void saveRecords(final Sheet sheet, final List<RecordHeader> headers,
             final XlsVerticalRecords anno,
             final CellAddress initPosition, final AtomicInteger nestedRecordSize,
-            final FieldAdapter adaptor, final Class<?> recordClass, final List<Object> result,
+            final FieldAdapter adapter, final Class<?> recordClass, final List<Object> result,
             final XlsMapperConfig config, final SavingWorkObject work,
             final List<CellRangeAddress> mergedRanges, final RecordOperation recordOperation) throws XlsMapperException {
 
@@ -869,7 +871,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
             
             // パスの位置の変更
-            work.getErrors().pushNestedPath(adaptor.getName(), r);
+            work.getErrors().pushNestedPath(adapter.getName(), r);
             
             if(record != null) {
              // execute PreProcess/ listner
@@ -991,7 +993,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                             } else if(anno.overRecord().equals(OverRecordOperation.Insert)) {
                                 // POIは列の追加をサポートしていないので非対応。
                                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
-                                        .var("property", adaptor.getNameWithClass())
+                                        .var("property", adapter.getNameWithClass())
                                         .varWithAnno("anno", XlsVerticalRecords.class)
                                         .var("attrName", "overRecord")
                                         .varWithEnum("attrValue", OverRecordOperation.Insert)
@@ -1039,7 +1041,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     } else if(anno.remainedRecord().equals(RemainedRecordOperation.Delete)) {
                         // POIは列の削除をサポートしていないので非対応。
                         throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
-                                .var("property", adaptor.getNameWithClass())
+                                .var("property", adapter.getNameWithClass())
                                 .varWithAnno("anno", XlsVerticalRecords.class)
                                 .var("attrName", "remainedRecord")
                                 .varWithEnum("attrValue", RemainedRecordOperation.Delete)

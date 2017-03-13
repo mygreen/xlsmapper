@@ -968,26 +968,26 @@ public class Utils {
         return !isEmpty(arrays);
     }
     
-    private static final Pattern PATTERN_CELL_ADREESS = Pattern.compile("^([a-zA-Z]+)([0-9]+)$");
-    
-    /**
-     * Excelのアドレス形式'A1'を、{@link CellAddress}に変換する。
-     * @param address 処理対象のアドレス
-     * @return 変換できない場合は、nullを返す。
-     */
-    public static CellAddress parseCellAddress(final String address) {
-        
-        if(isEmpty(address)) {
-            return null;
-        }
-        
-        final Matcher matcher = PATTERN_CELL_ADREESS.matcher(address);
-        if(!matcher.matches()) {
-            return null;
-        }
-        
-        return CellAddress.of(address);
-    }
+//    private static final Pattern PATTERN_CELL_ADREESS = Pattern.compile("^([a-zA-Z]+)([0-9]+)$");
+//    
+//    /**
+//     * Excelのアドレス形式'A1'を、{@link CellAddress}に変換する。
+//     * @param address 処理対象のアドレス
+//     * @return 変換できない場合は、nullを返す。
+//     */
+//    public static CellAddress parseCellAddress(final String address) {
+//        
+//        if(isEmpty(address)) {
+//            return null;
+//        }
+//        
+//        final Matcher matcher = PATTERN_CELL_ADREESS.matcher(address);
+//        if(!matcher.matches()) {
+//            return null;
+//        }
+//        
+//        return CellAddress.of(address);
+//    }
     
     /**
      * 座標をExcelのアドレス形式'A1'などに変換する
@@ -2146,7 +2146,7 @@ public class Utils {
      * セルに設定する数式をアノテーションから組み立てる。
      * 
      * @since 1.5
-     * @param adaptor フィールド
+     * @param adapter フィールド
      * @param formulaAnno 数式定義用のアノテーション。
      * @param config システム設定。
      * @param cell 設定対象のセル。
@@ -2154,7 +2154,7 @@ public class Utils {
      * @return 数式。
      * @throws XlsMapperException
      */
-    public static String getFormulaValue(final FieldAdapter adaptor, final XlsFormula formulaAnno,
+    public static String getFormulaValue(final FieldAdapter adapter, final XlsFormula formulaAnno,
             final XlsMapperConfig config, final Cell cell, final Object targetBean) throws XlsMapperException {
         
         if(isNotEmpty(formulaAnno.value())) {
@@ -2172,7 +2172,7 @@ public class Utils {
                 return config.getFormulaFormatter().interpolate(formulaAnno.value(), vars);
             } catch(Exception e) {
                 throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.invalidEL")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .var("attr", XlsFormula.class)
                         .var("attrName", "value")
                         .var("attrValue", formulaAnno.value())
@@ -2194,7 +2194,7 @@ public class Utils {
             
             if(method == null) {
                 throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.notFoundMethod")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsFormula.class)
                         .var("attrName", "methodName")
                         .var("attrValue", formulaAnno.methodName())
@@ -2237,7 +2237,7 @@ public class Utils {
             
         } else {
             throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.required.any")
-                    .var("property", adaptor.getNameWithClass())
+                    .var("property", adapter.getNameWithClass())
                     .varWithAnno("anno", XlsFormula.class)
                     .varWithArrays("attrNames", "value", "methodName")
                     .format());

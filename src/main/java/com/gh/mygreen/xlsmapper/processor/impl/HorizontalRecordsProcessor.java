@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -133,19 +134,19 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
     }
     
-    private List<?> loadRecords(final Sheet sheet, XlsHorizontalRecords anno, final FieldAdapter adaptor, 
+    private List<?> loadRecords(final Sheet sheet, XlsHorizontalRecords anno, final FieldAdapter adapter, 
             final Class<?> recordClass, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        RecordsProcessorUtil.checkLoadingNestedRecordClass(recordClass, adaptor, work.getAnnoReader());
+        RecordsProcessorUtil.checkLoadingNestedRecordClass(recordClass, adapter, work.getAnnoReader());
         
         // get table starting position
-        final CellAddress initPosition = getHeaderPosition(sheet, anno, adaptor, config);
-        if(initPosition == null) {
+        final Optional<CellAddress> initPosition = getHeaderPosition(sheet, anno, adapter, config);
+        if(!initPosition.isPresent()) {
             return null;
         }
         
-        final int initColumn = initPosition.getColumn();
-        final int initRow = initPosition.getRow();
+        final int initColumn = initPosition.get().getColumn();
+        final int initRow = initPosition.get().getRow();
         
         int hColumn = initColumn;
         int hRow = initRow;
@@ -189,14 +190,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // データ行の開始位置の調整
         hRow += anno.headerBottom();
         
-        return loadRecords(sheet, headers, anno, CellAddress.of(hRow, initColumn), 0, adaptor, recordClass, config, work);
+        return loadRecords(sheet, headers, anno, CellAddress.of(hRow, initColumn), 0, adapter, recordClass, config, work);
         
     }
     
     private List<?> loadRecords(final Sheet sheet, final List<RecordHeader> headers,
             final XlsHorizontalRecords anno, 
             final CellAddress initPosition, final int parentMergedSize,
-            final FieldAdapter adaptor, final Class<?> recordClass, 
+            final FieldAdapter adapter, final Class<?> recordClass, 
             final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
         final List<Object> result = new ArrayList<>();
@@ -230,7 +231,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             final Object record = config.createBean(recordClass);
             
             // パスの位置の変更
-            work.getErrors().pushNestedPath(adaptor.getName(), result.size());
+            work.getErrors().pushNestedPath(adapter.getName(), result.size());
             
             // execute PreProcess listener
             final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(record.getClass(), XlsListener.class);
@@ -360,7 +361,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 break;
             }
             
-            if(!anno.ignoreEmptyRecord() || !isEmptyRecord(adaptor, record, work.getAnnoReader())) {
+            if(!anno.ignoreEmptyRecord() || !isEmptyRecord(adapter, record, work.getAnnoReader())) {
                 result.add(record);
                 
             }
@@ -403,20 +404,21 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
      * 
      * @param sheet
      * @param anno
-     * @param adaptor
+     * @param adapter
      * @param config
      * @return 表の開始位置。指定したラベルが見つからない場合、設定によりnullを返す。
      * @throws AnnotationInvalidException アノテーションの値が不正で、表の開始位置が位置が見つからない場合。
      * @throws CellNotFoundException 指定したラベルが見つからない場合。
      */
-    private CellAddress getHeaderPosition(final Sheet sheet, final XlsHorizontalRecords anno,
-            final FieldAdapter adaptor, final XlsMapperConfig config) throws AnnotationInvalidException, CellNotFoundException {
+    private Optional<CellAddress> getHeaderPosition(final Sheet sheet, final XlsHorizontalRecords anno,
+            final FieldAdapter adapter, final XlsMapperConfig config) throws AnnotationInvalidException, CellNotFoundException {
         
         if(Utils.isNotEmpty(anno.headerAddress())) {
-            final CellAddress address = Utils.parseCellAddress(anno.headerAddress());
-            if(address == null) {
+            try {
+                return Optional.of(CellAddress.of(anno.headerAddress()));
+            } catch(IllegalArgumentException e) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsHorizontalRecords.class)
                         .var("attrName", "headerAddress")
                         .var("attrValue", anno.headerAddress())
@@ -424,19 +426,17 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
             }
             
-            return address;
-            
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
                 Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0, 0, config);
                 int initColumn = labelCell.getColumnIndex();
                 int initRow = labelCell.getRowIndex() + anno.bottom();
                 
-                return CellAddress.of(initRow, initColumn);
+                return Optional.of(CellAddress.of(initRow, initColumn));
                 
             } catch(CellNotFoundException ex) {
                 if(anno.optional()) {
-                    return null;
+                    return Optional.empty();
                 } else {
                     throw ex;
                 }
@@ -446,7 +446,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             // column, rowのアドレスを直接指定の場合
             if(anno.headerRow() < 0) {
                 throw  new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsHorizontalRecords.class)
                         .var("attrName", "headerRow")
                         .var("attrValue", anno.headerRow())
@@ -456,7 +456,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             if(anno.headerColumn() < 0) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
-                        .var("property", adaptor.getNameWithClass())
+                        .var("property", adapter.getNameWithClass())
                         .varWithAnno("anno", XlsHorizontalRecords.class)
                         .var("attrName", "column")
                         .var("attrValue", anno.headerColumn())
@@ -465,7 +465,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
             }
             
-            return CellAddress.of(anno.headerRow(), anno.headerColumn());
+            return Optional.of(CellAddress.of(anno.headerRow(), anno.headerColumn()));
         }
         
     }
@@ -663,14 +663,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     /**
      * レコードの値か空かどうか判定する。
      * <p>アノテーション<code>@XlsIsEmpty</code>のメソッドで判定を行う。
-     * @param adaptor
+     * @param adapter
      * @param record
      * @param annoReader
      * @return アノテーションがない場合はfalseを返す。
      * @throws AnnotationReadException 
      * @throws AnnotationInvalidException 
      */
-    private boolean isEmptyRecord(final FieldAdapter adaptor, final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
+    private boolean isEmptyRecord(final FieldAdapter adapter, final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
         
         for(Method method : record.getClass().getMethods()) {
             final XlsIsIgnored emptyAnno = annoReader.getAnnotation(method, XlsIsIgnored.class);
@@ -696,44 +696,44 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     
     @Override
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsHorizontalRecords anno,
-            final FieldAdapter adaptor, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final FieldAdapter adapter, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
                 final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), beansObj, adaptor.getName());
+                Utils.setLabel(POIUtils.getCellContents(tableLabelCell, config.getCellFormatter()), beansObj, adapter.getName());
             } catch(CellNotFoundException e) {
                 
             }
         }
         
-        final Class<?> clazz = adaptor.getType();
-        final Object result = adaptor.getValue(beansObj);
+        final Class<?> clazz = adapter.getType();
+        final Object result = adapter.getValue(beansObj);
         if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getComponentType();
+                recordClass = adapter.getComponentType();
             }
             
             final Collection<Object> value = (result == null ? new ArrayList<Object>() : (Collection<Object>) result);
             final List<Object> list = Utils.convertCollectionToList(value);
-            saveRecords(sheet, anno, adaptor, recordClass, list, config, work);
+            saveRecords(sheet, anno, adapter, recordClass, list, config, work);
             
         } else if(clazz.isArray()) {
             
             Class<?> recordClass = anno.recordClass();
             if(recordClass == Object.class) {
-                recordClass = adaptor.getComponentType();
+                recordClass = adapter.getComponentType();
             }
             
             final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
-            saveRecords(sheet, anno, adaptor, recordClass, list, config, work);
+            saveRecords(sheet, anno, adapter, recordClass, list, config, work);
             
         } else {
             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
-                    .var("property", adaptor.getNameWithClass())
+                    .var("property", adapter.getNameWithClass())
                     .varWithAnno("anno", XlsHorizontalRecords.class)
                     .varWithClass("actualType", clazz)
                     .var("expectedType", "Collection(List/Set) or Array")
@@ -742,19 +742,19 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
     }
     
-    private void saveRecords(final Sheet sheet, final XlsHorizontalRecords anno, final FieldAdapter adaptor, 
+    private void saveRecords(final Sheet sheet, final XlsHorizontalRecords anno, final FieldAdapter adapter, 
             final Class<?> recordClass, final List<Object> result, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        RecordsProcessorUtil.checkSavingNestedRecordClass(recordClass, adaptor, work.getAnnoReader());
+        RecordsProcessorUtil.checkSavingNestedRecordClass(recordClass, adapter, work.getAnnoReader());
         
         // get table starting position
-        final CellAddress initPosition = getHeaderPosition(sheet, anno, adaptor, config);
-        if(initPosition == null) {
+        final Optional<CellAddress> initPosition = getHeaderPosition(sheet, anno, adapter, config);
+        if(!initPosition.isPresent()) {
             return;
         }
         
-        int initColumn = initPosition.getColumn();
-        int initRow = initPosition.getRow();
+        int initColumn = initPosition.get().getColumn();
+        int initRow = initPosition.get().getRow();
         
         int hColumn = initColumn;
         int hRow = initRow;
@@ -816,7 +816,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // データ行の開始位置の調整
         hRow += anno.headerBottom();
         
-        saveRecords(sheet, headers, anno, CellAddress.of(hRow, initColumn), new AtomicInteger(0), adaptor, recordClass, result, config,
+        saveRecords(sheet, headers, anno, CellAddress.of(hRow, initColumn), new AtomicInteger(0), adapter, recordClass, result, config,
                 work, mergedRanges, recordOperation, new ArrayList<Integer>());
         
         // 書き込むデータがない場合は、1行目の終端を操作範囲とする。
@@ -840,7 +840,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     private void saveRecords(final Sheet sheet, final List<RecordHeader> headers,
             final XlsHorizontalRecords anno,
             final CellAddress initPosition, final AtomicInteger nestedRecordSize,
-            final FieldAdapter adaptor, final Class<?> recordClass, final List<Object> result,
+            final FieldAdapter adapter, final Class<?> recordClass, final List<Object> result,
             final XlsMapperConfig config, final SavingWorkObject work,
             final List<CellRangeAddress> mergedRanges, final RecordOperation recordOperation,
             final List<Integer> inserteRowsIdx) throws XlsMapperException {
@@ -880,7 +880,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             }
             
             // パスの位置の変更
-            work.getErrors().pushNestedPath(adaptor.getName(), r);
+            work.getErrors().pushNestedPath(adapter.getName(), r);
             
             if(record != null) {
                 

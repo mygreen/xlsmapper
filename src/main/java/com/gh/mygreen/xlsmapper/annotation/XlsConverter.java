@@ -24,14 +24,14 @@ import com.gh.mygreen.xlsmapper.converter.CellConverter;
  * 
  *     // シート読み込み時のExcel Cell {@literal =>} Javaオブジェクトに変換する。
  *     {@literal @Override}
- *     public LocaleDate toObject(final Cell cell, final FieldAdaptor adaptor, final XlsMapperConfig config)
+ *     public LocaleDate toObject(final Cell cell, final FieldAdaptor adapter, final XlsMapperConfig config)
  *         throws XlsMapperException {
  *         {@literal //TODO:} 実装する
  *     }
  *     
  *     //シート書き込み時のJavaオブジェクト {@literal =>} Excel Cellに変換する。
  *     {@literal @Override}
- *     Cell toCell(FieldAdaptor adaptor, LocaleDate targetValue, Sheet sheet, int column, int row, XlsMapperConfig config) throws XlsMapperException;
+ *     Cell toCell(FieldAdaptor adapter, LocaleDate targetValue, Sheet sheet, CellAddress address, XlsMapperConfig config) throws XlsMapperException;
  *         {@literal //TODO:} 実装する
  *     }
  * }

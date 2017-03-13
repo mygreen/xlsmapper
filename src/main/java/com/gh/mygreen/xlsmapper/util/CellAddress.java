@@ -2,6 +2,8 @@ package com.gh.mygreen.xlsmapper.util;
 
 import java.awt.Point;
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellReference;
@@ -84,19 +86,28 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
         return of(reference.getRow(), reference.getCol());
     }
     
-    
     /**
      * CellAddressのインスタンスを作成する。
      * @param address 'A1'の形式のセルのアドレス
      * @return {@link CellAddress}のインスタンス
-     * @throws IllegalArgumentException {@literal address == null || address.length() == 0}
+     * @throws IllegalArgumentException {@literal address == null || address.length() == 0 || アドレスの書式として不正}
      */
     public static CellAddress of(final String address) {
         ArgUtils.notEmpty(address, "address");
         
+        if(!matchedCellAddress(address)) {
+            throw new IllegalArgumentException(address + " is wrong cell address pattern.");
+        }
+        
         return of(new CellReference(address));
     }
     
+    private static final Pattern PATTERN_CELL_ADREESS = Pattern.compile("^([a-zA-Z]+)([0-9]+)$");
+    
+    private static boolean matchedCellAddress(final String address) {
+        final Matcher matcher = PATTERN_CELL_ADREESS.matcher(address);
+        return matcher.matches();
+    }
     
     /**
      * CellAddressのインスタンスを作成する。
