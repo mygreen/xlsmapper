@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 
 
 /**
@@ -22,11 +23,11 @@ public interface LoadingFieldProcessor<A extends Annotation> extends FieldProces
      * @param sheet Excelのシート
      * @param beansObj マッピング対象のBean。
      * @param anno 処理対象のアノテーション。
-     * @param adaptor マッピング対象のフィールド情報
+     * @param accessor マッピング対象のフィールド情報
      * @param config システム設定
      * @param work 一時オブジェクト
      * @throws XlsMapperException 
      */
-    void loadProcess(Sheet sheet, Object beansObj, A anno, FieldAdaptor adaptor, XlsMapperConfig config, LoadingWorkObject work) throws XlsMapperException;
+    void loadProcess(Sheet sheet, Object beansObj, A anno, FieldAccessor accessor, XlsMapperConfig config, LoadingWorkObject work) throws XlsMapperException;
     
 }

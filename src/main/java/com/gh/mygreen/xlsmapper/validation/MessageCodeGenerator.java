@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
@@ -202,7 +202,7 @@ public class MessageCodeGenerator {
     
     private void addCode(final List<String> codeList, final String code, final String objectName, final String field) {
         final String formattedCode = formatCode(code, objectName, field);
-        if(!codeList.contains(codeList)) {
+        if(!codeList.contains(formattedCode)) {
             codeList.add(formattedCode);
         }
     }

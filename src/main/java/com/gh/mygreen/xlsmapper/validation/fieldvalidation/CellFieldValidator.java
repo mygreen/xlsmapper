@@ -1,7 +1,6 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
-import java.awt.Point;
-
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 /**
@@ -21,6 +20,6 @@ public interface CellFieldValidator<T> extends FieldValidator<T> {
      * @param errors 入力値チェックした結果
      * @return true: チェックを実行した結果、エラーがない場合。
      */
-    public boolean validate(String fieldName, T value, Point cellAddress, SheetBindingErrors errors);
+    public boolean validate(String fieldName, T value, CellAddress cellAddress, SheetBindingErrors errors);
     
 }

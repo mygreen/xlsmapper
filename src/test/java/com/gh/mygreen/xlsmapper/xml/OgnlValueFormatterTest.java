@@ -7,7 +7,7 @@ import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-import com.gh.mygreen.xlsmapper.cellconvert.DefaultCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 
 import ognl.Ognl;
 import ognl.OgnlContext;
@@ -397,10 +397,10 @@ public class OgnlValueFormatterTest {
         
         OgnlValueFormatter formatter = new OgnlValueFormatter();
         
-        Class<?>[] obj = new Class[]{String.class, DefaultCellConverter.class};
+        Class<?>[] obj = new Class[]{String.class, CellConverter.class};
         
         String exp = formatter.format(obj);
-        assertThat(exp, is("new java.lang.Class[] {@java.lang.String@class, @com.gh.mygreen.xlsmapper.cellconvert.DefaultCellConverter@class}"));
+        assertThat(exp, is("new java.lang.Class[] {@java.lang.String@class, @com.gh.mygreen.xlsmapper.cellconverter.CellConverter@class}"));
         
         Class<?>[] result = (Class<?>[])evalOgnl(exp);
         assertThat(result, is(instanceOf(Class[].class)));

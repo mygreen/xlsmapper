@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
+import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
@@ -20,7 +20,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * <p>次のような表のExcelシートをマッピングする例を説明します。</p>
  * 
  * <div class="picture">
- *    <img src="doc-files/howto_load.png">
+ *    <img src="doc-files/howto_load.png" alt="">
  *    <p>基本的なマッピング</p>
  * </div>
  * 
@@ -96,7 +96,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * </p>
  * 
  * <div class="picture">
- *    <img src="doc-files/howto_save.png">
+ *    <img src="doc-files/howto_save.png" alt="">
  *    <p>データが空のテンプレートファイル</p>
  * </div>
  * 
@@ -107,7 +107,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  *   </li>
  *   <li>表「User List」のレコードを追加する操作を指定するために、アノテーションの属性 {@link XlsHorizontalRecords#overRecord()}を指定します。
  *     <br>テンプレート上は、レコードが1行分しかないですが、実際に書き込むレコード数が2つ以上の場合、足りなくなるため、その際のシートの操作方法を指定します。
- *     <br>今回の{@link OverRecordOperate#Insert}は、行の挿入を行います。
+ *     <br>今回の{@link OverRecordOperation#Insert}は、行の挿入を行います。
  *   </li>
  * </ul>
  * 

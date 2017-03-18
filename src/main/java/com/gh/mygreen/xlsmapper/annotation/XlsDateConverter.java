@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 
 /**
@@ -52,7 +53,7 @@ public @interface XlsDateConverter {
      *   <li>属性{@link #lenient()}で、日付/時刻の解析を厳密に行わないか指定します。
      *       <br>デフォルト値はtrueで、厳密に解析を行いません。falseの場合厳密に解析を行います。
      *   </li>
-     *   <li>書式に合わない値をパースした場合、例外{@link com.gh.mygreen.xlsmapper.cellconvert.TypeBindException}が発生します。</li>
+     *   <li>書式に合わない値をパースした場合、例外{@link com.gh.mygreen.xlsmapper.cellconverter.TypeBindException}が発生します。</li>
      * </ul>
      * 
      * <pre class="highlight"><code class="java">
@@ -94,6 +95,16 @@ public @interface XlsDateConverter {
      * @return
      */
     String locale() default "";
+    
+    /**
+     * タイムゾーンを指定します。
+     * <p>{@link TimeZone#getTimeZone(String)}で解釈可能な値を指定する必要があります。</p>
+     * <p>{@literal Asia/Tokyo, GMT, GMT+09:00}などの値を指定します。</p>
+     * <p>ただし、オフセットを持たないクラスタイプ{@literal LocalDateTime, LocalDate, LocalTime}の時は、指定しても意味がありません。</p>
+     * @since 2.0
+     * @return 省略した場合、システム標準の値を使用します。
+     */
+    String timezone() default "";
     
     /**
      * 書き込み時にセルの書式を直接設定したい場合に指定します。

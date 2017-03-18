@@ -4,7 +4,8 @@ import java.awt.Point;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 /**
@@ -87,7 +88,7 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T>, Ce
     }
     
     @Override
-    public boolean validate(final String fieldName, final T value, final Point cellAddress, final SheetBindingErrors errors) {
+    public boolean validate(final String fieldName, final T value, final CellAddress cellAddress, final SheetBindingErrors errors) {
         
         if(validate(value)) {
             return true;

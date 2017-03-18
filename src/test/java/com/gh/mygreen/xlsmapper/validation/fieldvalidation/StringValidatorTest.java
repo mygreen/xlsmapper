@@ -64,7 +64,7 @@ public class StringValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
         
@@ -76,7 +76,7 @@ public class StringValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
         
@@ -179,7 +179,7 @@ public class StringValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.exactLength"));
         
@@ -237,7 +237,7 @@ public class StringValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.maxLength"));
         
@@ -295,7 +295,7 @@ public class StringValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.minLength"));
         
@@ -353,7 +353,7 @@ public class StringValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.betweenLength"));
         
@@ -371,7 +371,7 @@ public class StringValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.betweenLength"));
         

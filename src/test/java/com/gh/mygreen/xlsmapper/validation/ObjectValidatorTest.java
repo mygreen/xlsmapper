@@ -14,17 +14,17 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
+import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
+import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.CellField;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.MaxValidator;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.PatternValidator;
@@ -104,7 +104,7 @@ public class ObjectValidatorTest {
         {
             String fieldName = "className";
             CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
             assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.className));
@@ -116,7 +116,7 @@ public class ObjectValidatorTest {
                 PersonRecord record = sheet.list.get(1);
                 String fieldName = "email";
                 CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-                assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
+                assertThat(fieldError.getCellAddress().toPoint(), is(record.positions.get(fieldName)));
                 assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
                 assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.pattern"));
                 assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.email));
@@ -131,7 +131,7 @@ public class ObjectValidatorTest {
                 PersonRecord record = sheet.list.get(2);
                 String fieldName = "birthday";
                 CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-                assertThat(fieldError.getCellAddress(), is(record.positions.get(fieldName)));
+                assertThat(fieldError.getCellAddress().toPoint(), is(record.positions.get(fieldName)));
                 assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
                 assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
                 assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.birthday));
@@ -192,7 +192,7 @@ public class ObjectValidatorTest {
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
-        @XlsIsEmpty
+        @XlsIsIgnored
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }

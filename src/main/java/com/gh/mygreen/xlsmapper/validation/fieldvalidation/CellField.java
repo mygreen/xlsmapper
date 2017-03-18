@@ -1,16 +1,18 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.validation.Errors;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
-import com.gh.mygreen.xlsmapper.PropertyNavigator;
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.fieldaccessor.LabelGetterFactory;
+import com.gh.mygreen.xlsmapper.fieldaccessor.PositionGetterFactory;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.PropertyNavigator;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -46,7 +48,7 @@ public class CellField<T> {
     private T value;
     
     /** セルのアドレス */
-    private Point cellAddress;
+    private CellAddress cellAddress;
     
     /** 必須かどうか */
     private boolean required;
@@ -90,8 +92,13 @@ public class CellField<T> {
         final T fieldValue = (T) propertyNavigator.getProperty(targetObj, fieldName);
         setValue(fieldValue);
         
-        setCellAddress(Utils.getPosition(targetObj, fieldName));
-        setLabel(Utils.getLabel(targetObj, fieldName));
+        Optional<CellAddress> position = new PositionGetterFactory().create(targetObj.getClass(), fieldName)
+                .map(getter -> getter.get(targetObj)).orElse(Optional.empty());
+        position.ifPresent(p -> setCellAddress(p));
+        
+        Optional<String> label = new LabelGetterFactory().create(targetObj.getClass(), fieldName)
+                .map(getter -> getter.get(targetObj)).orElse(Optional.empty());
+        label.ifPresent(l -> setLabel(l));
         
         this.validators = new ArrayList<FieldValidator<T>>();
     }
@@ -297,11 +304,11 @@ public class CellField<T> {
         return !hasErrors(errors);
     }
     
-    public Point getCellAddress() {
+    public CellAddress getCellAddress() {
         return cellAddress;
     }
     
-    public CellField<T> setCellAddress(Point cellAddress) {
+    public CellField<T> setCellAddress(CellAddress cellAddress) {
         this.cellAddress = cellAddress;
         return this;
     }

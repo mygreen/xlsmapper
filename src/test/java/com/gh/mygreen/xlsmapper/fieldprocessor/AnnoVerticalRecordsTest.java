@@ -24,29 +24,31 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
-import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
-import com.gh.mygreen.xlsmapper.IsEmptyComparator;
-import com.gh.mygreen.xlsmapper.IsEmptyConfig;
-import com.gh.mygreen.xlsmapper.POIUtils;
-import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.XlsMapper;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
+import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperate;
+import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
-import com.gh.mygreen.xlsmapper.annotation.XlsHint;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
+import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
+import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
-import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
+import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
-import com.gh.mygreen.xlsmapper.fieldprocessor.processor.VerticalRecordsProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.VerticalRecordsProcessor;
+import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.util.IsEmptyComparator;
+import com.gh.mygreen.xlsmapper.util.IsEmptyConfig;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 /**
@@ -2985,15 +2987,15 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
     @XlsSheet(name="開始位置の指定")
     private static class StartedPositionSheet {
         
-        @XlsHint(order=1)
+        @XlsOrder(value=1)
         @XlsVerticalRecords(tableLabel="○×一覧", ignoreEmptyRecord=true)
         private List<NormalRecord> normalRecords1;
         
-        @XlsHint(order=2)
+        @XlsOrder(value=2)
         @XlsVerticalRecords(headerAddress="C9", ignoreEmptyRecord=true)
         private List<NormalRecord> normalRecords2;
         
-        @XlsHint(order=3)
+        @XlsOrder(value=3)
         @XlsVerticalRecords(headerColumn=3, headerRow=13, ignoreEmptyRecord=true)
         private List<NormalRecord> normalRecords3;
         
@@ -3001,7 +3003,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 //        @XlsVerticalRecords(tableLabel="◆△一覧", bottom=2, skipEmptyRecord=true)
         private List<NormalRecord> normalRecords4;
         
-        @XlsHint(order=5)
+        @XlsOrder(value=5)
         @XlsVerticalRecords(tableLabel="存在しない", optional=true, ignoreEmptyRecord=true)
         private List<NormalRecord> normalRecords5;
         
@@ -3174,19 +3176,19 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="終了位置の指定")
    private static class EndPositionSheet {
        
-       @XlsHint(order=1)
+       @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="終端レコードの指定（Empty）", terminal=RecordTerminal.Empty)
        private List<NormalRecord> normalRecords1;
        
-       @XlsHint(order=2)
+       @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="終端レコードの指定（Border）", terminal=RecordTerminal.Border)
        private List<NormalRecord> normalRecords2;
        
-       @XlsHint(order=3)
+       @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="終端セルの指定", terminal=RecordTerminal.Border, terminateLabel="合計")
        private List<NormalRecord> normalRecords3;
        
-       @XlsHint(order=4)
+       @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="見出しセルの個数指定", terminal=RecordTerminal.Border, headerLimit=3)
        private List<NormalRecord> normalRecords4;
        
@@ -3293,24 +3295,24 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="見出しの空白")
    private static class HeaderSpaceSheet {
        
-       @XlsHint(order=1)
+       @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="見出しに空白なし", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<UserRecord> records1;
        
-       @XlsHint(order=2)
+       @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<UserRecord> records2;
        
-       @XlsHint(order=3)
+       @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="見出しに空白がある", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy, range=2)
+               overRecord=OverRecordOperation.Copy, range=2)
        private List<UserRecord> records3;
        
-       @XlsHint(order=4)
+       @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="開始位置がずれている", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy, range=3)
+               overRecord=OverRecordOperation.Copy, range=3)
        private List<UserRecord> records4;
        
        /**
@@ -3392,7 +3394,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsColumn(columnName="電話番号")
            String tel;
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
            }
@@ -3421,29 +3423,29 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="カラムの設定")
    private static class ColumnSettingSheet {
        
-       @XlsHint(order=1)
+       @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="結合セル", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<MergedRecord> mergedRecords;
        
-       @XlsHint(order=2)
+       @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<HeaderMergedRecord> headerMergedRecords;
        
-       @XlsHint(order=3)
+       @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="オプションのセル（セルがある）", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<OptionalRecord> optionalRecords1;
        
-       @XlsHint(order=4)
+       @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="オプションのセル（セルがない）", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<OptionalRecord> optionalRecords2;
        
-       @XlsHint(order=5)
+       @XlsOrder(value=5)
        @XlsVerticalRecords(tableLabel="Converterがある", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<ConvertedRecord> convertedRecord;
        
        /**
@@ -3672,7 +3674,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        @XlsColumn(columnName="No.")
        private int no;
        
-       @XlsConverter(trim=true)
+       @XlsTrim
        @XlsColumn(columnName="氏名")
        private String name;
        
@@ -3713,15 +3715,15 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    private static class MapColumnSettingSheet {
        
        @XlsVerticalRecords(tableLabel="マップカラム（文字列）", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<MapRecord> mapRecords1;
        
        @XlsVerticalRecords(tableLabel="マップカラム（Converterあり）", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<MapConvertedRecord> mapRecords2;
        
        @XlsVerticalRecords(tableLabel="マップカラム（終了条件がある）", terminal=RecordTerminal.Border,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<MapEndRecord> mapRecords3;
        
        /**
@@ -3924,25 +3926,25 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 空のレコードをスキップ（リスト）
         */
-       @XlsHint(order=1)
+       @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="名簿（リスト）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<EmptySkipRecord> skipList;
        
        /**
         * 空のレコードをスキップ（集合）
         */
-       @XlsHint(order=2)
+       @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="名簿（集合）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private Set<EmptySkipRecord> skipSet;
        
        /**
         * 配列
         */
-       @XlsHint(order=3)
+       @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="名簿（配列）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private EmptySkipRecord[] skipArray;
        
        /**
@@ -4020,7 +4022,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        @XlsColumn(columnName="生年月日")
        private Date birthday;
        
-       @XlsIsEmpty
+       @XlsIsIgnored
        public boolean isEmpty() {
            return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
        }
@@ -4048,9 +4050,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="余分なレコードの制御")
    private static class RemainedOverSheet {
        
-       @XlsHint(order=1)
+       @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Break)
+               overRecord=OverRecordOperation.Break)
        private List<RemainedOverRecord> overBreakRecrods;
        
 //       @XlsHint(order=2)
@@ -4058,19 +4060,19 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 //               overRecord=OverRecordOperate.Insert)
        private List<RemainedOverRecord> overInsertRecrods;
        
-       @XlsHint(order=3)
+       @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<RemainedOverRecord> overCopyRecrods;
        
-       @XlsHint(order=4)
+       @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               remainedRecord=RemainedRecordOperate.None)
+               remainedRecord=RemainedRecordOperation.None)
        private List<RemainedOverRecord> remainedNoneRecrods;
        
-       @XlsHint(order=5)
+       @XlsOrder(value=5)
        @XlsVerticalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               remainedRecord=RemainedRecordOperate.Clear)
+               remainedRecord=RemainedRecordOperation.Clear)
        private List<RemainedOverRecord> remainedClearRecrods;
        
 //       @XlsHint(order=6)
@@ -4211,7 +4213,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        @XlsMapColumns(previousColumnName="氏名")
        private Map<String, String> dateAttended;
        
-       @XlsIsEmpty
+       @XlsIsIgnored
        public boolean isEmpty() {
            IsEmptyBuilder builder = new IsEmptyBuilder(IsEmptyConfig.create().withZeroAsEmpty(true));
            builder.append(name);
@@ -4272,41 +4274,41 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 入力定義が設定されてた表（挿入用）
         */
-       @XlsHint(order=1)
+       @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="入力規則（レコードの挿入）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<DataValidationRecord> insertValidationRecrods;
        
        /**
         * 名前の定義用の表
         */
-       @XlsHint(order=2)
+       @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="名前の定義", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Copy)
+               overRecord=OverRecordOperation.Copy)
        private List<NameDefRecord> nameRecords;
        
        /**
         * 入力定義が設定されてた表（削除用）
         */
-       @XlsHint(order=3)
+       @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="入力規則（レコードの削除）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Break, remainedRecord=RemainedRecordOperate.Clear)
+               overRecord=OverRecordOperation.Break, remainedRecord=RemainedRecordOperation.Clear)
        private List<DataValidationRecord> deleteValidationRecrods;
        
        /**
         * 入力定義が設定されてた表（削除用）（データなし）
         */
-       @XlsHint(order=4)
+       @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="入力規則（レコードの削除）（データなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Break, remainedRecord=RemainedRecordOperate.Clear)
+               overRecord=OverRecordOperation.Break, remainedRecord=RemainedRecordOperation.Clear)
        private List<DataValidationRecord> nonDeleteValidationRecrods;
        
        /**
         * 入力定義が設定されてた表（コピー用）
         */
-       @XlsHint(order=5)
+       @XlsOrder(value=5)
        @XlsVerticalRecords(tableLabel="入力規則（レコードのコピー）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-               overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Clear)
+               overRecord=OverRecordOperation.Copy, remainedRecord=RemainedRecordOperation.Clear)
        private List<DataValidationRecord> copyValidationRecrods;
        
        /**
@@ -4398,7 +4400,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        @XlsMapColumns(previousColumnName="参照形式")
        private Map<String, Boolean> category;
        
-       @XlsIsEmpty
+       @XlsIsIgnored
        public boolean isEmpty() {
            IsEmptyBuilder builder = new IsEmptyBuilder(IsEmptyConfig.create().withZeroAsEmpty(true));
            builder.append(selectRule);
@@ -4499,24 +4501,22 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        private MethodAnnoMapRecord[] mapRecords;
        
-       @XlsHint(order=1)
-       @XlsVerticalRecords(tableLabel="名簿", overRecord=OverRecordOperate.Copy)
+       @XlsOrder(value=1)
+       @XlsVerticalRecords(tableLabel="名簿", overRecord=OverRecordOperation.Copy, ignoreEmptyRecord=true)
        public List<MethodAnnoRecord> getRecords() {
            return records;
        }
        
-       @XlsVerticalRecords(tableLabel="名簿", ignoreEmptyRecord=true)
        public void setRecords(List<MethodAnnoRecord> records) {
            this.records = records;
        }
        
-       @XlsHint(order=2)
-       @XlsVerticalRecords(tableLabel="出欠", overRecord=OverRecordOperate.Copy)
+       @XlsOrder(value=2)
        public MethodAnnoMapRecord[] getMapRecords() {
            return mapRecords;
        }
        
-       @XlsVerticalRecords(tableLabel="出欠", ignoreEmptyRecord=true)
+       @XlsVerticalRecords(tableLabel="出欠", overRecord=OverRecordOperation.Copy, ignoreEmptyRecord=true)
        public void setMapRecords(MethodAnnoMapRecord[] mapRecords) {
            this.mapRecords = mapRecords;
        }
@@ -4584,7 +4584,6 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            return no;
        }
        
-       @XlsColumn(columnName="No.")
        public void setNo(int no) {
            this.no = no;
        }
@@ -4594,7 +4593,6 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            return name;
        }
        
-       @XlsColumn(columnName="氏名")
        public void setName(String name) {
            this.name = name;
        }
@@ -4605,7 +4603,6 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        }
        
        @XlsDateConverter(javaPattern="yyyy年M月d日")
-       @XlsColumn(columnName="生年月日")
        public void setBirthday(Date birthday) {
            this.birthday = birthday;
        }
@@ -4622,7 +4619,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            this.birthdayPosition = new Point(x, y);
        }
        
-       @XlsIsEmpty
+       @XlsIsIgnored
        public boolean isEmpty() {
            return new IsEmptyBuilder()
                .append(name)
@@ -4688,7 +4685,6 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            return no;
        }
        
-       @XlsColumn(columnName="No.")
        public void setNo(int no) {
            this.no = no;
        }
@@ -4698,24 +4694,21 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            return name;
        }
        
-       @XlsColumn(columnName="氏名")
        public void setName(String name) {
            this.name = name;
        }
        
-       @XlsBooleanConverter(saveAsTrue="出席", saveAsFalse="欠席")
-       @XlsMapColumns(previousColumnName="氏名")
+       @XlsBooleanConverter(saveAsTrue="出席", saveAsFalse="欠席", loadForTrue="出席", loadForFalse="欠席")
        public Map<String, Boolean> getDateAttended() {
            return dateAttended;
        }
        
-       @XlsBooleanConverter(loadForTrue="出席", loadForFalse="欠席")
        @XlsMapColumns(previousColumnName="氏名")
        public void setDateAttended(Map<String, Boolean> dateAttended) {
            this.dateAttended = dateAttended;
        }
        
-       @XlsIsEmpty
+       @XlsIsIgnored
        public boolean isEmpty() {
            return new IsEmptyBuilder()
                .append(name)
@@ -4788,19 +4781,19 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="ラベルの位置の指定")
    private static class TableLabelSheet {
        
-       @XlsHint(order=1)
+       @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="タイトルが左", ignoreEmptyRecord=true, tableLabelAbove=false)
        private List<NormalRecord> leftRecords1;
        
-       @XlsHint(order=2)
+       @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="タイトルが左（離れている）", ignoreEmptyRecord=true, tableLabelAbove=false, right=2)
        private List<NormalRecord> leftRecords2;
        
-       @XlsHint(order=3)
+       @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="タイトルが上", ignoreEmptyRecord=true, tableLabelAbove=true)
        private List<NormalRecord> aboveRecords1;
        
-       @XlsHint(order=4)
+       @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="タイトルが上（離れている）", ignoreEmptyRecord=true, tableLabelAbove=true, right=2)
        private List<NormalRecord> aboveRecords2;
        
@@ -4876,20 +4869,20 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="データの開始位置")
    private static class StartedDataPositionSheet {
        
-       @XlsHint(order=1)
+       @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="データの開始位置が離れている", terminal=RecordTerminal.Border, headerRight=2,
-               ignoreEmptyRecord=true, overRecord=OverRecordOperate.Copy)
+               ignoreEmptyRecord=true, overRecord=OverRecordOperation.Copy)
        private List<DistantRecord> distantRecords;
        
-       @XlsHint(order=2)
+       @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border, headerRight=2,
-               ignoreEmptyRecord=true, overRecord=OverRecordOperate.Copy)
+               ignoreEmptyRecord=true, overRecord=OverRecordOperation.Copy)
        private List<HeaderMergedRecord> headerMergedRecords1;
        
-       @XlsHint(order=3)
+       @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="見出しが結合（タイトルが上）", terminal=RecordTerminal.Border, headerRight=2,
                tableLabelAbove=true,
-               ignoreEmptyRecord=true, overRecord=OverRecordOperate.Copy)
+               ignoreEmptyRecord=true, overRecord=OverRecordOperation.Copy)
        private List<HeaderMergedRecord> headerMergedRecords2;
        
        /**
@@ -4950,7 +4943,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            
            private Map<String, String> labels;
            
-           @XlsConverter(defaultValue="99")
+           @XlsDefaultValue("99")
            @XlsColumn(columnName="No.", optional=true)
            private int no;
            
@@ -4966,7 +4959,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsColumn(columnName="合計")
            private int sum;
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
            }
@@ -5008,7 +5001,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            
            private Map<String, String> labels;
            
-           @XlsConverter(defaultValue="99")
+           @XlsDefaultValue("99")
            @XlsColumn(columnName="No.", optional=true)
            private int no;
            
@@ -5025,7 +5018,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            private int sum;
 
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
            }
@@ -5163,7 +5156,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsColumn(columnName="/備考.*/")
            private String comment;
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
            }
@@ -5202,22 +5195,22 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        private Map<String, String> labels;
        
-       @XlsHint(order=1)
-       @XlsVerticalRecords(tableLabel="通常の表", overRecord=OverRecordOperate.Copy)
+       @XlsOrder(value=1)
+       @XlsVerticalRecords(tableLabel="通常の表", overRecord=OverRecordOperation.Copy)
        private List<LargeRecord> largeRecords1;
        
-       @XlsHint(order=2)
+       @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="空のレコードがある表", terminal=RecordTerminal.Border, 
-               overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Clear, ignoreEmptyRecord=true)
+               overRecord=OverRecordOperation.Copy, remainedRecord=RemainedRecordOperation.Clear, ignoreEmptyRecord=true)
        private List<LargeRecord> largeRecords2;
        
-       @XlsHint(order=3)
+       @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="見出しが結合している表", terminal=RecordTerminal.Border, 
-               overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Clear, ignoreEmptyRecord=true, headerRight=2)
+               overRecord=OverRecordOperation.Copy, remainedRecord=RemainedRecordOperation.Clear, ignoreEmptyRecord=true, headerRight=2)
        private List<HeaderMergedLargeRecord> largeRecords3;
        
-       @XlsHint(order=4)
-       @XlsVerticalRecords(tableLabel="1対1のネスト", overRecord=OverRecordOperate.Copy, ignoreEmptyRecord=true)
+       @XlsOrder(value=4)
+       @XlsVerticalRecords(tableLabel="1対1のネスト", overRecord=OverRecordOperation.Copy, ignoreEmptyRecord=true)
        private List<OneToOneRecord> oneToOneRecords;
        
        public NestedSheet addRecord1(LargeRecord record) {
@@ -5333,7 +5326,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
                return this;
            }
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "middleRecords");
            }
@@ -5395,7 +5388,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
                return this;
            }
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "smallRecords");
            }
@@ -5438,7 +5431,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsColumn(columnName="値")
            private String value;
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
            }
@@ -5485,7 +5478,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
                return this;
            }
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "middleRecords");
            }
@@ -5547,7 +5540,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
                return this;
            }
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "smallRecords");
            }
@@ -5590,7 +5583,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsColumn(columnName="詳細", headerMerged=1)
            private String value;
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
            }
@@ -5634,7 +5627,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsNestedRecords
            private ResultRecord result;
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
            }
@@ -5680,7 +5673,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsColumn(columnName="合計")
            private int sum;
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
            }
@@ -5707,12 +5700,12 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="数式を指定")
    private static class FormulaSheet {
        
-       @XlsHint(order=1)
-       @XlsVerticalRecords(tableLabel="成績一覧", headerRight=2, terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Copy)
+       @XlsOrder(value=1)
+       @XlsVerticalRecords(tableLabel="成績一覧", headerRight=2, terminal=RecordTerminal.Border, overRecord=OverRecordOperation.Copy)
        private List<GradeRecord> gradeRecrods;
        
-       @XlsHint(order=2)
-       @XlsVerticalRecords(tableLabel="出欠確認", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Copy)
+       @XlsOrder(value=2)
+       @XlsVerticalRecords(tableLabel="出欠確認", terminal=RecordTerminal.Border, overRecord=OverRecordOperation.Copy)
        private List<EntryRecord> entryRecords;
        
        /**
@@ -5779,7 +5772,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsFormula("SUM({columnAlpha}6:{columnAlpha}7)")
            private Integer sum;
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
            }
@@ -5839,7 +5832,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsColumn(columnName="備考")
            private String comment;
            
-           @XlsIsEmpty
+           @XlsIsIgnored
            public boolean isEmpty() {
                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
            }

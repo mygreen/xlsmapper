@@ -3,10 +3,11 @@ package com.gh.mygreen.xlsmapper.validation.beanvalidation;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.metadata.ConstraintDescriptor;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
 import com.gh.mygreen.xlsmapper.validation.MessageResolver;
 
@@ -58,11 +59,11 @@ public class MessageInterpolatorAdapter implements javax.validation.MessageInter
         
         // デフォルトのメッセージ
         final String defaultCode = String.format("%s.message", descriptor.getAnnotation().annotationType().getCanonicalName());
-        final String defaultMessage = messageResolver.getMessage(defaultCode);
-        if(defaultMessage == null) {
-            throw new RuntimeException(String.format("not found message code '%s'", defaultCode));
-        }
-        vars.put(defaultCode, defaultMessage);
+        final Optional<String> defaultMessage = messageResolver.getMessage(defaultCode);
+        
+        
+        vars.put(defaultCode, 
+                defaultMessage.orElseThrow(() -> new RuntimeException(String.format("not found message code '%s'", defaultCode))));
         
         return vars;
     }

@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 
 
 /**
@@ -22,11 +23,11 @@ public interface SavingFieldProcessor<A extends Annotation> extends FieldProcess
      * @param sheet Excelのシート
      * @param targetObj マッピング対象のBean。
      * @param anno 処理対象のアノテーション。
-     * @param adaptor マッピング対象のフィールド情報
+     * @param accessor マッピング対象のフィールド情報
      * @param config システム設定
      * @param work 一時オブジェクト
      * @throws XlsMapperException 
      */
-    void saveProcess(Sheet sheet, Object targetObj, A anno, FieldAdaptor adaptor, XlsMapperConfig config, SavingWorkObject work) throws XlsMapperException;
+    void saveProcess(Sheet sheet, Object targetObj, A anno, FieldAccessor accessor, XlsMapperConfig config, SavingWorkObject work) throws XlsMapperException;
     
 }

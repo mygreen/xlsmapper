@@ -16,7 +16,7 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
-import com.gh.mygreen.xlsmapper.fieldprocessor.processor.SheetNameProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.SheetNameProcessor;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 /**
@@ -178,7 +178,6 @@ public class AnnoSheetNameTest {
             return sheetName;
         }
         
-        @XlsSheetName
         public void setSheetName(String sheetName) {
             this.sheetName = sheetName;
         }

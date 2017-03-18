@@ -15,19 +15,27 @@ public class AnnotationInvalidException extends XlsMapperException {
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
     
-    private final Annotation anno;
+    private Annotation targetAnnotation;
     
-    public AnnotationInvalidException(final String message, final Annotation anno) {
+    public AnnotationInvalidException(final String message) {
         super(message);
-        this.anno = anno;
     }
     
-    public AnnotationInvalidException(final String message, final Annotation anno, final Exception exception) {
+    public AnnotationInvalidException(final Annotation targetAnnotation, final String message) {
+        super(message);
+        this.targetAnnotation = targetAnnotation;
+    }
+    
+    public AnnotationInvalidException(final Annotation targetAnnotation, final String message, final Exception exception) {
         super(message, exception);
-        this.anno = anno;
+        this.targetAnnotation = targetAnnotation;
     }
     
-    public Annotation getAnno() {
-        return anno;
+    /**
+     * エラーの元となったアノテーションを取得する。
+     * @return 必要なアノテーションが付与されていない時など、nullを返すときもあります。
+     */
+    public Annotation getTargetAnnotation() {
+        return targetAnnotation;
     }
 }

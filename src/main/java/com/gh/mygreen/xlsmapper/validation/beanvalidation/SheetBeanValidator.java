@@ -1,10 +1,10 @@
 package com.gh.mygreen.xlsmapper.validation.beanvalidation;
 
-import java.awt.Point;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -16,8 +16,11 @@ import javax.validation.metadata.ConstraintDescriptor;
 
 import org.hibernate.validator.internal.engine.path.PathImpl;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.fieldaccessor.LabelGetterFactory;
+import com.gh.mygreen.xlsmapper.fieldaccessor.PositionGetterFactory;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.FieldErrorBuilder;
 import com.gh.mygreen.xlsmapper.validation.ObjectValidator;
@@ -126,12 +129,16 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 // 親のオブジェクトから、セルの座標を取得する
                 final Object parentObj = violation.getLeafBean();
                 final Path path = violation.getPropertyPath();
-                Point cellAddress = null;
-                String label = null;
+                Optional<CellAddress> cellAddress = Optional.empty();
+                Optional<String> label = Optional.empty();
                 if(path instanceof PathImpl) {
                     final PathImpl pathImpl = (PathImpl) path;
-                    cellAddress = Utils.getPosition(parentObj, pathImpl.getLeafNode().getName());
-                    label = Utils.getLabel(parentObj, pathImpl.getLeafNode().getName());
+                    cellAddress = new PositionGetterFactory().create(parentObj.getClass(), pathImpl.getLeafNode().getName())
+                            .map(getter -> getter.get(parentObj)).orElse(Optional.empty());
+                    
+                    label = new LabelGetterFactory().create(parentObj.getClass(), pathImpl.getLeafNode().getName())
+                            .map(getter -> getter.get(parentObj)).orElse(Optional.empty());
+                    
                 }
                 
                 // 実際の値を取得する
@@ -145,8 +152,8 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 errors.addError(FieldErrorBuilder.create()
                         .objectName(errors.getObjectName()).fieldPath(errors.buildFieldPath(fieldName))
                         .codes(errors.generateMessageCodes(errorCode, fieldName, fieldType), errorVars)
-                        .sheetName(errors.getSheetName()).cellAddress(cellAddress)
-                        .label(label)
+                        .sheetName(errors.getSheetName()).cellAddress(cellAddress.orElse(null))
+                        .label(label.orElse(null))
                         .defaultMessage(violation.getMessage())
                         .fieldValue(fieldValue)
                         .build());

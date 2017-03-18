@@ -5,7 +5,7 @@
 	<groupId>com.github.mygreen</groupId>
 	<artifactId>xlsmapper</artifactId>
 	<packaging>jar</packaging>
-	<version>1.6</version>
+	<version>2.0</version>
 	<name>XlsMapper</name>
 	<url>http://mygreen.github.io/xlsmapper/</url>
 	<description><![CDATA[
@@ -61,7 +61,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 	</developers>
 	
 	<properties>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 		<poi.version>3.15</poi.version>
 		<slf4j.version>1.7.1</slf4j.version>
 	</properties>
@@ -122,7 +122,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.3</version>
+				<version>2.10.4</version>
 				<configuration>
 					<nohelp>true</nohelp>
 					<charset>UTF-8</charset>
@@ -131,7 +131,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 					<locale>ja_JP</locale>
 					<maxmemory>512m</maxmemory>
 					<links>
-						<link>http://docs.oracle.com/javase/jp/7/api/</link>
+						<link>https://docs.oracle.com/javase/jp/8/docs/api/</link>
 						<link>http://poi.apache.org/apidocs/</link>
 					</links>
 					<stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
@@ -234,6 +234,12 @@ $(document).ready(function() {
 			<version>1.3</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.6.2</version>
+			<scope>test</scope>
+		</dependency>
 		
 		<!-- Excel -->
 		<dependency>
@@ -273,43 +279,11 @@ $(document).ready(function() {
 		
 		<!-- 式言語 -->
 		<dependency>
-			<groupId>com.github.mygreen</groupId>
-			<artifactId>standalone-el</artifactId>
-			<version>0.2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.glassfish.web</groupId>
-					<artifactId>el-impl</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>ognl</groupId>
 			<artifactId>ognl</artifactId>
 			<version>3.0.8</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.mvel</groupId>
-			<artifactId>mvel2</artifactId>
-			<version>2.2.2.Final</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<!-- EL 2.x
-		<dependency>
-			<groupId>org.glassfish.web</groupId>
-			<artifactId>el-impl</artifactId>
-			<version>2.2.1-b05</version>
-		</dependency>
-		-->
-		<!-- EL 3.x -->
-		<dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>javax.el</artifactId>
-			<version>3.0.1-b08</version>
-		</dependency>
-		 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-jexl</artifactId>
@@ -324,9 +298,15 @@ $(document).ready(function() {
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
+		<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>5.1.3.Final</version>
+			<version>5.3.3.Final</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.el</artifactId>
+			<version>3.0.1-b08</version>
 			<scope>provided</scope>
 		</dependency>
 		
@@ -350,7 +330,7 @@ $(document).ready(function() {
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.3</version>
+				<version>2.10.4</version>
 				<configuration>
 					<source>${java.version}</source>
 					<encoding>UTF-8</encoding>
@@ -358,7 +338,7 @@ $(document).ready(function() {
 					<docencoding>UTF-8</docencoding>
 					<locale>ja_JP</locale>
 					<links>
-						<link>http://docs.oracle.com/javase/jp/7/api/</link>
+						<link>https://docs.oracle.com/javase/jp/8/docs/api/</link>
 						<link>http://poi.apache.org/apidocs/</link>
 					</links>
 					<stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>

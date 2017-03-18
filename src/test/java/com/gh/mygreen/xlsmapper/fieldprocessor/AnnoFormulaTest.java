@@ -27,11 +27,9 @@ import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.CellFormatter;
-import com.gh.mygreen.xlsmapper.POIUtils;
-import com.gh.mygreen.xlsmapper.Utils;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
+import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
@@ -39,7 +37,10 @@ import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.cellconvert.ConversionException;
+import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
@@ -103,7 +104,7 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, new CellAddress("A2"));
+            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
             
             String formula = cell.getCellFormula();
             CellFormatter formatter = mapper.getConig().getCellFormatter();
@@ -155,7 +156,7 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, new CellAddress("A2"));
+            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
             
             String formula = cell.getCellFormula();
             CellFormatter formatter = mapper.getConig().getCellFormatter();
@@ -210,7 +211,7 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, new CellAddress("A2"));
+            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
             assertThat(cell.getCellType(), is(Cell.CELL_TYPE_FORMULA));
             
             String formula = cell.getCellFormula();
@@ -266,7 +267,7 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, new CellAddress("A2"));
+            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
             assertThat(cell.getCellType(), is(Cell.CELL_TYPE_NUMERIC));
             
             CellFormatter formatter = mapper.getConig().getCellFormatter();
@@ -317,7 +318,7 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, new CellAddress("A2"));
+            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
             assertThat(cell.getCellType(), is(Cell.CELL_TYPE_BLANK));
             
             CellFormatter formatter = mapper.getConig().getCellFormatter();
@@ -520,8 +521,8 @@ public class AnnoFormulaTest {
         private String getC1Formula(final Sheet sheet, final Cell cell, final Point point, final XlsMapperConfig config, final Object object) {
             
             assertThat(sheet, is(notNullValue()));
-            assertThat(Utils.formatCellAddress(cell), is("A2"));
-            assertThat(Utils.formatCellAddress(point), is("A2"));
+            assertThat(CellAddress.of(cell).formatAsString(), is("A2"));
+            assertThat(CellAddress.of(point).formatAsString(), is("A2"));
             assertThat(config, is(notNullValue()));
             assertThat(object, is(nullValue()));
             
@@ -549,7 +550,7 @@ public class AnnoFormulaTest {
         // マッピングした位置情報
         private Map<String, Point> positions;
         
-        @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)
+        @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border, overRecord=OverRecordOperation.Insert)
         private List<SampleRecord> records;
         
         // レコードを追加する

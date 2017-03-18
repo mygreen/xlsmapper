@@ -17,7 +17,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  * フィールド、メソッドのアノテーションへアクセスするためのクラス。
  * <p>Javaソースに直接アノテーションを付与する場合と、XMLで定義する方法の両方をサポートする。
  * 
- * @version 1.0
+ * @version 2.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -107,14 +107,16 @@ public class AnnotationReader {
     /**
      * メソッドに付与された指定したアノテーションを取得する。
      * 
-     * @param clazz 取得対象のクラス。
      * @param method 取得対象のメソッド。
      * @param annClas 取得対象のアノテーションのタイプ。
      * @return
      * @throws AnnotationReadException
      */
     @SuppressWarnings("unchecked")
-    public <A extends Annotation> A getAnnotation(final Class<?> clazz, final Method method, final Class<A> annClas) throws AnnotationReadException {
+    public <A extends Annotation> A getAnnotation(final Method method, final Class<A> annClas) throws AnnotationReadException {
+        
+        final Class<?> clazz = method.getDeclaringClass();
+        
         if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             
@@ -134,14 +136,27 @@ public class AnnotationReader {
     }
     
     /**
+     * メソッドに付与されたアノテーションを持つか判定します。
+     * @since 2.0
+     * @param method 判定対象のメソッド
+     * @param annClass アノテーションのタイプ
+     * @return trueの場合、アノテーションを持ちます。
+     */
+    public <A extends Annotation> boolean hasAnnotation(final Method method, final Class<A> annClass) {
+        return getAnnotation(method, annClass) != null;
+    }
+    
+    /**
      * メソッドに付与されたアノテーションを全て取得する。
      * 
-     * @param clazz 取得対象のクラス。
      * @param method 取得対象のメソッド。
      * @return 取得対象のアノテーションのタイプ。
      * @throws AnnotationReadException
      */
-    public Annotation[] getAnnotations(final Class<?> clazz, final Method method) throws AnnotationReadException {
+    public Annotation[] getAnnotations(final Method method) throws AnnotationReadException {
+        
+        final Class<?> clazz = method.getDeclaringClass();
+        
         if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             
@@ -172,14 +187,16 @@ public class AnnotationReader {
     
     /**
      * フィールドに付与されたアノテーションを指定して取得する。
-     * @param clazz 取得対象のクラス。
      * @param field 取得対象のフィールド
-     * @param annClass
+     * @param annClass アノテーションのタイプ
      * @return
      * @throws AnnotationReadException
      */
     @SuppressWarnings("unchecked")
-    public <A extends Annotation> A getAnnotation(final Class<?> clazz, final Field field, final Class<A> annClass) throws AnnotationReadException {
+    public <A extends Annotation> A getAnnotation(final Field field, final Class<A> annClass) throws AnnotationReadException {
+        
+        final Class<?> clazz = field.getDeclaringClass();
+        
         if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             
@@ -199,13 +216,26 @@ public class AnnotationReader {
     }
     
     /**
+     * フィールドに付与されたアノテーションを持つか判定します。
+     * @since 2.0
+     * @param field 判定対象のフィールド
+     * @param annClass アノテーションのタイプ
+     * @return trueの場合、アノテーションを持ちます。
+     */
+    public <A extends Annotation> boolean hasAnnotation(final Field field, final Class<A> annClass) {
+        return getAnnotation(field, annClass) != null;
+    }
+    
+    /**
      * フィールドに付与されたアノテーションを全て取得する。
-     * @param clazz 取得対象のクラス。
      * @param field 取得対象のフィールド
      * @return
      * @throws AnnotationReadException
      */
-    public Annotation[] getAnnotations(final Class<?> clazz, final Field field) throws AnnotationReadException {
+    public Annotation[] getAnnotations(final Field field) throws AnnotationReadException {
+        
+        final Class<?> clazz = field.getDeclaringClass();
+        
         if(xmlInfo != null && xmlInfo.containsClassInfo(clazz.getName())) {
             final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());
             

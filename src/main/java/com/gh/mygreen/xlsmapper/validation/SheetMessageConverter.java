@@ -7,21 +7,22 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
  * エラーオブジェクトを解釈して、メッセージに変換するクラス。
- * <p>オブジェクトの種類ごとに、デフォルトメッセージ変数が利用できます。
+ * <p>オブジェクトの種類ごとに、デフォルトメッセージ変数が利用できます。</p>
  * <ul>
- *  <li>'fieldLabel'：フィールドのラベル。メッセージ用のプロパティファイルにフィールド名を定義している場合、自動的に設定されます。
- *  <li>'objectLabel'：オブジェクトのラベル。メッセージ用のプロパティファイルにオブジェクト名を定義している場合、自動的に設定されます。
- *  <li>'label'：ラベル変数'label'が指定されていない場合、エラー対象のオブジェクト名またはフィールド名から自動的に決定されます。
- *  <li>'sheetName':シート用のエラーの場合、シート名が設定されます。
- *  <li>'cellAddress':シート用のフィールドエラーの場合、セルのアドレスが設定されます。'A1'のような形式になります。
- * 
+ *  <li>'fieldLabel'：フィールドのラベル。メッセージ用のプロパティファイルにフィールド名を定義している場合、自動的に設定されます。</li>
+ *  <li>'objectLabel'：オブジェクトのラベル。メッセージ用のプロパティファイルにオブジェクト名を定義している場合、自動的に設定されます。</li>
+ *  <li>'label'：ラベル変数'label'が指定されていない場合、エラー対象のオブジェクト名またはフィールド名から自動的に決定されます。</li>
+ *  <li>'sheetName':シート用のエラーの場合、シート名が設定されます。</li>
+ *  <li>'cellAddress':シート用のフィールドエラーの場合、セルのアドレスが設定されます。'A1'のような形式になります。</li>
+ * </ul>
  * 
  * @author T.TSUCHIE
  *
@@ -165,7 +166,7 @@ public class SheetMessageConverter {
             if(error instanceof CellFieldError) {
                 final CellFieldError cellFieldError = (CellFieldError) error;
                 vars.put("sheetName", cellFieldError.getSheetName());
-                vars.put("cellAddress", Utils.formatCellAddress(cellFieldError.getCellAddress()));
+                vars.put("cellAddress", cellFieldError.getCellAddress().formatAsString());
             }
             
         } else {
@@ -209,10 +210,11 @@ public class SheetMessageConverter {
     public String getMessage(final String[] codes, final String defaultMessage) {
         for(String code : codes) {
             try {
-                final String message = messageResolver.getMessage(code);
-                if(message != null) {
-                    return message;
+                final Optional<String> message = messageResolver.getMessage(code);
+                if(message.isPresent()) {
+                    return message.get();
                 }
+                
             } catch(Throwable e) {
                 continue;
             }

@@ -2,7 +2,7 @@ package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
 import java.util.LinkedHashMap;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 
 /**
@@ -17,8 +17,9 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
     /**
      * 文字列が指定した文字長かどうかチェックする。
      * <ul>
-     *  <li>メッセージキーは、「fieldError.exactLength」。
-     *  <li>メッセージ引数{0}は、文字長。
+     *  <li>メッセージキーは、「fieldError.exactLength」。</li>
+     *  <li>メッセージ引数{0}は、文字長。</li>
+     * </ul>
      */
     public static class ExactLengthValidator extends StringValidator {
         
@@ -66,8 +67,9 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
     /**
      * 文字列が指定した文字長以内かどうかチェックする。
      * <ul>
-     *  <li>メッセージキーは、「fieldError.maxLength」。
-     *  <li>メッセージ引数{0}は、最大文字長。
+     *  <li>メッセージキーは、「fieldError.maxLength」。</li>
+     *  <li>メッセージ引数{0}は、最大文字長。</li>
+     * </ul>
      */
     public static class MaxLengthValidator extends StringValidator {
         
@@ -115,8 +117,9 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
     /**
      * 文字列が指定した文字長以上かどうかチェックする。
      * <ul>
-     *  <li>メッセージキーは、「fieldError.minLength」。
-     *  <li>メッセージ引数{0}は、最小文字長。
+     *  <li>メッセージキーは、「fieldError.minLength」。</li>
+     *  <li>メッセージ引数{0}は、最小文字長。</li>
+     * </ul>
      */
     public static class MinLengthValidator extends StringValidator {
         
@@ -164,9 +167,10 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
     /**
      * 文字列が指定した文字長の範囲内かどうかチェックする。
      * <ul>
-     *  <li>メッセージキーは、「fieldError.betweenLength」。
-     *  <li>メッセージ引数{0}は、最小文字長。
-     *  <li>メッセージ引数{1}は、最大文字長。
+     *  <li>メッセージキーは、「fieldError.betweenLength」。</li>
+     *  <li>メッセージ引数{0}は、最小文字長。</li>
+     *  <li>メッセージ引数{1}は、最大文字長。</li>
+     * </ul>
      */
     public static class BetweenLengthValidator extends StringValidator {
         

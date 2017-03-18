@@ -16,11 +16,11 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * <p>使い方を基本的な例を元に説明していきます。</p>
  * 
  * <div class="picture">
- *    <img src="doc-files/IterateTables.png">
+ *    <img src="doc-files/IterateTables.png" alt="">
  *    <p>基本的な例</p>
  * </div>
  * 
- * <p>シート用クラスの場合、属性{@link XlsIterateTables#tableLabel()}で、繰り返し部分の表の名称を指定します。</p>
+ * <p>シート用クラスの場合、属性{@link XlsIterateTables#tableLabel()}で、繰り返し部分の表の名称を指定します。
  *    <br>また、属性{@link XlsIterateTables#bottom()}で、アノテーション{@link XlsHorizontalRecords}を
  *        マッピングする表の開始位置が表の名称からどれだけ離れているかを指定します。
  * </p>
@@ -34,7 +34,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  *     public class SampleSheet {
  *         
  *         {@literal @XlsIterateTables(tableLabel="部門情報", bottom=2)}
- *         private List<SampleTable> tables;
+ *         private {@literal List<SampleTable>} tables;
  *     }
  * }
  * </code></pre>
@@ -56,7 +56,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  *     private String deptName;
  *     
  *     {@literal @XlsHorizontalRecords(tableLabel="部門情報")}
- *     private List<SampleRecord> records;
+ *     private {@literal List<SampleRecord>} records;
  * }
  * </code></pre>
  * 
@@ -110,7 +110,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  *     
  *     // 正規表現による指定
  *     {@literal @XlsIterateTables(tableLabel="/部門情報.+/", bottom=2)}
- *     private List<SampleTable> tables;
+ *     private {@literal List<SampleTable>} tables;
  *     
  * }
  * </code></pre>

@@ -1,13 +1,16 @@
 package com.gh.mygreen.xlsmapper.validation;
 
+import java.util.Optional;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 
 
 /**
- * MessageResolver via Spring 'org.springframework.context.MessageSource'.
+ * Springの{@link MessageSource}をブリッジする{@link MessageResolver}。
  * 
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -26,18 +29,28 @@ public class SpringMessageResolver implements MessageResolver {
     /**
      * {@inheritDoc}
      */
-    public String getMessage(final String code) {
+    @Override
+    public Optional<String> getMessage(final String code) {
         try {
-            return messageSourceAccessor.getMessage(code);
+            return Optional.of(messageSourceAccessor.getMessage(code));
+            
         } catch(NoSuchMessageException e) {
-            return null;
+            return Optional.empty();
         }
     }
     
+    /**
+     * メッセージソースを設定する
+     * @param messageSource Springのメッセージソース
+     */
     public void setMessageSource(final MessageSource messageSource) {
         this.messageSourceAccessor = new MessageSourceAccessor(messageSource);
     }
     
+    /**
+     * メッセージソースを取得する。
+     * @return 現在設定されているメッセージソースをラップした{@link MessageSourceAccessor}を返す。
+     */
     protected MessageSourceAccessor getMessageSourceAccessor() {
         return messageSourceAccessor;
     }

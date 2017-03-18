@@ -26,8 +26,8 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
     private int _bottom = 1;
     private int _headerLimit = 0;
     private int _headerBottom = 1;
-    private OverRecordOperate _orverRecord = null;
-    private RemainedRecordOperate _remainedRecord = null;
+    private OverRecordOperation _orverRecord = null;
+    private RemainedRecordOperation _remainedRecord = null;
     private boolean _skipEmptyRecord = false;
     
     public XlsHorizontalRecordsForIterateTables(final XlsHorizontalRecords rec, int headerColumn, int headerRow) {
@@ -120,11 +120,11 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
     }
     
     @Override
-    public OverRecordOperate overRecord() {
+    public OverRecordOperation overRecord() {
         return this._orverRecord;
     }
     @Override
-    public RemainedRecordOperate remainedRecord() {
+    public RemainedRecordOperation remainedRecord() {
         return this._remainedRecord;
     }
     

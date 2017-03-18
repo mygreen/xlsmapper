@@ -3,7 +3,7 @@ package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 import java.util.LinkedHashMap;
 import java.util.regex.Pattern;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 
 /**

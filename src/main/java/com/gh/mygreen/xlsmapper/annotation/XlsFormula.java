@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 
 /**
  * 書き込み時にセルの数式を定義するためのアノテーションです。
@@ -27,7 +28,7 @@ import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
  * <pre class="highlight"><code class="java">
  * // 数式をフォーマットする際のEL関数を登録する。
  * ExpressionLanguageJEXLImpl formulaEL = new ExpressionLanguageJEXLImpl();
- * Map<String, Object> funcs = new HashMap<>(); 
+ * {@literal Map<String, Object>} funcs = new {@literal HashMap<>}(); 
  * funcs.put("x", CustomFunctions.class);
  * formulaEL.getJexlEngine().setFunctions(funcs);
  * 
@@ -93,7 +94,7 @@ public @interface XlsFormula {
      * public class SampleRecord {
      *     
      *     // マッピングした位置情報
-     *     private Map<String, Point> positions;
+     *     private {@literal Map<String, Point>} positions;
      *     
      *     {@literal @XlsColumn(columnName="名前")}
      *     private String name;
@@ -141,6 +142,8 @@ public @interface XlsFormula {
      *        <li>セルのオブジェクト : {@link Cell}</li>
      *        <li>シートのオブジェクト : {@link Sheet}</li>
      *        <li>セルの座標 : {@link Point}。0から始まります。</li>
+     *        <li>セルの座標 : {@link CellAddress}。</li>
+     *        <li>セルの座標 : {@link org.apache.poi.ss.util.CellAddress}。</li>
      *        <li>システム設定 : {@link XlsMapperConfig}</li>
      *      </ul>
      *    </li>
@@ -174,7 +177,7 @@ public @interface XlsFormula {
      * public class SampleRecord {
      *     
      *     // マッピングした位置情報
-     *     private Map<String, Point> positions;
+     *     private {@literal Map<String, Point>} positions;
      *     
      *     {@literal @XlsColumn(columnName="名前")}
      *     private String name;
@@ -218,7 +221,7 @@ public @interface XlsFormula {
      * public class SampleRecord {
      *     
      *     // マッピングした位置情報
-     *     private Map<String, Point> positions;
+     *     private {@literal Map<String, Point>} positions;
      *     
      *     {@literal @XlsColumn(columnName="名前")}
      *     private String name;

@@ -19,22 +19,22 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperate;
+import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperate;
+import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
-import com.gh.mygreen.xlsmapper.annotation.XlsHint;
+import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsEmpty;
+import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
-import com.gh.mygreen.xlsmapper.fieldprocessor.processor.IterateTablesProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
+import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 /**
@@ -1168,17 +1168,17 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
-        @XlsHint(order=1)
+        @XlsOrder(value=1)
         @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
         private int no;
         
-        @XlsHint(order=2)
+        @XlsOrder(value=2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
         
-        @XlsHint(order=3)
+        @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
+                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
         private List<PersonRecord> persons;
         
         public ClassTable no(int no) {
@@ -1224,7 +1224,7 @@ public class AnnoIterateTablesTest {
         @XlsColumn(columnName="誕生日")
         private Date birthday;
         
-        @XlsIsEmpty
+        @XlsIsIgnored
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }
@@ -1282,17 +1282,17 @@ public class AnnoIterateTablesTest {
         
         private Map<String, String> labels;
         
-        @XlsHint(order=1)
+        @XlsOrder(value=1)
         @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
         private int no;
         
-        @XlsHint(order=2)
+        @XlsOrder(value=2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, optional=true)
         private String name;
         
-        @XlsHint(order=3)
+        @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
+                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
         private List<PersonRecord> persons;
         
         public OptionalClassTable no(int no) {
@@ -1358,14 +1358,14 @@ public class AnnoIterateTablesTest {
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
         
-        @XlsHint(order=3)
+        @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
+                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
         private List<PersonRecord> persons;
         
-        @XlsHint(order=4)
+        @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperate.Copy, remainedRecord=RemainedRecordOperate.Clear)
+                overRecord=OverRecordOperation.Copy, remainedRecord=RemainedRecordOperation.Clear)
         private List<ResultRecord> results;
         
         public ConcatClassTable no(int no) {
@@ -1422,7 +1422,7 @@ public class AnnoIterateTablesTest {
         @XlsColumn(columnName="合計")
         private int sum;
         
-        @XlsIsEmpty
+        @XlsIsIgnored
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }
@@ -1476,7 +1476,6 @@ public class AnnoIterateTablesTest {
             return classTables;
         }
         
-        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
         public void setClassTables(List<MethodAnnoTable> classTables) {
             this.classTables = classTables;
         }
@@ -1508,39 +1507,33 @@ public class AnnoIterateTablesTest {
         
         private List<PersonRecord> persons;
         
-        @XlsHint(order=1)
         @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
         public int getNo() {
             return no;
         }
         
-        @XlsHint(order=1)
-        @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+        @XlsOrder(value=1)
         public void setNo(int no) {
             this.no = no;
         }
         
-        @XlsHint(order=2)
-        @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
+        @XlsOrder(value=2)
         public String getName() {
             return name;
         }
         
-        @XlsHint(order=2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         public void setName(String name) {
             this.name = name;
         }
         
-        @XlsHint(order=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
+                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
         public List<PersonRecord> getPersons() {
             return persons;
         }
         
-        @XlsHint(order=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true)
+        @XlsOrder(value=3)
         public void setPersons(List<PersonRecord> persons) {
             this.persons = persons;
         }
@@ -1634,17 +1627,17 @@ public class AnnoIterateTablesTest {
             
             private String classTablesLabel;
             
-            @XlsHint(order=1)
+            @XlsOrder(value=1)
             @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
             private int no;
             
-            @XlsHint(order=2)
+            @XlsOrder(value=2)
             @XlsLabelledCell(label="/クラス名.*/", type=LabelledCellType.Right)
             private String name;
             
-            @XlsHint(order=3)
+            @XlsOrder(value=3)
             @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                    overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
+                    overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
             private List<RegexRecord> persons;
             
             // 値設定用のメソッド
@@ -1692,7 +1685,7 @@ public class AnnoIterateTablesTest {
             @XlsColumn(columnName="誕生日")
             private Date birthday;
             
-            @XlsIsEmpty
+            @XlsIsIgnored
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
             }

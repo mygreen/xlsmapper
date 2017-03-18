@@ -56,7 +56,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
         
@@ -172,7 +172,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
         
@@ -190,7 +190,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
         
@@ -251,7 +251,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
         
@@ -269,7 +269,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
         
@@ -330,7 +330,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
         
@@ -350,7 +350,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
         
@@ -370,7 +370,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
         
@@ -421,7 +421,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
         
@@ -537,7 +537,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
         
@@ -555,7 +555,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
         
@@ -616,7 +616,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
         
@@ -634,7 +634,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
         
@@ -695,7 +695,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
         
@@ -715,7 +715,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
         
@@ -735,7 +735,7 @@ public class NumberValidatorTest {
         
         field.validate(errors);
         fieldError = errors.getFirstCellFieldError(fieldName);
-        assertThat(fieldError.getCellAddress(), is(sheet.positions.get(fieldName)));
+        assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
         assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
         assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
         

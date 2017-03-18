@@ -1,9 +1,10 @@
 package com.gh.mygreen.xlsmapper.validation;
 
-import java.awt.Point;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 
 
 /**
@@ -32,7 +33,7 @@ public class FieldErrorBuilder {
     
     private String sheetName;
     
-    private Point cellAddress;
+    private CellAddress cellAddress;
     
     private String label;
     
@@ -149,17 +150,17 @@ public class FieldErrorBuilder {
     }
     
     public FieldErrorBuilder cellAddress(final Cell cell ) {
-        this.cellAddress = new Point(cell.getColumnIndex(), cell.getRowIndex());
+        this.cellAddress = CellAddress.of(cell);
         return this;
     }
     
-    public FieldErrorBuilder cellAddress(final Point position ) {
-        this.cellAddress = position;
+    public FieldErrorBuilder cellAddress(final CellAddress address ) {
+        this.cellAddress = address;
         return this;
     }
     
     public FieldErrorBuilder cellAddress(final int column, final int row) {
-        this.cellAddress = new Point(column, row);
+        this.cellAddress = CellAddress.of(row, column);
         return this;
     }
     

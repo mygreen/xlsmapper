@@ -5,6 +5,9 @@ import java.lang.annotation.Annotation;
 
 /**
  * アノテーションを処理するためのインタフェース。
+ * 
+ * @param <A> サポートするアノテーション
+ * @version 1.0
  * @author T.TSUCHIE
  *
  */

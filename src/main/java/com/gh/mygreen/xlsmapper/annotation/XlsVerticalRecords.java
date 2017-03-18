@@ -41,7 +41,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/VerticalRecord.png">
+ *    <img src="doc-files/VerticalRecord.png" alt="">
  *    <p>基本的な使い方</p>
  * </div>
  *
@@ -123,7 +123,7 @@ public @interface XlsVerticalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/VerticalRecord_tableLabelAbove.png">
+     *    <img src="doc-files/VerticalRecord_tableLabelAbove.png" alt="">
      *    <p>表の名称が上方にある場合</p>
      * </div>
      * 
@@ -203,27 +203,10 @@ public @interface XlsVerticalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/VerticalRecord_right.png">
+     *    <img src="doc-files/VerticalRecord_right.png" alt="">
      *    <p>表の名称から離れている際の開始位置の指定</p>
      * </div>
      * 
-     * 
-     * <h3 class="description">表の名称から開始位置が離れた場所にある場合</h3>
-     * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #bottom()}で表の開始位置がどれだけ離れているか指定します。</p>
-     * 
-     * <pre class="highlight"><code class="java">
-     * {@literal @XlsSheet(name="Users")}
-     * public class SampleSheet {
-     *     
-     *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧", bottom=3)}
-     *     private {@literal List<UserRecord>} records;
-     * }
-     * </code></pre>
-     * 
-     * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_bottom.png">
-     *    <p>表の名称から離れている際の開始位置の指定</p>
-     * </div>
      * 
      * @since 1.0
      * @return 値は1から始まり、指定しない場合は1を指定します。
@@ -280,7 +263,7 @@ public @interface XlsVerticalRecords {
      * </code></pre>
      * 
      * <div class="picture">
-     *    <img src="doc-files/VerticalRecord_headerRight.png">
+     *    <img src="doc-files/VerticalRecord_headerRight.png" alt="">
      *    <p>表の見出しからデータレコードが離れているときの指定</p>
      * </div>
      * 
@@ -291,21 +274,21 @@ public @interface XlsVerticalRecords {
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
-     * {@link XlsVerticalRecords}の場合、{@link OverRecordOperate#Insert}は対応していません。
-     * @return {@link OverRecordOperate#Break}の場合、足りないレコードがあるとそこで処理を終了します。
+     * {@link XlsVerticalRecords}の場合、{@link OverRecordOperation#Insert}は対応していません。
+     * @return {@link OverRecordOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。
      */
-    OverRecordOperate overRecord() default OverRecordOperate.Break;
+    OverRecordOperation overRecord() default OverRecordOperation.Break;
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
-     * {@link XlsVerticalRecords}の場合、{@link RemainedRecordOperate#Delete}は対応していません。
-     * @return {@link RemainedRecordOperate#None}の場合、余っているレコードがあっても何もしません。
+     * {@link XlsVerticalRecords}の場合、{@link RemainedRecordOperation#Delete}は対応していません。
+     * @return {@link RemainedRecordOperation#None}の場合、余っているレコードがあっても何もしません。
      */
-    RemainedRecordOperate remainedRecord() default RemainedRecordOperate.None; 
+    RemainedRecordOperation remainedRecord() default RemainedRecordOperation.None; 
     
     /**
      * 空のレコードの場合、処理を無視するかどうか。
-     * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsEmpty}を付与する必要があります。
+     * <p>レコードの判定用のメソッドに、アノテーション{@link XlsIsIgnored}を付与する必要があります。
      * @since 0.2
      * @return trueの場合、空のレコードを無視します。
      */

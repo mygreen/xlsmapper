@@ -21,12 +21,12 @@ import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
-import com.gh.mygreen.xlsmapper.annotation.XlsHint;
+import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
+import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
-import com.gh.mygreen.xlsmapper.fieldprocessor.processor.LabelledCellProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellProcessor;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 
@@ -778,7 +778,6 @@ public class AnnoLabelledCellTest {
             return posRight;
         }
         
-        @XlsLabelledCell(label="位置（右側）", type=LabelledCellType.Right)
         public void setPosRight(String posRight) {
             this.posRight = posRight;
         }
@@ -788,7 +787,6 @@ public class AnnoLabelledCellTest {
             return posLeft;
         }
         
-        @XlsLabelledCell(label="位置（左側）", type=LabelledCellType.Left)
         public void setPosLeft(String posLeft) {
             this.posLeft = posLeft;
         }
@@ -798,7 +796,6 @@ public class AnnoLabelledCellTest {
             return posBottom;
         }
         
-        @XlsLabelledCell(label="位置（下側）", type=LabelledCellType.Bottom)
         public void setPosBottom(String posBottom) {
             this.posBottom = posBottom;
         }
@@ -808,7 +805,6 @@ public class AnnoLabelledCellTest {
             return foundNo;
         }
         
-        @XlsLabelledCell(label="見つからない", type=LabelledCellType.Right, optional=true)
         public void setFoundNo(Integer foundNo) {
             this.foundNo = foundNo;
         }
@@ -818,7 +814,6 @@ public class AnnoLabelledCellTest {
             return wrongFormat;
         }
         
-        @XlsLabelledCell(label="不正なフォーマット", type=LabelledCellType.Right)
         public void setWrongFormat(Double wrongFormat) {
             this.wrongFormat = wrongFormat;
         }
@@ -828,7 +823,6 @@ public class AnnoLabelledCellTest {
             return header;
         }
         
-        @XlsLabelledCell(label="ラベル名", type=LabelledCellType.Bottom, headerLabel="見出し１")
         public void setHeader(Date header) {
             this.header = header;
         }
@@ -838,7 +832,6 @@ public class AnnoLabelledCellTest {
             return headerSkip;
         }
         
-        @XlsLabelledCell(label="ラベル名", type=LabelledCellType.Right, headerLabel="見出し２", skip=2)
         public void setHeaderSkip(Date headerSkip) {
             this.headerSkip = headerSkip;
         }
@@ -848,7 +841,6 @@ public class AnnoLabelledCellTest {
             return headerRange;
         }
         
-        @XlsLabelledCell(label="ラベル名", type=LabelledCellType.Left, headerLabel="見出し３", range=2)
         public void setHeaderRange(Date headerRange) {
             this.headerRange = headerRange;
         }
@@ -858,7 +850,6 @@ public class AnnoLabelledCellTest {
             return address1;
         }
         
-        @XlsLabelledCell(labelAddress="B26", type=LabelledCellType.Right)
         public void setAddress1(String address1) {
             this.address1 = address1;
         }
@@ -868,7 +859,6 @@ public class AnnoLabelledCellTest {
             return address2;
         }
         
-        @XlsLabelledCell(labelColumn=1, labelRow=25, type=LabelledCellType.Bottom)
         public void setAddress2(String address2) {
             this.address2 = address2;
         }
@@ -878,7 +868,6 @@ public class AnnoLabelledCellTest {
             return blank;
         }
         
-        @XlsLabelledCell(label="値が空の場合", type=LabelledCellType.Right)
         public void setBlank(String blank) {
             this.blank = blank;
         }
@@ -1131,15 +1120,15 @@ public class AnnoLabelledCellTest {
         
         private Map<String, String> labels;
         
-        @XlsHint(order=1)
+        @XlsOrder(value=1)
         @XlsLabelledCell(label="開始日", type=LabelledCellType.Bottom)
         private Date start;
         
-        @XlsHint(order=2)
+        @XlsOrder(value=2)
         @XlsLabelledCell(label="終了日", type=LabelledCellType.Bottom)
         private Date end;
         
-        @XlsHint(order=3)
+        @XlsOrder(value=3)
         @XlsLabelledCell(label="差", type=LabelledCellType.Bottom)
         @XlsFormula(value="C5-B5")
         private Integer diff;

@@ -1,6 +1,6 @@
 package com.gh.mygreen.xlsmapper.validation;
 
-import com.gh.mygreen.xlsmapper.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 /**
  * オブジェクトのValidatorの抽象クラス。

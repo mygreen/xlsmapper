@@ -1,19 +1,19 @@
 package com.gh.mygreen.xlsmapper.validation;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import com.gh.mygreen.xlsmapper.Utils;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
  * シートのエラー情報を処理するためのクラス。
  * 
- * @version 0.5
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -806,7 +806,7 @@ public class SheetBindingErrors {
      * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
      * @param errorCode メッセージコード。
      */
-    public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode) {
+    public void rejectSheetValue(final String field, final CellAddress cellAddress, final String errorCode) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .codes(generateMessageCodes(errorCode, buildFieldPath(field)))
@@ -836,11 +836,11 @@ public class SheetBindingErrors {
      * @param field フィールドパス。
      * @param fieldValue フィールドの値。
      * @param fieldType フィールドのクラスタイプ。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      */
     public void rejectSheetValue(final String field, final Object fieldValue, final Class<?> fieldType,
-            final Point cellAddress, final String errorCode) {
+            final CellAddress cellAddress, final String errorCode) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
@@ -854,12 +854,12 @@ public class SheetBindingErrors {
      * @param field フィールドパス。
      * @param fieldValue フィールドの値。
      * @param fieldType フィールドのクラスタイプ。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
      */
     public void rejectSheetValue(final String field, final Object fieldValue, final Class<?> fieldType,
-            final Point cellAddress, final String errorCode, final String defaultMessage) {
+            final CellAddress cellAddress, final String errorCode, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
@@ -872,11 +872,11 @@ public class SheetBindingErrors {
     /**
      * エラーコードとデフォルトメッセージを指定してシートのフィールドエラーを登録します。
      * @param field フィールドパス。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
      */
-    public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final String defaultMessage) {
+    public void rejectSheetValue(final String field, final CellAddress cellAddress, final String errorCode, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .codes(generateMessageCodes(errorCode, buildFieldPath(field)))
@@ -889,11 +889,11 @@ public class SheetBindingErrors {
      * エラーコードとメッセージ引数を指定してシートのフィールドエラーを登録します。
      * <p>メッセージ中の変数はインデックス形式で指定する必要がります。
      * @param field フィールドパス。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param errorArgs メッセージ変数。
      */
-    public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Object[] errorArgs) {
+    public void rejectSheetValue(final String field, final CellAddress cellAddress, final String errorCode, final Object[] errorArgs) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorArgs)
@@ -905,12 +905,12 @@ public class SheetBindingErrors {
      * エラーコードとメッセージ引数を指定してシートのフィールドエラーを登録します。
      * <p>メッセージ中の変数はインデックス形式で指定する必要がります。
      * @param field フィールドパス。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param errorArgs メッセージ変数。
      * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
      */
-    public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Object[] errorArgs, final String defaultMessage) {
+    public void rejectSheetValue(final String field, final CellAddress cellAddress, final String errorCode, final Object[] errorArgs, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorArgs)
@@ -922,11 +922,11 @@ public class SheetBindingErrors {
     /**
      * エラーコードとデメッセージ変数を指定してシートのフィールドエラーを登録します。
      * @param field フィールドパス。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param errorVars メッセージ変数。
      */
-    public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Map<String, Object> errorVars) {
+    public void rejectSheetValue(final String field, final CellAddress cellAddress, final String errorCode, final Map<String, Object> errorVars) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorVars)
@@ -937,12 +937,12 @@ public class SheetBindingErrors {
     /**
      * エラーコードとメッセージ変数を指定してシートのフィールドエラーを登録します。
      * @param field フィールドパス。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param errorVars メッセージ変数。
      * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
      */
-    public void rejectSheetValue(final String field, final Point cellAddress, final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
+    public void rejectSheetValue(final String field, final CellAddress cellAddress, final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .codes(generateMessageCodes(errorCode, buildFieldPath(field)), errorVars)
@@ -957,12 +957,12 @@ public class SheetBindingErrors {
      * @param field フィールドパス。
      * @param fieldValue フィールドの値。
      * @param fieldType フィールドのクラスタイプ。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param errorArgs メッセージ変数。
      */
     public void rejectSheetValue(final String field, final Object fieldValue, final Class<?> fieldType,
-            final Point cellAddress, final String errorCode, final Object[] errorArgs) {
+            final CellAddress cellAddress, final String errorCode, final Object[] errorArgs) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
@@ -977,13 +977,13 @@ public class SheetBindingErrors {
      * @param field フィールドパス。
      * @param fieldValue フィールドの値。
      * @param fieldType フィールドのクラスタイプ。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param errorArgs メッセージ変数。
      * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
      */
     public void rejectSheetValue(final String field, final Object fieldValue, final Class<?> fieldType,
-            final Point cellAddress, final String errorCode, final Object[] errorArgs, final String defaultMessage) {
+            final CellAddress cellAddress, final String errorCode, final Object[] errorArgs, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
@@ -998,12 +998,12 @@ public class SheetBindingErrors {
      * @param field フィールドパス。
      * @param fieldValue フィールドの値。
      * @param fieldType フィールドのクラスタイプ。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param errorVars メッセージ変数。
      */
     public void rejectSheetValue(final String field, final Object fieldValue, final Class<?> fieldType,
-            final Point cellAddress, final String errorCode, final Map<String, Object> errorVars) {
+            final CellAddress cellAddress, final String errorCode, final Map<String, Object> errorVars) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
@@ -1017,13 +1017,13 @@ public class SheetBindingErrors {
      * @param field フィールドパス。
      * @param fieldValue フィールドの値。
      * @param fieldType フィールドのクラスタイプ。
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param errorCode メッセージコード。
      * @param errorVars メッセージ変数。
      * @param defaultMessage デフォルトメッセージ。指定したエラーコードに対するメッセージが見つからないときに使用する値です。
      */
     public void rejectSheetValue(final String field, final Object fieldValue, final Class<?> fieldType,
-            final Point cellAddress, final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
+            final CellAddress cellAddress, final String errorCode, final Map<String, Object> errorVars, final String defaultMessage) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
@@ -1055,11 +1055,11 @@ public class SheetBindingErrors {
      * @param fieldValue フィールドの値。
      * @param fieldType フィールドのクラスタイプ。
      * @param errorVars メッセージ変数
-     * @param cellAddress セルのアドレス。x座標が列番号です。y座標が行番号です。列番号、行番号は0から始まります。
+     * @param cellAddress セルのアドレス。
      * @param label フィールドのラベル。
      */
     public void rejectSheetTypeBind(final String field, final Object fieldValue, final Class<?> fieldType, final Map<String, Object> errorVars,
-            final Point cellAddress, final String label) {
+            final CellAddress cellAddress, final String label) {
         addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)
@@ -1094,7 +1094,7 @@ public class SheetBindingErrors {
      * @param label フィールドのラベル。
      */
     public void rejectSheetTypeBind(final String field, final Object fieldValue, final Class<?> fieldType,
-            final Point cellAddress, final String label) {
+            final CellAddress cellAddress, final String label) {
             addError(FieldErrorBuilder.create()
                 .objectName(getObjectName()).fieldPath(buildFieldPath(field))
                 .fieldValue(fieldValue).fieldType(fieldType)

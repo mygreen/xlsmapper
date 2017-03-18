@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
 import java.awt.Point;
@@ -23,8 +24,8 @@ import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.cellconvert.TypeBindException;
-import com.gh.mygreen.xlsmapper.fieldprocessor.processor.CellProcessor;
+import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.CellProcessor;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 /**
@@ -72,7 +73,7 @@ public class AnnoCellTest {
     /**
      * 読み込みのテスト - バインドエラー
      */
-    @Test(expected=TypeBindException.class)
+    @Test
     public void test_load_cell_bind_error() throws Exception {
         XlsMapper mapper = new XlsMapper();
         mapper.getConig().setContinueTypeBindFailure(false);
@@ -80,16 +81,16 @@ public class AnnoCellTest {
         try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
             
-            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
-            
-            fail();
+            assertThatThrownBy(() -> mapper.load(in, NormalSheet.class, errors))
+                .isInstanceOf(TypeBindException.class)
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoCellTest$NormalSheet#c4' において、セル（D12） の値（'abc'）を 'java.lang.Integer' に変換できませんでした。");
         }
     }
     
     /**
      * 読み込みのテスト - 不正なアノテーション - インデックスが範囲外
      */
-    @Test(expected=AnnotationInvalidException.class)
+    @Test
     public void test_load_cell_invalid_annotation1() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
@@ -98,9 +99,9 @@ public class AnnoCellTest {
         try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(InvalidAnno1Sheet1.class);
             
-            InvalidAnno1Sheet1 sheet = mapper.load(in, InvalidAnno1Sheet1.class, errors);
-            
-            fail();
+            assertThatThrownBy(() -> mapper.load(in, InvalidAnno1Sheet1.class, errors))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoCellTest$InvalidAnno1Sheet1#c1' において、アノテーション @XlsCell の属性 'row' の値（-1）は、0以上の値を設定してください。");
             
         }
     }
@@ -108,7 +109,7 @@ public class AnnoCellTest {
     /**
      * 読み込みのテスト - 不正なアノテーション - アドレスが不正
      */
-    @Test(expected=AnnotationInvalidException.class)
+    @Test
     public void test_load_cell_invalid_annotation2() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
@@ -117,9 +118,9 @@ public class AnnoCellTest {
         try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
             SheetBindingErrors errors = new SheetBindingErrors(InvalidAnnoSheet2.class);
             
-            InvalidAnnoSheet2 sheet = mapper.load(in, InvalidAnnoSheet2.class, errors);
-            
-            fail();
+            assertThatThrownBy(() -> mapper.load(in, InvalidAnnoSheet2.class, errors))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoCellTest$InvalidAnnoSheet2#c1' において、アノテーション @XlsCell の属性 'address' の値（あいう）は、セルのアドレスの書式として不正です。");
             
         }
     }
@@ -433,7 +434,6 @@ public class AnnoCellTest {
             return c1;
         }
         
-        @XlsCell(column=1, row=3)
         public void setC1(String c1) {
             this.c1 = c1;
         }
@@ -443,7 +443,6 @@ public class AnnoCellTest {
             return c2;
         }
         
-        @XlsCell(address="C7")
         public void setC2(Double c2) {
             this.c2 = c2;
         }
@@ -453,7 +452,6 @@ public class AnnoCellTest {
             return c3;
         }
         
-        @XlsCell(column=0, row=0, address="B10")
         public void setC3(Date c3) {
             this.c3 = c3;
         }
@@ -463,7 +461,6 @@ public class AnnoCellTest {
             return c4;
         }
         
-        @XlsCell(address="D12")
         public void setC4(Integer c4) {
             this.c4 = c4;
         }

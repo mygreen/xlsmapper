@@ -13,6 +13,8 @@ import java.util.Set;
 
 import org.apache.poi.ss.util.CellReference;
 
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -35,7 +37,7 @@ public class TestUtils {
      */
     public static CellFieldError cellFieldError(final SheetBindingErrors errors, final String address) {
         for(CellFieldError error : errors.getCellFieldErrors()) {
-            if(error.getFormattedCellAddress().equalsIgnoreCase(address)) {
+            if(error.getCellAddress().formatAsString().equalsIgnoreCase(address)) {
                 return error;
             }
         }

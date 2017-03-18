@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
  *   <li>親に指定しているJavaBeanクラスは、子や孫には指定することができません。</li>
  *   <li>属性{@link XlsHorizontalRecords#terminateLabel()}や{@link XlsHorizontalRecords#ignoreEmptyRecord()}などの
  *     終端や空のレコードの判定は、入れ子になったレコードごとに判定されます。</li>
- *   <li>読み込みの際、アノテーション{@link XlsIsEmpty}で、空のレコードを読み飛ばした結果、
+ *   <li>読み込みの際、アノテーション{@link XlsIsIgnored}で、空のレコードを読み飛ばした結果、
  *     レコード数が0件となった場合は、要素数0個リストや配列が設定されます。</li>
  * </ul>
  * 
@@ -74,7 +74,7 @@ import java.lang.annotation.Target;
  * </code></pre>
  * 
  * <div class="picture">
- *    <img src="doc-files/NestedRecords_oneToMany.png">
+ *    <img src="doc-files/NestedRecords_oneToMany.png" alt="">
  *    <p>一対多の関係</p>
  * </div>
  * 
@@ -127,7 +127,7 @@ import java.lang.annotation.Target;
  * 
  * 
  * <div class="picture">
- *    <img src="doc-files/NestedRecords_oneToOne.png">
+ *    <img src="doc-files/NestedRecords_oneToOne.png" alt="">
  *    <p>一対一の関係</p>
  * </div>
  *
