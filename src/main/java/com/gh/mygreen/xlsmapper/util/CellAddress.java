@@ -88,6 +88,18 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
     
     /**
      * CellAddressのインスタンスを作成する。
+     * @param address セルのアドレス
+     * @return {@link CellAddress}のインスタンス
+     * @throws NullPointerException {@link address == null.}
+     */
+    public static CellAddress of(final org.apache.poi.ss.util.CellAddress address) {
+        ArgUtils.notNull(address, "address");
+        
+        return of(address.getRow(), address.getColumn());
+    }
+    
+    /**
+     * CellAddressのインスタンスを作成する。
      * @param address 'A1'の形式のセルのアドレス
      * @return {@link CellAddress}のインスタンス
      * @throws IllegalArgumentException {@literal address == null || address.length() == 0 || アドレスの書式として不正}

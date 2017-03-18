@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapterBuilder;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 /**
@@ -191,6 +191,8 @@ public class ClassUtils {
             return Optional.empty();
         }
         
+        method.setAccessible(true);
+        
         if(method.getParameterCount() > 0) {
             return Optional.empty();
         }
@@ -221,6 +223,8 @@ public class ClassUtils {
             return Optional.empty();
         }
         
+        method.setAccessible(true);
+        
         if(!method.getReturnType().equals(boolean.class)) {
             return Optional.empty();
         }
@@ -242,10 +246,11 @@ public class ClassUtils {
         Method method;
         try {
             method = targetClass.getMethod(methodName, propertyType);
-            
         } catch (NoSuchMethodException | SecurityException e) {
             return Optional.empty();
         }
+        
+        method.setAccessible(true);
         
         return Optional.of(method);
     }

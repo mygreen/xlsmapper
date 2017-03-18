@@ -53,7 +53,7 @@ public @interface XlsDateConverter {
      *   <li>属性{@link #lenient()}で、日付/時刻の解析を厳密に行わないか指定します。
      *       <br>デフォルト値はtrueで、厳密に解析を行いません。falseの場合厳密に解析を行います。
      *   </li>
-     *   <li>書式に合わない値をパースした場合、例外{@link com.gh.mygreen.xlsmapper.converter.TypeBindException}が発生します。</li>
+     *   <li>書式に合わない値をパースした場合、例外{@link com.gh.mygreen.xlsmapper.cellconverter.TypeBindException}が発生します。</li>
      * </ul>
      * 
      * <pre class="highlight"><code class="java">

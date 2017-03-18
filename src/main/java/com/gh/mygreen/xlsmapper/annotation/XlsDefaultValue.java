@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.gh.mygreen.xlsmapper.converter.TypeBindException;
+import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 
 /**
  * 初期値を指定するためのアノテーション。

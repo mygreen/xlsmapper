@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 
 /**
  * 書き込み時にセルの数式を定義するためのアノテーションです。
@@ -141,6 +142,8 @@ public @interface XlsFormula {
      *        <li>セルのオブジェクト : {@link Cell}</li>
      *        <li>シートのオブジェクト : {@link Sheet}</li>
      *        <li>セルの座標 : {@link Point}。0から始まります。</li>
+     *        <li>セルの座標 : {@link CellAddress}。</li>
+     *        <li>セルの座標 : {@link org.apache.poi.ss.util.CellAddress}。</li>
      *        <li>システム設定 : {@link XlsMapperConfig}</li>
      *      </ul>
      *    </li>

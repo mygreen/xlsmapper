@@ -11,8 +11,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapterBuilder;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
@@ -120,7 +120,7 @@ public class SheetFinder {
         } else if(sheetAnno.regex().length() > 0) {
             // シート名（正規表現）をもとにして、取得する。
             String sheetNameValue = null;
-            Optional<FieldAdapter> sheetNameField = getSheetNameField(beanObj, annoReader);
+            Optional<FieldAccessor> sheetNameField = getSheetNameField(beanObj, annoReader);
             if(sheetNameField.isPresent()) {
                 sheetNameValue = (String)sheetNameField.get().getValue(beanObj);
             }
@@ -178,9 +178,9 @@ public class SheetFinder {
      * @return 見つからない場合、空を返す。
      * @throws AnnotationReadException 
      */
-    private Optional<FieldAdapter> getSheetNameField(final Object beanObj, final AnnotationReader annoReader) throws AnnotationReadException {
+    private Optional<FieldAccessor> getSheetNameField(final Object beanObj, final AnnotationReader annoReader) throws AnnotationReadException {
         
-        FieldAdapterBuilder fieldBuilder = new FieldAdapterBuilder(annoReader);
+        FieldAccessorFactory adpterFactory = new FieldAccessorFactory(annoReader);
         
         Class<?> clazz = beanObj.getClass();
         for(Method method : clazz.getMethods()) {
@@ -193,7 +193,7 @@ public class SheetFinder {
                 continue;
             }
             
-            return Optional.of(fieldBuilder.of(method));
+            return Optional.of(adpterFactory.create(method));
         }
         
         for(Field field : clazz.getDeclaredFields()) {
@@ -203,7 +203,7 @@ public class SheetFinder {
                 continue;
             }
             
-            return Optional.of(fieldBuilder.of(field));
+            return Optional.of(adpterFactory.create(field));
             
         }
         

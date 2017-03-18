@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.validation.Errors;
 
+import com.gh.mygreen.xlsmapper.fieldaccessor.LabelGetterFactory;
+import com.gh.mygreen.xlsmapper.fieldaccessor.PositionGetterFactory;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.util.PropertyNavigator;
-import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -90,8 +92,13 @@ public class CellField<T> {
         final T fieldValue = (T) propertyNavigator.getProperty(targetObj, fieldName);
         setValue(fieldValue);
         
-        setCellAddress(CellAddress.of(Utils.getPosition(targetObj, fieldName)));
-        setLabel(Utils.getLabel(targetObj, fieldName));
+        Optional<CellAddress> position = new PositionGetterFactory().create(targetObj.getClass(), fieldName)
+                .map(getter -> getter.get(targetObj)).orElse(Optional.empty());
+        position.ifPresent(p -> setCellAddress(p));
+        
+        Optional<String> label = new LabelGetterFactory().create(targetObj.getClass(), fieldName)
+                .map(getter -> getter.get(targetObj)).orElse(Optional.empty());
+        label.ifPresent(l -> setLabel(l));
         
         this.validators = new ArrayList<FieldValidator<T>>();
     }

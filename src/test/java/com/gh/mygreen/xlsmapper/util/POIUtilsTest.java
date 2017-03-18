@@ -18,7 +18,7 @@ import org.apache.poi.ss.util.CellRangeAddressList;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.converter.LinkType;
+import com.gh.mygreen.xlsmapper.cellconverter.LinkType;
 
 /**
  * {@link POIUtils}のテスタ

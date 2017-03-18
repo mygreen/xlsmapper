@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapterBuilder;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 /**
- * {@link FieldAdapter}に対するユーティリティクラス。
+ * {@link FieldAccessor}に対するユーティリティクラス。
  *
  * @since 2.0
  * @author T.TSUCHIE
@@ -30,33 +30,35 @@ public class FieldAdapterUtils {
      * @return プロパティの一覧。存在しない場合は、空のリストを返す。
      * @throws NullPointerException {@literal targetClass == null or annoReader == null or annoClass == null.}
      */
-    public static List<FieldAdapter> getPropertiesWithAnnotation(final Class<?> targetClass, final AnnotationReader annoReader,
+    public static List<FieldAccessor> getPropertiesWithAnnotation(final Class<?> targetClass, final AnnotationReader annoReader,
             final Class<? extends Annotation> annoClass) {
         
         ArgUtils.notNull(targetClass, "targetClass");
         ArgUtils.notNull(annoReader, "annoReader");
         ArgUtils.notNull(annoClass, "annoClass");
         
-        final FieldAdapterBuilder builder = new FieldAdapterBuilder(annoReader);
-        final List<FieldAdapter> list = new ArrayList<>();
+        final FieldAccessorFactory accessorFactory = new FieldAccessorFactory(annoReader);
+        final List<FieldAccessor> list = new ArrayList<>();
         
         for(Method method : targetClass.getMethods()) {
             if(!ClassUtils.isAccessorMethod(method)) {
                 continue;
             }
             
-            final FieldAdapter adapter = builder.of(method);
-            if(adapter.hasAnnotation(annoClass) && !list.contains(adapter)) {
-                list.add(adapter);
+            method.setAccessible(true);
+            
+            final FieldAccessor accessor = accessorFactory.create(method);
+            if(accessor.hasAnnotation(annoClass) && !list.contains(accessor)) {
+                list.add(accessor);
             }
         }
         
         for(Field field : targetClass.getDeclaredFields()) {
             field.setAccessible(true);
             
-            final FieldAdapter adapter = builder.of(field);
-            if(adapter.hasAnnotation(annoClass) && !list.contains(adapter)) {
-                list.add(adapter);
+            final FieldAccessor accessor = accessorFactory.create(field);
+            if(accessor.hasAnnotation(annoClass) && !list.contains(accessor)) {
+                list.add(accessor);
             }
             
         }
@@ -76,12 +78,12 @@ public class FieldAdapterUtils {
      * @return プロパティの一覧。存在しない場合は、空のリストを返す。
      * @throws NullPointerException {@literal config == null || columnName == null.}
      */
-    public static List<FieldAdapter> getColumnPropertiesByName(final Class<?> targetClass, final AnnotationReader annoReader,
+    public static List<FieldAccessor> getColumnPropertiesByName(final Class<?> targetClass, final AnnotationReader annoReader,
             final XlsMapperConfig config, final String columnName) {
         
         return getPropertiesWithAnnotation(targetClass, annoReader, XlsColumn.class)
             .stream()
-            .filter(adapter -> Utils.matches(columnName, adapter.getAnnotation(XlsColumn.class).get().columnName(), config))
+            .filter(accessor -> Utils.matches(columnName, accessor.getAnnotation(XlsColumn.class).get().columnName(), config))
             .collect(Collectors.toList());
         
     }

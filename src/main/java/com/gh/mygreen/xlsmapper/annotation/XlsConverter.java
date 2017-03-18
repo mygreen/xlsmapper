@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.gh.mygreen.xlsmapper.converter.CellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 
 
 /**
@@ -24,14 +24,14 @@ import com.gh.mygreen.xlsmapper.converter.CellConverter;
  * 
  *     // シート読み込み時のExcel Cell {@literal =>} Javaオブジェクトに変換する。
  *     {@literal @Override}
- *     public LocaleDate toObject(final Cell cell, final FieldAdaptor adapter, final XlsMapperConfig config)
+ *     public LocaleDate toObject(final Cell cell, final FieldAccessor accessor, final XlsMapperConfig config)
  *         throws XlsMapperException {
  *         {@literal //TODO:} 実装する
  *     }
  *     
  *     //シート書き込み時のJavaオブジェクト {@literal =>} Excel Cellに変換する。
  *     {@literal @Override}
- *     Cell toCell(FieldAdaptor adapter, LocaleDate targetValue, Sheet sheet, CellAddress address, XlsMapperConfig config) throws XlsMapperException;
+ *     Cell toCell(FieldAccessor accessor, LocaleDate targetValue, Sheet sheet, CellAddress address, XlsMapperConfig config) throws XlsMapperException;
  *         {@literal //TODO:} 実装する
  *     }
  * }

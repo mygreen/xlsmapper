@@ -17,11 +17,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellReference;
@@ -33,11 +32,11 @@ import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.converter.ConversionException;
-import com.gh.mygreen.xlsmapper.converter.DefaultItemConverter;
-import com.gh.mygreen.xlsmapper.converter.ItemConverter;
-import com.gh.mygreen.xlsmapper.processor.CellNotFoundException;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
+import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
+import com.gh.mygreen.xlsmapper.cellconverter.DefaultItemConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.ItemConverter;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -413,495 +412,495 @@ public class Utils {
         
     }
     
-    public static Point toPoint(CellAddress address) {
-        return new Point(address.getColumn(), address.getRow());
-    }
+//    public static Point toPoint(CellAddress address) {
+//        return new Point(address.getColumn(), address.getRow());
+//    }
     
-    /**
-     * セルの位置を設定する。
-     * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。</p>
-     * <p>フィールド「{@literal Map<String, Point>} positions」に、設定する。</p>
-     * @param address アドレス情報
-     * @param obj メソッドが定義されているオブジェクト
-     * @param fieldName フィールド名
-     */
-    @SuppressWarnings("unchecked")
-    public static void setPosition(final CellAddress address, final Object obj, final String fieldName) {
-        
-        final Class<?> clazz = obj.getClass();
-        final String positionFieldName = fieldName + "Position";
-        
-        // フィールド positionsの場合
-        final String positionMapFieldName = "positions";
-        try {
-            Field positionMapField  = clazz.getDeclaredField(positionMapFieldName);
-            positionMapField.setAccessible(true);
-            if(Map.class.isAssignableFrom(positionMapField.getType())) {
-                Object positionMapValue = positionMapField.get(obj);
-                if(positionMapValue == null) {
-                    positionMapValue = new HashMap<String, Point>();
-                    positionMapField.set(obj, positionMapValue);
-                }
-                
-                ((Map<String, Point>) positionMapValue).put(fieldName, toPoint(address));
-                return;
-            }
-        } catch (NoSuchFieldException | SecurityException e) {
-            // フィールドが見つからない場合は何もしない。
-            
-            
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(
-                    String.format("fail set '%s' field", positionMapFieldName), 
-                    e);
-        }
-        
-        
-        // メソッドの場合(引数が int, intの場合)
-        final Method positionMethod1 = getSetter(clazz, positionFieldName, Integer.TYPE, Integer.TYPE);
-        if(positionMethod1 != null) {
-            try {
-                positionMethod1.invoke(obj, address.getColumn(), address.getRow());
-                return;
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new RuntimeException(
-                        String.format("fail set position with '%s' method", positionMethod1.getName()),
-                        e);
-            }
-            
-        }
-        
-        // メソッドの場合(引数が Pointの場合)
-        final Method positionMethod2 = getSetter(clazz, positionFieldName, Point.class);
-        if(positionMethod2 != null) {
-            try {
-                positionMethod2.invoke(obj, toPoint(address));
-                return;
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new RuntimeException(
-                        String.format("fail set position with '%s' method", positionMethod2.getName()),
-                        e);
-            }
-            
-        }
-        
-        // フィールドの場合
-        final Field positionField = getField(clazz, positionFieldName);
-        if(positionField != null) {
-            try {
-                positionField.setAccessible(true);
-                positionField.set(obj, toPoint(address));
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException(
-                        String.format("fail set position with '%s' field", positionField.getName()),
-                        e);
-            }
-        }
-        
-        
-    }
+//    /**
+//     * セルの位置を設定する。
+//     * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。</p>
+//     * <p>フィールド「{@literal Map<String, Point>} positions」に、設定する。</p>
+//     * @param address アドレス情報
+//     * @param obj メソッドが定義されているオブジェクト
+//     * @param fieldName フィールド名
+//     */
+//    @SuppressWarnings("unchecked")
+//    public static void setPosition(final CellAddress address, final Object obj, final String fieldName) {
+//        
+//        final Class<?> clazz = obj.getClass();
+//        final String positionFieldName = fieldName + "Position";
+//        
+//        // フィールド positionsの場合
+//        final String positionMapFieldName = "positions";
+//        try {
+//            Field positionMapField  = clazz.getDeclaredField(positionMapFieldName);
+//            positionMapField.setAccessible(true);
+//            if(Map.class.isAssignableFrom(positionMapField.getType())) {
+//                Object positionMapValue = positionMapField.get(obj);
+//                if(positionMapValue == null) {
+//                    positionMapValue = new HashMap<String, Point>();
+//                    positionMapField.set(obj, positionMapValue);
+//                }
+//                
+//                ((Map<String, Point>) positionMapValue).put(fieldName, address.toPoint());
+//                return;
+//            }
+//        } catch (NoSuchFieldException | SecurityException e) {
+//            // フィールドが見つからない場合は何もしない。
+//            
+//            
+//        } catch (IllegalArgumentException | IllegalAccessException e) {
+//            throw new RuntimeException(
+//                    String.format("fail set '%s' field", positionMapFieldName), 
+//                    e);
+//        }
+//        
+//        
+//        // メソッドの場合(引数が int, intの場合)
+//        final Method positionMethod1 = getSetter(clazz, positionFieldName, Integer.TYPE, Integer.TYPE);
+//        if(positionMethod1 != null) {
+//            try {
+//                positionMethod1.invoke(obj, address.getColumn(), address.getRow());
+//                return;
+//            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set position with '%s' method", positionMethod1.getName()),
+//                        e);
+//            }
+//            
+//        }
+//        
+//        // メソッドの場合(引数が Pointの場合)
+//        final Method positionMethod2 = getSetter(clazz, positionFieldName, Point.class);
+//        if(positionMethod2 != null) {
+//            try {
+//                positionMethod2.invoke(obj, address.toPoint());
+//                return;
+//            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set position with '%s' method", positionMethod2.getName()),
+//                        e);
+//            }
+//            
+//        }
+//        
+//        // フィールドの場合
+//        final Field positionField = getField(clazz, positionFieldName);
+//        if(positionField != null) {
+//            try {
+//                positionField.setAccessible(true);
+//                positionField.set(obj, address.toPoint());
+//            } catch (IllegalArgumentException | IllegalAccessException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set position with '%s' field", positionField.getName()),
+//                        e);
+//            }
+//        }
+//        
+//        
+//    }
     
-    /**
-     * セルの位置を取得する
-     * <p>「get + 'フィールド名' + Position」のgetterか「'フィールド名' + Position」というフィールド名で決める。</p>
-     * <p>フィールド「{{@literal Map<String, Point>} positions」に、設定する。</p>
-     * @param obj メソッドが定義されているオブジェクト
-     * @param fieldName フィールド名
-     * @return 座標が取得できない場合はnullを返す。
-     */
-    @SuppressWarnings("unchecked")
-    public static Point getPosition(final Object obj, final String fieldName) {
-        
-        final Class<?> clazz = obj.getClass();
-        final String positionFieldName = fieldName + "Position";
-        
-        // フィールド positionsの場合
-        final String positionMapFieldName = "positions";
-        try {
-            Field positionMapField  = clazz.getDeclaredField(positionMapFieldName);
-            positionMapField.setAccessible(true);
-            if(Map.class.isAssignableFrom(positionMapField.getType())) {
-                Object positionMapValue = positionMapField.get(obj);
-                if(positionMapValue == null) {
-                    return null;
-                }
-                
-                return ((Map<String, Point>) positionMapValue).get(fieldName);
-                
-            }
-        } catch (NoSuchFieldException | SecurityException e) {
-            // フィールドが見つからない場合は何もしない。
-            
-            
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(
-                    String.format("fail set '%s' field", positionMapFieldName), 
-                    e);
-        }
-        
-        // メソッドの場合
-        final Method positionMethod1 = getGetter(clazz, positionFieldName);
-        if(positionMethod1 != null) {
-            try {
-                final Object positionValue = positionMethod1.invoke(obj);
-                if(Point.class.isAssignableFrom(positionMethod1.getReturnType())) {
-                    return (Point) positionValue;
-                } else {
-                    throw new RuntimeException(
-                            String.format("method '%s' return type not '%s'", positionMethod1.getName(), Point.class.getName()));
-                }
-                
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new RuntimeException(
-                        String.format("fail set position with '%s' method", positionMethod1.getName()),
-                        e);
-            }
-            
-        }
-        
-        // フィールドの場合
-        final Field positionField = getField(clazz, positionFieldName);
-        if(positionField != null) {
-            try {
-                positionField.setAccessible(true);
-                
-                final Object positionValue = positionField.get(obj);
-                if(Point.class.isAssignableFrom(positionValue.getClass())) {
-                    return (Point) positionValue;
-                } else {
-                    throw new RuntimeException(
-                            String.format("field '%s' return type not '%s'", positionField.getName(), Point.class.getName()));
-                }
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException(
-                        String.format("fail set position with '%s' field", positionField.getName()),
-                        e);
-            }
-        }
-        
-        return null;
-        
-    }
+//    /**
+//     * セルの位置を取得する
+//     * <p>「get + 'フィールド名' + Position」のgetterか「'フィールド名' + Position」というフィールド名で決める。</p>
+//     * <p>フィールド「{{@literal Map<String, Point>} positions」に、設定する。</p>
+//     * @param obj メソッドが定義されているオブジェクト
+//     * @param fieldName フィールド名
+//     * @return 座標が取得できない場合はnullを返す。
+//     */
+//    @SuppressWarnings("unchecked")
+//    public static Point getPosition(final Object obj, final String fieldName) {
+//        
+//        final Class<?> clazz = obj.getClass();
+//        final String positionFieldName = fieldName + "Position";
+//        
+//        // フィールド positionsの場合
+//        final String positionMapFieldName = "positions";
+//        try {
+//            Field positionMapField  = clazz.getDeclaredField(positionMapFieldName);
+//            positionMapField.setAccessible(true);
+//            if(Map.class.isAssignableFrom(positionMapField.getType())) {
+//                Object positionMapValue = positionMapField.get(obj);
+//                if(positionMapValue == null) {
+//                    return null;
+//                }
+//                
+//                return ((Map<String, Point>) positionMapValue).get(fieldName);
+//                
+//            }
+//        } catch (NoSuchFieldException | SecurityException e) {
+//            // フィールドが見つからない場合は何もしない。
+//            
+//            
+//        } catch (IllegalArgumentException | IllegalAccessException e) {
+//            throw new RuntimeException(
+//                    String.format("fail set '%s' field", positionMapFieldName), 
+//                    e);
+//        }
+//        
+//        // メソッドの場合
+//        final Method positionMethod1 = getGetter(clazz, positionFieldName);
+//        if(positionMethod1 != null) {
+//            try {
+//                final Object positionValue = positionMethod1.invoke(obj);
+//                if(Point.class.isAssignableFrom(positionMethod1.getReturnType())) {
+//                    return (Point) positionValue;
+//                } else {
+//                    throw new RuntimeException(
+//                            String.format("method '%s' return type not '%s'", positionMethod1.getName(), Point.class.getName()));
+//                }
+//                
+//            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set position with '%s' method", positionMethod1.getName()),
+//                        e);
+//            }
+//            
+//        }
+//        
+//        // フィールドの場合
+//        final Field positionField = getField(clazz, positionFieldName);
+//        if(positionField != null) {
+//            try {
+//                positionField.setAccessible(true);
+//                
+//                final Object positionValue = positionField.get(obj);
+//                if(Point.class.isAssignableFrom(positionValue.getClass())) {
+//                    return (Point) positionValue;
+//                } else {
+//                    throw new RuntimeException(
+//                            String.format("field '%s' return type not '%s'", positionField.getName(), Point.class.getName()));
+//                }
+//            } catch (IllegalArgumentException | IllegalAccessException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set position with '%s' field", positionField.getName()),
+//                        e);
+//            }
+//        }
+//        
+//        return null;
+//        
+//    }
     
-    /**
-     * MapColumn形式の場合のセルの位置を設定する。
-     * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。</p>
-     * <p>フィールド「{@literal Map<String, Point>} positions」に、設定する。</p>
-     * @param x 列のインデックス
-     * @param y 行のインデックス
-     * @param obj メソッドが定義されているオブジェクト
-     * @param fieldName フィールド名
-     * @param key
-     */
-    @SuppressWarnings("unchecked")
-    public static void setPositionWithMapColumn(final int x, final int y, final Object obj, final String fieldName, final String key) {
-        
-        final Class<?> clazz = obj.getClass();
-        final String positionFieldName = fieldName + "Position";
-        
-        // フィールド positionsの場合
-        final String positionMapFieldName = "positions";
-        try {
-            Field positionMapField  = clazz.getDeclaredField(positionMapFieldName);
-            positionMapField.setAccessible(true);
-            if(Map.class.isAssignableFrom(positionMapField.getType())) {
-                Object positionMapValue = positionMapField.get(obj);
-                if(positionMapValue == null) {
-                    positionMapValue = new HashMap<String, Point>();
-                    positionMapField.set(obj, positionMapValue);
-                }
-                
-                final String mapKey = String.format("%s[%s]", fieldName, key);
-                ((Map<String, Point>) positionMapValue).put(mapKey, new Point(x, y));
-                return;
-            }
-        } catch (NoSuchFieldException | SecurityException e) {
-            // フィールドが見つからない場合は何もしない。
-            
-            
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(
-                    String.format("fail set '%s' field", positionMapFieldName), 
-                    e);
-        }
-        
-        // メソッドの場合(引数が String, int, intの場合)
-        final Method positionMethod1 = getSetter(clazz, positionFieldName, String.class, Integer.TYPE, Integer.TYPE);
-        if(positionMethod1 != null) {
-            try {
-                positionMethod1.invoke(obj, key, x, y);
-                return;
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new RuntimeException(
-                        String.format("fail set map position with '%s' method", positionMethod1.getName()),
-                        e);
-            }
-            
-        }
-        
-        // メソッドの場合(引数が String, Pointの場合)
-        final Method positionMethod2 = getSetter(clazz, positionFieldName, String.class, Point.class);
-        if(positionMethod2 != null) {
-            try {
-                positionMethod2.invoke(obj, key, new Point(x, y));
-                return;
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new RuntimeException(
-                        String.format("fail set map position with '%s' method", positionMethod2.getName()),
-                        e);
-            }
-            
-        }
-        
-        // フィールドの場合(Map<String, Point>)の場合
-        final Field positionField = getField(clazz, positionFieldName);
-        if(positionField != null) {
-            try {
-                positionField.setAccessible(true);
-                if(Map.class.isAssignableFrom(positionField.getType())) {
-                    Object positionValue = positionField.get(obj);
-                    if(positionValue == null) {
-                        positionValue = new HashMap<String, Point>();
-                        positionField.set(obj, positionValue);
-                    }
-                    
-                    ((Map<String, Point>) positionValue).put(key, new Point(x, y));
-                }
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException(
-                        String.format("fail set position with '%s' field", positionField.getName()),
-                        e);
-            }
-        }
-        
-        
-    }
+//    /**
+//     * MapColumn形式の場合のセルの位置を設定する。
+//     * <p>「set + 'フィールド名' + Position」のsetterか「'フィールド名' + Position」というフィールド名で決める。</p>
+//     * <p>フィールド「{@literal Map<String, Point>} positions」に、設定する。</p>
+//     * @param x 列のインデックス
+//     * @param y 行のインデックス
+//     * @param obj メソッドが定義されているオブジェクト
+//     * @param fieldName フィールド名
+//     * @param key
+//     */
+//    @SuppressWarnings("unchecked")
+//    public static void setPositionWithMapColumn(final int x, final int y, final Object obj, final String fieldName, final String key) {
+//        
+//        final Class<?> clazz = obj.getClass();
+//        final String positionFieldName = fieldName + "Position";
+//        
+//        // フィールド positionsの場合
+//        final String positionMapFieldName = "positions";
+//        try {
+//            Field positionMapField  = clazz.getDeclaredField(positionMapFieldName);
+//            positionMapField.setAccessible(true);
+//            if(Map.class.isAssignableFrom(positionMapField.getType())) {
+//                Object positionMapValue = positionMapField.get(obj);
+//                if(positionMapValue == null) {
+//                    positionMapValue = new HashMap<String, Point>();
+//                    positionMapField.set(obj, positionMapValue);
+//                }
+//                
+//                final String mapKey = String.format("%s[%s]", fieldName, key);
+//                ((Map<String, Point>) positionMapValue).put(mapKey, new Point(x, y));
+//                return;
+//            }
+//        } catch (NoSuchFieldException | SecurityException e) {
+//            // フィールドが見つからない場合は何もしない。
+//            
+//            
+//        } catch (IllegalArgumentException | IllegalAccessException e) {
+//            throw new RuntimeException(
+//                    String.format("fail set '%s' field", positionMapFieldName), 
+//                    e);
+//        }
+//        
+//        // メソッドの場合(引数が String, int, intの場合)
+//        final Method positionMethod1 = getSetter(clazz, positionFieldName, String.class, Integer.TYPE, Integer.TYPE);
+//        if(positionMethod1 != null) {
+//            try {
+//                positionMethod1.invoke(obj, key, x, y);
+//                return;
+//            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set map position with '%s' method", positionMethod1.getName()),
+//                        e);
+//            }
+//            
+//        }
+//        
+//        // メソッドの場合(引数が String, Pointの場合)
+//        final Method positionMethod2 = getSetter(clazz, positionFieldName, String.class, Point.class);
+//        if(positionMethod2 != null) {
+//            try {
+//                positionMethod2.invoke(obj, key, new Point(x, y));
+//                return;
+//            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set map position with '%s' method", positionMethod2.getName()),
+//                        e);
+//            }
+//            
+//        }
+//        
+//        // フィールドの場合(Map<String, Point>)の場合
+//        final Field positionField = getField(clazz, positionFieldName);
+//        if(positionField != null) {
+//            try {
+//                positionField.setAccessible(true);
+//                if(Map.class.isAssignableFrom(positionField.getType())) {
+//                    Object positionValue = positionField.get(obj);
+//                    if(positionValue == null) {
+//                        positionValue = new HashMap<String, Point>();
+//                        positionField.set(obj, positionValue);
+//                    }
+//                    
+//                    ((Map<String, Point>) positionValue).put(key, new Point(x, y));
+//                }
+//            } catch (IllegalArgumentException | IllegalAccessException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set position with '%s' field", positionField.getName()),
+//                        e);
+//            }
+//        }
+//        
+//        
+//    }
     
-    /**
-     * セルの見出しを設定する。
-     * <p>「set + 'フィールド名' + Label」のsetterか「'フィールド名' + Label」というフィールド名で決める。</p>
-     * <p>フィールド「{@literal Map<String, String>} labels」に、設定する。</p>
-     * @param label 設定する見出し
-     * @param obj メソッドが定義されているオブジェクト
-     * @param fieldName フィールド名
-     */
-    @SuppressWarnings("unchecked")
-    public static void setLabel(final String label, final Object obj, final String fieldName) {
-        
-        final Class<?> clazz = obj.getClass();
-        final String labelFieldName = fieldName + "Label";
-        
-        // フィールド labelsの場合
-        final String labelMapFieldName = "labels";
-        try {
-            Field labelMapField  = clazz.getDeclaredField(labelMapFieldName);
-            labelMapField.setAccessible(true);
-            if(Map.class.isAssignableFrom(labelMapField.getType())) {
-                Object labelMapValue = labelMapField.get(obj);
-                if(labelMapValue == null) {
-                    labelMapValue = new HashMap<String, Point>();
-                    labelMapField.set(obj, labelMapValue);
-                }
-                
-                ((Map<String, String>) labelMapValue).put(fieldName, label);
-                return;
-            }
-        } catch (NoSuchFieldException | SecurityException e) {
-            // フィールドが見つからない場合は何もしない。
-            
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(
-                    String.format("fail set '%s' field", labelMapFieldName), 
-                    e);
-        }
-        
-        // メソッドの場合(引数が String の場合)
-        final Method labelMethod1 = getSetter(clazz, labelFieldName, String.class);
-        if(labelMethod1 != null) {
-            try {
-                labelMethod1.invoke(obj, label);
-                return;
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new RuntimeException(
-                        String.format("fail set label with '%s' method", labelMethod1.getName()),
-                        e);
-            }
-            
-        }
-        
-        // フィールドの場合
-        final Field labelField = getField(clazz, labelFieldName);
-        if(labelField != null) {
-            try {
-                labelField.setAccessible(true);
-                labelField.set(obj, label);
-                return;
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException(
-                        String.format("fail set label with '%s' field", labelField.getName()),
-                        e);
-            }
-        }
-        
-    }
-    
-    /**
-     * セルの見出しを取得する。
-     * <p>「get + 'フィールド名' + Label」のgetterか「'フィールド名' + Label」というフィールド名で決める。</p>
-     * <p>フィールド「{@literal Map<String, String>} labels」に、設定する。</p>
-     * @param obj メソッドが定義されているオブジェクト
-     * @param fieldName フィールド名
-     * @return セルの見出し。
-     */
-    @SuppressWarnings("unchecked")
-    public static String getLabel(final Object obj, final String fieldName) {
-        
-        final Class<?> clazz = obj.getClass();
-        final String labelFieldName = fieldName + "Label";
-        
-        // フィールド labelsの場合
-        final String labelMapFieldName = "labels";
-        try {
-            Field labelMapField  = clazz.getDeclaredField(labelMapFieldName);
-            labelMapField.setAccessible(true);
-            if(Map.class.isAssignableFrom(labelMapField.getType())) {
-                Object labelMapValue = labelMapField.get(obj);
-                if(labelMapValue == null) {
-                    return null;
-                }
-                
-                return ((Map<String, String>) labelMapValue).get(fieldName);
-                
-            }
-        } catch (NoSuchFieldException | SecurityException e) {
-            // フィールドが見つからない場合は何もしない。
-            
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(
-                    String.format("fail set '%s' field", labelMapFieldName), 
-                    e);
-        }
-        
-        // メソッドの場合
-        final Method labelMethod1 = getSetter(clazz, labelFieldName);
-        if(labelMethod1 != null) {
-            try {
-                final Object labelValue = labelMethod1.invoke(obj);
-                if(Point.class.isAssignableFrom(labelMethod1.getReturnType())) {
-                    return (String) labelValue;
-                } else {
-                    throw new RuntimeException(
-                            String.format("method '%s' return type not '%s'", labelMethod1.getName(), String.class.getName()));
-                }
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new RuntimeException(
-                        String.format("fail set label with '%s' method", labelMethod1.getName()),
-                        e);
-            }
-            
-        }
-        
-        // フィールドの場合
-        final Field labelField = getField(clazz, labelFieldName);
-        if(labelField != null) {
-            try {
-                labelField.setAccessible(true);
-                final Object labelValue = labelField.get(obj);
-                if(Point.class.isAssignableFrom(labelField.getType())) {
-                    return (String) labelValue;
-                } else {
-                    throw new RuntimeException(
-                            String.format("field '%s' type not '%s'", labelField.getName(), String.class.getName()));
-                }
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException(
-                        String.format("fail set label with '%s' field", labelField.getName()),
-                        e);
-            }
-        }
-        
-        return null;
-        
-    }
-    
-    /**
-     * セルの見出しを設定する。
-     * <p>「set + 'フィールド名' + Label」のsetterか「'フィールド名' + Label」というフィールド名で決める。</p>
-     * <p>フィールド「{@literal Map<String, String>} labels」に、設定する。</p>
-     * @param label 設定する見出し
-     * @param obj メソッドが定義されているオブジェクト
-     * @param fieldName フィールド名
-     * @param key
-     */
-    @SuppressWarnings("unchecked")
-    public static void setLabelWithMapColumn(final String label, final Object obj, final String fieldName, final String key) {
-        
-        final Class<?> clazz = obj.getClass();
-        final String labelFieldName = fieldName + "Label";
-        
-        // フィールド labelsの場合
-        final String labelMapFieldName = "labels";
-        try {
-            Field labelMapField  = clazz.getDeclaredField(labelMapFieldName);
-            labelMapField.setAccessible(true);
-            if(Map.class.isAssignableFrom(labelMapField.getType())) {
-                Object labelMapValue = labelMapField.get(obj);
-                if(labelMapValue == null) {
-                    labelMapValue = new HashMap<String, String>();
-                    labelMapField.set(obj, labelMapValue);
-                }
-                
-                final String mapKey = String.format("%s[%s]", fieldName, key);
-                ((Map<String, String>) labelMapValue).put(mapKey, label);
-                return;
-            }
-        } catch (NoSuchFieldException | SecurityException e) {
-            // フィールドが見つからない場合は何もしない。
-            
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(
-                    String.format("fail set '%s' field", labelMapFieldName), 
-                    e);
-        }
-        
-        // メソッドの場合(引数が String, String の場合)
-        final Method labelMethod1 = getSetter(clazz, labelFieldName, String.class, String.class);
-        if(labelMethod1 != null) {
-            try {
-                labelMethod1.invoke(obj, key, label);
-                return;
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new RuntimeException(
-                        String.format("fail set label with '%s' method", labelMethod1.getName()),
-                        e);
-            }
-            
-        }
-        
-        // フィールドの場合
-        final Field labelField = getField(clazz, labelFieldName);
-        if(labelField != null) {
-            try {
-                labelField.setAccessible(true);
-                
-                if(Map.class.isAssignableFrom(labelField.getType())) {
-                    Object labelValue = labelField.get(obj);
-                    if(labelValue == null) {
-                        labelValue = new HashMap<String, Point>();
-                        labelField.set(obj, labelValue);
-                    }
-                    
-                    ((Map<String, String>) labelValue).put(key, label);
-                }
-                return;
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException(
-                        String.format("fail set label with '%s' field", labelField.getName()),
-                        e);
-            }
-        }
-        
-    }
+//    /**
+//     * セルの見出しを設定する。
+//     * <p>「set + 'フィールド名' + Label」のsetterか「'フィールド名' + Label」というフィールド名で決める。</p>
+//     * <p>フィールド「{@literal Map<String, String>} labels」に、設定する。</p>
+//     * @param label 設定する見出し
+//     * @param obj メソッドが定義されているオブジェクト
+//     * @param fieldName フィールド名
+//     */
+//    @SuppressWarnings("unchecked")
+//    public static void setLabel(final String label, final Object obj, final String fieldName) {
+//        
+//        final Class<?> clazz = obj.getClass();
+//        final String labelFieldName = fieldName + "Label";
+//        
+//        // フィールド labelsの場合
+//        final String labelMapFieldName = "labels";
+//        try {
+//            Field labelMapField  = clazz.getDeclaredField(labelMapFieldName);
+//            labelMapField.setAccessible(true);
+//            if(Map.class.isAssignableFrom(labelMapField.getType())) {
+//                Object labelMapValue = labelMapField.get(obj);
+//                if(labelMapValue == null) {
+//                    labelMapValue = new HashMap<String, Point>();
+//                    labelMapField.set(obj, labelMapValue);
+//                }
+//                
+//                ((Map<String, String>) labelMapValue).put(fieldName, label);
+//                return;
+//            }
+//        } catch (NoSuchFieldException | SecurityException e) {
+//            // フィールドが見つからない場合は何もしない。
+//            
+//        } catch (IllegalArgumentException | IllegalAccessException e) {
+//            throw new RuntimeException(
+//                    String.format("fail set '%s' field", labelMapFieldName), 
+//                    e);
+//        }
+//        
+//        // メソッドの場合(引数が String の場合)
+//        final Method labelMethod1 = getSetter(clazz, labelFieldName, String.class);
+//        if(labelMethod1 != null) {
+//            try {
+//                labelMethod1.invoke(obj, label);
+//                return;
+//            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set label with '%s' method", labelMethod1.getName()),
+//                        e);
+//            }
+//            
+//        }
+//        
+//        // フィールドの場合
+//        final Field labelField = getField(clazz, labelFieldName);
+//        if(labelField != null) {
+//            try {
+//                labelField.setAccessible(true);
+//                labelField.set(obj, label);
+//                return;
+//            } catch (IllegalArgumentException | IllegalAccessException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set label with '%s' field", labelField.getName()),
+//                        e);
+//            }
+//        }
+//        
+//    }
+//    
+//    /**
+//     * セルの見出しを取得する。
+//     * <p>「get + 'フィールド名' + Label」のgetterか「'フィールド名' + Label」というフィールド名で決める。</p>
+//     * <p>フィールド「{@literal Map<String, String>} labels」に、設定する。</p>
+//     * @param obj メソッドが定義されているオブジェクト
+//     * @param fieldName フィールド名
+//     * @return セルの見出し。
+//     */
+//    @SuppressWarnings("unchecked")
+//    public static String getLabel(final Object obj, final String fieldName) {
+//        
+//        final Class<?> clazz = obj.getClass();
+//        final String labelFieldName = fieldName + "Label";
+//        
+//        // フィールド labelsの場合
+//        final String labelMapFieldName = "labels";
+//        try {
+//            Field labelMapField  = clazz.getDeclaredField(labelMapFieldName);
+//            labelMapField.setAccessible(true);
+//            if(Map.class.isAssignableFrom(labelMapField.getType())) {
+//                Object labelMapValue = labelMapField.get(obj);
+//                if(labelMapValue == null) {
+//                    return null;
+//                }
+//                
+//                return ((Map<String, String>) labelMapValue).get(fieldName);
+//                
+//            }
+//        } catch (NoSuchFieldException | SecurityException e) {
+//            // フィールドが見つからない場合は何もしない。
+//            
+//        } catch (IllegalArgumentException | IllegalAccessException e) {
+//            throw new RuntimeException(
+//                    String.format("fail set '%s' field", labelMapFieldName), 
+//                    e);
+//        }
+//        
+//        // メソッドの場合
+//        final Method labelMethod1 = getSetter(clazz, labelFieldName);
+//        if(labelMethod1 != null) {
+//            try {
+//                final Object labelValue = labelMethod1.invoke(obj);
+//                if(Point.class.isAssignableFrom(labelMethod1.getReturnType())) {
+//                    return (String) labelValue;
+//                } else {
+//                    throw new RuntimeException(
+//                            String.format("method '%s' return type not '%s'", labelMethod1.getName(), String.class.getName()));
+//                }
+//            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set label with '%s' method", labelMethod1.getName()),
+//                        e);
+//            }
+//            
+//        }
+//        
+//        // フィールドの場合
+//        final Field labelField = getField(clazz, labelFieldName);
+//        if(labelField != null) {
+//            try {
+//                labelField.setAccessible(true);
+//                final Object labelValue = labelField.get(obj);
+//                if(Point.class.isAssignableFrom(labelField.getType())) {
+//                    return (String) labelValue;
+//                } else {
+//                    throw new RuntimeException(
+//                            String.format("field '%s' type not '%s'", labelField.getName(), String.class.getName()));
+//                }
+//            } catch (IllegalArgumentException | IllegalAccessException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set label with '%s' field", labelField.getName()),
+//                        e);
+//            }
+//        }
+//        
+//        return null;
+//        
+//    }
+//    
+//    /**
+//     * セルの見出しを設定する。
+//     * <p>「set + 'フィールド名' + Label」のsetterか「'フィールド名' + Label」というフィールド名で決める。</p>
+//     * <p>フィールド「{@literal Map<String, String>} labels」に、設定する。</p>
+//     * @param label 設定する見出し
+//     * @param obj メソッドが定義されているオブジェクト
+//     * @param fieldName フィールド名
+//     * @param key
+//     */
+//    @SuppressWarnings("unchecked")
+//    public static void setLabelWithMapColumn(final String label, final Object obj, final String fieldName, final String key) {
+//        
+//        final Class<?> clazz = obj.getClass();
+//        final String labelFieldName = fieldName + "Label";
+//        
+//        // フィールド labelsの場合
+//        final String labelMapFieldName = "labels";
+//        try {
+//            Field labelMapField  = clazz.getDeclaredField(labelMapFieldName);
+//            labelMapField.setAccessible(true);
+//            if(Map.class.isAssignableFrom(labelMapField.getType())) {
+//                Object labelMapValue = labelMapField.get(obj);
+//                if(labelMapValue == null) {
+//                    labelMapValue = new HashMap<String, String>();
+//                    labelMapField.set(obj, labelMapValue);
+//                }
+//                
+//                final String mapKey = String.format("%s[%s]", fieldName, key);
+//                ((Map<String, String>) labelMapValue).put(mapKey, label);
+//                return;
+//            }
+//        } catch (NoSuchFieldException | SecurityException e) {
+//            // フィールドが見つからない場合は何もしない。
+//            
+//        } catch (IllegalArgumentException | IllegalAccessException e) {
+//            throw new RuntimeException(
+//                    String.format("fail set '%s' field", labelMapFieldName), 
+//                    e);
+//        }
+//        
+//        // メソッドの場合(引数が String, String の場合)
+//        final Method labelMethod1 = getSetter(clazz, labelFieldName, String.class, String.class);
+//        if(labelMethod1 != null) {
+//            try {
+//                labelMethod1.invoke(obj, key, label);
+//                return;
+//            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set label with '%s' method", labelMethod1.getName()),
+//                        e);
+//            }
+//            
+//        }
+//        
+//        // フィールドの場合
+//        final Field labelField = getField(clazz, labelFieldName);
+//        if(labelField != null) {
+//            try {
+//                labelField.setAccessible(true);
+//                
+//                if(Map.class.isAssignableFrom(labelField.getType())) {
+//                    Object labelValue = labelField.get(obj);
+//                    if(labelValue == null) {
+//                        labelValue = new HashMap<String, Point>();
+//                        labelField.set(obj, labelValue);
+//                    }
+//                    
+//                    ((Map<String, String>) labelValue).put(key, label);
+//                }
+//                return;
+//            } catch (IllegalArgumentException | IllegalAccessException e) {
+//                throw new RuntimeException(
+//                        String.format("fail set label with '%s' field", labelField.getName()),
+//                        e);
+//            }
+//        }
+//        
+//    }
     
     /**
      * 文字列が空文字か判定する。
@@ -2105,40 +2104,40 @@ public class Utils {
      * セルに数式を設定する。
      * @since 1.5
      * 
-     * @param adapter フィールド
+     * @param accessor フィールド
      * @param formulaAnno 数式定義用のアノテーション。
      * @param config システム設定。
      * @param cell 設定対象のセル。
      * @param targetBean 処理対象のJavaBean.
      * @throws XlsMapperException
      */
-    public static void setupCellFormula(final FieldAdapter adapter, final XlsFormula formulaAnno,
+    public static void setupCellFormula(final FieldAccessor accessor, final XlsFormula formulaAnno,
             final XlsMapperConfig config, final Cell cell, final Object targetBean) throws XlsMapperException {
         
-        ArgUtils.notNull(adapter, "adaptor");
+        ArgUtils.notNull(accessor, "adaptor");
         ArgUtils.notNull(formulaAnno, "formulaAnno");
         ArgUtils.notNull(config, "config");
         ArgUtils.notNull(cell, "cell");
         
-        final String formula = getFormulaValue(adapter, formulaAnno, config, cell, targetBean);
+        final String formula = getFormulaValue(accessor, formulaAnno, config, cell, targetBean);
         if(isEmpty(formula)) {
-            cell.setCellType(Cell.CELL_TYPE_BLANK);
+            cell.setCellType(CellType.BLANK);
             return;
         }
         
         try {
             cell.setCellFormula(formula);
-            cell.setCellType(Cell.CELL_TYPE_FORMULA);
+            cell.setCellType(CellType.FORMULA);
             
         } catch(FormulaParseException e) {
             // 数式の解析に失敗した場合
             final String message = new StringBuilder()
                     .append(String.format("Fail parse formula '%s'.", formula))
                     .append(String.format(" Cell '%s' map from '%s#%s'.", 
-                            formatCellAddress(cell), adapter.getDeclaringClass().getName(), adapter.getName()))
+                            formatCellAddress(cell), accessor.getDeclaringClass().getName(), accessor.getName()))
                     .toString();
                 
-            throw new ConversionException(message, e, adapter.getType());
+            throw new ConversionException(message, e, accessor.getType());
         }
     }
     
@@ -2146,7 +2145,7 @@ public class Utils {
      * セルに設定する数式をアノテーションから組み立てる。
      * 
      * @since 1.5
-     * @param adapter フィールド
+     * @param accessor フィールド
      * @param formulaAnno 数式定義用のアノテーション。
      * @param config システム設定。
      * @param cell 設定対象のセル。
@@ -2154,7 +2153,7 @@ public class Utils {
      * @return 数式。
      * @throws XlsMapperException
      */
-    public static String getFormulaValue(final FieldAdapter adapter, final XlsFormula formulaAnno,
+    public static String getFormulaValue(final FieldAccessor accessor, final XlsFormula formulaAnno,
             final XlsMapperConfig config, final Cell cell, final Object targetBean) throws XlsMapperException {
         
         if(isNotEmpty(formulaAnno.value())) {
@@ -2172,7 +2171,7 @@ public class Utils {
                 return config.getFormulaFormatter().interpolate(formulaAnno.value(), vars);
             } catch(Exception e) {
                 throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.invalidEL")
-                        .var("property", adapter.getNameWithClass())
+                        .var("property", accessor.getNameWithClass())
                         .var("attr", XlsFormula.class)
                         .var("attrName", "value")
                         .var("attrValue", formulaAnno.value())
@@ -2194,7 +2193,7 @@ public class Utils {
             
             if(method == null) {
                 throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.notFoundMethod")
-                        .var("property", adapter.getNameWithClass())
+                        .var("property", accessor.getNameWithClass())
                         .varWithAnno("anno", XlsFormula.class)
                         .var("attrName", "methodName")
                         .var("attrValue", formulaAnno.methodName())
@@ -2210,8 +2209,14 @@ public class Utils {
                 if(Cell.class.isAssignableFrom(paramTypes[i])) {
                     paramValues[i] = cell;
                     
+                } else if(CellAddress.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = CellAddress.of(cell);
+                    
                 } else if(Point.class.isAssignableFrom(paramTypes[i])) {
-                    paramValues[i] = new Point(cell.getColumnIndex(), cell.getRowIndex());
+                    paramValues[i] = CellAddress.of(cell).toPoint();
+                    
+                } else if(org.apache.poi.ss.util.CellAddress.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = CellAddress.of(cell).toPoiCellAddress();
                     
                 } else if(Sheet.class.isAssignableFrom(paramTypes[i])) {
                     paramValues[i] = cell.getSheet();
@@ -2237,7 +2242,7 @@ public class Utils {
             
         } else {
             throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.required.any")
-                    .var("property", adapter.getNameWithClass())
+                    .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsFormula.class)
                     .varWithArrays("attrNames", "value", "methodName")
                     .format());

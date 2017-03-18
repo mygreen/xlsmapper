@@ -21,11 +21,11 @@ import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapter;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapterBuilder;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapterProxy;
-import com.gh.mygreen.xlsmapper.processor.FieldAdapterProxyComparator;
-import com.gh.mygreen.xlsmapper.processor.LoadingFieldProcessor;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxy;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxyComparator;
+import com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
@@ -406,7 +406,7 @@ public class XlsLoader {
         work.getErrors().setSheetName(sheet.getSheetName());
         
         final AnnotationReader annoReader = work.getAnnoReader();
-        final FieldAdapterBuilder adapterBuilder = new FieldAdapterBuilder(annoReader);
+        final FieldAccessorFactory adpterFactory = new FieldAccessorFactory(annoReader);
         
         // リスナークラスの@PreLoadd用メソッドの実行
         final XlsListener listenerAnno = annoReader.getAnnotation(beanObj.getClass(), XlsListener.class);
@@ -429,7 +429,7 @@ public class XlsLoader {
             }
         }
         
-        final List<FieldAdapterProxy> adapterProxies = new ArrayList<>();
+        final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();
         
         // public メソッドの処理
         for(Method method : clazz.getMethods()) {
@@ -439,11 +439,11 @@ public class XlsLoader {
                 final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
                 
                 if(processor != null && ClassUtils.isAccessorMethod(method)) {
-                    final FieldAdapter adapter = adapterBuilder.of(method);
+                    final FieldAccessor accessor = adpterFactory.create(method);
                     
-                    final FieldAdapterProxy adapterProxy = new FieldAdapterProxy(anno, processor, adapter);
-                    if(!adapterProxies.contains(adapterProxy)) {
-                        adapterProxies.add(adapterProxy);
+                    final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
+                    if(!accessorProxies.contains(accessorProxy)) {
+                        accessorProxies.add(accessorProxy);
                     }
                     
                 } else if(anno instanceof XlsPostLoad) {
@@ -457,16 +457,16 @@ public class XlsLoader {
         for(Field field : clazz.getDeclaredFields()) {
             
             field.setAccessible(true);
-            final FieldAdapter adapter = adapterBuilder.of(field);
+            final FieldAccessor accessor = adpterFactory.create(field);
             
             for(Annotation anno : annoReader.getAnnotations(field)) {
                 final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
                 
                 if(processor != null) {
                     
-                    final FieldAdapterProxy adapterProxy = new FieldAdapterProxy(anno, processor, adapter);
-                    if(!adapterProxies.contains(adapterProxy)) {
-                        adapterProxies.add(adapterProxy);
+                    final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
+                    if(!accessorProxies.contains(accessorProxy)) {
+                        accessorProxies.add(accessorProxy);
                     }
                     
                 }
@@ -474,9 +474,9 @@ public class XlsLoader {
         }
         
         // 順番を並び替えて保存処理を実行する
-        Collections.sort(adapterProxies, new FieldAdapterProxyComparator());
-        for(FieldAdapterProxy adapterProxy : adapterProxies) {
-            adapterProxy.loadProcess(sheet, beanObj, config, work);
+        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());
+        for(FieldAccessorProxy accessorProxy : accessorProxies) {
+            accessorProxy.loadProcess(sheet, beanObj, config, work);
         }
         
         // リスナークラスの@PostLoadの取得
