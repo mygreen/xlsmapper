@@ -4,18 +4,22 @@ import java.awt.Point;
 
 import org.apache.poi.ss.usermodel.Cell;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 
 /**
  * シートのレコードの操作情報
  * レコードの書き込み後、セルの入力規則やシートの名前の範囲を修正するために利用する。
- *
+ * 
+ * @version 2.0
  * @since 0.3
  * @author T.TSUCHIE
  *
  */
 public class RecordOperation {
+    
+    private final XlsRecordOperation annotation;
     
     /** レコードのコピー回数 */
     private int countCopyRecord;
@@ -32,11 +36,20 @@ public class RecordOperation {
     /** 右下のセルの位置 */
     private Point bottomRightPosition;
     
-    public RecordOperation() {
+    public RecordOperation(final XlsRecordOperation annotation) {
+        this.annotation = annotation;
         this.countCopyRecord = 0;
         this.countInsertRecord = 0;
         this.countDeleteRecord = 0;
         
+    }
+    
+    /**
+     * レコードの操作用のアノテーションを取得する。
+     * @return 付与されていない場合は、属性がデフォルト値が設定される。
+     */
+    public XlsRecordOperation getAnnotation() {
+        return annotation;
     }
     
     /**

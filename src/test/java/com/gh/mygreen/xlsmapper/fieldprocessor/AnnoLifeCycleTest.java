@@ -21,12 +21,10 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
+import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsListener;
@@ -34,6 +32,9 @@ import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.RemainedOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
@@ -352,12 +353,12 @@ public class AnnoLifeCycleTest {
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
         
-        @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
         private List<Record> hRecords;
         
-        @XlsVerticalRecords(tableLabel="縦方向", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Copy, remainedRecord=RemainedRecordOperation.Clear)
+        @XlsVerticalRecords(tableLabel="縦方向", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Copy, remainedCase=RemainedOperation.Clear)
         private List<Record> vRecords;
         
         public SimpleSheet addHoritonzal(final Record record) {
@@ -614,8 +615,8 @@ public class AnnoLifeCycleTest {
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
         
-        @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
         private List<Record> hRecords;
         
         public Table name(final String name) {
@@ -751,7 +752,7 @@ public class AnnoLifeCycleTest {
         @XlsColumn(columnName="氏名")
         private String name;
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no",
                     "executeInitLoad", "executeDestroyLoad", "executeInitSave", "executeDestroySave");

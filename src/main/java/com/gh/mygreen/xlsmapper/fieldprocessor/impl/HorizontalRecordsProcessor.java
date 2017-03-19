@@ -1,5 +1,6 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,8 +14,12 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import javax.management.RuntimeErrorException;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
@@ -33,12 +38,10 @@ import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
+import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
@@ -46,6 +49,9 @@ import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.RemainedOperation;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -218,6 +224,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             terminal = RecordTerminal.Empty;
         }
         
+        // レコードの値を無視すると判定するためのメソッドの抽出
+        final Optional<Method> ignorableMethod = Arrays.stream(recordClass.getMethods())
+                .filter(method -> work.getAnnoReader().hasAnnotation(method, XlsIgnorable.class))
+                .filter(method -> method.getParameterCount() == 0)
+                .filter(method -> method.getReturnType().equals(Boolean.TYPE))
+                .findFirst();
+        ignorableMethod.ifPresent(method -> method.setAccessible(true));
+        
         final int startHeaderIndex = getStartHeaderIndexForLoading(headers, recordClass, work.getAnnoReader(), config);
         
         // get records
@@ -271,7 +285,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
                 if(terminal == RecordTerminal.Border && i == startHeaderIndex){
                     final CellStyle format = cell.getCellStyle();
-                    if(format != null && !(format.getBorderLeft() == CellStyle.BORDER_NONE)){
+                    if(format != null && !(format.getBorderLeftEnum().equals(BorderStyle.NONE))){
                         emptyFlag = false;
                     } else {
                         emptyFlag = true;
@@ -304,11 +318,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())) {
                         final CellStyle valueCellFormat = valueCell.getCellStyle();
                         if(column.merged()
-                                && (valueCellFormat == null || valueCellFormat.getBorderTop() == CellStyle.BORDER_NONE)) {
+                                && (valueCellFormat == null || valueCellFormat.getBorderTopEnum().equals(BorderStyle.NONE))) {
                             for(int k=hRow-1; k > initRow; k--){
                                 Cell tmpCell = POIUtils.getCell(sheet, hColumn, k);
                                 final CellStyle tmpCellFormat = tmpCell.getCellStyle();
-                                if(tmpCellFormat!=null && !(tmpCellFormat.getBorderBottom() == CellStyle.BORDER_NONE)){
+                                if(tmpCellFormat!=null && !(tmpCellFormat.getBorderBottomEnum().equals(BorderStyle.NONE))){
                                     break;
                                 }
                                 if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){
@@ -364,28 +378,28 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 break;
             }
             
-            if(!anno.ignoreEmptyRecord() || !isEmptyRecord(accessor, record, work.getAnnoReader())) {
+            if(isAvailabledRecord(ignorableMethod, record)) {
+                // 有効なレコードのみ、処理を行う
                 result.add(record);
                 
-            }
-            
-            // set PostProcess listener
-            if(listenerAnno != null) {
-                Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                for(Method method : listenerObj.getClass().getMethods()) {
-                    
-                    final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
-                    if(postProcessAnno != null) {
-                        work.addNeedPostProcess(new NeedProcess(record, listenerObj, method));
+                // set PostProcess listener
+                if(listenerAnno != null) {
+                    Object listenerObj = config.createBean(listenerAnno.listenerClass());
+                    for(Method method : listenerObj.getClass().getMethods()) {
+                        
+                        final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
+                        if(postProcessAnno != null) {
+                            work.addNeedPostProcess(new NeedProcess(record, listenerObj, method));
+                        }
                     }
                 }
-            }
-            
-            // set PostProcess method
-            for(Method method : record.getClass().getMethods()) {
-                final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
-                if(postProcessAnno != null) {
-                    work.addNeedPostProcess(new NeedProcess(record, record, method));
+                
+                // set PostProcess method
+                for(Method method : record.getClass().getMethods()) {
+                    final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
+                    if(postProcessAnno != null) {
+                        work.addNeedPostProcess(new NeedProcess(record, record, method));
+                    }
                 }
             }
             
@@ -664,37 +678,28 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     }
     
     /**
-     * レコードの値か空かどうか判定する。
-     * <p>アノテーション<code>@XlsIsEmpty</code>のメソッドで判定を行う。
-     * @param accessor
-     * @param record
-     * @param annoReader
-     * @return アノテーションがない場合はfalseを返す。
-     * @throws AnnotationReadException 
-     * @throws AnnotationInvalidException 
+     * レコードが有効かどうか判定する
+     * <p>アノテーション{@link XlsIgnorable}のメソッドで判定を行う。
+     * @param ignoreMethod レコードの判定を無視するかどうかの判定に使用するメソッド
+     * @param record 判定対象のレコードのインスタンス。
+     * @return trueの場合は有効。
      */
-    private boolean isEmptyRecord(final FieldAccessor accessor, final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
+    private boolean isAvailabledRecord(final Optional<Method> ignoreMethod, final Object record)
+            throws AnnotationReadException, AnnotationInvalidException {
         
-        for(Method method : record.getClass().getMethods()) {
-            final XlsIsIgnored emptyAnno = annoReader.getAnnotation(method, XlsIsIgnored.class);
-            if(emptyAnno == null) {
-                continue;
-            }
-            
-            try {
-                method.setAccessible(true);
-                return (boolean) method.invoke(record);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                
-                throw new AnnotationInvalidException(emptyAnno, MessageBuilder.create("anno.XlsIsEmpty.notSupportType")
-                        .varWithClass("classType", record.getClass())
-                        .var("methodName", method.getName())
-                        .format(),e);
-            }
+        if(!ignoreMethod.isPresent()) {
+            // 判定用のメソッドが存在しない場合
+            return true;
         }
         
-        // メソッドが見つからない場合。
-        return false;
+        try {
+            boolean ignored = (boolean)ignoreMethod.get().invoke(record);
+            return !ignored;
+            
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new RuntimeException("fail execute method of ignoreable record", e);
+        }
+        
     }
     
     @Override
@@ -803,7 +808,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final List<CellRangeAddress> mergedRanges = new ArrayList<>();
         
         // 書き込んだセルの範囲などの情報
-        final RecordOperation recordOperation = new RecordOperation();
+        final RecordOperation recordOperation = new RecordOperation(getRecordOperateAnnotation(accessor));
         recordOperation.setupCellPositoin(hRow+1, initColumn);
         
         /*
@@ -811,7 +816,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
          * POI-3.15より、レコードの挿入や削除を行うと、その範囲にある結合が解除されるようになったため、補完する。
          */
         final List<CellRangeAddress> mergedRegionList = new ArrayList<>();
-        if(anno.overRecord().equals(OverRecordOperation.Insert) || anno.remainedRecord().equals(RemainedRecordOperation.Delete)) {
+        
+        if(recordOperation.getAnnotation().overCase().equals(OverOperation.Insert) 
+                || recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.Delete)) {
+            
             final int mergedNum = sheet.getNumMergedRegions();
             for(int i=0; i < mergedNum; i++) {
                 mergedRegionList.add(sheet.getMergedRegion(i));
@@ -839,6 +847,36 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         // 結合情報の補完 - POI 3.15以上のときに行う
         correctMergedCell(sheet, recordOperation, mergedRegionList);
+        
+    }
+    
+    /**
+     * アノテーション{@link XlsRecordOperation}を取得する。
+     * ただし、付与されていない場合は、属性にデフォルト値が指定されているものを取得する。
+     * @param accessor フィールド情報
+     * @return アノテーションのインスタンス
+     */
+    private XlsRecordOperation getRecordOperateAnnotation(final FieldAccessor accessor) {
+        
+        return accessor.getAnnotation(XlsRecordOperation.class)
+                .orElseGet(() -> new XlsRecordOperation() {
+                    
+                    @Override
+                    public Class<? extends Annotation> annotationType() {
+                        return XlsRecordOperation.class;
+                    }
+                    
+                    @Override
+                    public RemainedOperation remainedCase() {
+                        return RemainedOperation.None;
+                    }
+                    
+                    @Override
+                    public OverOperation overCase() {
+                        return OverOperation.Break;
+                    }
+                });
+        
         
     }
     
@@ -933,7 +971,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
                 if(terminal == RecordTerminal.Border && i == startHeaderIndex){
                     final CellStyle format = cell.getCellStyle();
-                    if(format != null && !(format.getBorderLeft() == CellStyle.BORDER_NONE)){
+                    if(format != null && !(format.getBorderLeftEnum().equals(BorderStyle.NONE))){
                         emptyFlag = false;
                     } else {
                         emptyFlag = true;
@@ -969,11 +1007,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())) {
                             final CellStyle valueCellFormat = valueCell.getCellStyle();
                             if(column.merged()
-                                    && (valueCellFormat == null || valueCellFormat.getBorderTop() == CellStyle.BORDER_NONE)) {
+                                    && (valueCellFormat == null || valueCellFormat.getBorderTopEnum().equals(BorderStyle.NONE))) {
                                 for(int k=hRow-1; k > initRow; k--){
                                     Cell tmpCell = POIUtils.getCell(sheet, hColumn, k);
                                     final CellStyle tmpCellFormat = tmpCell.getCellStyle();
-                                    if(tmpCellFormat != null && !(tmpCellFormat.getBorderBottom() == CellStyle.BORDER_NONE)){
+                                    if(tmpCellFormat != null && !(tmpCellFormat.getBorderBottomEnum().equals(BorderStyle.NONE))){
                                         break;
                                     }
                                     if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){
@@ -990,18 +1028,18 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         
                         // 書き込む行が足りない場合の操作
                         if(emptyFlag) {
-                            if(anno.overRecord().equals(OverRecordOperation.Break)) {
+                            if(recordOperation.getAnnotation().overCase().equals(OverOperation.Break)) {
                                 break;
                                 
-                            } else if(anno.overRecord().equals(OverRecordOperation.Copy)) {
+                            } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Copy)) {
                                 // 1つ上のセルの書式をコピーする。
                                 final CellStyle style = POIUtils.getCell(sheet, valueCell.getColumnIndex(), valueCell.getRowIndex()-1).getCellStyle();
                                 valueCell.setCellStyle(style);
-                                valueCell.setCellType(Cell.CELL_TYPE_BLANK);
+                                valueCell.setCellType(CellType.BLANK);
                                 
                                 recordOperation.incrementCopyRecord();
                                 
-                            } else if(anno.overRecord().equals(OverRecordOperation.Insert)) {
+                            } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Insert)) {
                                 // すでに他の列の処理に対して行を追加している場合は行の追加は行わない。
                                 if(!insertRows) {
                                     // 行を下に追加する
@@ -1022,7 +1060,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                                 // １つ上のセルの書式をコピーする
                                 final CellStyle style = POIUtils.getCell(sheet, valueCell.getColumnIndex(), valueCell.getRowIndex()-1).getCellStyle();
                                 valueCell.setCellStyle(style);
-                                valueCell.setCellType(Cell.CELL_TYPE_BLANK);
+                                valueCell.setCellType(CellType.BLANK);
                             }
                             
                         }
@@ -1057,18 +1095,18 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                  *  行の追加やコピー処理をしていないときのみ実行する
                  */
                 if(record == null && emptyFlag == false && recordOperation.isNotExecuteOverRecordOperation()) {
-                    if(anno.remainedRecord().equals(RemainedRecordOperation.None)) {
+                    if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.None)) {
                         // なにもしない
                         
-                    } else if(anno.remainedRecord().equals(RemainedRecordOperation.Clear)) {
+                    } else if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.Clear)) {
                         final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
-                        clearCell.setCellType(Cell.CELL_TYPE_BLANK);
+                        clearCell.setCellType(CellType.BLANK);
                         
-                    } else if(anno.remainedRecord().equals(RemainedRecordOperation.Delete)) {
+                    } else if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.Delete)) {
                         if(initRow == hRow) {
                             // 1行目は残しておき、値をクリアする
                             final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
-                            clearCell.setCellType(Cell.CELL_TYPE_BLANK);
+                            clearCell.setCellType(CellType.BLANK);
                             
                         } else if(!deleteRows) {
                             // すでに他の列の処理に対して行を削除している場合は行の削除は行わない。
@@ -1288,7 +1326,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     boolean emptyFlag = true;
                     if(terminal == RecordTerminal.Border) {
                         CellStyle format = cell.getCellStyle();
-                        if(format != null && !(format.getBorderLeft() == CellStyle.BORDER_NONE)) {
+                        if(format != null && !(format.getBorderLeftEnum().equals(BorderStyle.NONE))) {
                             emptyFlag = false;
                         } else {
                             emptyFlag = true;
@@ -1303,19 +1341,19 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     
                     // 空セルの場合
                     if(emptyFlag) {
-                        if(anno.overRecord().equals(OverRecordOperation.Break)) {
+                        if(recordOperation.getAnnotation().overCase().equals(OverOperation.Break)) {
                             break;
                             
-                        } else if(anno.overRecord().equals(OverRecordOperation.Copy)) {
+                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Copy)) {
                             final CellStyle style = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1).getCellStyle();
                             cell.setCellStyle(style);
-                            cell.setCellType(Cell.CELL_TYPE_BLANK);
+                            cell.setCellType(CellType.BLANK);
                             
-                        } else if(anno.overRecord().equals(OverRecordOperation.Insert)) {
+                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Insert)) {
                             // 既に追加ずみなので、セルの書式のコピーのみ行う
                             final CellStyle style = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1).getCellStyle();
                             cell.setCellStyle(style);
-                            cell.setCellType(Cell.CELL_TYPE_BLANK);
+                            cell.setCellType(CellType.BLANK);
                             
                             
                         }
@@ -1482,7 +1520,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             for(int i=1; i < mergedSize; i++) {
                 Cell mergedCell = POIUtils.getCell(sheet, position.getColumn(), position.getRow() + i);
                 mergedCell.setCellStyle(style);
-                mergedCell.setCellType(Cell.CELL_TYPE_BLANK);
+                mergedCell.setCellType(CellType.BLANK);
             }
             
             final CellRangeAddress range = new CellRangeAddress(position.getRow(), position.getRow()+ mergedSize-1,
@@ -1597,7 +1635,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 continue;
             }
             
-            AreaReference areaRef = new AreaReference(name.getRefersToFormula());
+            AreaReference areaRef = new AreaReference(name.getRefersToFormula(), POIUtils.getVersion(sheet));
             CellReference firstCellRef = areaRef.getFirstCell();
             CellReference lastCellRef = areaRef.getLastCell();
             
@@ -1629,7 +1667,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
      * 挿入・削除前の情報を元に結合を再設定する
      * 
      * @since 1.6
-     * @param sheet っしーと
+     * @param sheet シート
      * @param recordOperation 挿入・削除処理の情報
      * @param mergedRegionList 挿入・削除処理を行う前の結合情報
      */

@@ -20,17 +20,17 @@ public @interface XlsRecordOperation {
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
-     * <p>値は、列挙型{@link OverRecordOperation}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
+     * <p>値は、列挙型{@link OverOperationn}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
      *    <br>デフォルトでは何もしません。
      * </p>
-     * <p>ただし、{@link XlsVerticalRecords}の場合、{@link OverRecordOperation#Insert}は対応していません。</p>
+     * <p>ただし、{@link XlsVerticalRecords}の場合、{@link OverOperation#Insert}は対応していません。</p>
      * <pre class="highlight"><code class="java">
      * // シート用クラス
      * {@literal @XlsSheet(name="Users")}
      * public class SampleSheet {
      *     
      *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
-     *     {@literal @XlsXlsRecordOperation(overCase=OverRecordOperation.Insert)}
+     *     {@literal @XlsXlsRecordOperation(overCase=OverOperationn.Insert)}
      *     private {@literal List<UserRecord>} records;
      *     
      * }
@@ -41,16 +41,16 @@ public @interface XlsRecordOperation {
      *    <p>表の書き込み時の不足するレコードの操作の指定</p>
      * </div>
      * 
-     * @return {@link OverRecordOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。
+     * @return {@link OverOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。
      */
-    OverRecordOperation overCase() default OverRecordOperation.Break;
+    OverOperation overCase() default OverOperation.Break;
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
-     * <p>値は、列挙型{@link RemainedRecordOperation}で指定し、行の値のクリアや、行の削除を指定することができます。
+     * <p>値は、列挙型{@link RemainedOperation}で指定し、行の値のクリアや、行の削除を指定することができます。
      *   <br>デフォルトでは何もしません。
      * </p>
-     * <p>ただし、{@link XlsVerticalRecords}の場合、{@link RemainedRecordOperation#Delete}は対応していません。</p>
+     * <p>ただし、{@link XlsVerticalRecords}の場合、{@link RemainedOperation#Delete}は対応していません。</p>
      * 
      * <pre class="highlight"><code class="java">
      * // シート用クラス
@@ -69,8 +69,51 @@ public @interface XlsRecordOperation {
      *    <p>表の書き込み時の余分なレコードの操作の指定</p>
      * </div>
      * 
-     * @return {@link RemainedRecordOperation#None}の場合、余っているレコードがあっても何もしません。
+     * @return {@link RemainedOperation#None}の場合、余っているレコードがあっても何もしません。
      */
-    RemainedRecordOperation remainedCase() default RemainedRecordOperation.None;
+    RemainedOperation remainedCase() default RemainedOperation.None;
     
+    /**
+     * アノテーション {@link XlsHorizontalRecords}や{@link XlsVerticalRecords}で、
+     * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
+     *
+     * @since 2.0
+     * @author T.TSUCHIE
+     *
+     */
+    public static enum OverOperation {
+        
+        /** 前のセルをコピーします */
+        Copy,
+        
+        /** 次のセルの前に行または列を挿入します */
+        Insert,
+        
+        /** レコードの書き込みを中断します*/
+        Break,
+        ;
+        
+    }
+    
+    /**
+     * アノテーション {@link XlsHorizontalRecords}や{@link XlsVerticalRecords}で、
+     * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
+     *
+     * @since 2.0
+     * @author T.TSUCHIE
+     *
+     */
+    public static enum RemainedOperation {
+        
+        /** セルの値をクリアします */
+        Clear,
+        
+        /** 行または列を削除します */
+        Delete,
+        
+        /** 何もしません */
+        None,
+        ;
+        
+    }
 }

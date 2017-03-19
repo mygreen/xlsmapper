@@ -29,19 +29,18 @@ import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.CellFormatter;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
 import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
-import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
@@ -550,7 +549,8 @@ public class AnnoFormulaTest {
         // マッピングした位置情報
         private Map<String, Point> positions;
         
-        @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border, overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<SampleRecord> records;
         
         // レコードを追加する

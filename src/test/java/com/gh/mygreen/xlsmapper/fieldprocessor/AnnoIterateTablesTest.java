@@ -21,17 +21,18 @@ import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
+import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.RemainedOperation;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
@@ -1177,8 +1178,8 @@ public class AnnoIterateTablesTest {
         private String name;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
         private List<PersonRecord> persons;
         
         public ClassTable no(int no) {
@@ -1224,7 +1225,7 @@ public class AnnoIterateTablesTest {
         @XlsColumn(columnName="誕生日")
         private Date birthday;
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }
@@ -1291,8 +1292,8 @@ public class AnnoIterateTablesTest {
         private String name;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
         private List<PersonRecord> persons;
         
         public OptionalClassTable no(int no) {
@@ -1359,13 +1360,13 @@ public class AnnoIterateTablesTest {
         private String name;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3)
+        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
         private List<PersonRecord> persons;
         
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Copy, remainedRecord=RemainedRecordOperation.Clear)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4)
+        @XlsRecordOperation(overCase=OverOperation.Copy, remainedCase=RemainedOperation.Clear)
         private List<ResultRecord> results;
         
         public ConcatClassTable no(int no) {
@@ -1422,7 +1423,7 @@ public class AnnoIterateTablesTest {
         @XlsColumn(columnName="合計")
         private int sum;
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }
@@ -1527,8 +1528,8 @@ public class AnnoIterateTablesTest {
             this.name = name;
         }
         
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
         public List<PersonRecord> getPersons() {
             return persons;
         }
@@ -1636,8 +1637,8 @@ public class AnnoIterateTablesTest {
             private String name;
             
             @XlsOrder(value=3)
-            @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                    overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete)
+            @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border)
+            @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
             private List<RegexRecord> persons;
             
             // 値設定用のメソッド
@@ -1685,7 +1686,7 @@ public class AnnoIterateTablesTest {
             @XlsColumn(columnName="誕生日")
             private Date birthday;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
             }

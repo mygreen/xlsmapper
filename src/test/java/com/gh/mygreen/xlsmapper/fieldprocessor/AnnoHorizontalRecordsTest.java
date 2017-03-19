@@ -27,24 +27,24 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
+import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.RemainedOperation;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.HorizontalRecordsProcessor;
@@ -3362,23 +3362,23 @@ public class AnnoHorizontalRecordsTest {
     private static class StartedPositionSheet {
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="○×一覧", ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="○×一覧")
         private List<NormalRecord> normalRecords1;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(headerAddress="B9", ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(headerAddress="B9")
         private List<NormalRecord> normalRecords2;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(headerColumn=2, headerRow=13, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(headerColumn=2, headerRow=13)
         private List<NormalRecord> normalRecords3;
         
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="◆△一覧", bottom=2, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="◆△一覧", bottom=2)
         private List<NormalRecord> normalRecords4;
         
         @XlsOrder(value=5)
-        @XlsHorizontalRecords(tableLabel="存在しない", optional=true, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="存在しない", optional=true)
         private List<NormalRecord> normalRecords5;
         
         /**
@@ -3672,23 +3672,23 @@ public class AnnoHorizontalRecordsTest {
     private static class HeaderSpaceSheet {
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="見出しに空白なし", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="見出しに空白なし", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<UserRecord> records1;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<UserRecord> records2;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="見出しに空白がある", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert, range=2)
+        @XlsHorizontalRecords(tableLabel="見出しに空白がある", terminal=RecordTerminal.Border, range=2)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<UserRecord> records3;
         
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="開始位置がずれている", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert, range=3)
+        @XlsHorizontalRecords(tableLabel="開始位置がずれている", terminal=RecordTerminal.Border, range=3)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<UserRecord> records4;
         
         /**
@@ -3770,7 +3770,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="電話番号")
             String tel;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
             }
@@ -3800,28 +3800,28 @@ public class AnnoHorizontalRecordsTest {
     private static class ColumnSettingSheet {
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="結合セル", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="結合セル", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<MergedRecord> mergedRecords;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<HeaderMergedRecord> headerMergedRecords;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="オプションのセル（セルがある）", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="オプションのセル（セルがある）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<OptionalRecord> optionalRecords1;
         
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="オプションのセル（セルがない）", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="オプションのセル（セルがない）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<OptionalRecord> optionalRecords2;
         
         @XlsOrder(value=5)
-        @XlsHorizontalRecords(tableLabel="Converterがある", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="Converterがある", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<ConvertedRecord> convertedRecord;
         
         /**
@@ -4092,16 +4092,16 @@ public class AnnoHorizontalRecordsTest {
     @XlsSheet(name="マップカラムの設定")
     private static class MapColumnSettingSheet {
         
-        @XlsHorizontalRecords(tableLabel="マップカラム（文字列）", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="マップカラム（文字列）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<MapRecord> mapRecords1;
         
-        @XlsHorizontalRecords(tableLabel="マップカラム（Converterあり）", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="マップカラム（Converterあり）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<MapConvertedRecord> mapRecords2;
         
-        @XlsHorizontalRecords(tableLabel="マップカラム（終了条件がある）", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="マップカラム（終了条件がある）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<MapEndRecord> mapRecords3;
         
         /**
@@ -4305,24 +4305,24 @@ public class AnnoHorizontalRecordsTest {
          * 空のレコードをスキップ（リスト）
          */
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="名簿（リスト）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="名簿（リスト）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<EmptySkipRecord> skipList;
         
         /**
          * 空のレコードをスキップ（集合）
          */
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="名簿（集合）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="名簿（集合）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private Set<EmptySkipRecord> skipSet;
         
         /**
          * 配列
          */
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="名簿（配列）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="名簿（配列）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private EmptySkipRecord[] skipArray;
         
         /**
@@ -4400,7 +4400,7 @@ public class AnnoHorizontalRecordsTest {
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }
@@ -4429,38 +4429,38 @@ public class AnnoHorizontalRecordsTest {
     private static class RemainedOverSheet {
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Break)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Break)
         private List<RemainedOverRecord> overBreakRecrods;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<RemainedOverRecord> overInsertRecrods;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Copy)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Copy)
         private List<RemainedOverRecord> overCopyRecrods;
         
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.None)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.None)
         private List<RemainedOverRecord> remainedNoneRecrods;
         
         @XlsOrder(value=5)
-        @XlsHorizontalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.Clear)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.Clear)
         private List<RemainedOverRecord> remainedClearRecrods;
         
         @XlsOrder(value=6)
-        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.Delete)
         private List<RemainedOverRecord> remainedDeleteRecrods1;
         
         @XlsOrder(value=7)
-        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.Delete)
         private List<RemainedOverRecord> remainedDeleteRecrods2;
         
         /**
@@ -4591,7 +4591,7 @@ public class AnnoHorizontalRecordsTest {
         @XlsMapColumns(previousColumnName="氏名")
         private Map<String, String> dateAttended;
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             IsEmptyBuilder builder = new IsEmptyBuilder(IsEmptyConfig.create().withZeroAsEmpty(true));
             builder.append(name);
@@ -4653,40 +4653,40 @@ public class AnnoHorizontalRecordsTest {
          * 入力定義が設定されてた表（挿入用）
          */
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="入力規則（レコードの挿入）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="入力規則（レコードの挿入）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<DataValidationRecord> insertValidationRecrods;
         
         /**
          * 名前の定義用の表
          */
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="名前の定義", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="名前の定義", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<NameDefRecord> nameRecords;
         
         /**
          * 入力定義が設定されてた表（削除用）
          */
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="入力規則（レコードの削除）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Break, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="入力規則（レコードの削除）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Break, remainedCase=RemainedOperation.Delete)
         private List<DataValidationRecord> deleteValidationRecrods;
         
         /**
          * 入力定義が設定されてた表（削除用）（データなし）
          */
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="入力規則（レコードの削除）（データなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Break, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="入力規則（レコードの削除）（データなし）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Break, remainedCase=RemainedOperation.Delete)
         private List<DataValidationRecord> nonDeleteValidationRecrods;
         
         /**
          * 入力定義が設定されてた表（コピー用）
          */
         @XlsOrder(value=5)
-        @XlsHorizontalRecords(tableLabel="入力規則（レコードのコピー）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Copy, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="入力規則（レコードのコピー）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Copy, remainedCase=RemainedOperation.Delete)
         private List<DataValidationRecord> copyValidationRecrods;
         
         /**
@@ -4778,7 +4778,7 @@ public class AnnoHorizontalRecordsTest {
         @XlsMapColumns(previousColumnName="参照形式")
         private Map<String, Boolean> category;
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             IsEmptyBuilder builder = new IsEmptyBuilder(IsEmptyConfig.create().withZeroAsEmpty(true));
             builder.append(selectRule);
@@ -4879,18 +4879,18 @@ public class AnnoHorizontalRecordsTest {
         private String value1;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="コメントがある表（行の追加）", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="コメントがある表（行の追加）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<CommentRecord> insertRecords;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="コメントがある表（行の削除）", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Break, remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="コメントがある表（行の削除）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Break, remainedCase=RemainedOperation.Delete)
         private List<CommentRecord> deleteRecords;
         
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="コメントがある表（行のコピー）", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperation.Copy)
+        @XlsHorizontalRecords(tableLabel="コメントがある表（行のコピー）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Copy)
         private List<CommentRecord> copyRecords;
         
         /**
@@ -5003,7 +5003,8 @@ public class AnnoHorizontalRecordsTest {
         private MethodAnnoMapRecord[] mapRecords;
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="名簿", overRecord=OverRecordOperation.Insert, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="名簿")
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         public List<MethodAnnoRecord> getRecords() {
             return records;
         }
@@ -5017,7 +5018,8 @@ public class AnnoHorizontalRecordsTest {
             return mapRecords;
         }
         
-        @XlsHorizontalRecords(tableLabel="出欠", overRecord=OverRecordOperation.Insert, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="出欠")
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         public void setMapRecords(MethodAnnoMapRecord[] mapRecords) {
             this.mapRecords = mapRecords;
         }
@@ -5120,7 +5122,7 @@ public class AnnoHorizontalRecordsTest {
             this.birthdayPosition = new Point(x, y);
         }
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             return new IsEmptyBuilder()
                 .append(name)
@@ -5209,7 +5211,7 @@ public class AnnoHorizontalRecordsTest {
             this.dateAttended = dateAttended;
         }
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             return new IsEmptyBuilder()
                 .append(name)
@@ -5281,10 +5283,10 @@ public class AnnoHorizontalRecordsTest {
     @XlsSheet(name="連結した表")
     private static class ConcatSheet {
         
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, terminateLabel="平均", headerLimit=3, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, terminateLabel="平均", headerLimit=3)
         private List<UserRecord> userRecords;
         
-        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, range=4, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, range=4)
         private List<ResultRecord> resultRecords;
         
         
@@ -5307,7 +5309,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsDateConverter(javaPattern="yyyy年M月d日")
             private Date birthDady;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positoins", "labels", "no");
             }
@@ -5336,7 +5338,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="合計")
             private int sum;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
             }
@@ -5352,13 +5354,13 @@ public class AnnoHorizontalRecordsTest {
     private static class StartedDataPositionSheet {
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="データの開始位置が離れている", terminal=RecordTerminal.Border, headerBottom=2,
-                ignoreEmptyRecord=true, overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="データの開始位置が離れている", terminal=RecordTerminal.Border, headerBottom=2)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<DistantRecord> distantRecords;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border, headerBottom=2,
-                ignoreEmptyRecord=true, overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border, headerBottom=2)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<HeaderMergedRecord> headerMergedRecords;
         
         /**
@@ -5419,7 +5421,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="合計")
             private int sum;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
             }
@@ -5478,7 +5480,7 @@ public class AnnoHorizontalRecordsTest {
             private int sum;
 
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
             }
@@ -5522,16 +5524,16 @@ public class AnnoHorizontalRecordsTest {
         
         private Map<String, String> labels;
         
-        @XlsHorizontalRecords(tableLabel="測定結果（通常）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="測定結果（通常）", terminal=RecordTerminal.Border)
         private List<ResultRecord> records1;
         
-        @XlsHorizontalRecords(tableLabel="/測定結果\\[.+\\]/", terminal=RecordTerminal.Border, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="/測定結果\\[.+\\]/", terminal=RecordTerminal.Border)
         private List<ResultRecord> records2;
         
-        @XlsHorizontalRecords(tableLabel="測定結果（見出しが正規表現）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="測定結果（見出しが正規表現）", terminal=RecordTerminal.Border)
         private List<ResultRecord> records3;
         
-        @XlsHorizontalRecords(tableLabel="測定結果（終端が正規表現）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true, terminateLabel="/.*合計.*/")
+        @XlsHorizontalRecords(tableLabel="測定結果（終端が正規表現）", terminal=RecordTerminal.Border, terminateLabel="/.*合計.*/")
         private List<ResultRecord> records4;
         
         /**
@@ -5616,7 +5618,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="/備考.*/")
             private String comment;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
             }
@@ -5656,21 +5658,23 @@ public class AnnoHorizontalRecordsTest {
         private Map<String, String> labels;
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="通常の表", overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="通常の表")
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<LargeRecord> largeRecords1;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="空のレコードがある表", terminal=RecordTerminal.Border, 
-                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Delete, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="空のレコードがある表", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
         private List<LargeRecord> largeRecords2;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="見出しが結合している表", terminal=RecordTerminal.Border, 
-                overRecord=OverRecordOperation.Insert, remainedRecord=RemainedRecordOperation.Clear, ignoreEmptyRecord=true, headerBottom=2)
+        @XlsHorizontalRecords(tableLabel="見出しが結合している表", terminal=RecordTerminal.Border, headerBottom=2)
+        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Clear)
         private List<HeaderMergedLargeRecord> largeRecords3;
         
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="1対1のネスト", overRecord=OverRecordOperation.Copy, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="1対1のネスト")
+        @XlsRecordOperation(overCase=OverOperation.Copy)
         private List<OneToOneRecord> oneToOneRecords;
         
         public NestedSheet addRecord1(LargeRecord record) {
@@ -5786,7 +5790,7 @@ public class AnnoHorizontalRecordsTest {
                 return this;
             }
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "middleRecords");
             }
@@ -5848,7 +5852,7 @@ public class AnnoHorizontalRecordsTest {
                 return this;
             }
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "smallRecords");
             }
@@ -5891,7 +5895,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="値")
             private String value;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
             }
@@ -5938,7 +5942,7 @@ public class AnnoHorizontalRecordsTest {
                 return this;
             }
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "middleRecords");
             }
@@ -6000,7 +6004,7 @@ public class AnnoHorizontalRecordsTest {
                 return this;
             }
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "smallRecords");
             }
@@ -6043,7 +6047,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="詳細", headerMerged=1)
             private String value;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
             }
@@ -6087,7 +6091,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsNestedRecords
             private ResultRecord result;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
             }
@@ -6133,7 +6137,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="合計")
             private int sum;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
             }
@@ -6161,11 +6165,13 @@ public class AnnoHorizontalRecordsTest {
     private static class FormulaSheet {
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="成績一覧", headerBottom=2, terminal=RecordTerminal.Border, overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="成績一覧", headerBottom=2, terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<GradeRecord> gradeRecrods;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="出欠確認", terminal=RecordTerminal.Border, overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="出欠確認", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<EntryRecord> entryRecords;
         
         /**
@@ -6232,7 +6238,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsFormula("SUM(D{rowNumber}:E{rowNumber})")
             private Integer sum;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
             }
@@ -6293,7 +6299,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="備考")
             private String comment;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
             }
@@ -6348,38 +6354,38 @@ public class AnnoHorizontalRecordsTest {
     private static class RemainedOverAndTerminalSheet {
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Break)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Break)
         private List<RemainedOverRecord> overBreakRecrods;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<RemainedOverRecord> overInsertRecrods;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Copy)
+        @XlsHorizontalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Copy)
         private List<RemainedOverRecord> overCopyRecrods;
         
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.None)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.None)
         private List<RemainedOverRecord> remainedNoneRecrods;
         
         @XlsOrder(value=5)
-        @XlsHorizontalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.Clear)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.Clear)
         private List<RemainedOverRecord> remainedClearRecrods;
         
         @XlsOrder(value=6)
-        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.Delete)
         private List<RemainedOverRecord> remainedDeleteRecrods1;
         
         @XlsOrder(value=7)
-        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.Delete)
         private List<RemainedOverRecord> remainedDeleteRecrods2;
         
         /**
@@ -6499,33 +6505,33 @@ public class AnnoHorizontalRecordsTest {
     private static class CorrectMergedCellSheet {
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="挿入より上にある表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Break)
+        @XlsHorizontalRecords(tableLabel="挿入より上にある表", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Break)
         List<Record> insertAbobeRecords; 
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="挿入する表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="挿入する表", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         List<Record> insertRecords;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="挿入より下にある表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Break)
+        @XlsHorizontalRecords(tableLabel="挿入より下にある表", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Break)
         List<Record> insertBelowRecords;
         
         @XlsOrder(value=4)
-        @XlsHorizontalRecords(tableLabel="削除より上にある表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.None)
+        @XlsHorizontalRecords(tableLabel="削除より上にある表", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.None)
         List<Record> deleteAbobeRecords; 
         
         @XlsOrder(value=5)
-        @XlsHorizontalRecords(tableLabel="削除する表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.Delete)
+        @XlsHorizontalRecords(tableLabel="削除する表", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.Delete)
         List<Record> deleteRecords;
         
         @XlsOrder(value=6)
-        @XlsHorizontalRecords(tableLabel="削除より下にある表", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                remainedRecord=RemainedRecordOperation.None)
+        @XlsHorizontalRecords(tableLabel="削除より下にある表", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(remainedCase=RemainedOperation.None)
         List<Record> deleteBelowRecords;
         
         /**
@@ -6649,7 +6655,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="備考")
             private String comment;
             
-            @XlsIsIgnored
+            @XlsIgnorable
             public boolean isEmpty() {
                 return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
             }

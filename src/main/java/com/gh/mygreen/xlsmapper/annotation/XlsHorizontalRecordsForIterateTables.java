@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation;
  * {@link XlsIterateTables}をProcessorへ渡す際のインタフェース用クラス。
  * <p>アノテーションとしては直接には使用しない。
  * 
- * @version 1.1
+ * @version 2.0
  * @author Mitsuyoshi Hasegawa
  * @author T.TSUCHIE
  */
@@ -26,8 +26,6 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
     private int _bottom = 1;
     private int _headerLimit = 0;
     private int _headerBottom = 1;
-    private OverRecordOperation _orverRecord = null;
-    private RemainedRecordOperation _remainedRecord = null;
     private boolean _skipEmptyRecord = false;
     
     public XlsHorizontalRecordsForIterateTables(final XlsHorizontalRecords rec, int headerColumn, int headerRow) {
@@ -49,9 +47,6 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
         this._headerLimit = rec.headerLimit();
         this._headerBottom = rec.headerBottom();
         
-        this._orverRecord = rec.overRecord();
-        this._remainedRecord = rec.remainedRecord();
-        this._skipEmptyRecord = rec.ignoreEmptyRecord();
     }
     
     @Override
@@ -119,17 +114,4 @@ public class XlsHorizontalRecordsForIterateTables implements XlsHorizontalRecord
         return this._headerBottom;
     }
     
-    @Override
-    public OverRecordOperation overRecord() {
-        return this._orverRecord;
-    }
-    @Override
-    public RemainedRecordOperation remainedRecord() {
-        return this._remainedRecord;
-    }
-    
-    @Override
-    public boolean ignoreEmptyRecord() {
-        return this._skipEmptyRecord;
-    }
 }

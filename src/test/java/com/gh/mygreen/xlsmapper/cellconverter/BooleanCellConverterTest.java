@@ -18,17 +18,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.XlsMapper;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
+import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
 import com.gh.mygreen.xlsmapper.cellconverter.impl.BooleanCellConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -398,18 +399,18 @@ public class BooleanCellConverterTest {
     private static class BooleanSheet {
         
         @XlsOrder(value=1)
-        @XlsHorizontalRecords(tableLabel="ブール型（アノテーションなし）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="ブール型（アノテーションなし）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsOrder(value=2)
-        @XlsHorizontalRecords(tableLabel="ブール型（初期値、書式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="ブール型（初期値、書式）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsOrder(value=3)
-        @XlsHorizontalRecords(tableLabel="ブール型（数式）", terminal=RecordTerminal.Border, ignoreEmptyRecord=true,
-                overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="ブール型（数式）", terminal=RecordTerminal.Border)
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         private List<FormulaRecord> formulaRecords;
         
         /**
@@ -484,7 +485,7 @@ public class BooleanCellConverterTest {
         @XlsColumn(columnName="備考")
         private String comment;
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }
@@ -549,7 +550,7 @@ public class BooleanCellConverterTest {
         @XlsColumn(columnName="備考")
         private String comment;
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }

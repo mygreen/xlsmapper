@@ -18,6 +18,7 @@ import org.apache.poi.hssf.record.aggregates.DataValidityTable;
 import org.apache.poi.hssf.record.aggregates.RecordAggregate.RecordVisitor;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
@@ -57,6 +58,27 @@ public class POIUtils {
     
     /** 標準のセルフォーマッター */
     private static CellFormatter defaultCellFormatter = new DefaultCellFormatter();
+    
+    /**
+     * シートの種類を判定する。
+     * 
+     * @since 2.0
+     * @param sheet 判定対象のオブジェクト
+     * @return シートの種類。不明な場合はnullを返す。
+     * @throws NullPointerException {@literal sheet == null}
+     */
+    public static SpreadsheetVersion getVersion(final Sheet sheet) {
+        ArgUtils.notNull(sheet, "sheet");
+        
+        if(sheet instanceof HSSFSheet) {
+            return SpreadsheetVersion.EXCEL97;
+            
+        } else if(sheet instanceof XSSFSheet) {
+            return SpreadsheetVersion.EXCEL2007;
+        }
+        
+        return null;
+    }
     
     /**
      * シートの最大列数を取得する。
