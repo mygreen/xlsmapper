@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -220,6 +221,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
                 .create(recordClass);
         
+        // レコードの見出しに対するカラム情報のキャッシュ
+        final Map<String, List<FieldAccessor>> propertiesCache = new HashMap<>();
+        
         final int startHeaderIndex = getStartHeaderIndexForLoading(headers, recordClass, work.getAnnoReader(), config);
         
         // get records
@@ -279,11 +283,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 }
                 
                 // mapping from Excel columns to Object properties.
-                final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
-                        record.getClass(), work.getAnnoReader(), config, headerInfo.getLabel())
-                        .stream()
-                        .filter(p -> p.isReadable())
-                        .collect(Collectors.toList());
+                final List<FieldAccessor> propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -> {
+                    return FieldAdapterUtils.getColumnPropertiesByName(
+                            record.getClass(), work.getAnnoReader(), config, key)
+                            .stream()
+                            .filter(p -> p.isReadable())
+                            .collect(Collectors.toList());
+                });
                 
                 for(FieldAccessor property : propeties) {
                     Cell valueCell = cell;
@@ -874,6 +880,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
                 .create(recordClass);
         
+        // レコードの見出しに対するカラム情報のキャッシュ
+        final Map<String, List<FieldAccessor>> propertiesCache = new HashMap<>();
+        
         final int startHeaderIndex = getStartHeaderIndexForSaving(headers, recordClass, work.getAnnoReader(), config);
         
         // get records
@@ -947,11 +956,14 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 // mapping from Excel columns to Object properties.
                 if(record != null) {
-                    final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
-                            record.getClass(), work.getAnnoReader(), config, headerInfo.getLabel())
-                            .stream()
-                            .filter(p -> p.isWritable())
-                            .collect(Collectors.toList());
+                    final List<FieldAccessor> propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -> {
+                        return FieldAdapterUtils.getColumnPropertiesByName(
+                                record.getClass(), work.getAnnoReader(), config, key)
+                                .stream()
+                                .filter(p -> p.isWritable())
+                                .collect(Collectors.toList());
+                    });
+                    
                     for(FieldAccessor property : propeties) {
                         Cell valueCell = cell;
                         final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
