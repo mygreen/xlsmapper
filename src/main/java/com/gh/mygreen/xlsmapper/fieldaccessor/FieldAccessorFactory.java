@@ -29,7 +29,7 @@ public class FieldAccessorFactory {
     
     private static Logger log = LoggerFactory.getLogger(FieldAccessorFactory.class);
     
-    private AnnotationReader annoReader;
+    private final AnnotationReader annoReader;
     
     private PositionSetterFactory positionSetterFactory = new PositionSetterFactory();
     private PositionGetterFactory positionGetterFactory = new PositionGetterFactory();

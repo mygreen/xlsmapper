@@ -1,7 +1,6 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,16 +21,13 @@ import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecordsForIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCellForIterateTable;
-import com.gh.mygreen.xlsmapper.annotation.XlsListener;
-import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
-import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
-import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
-import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxy;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxyComparator;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
 import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -103,6 +99,10 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         Cell after = null;
         Cell currentCell = null;
         
+        // 各種レコードのコールバック用メソッドを抽出する
+        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
+                .create(tableClass);
+        
         final String label = iterateTablesAnno.tableLabel();
         currentCell = Utils.getCell(sheet, label, after, false, !iterateTablesAnno.optional(), config);
         
@@ -113,25 +113,16 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             // パスの位置の変更
             work.getErrors().pushNestedPath(accessor.getName(), resultTableList.size());
             
+            
             // execute PreProcess listener
-            final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(tableObj.getClass(), XlsListener.class);
-            if(listenerAnno != null) {
-                Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
-                    if(preProcessAnno != null) {
-                        Utils.invokeNeedProcessMethod(listenerObj, method, tableObj, sheet, config, work.getErrors());
-                    }
-                }
-            }
+            methodCache.getListenerPreLoadMethods().forEach(method -> {
+                Utils.invokeNeedProcessMethod(methodCache.getListenerObject().get(), method, tableObj, sheet, config, work.getErrors());
+            });
             
             // execute PreProcess method
-            for(Method method : tableObj.getClass().getMethods()) {
-                final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
-                if(preProcessAnno != null) {
-                    Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors());                    
-                }
-            }
+            methodCache.getPreLoadMethods().forEach(method -> {
+                Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors());   
+            });
             
             // process single label.
             loadSingleLabelledCell(sheet, tableObj, currentCell, config, work);
@@ -148,23 +139,14 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             currentCell = Utils.getCell(sheet, label, after, false, false, config);
             
             // set PostProcess listener
-            if(listenerAnno != null) {
-                Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
-                    if(postProcessAnno != null) {
-                        work.addNeedPostProcess(new NeedProcess(tableObj, listenerObj, method));
-                    }
-                }
-            }
+            methodCache.getListenerPostLoadMethods().forEach(method -> {
+                work.addNeedPostProcess(new NeedProcess(tableObj, methodCache.getListenerObject().get(), method));
+            });
             
             // set PostProcess method
-            for(Method method : tableObj.getClass().getMethods()) {
-                final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
-                if(postProcessAnno != null) {
-                    work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));
-                }
-            }
+            methodCache.getPostLoadMethods().forEach(method -> {
+                work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));
+            });
             
             // パスの位置の変更
             work.getErrors().popNestedPath();
@@ -332,6 +314,10 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         Cell currentCell = null;
         String label = iterateTablesAnno.tableLabel();
         
+        // 各種レコードのコールバック用メソッドを抽出する
+        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
+                .create(tableClass);
+        
         for(int i=0; i < resultTableList.size(); i++) {
             
             final Object tableObj = resultTableList.get(i);
@@ -340,24 +326,14 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             work.getErrors().pushNestedPath(accessor.getName(), i);
             
             // execute PreProcess listener
-            final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(tableObj.getClass(), XlsListener.class);
-            if(listenerAnno != null) {
-                Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
-                    if(preProcessAnno != null) {
-                        Utils.invokeNeedProcessMethod(listenerObj, method, tableObj, sheet, config, work.getErrors());
-                    }
-                }
-            }
+            methodCache.getListenerPreSaveMethods().forEach(method -> {
+                Utils.invokeNeedProcessMethod(methodCache.getListenerObject().get(), method, tableObj, sheet, config, work.getErrors());
+            });
             
             // execute PreProcess method
-            for(Method method : tableObj.getClass().getMethods()) {
-                final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
-                if(preProcessAnno != null) {
-                    Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors());                    
-                }
-            }
+            methodCache.getPreSaveMethods().forEach(method -> {
+                Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors());
+            });
             
             currentCell = Utils.getCell(sheet, label, after, false, !iterateTablesAnno.optional(), config);
             if(currentCell == null) {
@@ -380,23 +356,14 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             after = currentCell;
             
             // set PostProcess listener
-            if(listenerAnno != null) {
-                Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
-                    if(postProcessAnno != null) {
-                        work.addNeedPostProcess(new NeedProcess(tableObj, listenerObj, method));
-                    }
-                }
-            }
+            methodCache.getListenerPostSaveMethods().forEach(method -> {
+                work.addNeedPostProcess(new NeedProcess(tableObj, methodCache.getListenerObject().get(), method));
+            });
             
-            // set PreProcess method
-            for(Method method : tableObj.getClass().getMethods()) {
-                final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
-                if(postProcessAnno != null) {
-                    work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));
-                }
-            }
+            // set PostProcess method
+            methodCache.getPostSaveMethods().forEach(method -> {
+                work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));
+            });
             
             // パスの位置の変更
             work.getErrors().popNestedPath();

@@ -14,8 +14,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -42,13 +40,8 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
-import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
-import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
-import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
-import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.RemainedOperation;
@@ -60,6 +53,8 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.MergedRecord;
 import com.gh.mygreen.xlsmapper.fieldprocessor.NestMergedSizeException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordHeader;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordsProcessorUtil;
 import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
@@ -224,13 +219,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             terminal = RecordTerminal.Empty;
         }
         
-        // レコードの値を無視すると判定するためのメソッドの抽出
-        final Optional<Method> ignorableMethod = Arrays.stream(recordClass.getMethods())
-                .filter(method -> work.getAnnoReader().hasAnnotation(method, XlsIgnorable.class))
-                .filter(method -> method.getParameterCount() == 0)
-                .filter(method -> method.getReturnType().equals(Boolean.TYPE))
-                .findFirst();
-        ignorableMethod.ifPresent(method -> method.setAccessible(true));
+        // 各種レコードのコールバック用メソッドを抽出する
+        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
+                .create(recordClass);
         
         final int startHeaderIndex = getStartHeaderIndexForLoading(headers, recordClass, work.getAnnoReader(), config);
         
@@ -250,24 +241,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             work.getErrors().pushNestedPath(accessor.getName(), result.size());
             
             // execute PreProcess listener
-            final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(record.getClass(), XlsListener.class);
-            if(listenerAnno != null) {
-                Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
-                    if(preProcessAnno != null) {
-                        Utils.invokeNeedProcessMethod(listenerObj, method, record, sheet, config, work.getErrors());
-                    }
-                }
-            }
+            methodCache.getListenerPreLoadMethods().forEach(method -> {
+                Utils.invokeNeedProcessMethod(methodCache.getListenerObject().get(), method, record, sheet, config, work.getErrors());
+            });
             
             // execute PreProcess method
-            for(Method method : record.getClass().getMethods()) {
-                final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
-                if(preProcessAnno != null) {
-                    Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors());
-                }
-            }
+            methodCache.getPreLoadMethods().forEach(method -> {
+                Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors());
+            });
             
             final List<MergedRecord> mergedRecords = new ArrayList<>();
             
@@ -378,29 +359,20 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 break;
             }
             
-            if(isAvailabledRecord(ignorableMethod, record)) {
+            if(isAvailabledRecord(methodCache.getIgnoreableMethod(), record)) {
                 // 有効なレコードのみ、処理を行う
                 result.add(record);
                 
                 // set PostProcess listener
-                if(listenerAnno != null) {
-                    Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                    for(Method method : listenerObj.getClass().getMethods()) {
-                        
-                        final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
-                        if(postProcessAnno != null) {
-                            work.addNeedPostProcess(new NeedProcess(record, listenerObj, method));
-                        }
-                    }
-                }
+                methodCache.getListenerPostLoadMethods().forEach(method -> {
+                    work.addNeedPostProcess(new NeedProcess(record, methodCache.getListenerObject().get(), method));
+                });
                 
                 // set PostProcess method
-                for(Method method : record.getClass().getMethods()) {
-                    final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
-                    if(postProcessAnno != null) {
-                        work.addNeedPostProcess(new NeedProcess(record, record, method));
-                    }
-                }
+                methodCache.getPostLoadMethods().forEach(method -> {
+                    work.addNeedPostProcess(new NeedProcess(record, record, method));
+                });
+                
             }
             
             // パスの位置の変更
@@ -908,6 +880,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             terminal = RecordTerminal.Border;
         }
         
+        // 各種レコードのコールバック用メソッドを抽出する
+        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
+                .create(recordClass);
         
         final int startHeaderIndex = getStartHeaderIndexForSaving(headers, recordClass, work.getAnnoReader(), config);
         
@@ -917,9 +892,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             boolean emptyFlag = true;
             
             // 書き込むレコードのオブジェクトを取得。データが0件の場合、nullとなる。
-            Object record = null;
+            final Object record;
             if(r < result.size()) {
                 record = result.get(r);
+            } else {
+                record = null;
             }
             
             // パスの位置の変更
@@ -927,25 +904,16 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             if(record != null) {
                 
-                // execute PreProcess/ listner
-                final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(record.getClass(), XlsListener.class);
-                if(listenerAnno != null) {
-                    Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                    for(Method method : listenerObj.getClass().getMethods()) {
-                        final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
-                        if(preProcessAnno != null) {
-                            Utils.invokeNeedProcessMethod(listenerObj, method, record, sheet, config, work.getErrors());
-                        }
-                    }
-                }
+                // execute PreProcess listner
+                methodCache.getListenerPreSaveMethods().forEach(method -> {
+                    Utils.invokeNeedProcessMethod(methodCache.getListenerObject().get(), method, record, sheet, config, work.getErrors());
+                });
                 
-                // execute PreProcess/PostProcess method
-                for(Method method : record.getClass().getMethods()) {
-                    final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
-                    if(preProcessAnno != null) {
-                        Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors());                    
-                    }
-                }
+                // execute PreProcess method
+                methodCache.getPreSaveMethods().forEach(method -> {
+                    Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors()); 
+                });
+                
             }
             
             // レコードの各列処理で既に行を追加したかどうかのフラグ。(ネスト先でも参照する)
@@ -1141,26 +1109,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             if(record != null) {
                 
                 // set PostProcess listener
-                final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(record.getClass(), XlsListener.class);
-                if(listenerAnno != null) {
-                    Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                    for(Method method : listenerObj.getClass().getMethods()) {
-                        
-                        final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
-                        if(postProcessAnno != null) {
-                            work.addNeedPostProcess(new NeedProcess(record, listenerObj, method));
-                        }
-                    }
-                }
+                methodCache.getListenerPostSaveMethods().forEach(method -> {
+                    work.addNeedPostProcess(new NeedProcess(record, methodCache.getListenerObject().get(), method));
+                });
                 
                 // set PostProcess method
-                for(Method method : record.getClass().getMethods()) {
-                    
-                    final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
-                    if(postProcessAnno != null) {
-                        work.addNeedPostProcess(new NeedProcess(record, record, method));
-                    }
-                }
+                methodCache.getPostSaveMethods().forEach(method -> {
+                    work.addNeedPostProcess(new NeedProcess(record, record, method));
+                });
                 
             }
             
