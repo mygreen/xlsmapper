@@ -67,16 +67,32 @@ public class RecordMethodFacatory {
      */
     private void setupIgnoreableMethod(final RecordMethodCache recordMethod, final Class<?> recordClass) {
         
-        final Optional<Method> ignorableMethod = Arrays.stream(recordClass.getMethods())
-                .filter(method -> annoReader.hasAnnotation(method, XlsIgnorable.class))
-                .filter(method -> method.getParameterCount() == 0)
-                .filter(method -> method.getReturnType().equals(Boolean.TYPE))
-                .findFirst();
-        ignorableMethod.ifPresent(method -> method.setAccessible(true));
-        
-        recordMethod.ignoreableMethod = ignorableMethod;
+        for(Method method : recordClass.getMethods()) {
+            method.setAccessible(true);
+            
+            if(!annoReader.hasAnnotation(method, XlsIgnorable.class)) {
+                continue;
+            }
+            
+            if(method.getParameterCount() > 0) {
+                continue;
+            }
+            
+            if(!method.getReturnType().equals(Boolean.TYPE)) {
+                continue;
+            }
+            
+            recordMethod.ignoreableMethod = Optional.of(method);
+            return;
+        }
     }
     
+    /**
+     * リスナークラスに定義されているコールバックメソッドの抽出
+     * 
+     * @param recordMethod メソッドの格納先
+     * @param recordClass レコードクラス
+     */
     private void setupListenerCallbackMethods(final RecordMethodCache recordMethod, final Class<?> recordClass) {
         
         // リスナーオブジェクトに定義されたコールバックメソッドの抽出
@@ -109,6 +125,12 @@ public class RecordMethodFacatory {
         
     }
     
+    /**
+     * レコードクラスに定義されているコールバックメソッドの抽出
+     * 
+     * @param recordMethod メソッドの格納先
+     * @param recordClass レコードクラス
+     */
     private void setupRecordCallbackMethods(final RecordMethodCache recordMethod, final Class<?> recordClass) {
         
         for(Method method : recordClass.getMethods()) {
