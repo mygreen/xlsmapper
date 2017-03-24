@@ -1,11 +1,13 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +15,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -30,18 +34,14 @@ import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
 import com.gh.mygreen.xlsmapper.XlsMapperConfig;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-import com.gh.mygreen.xlsmapper.annotation.RemainedRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
-import com.gh.mygreen.xlsmapper.annotation.XlsListener;
+import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
-import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
-import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
-import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.RemainedOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -51,9 +51,12 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.MergedRecord;
 import com.gh.mygreen.xlsmapper.fieldprocessor.NestMergedSizeException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordHeader;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordsProcessorUtil;
 import com.gh.mygreen.xlsmapper.util.CellAddress;
-import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
+import com.gh.mygreen.xlsmapper.util.CellFinder;
+import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -77,14 +80,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
-            try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                final String label = POIUtils.getCellContents(tableLabelCell, config.getCellFormatter());
+            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
+            tableLabelCell.ifPresent(c -> {
+                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
                 accessor.setLabel(beansObj, label);
                 
-            } catch(CellNotFoundException e) {
-                
-            }
+            });
         }
         
         final Class<?> clazz = accessor.getType();
@@ -215,6 +216,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             terminal = RecordTerminal.Empty;
         }
         
+        // 各種レコードのコールバック用メソッドを抽出する
+        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
+                .create(recordClass);
+        
+        // レコードの見出しに対するカラム情報のキャッシュ
+        final Map<String, List<FieldAccessor>> propertiesCache = new HashMap<>();
+        
         final int startHeaderIndex = getStartHeaderIndexForLoading(headers, recordClass, work.getAnnoReader(), config);
         
         // get records
@@ -233,24 +241,14 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             work.getErrors().pushNestedPath(accessor.getName(), result.size());
             
             // execute PreProcess listener
-            final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(record.getClass(), XlsListener.class);
-            if(listenerAnno != null) {
-                Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                for(Method method : listenerObj.getClass().getMethods()) {
-                    final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
-                    if(preProcessAnno != null) {
-                        Utils.invokeNeedProcessMethod(listenerObj, method, record, sheet, config, work.getErrors());
-                    }
-                }
-            }
+            methodCache.getListenerPreLoadMethods().forEach(method -> {
+                Utils.invokeNeedProcessMethod(methodCache.getListenerObject().get(), method, record, sheet, config, work.getErrors());
+            });
             
             // execute PreProcess method
-            for(Method method : record.getClass().getMethods()) {
-                final XlsPreLoad preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreLoad.class);
-                if(preProcessAnno != null) {
-                    Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors());
-                }
-            }
+            methodCache.getPreLoadMethods().forEach(method -> {
+                Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors());
+            });
             
             final List<MergedRecord> mergedRecords = new ArrayList<>();
             
@@ -268,7 +266,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 if(terminal==RecordTerminal.Border && i == startHeaderIndex){
                     final CellStyle format = cell.getCellStyle();
-                    if(format!=null && !(format.getBorderTop() == CellStyle.BORDER_NONE)){
+                    if(format!=null && !(format.getBorderTopEnum().equals(BorderStyle.NONE))){
                         emptyFlag = false;
                     } else {
                         emptyFlag = true;
@@ -284,11 +282,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 }
                 
                 // mapping from Excel columns to Object properties.
-                final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
-                        record.getClass(), work.getAnnoReader(), config, headerInfo.getLabel())
-                        .stream()
-                        .filter(p -> p.isReadable())
-                        .collect(Collectors.toList());
+                final List<FieldAccessor> propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -> {
+                    return FieldAccessorUtils.getColumnPropertiesByName(
+                            record.getClass(), work.getAnnoReader(), config, key)
+                            .stream()
+                            .filter(p -> p.isReadable())
+                            .collect(Collectors.toList());
+                });
                 
                 for(FieldAccessor property : propeties) {
                     Cell valueCell = cell;
@@ -303,12 +303,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())){
                         CellStyle valueCellFormat = valueCell.getCellStyle();
                         if(column.merged() && 
-                                (valueCellFormat == null || valueCellFormat.getBorderRight() == CellStyle.BORDER_NONE)){
+                                (valueCellFormat == null || valueCellFormat.getBorderRightEnum().equals(BorderStyle.NONE))){
                             for(int k=hColumn; k > initColumn; k--){
                                 final Cell tmpCell = POIUtils.getCell(sheet, k, hRow);
                                 final CellStyle tmpCellFormat = tmpCell.getCellStyle();
                                 
-                                if(tmpCellFormat!=null && !(tmpCellFormat.getBorderLeft() == CellStyle.BORDER_NONE)){
+                                if(tmpCellFormat!=null && !(tmpCellFormat.getBorderLeftEnum().equals(BorderStyle.NONE))){
                                     break;
                                 }
                                 
@@ -329,7 +329,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         int mergedSize =  mergedRange.getLastColumn() - mergedRange.getFirstColumn() + 1;
                         mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));
                     } else {
-                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(Utils.formatCellAddress(valueCell)), 1));
+                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(valueCell)), 1));
                     }
                     
                     // set for value
@@ -365,29 +365,20 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 break;
             }
             
-            if(!anno.ignoreEmptyRecord() || !isEmptyRecord(accessor, record, work.getAnnoReader())) {
+            if(isAvailabledRecord(methodCache.getIgnoreableMethod(), record)) {
+                // 有効なレコードのみ、処理を行う
                 result.add(record);
                 
-            }
-            
-            // set PostProcess listener
-            if(listenerAnno != null) {
-                Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                for(Method method : listenerObj.getClass().getMethods()) {
-                    
-                    final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
-                    if(postProcessAnno != null) {
-                        work.addNeedPostProcess(new NeedProcess(record, listenerObj, method));
-                    }
-                }
-            }
-            
-            // set PostProcess method
-            for(Method method : record.getClass().getMethods()) {
-                final XlsPostLoad postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostLoad.class);
-                if(postProcessAnno != null) {
+                // set PostProcess listener
+                methodCache.getListenerPostLoadMethods().forEach(method -> {
+                    work.addNeedPostProcess(new NeedProcess(record, methodCache.getListenerObject().get(), method));
+                });
+                
+                // set PostProcess method
+                methodCache.getPostLoadMethods().forEach(method -> {
                     work.addNeedPostProcess(new NeedProcess(record, record, method));
-                }
+                });
+                
             }
             
             // パスの位置の変更
@@ -434,7 +425,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
+                final Cell labelCell = CellFinder.query(sheet, anno.tableLabel(), config).findWhenNotFoundException();
                 
                 if(anno.tableLabelAbove()) {
                     // 表の見出しが上にある場合。HorizontalRecordsを同じ。
@@ -501,7 +492,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+            final List<FieldAccessor> propeties = FieldAccessorUtils.getColumnPropertiesByName(
                     recordClass, annoReader, config, headerInfo.getLabel())
                     .stream()
                     .filter(p -> p.isReadable())
@@ -518,7 +509,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     private void loadMapColumns(final Sheet sheet, final List<RecordHeader> headers, final List<MergedRecord> mergedRecords,
             final CellAddress beginPosition, final Object record, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
                 .filter(p -> p.isReadable())
@@ -562,7 +553,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         int mergedSize =  mergedRange.getLastColumn() - mergedRange.getFirstColumn() + 1;
                         mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));
                     } else {
-                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(Utils.formatCellAddress(cell)), 1));
+                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(cell)), 1));
                     }
                     
                     try {
@@ -593,7 +584,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // 基本的に結合している個数による。
         int skipSize = 0;
         
-        final List<FieldAccessor> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
                 .filter(p -> p.isReadable())
@@ -669,36 +660,28 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     }
     
     /**
-     * レコードの値か空かどうか判定する。
-     * <p>アノテーション<code>@XlsIsEmpty</code>のメソッドで判定を行う。
-     * @param accessor
-     * @param record
-     * @param annoReader
-     * @return アノテーションがない場合はfalseを返す。
-     * @throws AnnotationReadException 
-     * @throws AnnotationInvalidException 
+     * レコードが有効かどうか判定する
+     * <p>アノテーション{@link XlsIgnorable}のメソッドで判定を行う。
+     * @param ignoreMethod レコードの判定を無視するかどうかの判定に使用するメソッド
+     * @param record 判定対象のレコードのインスタンス。
+     * @return trueの場合は有効。
      */
-    private boolean isEmptyRecord(final FieldAccessor accessor, final Object record, final AnnotationReader annoReader) throws AnnotationReadException, AnnotationInvalidException {
+    private boolean isAvailabledRecord(final Optional<Method> ignoreMethod, final Object record)
+            throws AnnotationReadException, AnnotationInvalidException {
         
-        for(Method method : record.getClass().getMethods()) {
-            final XlsIsIgnored emptyAnno = annoReader.getAnnotation(method, XlsIsIgnored.class);
-            if(emptyAnno == null) {
-                continue;
-            }
-            
-            try {
-                method.setAccessible(true);
-                return (boolean) method.invoke(record);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new AnnotationInvalidException(emptyAnno, MessageBuilder.create("anno.XlsIsEmpty.notSupportType")
-                        .varWithClass("classType", record.getClass())
-                        .var("methodName", method.getName())
-                        .format(),e);
-            }
+        if(!ignoreMethod.isPresent()) {
+            // 判定用のメソッドが存在しない場合
+            return true;
         }
         
-        // メソッドが見つからない場合。
-        return false;
+        try {
+            boolean ignored = (boolean)ignoreMethod.get().invoke(record);
+            return !ignored;
+            
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new RuntimeException("fail execute method of ignoreable record", e);
+        }
+        
     }
     
     @Override
@@ -707,14 +690,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
-            try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                final String label = POIUtils.getCellContents(tableLabelCell, config.getCellFormatter());
+            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
+            tableLabelCell.ifPresent(c -> {
+                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
                 accessor.setLabel(beansObj, label);
                 
-            } catch(CellNotFoundException e) {
-                
-            }
+            });
         }
         
         final Class<?> clazz = accessor.getType();
@@ -808,7 +789,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final List<CellRangeAddress> mergedRanges = new ArrayList<CellRangeAddress>();
         
         // 書き込んだセルの範囲などの情報
-        final RecordOperation recordOperation = new RecordOperation();
+        final RecordOperation recordOperation = new RecordOperation(getRecordOperateAnnotation(accessor));
         recordOperation.setupCellPositoin(initRow, hColumn+1);
         
         // データ行の開始位置の調整
@@ -833,6 +814,36 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         if(config.isCorrectNameRangeOnSave()) {
             correctNameRange(sheet, recordOperation);
         }
+    }
+    
+    /**
+     * アノテーション{@link XlsRecordOperation}を取得する。
+     * ただし、付与されていない場合は、属性にデフォルト値が指定されているものを取得する。
+     * @param accessor フィールド情報
+     * @return アノテーションのインスタンス
+     */
+    private XlsRecordOperation getRecordOperateAnnotation(final FieldAccessor accessor) {
+        
+        return accessor.getAnnotation(XlsRecordOperation.class)
+                .orElseGet(() -> new XlsRecordOperation() {
+                    
+                    @Override
+                    public Class<? extends Annotation> annotationType() {
+                        return XlsRecordOperation.class;
+                    }
+                    
+                    @Override
+                    public RemainedOperation remainedCase() {
+                        return RemainedOperation.None;
+                    }
+                    
+                    @Override
+                    public OverOperation overCase() {
+                        return OverOperation.Break;
+                    }
+                });
+        
+        
     }
     
     private void saveRecords(final Sheet sheet, final List<RecordHeader> headers,
@@ -862,6 +873,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             terminal = RecordTerminal.Border;
         }
         
+        // 各種レコードのコールバック用メソッドを抽出する
+        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
+                .create(recordClass);
+        
+        // レコードの見出しに対するカラム情報のキャッシュ
+        final Map<String, List<FieldAccessor>> propertiesCache = new HashMap<>();
+        
         final int startHeaderIndex = getStartHeaderIndexForSaving(headers, recordClass, work.getAnnoReader(), config);
         
         // get records
@@ -870,34 +888,28 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             boolean emptyFlag = true;
             
             // 書き込むレコードのオブジェクトを取得。データが0件の場合、nullとなる。
-            Object record = null;
+            final Object record;
             if(r < result.size()) {
                 record = result.get(r);
+            } else {
+                record = null;
             }
             
             // パスの位置の変更
             work.getErrors().pushNestedPath(accessor.getName(), r);
             
             if(record != null) {
-             // execute PreProcess/ listner
-                final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(record.getClass(), XlsListener.class);
-                if(listenerAnno != null) {
-                    Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                    for(Method method : listenerObj.getClass().getMethods()) {
-                        final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
-                        if(preProcessAnno != null) {
-                            Utils.invokeNeedProcessMethod(listenerObj, method, record, sheet, config, work.getErrors());
-                        }
-                    }
-                }
                 
-                // execute PreProcess/PostProcess method
-                for(Method method : record.getClass().getMethods()) {
-                    final XlsPreSave preProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPreSave.class);
-                    if(preProcessAnno != null) {
-                        Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors());                    
-                    }
-                }
+                // execute PreProcess listner
+                methodCache.getListenerPreSaveMethods().forEach(method -> {
+                    Utils.invokeNeedProcessMethod(methodCache.getListenerObject().get(), method, record, sheet, config, work.getErrors());
+                });
+                
+                // execute PreProcess method
+                methodCache.getPreSaveMethods().forEach(method -> {
+                    Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors()); 
+                });
+                
             }
             
 //            // レコードの各列処理で既に行を追加したかどうかのフラグ。
@@ -924,7 +936,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 if(terminal == RecordTerminal.Border && i == startHeaderIndex){
                     final CellStyle format = cell.getCellStyle();
-                    if(format!=null && !(format.getBorderTop() == CellStyle.BORDER_NONE)){
+                    if(format!=null && !(format.getBorderTopEnum().equals(BorderStyle.NONE))){
                         emptyFlag = false;
                     } else {
                         emptyFlag = true;
@@ -941,11 +953,14 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 // mapping from Excel columns to Object properties.
                 if(record != null) {
-                    final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
-                            record.getClass(), work.getAnnoReader(), config, headerInfo.getLabel())
-                            .stream()
-                            .filter(p -> p.isWritable())
-                            .collect(Collectors.toList());
+                    final List<FieldAccessor> propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -> {
+                        return FieldAccessorUtils.getColumnPropertiesByName(
+                                record.getClass(), work.getAnnoReader(), config, key)
+                                .stream()
+                                .filter(p -> p.isWritable())
+                                .collect(Collectors.toList());
+                    });
+                    
                     for(FieldAccessor property : propeties) {
                         Cell valueCell = cell;
                         final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
@@ -960,11 +975,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())) {
                             final CellStyle valueCellFormat = valueCell.getCellStyle();
                             if(column.merged()
-                                    && (valueCellFormat == null || valueCellFormat.getBorderRight() == CellStyle.BORDER_NONE)){
+                                    && (valueCellFormat == null || valueCellFormat.getBorderRightEnum().equals(BorderStyle.NONE))){
                                 for(int k=hColumn-1; k > hColumn; k--){
                                     Cell tmpCell = POIUtils.getCell(sheet, k, hRow);
                                     final CellStyle tmpCellFormat = tmpCell.getCellStyle();
-                                    if(tmpCellFormat!=null && !(tmpCellFormat.getBorderLeft() == CellStyle.BORDER_NONE)){
+                                    if(tmpCellFormat!=null && !(tmpCellFormat.getBorderLeftEnum().equals(BorderStyle.NONE))){
                                         break;
                                     }
                                     if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){
@@ -981,27 +996,27 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         
                         // 書き込む行が足りない場合の操作
                         if(emptyFlag) {
-                            if(anno.overRecord().equals(OverRecordOperation.Break)) {
+                            if(recordOperation.getAnnotation().overCase().equals(OverOperation.Break)) {
                                 break;
                                 
-                            } else if(anno.overRecord().equals(OverRecordOperation.Copy)) {
+                            } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Copy)) {
                                 // 1つ左のセルの書式をコピーする。
                                 final CellStyle style = POIUtils.getCell(sheet, valueCell.getColumnIndex()-1, valueCell.getRowIndex()).getCellStyle();
                                 valueCell.setCellStyle(style);
-                                valueCell.setCellType(Cell.CELL_TYPE_BLANK);
+                                valueCell.setCellType(CellType.BLANK);
                                 
                                 // セル幅の調整
                                 sheet.setColumnWidth(valueCell.getColumnIndex(), sheet.getColumnWidth(valueCell.getColumnIndex()-1));
                                 
                                 recordOperation.incrementCopyRecord();
                                 
-                            } else if(anno.overRecord().equals(OverRecordOperation.Insert)) {
+                            } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Insert)) {
                                 // POIは列の追加をサポートしていないので非対応。
                                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                         .var("property", accessor.getNameWithClass())
-                                        .varWithAnno("anno", XlsVerticalRecords.class)
-                                        .var("attrName", "overRecord")
-                                        .varWithEnum("attrValue", OverRecordOperation.Insert)
+                                        .varWithAnno("anno", XlsRecordOperation.class)
+                                        .var("attrName", "overCase")
+                                        .varWithEnum("attrValue", OverOperation.Insert)
                                         .format());
                             }
                             
@@ -1037,20 +1052,20 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                  *  行の追加やコピー処理をしていないときのみ実行する
                  */
                 if(record == null && emptyFlag == false && recordOperation.isNotExecuteOverRecordOperation()) {
-                    if(anno.remainedRecord().equals(RemainedRecordOperation.None)) {
+                    if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.None)) {
                         // なにもしない
                         
-                    } else if(anno.remainedRecord().equals(RemainedRecordOperation.Clear)) {
+                    } else if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.Clear)) {
                         Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
-                        clearCell.setCellType(Cell.CELL_TYPE_BLANK);
+                        clearCell.setCellType(CellType.BLANK);
                         
-                    } else if(anno.remainedRecord().equals(RemainedRecordOperation.Delete)) {
+                    } else if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.Delete)) {
                         // POIは列の削除をサポートしていないので非対応。
                         throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                 .var("property", accessor.getNameWithClass())
-                                .varWithAnno("anno", XlsVerticalRecords.class)
-                                .var("attrName", "remainedRecord")
-                                .varWithEnum("attrValue", RemainedRecordOperation.Delete)
+                                .varWithAnno("anno", XlsRecordOperation.class)
+                                .var("attrName", "remainedCase")
+                                .varWithEnum("attrValue", RemainedOperation.Delete)
                                 .format());
                     }
                 }
@@ -1073,26 +1088,14 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             if(record != null) {
                 
                 // set PostProcess listener
-                final XlsListener listenerAnno = work.getAnnoReader().getAnnotation(record.getClass(), XlsListener.class);
-                if(listenerAnno != null) {
-                    Object listenerObj = config.createBean(listenerAnno.listenerClass());
-                    for(Method method : listenerObj.getClass().getMethods()) {
-                        
-                        final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
-                        if(postProcessAnno != null) {
-                            work.addNeedPostProcess(new NeedProcess(record, listenerObj, method));
-                        }
-                    }
-                }
+                methodCache.getListenerPostSaveMethods().forEach(method -> {
+                    work.addNeedPostProcess(new NeedProcess(record, methodCache.getListenerObject().get(), method));
+                });
                 
                 // set PostProcess method
-                for(Method method : record.getClass().getMethods()) {
-                    
-                    final XlsPostSave postProcessAnno = work.getAnnoReader().getAnnotation(method, XlsPostSave.class);
-                    if(postProcessAnno != null) {
-                        work.addNeedPostProcess(new NeedProcess(record, record, method));
-                    }
-                }
+                methodCache.getPostSaveMethods().forEach(method -> {
+                    work.addNeedPostProcess(new NeedProcess(record, record, method));
+                });
                 
             }
             
@@ -1132,7 +1135,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+            final List<FieldAccessor> propeties = FieldAccessorUtils.getColumnPropertiesByName(
                     recordClass,annoReader, config,  headerInfo.getLabel())
                     .stream()
                     .filter(p -> p.isWritable())
@@ -1208,7 +1211,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             final XlsVerticalRecords anno, final XlsMapperConfig config, final SavingWorkObject work,
             final RecordOperation recordOperation) throws XlsMapperException {
         
-        final List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
                 .filter(p -> p.isWritable())
@@ -1263,21 +1266,21 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     
                     // 空セルの場合
                     if(emptyFlag) {
-                        if(anno.overRecord().equals(OverRecordOperation.Break)) {
+                        if(recordOperation.getAnnotation().overCase().equals(OverOperation.Break)) {
                             break;
                             
-                        } else if(anno.overRecord().equals(OverRecordOperation.Copy)) {
+                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Copy)) {
                             final CellStyle style = POIUtils.getCell(sheet, cell.getColumnIndex()-1, cell.getRowIndex()).getCellStyle();
                             cell.setCellStyle(style);
-                            cell.setCellType(Cell.CELL_TYPE_BLANK);
+                            cell.setCellType(CellType.BLANK);
                             
-                        } else if(anno.overRecord().equals(OverRecordOperation.Insert)) {
+                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Insert)) {
                             // POIは列の追加をサポートしていないので非対応。
                             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                     .var("property", property.getNameWithClass())
                                     .varWithAnno("anno", XlsVerticalRecords.class)
                                     .var("attrName", "overRecord")
-                                    .varWithEnum("attrValue", OverRecordOperation.Insert)
+                                    .varWithEnum("attrValue", OverOperation.Insert)
                                     .format());
                             
                         }
@@ -1317,7 +1320,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         int skipSize = 0;
         
-        final List<FieldAccessor> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
                 .filter(p -> p.isWritable())
@@ -1441,7 +1444,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             for(int i=1; i < mergedSize; i++) {
                 Cell mergedCell = POIUtils.getCell(sheet, position.getColumn() + i, position.getRow());
                 mergedCell.setCellStyle(style);
-                mergedCell.setCellType(Cell.CELL_TYPE_BLANK);
+                mergedCell.setCellType(CellType.BLANK);
             }
             
             final CellRangeAddress range = new CellRangeAddress(position.getRow(), position.getRow(),
@@ -1548,7 +1551,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 continue;
             }
             
-            AreaReference areaRef = new AreaReference(name.getRefersToFormula());
+            AreaReference areaRef = new AreaReference(name.getRefersToFormula(), POIUtils.getVersion(sheet));
             CellReference firstCellRef = areaRef.getFirstCell();
             CellReference lastCellRef = areaRef.getLastCell();
             

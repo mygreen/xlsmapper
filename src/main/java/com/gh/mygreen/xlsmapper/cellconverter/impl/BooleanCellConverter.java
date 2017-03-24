@@ -52,7 +52,7 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
     protected Boolean parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor, final XlsMapperConfig config) 
             throws TypeBindException {
         
-        if(evaluatedCell.getCellTypeEnum() == CellType.BOOLEAN) {
+        if(evaluatedCell.getCellTypeEnum().equals(CellType.BOOLEAN)) {
             return evaluatedCell.getBooleanCellValue();
             
         } else if(!formattedValue.isEmpty()) {
@@ -88,7 +88,7 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
         if(cellValue.isPresent()) {
             if(anno.saveAsTrue().equalsIgnoreCase("true") 
                     && anno.saveAsTrue().equalsIgnoreCase("false")
-                    && cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+                    && cell.getCellTypeEnum().equals(CellType.BOOLEAN)) {
                 // テンプレートのセルの書式がbooleanの場合はそのまま設定する
                 cell.setCellValue(cellValue.get());
                 
@@ -100,7 +100,7 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
             }
             
         } else {
-            cell.setCellType(Cell.CELL_TYPE_BLANK);
+            cell.setCellType(CellType.BLANK);
         }
         
     }

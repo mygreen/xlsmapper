@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -105,9 +106,9 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  *   <li>セル「Date」の書き込み時の書式を指定するために、アノテーション {@link XlsDateConverter} に付与します。
  *     <br>属性 {@link XlsDateConverter#excelPattern()} でExcelのセルの書式を設定します。
  *   </li>
- *   <li>表「User List」のレコードを追加する操作を指定するために、アノテーションの属性 {@link XlsHorizontalRecords#overRecord()}を指定します。
+ *   <li>表「User List」のレコードを追加する操作を指定するために、アノテーションの属性 {@link XlsRecordOperation#overCase()}を指定します。
  *     <br>テンプレート上は、レコードが1行分しかないですが、実際に書き込むレコード数が2つ以上の場合、足りなくなるため、その際のシートの操作方法を指定します。
- *     <br>今回の{@link OverRecordOperation#Insert}は、行の挿入を行います。
+ *     <br>今回の{@link OverOperation#Insert}は、行の挿入を行います。
  *   </li>
  * </ul>
  * 
@@ -120,7 +121,8 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  *     {@literal @XlsDateConverter(excelPattern="yyyy/m/d")}
  *     Date createDate;
  *     
- *     {@literal @XlsHorizontalRecords(tableLabel="User List", overRecord=OverRecordOperate.Insert)}
+ *     {@literal @XlsHorizontalRecords(tableLabel="User List")}
+ *     {@literal @XlsRecordOperation(overCase=OverOperation#Insert)}
  *     {@literal List<UserRecord>} users;
  *     
  * }

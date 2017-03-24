@@ -25,16 +25,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
-import com.gh.mygreen.xlsmapper.annotation.OverRecordOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
-import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.util.CellFinder;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
 
 /**
  * マニュアルなどに明記するためのサンプル
@@ -162,7 +164,8 @@ public class SampleTest {
         @XlsDateConverter(excelPattern="yyyy/m/d")
         Date createDate;
         
-        @XlsHorizontalRecords(tableLabel="User List", overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="User List")
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         List<UserRecord> users;
         
     }
@@ -230,7 +233,7 @@ public class SampleTest {
         XlsMapperConfig config = new XlsMapperConfig();
         
         // 日付のセル[日付]を取得する
-        Cell baseHeaderCell = Utils.getCell(sheet, "[日付]", 0, 0, config);
+        Cell baseHeaderCell = CellFinder.query(sheet, "[日付]", config).findWhenNotFoundException();
         List<String> dateHeaders = new ArrayList<>(record1.attendedMap.keySet());
         
         // 1つ目の見出しの書き換え
@@ -266,7 +269,8 @@ public class SampleTest {
     @XlsSheet(name="MapColumn(dynamic)")
     private static class MapColumnsDynamicSheet {
         
-        @XlsHorizontalRecords(tableLabel="ユーザ一覧", overRecord=OverRecordOperation.Insert)
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧")
+        @XlsRecordOperation(overCase=OverOperation.Insert)
         List<SampleRecord> records;
         
         // XlsMapColumnsのマッピング用のセルを作成する
@@ -277,7 +281,7 @@ public class SampleTest {
                 final Workbook workbook = sheet.getWorkbook();
                 
                 // 基準となる日付のセル[日付]を取得する
-                Cell baseHeaderCell = Utils.getCell(sheet, "[日付]", 0, 0, config);
+                Cell baseHeaderCell = CellFinder.query(sheet, "[日付]", config).findWhenNotFoundException();
                 
                 // 書き換えるための見出しの値の取得
                 List<String> dateHeaders = new ArrayList<>(records.get(0).attendedMap.keySet());

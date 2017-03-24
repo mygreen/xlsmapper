@@ -33,7 +33,7 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored;
+import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
@@ -390,7 +390,7 @@ public class SheetBeanValidatorTest {
         private String className;
         
         @Valid
-        @XlsHorizontalRecords(tableLabel="名簿一覧", terminal=RecordTerminal.Border, ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="名簿一覧", terminal=RecordTerminal.Border)
         private List<PersonRecord> list;
         
     }
@@ -419,7 +419,7 @@ public class SheetBeanValidatorTest {
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
-        @XlsIsIgnored
+        @XlsIgnorable
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }

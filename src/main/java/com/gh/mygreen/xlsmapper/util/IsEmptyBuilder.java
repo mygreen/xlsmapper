@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 値が全て空かどかチェックするためのクラス。
- * <p>アノテーション{@link com.gh.mygreen.xlsmapper.annotation.XlsIsIgnored}を付与したメソッドの実装に利用します。</p>
+ * <p>アノテーション{@link com.gh.mygreen.xlsmapper.annotation.XlsIgnorable}を付与したメソッドの実装に利用します。</p>
  * 
  * <p>リフレクションを利用して判定する場合は、位置情報のフィールドpositions、ラベル情報のフィールドlabelsを除外します。</p>
  * <pre class="highlight"><code class="java">

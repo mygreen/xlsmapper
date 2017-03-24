@@ -7,7 +7,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.poi.hssf.model.InternalSheet;
@@ -18,7 +20,10 @@ import org.apache.poi.hssf.record.aggregates.DataValidityTable;
 import org.apache.poi.hssf.record.aggregates.RecordAggregate.RecordVisitor;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.SpreadsheetVersion;
+import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
@@ -39,9 +44,17 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.CellFormatter;
 import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
+import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
+import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
 import com.gh.mygreen.xlsmapper.cellconverter.LinkType;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.github.mygreen.cellformatter.POICell;
 
 /**
@@ -59,10 +72,32 @@ public class POIUtils {
     private static CellFormatter defaultCellFormatter = new DefaultCellFormatter();
     
     /**
+     * シートの種類を判定する。
+     * 
+     * @since 2.0
+     * @param sheet 判定対象のオブジェクト
+     * @return シートの種類。不明な場合はnullを返す。
+     * @throws NullPointerException {@literal sheet == null}
+     */
+    public static SpreadsheetVersion getVersion(final Sheet sheet) {
+        ArgUtils.notNull(sheet, "sheet");
+        
+        if(sheet instanceof HSSFSheet) {
+            return SpreadsheetVersion.EXCEL97;
+            
+        } else if(sheet instanceof XSSFSheet) {
+            return SpreadsheetVersion.EXCEL2007;
+        }
+        
+        return null;
+    }
+    
+    /**
      * シートの最大列数を取得する。
      * <p>{@literal jxl.Sheet.getColumns()}</p>
-     * @param sheet
-     * @return
+     * @param sheet シートオブジェクト
+     * @return 最大列数
+     * @throws NullPointerException {@link sheet == null.}
      */
     public static int getColumns(final Sheet sheet) {
         ArgUtils.notNull(sheet, "sheet");
@@ -89,8 +124,9 @@ public class POIUtils {
      * シートの最大行数を取得する
      * 
      * <p>{@literal jxl.Sheet.getRows()}</p>
-     * @param sheet
-     * @return
+     * @param sheet シートオブジェクト
+     * @return 最大行数
+     * @throws NullPointerException {@link sheet == null.}
      */
     public static int getRows(final Sheet sheet) {
         ArgUtils.notNull(sheet, "sheet");
@@ -98,11 +134,12 @@ public class POIUtils {
     }
     
     /**
-     * シートから任意のセルを取得する。
+     * シートから任意アドレスのセルを取得する。
      * @since 0.5
      * @param sheet シートオブジェクト
      * @param address アドレス（Point.x=column, Point.y=row）
-     * @return 
+     * @return セル
+     * @throws NullPointerException {@link sheet == null or address == null.}
      */
     public static Cell getCell(final Sheet sheet, final Point address) {
         ArgUtils.notNull(sheet, "sheet");
@@ -111,11 +148,12 @@ public class POIUtils {
     }
     
     /**
-     * シートから任意のセルを取得する。
+     * シートから任意アドレスのセルを取得する。
      * @since 1.4
      * @param sheet シートオブジェクト
      * @param address セルのアドレス
-     * @return 
+     * @return セル
+     * @throws NullPointerException {@link sheet == null or address == null.}
      */
     public static Cell getCell(final Sheet sheet, final CellAddress address) {
         ArgUtils.notNull(sheet, "sheet");
@@ -124,13 +162,14 @@ public class POIUtils {
     }
     
     /**
-     * シートから任意のセルを取得する。
+     * シートから任意アドレスのセルを取得する。
      * 
      * <p>{@literal jxl.Sheet.getCell(int column, int row)}</p>
-     * @param sheet
-     * @param column
-     * @param row
-     * @return
+     * @param sheet シートオブジェクト
+     * @param column 列番号（0から始まる）
+     * @param row 行番号（0から始まる）
+     * @return セル
+     * @throws NullPointerException {@link sheet == null}
      */
     public static Cell getCell(final Sheet sheet, final int column, final int row) {
         ArgUtils.notNull(sheet, "sheet");
@@ -142,7 +181,7 @@ public class POIUtils {
         
         Cell cell = rows.getCell(column);
         if(cell == null) {
-            cell = rows.createCell(column, Cell.CELL_TYPE_BLANK);
+            cell = rows.createCell(column, CellType.BLANK);
         }
         
         return cell;
@@ -151,9 +190,11 @@ public class POIUtils {
     /**
      * 任意の行のセルを全て取得する。
      * <p> {@literal jxl.Seet.getRow(int row)}</p>
-     * @param sheet
-     * @param row
-     * @return
+     * @param sheet シートオブジェクト
+     * @param row 行番号（0から始まる）
+     * @return 行レコード（カラムの集合）。
+     *         ただし、シートの最大列数以下の場合、空のセルを補完する。
+     * @throws NullPointerException {@link sheet == null}
      */
     public static Cell[] getRow(final Sheet sheet, final int row) {
         ArgUtils.notNull(sheet, "sheet");
@@ -167,7 +208,7 @@ public class POIUtils {
         for(int i=0; i < maxColumn; i++) {
             Cell cell = rows.getCell(i);
             if(cell == null) {
-                cell = rows.createCell(i, Cell.CELL_TYPE_BLANK);
+                cell = rows.createCell(i, CellType.BLANK);
             }
             cells[i] = cell;
         }
@@ -179,8 +220,10 @@ public class POIUtils {
      * 任意の列のセルを全て取得する。
      * <p> {@literal jxl.Seet.getColumn(int col)}</p>
      * @param sheet
-     * @param col
-     * @return
+     * @param col 列番号（0から始まる）
+     * @return 列レコード（行の集合）。
+     *         ただし、シートの最大行数以下の場合、空のセルを補完する。
+     * @throws NullPointerException {@link sheet == null}
      */
     public static Cell[] getColumn(final Sheet sheet, final int col) {
         ArgUtils.notNull(sheet, "sheet");
@@ -196,7 +239,7 @@ public class POIUtils {
             
             Cell cell = rows.getCell(col);
             if(cell == null) {
-                cell = rows.createCell(col, Cell.CELL_TYPE_BLANK);
+                cell = rows.createCell(col, CellType.BLANK);
             }
             
             cells[i] = cell;
@@ -291,7 +334,8 @@ public class POIUtils {
      * @param startRow
      * @param endCol
      * @param endRow
-     * @return
+     * @return 結合した範囲のアドレス情報
+     * @throws NullPointerException {@literal sheet == null}
      */
     public static CellRangeAddress mergeCells(final Sheet sheet, int startCol, int startRow, int endCol, int endRow) {
         ArgUtils.notNull(sheet, "sheet");
@@ -305,7 +349,7 @@ public class POIUtils {
                 }
                 
                 Cell cell = getCell(sheet, c, r);
-                cell.setCellType(Cell.CELL_TYPE_BLANK);
+                cell.setCellType(CellType.BLANK);
             }
         }
         
@@ -939,6 +983,176 @@ public class POIUtils {
         }
         
         return false;
+    }
+
+    /**
+     * セルに設定する数式をアノテーションから組み立てる。
+     * 
+     * @since 1.5
+     * @param accessor フィールド
+     * @param formulaAnno 数式定義用のアノテーション。
+     * @param config システム設定。
+     * @param cell 設定対象のセル。
+     * @param targetBean 処理対象のJavaBean.
+     * @return 数式。
+     * @throws XlsMapperException
+     */
+    public static String getFormulaValue(final FieldAccessor accessor, final XlsFormula formulaAnno,
+            final XlsMapperConfig config, final Cell cell, final Object targetBean) throws XlsMapperException {
+        
+        if(Utils.isNotEmpty(formulaAnno.value())) {
+            final Map<String, Object> vars = new HashMap<>();
+            vars.put("rowIndex", cell.getRowIndex());
+            vars.put("columnIndex", cell.getColumnIndex());
+            vars.put("rowNumber", cell.getRowIndex()+1);
+            vars.put("columnNumber", cell.getColumnIndex()+1);
+            vars.put("columnAlpha", CellReference.convertNumToColString(cell.getColumnIndex()));
+            vars.put("address", formatCellAddress(cell));
+            vars.put("targetBean", targetBean);
+            vars.put("cell", cell);
+            
+            try {
+                return config.getFormulaFormatter().interpolate(formulaAnno.value(), vars);
+            } catch(Exception e) {
+                throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.invalidEL")
+                        .var("property", accessor.getNameWithClass())
+                        .var("attr", XlsFormula.class)
+                        .var("attrName", "value")
+                        .var("attrValue", formulaAnno.value())
+                        .format(), e);
+            }
+            
+        } else if(Utils.isNotEmpty(formulaAnno.methodName())) {
+            
+            // 戻り値が文字列の数式を返すメソッドを探す
+            final Class<?> targetClass = targetBean.getClass();
+            Method method = null;
+            for(Method m : targetClass.getDeclaredMethods()) {
+                if(m.getName().equals(formulaAnno.methodName())
+                        && m.getReturnType().equals(String.class)) {
+                    method = m;
+                    break;
+                }
+            }
+            
+            if(method == null) {
+                throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.notFoundMethod")
+                        .var("property", accessor.getNameWithClass())
+                        .varWithAnno("anno", XlsFormula.class)
+                        .var("attrName", "methodName")
+                        .var("attrValue", formulaAnno.methodName())
+                        .varWithClass("definedClass", targetClass)
+                        .format());
+            }
+            
+            // メソッドの引数の組み立て
+            final Class<?>[] paramTypes = method.getParameterTypes();
+            final Object[] paramValues = new Object[paramTypes.length];
+            
+            for(int i=0; i < paramTypes.length; i++) {
+                if(Cell.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = cell;
+                    
+                } else if(CellAddress.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = CellAddress.of(cell);
+                    
+                } else if(Point.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = CellAddress.of(cell).toPoint();
+                    
+                } else if(org.apache.poi.ss.util.CellAddress.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = CellAddress.of(cell).toPoiCellAddress();
+                    
+                } else if(Sheet.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = cell.getSheet();
+                    
+                } else if(XlsMapperConfig.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = config;
+                    
+                } else {
+                    paramValues[i] = null;
+                }
+            }
+            
+            // メソッドの実行
+            try {
+                method.setAccessible(true);
+                return (String) method.invoke(targetBean, paramValues);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                Throwable t = e.getCause() == null ? e : e.getCause();
+                throw new XlsMapperException(
+                        String.format("Fail execute method '%s#%s'.", targetClass.getName(), method.getName()),
+                        t);
+            }
+            
+        } else {
+            throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.required.any")
+                    .var("property", accessor.getNameWithClass())
+                    .varWithAnno("anno", XlsFormula.class)
+                    .varWithArrays("attrNames", "value", "methodName")
+                    .format());
+        }
+        
+    }
+
+    /**
+     * セルに数式を設定する。
+     * @since 1.5
+     * 
+     * @param accessor フィールド
+     * @param formulaAnno 数式定義用のアノテーション。
+     * @param config システム設定。
+     * @param cell 設定対象のセル。
+     * @param targetBean 処理対象のJavaBean.
+     * @throws XlsMapperException
+     */
+    public static void setupCellFormula(final FieldAccessor accessor, final XlsFormula formulaAnno,
+            final XlsMapperConfig config, final Cell cell, final Object targetBean) throws XlsMapperException {
+        
+        ArgUtils.notNull(accessor, "adaptor");
+        ArgUtils.notNull(formulaAnno, "formulaAnno");
+        ArgUtils.notNull(config, "config");
+        ArgUtils.notNull(cell, "cell");
+        
+        final String formula = getFormulaValue(accessor, formulaAnno, config, cell, targetBean);
+        if(Utils.isEmpty(formula)) {
+            cell.setCellType(CellType.BLANK);
+            return;
+        }
+        
+        try {
+            cell.setCellFormula(formula);
+            cell.setCellType(CellType.FORMULA);
+            
+        } catch(FormulaParseException e) {
+            // 数式の解析に失敗した場合
+            final String message = new StringBuilder()
+                    .append(String.format("Fail parse formula '%s'.", formula))
+                    .append(String.format(" Cell '%s' map from '%s#%s'.", 
+                            formatCellAddress(cell), accessor.getDeclaringClass().getName(), accessor.getName()))
+                    .toString();
+                
+            throw new ConversionException(message, e, accessor.getType());
+        }
+    }
+    
+    /**
+     * アノテーション{@link XlsCellOption}を元に、セルの制御の設定「折り返し設定」「縮小して表示」を設定します。
+     * @param cell セル
+     * @param cellOptionAnno セルの制御を設定するアノテーション。
+     * @throws NullPointerException {@literal cell == null.}
+     */
+    public static void setupCellOption(final Cell cell, final XlsCellOption cellOptionAnno) {
+        
+        ArgUtils.notNull(cell, "cell");
+        
+        if(cellOptionAnno.shrinkToFit()) {
+            cell.getCellStyle().setShrinkToFit(true);
+            
+        } else if(cellOptionAnno.wrapText()) {
+            cell.getCellStyle().setWrapText(true);
+            
+        }
+        
     }
     
 }

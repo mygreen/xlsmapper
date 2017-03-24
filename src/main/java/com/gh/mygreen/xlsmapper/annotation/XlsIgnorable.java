@@ -58,7 +58,7 @@ import java.lang.annotation.Target;
  * 
  * <h3 class="description">{@link com.gh.mygreen.xlsmapper.util.IsEmptyBuilder}を使った記述の簡単化</h3>
  * 
- * アノテーション{@link XlsIsIgnored}を付与したメソッドの実装において、{@link com.gh.mygreen.xlsmapper.util.IsEmptyBuilder}を使用すると、
+ * アノテーション{@link XlsIgnorable}を付与したメソッドの実装において、{@link com.gh.mygreen.xlsmapper.util.IsEmptyBuilder}を使用すると、
  * より簡潔に記述することができます。
  * 
  *  * <pre class="highlight"><code class="java">
@@ -75,8 +75,8 @@ import java.lang.annotation.Target;
  *     private String address;
  *     
  *     // レコードが空と判定するためのメソッド
- *     {@literal @XlsIsIgnored}
- *     public boolean isIgnored() {
+ *     {@literal @XlsIgnorable}
+ *     public boolean isEmpty() {
  *         // 列「ID」は空の判定には含まないよう除外する。
  *         return IsEmptyBuilder.reflectionIsEmpty(this, "id");
  *     }
@@ -91,5 +91,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface XlsIsIgnored {
+public @interface XlsIgnorable {
 }

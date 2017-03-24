@@ -16,7 +16,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.HorizontalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.VerticalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
+import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
@@ -43,7 +43,7 @@ public class RecordsProcessorUtil {
             final List<RecordHeader> headers, final AnnotationReader reader, final XlsMapperConfig config)
                     throws XlsMapperException {
         
-        List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(recordClass, reader, XlsColumn.class);
+        List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsColumn.class);
         
         for(FieldAccessor property : properties) {
             final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
@@ -132,7 +132,7 @@ public class RecordsProcessorUtil {
                     .format());
         }
         
-        final List<FieldAccessor> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)
+        final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)
                 .stream()
                 .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
@@ -215,7 +215,7 @@ public class RecordsProcessorUtil {
                     .format());
         }
         
-        final List<FieldAccessor> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)
+        final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)
                 .stream()
                 .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
