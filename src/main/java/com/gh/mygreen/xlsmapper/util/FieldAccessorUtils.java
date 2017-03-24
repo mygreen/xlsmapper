@@ -20,7 +20,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
  * @author T.TSUCHIE
  *
  */
-public class FieldAdapterUtils {
+public class FieldAccessorUtils {
     
     /**
      * 指定したアノテーションを持つBeanのプロパティ（フィールド、アクセッサメソッド）の一覧を取得します。

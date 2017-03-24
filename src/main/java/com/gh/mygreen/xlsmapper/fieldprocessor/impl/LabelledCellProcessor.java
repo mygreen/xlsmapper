@@ -17,7 +17,9 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellFinder;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -137,15 +139,17 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         } else if(Utils.isNotEmpty(anno.label())) {
             try {
                 if(Utils.isNotEmpty(anno.headerLabel())){
-                    Cell headerCell = Utils.getCell(sheet, anno.headerLabel(), 0, 0, config);
-                    Cell labelCell = Utils.getCell(sheet, anno.label(), headerCell.getColumnIndex(), headerCell.getRowIndex() + 1, config);
+                    Cell headerCell = CellFinder.query(sheet, anno.headerLabel(), config).findWhenNotFoundException();
+                    Cell labelCell = CellFinder.query(sheet, anno.label(), config)
+                            .fromPosition(headerCell.getColumnIndex(), headerCell.getRowIndex() + 1)
+                            .findWhenNotFoundException();
                     return Optional.of(CellAddress.of(labelCell));
                     
                 } else {
-                    Cell labelCell = Utils.getCell(sheet, anno.label(), 0, config);
+                    Cell labelCell = CellFinder.query(sheet, anno.label(), config).findWhenNotFoundException();
                     return Optional.of(CellAddress.of(labelCell));
                 }
-            } catch(XlsMapperException ex){
+            } catch(CellNotFoundException ex){
                 if(anno.optional()){
                     return Optional.empty();
                 } else {

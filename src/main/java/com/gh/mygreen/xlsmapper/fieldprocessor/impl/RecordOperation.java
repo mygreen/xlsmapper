@@ -19,6 +19,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
  */
 public class RecordOperation {
     
+    /** レコード操作のアノテーション */
     private final XlsRecordOperation annotation;
     
     /** レコードのコピー回数 */
@@ -46,6 +47,8 @@ public class RecordOperation {
     
     /**
      * レコードの操作用のアノテーションを取得する。
+     * 
+     * @since 2.0
      * @return 付与されていない場合は、属性がデフォルト値が設定される。
      */
     public XlsRecordOperation getAnnotation() {

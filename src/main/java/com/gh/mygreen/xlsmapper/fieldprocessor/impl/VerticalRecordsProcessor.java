@@ -55,7 +55,8 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordsProcessorUtil;
 import com.gh.mygreen.xlsmapper.util.CellAddress;
-import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
+import com.gh.mygreen.xlsmapper.util.CellFinder;
+import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -79,14 +80,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
-            try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                final String label = POIUtils.getCellContents(tableLabelCell, config.getCellFormatter());
+            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
+            tableLabelCell.ifPresent(c -> {
+                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
                 accessor.setLabel(beansObj, label);
                 
-            } catch(CellNotFoundException e) {
-                
-            }
+            });
         }
         
         final Class<?> clazz = accessor.getType();
@@ -284,7 +283,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 // mapping from Excel columns to Object properties.
                 final List<FieldAccessor> propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -> {
-                    return FieldAdapterUtils.getColumnPropertiesByName(
+                    return FieldAccessorUtils.getColumnPropertiesByName(
                             record.getClass(), work.getAnnoReader(), config, key)
                             .stream()
                             .filter(p -> p.isReadable())
@@ -330,7 +329,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         int mergedSize =  mergedRange.getLastColumn() - mergedRange.getFirstColumn() + 1;
                         mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));
                     } else {
-                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(Utils.formatCellAddress(valueCell)), 1));
+                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(valueCell)), 1));
                     }
                     
                     // set for value
@@ -426,7 +425,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
+                final Cell labelCell = CellFinder.query(sheet, anno.tableLabel(), config).findWhenNotFoundException();
                 
                 if(anno.tableLabelAbove()) {
                     // 表の見出しが上にある場合。HorizontalRecordsを同じ。
@@ -493,7 +492,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+            final List<FieldAccessor> propeties = FieldAccessorUtils.getColumnPropertiesByName(
                     recordClass, annoReader, config, headerInfo.getLabel())
                     .stream()
                     .filter(p -> p.isReadable())
@@ -510,7 +509,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     private void loadMapColumns(final Sheet sheet, final List<RecordHeader> headers, final List<MergedRecord> mergedRecords,
             final CellAddress beginPosition, final Object record, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
                 .filter(p -> p.isReadable())
@@ -554,7 +553,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         int mergedSize =  mergedRange.getLastColumn() - mergedRange.getFirstColumn() + 1;
                         mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));
                     } else {
-                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(Utils.formatCellAddress(cell)), 1));
+                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(cell)), 1));
                     }
                     
                     try {
@@ -585,7 +584,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         // 基本的に結合している個数による。
         int skipSize = 0;
         
-        final List<FieldAccessor> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
                 .filter(p -> p.isReadable())
@@ -691,14 +690,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
-            try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                final String label = POIUtils.getCellContents(tableLabelCell, config.getCellFormatter());
+            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
+            tableLabelCell.ifPresent(c -> {
+                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
                 accessor.setLabel(beansObj, label);
                 
-            } catch(CellNotFoundException e) {
-                
-            }
+            });
         }
         
         final Class<?> clazz = accessor.getType();
@@ -957,7 +954,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 // mapping from Excel columns to Object properties.
                 if(record != null) {
                     final List<FieldAccessor> propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -> {
-                        return FieldAdapterUtils.getColumnPropertiesByName(
+                        return FieldAccessorUtils.getColumnPropertiesByName(
                                 record.getClass(), work.getAnnoReader(), config, key)
                                 .stream()
                                 .filter(p -> p.isWritable())
@@ -1138,7 +1135,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+            final List<FieldAccessor> propeties = FieldAccessorUtils.getColumnPropertiesByName(
                     recordClass,annoReader, config,  headerInfo.getLabel())
                     .stream()
                     .filter(p -> p.isWritable())
@@ -1214,7 +1211,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             final XlsVerticalRecords anno, final XlsMapperConfig config, final SavingWorkObject work,
             final RecordOperation recordOperation) throws XlsMapperException {
         
-        final List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
                 .filter(p -> p.isWritable())
@@ -1323,7 +1320,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         int skipSize = 0;
         
-        final List<FieldAccessor> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
                 .filter(p -> p.isWritable())

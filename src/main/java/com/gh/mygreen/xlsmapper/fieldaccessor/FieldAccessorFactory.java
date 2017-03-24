@@ -98,15 +98,18 @@ public class FieldAccessorFactory {
         }
         
         // 位置・ラベル情報のアクセッサの設定
-        accessor.positionSetter = positionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-        accessor.positionGetter = positionGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-        
-        accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-        accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-        
         if(accessor.hasAnnotation(XlsMapColumns.class)) {
             accessor.mapColumnPositionSetter = mapColumnPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             accessor.mapColumnLabelSetter = mapColumnLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+        } else {
+            // XlsMapColumnsを持たない通常のプロパティの場合
+            accessor.positionSetter = positionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.positionGetter = positionGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+            accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+        
         }
         
         return accessor;
@@ -209,16 +212,19 @@ public class FieldAccessorFactory {
         }
         
         // 位置・ラベル情報のアクセッサの設定
-        accessor.positionSetter = positionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-        accessor.positionGetter = positionGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-        
-        accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-        accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-        
         if(accessor.hasAnnotation(XlsMapColumns.class)) {
             accessor.mapColumnPositionSetter = mapColumnPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             accessor.mapColumnLabelSetter = mapColumnLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+        } else {
+            // XlsMapColumnsを持たない通常のプロパティの場合
+            accessor.positionSetter = positionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.positionGetter = positionGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+            accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
         }
+        
         
         return accessor;
     }

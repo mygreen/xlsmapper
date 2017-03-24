@@ -28,7 +28,9 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
-import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
+import com.gh.mygreen.xlsmapper.util.CellFinder;
+import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 
@@ -104,7 +106,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 .create(tableClass);
         
         final String label = iterateTablesAnno.tableLabel();
-        currentCell = Utils.getCell(sheet, label, after, false, !iterateTablesAnno.optional(), config);
+        
+        currentCell = CellFinder.query(sheet, label, config).find(iterateTablesAnno.optional());
         
         while(currentCell != null) {
             // 1 table object instance
@@ -136,7 +139,11 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             resultTableList.add(tableObj);
             after = currentCell;
-            currentCell = Utils.getCell(sheet, label, after, false, false, config);
+            currentCell = CellFinder.query(sheet, label, config)
+                    .fromPosition(after)
+                    .excludeFrom(true)
+                    .findOptional()
+                    .orElse(null);
             
             // set PostProcess listener
             methodCache.getListenerPostLoadMethods().forEach(method -> {
@@ -170,20 +177,24 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final LabelledCellProcessor labelledCellProcessor = 
                 (LabelledCellProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsLabelledCell.class);
         
-        final List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)
                 .stream()
                 .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
         
         for(FieldAccessor property : properties) {
-            final XlsLabelledCell ann = property.getAnnotation(XlsLabelledCell.class).get();
+            final XlsLabelledCell anno = property.getAnnotation(XlsLabelledCell.class).get();
             
             Cell titleCell = null;
             try {
-                titleCell = Utils.getCell(sheet, ann.label(), headerCell, config);
+                titleCell = CellFinder.query(sheet, anno.label(), config)
+                        .fromPosition(headerCell)
+                        .excludeFrom(true)
+                        .findWhenNotFoundException();
+                
             } catch (CellNotFoundException e) {
-                if (ann.optional()) {
+                if (anno.optional()) {
                     continue;
                 } else {
                     throw e;
@@ -191,8 +202,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             }
             
             final XlsLabelledCell labelledCell = new XlsLabelledCellForIterateTable(
-                    ann, titleCell.getRowIndex(), titleCell.getColumnIndex(),
-                    Utils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
+                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
+                    POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
             
             labelledCellProcessor.loadProcess(sheet, tableObj, labelledCell, property, config, work);
         }
@@ -213,7 +224,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final HorizontalRecordsProcessor processor = 
                 (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsHorizontalRecords.class);
         
-        final List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)
                 .stream()
                 .filter(p -> p.isReadable())
@@ -335,7 +346,14 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors());
             });
             
-            currentCell = Utils.getCell(sheet, label, after, false, !iterateTablesAnno.optional(), config);
+            if(after == null) {
+                currentCell = CellFinder.query(sheet, label, config).find(iterateTablesAnno.optional());
+            } else {
+                currentCell = CellFinder.query(sheet, label, config)
+                        .fromPosition(after)
+                        .excludeFrom(true)
+                        .find(iterateTablesAnno.optional());
+            }
             if(currentCell == null) {
                 //TODO: 見出しが足りない場合の追加処理を記述する
                 
@@ -378,7 +396,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final LabelledCellProcessor labelledCellProcessor = 
                 (LabelledCellProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsLabelledCell.class);
         
-        final List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)
                 .stream()
                 .filter(p -> p.isWritable())
@@ -390,7 +408,11 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             Cell titleCell = null;
             try {
-                titleCell = Utils.getCell(sheet, anno.label(), headerCell, config);
+                titleCell = CellFinder.query(sheet, anno.label(), config)
+                        .fromPosition(headerCell)
+                        .excludeFrom(true)
+                        .findWhenNotFoundException();
+                
             } catch (CellNotFoundException e) {
                 if (anno.optional()) {
                     continue;
@@ -401,7 +423,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             final XlsLabelledCell labelledCell = new XlsLabelledCellForIterateTable(
                     anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
-                    Utils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
+                    POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
             
             labelledCellProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);
         }
@@ -421,7 +443,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         
         final HorizontalRecordsProcessor processor = (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsHorizontalRecords.class);
         
-        final List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)
                 .stream()
                 .filter(p -> p.isWritable())

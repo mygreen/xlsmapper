@@ -19,7 +19,6 @@ import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.util.CellAddress;
-import com.gh.mygreen.xlsmapper.util.ConversionUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -116,7 +115,7 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
         
         // セルの制御の設定
         accessor.getAnnotation(XlsCellOption.class).ifPresent(cellOptionAnno -> {
-            ConversionUtils.setupCellOption(cell, cellOptionAnno);
+            POIUtils.setupCellOption(cell, cellOptionAnno);
         });
         
         // デフォルト値の設定
@@ -135,7 +134,7 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
         // 数式の設定
         accessor.getAnnotation(XlsFormula.class).ifPresent(formulaAnno -> {
             if(isEmptyValue(cellValue, accessor, config) || formulaAnno.primary()) {
-                Utils.setupCellFormula(accessor, formulaAnno, config, cell, targetBean);
+                POIUtils.setupCellFormula(accessor, formulaAnno, config, cell, targetBean);
             }
         });
         

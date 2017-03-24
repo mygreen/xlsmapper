@@ -58,7 +58,8 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordsProcessorUtil;
 import com.gh.mygreen.xlsmapper.util.CellAddress;
-import com.gh.mygreen.xlsmapper.util.FieldAdapterUtils;
+import com.gh.mygreen.xlsmapper.util.CellFinder;
+import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -84,14 +85,12 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
-            try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                final String label = POIUtils.getCellContents(tableLabelCell, config.getCellFormatter());
+            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
+            tableLabelCell.ifPresent(c -> {
+                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
                 accessor.setLabel(beansObj, label);
-                
-            } catch(CellNotFoundException e) {
-                
-            }
+            });
+            
         }
         
         final Class<?> clazz = accessor.getType();
@@ -287,7 +286,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
                 // mapping from Excel columns to Object properties.
                 final List<FieldAccessor> propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -> {
-                    return FieldAdapterUtils.getColumnPropertiesByName(
+                    return FieldAccessorUtils.getColumnPropertiesByName(
                             record.getClass(), work.getAnnoReader(), config, key)
                             .stream()
                             .filter(p -> p.isReadable())
@@ -329,7 +328,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         int mergedSize =  mergedRange.getLastRow() - mergedRange.getFirstRow() + 1;
                         mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));
                     } else {
-                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(Utils.formatCellAddress(valueCell)), 1));
+                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(valueCell)), 1));
                     }
                     
                     // set for value
@@ -423,7 +422,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
         } else if(Utils.isNotEmpty(anno.tableLabel())) {
             try {
-                Cell labelCell = Utils.getCell(sheet, anno.tableLabel(), 0, 0, config);
+                final Cell labelCell = CellFinder.query(sheet, anno.tableLabel(), config).findWhenNotFoundException();
                 int initColumn = labelCell.getColumnIndex();
                 int initRow = labelCell.getRowIndex() + anno.bottom();
                 
@@ -484,7 +483,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+            final List<FieldAccessor> propeties = FieldAccessorUtils.getColumnPropertiesByName(
                     recordClass, annoReader, config, headerInfo.getLabel())
                     .stream()
                     .filter(p -> p.isReadable())
@@ -502,7 +501,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     private void loadMapColumns(final Sheet sheet, final List<RecordHeader> headers, final List<MergedRecord> mergedRecords,
             final CellAddress beginPosition, final Object record, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final List<FieldAccessor> mapProperties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> mapProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
                 .filter(f -> f.isReadable())
@@ -546,7 +545,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         int mergedSize =  mergedRange.getLastRow() - mergedRange.getFirstRow() + 1;
                         mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));
                     } else {
-                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(Utils.formatCellAddress(cell)), 1));
+                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(cell)), 1));
                     }
                     
                     try {
@@ -577,7 +576,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // 基本的に結合している個数による。
         int skipSize = 0;
         
-        final List<FieldAccessor> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
                 .filter(f -> f.isReadable())
@@ -686,14 +685,12 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
-            try {
-                final Cell tableLabelCell = Utils.getCell(sheet, anno.tableLabel(), 0, config);
-                final String label = POIUtils.getCellContents(tableLabelCell, config.getCellFormatter());
+            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
+            tableLabelCell.ifPresent(c -> {
+                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
                 accessor.setLabel(beansObj, label);
                 
-            } catch(CellNotFoundException e) {
-                
-            }
+            });
         }
         
         final Class<?> clazz = accessor.getType();
@@ -966,7 +963,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 // mapping from Excel columns to Object properties.
                 if(record != null) {
                     final List<FieldAccessor> propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -> {
-                        return FieldAdapterUtils.getColumnPropertiesByName(
+                        return FieldAccessorUtils.getColumnPropertiesByName(
                                 record.getClass(), work.getAnnoReader(), config, key)
                                 .stream()
                                 .filter(p -> p.isWritable())
@@ -1174,7 +1171,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         for(int i=0; i < headers.size(); i++) {
             RecordHeader headerInfo = headers.get(i);
-            final List<FieldAccessor> propeties = FieldAdapterUtils.getColumnPropertiesByName(
+            final List<FieldAccessor> propeties = FieldAccessorUtils.getColumnPropertiesByName(
                     recordClass, annoReader, config, headerInfo.getLabel())
                     .stream()
                     .filter(p -> p.isWritable())
@@ -1252,7 +1249,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             XlsHorizontalRecords anno, XlsMapperConfig config, SavingWorkObject work,
             RecordOperation recordOperation) throws XlsMapperException {
         
-        final List<FieldAccessor> properties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
                 .filter(p -> p.isWritable())
@@ -1363,7 +1360,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         int skipSize = 0;
         
-        final List<FieldAccessor> nestedProperties = FieldAdapterUtils.getPropertiesWithAnnotation(
+        final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
                 .filter(p -> p.isWritable())
