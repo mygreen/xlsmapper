@@ -1,11 +1,13 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 
 
 /**
- * マッピング対象のExcelのCellが見つからない場合にスローする例外。
+ * マッピング対象のCellが見つからない場合にスローする例外。
  * 
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -20,17 +22,33 @@ public class CellNotFoundException extends XlsMapperException {
     /** 検索対象のセルのラベル */
     private final String label;
     
+    /**
+     * 指定したラベルを持つセルが見つからない場合
+     * @param sheetName シート名
+     * @param label ラベル名
+     */
     public CellNotFoundException(final String sheetName, final String label) {
-        super(String.format("Cell '%s' not found in sheet '%s'", label, sheetName));
+        super(MessageBuilder.create("cell.notNotFound.label")
+                .var("sheetName", sheetName)
+                .var("lael", label)
+                .format());
         this.sheetName = sheetName;
         this.label = label;
         
     }
     
+    /**
+     * シート名を取得する
+     * @return シート名
+     */
     public String getSheetName() {
         return sheetName;
     }
     
+    /**
+     * ラベル名を取得する
+     * @return ラベル名
+     */
     public String getLabel() {
         return label;
     }
