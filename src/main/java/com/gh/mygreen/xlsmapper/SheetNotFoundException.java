@@ -1,6 +1,7 @@
 package com.gh.mygreen.xlsmapper;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 
 
 /**
@@ -25,7 +26,9 @@ public class SheetNotFoundException extends XlsMapperException {
      * @param sheetName シート名
      */
     public SheetNotFoundException(final String sheetName) {
-        this(sheetName, String.format("Cannot find sheet '%s'.", sheetName));
+        this(sheetName, MessageBuilder.create("sheet.notFound.name")
+                .var("sheetName", sheetName)
+                .format());
         
     }
     
@@ -46,7 +49,10 @@ public class SheetNotFoundException extends XlsMapperException {
      * @param bookSheetSize ワークブックのシートサイズ。
      */
     public SheetNotFoundException(final int sheetNumber, final int bookSheetSize) {
-        super(String.format("Cannot find sheet number [%d]. book only has number of sheet %d.", sheetNumber, bookSheetSize));
+        super(MessageBuilder.create("sheet.notFound.overSize")
+                .var("sheetNumber", sheetNumber)
+                .var("bookSheetSize", bookSheetSize)
+                .format());
         this.sheetNumber = sheetNumber;
         this.bookSheetSize = bookSheetSize;
     }

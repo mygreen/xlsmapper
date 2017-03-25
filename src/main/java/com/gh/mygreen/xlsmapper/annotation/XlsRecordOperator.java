@@ -16,21 +16,21 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface XlsRecordOperation {
+public @interface XlsRecordOperator {
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
      * <p>値は、列挙型{@link OverOperationn}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
      *    <br>デフォルトでは何もしません。
      * </p>
-     * <p>ただし、{@link XlsVerticalRecords}の場合、{@link OverOperation#Insert}は対応していません。</p>
+     * <p>ただし、{@link XlsVerticalRecords}の場合、{@link OverOperate#Insert}は対応していません。</p>
      * <pre class="highlight"><code class="java">
      * // シート用クラス
      * {@literal @XlsSheet(name="Users")}
      * public class SampleSheet {
      *     
      *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
-     *     {@literal @XlsXlsRecordOperation(overCase=OverOperationn.Insert)}
+     *     {@literal @XlsRecordOperator(overCase=OverOperate.Insert)}
      *     private {@literal List<UserRecord>} records;
      *     
      * }
@@ -41,16 +41,16 @@ public @interface XlsRecordOperation {
      *    <p>表の書き込み時の不足するレコードの操作の指定</p>
      * </div>
      * 
-     * @return {@link OverOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。
+     * @return {@link OverOperate#Break}の場合、足りないレコードがあるとそこで処理を終了します。
      */
-    OverOperation overCase() default OverOperation.Break;
+    OverOperate overCase() default OverOperate.Break;
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
-     * <p>値は、列挙型{@link RemainedOperation}で指定し、行の値のクリアや、行の削除を指定することができます。
+     * <p>値は、列挙型{@link RemainedOperate}で指定し、行の値のクリアや、行の削除を指定することができます。
      *   <br>デフォルトでは何もしません。
      * </p>
-     * <p>ただし、{@link XlsVerticalRecords}の場合、{@link RemainedOperation#Delete}は対応していません。</p>
+     * <p>ただし、{@link XlsVerticalRecords}の場合、{@link RemainedOperate#Delete}は対応していません。</p>
      * 
      * <pre class="highlight"><code class="java">
      * // シート用クラス
@@ -58,7 +58,7 @@ public @interface XlsRecordOperation {
      * public class SampleSheet {
      *     
      *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
-     *     {@literal @XlsXlsRecordOperation(remainedCase=RemainedRecordOperation.Clear)}
+     *     {@literal @XlsRecordOperator(remainedCase=RemainedRecordOperate.Clear)}
      *     private {@literal List<UserRecord>} records;
      *     
      * }
@@ -69,9 +69,9 @@ public @interface XlsRecordOperation {
      *    <p>表の書き込み時の余分なレコードの操作の指定</p>
      * </div>
      * 
-     * @return {@link RemainedOperation#None}の場合、余っているレコードがあっても何もしません。
+     * @return {@link RemainedOperate#None}の場合、余っているレコードがあっても何もしません。
      */
-    RemainedOperation remainedCase() default RemainedOperation.None;
+    RemainedOperate remainedCase() default RemainedOperate.None;
     
     /**
      * アノテーション {@link XlsHorizontalRecords}や{@link XlsVerticalRecords}で、
@@ -81,7 +81,7 @@ public @interface XlsRecordOperation {
      * @author T.TSUCHIE
      *
      */
-    public static enum OverOperation {
+    public static enum OverOperate {
         
         /** 前のセルをコピーします */
         Copy,
@@ -103,7 +103,7 @@ public @interface XlsRecordOperation {
      * @author T.TSUCHIE
      *
      */
-    public static enum RemainedOperation {
+    public static enum RemainedOperate {
         
         /** セルの値をクリアします */
         Clear,

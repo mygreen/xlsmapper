@@ -52,6 +52,7 @@ import java.lang.annotation.Target;
  *  <li>このアノテーションの付与、または属性の値が-1以下の場合、付与しているいフィールドよりも処理順序は後になります。</li>
  * </ul>
  * 
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */

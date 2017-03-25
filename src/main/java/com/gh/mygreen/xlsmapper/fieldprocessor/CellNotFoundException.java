@@ -30,7 +30,7 @@ public class CellNotFoundException extends XlsMapperException {
     public CellNotFoundException(final String sheetName, final String label) {
         super(MessageBuilder.create("cell.notNotFound.label")
                 .var("sheetName", sheetName)
-                .var("lael", label)
+                .var("label", label)
                 .format());
         this.sheetName = sheetName;
         this.label = label;
