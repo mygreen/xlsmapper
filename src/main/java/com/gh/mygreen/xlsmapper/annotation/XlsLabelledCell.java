@@ -197,4 +197,17 @@ public @interface XlsLabelledCell {
      * @return 値は0から始まり、指定しない場合は0を指定します。
      */
     int skip() default 0;
+    
+    /**
+     * ラベルセルが結合している場合を考慮するかどうか指定します。
+     * <p>属性{@link #label()}でラベルを指定しますが、そのセルが結合されている場合、
+     *    データセルまでの距離を属性{@link #skip()}で指定する必要がありす。
+     *    <br>しかし、{@link #labelMerged()}の値をtrueにすると、属性{@link #skip()}の値を指定する必要がなく、
+     *    結合分を自動的に考慮して値をマッピングします。
+     * </p>
+     * 
+     * @since 2.0
+     * @return trueの場合、ラベルが指定されているセルが結合されていることを考慮する。
+     */
+    boolean labelMerged() default false;
 }

@@ -33,7 +33,8 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link LabelledCellProcessor}のテスタ
  * アノテーション{@link XlsLabelledCell}のテスタ。
- * @version 1.5
+ * 
+ * @version 2.9
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -81,6 +82,10 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.blank, is(nullValue()));
             
             assertThat(sheet.mergedCell, is("結合先の値です。"));
+            
+            assertThat(sheet.labelMergedLeft, is("左側"));
+            assertThat(sheet.labelMergedRight, is("右側"));
+            assertThat(sheet.labelMergedBottom, is("下側"));
             
         }
     }
@@ -295,7 +300,10 @@ public class AnnoLabelledCellTest {
             .headerRange(toUtilDate(toTimestamp("2011-02-03 04:05:06.000")))
             .address1("アドレス指定です。\n右側。")
             .address2("アドレス指定です。\n左側。")
-            .mergedCell("結合先の値です。");
+            .mergedCell("結合先の値です。")
+            .labelMergedLeft("左側")
+            .labelMergedRight("右側")
+            .labelMergedBottom("下側")
             ;
         
         // ファイルへの書き込み
@@ -333,9 +341,13 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.address1, is(outSheet.address1));
             assertThat(sheet.address2, is(outSheet.address2));
             
+            assertThat(sheet.blank, is(outSheet.blank));
+            
             assertThat(sheet.mergedCell, is(outSheet.mergedCell));
             
-            assertThat(sheet.blank, is(outSheet.blank));
+            assertThat(sheet.labelMergedLeft, is(outSheet.labelMergedLeft));
+            assertThat(sheet.labelMergedRight, is(outSheet.labelMergedRight));
+            assertThat(sheet.labelMergedBottom, is(outSheet.labelMergedBottom));
             
             
         }
@@ -605,6 +617,24 @@ public class AnnoLabelledCellTest {
         @XlsLabelledCell(label="結合しているセル（ラベル名）", type=LabelledCellType.Right, skip=2)
         private String mergedCell;
         
+        /**
+         * 結合しているラベルを考慮 - 左側
+         */
+        @XlsLabelledCell(label="結合を考慮", type=LabelledCellType.Left, labelMerged=true)
+        private String labelMergedLeft;
+        
+        /**
+         * 結合しているラベルを考慮 - 右側
+         */
+        @XlsLabelledCell(label="結合を考慮", type=LabelledCellType.Right, labelMerged=true)
+        private String labelMergedRight;
+        
+        /**
+         * 結合しているラベルを考慮 - 下側
+         */
+        @XlsLabelledCell(label="結合を考慮", type=LabelledCellType.Bottom, labelMerged=true)
+        private String labelMergedBottom;
+        
         public NormalSheet posRight(String posRight) {
             this.posRight = posRight;
             return this;
@@ -664,6 +694,21 @@ public class AnnoLabelledCellTest {
             this.mergedCell = mergedCell;
             return this;
         }
+        
+        public NormalSheet labelMergedLeft(String labelMergedLeft) {
+            this.labelMergedLeft = labelMergedLeft;
+            return this;
+        }
+        
+        public NormalSheet labelMergedRight(String labelMergedRight) {
+            this.labelMergedRight = labelMergedRight;
+            return this;
+        }
+        
+        public NormalSheet labelMergedBottom(String labelMergedBottom) {
+            this.labelMergedBottom = labelMergedBottom;
+            return this;
+        }
     }
     
     /**
@@ -675,7 +720,7 @@ public class AnnoLabelledCellTest {
         /**
          * ラベルが見つからない 
          */
-        @XlsLabelledCell(label="身つからない", type=LabelledCellType.Right, optional=false)
+        @XlsLabelledCell(label="見つからない", type=LabelledCellType.Right, optional=false)
         private Integer foundNo;
         
     }

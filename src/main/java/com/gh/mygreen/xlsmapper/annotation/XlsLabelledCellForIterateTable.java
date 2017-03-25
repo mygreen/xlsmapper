@@ -18,6 +18,7 @@ public class XlsLabelledCellForIterateTable implements XlsLabelledCell {
     private Class<? extends Annotation> _annotationType = null;
     private String _headerLabel = null;
     private int _skip = 0;
+    private boolean _labelMerged = false;
 
     public XlsLabelledCellForIterateTable(XlsLabelledCell labelledCell, int labelRow, int labelColumn, String labelAddress) {
         this._label = "";
@@ -30,6 +31,7 @@ public class XlsLabelledCellForIterateTable implements XlsLabelledCell {
         this._annotationType = labelledCell.annotationType();
         this._headerLabel = labelledCell.headerLabel();
         this._skip = labelledCell.skip();
+        this._labelMerged = labelledCell.labelMerged();
     }
     
     @Override
@@ -80,5 +82,10 @@ public class XlsLabelledCellForIterateTable implements XlsLabelledCell {
     @Override
     public int skip() {
         return this._skip;
+    }
+    
+    @Override
+    public boolean labelMerged() {
+        return this._labelMerged;
     }
 }
