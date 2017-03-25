@@ -32,9 +32,9 @@ import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.RemainedOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
@@ -354,11 +354,11 @@ public class AnnoLifeCycleTest {
         private String name;
         
         @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border)
-        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
+        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<Record> hRecords;
         
         @XlsVerticalRecords(tableLabel="縦方向", terminal=RecordTerminal.Border)
-        @XlsRecordOperation(overCase=OverOperation.Copy, remainedCase=RemainedOperation.Clear)
+        @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
         private List<Record> vRecords;
         
         public SimpleSheet addHoritonzal(final Record record) {
@@ -616,7 +616,7 @@ public class AnnoLifeCycleTest {
         private String name;
         
         @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border)
-        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
+        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<Record> hRecords;
         
         public Table name(final String name) {

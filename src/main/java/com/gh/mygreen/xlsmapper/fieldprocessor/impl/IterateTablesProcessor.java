@@ -140,8 +140,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             resultTableList.add(tableObj);
             after = currentCell;
             currentCell = CellFinder.query(sheet, label, config)
-                    .fromPosition(after)
-                    .excludeFrom(true)
+                    .startPosition(after)
+                    .excludeStartPosition(true)
                     .findOptional()
                     .orElse(null);
             
@@ -189,8 +189,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             Cell titleCell = null;
             try {
                 titleCell = CellFinder.query(sheet, anno.label(), config)
-                        .fromPosition(headerCell)
-                        .excludeFrom(true)
+                        .startPosition(headerCell)
+                        .excludeStartPosition(true)
                         .findWhenNotFoundException();
                 
             } catch (CellNotFoundException e) {
@@ -350,8 +350,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 currentCell = CellFinder.query(sheet, label, config).find(iterateTablesAnno.optional());
             } else {
                 currentCell = CellFinder.query(sheet, label, config)
-                        .fromPosition(after)
-                        .excludeFrom(true)
+                        .startPosition(after)
+                        .excludeStartPosition(true)
                         .find(iterateTablesAnno.optional());
             }
             if(currentCell == null) {
@@ -409,8 +409,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             Cell titleCell = null;
             try {
                 titleCell = CellFinder.query(sheet, anno.label(), config)
-                        .fromPosition(headerCell)
-                        .excludeFrom(true)
+                        .startPosition(headerCell)
+                        .excludeStartPosition(true)
                         .findWhenNotFoundException();
                 
             } catch (CellNotFoundException e) {

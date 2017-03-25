@@ -41,7 +41,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno,
             final FieldAccessor accessor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final Optional<FindInfo> info = findCell(accessor, sheet, anno, config, ProcessType.Read);
+        final Optional<FindInfo> info = findCell(accessor, sheet, anno, config, ProcessType.Load);
         if(!info.isPresent()) {
             /*
              * ラベル用のセルが見つからない場合
@@ -129,7 +129,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
                 break;
             }
             
-            if(processType.equals(ProcessType.Write)) {
+            if(processType.equals(ProcessType.Save)) {
                 /*
                  * 書き込み時は、属性rangeの範囲を考慮しない。
                  * テンプレートファイルの場合、値は空を設定しているため。
@@ -167,7 +167,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
                 if(Utils.isNotEmpty(anno.headerLabel())){
                     Cell headerCell = CellFinder.query(sheet, anno.headerLabel(), config).findWhenNotFoundException();
                     Cell labelCell = CellFinder.query(sheet, anno.label(), config)
-                            .fromPosition(headerCell.getColumnIndex(), headerCell.getRowIndex() + 1)
+                            .startPosition(headerCell.getColumnIndex(), headerCell.getRowIndex() + 1)
                             .findWhenNotFoundException();
                     return Optional.of(CellAddress.of(labelCell));
                     
@@ -215,7 +215,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledCell anno, final FieldAccessor accessor,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        final Optional<FindInfo> info = findCell(accessor, sheet, anno, config, ProcessType.Write);
+        final Optional<FindInfo> info = findCell(accessor, sheet, anno, config, ProcessType.Save);
         if(!info.isPresent()) {
             /*
              * ラベル用のセルが見つからない場合

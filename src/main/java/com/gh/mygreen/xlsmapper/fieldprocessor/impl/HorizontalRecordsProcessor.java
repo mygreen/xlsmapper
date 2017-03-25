@@ -43,9 +43,10 @@ import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.RemainedOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordFinder;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -53,6 +54,8 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.MergedRecord;
 import com.gh.mygreen.xlsmapper.fieldprocessor.NestMergedSizeException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessType;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordFinder;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordHeader;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
@@ -192,8 +195,17 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         // データ行の開始位置の調整
         hRow += anno.headerBottom();
+        CellAddress startPosition = CellAddress.of(hRow, initColumn);
         
-        return loadRecords(sheet, headers, anno, CellAddress.of(hRow, initColumn), 0, accessor, recordClass, config, work);
+        // 独自の開始位置を指定する場合
+        final Optional<XlsRecordFinder> finderAnno = accessor.getAnnotation(XlsRecordFinder.class);
+        if(finderAnno.isPresent()) {
+            final RecordFinder finder = config.createBean(finderAnno.get().value());
+            startPosition = finder.find(ProcessType.Load, finderAnno.get().args(), sheet, startPosition, config);
+            
+        }
+        
+        return loadRecords(sheet, headers, anno, startPosition, 0, accessor, recordClass, config, work);
         
     }
     
@@ -778,13 +790,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 break;
             }
         }
-
-        // XlsColumn(merged=true)の結合したセルの情報
-        final List<CellRangeAddress> mergedRanges = new ArrayList<>();
         
-        // 書き込んだセルの範囲などの情報
-        final RecordOperation recordOperation = new RecordOperation(getRecordOperateAnnotation(accessor));
-        recordOperation.setupCellPositoin(hRow+1, initColumn);
+        // レコードの操作のアノテーション
+        final XlsRecordOperator recordOperationAnno = getRecordOperateAnnotation(accessor);
         
         /*
          * 結合セルの補完
@@ -792,8 +800,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
          */
         final List<CellRangeAddress> mergedRegionList = new ArrayList<>();
         
-        if(recordOperation.getAnnotation().overCase().equals(OverOperation.Insert) 
-                || recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.Delete)) {
+        if(recordOperationAnno.overCase().equals(OverOperate.Insert) 
+                || recordOperationAnno.remainedCase().equals(RemainedOperate.Delete)) {
             
             final int mergedNum = sheet.getNumMergedRegions();
             for(int i=0; i < mergedNum; i++) {
@@ -803,13 +811,29 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         
         // データ行の開始位置の調整
         hRow += anno.headerBottom();
+        CellAddress startPosition = CellAddress.of(hRow, initColumn);
         
-        saveRecords(sheet, headers, anno, CellAddress.of(hRow, initColumn), new AtomicInteger(0), accessor, recordClass, result, config,
+        // 独自の開始位置を指定する場合
+        final Optional<XlsRecordFinder> finderAnno = accessor.getAnnotation(XlsRecordFinder.class);
+        if(finderAnno.isPresent()) {
+            final RecordFinder finder = config.createBean(finderAnno.get().value());
+            startPosition = finder.find(ProcessType.Save, finderAnno.get().args(), sheet, startPosition, config);
+            
+        }
+        
+        // 書き込んだセルの範囲などの情報
+        final RecordOperation recordOperation = new RecordOperation(recordOperationAnno);
+        recordOperation.setupCellPositoin(startPosition);
+        
+        // XlsColumn(merged=true)の結合したセルの情報
+        final List<CellRangeAddress> mergedRanges = new ArrayList<>();
+        
+        saveRecords(sheet, headers, anno, startPosition, new AtomicInteger(0), accessor, recordClass, result, config,
                 work, mergedRanges, recordOperation, new ArrayList<Integer>());
         
         // 書き込むデータがない場合は、1行目の終端を操作範囲とする。
         if(result.isEmpty()) {
-            recordOperation.setupCellPositoin(hRow-2, hColumn-1);
+            recordOperation.setupCellPositoin(startPosition.getRow(), hColumn-1);
         }
         
         if(config.isCorrectCellDataValidationOnSave()) {
@@ -826,29 +850,29 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     }
     
     /**
-     * アノテーション{@link XlsRecordOperation}を取得する。
+     * アノテーション{@link XlsRecordOperator}を取得する。
      * ただし、付与されていない場合は、属性にデフォルト値が指定されているものを取得する。
      * @param accessor フィールド情報
      * @return アノテーションのインスタンス
      */
-    private XlsRecordOperation getRecordOperateAnnotation(final FieldAccessor accessor) {
+    private XlsRecordOperator getRecordOperateAnnotation(final FieldAccessor accessor) {
         
-        return accessor.getAnnotation(XlsRecordOperation.class)
-                .orElseGet(() -> new XlsRecordOperation() {
+        return accessor.getAnnotation(XlsRecordOperator.class)
+                .orElseGet(() -> new XlsRecordOperator() {
                     
                     @Override
                     public Class<? extends Annotation> annotationType() {
-                        return XlsRecordOperation.class;
+                        return XlsRecordOperator.class;
                     }
                     
                     @Override
-                    public RemainedOperation remainedCase() {
-                        return RemainedOperation.None;
+                    public RemainedOperate remainedCase() {
+                        return RemainedOperate.None;
                     }
                     
                     @Override
-                    public OverOperation overCase() {
-                        return OverOperation.Break;
+                    public OverOperate overCase() {
+                        return OverOperate.Break;
                     }
                 });
         
@@ -1004,10 +1028,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         
                         // 書き込む行が足りない場合の操作
                         if(emptyFlag) {
-                            if(recordOperation.getAnnotation().overCase().equals(OverOperation.Break)) {
+                            if(recordOperation.getAnnotation().overCase().equals(OverOperate.Break)) {
                                 break;
                                 
-                            } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Copy)) {
+                            } else if(recordOperation.getAnnotation().overCase().equals(OverOperate.Copy)) {
                                 // 1つ上のセルの書式をコピーする。
                                 final CellStyle style = POIUtils.getCell(sheet, valueCell.getColumnIndex(), valueCell.getRowIndex()-1).getCellStyle();
                                 valueCell.setCellStyle(style);
@@ -1015,7 +1039,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                                 
                                 recordOperation.incrementCopyRecord();
                                 
-                            } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Insert)) {
+                            } else if(recordOperation.getAnnotation().overCase().equals(OverOperate.Insert)) {
                                 // すでに他の列の処理に対して行を追加している場合は行の追加は行わない。
                                 if(!insertRows) {
                                     // 行を下に追加する
@@ -1071,14 +1095,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                  *  行の追加やコピー処理をしていないときのみ実行する
                  */
                 if(record == null && emptyFlag == false && recordOperation.isNotExecuteOverRecordOperation()) {
-                    if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.None)) {
+                    if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperate.None)) {
                         // なにもしない
                         
-                    } else if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.Clear)) {
+                    } else if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperate.Clear)) {
                         final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
                         clearCell.setCellType(CellType.BLANK);
                         
-                    } else if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperation.Delete)) {
+                    } else if(recordOperation.getAnnotation().remainedCase().equals(RemainedOperate.Delete)) {
                         if(initRow == hRow) {
                             // 1行目は残しておき、値をクリアする
                             final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
@@ -1305,15 +1329,15 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     
                     // 空セルの場合
                     if(emptyFlag) {
-                        if(recordOperation.getAnnotation().overCase().equals(OverOperation.Break)) {
+                        if(recordOperation.getAnnotation().overCase().equals(OverOperate.Break)) {
                             break;
                             
-                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Copy)) {
+                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperate.Copy)) {
                             final CellStyle style = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1).getCellStyle();
                             cell.setCellStyle(style);
                             cell.setCellType(CellType.BLANK);
                             
-                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperation.Insert)) {
+                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperate.Insert)) {
                             // 既に追加ずみなので、セルの書式のコピーのみ行う
                             final CellStyle style = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1).getCellStyle();
                             cell.setCellStyle(style);

@@ -159,7 +159,10 @@ public class SheetFinder {
                     names.add(sheet.getSheetName());
                 }
                 throw new SheetNotFoundException(sheetAnno.regex(),
-                        String.format("found multiple sheet : %s.", Utils.join(names, ",")));
+                        MessageBuilder.create("sheet.regexMultipleHit")
+                            .var("regex", sheetAnno.regex())
+                            .var("names", names)
+                            .format());
             }
         }
         

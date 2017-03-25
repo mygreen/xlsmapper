@@ -4,12 +4,13 @@ import java.awt.Point;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.CellAddress;
 
 
 /**
- * シートのレコードの操作情報
+ * シートのレコードの操作情報。
  * レコードの書き込み後、セルの入力規則やシートの名前の範囲を修正するために利用する。
  * 
  * @version 2.0
@@ -20,7 +21,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 public class RecordOperation {
     
     /** レコード操作のアノテーション */
-    private final XlsRecordOperation annotation;
+    private final XlsRecordOperator annotation;
     
     /** レコードのコピー回数 */
     private int countCopyRecord;
@@ -37,7 +38,7 @@ public class RecordOperation {
     /** 右下のセルの位置 */
     private Point bottomRightPosition;
     
-    public RecordOperation(final XlsRecordOperation annotation) {
+    public RecordOperation(final XlsRecordOperator annotation) {
         this.annotation = annotation;
         this.countCopyRecord = 0;
         this.countInsertRecord = 0;
@@ -51,7 +52,7 @@ public class RecordOperation {
      * @since 2.0
      * @return 付与されていない場合は、属性がデフォルト値が設定される。
      */
-    public XlsRecordOperation getAnnotation() {
+    public XlsRecordOperator getAnnotation() {
         return annotation;
     }
     
@@ -143,7 +144,8 @@ public class RecordOperation {
     
     /**
      * セルの位置を元に左上、右下の端の位置を記憶する。
-     * @param cell
+     * @param cell セル情報
+     * @throws NullPointerException {@literal cell == null.}
      */
     public void setupCellPositoin(final Cell cell) {
         ArgUtils.notNull(cell, "cell");
@@ -151,9 +153,19 @@ public class RecordOperation {
     }
     
     /**
+     * アドレス情報を元に左上、右下の端の位置を記憶する。
+     * @param address アドレス情報
+     * @throws NullPointerException {@literal address == null.}
+     */
+    public void setupCellPositoin(final CellAddress address) {
+        ArgUtils.notNull(address, "address");
+        setupCellPositoin(address.getRow(), address.getColumn());
+    }
+    
+    /**
      * セルの位置を元に左上、右下の端の位置を記憶する。
-     * @param rowIndex
-     * @param columnIndex
+     * @param rowIndex 行番号（0から始まる）
+     * @param columnIndex 列番号（0から始まる）
      */
     public void setupCellPositoin(final int rowIndex, final int columnIndex) {
         
@@ -184,10 +196,18 @@ public class RecordOperation {
         }
     }
     
+    /**
+     * 左上端の座標を取得する。
+     * @return 左上端の座標
+     */
     public Point getTopLeftPoisitoin() {
         return topLeftPoisitoin;
     }
     
+    /**
+     * 右下端の座標を取得する。
+     * @return 右下端の座標
+     */
     public Point getBottomRightPosition() {
         return bottomRightPosition;
     }

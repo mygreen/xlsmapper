@@ -212,9 +212,9 @@ public @interface XlsFormula {
     
     /**
      * 出力する際に、値が設定されていても、数式を優先するかどうかを指定します。
-     * <p>出力するオブジェクトのプロパティに値が設定されている場合、アノテーション {@link XlsFormula} を指定していても、デフォルトでは値が出力されます。</p>
-     * <p>数式を優先して出力する場合、 属性 {@literal primary=true} を指定すると数式が優先されます。
-     *   <br>特に、プリミティブ型など初期値が入っている場合や、 アノテーション {@literal @XlsConverter(defaultValue="<初期値>")} で初期値を指定している場合には、注意が必要です。
+     * <p>出力するオブジェクトのプロパティに値が設定されている場合、アノテーション {@link XlsFormula} を指定していても、デフォルトでは値が設定されます。</p>
+     * <p>属性 {@literal primary=true} を指定すると数式が優先されます。
+     *   <br>特に、プリミティブ型など初期値が入っている場合や、アノテーション {@literal @XlsConverter(defaultValue="<初期値>")} で初期値を指定している場合には、注意が必要です。
      * </p>
      * 
      * <pre class="highlight"><code class="java">

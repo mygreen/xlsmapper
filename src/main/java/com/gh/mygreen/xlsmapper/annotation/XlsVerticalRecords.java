@@ -181,7 +181,7 @@ public @interface XlsVerticalRecords {
      * <p>また、属性{@link #headerAddress()}や{@link #tableLabel()}で指定した位置から表が開始しないような場合も、
      *  属性{@link #range()}を指定することで、さらに先のセルの検索を試みます。
      * </p>
-     * @return 値は1から始まります。初期値は1です。
+     * @return 値は1から始まります。
      */
     int range() default 1;
     
@@ -190,8 +190,6 @@ public @interface XlsVerticalRecords {
      * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #right()}で表の開始位置がどれだけ離れているか指定します。
      *  <br>右方向の列数を指定します。
      * </p>
-     * <p>{@link XlsHorizontalRecords#bottom()} と同じような意味になります。</p>
-     * <p>さらに、属性 {@link #tableLabelAbove()} と組み合わせると、下方向にどれだけ離れているかの意味になります。
      * 
      * <pre class="highlight"><code class="java">
      * {@literal @XlsSheet(name="Users")}
@@ -209,16 +207,27 @@ public @interface XlsVerticalRecords {
      * 
      * 
      * @since 1.0
-     * @return 値は1から始まり、指定しない場合は1を指定します。
+     * @return 値は1から始まります。
      */
     int right() default 1;
+    
+    /**
+     * 属性{@link #tableLabelAbove()}がtrueのときである、表のタイトルが上部にあるときのみ有効になります。
+     * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #bottom()}で表の開始位置がどれだけ離れているか指定します。
+     *  <br>下方向の行数を指定します。
+     * </p>
+     * 
+     * @since 2.0
+     * @return 値は1から始まります。
+     */
+    int bottom() default 1;
     
     /**
      * テーブルのカラムが指定数見つかったタイミングで Excelシートの走査を終了したい場合に指定します。
      * <p>主に無駄な走査を抑制したい場合にしますが、 {@link XlsIterateTables}使用時に、
      * テーブルが隣接しており終端を検出できない場合などに カラム数を明示的に指定してテーブルの区切りを指定する場合にも使用できます。 
      * 
-     * @return 値は0から始まり、指定しない場合は0を指定します。
+     * @return 値は0から始まります。
      */
     int headerLimit() default 0;
     
@@ -268,7 +277,7 @@ public @interface XlsVerticalRecords {
      * </div>
      * 
      * @since 1.1
-     * @return 値は1から始まり、指定しない場合は1を指定します。
+     * @return 値は1から始まります。
      */
     int headerRight() default 1;
     

@@ -252,7 +252,7 @@ public @interface XlsHorizontalRecords {
      *    <p>表の見出しに空白がある場合</p>
      * </div>
      * 
-     * @return 値は1から始まります。初期値は1です。
+     * @return 値は1から始まります。
      */
     int range() default 1;
     
@@ -276,7 +276,7 @@ public @interface XlsHorizontalRecords {
      *    <p>表の名称から離れている際の開始位置の指定</p>
      * </div>
      * 
-     * @return 値は1から始まり、指定しない場合は1を指定します。
+     * @return 値は1から始まります。
      */
     int bottom() default 1;
     
@@ -305,7 +305,7 @@ public @interface XlsHorizontalRecords {
      *    <p>表の見出しの走査の終了条件の指定</p>
      * </div>
      * 
-     * @return 値は0から始まり、指定しない場合は0を指定します。
+     * @return 値は0から始まります。
      */
     int headerLimit() default 0;
     
@@ -360,7 +360,7 @@ public @interface XlsHorizontalRecords {
      * </div>
      * 
      * @since 1.1
-     * @return 値は1から始まり、指定しない場合は1を指定します。
+     * @return 値は1から始まります。
      */
     int headerBottom() default 1;
     

@@ -25,14 +25,14 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.OverOperation;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperation.RemainedOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
@@ -1179,7 +1179,7 @@ public class AnnoIterateTablesTest {
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
+        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<PersonRecord> persons;
         
         public ClassTable no(int no) {
@@ -1293,7 +1293,7 @@ public class AnnoIterateTablesTest {
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
+        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<PersonRecord> persons;
         
         public OptionalClassTable no(int no) {
@@ -1361,12 +1361,12 @@ public class AnnoIterateTablesTest {
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3)
-        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
+        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<PersonRecord> persons;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4)
-        @XlsRecordOperation(overCase=OverOperation.Copy, remainedCase=RemainedOperation.Clear)
+        @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
         private List<ResultRecord> results;
         
         public ConcatClassTable no(int no) {
@@ -1529,7 +1529,7 @@ public class AnnoIterateTablesTest {
         }
         
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
+        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         public List<PersonRecord> getPersons() {
             return persons;
         }
@@ -1638,7 +1638,7 @@ public class AnnoIterateTablesTest {
             
             @XlsOrder(value=3)
             @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border)
-            @XlsRecordOperation(overCase=OverOperation.Insert, remainedCase=RemainedOperation.Delete)
+            @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
             private List<RegexRecord> persons;
             
             // 値設定用のメソッド

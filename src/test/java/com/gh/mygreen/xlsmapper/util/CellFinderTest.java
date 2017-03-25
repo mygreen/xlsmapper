@@ -61,7 +61,7 @@ public class CellFinderTest {
         {
             // 開始位置を含む場合（デフォルト値）
             Optional<Cell> cell = CellFinder.query(sheet, "テスト", config)
-                    .fromPosition(CellAddress.of("B4"))
+                    .startPosition(CellAddress.of("B4"))
                     .findOptional();
             
             assertThat(cell).isNotEmpty();
@@ -73,8 +73,8 @@ public class CellFinderTest {
         {
             // 開始位置を含まない場合
             Optional<Cell> cell = CellFinder.query(sheet, "テスト", config)
-                    .fromPosition(CellAddress.of("B4"))
-                    .excludeFrom(true)
+                    .startPosition(CellAddress.of("B4"))
+                    .excludeStartPosition(true)
                     .findOptional();
             
             assertThat(cell).isEmpty();
@@ -144,7 +144,7 @@ public class CellFinderTest {
         config.setNormalizeLabelText(true)
             .setRegexLabelText(true);
         Optional<Cell> cell = CellFinder.query(sheet, "/テスト.+/", config)
-                .fromPosition(CellAddress.of("C8"))
+                .startPosition(CellAddress.of("C8"))
                 .findOptional();
         
         assertThat(cell).isNotEmpty();

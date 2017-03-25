@@ -10,5 +10,5 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
  */
 public enum ProcessType {
     
-    Read, Write;
+    Load, Save;
 }

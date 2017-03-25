@@ -39,18 +39,18 @@ public class CellFinder {
      * 起点となる行番号
      * ・指定しない場合は、-1を指定する
      */
-    private int fromRow = -1;
+    private int startRow = -1;
     
     /**
      * 起点となる列番号
      * ・指定しない場合は、-1を指定する
      */
-    private int fromColumn = -1;
+    private int startColumn = -1;
     
     /**
      * 起点となる位置を除外するかどうか
      */
-    private boolean excludeFrom = false;
+    private boolean excludeStartPoisition = false;
     
     /**
      * 検索する際の条件を組み立てる
@@ -82,12 +82,12 @@ public class CellFinder {
      * @return 自身のインスタンス。メソッドチェーンとして続ける。
      * @throws IllegalArgumentException {@literal column < 0 or row < 0}
      */
-    public CellFinder fromPosition(final int column, final int row) {
+    public CellFinder startPosition(final int column, final int row) {
         ArgUtils.notMin(column, 0, "column");
         ArgUtils.notMin(row, 0, "row");
         
-        this.fromColumn = column;
-        this.fromRow = row;
+        this.startColumn = column;
+        this.startRow = row;
         
         return this;
     }
@@ -98,10 +98,10 @@ public class CellFinder {
      * @return 自身のインスタンス。メソッドチェーンとして続ける。
      * @throws NullPointerException {@literal cell == null.}
      */
-    public CellFinder fromPosition(final Cell cell) {
+    public CellFinder startPosition(final Cell cell) {
         ArgUtils.notNull(cell, "cell");
         
-        return fromPosition(cell.getColumnIndex(), cell.getRowIndex());
+        return startPosition(cell.getColumnIndex(), cell.getRowIndex());
     }
     
     /**
@@ -110,10 +110,10 @@ public class CellFinder {
      * @return 自身のインスタンス。メソッドチェーンとして続ける。
      * @throws NullPointerException {@literal address == null.}
      */
-    public CellFinder fromPosition(final CellAddress address) {
+    public CellFinder startPosition(final CellAddress address) {
         ArgUtils.notNull(address, "address");
         
-        return fromPosition(address.getColumn(), address.getRow());
+        return startPosition(address.getColumn(), address.getRow());
     }
     
     /**
@@ -123,11 +123,11 @@ public class CellFinder {
      * @return 自身のインスタンス。メソッドチェーンとして続ける。
      * @throws IllegalArgumentException {@literal column < 0}
      */
-    public CellFinder fromColumn(final int column) {
+    public CellFinder startColumn(final int column) {
         ArgUtils.notMin(column, 0, "column");
         
-        this.fromColumn = column;
-        this.fromRow = -1;
+        this.startColumn = column;
+        this.startRow = -1;
         
         return this;
     }
@@ -139,22 +139,22 @@ public class CellFinder {
      * @return 自身のインスタンス。メソッドチェーンとして続ける。
      * @throws IllegalArgumentException {@literal row < 0}
      */
-    public CellFinder fromRow(final int row) {
+    public CellFinder startRow(final int row) {
         ArgUtils.notMin(row, 0, "row");
         
-        this.fromColumn = -1;
-        this.fromRow = row;
+        this.startColumn = -1;
+        this.startRow = row;
         
         return this;
     }
     
     /**
      * 起点となる位置を除外するかどうか。
-     * @param excludeFrom trueの場合、起点となる位置を除外する
+     * @param excludeStartPosition trueの場合、起点となる位置を除外する
      * @return 自身のインスタンス。メソッドチェーンとして続ける。
      */
-    public CellFinder excludeFrom(final boolean excludeFrom) {
-        this.excludeFrom = excludeFrom;
+    public CellFinder excludeStartPosition(final boolean excludeStartPosition) {
+        this.excludeStartPoisition = excludeStartPosition;
         return this;
     }
     
@@ -205,8 +205,8 @@ public class CellFinder {
      */
     private Cell findCell() {
         
-        final int rowStart = fromRow < 0 ? 0 : fromRow;
-        final int columnStart = fromColumn < 0 ? 0 : fromColumn;
+        final int rowStart = startRow < 0 ? 0 : startRow;
+        final int columnStart = startColumn < 0 ? 0 : startColumn;
         
         final int maxRow = POIUtils.getRows(sheet);
         for(int i=rowStart; i < maxRow; i++) {
@@ -218,7 +218,7 @@ public class CellFinder {
             final int maxCol = row.getLastCellNum();;
             for(int j=columnStart; j < maxCol; j++) {
                 
-                if(excludeFrom && includeInFromPosition(j, i)) {
+                if(excludeStartPoisition && includeInStartPosition(j, i)) {
                     // 開始位置を除外する場合
                     continue;
                 }
@@ -241,18 +241,18 @@ public class CellFinder {
      * @param currentRow 現在の行番号
      * @return trueの場合含みます。
      */
-    private boolean includeInFromPosition(final int currentColumn, final int currentRow) {
+    private boolean includeInStartPosition(final int currentColumn, final int currentRow) {
         
-        if(fromColumn >=0 && fromRow >= 0
-                && currentColumn == fromColumn && currentRow == fromRow) {
+        if(startColumn >=0 && startRow >= 0
+                && currentColumn == startColumn && currentRow == startRow) {
             // 行と列の両方の指定がある場合
             return true;
             
-        } else if(fromColumn >= 0 && fromRow < 0 && currentColumn == fromColumn) {
+        } else if(startColumn >= 0 && startRow < 0 && currentColumn == startColumn) {
             // 列の指定のみ
             return true;
             
-        } else if(fromColumn < 0 && fromRow >= 0 && currentRow == fromRow) {
+        } else if(startColumn < 0 && startRow >= 0 && currentRow == startRow) {
             // 行の指定のみ
             return true;
             
