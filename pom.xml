@@ -150,6 +150,7 @@ $(document).ready(function() {
 </script>
 ]]>
 					</header>
+					<additionalparam>--allow-script-in-comments</additionalparam>
 				</configuration>
 				<executions>
 					<execution>
@@ -357,7 +358,7 @@ $(document).ready(function() {
 </script>
 ]]>
 					</header>
-					
+					<additionalparam>--allow-script-in-comments</additionalparam>
 				</configuration>
 			</plugin>
 			<plugin>

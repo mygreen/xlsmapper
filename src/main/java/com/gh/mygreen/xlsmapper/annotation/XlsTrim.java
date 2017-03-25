@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * public class SampleRecord {
  * 
  *     {@literal @XlsColumn(columnName="ID")}
- *     {@literal @XlsDefaultValue("  123   ")}// 属性defaultValueもトリム対象となる。
+ *     {@literal @XlsDefaultValue("  123   ")} // 初期値のアノテーション {@literal @XlsDefaultValue}もトリム対象となる。
  *     {@literal @XlsTrim} 
  *     private Integer id;
  *     

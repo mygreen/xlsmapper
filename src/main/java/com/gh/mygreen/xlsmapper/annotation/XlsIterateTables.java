@@ -28,14 +28,10 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * <pre class="highlight"><code class="java">
  * // シート用クラス
  * {@literal @XlsSheet(name="シート名")}
- * public class SampleRecord {
+ * public class SampleSheet {
  *     
- *     {@literal @XlsSheet(name="シート名")}
- *     public class SampleSheet {
- *         
- *         {@literal @XlsIterateTables(tableLabel="部門情報", bottom=2)}
- *         private {@literal List<SampleTable>} tables;
- *     }
+ *     {@literal @XlsIterateTables(tableLabel="部門情報", bottom=2)}
+ *     private {@literal List<SampleTable>} tables;
  * }
  * </code></pre>
  * 

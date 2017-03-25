@@ -3,6 +3,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +39,7 @@ import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 /**
  * アノテーション{@link XlsIterateTables}を処理する。
  * 
- * @version 1.3
+ * @version 2.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -46,13 +47,12 @@ import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTables> {
 
     @Override
-    public void loadProcess(final Sheet sheet, final Object obj, final XlsIterateTables anno,
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno,
             final FieldAccessor accessor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
         final Class<?> clazz = accessor.getType();
         
-        // create multi-table objects.
-        if(List.class.isAssignableFrom(clazz)) {
+        if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> tableClass = anno.tableClass();
             if(tableClass == Object.class) {
@@ -61,7 +61,9 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             List<?> value = loadTables(sheet, anno, accessor, tableClass, config, work);
             if(value != null) {
-                accessor.setValue(obj, value);
+                @SuppressWarnings({"unchecked", "rawtypes"})
+                Collection<?> collection = Utils.convertListToCollection(value, (Class<Collection>)clazz, config.getBeanFactory());
+                accessor.setValue(beansObj, collection);
             }
             
         } else if(clazz.isArray()) {
@@ -79,7 +81,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                     Array.set(array, i, value.get(i));
                 }
                 
-                accessor.setValue(obj, array);
+                accessor.setValue(beansObj, array);
             }
             
         } else {
@@ -280,21 +282,21 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 //    }
     
     @Override
-    public void saveProcess(final Sheet sheet, final Object obj, final XlsIterateTables anno, final FieldAccessor accessor,
+    public void saveProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno, final FieldAccessor accessor,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        final Object result = accessor.getValue(obj);
+        final Object result = accessor.getValue(beansObj);
         final Class<?> clazz = accessor.getType();
         
-        // create multi-table objects.
-        if(List.class.isAssignableFrom(clazz)) {
+        if(Collection.class.isAssignableFrom(clazz)) {
             
             Class<?> tableClass = anno.tableClass();
             if(tableClass == Object.class) {
                 tableClass = accessor.getComponentType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : (List<Object>) result);
+            final Collection<Object> value = (result == null ? new ArrayList<Object>() : (Collection<Object>) result);
+            final List<Object> list = Utils.convertCollectionToList(value);
             saveTables(sheet, anno, accessor, tableClass, list, config, work);
             
         } else if(clazz.isArray()) {
