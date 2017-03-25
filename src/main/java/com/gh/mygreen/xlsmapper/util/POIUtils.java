@@ -361,9 +361,9 @@ public class POIUtils {
     /**
      * 指定したセルのアドレスの結合情報を取得する。
      * @since 0.5
-     * @param sheet
-     * @param rowIdx
-     * @param colIdx
+     * @param sheet シート情報
+     * @param rowIdx 行番号
+     * @param colIdx 列番号
      * @return 結合していない場合nullを返す。
      */
     public static CellRangeAddress getMergedRegion(final Sheet sheet, final int rowIdx, final int colIdx) {

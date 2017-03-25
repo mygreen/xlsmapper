@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
@@ -18,6 +19,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessType;
 import com.gh.mygreen.xlsmapper.util.CellAddress;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
@@ -39,7 +41,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno,
             final FieldAccessor accessor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final Optional<FindInfo> info = findCell(accessor, sheet, anno, config);
+        final Optional<FindInfo> info = findCell(accessor, sheet, anno, config, ProcessType.Read);
         if(!info.isPresent()) {
             /*
              * ラベル用のセルが見つからない場合
@@ -69,7 +71,8 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         String label;
     }
     
-    private Optional<FindInfo> findCell(final FieldAccessor accessor, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config)
+    private Optional<FindInfo> findCell(final FieldAccessor accessor, final Sheet sheet, final XlsLabelledCell anno,
+            final XlsMapperConfig config, final ProcessType processType)
             throws XlsMapperException {
         
         final Optional<CellAddress> labelPosition = getLabelPosition(accessor, sheet, anno, config);
@@ -79,6 +82,21 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         
         final int column = labelPosition.get().getColumn();
         final int row = labelPosition.get().getRow();
+        
+        /*
+         * 見出しか結合している場合を考慮する場合
+         * ・結合サイズ分で補正する。
+         * ・考慮しない場合は、mergedXXXSizeの値は0のまま。
+         */
+        int mergedRowSize = 0;
+        int mergedColumnSize = 0;
+        if(anno.labelMerged()) {
+            CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, row, column);
+            if(mergedRegion != null) {
+                mergedRowSize = mergedRegion.getLastRow() - mergedRegion.getFirstRow();
+                mergedColumnSize = mergedRegion.getLastColumn() - mergedRegion.getFirstColumn();
+            }
+        }
         
         int range = anno.range();
         if(range < 1){
@@ -96,18 +114,26 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
                 targetCell = POIUtils.getCell(sheet, targetPosition);
                 
             } else if(anno.type() == LabelledCellType.Right) {
-                targetPosition.x = column + index;
+                targetPosition.x = column + index + mergedColumnSize;
                 targetPosition.y = row;
                 targetCell = POIUtils.getCell(sheet, targetPosition);
                 
             } else if(anno.type() == LabelledCellType.Bottom) {
                 targetPosition.x = column;
-                targetPosition.y = row + index;
+                targetPosition.y = row + index + mergedRowSize;
                 targetCell = POIUtils.getCell(sheet, targetPosition);
                 
             }
             
             if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length() > 0){
+                break;
+            }
+            
+            if(processType.equals(ProcessType.Write)) {
+                /*
+                 * 書き込み時は、属性rangeの範囲を考慮しない。
+                 * テンプレートファイルの場合、値は空を設定しているため。
+                 */
                 break;
             }
         }
@@ -189,7 +215,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledCell anno, final FieldAccessor accessor,
             final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
         
-        final Optional<FindInfo> info = findCell(accessor, sheet, anno, config);
+        final Optional<FindInfo> info = findCell(accessor, sheet, anno, config, ProcessType.Write);
         if(!info.isPresent()) {
             /*
              * ラベル用のセルが見つからない場合
