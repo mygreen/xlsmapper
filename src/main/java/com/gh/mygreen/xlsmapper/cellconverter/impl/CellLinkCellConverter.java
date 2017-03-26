@@ -3,6 +3,7 @@ package com.gh.mygreen.xlsmapper.cellconverter.impl;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Hyperlink;
 
@@ -91,7 +92,7 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
             }
             
         } else {
-            cell.setCellType(Cell.CELL_TYPE_BLANK);
+            cell.setCellType(CellType.BLANK);
         }
         
     }

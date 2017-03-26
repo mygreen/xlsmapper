@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -318,7 +319,7 @@ public class AnnoFormulaTest {
             Sheet sheet = book.getSheet("Formula(通常)");
             
             Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
-            assertThat(cell.getCellType(), is(Cell.CELL_TYPE_BLANK));
+            assertThat(cell.getCellTypeEnum(), is(CellType.BLANK));
             
             CellFormatter formatter = mapper.getConig().getCellFormatter();
             String value = formatter.format(cell);
