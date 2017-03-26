@@ -19,6 +19,7 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
@@ -31,6 +32,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
@@ -41,7 +43,8 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * {@link IterateTablesProcessor}のテスタ
  * アノテーション{@link XlsIterateTables}のテスタ。
- * @version 1.1
+ * 
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -74,7 +77,7 @@ public class AnnoIterateTablesTest {
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(2));
-                for(ClassTable table : sheet.classTables) {
+                for(HorizontalClassTable table : sheet.classTables) {
                     assertTable(table, errors);
                 }
             }
@@ -98,9 +101,56 @@ public class AnnoIterateTablesTest {
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, arrayWithSize(2));
-                for(ClassTable table : sheet.classTables) {
+                for(HorizontalClassTable table : sheet.classTables) {
                     assertTable(table, errors);
                 }
+            }
+        }
+    }
+    
+    /**
+     * 縦方向の表のテスト
+     */
+    @Test
+    public void test_load_it_vertical() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            
+            VerticalSheet sheet = mapper.load(in, VerticalSheet.class, errors);
+            
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(2));
+                for(VerticalClassTable table : sheet.classTables) {
+                    assertTable(table, errors);
+                }
+            }
+        }
+    }
+    
+    /**
+     * 横＋縦方向の表のテスト
+     * ※v2.0の段階では、対応していない
+     */
+    @Test(expected=AnnotationInvalidException.class)
+    public void test_load_it_horizontal_vertical() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            
+            try {
+                mapper.load(in, HorizontalAndVerticalSheet.class, errors);
+                
+                fail();
+            } catch(AnnotationInvalidException e) {
+//                e.printStackTrace();
+                throw e;
             }
         }
     }
@@ -222,7 +272,57 @@ public class AnnoIterateTablesTest {
         
     }
     
-    private void assertTable(final ClassTable table, final SheetBindingErrors errors) {
+    private void assertTable(final HorizontalClassTable table, final SheetBindingErrors errors) {
+        
+        if(table.name.equals("1年2組")) {
+            
+            assertThat(table.no, is(1));
+            assertThat(table.name, is("1年2組"));
+            
+            assertThat(table.persons, hasSize(2));
+            for(PersonRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("阿部一郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("泉太郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))));
+                    
+                }
+                
+            }
+            
+        } else if(table.name.equals("2年3組")) {
+            
+            assertThat(table.no, is(2));
+            assertThat(table.name, is("2年3組"));
+            
+            assertThat(table.persons, hasSize(3));
+            for(PersonRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("鈴木一郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("林次郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))));
+                    
+                } else if(record.no == 3) {
+                    assertThat(record.name, is("山田太郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))));
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    private void assertTable(final VerticalClassTable table, final SheetBindingErrors errors) {
         
         if(table.name.equals("1年2組")) {
             
@@ -535,13 +635,13 @@ public class AnnoIterateTablesTest {
         // テストデータの作成
         NormalSheet outSheet = new NormalSheet();
         
-        outSheet.add(new ClassTable().name("1年2組")
+        outSheet.add(new HorizontalClassTable().name("1年2組")
                 .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
                 .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
                 .add(new PersonRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
         );
         
-        outSheet.add(new ClassTable().name("2年3組")
+        outSheet.add(new HorizontalClassTable().name("2年3組")
                 .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
                 .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
                 .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
@@ -587,13 +687,13 @@ public class AnnoIterateTablesTest {
         // テストデータの作成
         NormalArraySheet outSheet = new NormalArraySheet();
         
-        outSheet.add(new ClassTable().name("1年2組")
+        outSheet.add(new HorizontalClassTable().name("1年2組")
                 .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
                 .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
                 .add(new PersonRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
         );
         
-        outSheet.add(new ClassTable().name("2年3組")
+        outSheet.add(new HorizontalClassTable().name("2年3組")
                 .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
                 .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
                 .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
@@ -631,6 +731,58 @@ public class AnnoIterateTablesTest {
     }
     
     /**
+     * 書き込みのテスト - 縦方向の表のテスト
+     */
+    @Test
+    public void test_save_it_vertical() throws Exception {
+        
+        // テストデータの作成
+        VerticalSheet outSheet = new VerticalSheet();
+        
+        outSheet.add(new VerticalClassTable().name("1年2組")
+                .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
+        );
+        
+        outSheet.add(new VerticalClassTable().name("2年3組")
+                .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
+                .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
+                .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
+        );
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConig().setContinueTypeBindFailure(true);
+        
+        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            
+            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            
+            VerticalSheet sheet = mapper.load(in, VerticalSheet.class, errors);
+            
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
+                
+                for(int i=0; i < sheet.classTables.size(); i++) {
+                    assertRecord(sheet.classTables.get(i), outSheet.classTables.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
      * 書き出しのテスト - 見出し用セルが見つからない
      */
     @Test(expected=CellNotFoundException.class)
@@ -639,14 +791,14 @@ public class AnnoIterateTablesTest {
         // テストデータの作成
         NotFoundCellSheet outSheet = new NotFoundCellSheet();
         
-        outSheet.add(new ClassTable().name("1年2組")
+        outSheet.add(new HorizontalClassTable().name("1年2組")
                 .add(new PersonRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
                 .add(new PersonRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
                 .add(new PersonRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
         );
         
         
-        outSheet.add(new ClassTable().name("2年3組")
+        outSheet.add(new HorizontalClassTable().name("2年3組")
                 .add(new PersonRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
                 .add(new PersonRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
                 .add(new PersonRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
@@ -893,7 +1045,31 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final ClassTable inRecord, final ClassTable outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final HorizontalClassTable inRecord, final HorizontalClassTable outRecord, final SheetBindingErrors errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        
+        if(inRecord.persons != null) {
+            assertThat(inRecord.persons, hasSize(outRecord.persons.size()));
+            
+            for(int i=0; i < inRecord.persons.size(); i++) {
+                assertRecord(inRecord.persons.get(i), outRecord.persons.get(i), errors);
+            }
+            
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final VerticalClassTable inRecord, final VerticalClassTable outRecord, final SheetBindingErrors errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1082,9 +1258,9 @@ public class AnnoIterateTablesTest {
         private Map<String, String> labels;
         
         @XlsIterateTables(tableLabel="クラス情報", bottom=3)
-        private List<ClassTable> classTables;
+        private List<HorizontalClassTable> classTables;
         
-        public NormalSheet add(ClassTable table) {
+        public NormalSheet add(HorizontalClassTable table) {
             
             if(classTables == null) {
                 this.classTables = new ArrayList<>();
@@ -1110,16 +1286,16 @@ public class AnnoIterateTablesTest {
         private Map<String, String> labels;
         
         @XlsIterateTables(tableLabel="クラス情報", bottom=3)
-        private ClassTable[] classTables;
+        private HorizontalClassTable[] classTables;
         
         /**
          * noを自動的に付与する。
          * @param record
          * @return 自身のインスタンス
          */
-        public NormalArraySheet add(ClassTable table) {
+        public NormalArraySheet add(HorizontalClassTable table) {
             
-            final List<ClassTable> list;
+            final List<HorizontalClassTable> list;
             if(classTables == null) {
                 list = new ArrayList<>();
             } else {
@@ -1129,24 +1305,24 @@ public class AnnoIterateTablesTest {
             list.add(table);
             table.no(list.size());
             
-            this.classTables = list.toArray(new ClassTable[list.size()]);
+            this.classTables = list.toArray(new HorizontalClassTable[list.size()]);
             
             return this;
         }
         
     }
     
-    @XlsSheet(name="見出しセルがない")
-    private static class NotFoundCellSheet {
+    @XlsSheet(name="縦方向の表")
+    private static class VerticalSheet {
         
         private Map<String, Point> positions;
         
         private Map<String, String> labels;
         
         @XlsIterateTables(tableLabel="クラス情報", bottom=3)
-        private List<ClassTable> classTables;
+        private List<VerticalClassTable> classTables;
         
-        public NotFoundCellSheet add(ClassTable table) {
+        public VerticalSheet add(VerticalClassTable table) {
             
             if(classTables == null) {
                 this.classTables = new ArrayList<>();
@@ -1161,9 +1337,84 @@ public class AnnoIterateTablesTest {
     }
     
     /**
-     * 繰り返し用のテーブルの定義
+     * 横と縦方向の2つの表は対応していない。
+     *
+     * @since 2.0
+     *
      */
-    private static class ClassTable {
+    @XlsSheet(name="横と縦方向の表")
+    private static class HorizontalAndVerticalSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
+        private List<HorizontalAndVerticalClassTable> classTables;
+        
+        private static class HorizontalAndVerticalClassTable {
+            
+            @XlsOrder(value=1)
+            @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+            private int no;
+            
+            @XlsOrder(value=2)
+            @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
+            private String name;
+            
+            @XlsOrder(value=3)
+            @XlsHorizontalRecords(terminal=RecordTerminal.Border, headerLimit=3)
+            @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+            private List<PersonRecord> persons;
+            
+            @XlsOrder(value=4)
+            @XlsVerticalRecords(terminal=RecordTerminal.Border, right=4)
+            @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+            private List<AttendRecord> attends;
+        }
+        
+        private static class AttendRecord {
+            
+            @XlsColumn(columnName="出席")
+            private int attendances;
+            
+            @XlsColumn(columnName="欠席")
+            private int absences;
+            
+            @XlsColumn(columnName="合計")
+            private int amount;
+            
+        }
+    }
+    
+    @XlsSheet(name="見出しセルがない")
+    private static class NotFoundCellSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
+        private List<HorizontalClassTable> classTables;
+        
+        public NotFoundCellSheet add(HorizontalClassTable table) {
+            
+            if(classTables == null) {
+                this.classTables = new ArrayList<>();
+            }
+            
+            this.classTables.add(table);
+            table.no(classTables.size());
+            
+            return this;
+        }
+        
+    }
+    
+    /**
+     * 繰り返し用のテーブルの定義 - horizontal
+     */
+    private static class HorizontalClassTable {
         
         private Map<String, Point> positions;
         
@@ -1182,17 +1433,63 @@ public class AnnoIterateTablesTest {
         @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<PersonRecord> persons;
         
-        public ClassTable no(int no) {
+        public HorizontalClassTable no(int no) {
             this.no = no;
             return this;
         }
         
-        public ClassTable name(String name) {
+        public HorizontalClassTable name(String name) {
             this.name = name;
             return this;
         }
         
-        public ClassTable add(PersonRecord record) {
+        public HorizontalClassTable add(PersonRecord record) {
+            
+            if(persons == null) {
+                this.persons = new ArrayList<>();
+            }
+            
+            this.persons.add(record);
+            record.no(persons.size());
+            
+            return this;
+        }
+        
+    }
+    
+    /**
+     * 繰り返し用のテーブルの定義 - vertical
+     */
+    private static class VerticalClassTable {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsOrder(value=1)
+        @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+        private int no;
+        
+        @XlsOrder(value=2)
+        @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
+        private String name;
+        
+        @XlsOrder(value=3)
+        @XlsVerticalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
+        @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+        private List<PersonRecord> persons;
+        
+        public VerticalClassTable no(int no) {
+            this.no = no;
+            return this;
+        }
+        
+        public VerticalClassTable name(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public VerticalClassTable add(PersonRecord record) {
             
             if(persons == null) {
                 this.persons = new ArrayList<>();
@@ -1221,7 +1518,7 @@ public class AnnoIterateTablesTest {
         @XlsColumn(columnName="氏名")
         private String name;
         
-        @XlsDateConverter(javaPattern="yyyy年M月d日")
+        @XlsDateConverter(javaPattern="yyyy年M月d日", excelPattern="yyyy/m/d")
         @XlsColumn(columnName="誕生日")
         private Date birthday;
         

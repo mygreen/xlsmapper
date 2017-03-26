@@ -86,9 +86,13 @@ public class RecordsProcessorUtil {
             }
             
             if(mergedSize != record.getMergedSize()) {
-                String message = String.format("Not match merged size. In sheet '%s' with cell '%s', expected merged size=%s, but actual merged size=%s.",
-                        sheet.getSheetName(), record.getMergedRange().formatAsString(), mergedSize, record.getMergedSize());
                 
+                String message = MessageBuilder.create("anno.XlsNestedRecords.mergeSizeNoMatch")
+                        .var("sheetName", sheet.getSheetName())
+                        .var("address", record.getMergedRange().formatAsString())
+                        .var("actualMergeSize", record.getMergedSize())
+                        .var("expectedMergeSize", mergedSize)
+                        .format();
                 throw new NestMergedSizeException(sheet.getSheetName(), record.getMergedSize(), message);
             }
         }
