@@ -49,7 +49,7 @@ public class PatternValidatorTest {
         SampleSheet sheet = new SampleSheet();
         sheet.addPosition(fieldName, toPointAddress("A5")).addLabel(fieldName, "名前");
         
-        SheetBindingErrors errors = new SheetBindingErrors(SampleSheet.class);
+        SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
         
@@ -58,12 +58,12 @@ public class PatternValidatorTest {
             errors.clearAllErrors();
             sheet.str = null;
             
-            CellField<String> field = new CellField<String>(sheet, fieldName);
+            CellField<String> field = new CellField<>(fieldName, String.class, errors);
             field.setRequired(false);
             field.add(new PatternValidator(".+@.+"));
-            field.validate(errors);
+            field.validate();
             
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -71,19 +71,19 @@ public class PatternValidatorTest {
             // パターン(値が不正)
             errors.clearAllErrors();
             sheet.str = "あいうえ";
-            CellField<String> field = new CellField<String>(sheet, fieldName);
+            CellField<String> field = new CellField<>(fieldName, String.class, errors);
             field.setRequired(false);
             field.add(new PatternValidator(".+@.+"));
-            field.validate(errors);
+            field.validate();
             
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.pattern"));
             
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.str));
-            assertThat(fieldError.getVars(), hasEntry("pattern", (Object)".+@.+"));
-            assertThat(fieldError.getVars(), hasEntry("patternName", null));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
+            assertThat(fieldError.getVariables(), hasEntry("pattern", (Object)".+@.+"));
+            assertThat(fieldError.getVariables(), hasEntry("patternName", null));
         }
         
         {
@@ -91,12 +91,12 @@ public class PatternValidatorTest {
             errors.clearAllErrors();
             sheet.str = "hoge@example.com";
             
-            CellField<String> field = new CellField<String>(sheet, fieldName);
+            CellField<String> field = new CellField<>(fieldName, String.class, errors);
             field.setRequired(false);
             field.add(new PatternValidator(".+@.+"));
-            field.validate(errors);
+            field.validate();
             
-            CellFieldError  fieldError = errors.getFirstCellFieldError(fieldName);
+            CellFieldError  fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -105,19 +105,19 @@ public class PatternValidatorTest {
             errors.clearAllErrors();
             sheet.str = "あいうえ";
             
-            CellField<String> field = new CellField<String>(sheet, fieldName);
+            CellField<String> field = new CellField<>(fieldName, String.class, errors);
             field.setRequired(false);
             field.add(new PatternValidator(".+@.+", "メールアドレスの書式"));
-            field.validate(errors);
+            field.validate();
             
-            CellFieldError  fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            CellFieldError  fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.pattern"));
             
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.str));
-            assertThat(fieldError.getVars(), hasEntry("pattern", (Object)".+@.+"));
-            assertThat(fieldError.getVars(), hasEntry("patternName", (Object)"メールアドレスの書式"));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
+            assertThat(fieldError.getVariables(), hasEntry("pattern", (Object)".+@.+"));
+            assertThat(fieldError.getVariables(), hasEntry("patternName", (Object)"メールアドレスの書式"));
             
         }
         

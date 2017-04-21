@@ -1,8 +1,8 @@
 package com.gh.mygreen.xlsmapper.validation.beanvalidation;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -19,10 +19,9 @@ import org.hibernate.validator.internal.engine.path.PathImpl;
 import com.gh.mygreen.xlsmapper.fieldaccessor.LabelGetterFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.PositionGetterFactory;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.FieldError;
-import com.gh.mygreen.xlsmapper.validation.FieldErrorBuilder;
+import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.ObjectValidator;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -78,7 +77,7 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
     }
     
     @Override
-    public void validate(final Object targetObj, final SheetBindingErrors errors) {
+    public void validate(final Object targetObj, final SheetBindingErrors<?> errors) {
         validate(targetObj, errors, new Class<?>[0]);
         
     }
@@ -89,7 +88,7 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
      * @param errors エラーオブジェクト
      * @param groups BeanValiationのグループのクラス
      */
-    public void validate(final Object targetObj, final SheetBindingErrors errors, final Class<?>... groups) {
+    public void validate(final Object targetObj, final SheetBindingErrors<?> errors, final Class<?>... groups) {
         ArgUtils.notNull(targetObj, "targetObj");
         ArgUtils.notNull(errors, "errors");
         
@@ -102,14 +101,14 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
      * @param errors シートのエラー
      */
     protected void processConstraintViolation(final Set<ConstraintViolation<Object>> violations,
-            final SheetBindingErrors errors) {
+            final SheetBindingErrors<?> errors) {
         
         for(ConstraintViolation<Object> violation : violations) {
             
             final String fieldName = violation.getPropertyPath().toString();
-            final FieldError fieldError = errors.getFirstFieldError(fieldName);
+            final Optional<CellFieldError> fieldError = errors.getFirstFieldError(fieldName);
             
-            if(fieldError != null && fieldError.isTypeBindFailure()) {
+            if(fieldError.isPresent() && fieldError.get().isConversionFailure()) {
                 // 型変換エラーが既存のエラーにある場合は、処理をスキップする。
                 continue;
             }
@@ -121,7 +120,10 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
             final String nestedPath = errors.buildFieldPath(fieldName);
             if(Utils.isEmpty(nestedPath)) {
                 // オブジェクトエラーの場合
-                errors.rejectSheet(errorCode, errorVars, violation.getMessage());
+                errors.createGlobalError(errorCode)
+                    .variables(errorVars)
+                    .defaultMessage(violation.getMessage())
+                    .buildAndAddError();
                 
             } else {
                 // フィールドエラーの場合
@@ -129,7 +131,7 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 // 親のオブジェクトから、セルの座標を取得する
                 final Object parentObj = violation.getLeafBean();
                 final Path path = violation.getPropertyPath();
-                Optional<CellAddress> cellAddress = Optional.empty();
+                Optional<CellPosition> cellAddress = Optional.empty();
                 Optional<String> label = Optional.empty();
                 if(path instanceof PathImpl) {
                     final PathImpl pathImpl = (PathImpl) path;
@@ -142,21 +144,14 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 }
                 
                 // 実際の値を取得する
-                final Object fieldValue = violation.getInvalidValue();
-                if(!errorVars.containsKey("validatedValue")) {
-                    errorVars.put("validatedValue", fieldValue);
-                }
+                errorVars.putIfAbsent("validatedValue", violation.getInvalidValue());
                 
-                Class<?> fieldType = fieldValue != null ? fieldValue.getClass() : null;
-                
-                errors.addError(FieldErrorBuilder.create()
-                        .objectName(errors.getObjectName()).fieldPath(errors.buildFieldPath(fieldName))
-                        .codes(errors.generateMessageCodes(errorCode, fieldName, fieldType), errorVars)
-                        .sheetName(errors.getSheetName()).cellAddress(cellAddress.orElse(null))
-                        .label(label.orElse(null))
-                        .defaultMessage(violation.getMessage())
-                        .fieldValue(fieldValue)
-                        .build());
+                errors.createFieldError(fieldName, errorCode)
+                    .variables(errorVars)
+                    .address(cellAddress)
+                    .label(label)
+                    .defaultMessage(violation.getMessage())
+                    .buildAndAddError();
                 
             }
             
@@ -171,7 +166,7 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
      */
     protected Map<String, Object> createVariableForConstraint(final ConstraintDescriptor<?> descriptor) {
         
-        final Map<String, Object> vars = new LinkedHashMap<String, Object>();
+        final Map<String, Object> vars = new HashMap<String, Object>();
         
         for(Map.Entry<String, Object> entry : descriptor.getAttributes().entrySet()) {
             final String attrName = entry.getKey();

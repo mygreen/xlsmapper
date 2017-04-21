@@ -9,11 +9,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.poi.ss.util.CellReference;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -35,9 +37,10 @@ public class TestUtils {
      * @param address
      * @return 見つからない場合はnullを返す。
      */
-    public static CellFieldError cellFieldError(final SheetBindingErrors errors, final String address) {
-        for(CellFieldError error : errors.getCellFieldErrors()) {
-            if(error.getCellAddress().formatAsString().equalsIgnoreCase(address)) {
+    public static CellFieldError cellFieldError(final SheetBindingErrors<?> errors, final String address) {
+        for(CellFieldError error : errors.getFieldErrors()) {
+            Optional<CellPosition> position = error.getAddressAsOptional();
+            if(position.isPresent() && position.get().formatAsString().equalsIgnoreCase(address)) {
                 return error;
             }
         }

@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor;
@@ -76,7 +76,7 @@ public class FieldAccessorProxy {
     }
     
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void loadProcess(final Sheet sheet, final Object beanObj, final XlsMapperConfig config, final LoadingWorkObject work)
+    public void loadProcess(final Sheet sheet, final Object beanObj, final Configuration config, final LoadingWorkObject work)
             throws XlsMapperException {
         
         LoadingFieldProcessor p = (LoadingFieldProcessor) processor;
@@ -84,7 +84,7 @@ public class FieldAccessorProxy {
     }
     
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public void saveProcess(final Sheet sheet, final Object beanObj, final XlsMapperConfig config, final SavingWorkObject work) 
+    public void saveProcess(final Sheet sheet, final Object beanObj, final Configuration config, final SavingWorkObject work) 
             throws XlsMapperException {
         
         SavingFieldProcessor p = (SavingFieldProcessor) processor;

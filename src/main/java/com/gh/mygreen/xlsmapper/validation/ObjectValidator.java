@@ -12,5 +12,5 @@ package com.gh.mygreen.xlsmapper.validation;
  */
 public interface ObjectValidator<T> {
     
-    void validate(T targetObj, SheetBindingErrors errors);
+    void validate(T targetObj, SheetBindingErrors<?> errors);
 }

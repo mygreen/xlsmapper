@@ -1,6 +1,6 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
-import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
@@ -10,16 +10,19 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
  * 正規表現を指定し、入力値チェックする。
  * <ul>
  *  <li>メッセージキーは、「cellFieldError.pattern」。</li>
+ *   <li>「pattern」：正規表現の式。</li>
+ *   <li>「description」：正規表現の名称。指定されていない場合は、null。</li>
  * </ul>
  * 
- * @version 1.5.1
+ * @version 2.0
+ * @author T.TSUCHIE
  *
  */
 public class PatternValidator extends AbstractFieldValidator<String> {
     
     private final Pattern pattern;
     
-    private final String patternName;
+    private final String description;
     
     /**
      * 正規表現のパターンを指定するコンストラクタ。
@@ -42,10 +45,10 @@ public class PatternValidator extends AbstractFieldValidator<String> {
      * 
      * @since 1.5.1
      * @param pattern 正規表現のパターン。
-     * @param patternName エラーメッセージ中で使用するパターンの名称。
+     * @param description エラーメッセージ中で使用するパターンの名称。
      */
-    public PatternValidator(final String pattern, final String patternName) {
-        this(Pattern.compile(pattern), patternName);
+    public PatternValidator(final String pattern, final String description) {
+        this(Pattern.compile(pattern), description);
     }
     
     /**
@@ -55,42 +58,38 @@ public class PatternValidator extends AbstractFieldValidator<String> {
      * @param pattern 正規表現のパターン。
      * @param patternName エラーメッセージ中で使用するパターンの名称。
      */
-    public PatternValidator(final Pattern pattern, final String patternName) {
+    public PatternValidator(final Pattern pattern, final String description) {
         super();
         ArgUtils.notNull(pattern, "pattern");
         this.pattern = pattern;
-        this.patternName = patternName;
+        this.description = description;
     }
     
     @Override
-    public String getDefaultMessageKey() {
+    public String getMessageKey() {
         return "cellFieldError.pattern";
     }
     
     @Override
-    protected boolean validate(final String value) {
-        if(isNullValue(value)) {
-            return true;
-        }
-        
-        if(pattern.matcher(value).matches()) {
-            return true;
-        }
-        
-        return false;
-    }
-    
-    @Override
-    protected LinkedHashMap<String, Object> getMessageVars(final String value) {
-        final LinkedHashMap<String, Object> vars = new LinkedHashMap<>();
-        vars.put("validatedValue", value);
+    protected Map<String, Object> getMessageVariables(final CellField<String> cellField) {
+        final Map<String, Object> vars = super.getMessageVariables(cellField);
         vars.put("pattern", getPattern().pattern());
-        vars.put("patternName", getPatternName());
+        vars.put("description", getDescription());
         return vars;
     }
     
+    @Override
+    protected void onValidate(final CellField<String> cellField) {
+        
+        if(pattern.matcher(cellField.getValue()).matches()) {
+            return;
+        }
+        
+        error(cellField);
+    }
+    
     /**
-     * 
+     * 設定されている正規表現を取得する。
      * @return pattern を取得する
      */
     public Pattern getPattern() {
@@ -98,10 +97,11 @@ public class PatternValidator extends AbstractFieldValidator<String> {
     }
     
     /**
+     * 正規表現に対する名称を取得する。
      * @since 1.5.1
      * @return パターン名を取得する。指定されていない場合はnullを返す。
      */
-    public String getPatternName() {
-        return patternName;
+    public String getDescription() {
+        return description;
     }
 }

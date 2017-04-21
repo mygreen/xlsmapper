@@ -15,7 +15,7 @@ import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecordsForIterateTables;
@@ -51,7 +51,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno,
-            final FieldAccessor accessor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         final Class<?> clazz = accessor.getType();
         
@@ -99,7 +99,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     }
     
     private List<?> loadTables(final Sheet sheet, final XlsIterateTables iterateTablesAnno, final FieldAccessor accessor,
-            final Class<?> tableClass, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final Class<?> tableClass, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         // アノテーションの整合性のチェック
         checkRecordAnnotation(tableClass, work.getAnnoReader());
@@ -203,7 +203,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
      * @throws XlsMapperException
      */
     private void loadSingleLabelledCell(final Sheet sheet, final Object tableObj, 
-            final Cell headerCell, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final Cell headerCell, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         final LabelledCellProcessor labelledCellProcessor = 
                 (LabelledCellProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsLabelledCell.class);
@@ -242,7 +242,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     
     private void loadMultipleHorizontalTableCell(final Sheet sheet, final Object tableObj, 
             final Cell headerCell, final XlsIterateTables iterateTablesAnno,
-            final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         int headerColumn = headerCell.getColumnIndex();
         int headerRow = headerCell.getRowIndex();
@@ -282,7 +282,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     
     private void loadMultipleVerticalTableCell(final Sheet sheet, final Object tableObj, 
             final Cell headerCell, final XlsIterateTables iterateTablesAnno,
-            final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         int headerColumn = headerCell.getColumnIndex();
         int headerRow = headerCell.getRowIndex();
@@ -322,7 +322,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     
     @Override
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno, final FieldAccessor accessor,
-            final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         final Object result = accessor.getValue(beansObj);
         final Class<?> clazz = accessor.getType();
@@ -360,7 +360,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     
     private void saveTables(final Sheet sheet, final XlsIterateTables iterateTablesAnno, final FieldAccessor accessor,
             final Class<?> tableClass, final List<Object> resultTableList,
-            final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         // アノテーションの整合性のチェック
         checkRecordAnnotation(tableClass, work.getAnnoReader());
@@ -435,7 +435,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     }
     
     private void saveSingleLabelledCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
-            final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         final LabelledCellProcessor labelledCellProcessor = 
                 (LabelledCellProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsLabelledCell.class);
@@ -475,7 +475,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     }
     
     private void saveMultipleHorizontalTableCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
-            final XlsIterateTables iterateTables, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final XlsIterateTables iterateTables, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         final int headerColumn = headerCell.getColumnIndex();
         int headerRow = headerCell.getRowIndex();
@@ -517,7 +517,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     }
     
     private void saveMultipleVerticalTableCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
-            final XlsIterateTables iterateTablesAnno, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final XlsIterateTables iterateTablesAnno, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         int headerColumn = headerCell.getColumnIndex();
         int headerRow = headerCell.getRowIndex();

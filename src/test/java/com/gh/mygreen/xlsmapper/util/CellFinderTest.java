@@ -17,7 +17,7 @@ import org.junit.Before;
 
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 
 /**
@@ -31,14 +31,14 @@ public class CellFinderTest {
     
     private Sheet sheet;
     
-    private XlsMapperConfig config;
+    private Configuration config;
     
     @Before
     public void setupBefore() throws Exception {
          Workbook workbook = WorkbookFactory.create(new FileInputStream(new File("src/test/data/utils.xlsx")));
          this.sheet = workbook.getSheet("CellFinder");
          
-         this.config = new XlsMapperConfig();
+         this.config = new Configuration();
     }
     
     @Test
@@ -47,7 +47,7 @@ public class CellFinderTest {
         Optional<Cell> cell = CellFinder.query(sheet, "テスト", config).findOptional();
         
         assertThat(cell).isNotEmpty();
-        assertThat(CellAddress.of(cell.get()).toString()).isEqualTo("B4");
+        assertThat(CellPosition.of(cell.get()).toString()).isEqualTo("B4");
         assertThat(getCellContents(cell.get())).isEqualTo("テスト");
         
     }
@@ -61,11 +61,11 @@ public class CellFinderTest {
         {
             // 開始位置を含む場合（デフォルト値）
             Optional<Cell> cell = CellFinder.query(sheet, "テスト", config)
-                    .startPosition(CellAddress.of("B4"))
+                    .startPosition(CellPosition.of("B4"))
                     .findOptional();
             
             assertThat(cell).isNotEmpty();
-            assertThat(CellAddress.of(cell.get()).toString()).isEqualTo("B4");
+            assertThat(CellPosition.of(cell.get()).toString()).isEqualTo("B4");
             assertThat(getCellContents(cell.get())).isEqualTo("テスト");
         
         }
@@ -73,7 +73,7 @@ public class CellFinderTest {
         {
             // 開始位置を含まない場合
             Optional<Cell> cell = CellFinder.query(sheet, "テスト", config)
-                    .startPosition(CellAddress.of("B4"))
+                    .startPosition(CellPosition.of("B4"))
                     .excludeStartPosition(true)
                     .findOptional();
             
@@ -93,7 +93,7 @@ public class CellFinderTest {
             Cell cell = CellFinder.query(sheet, "テスト", config).findWhenNotFoundException();
             
             assertThat(cell).isNotNull();
-            assertThat(CellAddress.of(cell).toString()).isEqualTo("B4");
+            assertThat(CellPosition.of(cell).toString()).isEqualTo("B4");
             assertThat(getCellContents(cell)).isEqualTo("テスト");
         }
         
@@ -115,7 +115,7 @@ public class CellFinderTest {
         Optional<Cell> cell = CellFinder.query(sheet, "/テスト.+/", config).findOptional();
         
         assertThat(cell).isNotEmpty();
-        assertThat(CellAddress.of(cell.get()).toString()).isEqualTo("C5");
+        assertThat(CellPosition.of(cell.get()).toString()).isEqualTo("C5");
         assertThat(getCellContents(cell.get())).isEqualTo("テスト（1）");
         
     }
@@ -130,7 +130,7 @@ public class CellFinderTest {
         Optional<Cell> cell = CellFinder.query(sheet, "ABCefg", config).findOptional();
         
         assertThat(cell).isNotEmpty();
-        assertThat(CellAddress.of(cell.get()).toString()).isEqualTo("B8");
+        assertThat(CellPosition.of(cell.get()).toString()).isEqualTo("B8");
         assertThat(getCellContents(cell.get())).isEqualTo("  ABC\nefg ");
         
     }
@@ -144,11 +144,11 @@ public class CellFinderTest {
         config.setNormalizeLabelText(true)
             .setRegexLabelText(true);
         Optional<Cell> cell = CellFinder.query(sheet, "/テスト.+/", config)
-                .startPosition(CellAddress.of("C8"))
+                .startPosition(CellPosition.of("C8"))
                 .findOptional();
         
         assertThat(cell).isNotEmpty();
-        assertThat(CellAddress.of(cell.get()).toString()).isEqualTo("C9");
+        assertThat(CellPosition.of(cell.get()).toString()).isEqualTo("C9");
         assertThat(getCellContents(cell.get())).isEqualTo("  テスト (3) ");
         
     }

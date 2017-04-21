@@ -15,13 +15,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.gh.mygreen.xlsmapper.SpringBeanFactory;
 import com.gh.mygreen.xlsmapper.XlsMapper;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
@@ -62,16 +61,16 @@ public class SpringTest {
     @Test
     public void test_injection_bean() throws Exception {
         
-        XlsMapperConfig config = new XlsMapperConfig();
+        Configuration config = new Configuration();
         config.setBeanFactory(springBeanFactory);
         
         XlsMapper mapper = new XlsMapper();
-        mapper.setConig(config);
+        mapper.setConiguration(config);
         
         try(InputStream in = new FileInputStream("src/test/data/spring.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(SampleSheet.class);
+            SheetBindingErrors<SampleSheet> errors = mapper.loadDetail(in, SampleSheet.class);
             
-            SampleSheet sheet = mapper.load(in, SampleSheet.class, errors);
+            SampleSheet sheet = errors.getTarget();
             
             assertThat(sheet.getSampleService(), is(not(nullValue())));
             
@@ -91,16 +90,16 @@ public class SpringTest {
     @Test
     public void test_injection_not_bean() throws Exception {
         
-        XlsMapperConfig config = new XlsMapperConfig();
+        Configuration config = new Configuration();
         config.setBeanFactory(springBeanFactory);
         
         XlsMapper mapper = new XlsMapper();
-        mapper.setConig(config);
+        mapper.setConiguration(config);
         
         try(InputStream in = new FileInputStream("src/test/data/spring.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NotSpringBeanSheet.class);
+            SheetBindingErrors<NotSpringBeanSheet> errors = mapper.loadDetail(in, NotSpringBeanSheet.class);
             
-            NotSpringBeanSheet sheet = mapper.load(in, NotSpringBeanSheet.class, errors);
+            NotSpringBeanSheet sheet = errors.getTarget();
             
             assertThat(sheet.sampleService, is(not(nullValue())));
             

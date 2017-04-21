@@ -14,7 +14,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -34,7 +34,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 public abstract class AbstractDateCellConverter<T extends Date> extends AbstractCellConverter<T> {
     
     @Override
-    protected T parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected T parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         final Optional<XlsDateConverter> convertAnno = accessor.getAnnotation(XlsDateConverter.class);
@@ -52,7 +52,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     }
     
     @Override
-    protected T parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected T parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         if(evaluatedCell.getCellTypeEnum() == CellType.NUMERIC) {
@@ -79,7 +79,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     }
     
     @Override
-    protected void setupCell(final Cell cell, final Optional<T> cellValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected void setupCell(final Cell cell, final Optional<T> cellValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         Optional<XlsDateConverter> converterAnno = accessor.getAnnotation(XlsDateConverter.class);

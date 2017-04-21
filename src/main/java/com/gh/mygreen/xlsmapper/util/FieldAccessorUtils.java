@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
@@ -79,7 +79,7 @@ public class FieldAccessorUtils {
      * @throws NullPointerException {@literal config == null || columnName == null.}
      */
     public static List<FieldAccessor> getColumnPropertiesByName(final Class<?> targetClass, final AnnotationReader annoReader,
-            final XlsMapperConfig config, final String columnName) {
+            final Configuration config, final String columnName) {
         
         return getPropertiesWithAnnotation(targetClass, annoReader, XlsColumn.class)
             .stream()

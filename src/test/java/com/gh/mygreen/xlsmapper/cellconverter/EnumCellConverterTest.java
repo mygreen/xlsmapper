@@ -61,12 +61,11 @@ public class EnumCellConverterTest {
     @Test
     public void test_load_enum() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(EnumSheet.class);
-            
-            EnumSheet sheet = mapper.load(in, EnumSheet.class, errors);
+            SheetBindingErrors<EnumSheet> errors = mapper.loadDetail(in, EnumSheet.class);
+            EnumSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 for(SimpleRecord record : sheet.simpleRecords) {
@@ -90,7 +89,7 @@ public class EnumCellConverterTest {
         }
     }
     
-    private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord record, final SheetBindingErrors<?> errors) {
         if(record.no == 1) {
             // 空文字
             assertThat(record.color, is(nullValue()));
@@ -103,25 +102,25 @@ public class EnumCellConverterTest {
             
         } else if(record.no == 3) {
             // 不正な値
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isConversionFailure(), is(true));
             
         } else if(record.no == 4) {
             // 小文字
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isConversionFailure(), is(true));
             
         } else if(record.no == 5) {
             // 空白
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isConversionFailure(), is(true));
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
         }
     }
     
-    private void assertRecord(final FormattedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -135,8 +134,8 @@ public class EnumCellConverterTest {
             
         } else if(record.no == 3) {
             // 不正な値
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isConversionFailure(), is(true));
             
         } else if(record.no == 4) {
             // 小文字
@@ -154,7 +153,7 @@ public class EnumCellConverterTest {
         
     }
     
-    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -205,7 +204,7 @@ public class EnumCellConverterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "convert_enum.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
@@ -217,9 +216,8 @@ public class EnumCellConverterTest {
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
             
-            SheetBindingErrors errors = new SheetBindingErrors(EnumSheet.class);
-            
-            EnumSheet sheet = mapper.load(in, EnumSheet.class, errors);
+            SheetBindingErrors<EnumSheet> errors = mapper.loadDetail(in, EnumSheet.class);
+            EnumSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
@@ -254,7 +252,7 @@ public class EnumCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -271,7 +269,7 @@ public class EnumCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -296,7 +294,7 @@ public class EnumCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);

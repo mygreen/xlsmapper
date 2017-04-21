@@ -32,8 +32,6 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
-import com.gh.mygreen.xlsmapper.xml.XmlIO;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 
 /**
@@ -47,67 +45,70 @@ public class XlsSaver {
     
     private static final Logger logger = LoggerFactory.getLogger(XlsSaver.class);
     
-    private XlsMapperConfig config;
+    private Configuration configuration;
     
-    public XlsSaver(XlsMapperConfig config) {
-        this.config = config;
+    /**
+     * 独自のシステム情報を設定するコンストラクタ
+     * @param configuration システム情報
+     */
+    public XlsSaver(Configuration configuration) {
+        this.configuration = configuration;
     }
     
+    /**
+     * デフォルトのコンストラクタ
+     */
     public XlsSaver() {
-        this(new XlsMapperConfig());
+        this(new Configuration());
     }
     
     /**
      * JavaのオブジェクトをExeclファイルに出力する。
-     * <p>出力するファイルは、引数で指定した雛形となるテンプレート用のExcelファイルをもとに出力する。
+     * <p>出力するファイルは、引数で指定した雛形となるテンプレート用のExcelファイルをもとに出力する。</p>
+     * 
      * @param templateXlsIn 雛形となるExcelファイルの入力
-     * @param xlsOut 出力
-     * @param beanObj 書き込むオブジェクト
-     * @throws XlsMapperException 
-     * @throws IOException 
+     * @param xlsOut 出力先のストリーム
+     * @param beanObj 書き込むBeanオブジェクト
+     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public void save(final InputStream templateXlsIn, final OutputStream xlsOut, final Object beanObj) throws XlsMapperException, IOException {
-        ArgUtils.notNull(templateXlsIn, "templateXlsIn");
-        ArgUtils.notNull(xlsOut, "xlsOut");
-        ArgUtils.notNull(beanObj, "beanObj");
+    public void save(final InputStream templateXlsIn, final OutputStream xlsOut, final Object beanObj) 
+            throws XlsMapperException, IOException {
         
-        save(templateXlsIn, xlsOut, beanObj, null);
-        
+        saveDetail(templateXlsIn, xlsOut, beanObj);
     }
     
     /**
-     * XMLによるマッピングを指定して、JavaのオブジェクトをExcelファイルに出力する。
-     * @param templateXlsIn
-     * @param xlsOut
-     * @param beanObj
-     * @param xmlIn
-     * @throws XlsMapperException 
-     * @throws IOException 
+     * JavaのオブジェクトをExeclファイルに出力する。
+     * <p>出力するファイルは、引数で指定した雛形となるテンプレート用のExcelファイルをもとに出力する。</p>
+     * 
+     * @param <P> マッピング対象のクラスタイプ
+     * @param templateXlsIn 雛形となるExcelファイルの入力
+     * @param xlsOut 出力先のストリーム
+     * @param beanObj 書き込むBeanオブジェクト
+     * @return マッピング結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
+     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public void save(final InputStream templateXlsIn, final OutputStream xlsOut, final Object beanObj, final InputStream xmlIn) throws XlsMapperException, IOException {
+    public <P> SheetBindingErrors<P> saveDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final P beanObj) 
+            throws XlsMapperException, IOException {
         
         ArgUtils.notNull(templateXlsIn, "templateXlsIn");
         ArgUtils.notNull(xlsOut, "xlsOut");
         ArgUtils.notNull(beanObj, "beanObj");
         
-        // Xml情報の出力
-        XmlInfo xmlInfo = null;
-        if(xmlIn != null) {
-            xmlInfo = XmlIO.load(xmlIn);
-        }
         
-        final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
-        final SavingWorkObject work = new SavingWorkObject();
-        work.setAnnoReader(annoReader);
-        
-        work.setErrors(new SheetBindingErrors(beanObj.getClass()));
+        final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));
         
         final Workbook book;
         try {
             book = WorkbookFactory.create(templateXlsIn);
             
-        } catch (InvalidFormatException | IOException e) {
-            throw new XlsMapperException("fail load template Excel File", e);
+        } catch (InvalidFormatException e) {
+            throw new XlsMapperException(MessageBuilder.create("file.faiiLoadTemplateExcel.notSupportType").format(), e);
         }
         
         final Class<?> clazz = beanObj.getClass();
@@ -120,73 +121,75 @@ public class XlsSaver {
             
         }
         
+        final SheetBindingErrors<P> bindingResult;
         try {
-            final Sheet[] xlsSheet = config.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);
-            saveSheet(xlsSheet[0], beanObj, work);
+            final Sheet[] xlsSheet = configuration.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);
+            bindingResult = saveSheet(xlsSheet[0], beanObj, annoReader);
+            
         } catch(SheetNotFoundException e) {
-            if(config.isIgnoreSheetNotFound()){
-                logger.warn("skip saving by not-found sheet.", e);
-                return;
+            if(configuration.isIgnoreSheetNotFound()){
+                logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), e);
+                return null;
+                
             } else {
                 throw e;
             }
         }
         
-        if(config.isFormulaRecalcurationOnSave()) {
+        if(configuration.isFormulaRecalcurationOnSave()) {
             book.setForceFormulaRecalculation(true);
         }
         
         book.write(xlsOut);
+        
+        return bindingResult;
     }
     
     /**
      * 複数のオブジェクトをそれぞれのシートへ保存する。
      * @param templateXlsIn 雛形となるExcelファイルの入力
-     * @param xlsOut 出力
+     * @param xlsOut xlsOut 出力先のストリーム
      * @param beanObjs 書き込むオブジェクトの配列。
-     * @throws XlsMapperException
-     * @throws IOException 
+     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
+     * @throws IllegalArgumentException {@literal }
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public void saveMultiple(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs) throws XlsMapperException, IOException {
+    public void saveMultiple(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs)
+            throws XlsMapperException, IOException {
         
-        ArgUtils.notNull(templateXlsIn, "templateXlsIn");
-        ArgUtils.notNull(xlsOut, "xlsOut");
-        ArgUtils.notEmpty(beanObjs, "beanObjs");
-        
-        saveMultiple(templateXlsIn, xlsOut, beanObjs, null);
+        saveMultipleDetail(templateXlsIn, xlsOut, beanObjs);
     }
     
     /**
      * 複数のオブジェクトをそれぞれのシートへ保存する。
      * @param templateXlsIn 雛形となるExcelファイルの入力
-     * @param xlsOut 出力
+     * @param xlsOut xlsOut 出力先のストリーム
      * @param beanObjs 書き込むオブジェクトの配列。
-     * @param xmlIn アノテーションの定義をしているXMLファイルの入力。
-     * @throws XlsMapperException
-     * @throws IOException 
+     * @return マッピング結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、結果に含まれません。
+     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
+     * @throws IllegalArgumentException {@literal }
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public void saveMultiple(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs,
-            final InputStream xmlIn) throws XlsMapperException, IOException {
+    public SheetBindingErrorsStore<Object> saveMultipleDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs)
+            throws XlsMapperException, IOException {
         
         ArgUtils.notNull(templateXlsIn, "templateXlsIn");
         ArgUtils.notNull(xlsOut, "xlsOut");
         ArgUtils.notEmpty(beanObjs, "beanObjs");
         
-        // Xmls情報の出力
-        XmlInfo xmlInfo = null;
-        if(xmlIn != null) {
-            xmlInfo = XmlIO.load(xmlIn);
-        }
+        final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));
         
-        final SheetBindingErrorsContainer errorsContainer = new SheetBindingErrorsContainer(getObjectNames(beanObjs));
+        final SheetBindingErrorsStore<Object> multipleResult = new SheetBindingErrorsStore<>();
         
-        final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
         final Workbook book;
         try {
             book = WorkbookFactory.create(templateXlsIn);
             
-        } catch (InvalidFormatException | IOException e) {
-            throw new XlsMapperException("fail load template Excel File", e);
+        } catch (InvalidFormatException e) {
+            throw new XlsMapperException(MessageBuilder.create("file.faiiLoadTemplateExcel.notSupportType").format(), e);
         }
         
         for(int i=0; i < beanObjs.length; i++) {
@@ -201,16 +204,13 @@ public class XlsSaver {
                         .format());
             }
             
-            final SavingWorkObject work = new SavingWorkObject();
-            work.setAnnoReader(annoReader);
-            
             try {
-                final Sheet[] xlsSheet = config.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);
-                work.setErrors(errorsContainer.findBindingResult(i));
-                saveSheet(xlsSheet[0], beanObj, work);
+                final Sheet[] xlsSheet = configuration.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);
+                multipleResult.addBindingErrors(saveSheet(xlsSheet[0], beanObj, annoReader));
+                
             } catch(SheetNotFoundException e) {
-                if(config.isIgnoreSheetNotFound()){
-                    logger.warn("skip saving by not-found sheet.", e);
+                if(configuration.isIgnoreSheetNotFound()){
+                    logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), e);
                     continue;
                 } else {
                     throw e;
@@ -218,47 +218,46 @@ public class XlsSaver {
             }
         }
         
-        if(config.isFormulaRecalcurationOnSave()) {
+        if(configuration.isFormulaRecalcurationOnSave()) {
             book.setForceFormulaRecalculation(true);
         }
         
         book.write(xlsOut);
-    }
-    
-    private String[] getObjectNames(final Object[] beanObjs) {
-        List<String> names = new ArrayList<String>();
-        for(Object item : beanObjs) {
-            names.add(item.getClass().getCanonicalName());
-        }
-        return names.toArray(new String[names.size()]);
+        
+        return multipleResult;
     }
     
     /**
      * 任意のクラスのオブジェクトを、Excelシートにマッピングする。
      * @param sheet
      * @param beanObj
-     * @param config
+     * @param configuration
      * @param work
      * @throws XlsMapperException 
      */
-    private void saveSheet(final Sheet sheet, final Object beanObj, final SavingWorkObject work) 
+    private <P> SheetBindingErrors<P> saveSheet(final Sheet sheet, final P beanObj, final AnnotationReader annoReader) 
             throws XlsMapperException {
         
         final Class<?> clazz = beanObj.getClass();
         
-        work.getErrors().setSheetName(sheet.getSheetName());
+        final SheetBindingErrors<P> errors = new SheetBindingErrors<P>(beanObj);
+        errors.setSheetName(sheet.getSheetName());
+        errors.setSheetIndex(sheet.getWorkbook().getSheetIndex(sheet));
         
-        final AnnotationReader annoReader = work.getAnnoReader();
+        final SavingWorkObject work = new SavingWorkObject();
+        work.setAnnoReader(annoReader);
+        work.setErrors(errors);
+        
         final FieldAccessorFactory adpterFactory = new FieldAccessorFactory(annoReader);
         
         // リスナークラスの@PreSave用メソッドの実行
         final XlsListener listenerAnno = annoReader.getAnnotation(beanObj.getClass(), XlsListener.class);
         if(listenerAnno != null) {
-            final Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            final Object listenerObj = configuration.createBean(listenerAnno.listenerClass());
             
             for(Method method : listenerObj.getClass().getMethods()) {
                 if(annoReader.hasAnnotation(method, XlsPreSave.class)) {
-                    Utils.invokeNeedProcessMethod(listenerObj, method, beanObj, sheet, config, work.getErrors());
+                    Utils.invokeNeedProcessMethod(listenerObj, method, beanObj, sheet, configuration, work.getErrors());
                 }
             }
             
@@ -269,7 +268,7 @@ public class XlsSaver {
             
             final XlsPreSave preProcessAnno = annoReader.getAnnotation(method, XlsPreSave.class);
             if(preProcessAnno != null) {
-                Utils.invokeNeedProcessMethod(beanObj, method, beanObj, sheet, config, work.getErrors());
+                Utils.invokeNeedProcessMethod(beanObj, method, beanObj, sheet, configuration, work.getErrors());
             }
         }
         
@@ -279,9 +278,9 @@ public class XlsSaver {
         for(Method method : clazz.getMethods()) {
             method.setAccessible(true);
             
-            for(Annotation anno : work.getAnnoReader().getAnnotations(method)) {
+            for(Annotation anno : annoReader.getAnnotations(method)) {
                 
-                final SavingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getSavingProcessor(anno.annotationType());
+                final SavingFieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getSavingProcessor(anno.annotationType());
                 
                 if(processor != null && ClassUtils.isAccessorMethod(method)) {
                     final FieldAccessor accessor = adpterFactory.create(method);
@@ -303,8 +302,8 @@ public class XlsSaver {
             field.setAccessible(true);
             final FieldAccessor accessor = adpterFactory.create(field);
             
-            for(Annotation anno : work.getAnnoReader().getAnnotations(field)) {
-                final SavingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getSavingProcessor(anno.annotationType());
+            for(Annotation anno : annoReader.getAnnotations(field)) {
+                final SavingFieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getSavingProcessor(anno.annotationType());
                 
                 if(processor != null) {
                     final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
@@ -319,12 +318,12 @@ public class XlsSaver {
         // 順番を並び替えて保存処理を実行する
         Collections.sort(accessorProxies, new FieldAccessorProxyComparator());
         for(FieldAccessorProxy accessorProxy : accessorProxies) {
-            accessorProxy.saveProcess(sheet, beanObj, config, work);
+            accessorProxy.saveProcess(sheet, beanObj, configuration, work);
         }
         
         // リスナークラスの@PostSaveの取得
         if(listenerAnno != null) {
-            final Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            final Object listenerObj = configuration.createBean(listenerAnno.listenerClass());
             for(Method method : listenerObj.getClass().getMethods()) {
                 if(annoReader.hasAnnotation(method, XlsPostSave.class)) {
                     work.addNeedPostProcess(new NeedProcess(beanObj, listenerObj, method));
@@ -335,17 +334,27 @@ public class XlsSaver {
         
         //@PostSaveが付与されているメソッドの実行
         for(NeedProcess need : work.getNeedPostProcesses()) {
-            Utils.invokeNeedProcessMethod(need.getProcess(), need.getMethod(), need.getTarget(), sheet, config, work.getErrors());
+            Utils.invokeNeedProcessMethod(need.getProcess(), need.getMethod(), need.getTarget(), sheet, configuration, work.getErrors());
         }
+        
+        return errors;
         
     }
     
-    public XlsMapperConfig getConfig() {
-        return config;
+    /**
+     * システム情報を取得します。
+     * @return 現在のシステム情報
+     */
+    public Configuration getConfiguration() {
+        return configuration;
     }
     
-    public void setConfig(XlsMapperConfig config) {
-        this.config = config;
+    /**
+     * システム情報を設定します。
+     * @param configuration システム情報
+     */
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
     
 }

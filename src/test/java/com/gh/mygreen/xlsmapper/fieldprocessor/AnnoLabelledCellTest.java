@@ -57,12 +57,12 @@ public class AnnoLabelledCellTest {
     @Test
     public void test_load_labelled_cell_normal() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
-            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            NormalSheet sheet = errors.getTarget();
             
             assertThat(sheet.posRight,is("右側の値です。"));
             assertThat(sheet.posLeft,is("左側の値です。"));
@@ -70,7 +70,7 @@ public class AnnoLabelledCellTest {
             
             assertThat(sheet.foundNo,is(nullValue()));
             
-            assertThat(cellFieldError(errors, cellAddress(sheet.positions.get("wrongFormat"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(sheet.positions.get("wrongFormat"))).isConversionFailure(), is(true));
             
             assertThat(sheet.header, is(toUtilDate(toTimestamp("2015-05-09 00:00:00.000"))));
             assertThat(sheet.headerSkip, is(toUtilDate(toTimestamp("2015-04-02 00:00:00.000"))));
@@ -96,12 +96,11 @@ public class AnnoLabelledCellTest {
     @Test(expected=TypeBindException.class)
     public void test_load_labelled_cell_bind_error() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(false);
+        mapper.getConiguration().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
             
-            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            mapper.load(in, NormalSheet.class);
             
             fail();
             
@@ -114,12 +113,10 @@ public class AnnoLabelledCellTest {
     @Test(expected=CellNotFoundException.class)
     public void test_load_labelled_cell_notFoundCell() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(false);
+        mapper.getConiguration().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NotFounceLabelCellSheet.class);
-            
-            NotFounceLabelCellSheet sheet = mapper.load(in, NotFounceLabelCellSheet.class, errors);
+            mapper.load(in, NotFounceLabelCellSheet.class);
             
             fail();
             
@@ -133,12 +130,10 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_invalid_annotation1() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(false);
+        mapper.getConiguration().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(InvalidAnnoSheet1.class);
-            
-            InvalidAnnoSheet1 sheet = mapper.load(in, InvalidAnnoSheet1.class, errors);
+            mapper.load(in, InvalidAnnoSheet1.class);
             
             fail();
             
@@ -153,12 +148,10 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_invalid_annotation2() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(false);
+        mapper.getConiguration().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(InvalidAnnoSheet2.class);
-            
-            InvalidAnnoSheet2 sheet = mapper.load(in, InvalidAnnoSheet2.class, errors);
+            mapper.load(in, InvalidAnnoSheet2.class);
             
             fail();
             
@@ -174,12 +167,12 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_methodAnno() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
-            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            MethodAnnoSheet sheet = errors.getTarget();
             
             assertThat(sheet.posRight,is("右側の値です。"));
             assertThat(sheet.posLeft,is("左側の値です。"));
@@ -187,7 +180,7 @@ public class AnnoLabelledCellTest {
             
             assertThat(sheet.foundNo,is(nullValue()));
             
-            assertThat(cellFieldError(errors, cellAddress(sheet.wrongFormatPosition)).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(sheet.wrongFormatPosition)).isConversionFailure(), is(true));
             
             assertThat(sheet.header, is(toUtilDate(toTimestamp("2015-05-09 00:00:00.000"))));
             assertThat(sheet.headerSkip, is(toUtilDate(toTimestamp("2015-04-02 00:00:00.000"))));
@@ -211,37 +204,39 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         
         // エラー確認（正規表現が無効）
-        mapper.getConig().setRegexLabelText(false)
+        mapper.getConiguration().setRegexLabelText(false)
             .setNormalizeLabelText(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
-            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            RegexSheet sheet = errors.getTarget();
+            
             fail();
         } catch(Exception e) {
             assertThat(e, instanceOf(CellNotFoundException.class));
         }
         
         // エラー確認（正規化が無効）
-        mapper.getConig().setRegexLabelText(true)
+        mapper.getConiguration().setRegexLabelText(true)
             .setNormalizeLabelText(false);
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
-            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            RegexSheet sheet = errors.getTarget();
+            
             fail();
         } catch(Exception e) {
             assertThat(e, instanceOf(CellNotFoundException.class));
         }
         
         // 正規表現、正規化の両方が有効
-        mapper.getConig().setRegexLabelText(true)
+        mapper.getConiguration().setRegexLabelText(true)
             .setNormalizeLabelText(true);
         try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
-            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            RegexSheet sheet = errors.getTarget();
             
             // 値の比較
             assertThat(sheet.regexp,is("正規表現の見出し。"));
@@ -265,13 +260,12 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_formula() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(new File("src/test/data/anno_LabelledCell.xlsx"))) {
+            SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(FormulaSheet.class);
-            
-            FormulaSheet sheet = mapper.load(in, FormulaSheet.class, errors);
+            FormulaSheet sheet = errors.getTarget();
             
             assertThat(sheet.start, is(toUtilDate(toTimestamp("2016-05-22 00:00:00.000"))));
             assertThat(sheet.end, is(toUtilDate(toTimestamp("2016-10-01 00:00:00.000"))));
@@ -308,7 +302,7 @@ public class AnnoLabelledCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_LabelledCell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
@@ -319,10 +313,9 @@ public class AnnoLabelledCellTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
-            
-            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            NormalSheet sheet = errors.getTarget();
             
             assertThat(sheet.positions, is(outSheet.positions));
             assertThat(sheet.labels, is(outSheet.labels));
@@ -378,7 +371,7 @@ public class AnnoLabelledCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_LabelledCell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
@@ -389,10 +382,9 @@ public class AnnoLabelledCellTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
-            
-            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            MethodAnnoSheet sheet = errors.getTarget();
             
             // 位置情報の指定
             assertThat(sheet.posRightPositon, is(outSheet.posRightPositon));
@@ -459,7 +451,7 @@ public class AnnoLabelledCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
@@ -472,10 +464,9 @@ public class AnnoLabelledCellTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
-            
-            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            RegexSheet sheet = errors.getTarget();
             
             assertThat(sheet.positions, is(outSheet.positions));
             assertThat(sheet.labels, is(outSheet.labels));
@@ -510,7 +501,7 @@ public class AnnoLabelledCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_LabelledCell_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
@@ -521,10 +512,9 @@ public class AnnoLabelledCellTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(FormulaSheet.class);
-            
-            FormulaSheet sheet = mapper.load(in, FormulaSheet.class, errors);
+            FormulaSheet sheet = errors.getTarget();
             
             assertThat(sheet.positions, is(outSheet.positions));
             assertThat(sheet.labels, is(outSheet.labels));

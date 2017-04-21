@@ -39,11 +39,11 @@ public class MessageCodeGenerator {
      * 型変換エラーコードの候補を生成する。
      * @param objectName
      * @param field
-     * @param fileType
+     * @param filedType
      * @return
      */
-    public String[] generateTypeMismatchCodes(final String objectName, final String field, final Class<?> fileType) {
-        return generateCodes(getTypeMismatchCode(), objectName, field, fileType);
+    public String[] generateTypeMismatchCodes(final String objectName, final String field, final Class<?> filedType) {
+        return generateCodes(getTypeMismatchCode(), objectName, field, filedType);
     }
     
     /**

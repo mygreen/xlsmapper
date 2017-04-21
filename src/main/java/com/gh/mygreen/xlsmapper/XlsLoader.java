@@ -32,8 +32,6 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
-import com.gh.mygreen.xlsmapper.xml.XmlIO;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 
 /**
@@ -47,111 +45,64 @@ public class XlsLoader {
     
     private static final Logger logger = LoggerFactory.getLogger(XlsLoader.class); 
     
-    private XlsMapperConfig config;
+    private Configuration configuration;
     
-    public XlsLoader(final XlsMapperConfig config) {
-        this.config = config;
+    /**
+     * 独自のシステム情報を設定するコンストラクタ
+     * @param configuration システム情報
+     */
+    public XlsLoader(final Configuration configuration) {
+        this.configuration = configuration;
     }
     
+    /**
+     * デフォルトのコンストラクタ
+     */
     public XlsLoader() {
-        this(new XlsMapperConfig());
+        this(new Configuration());
     }
     
     /**
      * Excelファイルの１シートを読み込み、任意のクラスにマッピングする。
+     * 
+     * @param <P> シートをマッピングするクラスタイプ
      * @param xlsIn 読み込みもとのExcelファイルのストリーム。
      * @param clazz マッピング先のクラスタイプ。
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     * @throws IllegalArgumentException xlsIn == null.
-     * @throws IllegalArgumentException clazz == null.
+     * @return シートをマッピングしたオブジェクト。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
+     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws XlsMapperException Excelファイルのマッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
      * 
      */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz) 
-            throws XlsMapperException, IOException {
+    public <P> P load(final InputStream xlsIn, final Class<P> clazz)  throws XlsMapperException, IOException {
         
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notNull(clazz, "clazz");
         
-        return load(xlsIn, clazz, null, null);
+        return loadDetail(xlsIn, clazz).getTarget();
     }
     
     /**
      * Excelファイルの１シートを読み込み、任意のクラスにマッピングする。
-     * @param xlsIn 読み込みもとのExcelファイルのストリーム。
-     * @param clazz マッピング先のクラスタイプ。
-     * @param xmlIn アノテーションの定義をしているXMLファイルの入力。指定しない場合は、nullを指定する。
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     * @throws IllegalArgumentException xlsIn == null.
-     * @throws IllegalArgumentException clazz == null.
-     */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn) 
-            throws XlsMapperException, IOException {
-        
-        ArgUtils.notNull(xlsIn, "xlsIn");
-        ArgUtils.notNull(clazz, "clazz");
-        
-        return load(xlsIn, clazz, xmlIn, null);
-    }
-    
-    /**
-     * Excelファイルの１シートを読み込み、任意のクラスにマッピングする。
-     * @param xlsIn 読み込みもとのExcelファイルのストリーム。
-     * @param clazz マッピング先のクラスタイプ。
-     * @param errors エラー内容
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     * @throws IllegalArgumentException xlsIn == null.
-     * @throws IllegalArgumentException clazz == null.
      * 
-     */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final SheetBindingErrors errors) 
-            throws XlsMapperException, IOException {
-        
-        ArgUtils.notNull(xlsIn, "xlsIn");
-        ArgUtils.notNull(clazz, "clazz");
-        
-        return load(xlsIn, clazz, null, errors);
-    }
-    
-    /**
-     * Excelファイルの１シートを読み込み、任意のクラスにマッピングする。
-     * @param xlsIn 読み込みもとのExcelファイルのストリーム。
+     * @param <P> シートをマッピングするクラスタイプ
+     * @param xlsIn 読み込み元のExcelファイルのストリーム。
      * @param clazz マッピング先のクラスタイプ。
-     * @param xmlIn アノテーションの定義をしているXMLファイルの入力。指定しない場合は、nullを指定する。
-     * @param errors マッピング時のエラー情報。指定しない場合は、nulを指定する。
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     * @throws IllegalArgumentException xlsIn == null.
-     * @throws IllegalArgumentException clazz == null.
+     * @return マッピングの詳細情報。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
+     *         
+     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws XlsMapperException Excelファイルのマッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
      */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn, 
-            final SheetBindingErrors errors)
+    public <P> SheetBindingErrors<P> loadDetail(final InputStream xlsIn, final Class<P> clazz) 
             throws XlsMapperException, IOException {
         
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notNull(clazz, "clazz");
         
-        XmlInfo xmlInfo = null;
-        if(xmlIn != null) {
-            xmlInfo = XmlIO.load(xmlIn);
-        }
-        
-        final LoadingWorkObject work = new LoadingWorkObject();
-        
-        final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
-        work.setAnnoReader(annoReader);
-        
-        if(errors != null) {
-            work.setErrors(errors);
-        } else {
-            work.setErrors(new SheetBindingErrors(clazz));
-        }
+        final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));
         
         final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
         if(sheetAnno == null) {
@@ -166,15 +117,16 @@ public class XlsLoader {
             book = WorkbookFactory.create(xlsIn);
             
         } catch (InvalidFormatException e) {
-            throw new XlsMapperException("fail load Excel File", e);
+            throw new XlsMapperException(MessageBuilder.create("file.failLoadExcel.notSupportType").format(), e);
         }
         
         try {
-            final Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);
-            return loadSheet(xlsSheet[0], clazz, work);
+            final Sheet[] xlsSheet = configuration.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);
+            return loadSheet(xlsSheet[0], clazz, annoReader);
+            
         } catch(SheetNotFoundException e) {
-            if(config.isIgnoreSheetNotFound()){
-                logger.warn("skip loading by not-found sheet.", e);
+            if(configuration.isIgnoreSheetNotFound()){
+                logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), e);
                 return null;
             } else {
                 throw e;
@@ -184,75 +136,44 @@ public class XlsLoader {
     
     /**
      * Excelファイルの複数シートを読み込み、任意のクラスにマップする。
-     * @param xlsIn
-     * @param clazz
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
+     * <p>{@link XlsSheet#regex()}により、複数のシートが同じ形式で、同じクラスにマッピングすする際に使用します。</p>
+     * 
+     * @param xlsIn 読み込み元のExcelファイルのストリーム。
+     * @param clazz マッピング先のクラスタイプ。
+     * @return マッピングした複数のシート。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
+     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
      */
+    @SuppressWarnings("unchecked")
     public <P> P[] loadMultiple(final InputStream xlsIn, final Class<P> clazz) throws XlsMapperException, IOException {
-        ArgUtils.notNull(xlsIn, "xlsIn");
-        ArgUtils.notNull(clazz, "clazz");
         
-        return loadMultiple(xlsIn, clazz, null, null);
-    }
-    
-    /**
-     * Excelファイルの複数シートを読み込み、任意のクラスにマップする。
-     * @param xlsIn
-     * @param clazz
-     * @param xmlIn
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     */
-    public <P> P[] loadMultiple(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn) throws XlsMapperException, IOException {
-        ArgUtils.notNull(xlsIn, "xlsIn");
-        ArgUtils.notNull(clazz, "clazz");
-        
-        return loadMultiple(xlsIn, clazz, xmlIn, null);
-    }
-    
-    /**
-     * Excelファイルの複数シートを読み込み、任意のクラスにマップする。
-     * @param xlsIn
-     * @param clazz
-     * @param errorsContainer
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     */
-    public <P> P[] loadMultiple(final InputStream xlsIn, final Class<P> clazz,
-            final SheetBindingErrorsContainer errorsContainer) throws XlsMapperException, IOException {
-        ArgUtils.notNull(xlsIn, "xlsIn");
-        ArgUtils.notNull(clazz, "clazz");
-        
-        return loadMultiple(xlsIn, clazz, null, errorsContainer);
+        return loadMultipleDetail(xlsIn, clazz).getAll().stream()
+                .map(s -> s.getTarget())
+                .toArray(n -> (P[])Array.newInstance(clazz, n));
     }
     
     /**
      * XMLによるマッピングを指定し、Excelファイルの複数シートを読み込み、任意のクラスにマップする。
-     * @param xlsIn
-     * @param clazz
-     * @param xmlIn
-     * @param errorsContainer
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
+     * <p>{@link XlsSheet#regex()}により、複数のシートが同じ形式で、同じクラスにマッピングすする際に使用します。</p>
+     * 
+     * @param <P> シートをマッピングするクラスタイプ
+     * @param xlsIn 読み込み元のExcelファイルのストリーム。
+     * @param clazz マッピング先のクラスタイプ。
+     * @return 複数のシートのマッピング結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
+     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
      */
-    @SuppressWarnings("unchecked")
-    public <P> P[] loadMultiple(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn,
-            final SheetBindingErrorsContainer errorsContainer) throws XlsMapperException, IOException {
+    public <P> SheetBindingErrorsStore<P> loadMultipleDetail(final InputStream xlsIn, final Class<P> clazz) 
+            throws XlsMapperException, IOException {
         
         ArgUtils.notNull(xlsIn, "xlsIn");
         ArgUtils.notNull(clazz, "clazz");
         
-        XmlInfo xmlInfo = null;
-        if(xmlIn != null) {
-            xmlInfo = XmlIO.load(xmlIn);
-        }
-        
-        final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
+        final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));
         
         final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
         if(sheetAnno == null) {
@@ -262,22 +183,15 @@ public class XlsLoader {
                     .format());
         }
         
-        final SheetBindingErrorsContainer container;
-        if(errorsContainer != null) {
-            container = errorsContainer;
-        } else {
-            container = new SheetBindingErrorsContainer(clazz);
-        }
+        final SheetBindingErrorsStore<P> multipleResult = new SheetBindingErrorsStore<>();
         
         final Workbook book;
         try {
             book = WorkbookFactory.create(xlsIn);
             
         } catch (InvalidFormatException e) {
-            throw new XlsMapperException("fail load Excel File", e);
+            throw new XlsMapperException(MessageBuilder.create("file.failLoadExcel.notSupportType").format(), e);
         }
-        
-        final List<P> list = new ArrayList<P>();
         
         if(sheetAnno.number() == -1 && sheetAnno.name().isEmpty() && sheetAnno.regex().isEmpty()) {
             // 読み込むシートの条件が指定されていない場合、全て読み込む
@@ -285,27 +199,22 @@ public class XlsLoader {
             for(int i=0; i < sheetNum; i++) {
                 final Sheet sheet = book.getSheetAt(i);
                 
-                final LoadingWorkObject work = new LoadingWorkObject();
-                work.setAnnoReader(annoReader);
-                work.setErrors(container.findBindingResult(i));
-                list.add(loadSheet(sheet, clazz, work));
+                multipleResult.addBindingErrors(loadSheet(sheet, clazz, annoReader));
+                
             }
             
         } else {
             // 読み込むシートの条件が指定されている場合
             try {
-                final Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);
+                final Sheet[] xlsSheet = configuration.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);
                 for(Sheet sheet : xlsSheet) {
+                    multipleResult.addBindingErrors(loadSheet(sheet, clazz, annoReader));
                     
-                    final LoadingWorkObject work = new LoadingWorkObject();
-                    work.setAnnoReader(annoReader);
-                    work.setErrors(container.findBindingResult(list.size()));
-                    list.add(loadSheet(sheet, clazz, work));
                 }
                 
             } catch(SheetNotFoundException e) {
-                if(config.isIgnoreSheetNotFound()){
-                    logger.warn("skip loading by not-found sheet.", e);
+                if(configuration.isIgnoreSheetNotFound()){
+                    logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), e);
                 } else {
                     throw e;
                 }
@@ -313,51 +222,61 @@ public class XlsLoader {
             
         }
         
-        return list.toArray((P[])Array.newInstance(clazz, list.size()));
+        return multipleResult;
     }
     
-    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes) throws XlsMapperException {
-        return loadMultiple(xlsIn, classes, null, null);
+    /**
+     * Excelファイルの複数シートを読み込み、任意のクラスにマップする。
+     * <p>複数のシートの形式を一度に読み込む際に使用します。</p>
+     * 
+     * @param xlsIn 読み込み元のExcelファイルのストリーム。
+     * @param classes マッピング先のクラスタイプの配列。
+     * @return マッピングした複数のシート。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
+     * @throws NullPointerException {@literal xlsIn == null or classes == null}
+     * @throws IllegalArgumentException {@link calsses.length == 0}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
+     */
+    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes)
+            throws XlsMapperException, IOException {
+        return loadMultipleDetail(xlsIn, classes).getAll().stream()
+                .map(s -> s.getTarget())
+                .toArray();
     }
     
-    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes, final InputStream xmlIn) throws XlsMapperException {
-        return loadMultiple(xlsIn, classes, xmlIn, null);
-    }
-    
-    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes,
-            final SheetBindingErrorsContainer errorsContainer) throws XlsMapperException {
-        return loadMultiple(xlsIn, classes, null, errorsContainer);
-    }
-    
-    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes, final InputStream xmlIn,
-            SheetBindingErrorsContainer errorsContainer) throws XlsMapperException {
+    /**
+     * Excelファイルの複数シートを読み込み、任意のクラスにマップする。
+     * <p>複数のシートの形式を一度に読み込む際に使用します。</p>
+     * 
+     * @param xlsIn 読み込み元のExcelファイルのストリーム。
+     * @param classes マッピング先のクラスタイプの配列。
+     * @return マッピングした複数のシートの結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
+     * @throws NullPointerException {@literal xlsIn == null or classes == null}
+     * @throws IllegalArgumentException {@link calsses.length == 0}
+     * @throws IOException ファイルの読み込みに失敗した場合
+     * @throws XlsMapperException マッピングに失敗した場合
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public SheetBindingErrorsStore<Object> loadMultipleDetail(final InputStream xlsIn, final Class<?>[] classes) 
+            throws XlsMapperException, IOException {
         
         ArgUtils.notNull(xlsIn, "xlsIn");
-        ArgUtils.notEmpty(classes, "clazz");
+        ArgUtils.notEmpty(classes, "classes");
         
-        XmlInfo xmlInfo = null;
-        if(xmlIn != null) {
-            xmlInfo = XmlIO.load(xmlIn);
-        }
+        final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));
         
-        final AnnotationReader annoReader = new AnnotationReader(xmlInfo);
-        
-        final SheetBindingErrorsContainer container;
-        if(errorsContainer != null) {
-            container = errorsContainer;
-        } else {
-            container = new SheetBindingErrorsContainer(classes);
-        }
+        final SheetBindingErrorsStore<Object> multipleStore = new SheetBindingErrorsStore<>();
         
         final Workbook book;
         try {
             book = WorkbookFactory.create(xlsIn);
             
-        } catch (InvalidFormatException | IOException e) {
-            throw new XlsMapperException("fail load Excel File", e);
+        } catch (InvalidFormatException e) {
+            throw new XlsMapperException(MessageBuilder.create("file.failLoadExcel.notSupportType").format(), e);
         }
         
-        final List<Object> list = new ArrayList<Object>();
         for(Class<?> clazz : classes) {
             final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
             if(sheetAnno == null) {
@@ -368,54 +287,57 @@ public class XlsLoader {
             }
             
             try {
-                final Sheet[] xlsSheet = config.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);
+                final Sheet[] xlsSheet = configuration.getSheetFinder().findForLoading(book, sheetAnno, annoReader, clazz);
                 for(Sheet sheet : xlsSheet) {
+                    multipleStore.addBindingErrors(loadSheet(sheet, (Class)clazz, annoReader));
                     
-                    final LoadingWorkObject work = new LoadingWorkObject();
-                    work.setAnnoReader(annoReader);
-                    work.setErrors(container.findBindingResult(list.size()));
-                    list.add(loadSheet(sheet, clazz, work));
-                    
-                } 
+                }
+                
             } catch(SheetNotFoundException ex){
-                if(!config.isIgnoreSheetNotFound()){
-                    logger.warn("skip loading by not-found sheet.", ex);
+                if(!configuration.isIgnoreSheetNotFound()){
+                    logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), ex);
                     throw ex;
                 }
             }
             
         }
         
-        return list.toArray();
+        return multipleStore;
     }
     
     /**
      * シートを読み込み、任意のクラスにマッピングする。
      * @param sheet シート情報
      * @param clazz マッピング先のクラスタイプ。
-     * @param work 
-     * @return
+     * @param annoReader 
+     * @return シートのマッピング情報
      * @throws Exception 
      * 
      */
-    private <P> P loadSheet(final Sheet sheet, final Class<P> clazz, final LoadingWorkObject work) throws XlsMapperException {
+    private <P> SheetBindingErrors<P> loadSheet(final Sheet sheet, final Class<P> clazz, final AnnotationReader annoReader) 
+            throws XlsMapperException {
         
         // 値の読み込み対象のJavaBeanオブジェクトの作成
-        final P beanObj = config.createBean(clazz);
+        final P beanObj = configuration.createBean(clazz);
         
-        work.getErrors().setSheetName(sheet.getSheetName());
+        final SheetBindingErrors<P> errors = new SheetBindingErrors<P>(beanObj);
+        errors.setSheetName(sheet.getSheetName());
+        errors.setSheetIndex(sheet.getWorkbook().getSheetIndex(sheet));
         
-        final AnnotationReader annoReader = work.getAnnoReader();
+        final LoadingWorkObject work = new LoadingWorkObject();
+        work.setAnnoReader(annoReader);
+        work.setErrors(errors);
+        
         final FieldAccessorFactory adpterFactory = new FieldAccessorFactory(annoReader);
         
-        // リスナークラスの@PreLoadd用メソッドの実行
+        // リスナークラスの@PreLoad用メソッドの実行
         final XlsListener listenerAnno = annoReader.getAnnotation(beanObj.getClass(), XlsListener.class);
         if(listenerAnno != null) {
-            final Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            final Object listenerObj = configuration.createBean(listenerAnno.listenerClass());
             
             for(Method method : listenerObj.getClass().getMethods()) {
                 if(annoReader.hasAnnotation(method, XlsPreLoad.class)) {
-                    Utils.invokeNeedProcessMethod(listenerObj, method, beanObj, sheet, config, work.getErrors());
+                    Utils.invokeNeedProcessMethod(listenerObj, method, beanObj, sheet, configuration, work.getErrors());
                 }
             }
             
@@ -425,7 +347,7 @@ public class XlsLoader {
         for(Method method : clazz.getMethods()) {
             
             if(annoReader.hasAnnotation(method, XlsPreLoad.class)) {
-                Utils.invokeNeedProcessMethod(beanObj, method, beanObj, sheet, config, work.getErrors());
+                Utils.invokeNeedProcessMethod(beanObj, method, beanObj, sheet, configuration, work.getErrors());
             }
         }
         
@@ -436,7 +358,7 @@ public class XlsLoader {
             method.setAccessible(true);
             
             for(Annotation anno : annoReader.getAnnotations(method)) {
-                final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
+                final LoadingFieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
                 
                 if(processor != null && ClassUtils.isAccessorMethod(method)) {
                     final FieldAccessor accessor = adpterFactory.create(method);
@@ -460,7 +382,7 @@ public class XlsLoader {
             final FieldAccessor accessor = adpterFactory.create(field);
             
             for(Annotation anno : annoReader.getAnnotations(field)) {
-                final LoadingFieldProcessor<?> processor = config.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
+                final LoadingFieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
                 
                 if(processor != null) {
                     
@@ -476,12 +398,12 @@ public class XlsLoader {
         // 順番を並び替えて保存処理を実行する
         Collections.sort(accessorProxies, new FieldAccessorProxyComparator());
         for(FieldAccessorProxy accessorProxy : accessorProxies) {
-            accessorProxy.loadProcess(sheet, beanObj, config, work);
+            accessorProxy.loadProcess(sheet, beanObj, configuration, work);
         }
         
         // リスナークラスの@PostLoadの取得
         if(listenerAnno != null) {
-            Object listenerObj = config.createBean(listenerAnno.listenerClass());
+            Object listenerObj = configuration.createBean(listenerAnno.listenerClass());
             for(Method method : listenerObj.getClass().getMethods()) {
                 if(annoReader.hasAnnotation(method, XlsPostLoad.class)) {
                     work.addNeedPostProcess(new NeedProcess(beanObj, listenerObj, method));
@@ -492,18 +414,26 @@ public class XlsLoader {
         
         //@PostLoadが付与されているメソッドの実行
         for(NeedProcess need : work.getNeedPostProcesses()) {
-            Utils.invokeNeedProcessMethod(need.getProcess(), need.getMethod(), need.getTarget(), sheet, config, work.getErrors());
+            Utils.invokeNeedProcessMethod(need.getProcess(), need.getMethod(), need.getTarget(), sheet, configuration, work.getErrors());
         }
         
-        return beanObj;
+        return errors;
     }
     
-    public XlsMapperConfig getConfig() {
-        return config;
+    /**
+     * システム情報を取得します。
+     * @return 現在のシステム情報
+     */
+    public Configuration getConfiguration() {
+        return configuration;
     }
     
-    public void setConfig(XlsMapperConfig config) {
-        this.config = config;
+    /**
+     * システム情報を設定します。
+     * @param configuration システム情報
+     */
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
     
 }

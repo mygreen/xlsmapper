@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.BeanFactory;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 
 /**
  * {@link Utils}のテスタ
@@ -60,7 +60,7 @@ public class UtilsTest {
     }
     
     /**
-     * {@link Utils#matches(String, String, XlsMapperConfig)}
+     * {@link Utils#matches(String, String, Configuration)}
      * @since 1.1
      */
     @Test
@@ -68,7 +68,7 @@ public class UtilsTest {
         String rawText        = "a bc　\t  de\nfg   h  ";
         String normalizedText = "a bc defg h";
         
-        XlsMapperConfig config = new XlsMapperConfig();
+        Configuration config = new Configuration();
         config.setNormalizeLabelText(false);
         
         assertFalse(Utils.matches(rawText, normalizedText, config));
@@ -78,12 +78,12 @@ public class UtilsTest {
     }
     
     /**
-     * {@link Utils#matches(String, String, XlsMapperConfig)}
+     * {@link Utils#matches(String, String, Configuration)}
      * @since 1.1
      */
     @Test
     public void testMatches_regex(){
-        XlsMapperConfig config = new XlsMapperConfig();
+        Configuration config = new Configuration();
         
         config.setNormalizeLabelText(false);
         config.setRegexLabelText(true);
@@ -117,7 +117,7 @@ public class UtilsTest {
     @Test
     public void testConvertListToCollection() {
         
-        final BeanFactory<Class<?>, Object> beanFactory = new XlsMapperConfig().getBeanFactory();
+        final BeanFactory<Class<?>, Object> beanFactory = new Configuration().getBeanFactory();
         
         List<String> list = new ArrayList<>();
         list.add("abc");

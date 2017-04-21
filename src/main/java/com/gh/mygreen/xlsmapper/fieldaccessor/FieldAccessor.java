@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 /**
  * メソッド（setter/getter）とフィールドのアクセスを吸収するクラス。
@@ -332,7 +332,7 @@ public class FieldAccessor {
      * @param position 位置情報
      * @throws NullPointerException {@literal targetObj == null or position == null}
      */
-    public void setPosition(final Object targetObj, final CellAddress position) {
+    public void setPosition(final Object targetObj, final CellPosition position) {
         
         ArgUtils.notNull(targetObj, "targetObj");
         ArgUtils.notNull(position, "position");
@@ -346,7 +346,7 @@ public class FieldAccessor {
      * @return 位置情報を保持するフィールドがない場合や、値が設定されていないときは空を返します。
      * @throws NullPointerException {@literal targetObj == null or position == null}
      */
-    public Optional<CellAddress> getPosition(final Object targetObj) {
+    public Optional<CellPosition> getPosition(final Object targetObj) {
         ArgUtils.notNull(targetObj, "targetObj");
         
         return positionGetter.map(getter -> getter.get(targetObj)).orElse(Optional.empty());
@@ -362,7 +362,7 @@ public class FieldAccessor {
      * @throws NullPointerException {@literal targetObj == null or position == null or key == null}
      * @throws IllegalArgumentException {@literal key is empty.}
      */
-    public void setMapColumnPosition(final Object targetObj, final CellAddress position, final String key) {
+    public void setMapColumnPosition(final Object targetObj, final CellPosition position, final String key) {
         
         ArgUtils.notNull(targetObj, "targetObj");
         ArgUtils.notNull(position, "position");

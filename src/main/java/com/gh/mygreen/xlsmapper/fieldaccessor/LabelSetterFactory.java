@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
@@ -169,7 +169,7 @@ public class LabelSetterFactory {
     /**
      * フィールドによるラベル情報を格納する場合。
      * <p>{@code <フィールド名> + Label}のメソッド名</p>
-     * <p>引数として、{@link CellAddress}、{@link Point}、 {@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
+     * <p>引数として、{@link CellPosition}、{@link Point}、 {@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
      * 
      * @param beanClass フィールドが定義してあるクラスのインスタンス
      * @param fieldName フィールド名

@@ -24,6 +24,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  *  <li>{@link RangeValidator}</li>
  * </ul>
  * 
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -43,20 +44,20 @@ public class DateValidatorTest {
         SampleSheet sheet = new SampleSheet();
         sheet.addPosition(fieldName, toPointAddress("A5")).addLabel(fieldName, "日時");
         
-        SheetBindingErrors errors = new SheetBindingErrors(SampleSheet.class);
+        SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
         {
             // 必須チェック(値がnull)
             errors.clearAllErrors();
             sheet.date = null;
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(true);
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
         }
         
@@ -64,11 +65,11 @@ public class DateValidatorTest {
             // 必須チェック(値が0)
             errors.clearAllErrors();
             sheet.date = new Date(0);
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(true);
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -76,11 +77,11 @@ public class DateValidatorTest {
             // 必須チェック(値がある)
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-06-01 10:12:13.456");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(true);
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
     }
@@ -98,18 +99,18 @@ public class DateValidatorTest {
         SampleSheet sheet = new SampleSheet();
         sheet.addPosition(fieldName, toPointAddress("A5")).addLabel(fieldName, "日時");
         
-        SheetBindingErrors errors = new SheetBindingErrors(SampleSheet.class);
+        SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
         {
             // 必須チェック(値がnull)
             errors.clearAllErrors();
             sheet.date = null;
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -117,11 +118,11 @@ public class DateValidatorTest {
             // 必須チェック(値が0)
             errors.clearAllErrors();
             sheet.date = new Date(0);
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -129,11 +130,11 @@ public class DateValidatorTest {
             // 必須チェック(値がある)
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-06-01 10:12:13.456");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -152,19 +153,19 @@ public class DateValidatorTest {
         SampleSheet sheet = new SampleSheet();
         sheet.addPosition(fieldName, toPointAddress("A5")).addLabel(fieldName, "日時");
         
-        SheetBindingErrors errors = new SheetBindingErrors(SampleSheet.class);
+        SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
         {
             // 最大値チェック(値がnull)
             errors.clearAllErrors();
             sheet.date = null;
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Date>(toTimestamp("2015-06-01 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -172,20 +173,18 @@ public class DateValidatorTest {
             // 最大値チェック(値が不正)
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-06-02 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Date>(toTimestamp("2015-06-01 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
             
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.date));
-            assertThat(fieldError.getVars(), hasEntry("formattedValidatedValue", (Object)"2015-06-02 00:00:00.0"));
-            assertThat(fieldError.getVars(), hasEntry("max", (Object)toTimestamp("2015-06-01 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMax", (Object)"2015-06-01 00:00:00.0"));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.date));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)toTimestamp("2015-06-01 00:00:00.000")));
         
         }
         
@@ -193,32 +192,32 @@ public class DateValidatorTest {
             // 最大値チェック(値が不正)（フォーマット指定あり）
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-06-02 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
-            field.add(new MaxValidator<Date>(toTimestamp("2015-06-01 00:00:00.000"), "yyyy年MM月dd日 HH時mm分ss秒"));
+            field.add(new MaxValidator<Date>(toTimestamp("2015-06-01 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
             
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.date));
-            assertThat(fieldError.getVars(), hasEntry("formattedValidatedValue", (Object)"2015年06月02日 00時00分00秒"));
-            assertThat(fieldError.getVars(), hasEntry("max", (Object)toTimestamp("2015-06-01 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMax", (Object)"2015年06月01日 00時00分00秒"));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.date));
+            assertThat(fieldError.getVariables(), hasEntry("formattedValidatedValue", (Object)"2015年06月02日 00時00分00秒"));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)toTimestamp("2015-06-01 00:00:00.000")));
+            assertThat(fieldError.getVariables(), hasEntry("formattedMax", (Object)"2015年06月01日 00時00分00秒"));
         }
         
         {
             // 最大値チェック(値が正しい)
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-06-01 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Date>(toTimestamp("2015-06-01 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -237,19 +236,19 @@ public class DateValidatorTest {
         SampleSheet sheet = new SampleSheet();
         sheet.addPosition(fieldName, toPointAddress("A5")).addLabel(fieldName, "日時");
         
-        SheetBindingErrors errors = new SheetBindingErrors(SampleSheet.class);
+        SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
         {
             // 最小値チェック(値がnull)
             errors.clearAllErrors();
             sheet.date = null;
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new MinValidator<Date>(toTimestamp("2015-06-01 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -257,20 +256,20 @@ public class DateValidatorTest {
             // 最小値チェック(値が不正)
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-05-31 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new MinValidator<Date>(toTimestamp("2015-06-01 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
             
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.date));
-            assertThat(fieldError.getVars(), hasEntry("formattedValidatedValue", (Object)"2015-05-31 00:00:00.0"));
-            assertThat(fieldError.getVars(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMin", (Object)"2015-06-01 00:00:00.0"));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.date));
+            assertThat(fieldError.getVariables(), hasEntry("formattedValidatedValue", (Object)"2015-05-31 00:00:00.0"));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
+            assertThat(fieldError.getVariables(), hasEntry("formattedMin", (Object)"2015-06-01 00:00:00.0"));
             
         }
         
@@ -278,20 +277,18 @@ public class DateValidatorTest {
             // 最小値チェック(値が不正)（フォーマット指定あり）
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-05-31 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);;
             field.setRequired(false);
-            field.add(new MinValidator<Date>(toTimestamp("2015-06-01 00:00:00.000"), "yyyy年MM月dd日 HH時mm分ss秒"));
+            field.add(new MinValidator<Date>(toTimestamp("2015-06-01 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
             
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.date));
-            assertThat(fieldError.getVars(), hasEntry("formattedValidatedValue", (Object)"2015年05月31日 00時00分00秒"));
-            assertThat(fieldError.getVars(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMin", (Object)"2015年06月01日 00時00分00秒"));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.date));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
         
         }
         
@@ -299,12 +296,12 @@ public class DateValidatorTest {
             // 最小値チェック(値が正しい)
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-06-01 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new MinValidator<Date>(toTimestamp("2015-06-01 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         
         }
@@ -323,19 +320,19 @@ public class DateValidatorTest {
         SampleSheet sheet = new SampleSheet();
         sheet.addPosition(fieldName, toPointAddress("A5")).addLabel(fieldName, "日時");
         
-        SheetBindingErrors errors = new SheetBindingErrors(SampleSheet.class);
+        SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
         {
             // 範囲値チェック(値がnull)
             errors.clearAllErrors();
             sheet.date = null;
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Date>(toTimestamp("2015-06-01 00:00:00.000"), toTimestamp("2015-06-30 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -343,22 +340,22 @@ public class DateValidatorTest {
             // 範囲値チェック(値が不正)（小さい）
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-05-31 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Date>(toTimestamp("2015-06-01 00:00:00.000"), toTimestamp("2015-06-30 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
             
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.date));
-            assertThat(fieldError.getVars(), hasEntry("formattedValidatedValue", (Object)"2015-05-31 00:00:00.0"));
-            assertThat(fieldError.getVars(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMin", (Object)"2015-06-01 00:00:00.0"));
-            assertThat(fieldError.getVars(), hasEntry("max", (Object)toTimestamp("2015-06-30 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMax", (Object)"2015-06-30 00:00:00.0"));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.date));
+            assertThat(fieldError.getVariables(), hasEntry("formattedValidatedValue", (Object)"2015-05-31 00:00:00.0"));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
+            assertThat(fieldError.getVariables(), hasEntry("formattedMin", (Object)"2015-06-01 00:00:00.0"));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)toTimestamp("2015-06-30 00:00:00.000")));
+            assertThat(fieldError.getVariables(), hasEntry("formattedMax", (Object)"2015-06-30 00:00:00.0"));
         
         }
         
@@ -366,44 +363,41 @@ public class DateValidatorTest {
             // 範囲値チェック(値が不正)（大さい）
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-07-01 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Date>(toTimestamp("2015-06-01 00:00:00.000"), toTimestamp("2015-06-30 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
             
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.date));
-            assertThat(fieldError.getVars(), hasEntry("formattedValidatedValue", (Object)"2015-07-01 00:00:00.0"));
-            assertThat(fieldError.getVars(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMin", (Object)"2015-06-01 00:00:00.0"));
-            assertThat(fieldError.getVars(), hasEntry("max", (Object)toTimestamp("2015-06-30 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMax", (Object)"2015-06-30 00:00:00.0"));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.date));
+            assertThat(fieldError.getVariables(), hasEntry("formattedValidatedValue", (Object)"2015-07-01 00:00:00.0"));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
+            assertThat(fieldError.getVariables(), hasEntry("formattedMin", (Object)"2015-06-01 00:00:00.0"));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)toTimestamp("2015-06-30 00:00:00.000")));
+            assertThat(fieldError.getVariables(), hasEntry("formattedMax", (Object)"2015-06-30 00:00:00.0"));
         }
         
         {
             // 範囲値チェック(値が不正)（フォーマット指定あり）
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-05-31 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
-            field.add(new RangeValidator<Date>(toTimestamp("2015-06-01 00:00:00.000"), toTimestamp("2015-06-30 00:00:00.000"), "yyyy年MM月dd日 HH時mm分ss秒"));
+            field.add(new RangeValidator<Date>(toTimestamp("2015-06-01 00:00:00.000"), toTimestamp("2015-06-30 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
             
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.date));
-            assertThat(fieldError.getVars(), hasEntry("formattedValidatedValue", (Object)"2015年05月31日 00時00分00秒"));
-            assertThat(fieldError.getVars(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMin", (Object)"2015年06月01日 00時00分00秒"));
-            assertThat(fieldError.getVars(), hasEntry("max", (Object)toTimestamp("2015-06-30 00:00:00.000")));
-            assertThat(fieldError.getVars(), hasEntry("formattedMax", (Object)"2015年06月30日 00時00分00秒"));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.date));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)toTimestamp("2015-06-01 00:00:00.000")));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)toTimestamp("2015-06-30 00:00:00.000")));
             
         }
         
@@ -411,12 +405,12 @@ public class DateValidatorTest {
             // 範囲値チェック(値が正しい)
             errors.clearAllErrors();
             sheet.date = toTimestamp("2015-06-01 00:00:00.000");
-            CellField<Date> field = new CellField<Date>(sheet, fieldName);
+            CellField<Date> field = new CellField<>(fieldName, Date.class, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Date>(toTimestamp("2015-06-01 00:00:00.000"), toTimestamp("2015-06-30 00:00:00.000")));
             
-            field.validate(errors);
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
+            field.validate();
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError, is(nullValue()));
         
         }

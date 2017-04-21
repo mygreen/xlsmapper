@@ -29,7 +29,7 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.CellFormatter;
 import com.gh.mygreen.xlsmapper.XlsMapper;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
@@ -40,7 +40,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
@@ -89,13 +89,14 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setAnnotationMapping(xmlInfo);
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet, xmlInfo.toInputStream());
+            mapper.save(template, out, outSheet);
         }
         
         // 書き込んだファイルを読み込み値の検証を行う。
@@ -104,10 +105,10 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
+            Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
             
             String formula = cell.getCellFormula();
-            CellFormatter formatter = mapper.getConig().getCellFormatter();
+            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
             String value = formatter.format(cell);
             
             assertThat(formula, is("SUM(C2:C3)"));
@@ -141,13 +142,14 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setAnnotationMapping(xmlInfo);;
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet, xmlInfo.toInputStream());
+            mapper.save(template, out, outSheet);
         }
         
         // 書き込んだファイルを読み込み値の検証を行う。
@@ -156,10 +158,10 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
+            Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
             
             String formula = cell.getCellFormula();
-            CellFormatter formatter = mapper.getConig().getCellFormatter();
+            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
             String value = formatter.format(cell);
             
             assertThat(formula, is("SUM(D2:D3)"));
@@ -196,13 +198,14 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setAnnotationMapping(xmlInfo);;
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet, xmlInfo.toInputStream());
+            mapper.save(template, out, outSheet);
         }
         
         // 書き込んだファイルを読み込み値の検証を行う。
@@ -211,11 +214,11 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
-            assertThat(cell.getCellType(), is(Cell.CELL_TYPE_FORMULA));
+            Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
+            assertThat(cell.getCellTypeEnum(), is(CellType.FORMULA));
             
             String formula = cell.getCellFormula();
-            CellFormatter formatter = mapper.getConig().getCellFormatter();
+            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
             String value = formatter.format(cell);
             
             assertThat(formula, is("SUM(C2:C3)"));
@@ -252,13 +255,14 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setAnnotationMapping(xmlInfo);;
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet, xmlInfo.toInputStream());
+            mapper.save(template, out, outSheet);
         }
         
         // 書き込んだファイルを読み込み値の検証を行う。
@@ -267,10 +271,10 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
-            assertThat(cell.getCellType(), is(Cell.CELL_TYPE_NUMERIC));
+            Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
+            assertThat(cell.getCellTypeEnum(), is(CellType.FORMULA));
             
-            CellFormatter formatter = mapper.getConig().getCellFormatter();
+            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
             String value = formatter.format(cell);
             
             assertThat(value, is("12.345"));
@@ -303,13 +307,14 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setAnnotationMapping(xmlInfo);
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet, xmlInfo.toInputStream());
+            mapper.save(template, out, outSheet);
         }
         
         // 書き込んだファイルを読み込み値の検証を行う。
@@ -318,10 +323,10 @@ public class AnnoFormulaTest {
             Workbook book = WorkbookFactory.create(in);
             Sheet sheet = book.getSheet("Formula(通常)");
             
-            Cell cell = POIUtils.getCell(sheet, CellAddress.of("A2"));
+            Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
             assertThat(cell.getCellTypeEnum(), is(CellType.BLANK));
             
-            CellFormatter formatter = mapper.getConig().getCellFormatter();
+            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
             String value = formatter.format(cell);
             
             assertThat(value, is(""));
@@ -353,13 +358,14 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setAnnotationMapping(xmlInfo);;
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet, xmlInfo.toInputStream());
+            mapper.save(template, out, outSheet);
         }
         
         fail();
@@ -390,13 +396,14 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setAnnotationMapping(xmlInfo);
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet, xmlInfo.toInputStream());
+            mapper.save(template, out, outSheet);
         }
         
         fail();
@@ -427,13 +434,14 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setAnnotationMapping(xmlInfo);
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet, xmlInfo.toInputStream());
+            mapper.save(template, out, outSheet);
         }
         
         fail();
@@ -464,13 +472,14 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setAnnotationMapping(xmlInfo);
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet, xmlInfo.toInputStream());
+            mapper.save(template, out, outSheet);
         }
         
         fail();
@@ -496,7 +505,7 @@ public class AnnoFormulaTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
@@ -518,11 +527,11 @@ public class AnnoFormulaTest {
         @XlsFormula(value="1+2")
         private Double c1;
         
-        private String getC1Formula(final Sheet sheet, final Cell cell, final Point point, final XlsMapperConfig config, final Object object) {
+        private String getC1Formula(final Sheet sheet, final Cell cell, final Point point, final Configuration config, final Object object) {
             
             assertThat(sheet, is(notNullValue()));
-            assertThat(CellAddress.of(cell).formatAsString(), is("A2"));
-            assertThat(CellAddress.of(point).formatAsString(), is("A2"));
+            assertThat(CellPosition.of(cell).formatAsString(), is("A2"));
+            assertThat(CellPosition.of(point).formatAsString(), is("A2"));
             assertThat(config, is(notNullValue()));
             assertThat(object, is(nullValue()));
             

@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 /**
  * {@link MapColumnPositionSetterFactory}のテスタ
@@ -91,7 +91,7 @@ public class MapColumnPositionSetterFactoryTest {
         }
         
         /**
-         * マップのタイプが{@link CellAddress}の場合
+         * マップのタイプが{@link CellPosition}の場合
          */
         @Test
         public void testCreateWithCellAddress() {
@@ -104,7 +104,7 @@ public class MapColumnPositionSetterFactoryTest {
                 CellAddressRecord record = new CellAddressRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
@@ -130,7 +130,7 @@ public class MapColumnPositionSetterFactoryTest {
                 PointRecord record = new PointRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
@@ -156,13 +156,13 @@ public class MapColumnPositionSetterFactoryTest {
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
                 assertThat(record.positions)
                     .hasSize(1)
-                    .containsEntry("test[abc]", position.toPoiCellAddress());
+                    .containsEntry("test[abc]", position.toCellAddress());
             }
             
         }
@@ -173,7 +173,7 @@ public class MapColumnPositionSetterFactoryTest {
          */
         private static class NoMapRecord {
             
-            CellAddress positions;
+            CellPosition positions;
             
         }
         
@@ -189,7 +189,7 @@ public class MapColumnPositionSetterFactoryTest {
         
         private static class CellAddressRecord {
             
-            Map<String, CellAddress> positions;
+            Map<String, CellPosition> positions;
             
         }
         
@@ -232,7 +232,7 @@ public class MapColumnPositionSetterFactoryTest {
                 CellAddressRecord record = new CellAddressRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
@@ -254,7 +254,7 @@ public class MapColumnPositionSetterFactoryTest {
                 PointRecord record = new PointRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
@@ -276,7 +276,7 @@ public class MapColumnPositionSetterFactoryTest {
                 IntRecord record = new IntRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
@@ -298,22 +298,22 @@ public class MapColumnPositionSetterFactoryTest {
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
                 assertThat(record.addressMap)
                     .hasSize(1)
-                    .containsEntry("abc", position.toPoiCellAddress());
+                    .containsEntry("abc", position.toCellAddress());
             }
             
         }
         
         private static class CellAddressRecord {
             
-            private Map<String, CellAddress> addressMap = new HashMap<>();
+            private Map<String, CellPosition> addressMap = new HashMap<>();
             
-            public void setTestPosition(String key, CellAddress address) {
+            public void setTestPosition(String key, CellPosition address) {
                 this.addressMap.put(key, address);
             }
             
@@ -375,7 +375,7 @@ public class MapColumnPositionSetterFactoryTest {
                 CellAddressRecord record = new CellAddressRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
@@ -397,7 +397,7 @@ public class MapColumnPositionSetterFactoryTest {
                 PointRecord record = new PointRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
@@ -419,13 +419,13 @@ public class MapColumnPositionSetterFactoryTest {
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
                 MapColumnPositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
                 
                 assertThat(record.testPosition)
                     .hasSize(1)
-                    .containsEntry("abc", position.toPoiCellAddress());
+                    .containsEntry("abc", position.toCellAddress());
             }
             
         }
@@ -440,7 +440,7 @@ public class MapColumnPositionSetterFactoryTest {
         
         private static class CellAddressRecord {
             
-            private Map<String, CellAddress> testPosition;
+            private Map<String, CellPosition> testPosition;
             
             
         }

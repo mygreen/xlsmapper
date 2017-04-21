@@ -13,7 +13,7 @@ import java.util.Set;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -31,7 +31,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
     
     @Override
-    protected Boolean parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected Boolean parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         final XlsBooleanConverter convertAnno = accessor.getAnnotation(XlsBooleanConverter.class)
@@ -49,7 +49,7 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
     }
     
     @Override
-    protected Boolean parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected Boolean parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         if(evaluatedCell.getCellTypeEnum().equals(CellType.BOOLEAN)) {
@@ -79,7 +79,7 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
     }
     
     @Override
-    protected void setupCell(final Cell cell, final Optional<Boolean> cellValue, final FieldAccessor accessor, final XlsMapperConfig config)
+    protected void setupCell(final Cell cell, final Optional<Boolean> cellValue, final FieldAccessor accessor, final Configuration config)
             throws TypeBindException {
         
         final XlsBooleanConverter anno = accessor.getAnnotation(XlsBooleanConverter.class)

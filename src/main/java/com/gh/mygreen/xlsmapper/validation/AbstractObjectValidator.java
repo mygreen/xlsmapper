@@ -7,19 +7,22 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
  * 
  * @author T.TSUCHIE
  *
- * @param <T> チェック対象のオブジェクトのクラス
+ * @param <T> 検証対象のオブジェクトのクラスタイプ
  */
 public abstract class AbstractObjectValidator<T> implements ObjectValidator<T> {
     
     /**
-     * 引数taretObjectで指定したValidatorを実行する。
-     * @param validator
-     * @param targetObject
-     * @param errors
+     * ネストしたプロパティの値の検証を実行する。
+     * @param <S> ネストしたプロパティのクラスタイプ
+     * @param validator ネストしたプロパティに対するValidator
+     * @param targetObject ネストしたプロパティのインスタンス
+     * @param errors エラー情報
      * @param subPath ネストするパス
+     * @throws NullPointerException {@literal validator == null or targetObject == null or errors == null}
      */
     protected <S> void invokeNestedValidator(final ObjectValidator<S> validator, final S targetObject,
-            final SheetBindingErrors errors, final String subPath) {
+            final SheetBindingErrors<?> errors, final String subPath) {
+        
         ArgUtils.notNull(validator, "validator");
         ArgUtils.notNull(targetObject, "targetObject");
         ArgUtils.notNull(errors, "errors");
@@ -33,18 +36,23 @@ public abstract class AbstractObjectValidator<T> implements ObjectValidator<T> {
     }
     
     /**
-     * 引数taretObjectで指定したValidatorを実行する。
-     * @param validator
-     * @param targetObject
-     * @param errors
+     * リストや配列の形式のネストしたプロパティの値の検証を実行する。
+     * @param <S> ネストしたプロパティのクラスタイプ
+     * @param validator ネストしたプロパティに対するValidator
+     * @param targetObject ネストしたプロパティのインスタンス
+     * @param errors エラー情報
      * @param subPath ネストするパス
-     * @param index インデックス
+     * @param index リストや配列のインデックス。0から始まる。
+     * @throws NullPointerException {@literal validator == null or targetObject == null or errors == null}
+     * @throws IllegalArgumentException {@literal index < 0}
      */
     protected <S> void invokeNestedValidator(final ObjectValidator<S> validator, final S targetObject,
-            final SheetBindingErrors errors, final String subPath, final int index) {
+            final SheetBindingErrors<?> errors, final String subPath, final int index) {
+        
         ArgUtils.notNull(validator, "validator");
         ArgUtils.notNull(targetObject, "targetObject");
         ArgUtils.notNull(errors, "errors");
+        ArgUtils.notMin(index, 0, "index");
         
         errors.pushNestedPath(subPath, index);
         try {
@@ -55,18 +63,23 @@ public abstract class AbstractObjectValidator<T> implements ObjectValidator<T> {
     }
     
     /**
-     * 引数taretObjectで指定したValidatorを実行する。
-     * @param validator
-     * @param targetObject
-     * @param errors
+     * マップ形式のネストしたプロパティの値の検証を実行する。
+     * @param <S> ネストしたプロパティのクラスタイプ
+     * @param validator ネストしたプロパティに対するValidator
+     * @param targetObject ネストしたプロパティのインスタンス
+     * @param errors エラー情報
      * @param subPath ネストするパス
-     * @param key インデックス
+     * @param key マップのキー。
+     * @throws NullPointerException {@literal validator == null or targetObject == null or errors == null or key == null}
+     * @throws IllegalArgumentException {@literal key.length() == 0}
      */
     protected <S> void invokeNestedValidator(final ObjectValidator<S> validator, final S targetObject,
-            final SheetBindingErrors errors, final String subPath, final String key) {
+            final SheetBindingErrors<?> errors, final String subPath, final String key) {
+        
         ArgUtils.notNull(validator, "validator");
         ArgUtils.notNull(targetObject, "targetObject");
         ArgUtils.notNull(errors, "errors");
+        ArgUtils.notEmpty(key, "key");
         
         errors.pushNestedPath(subPath, key);
         try {

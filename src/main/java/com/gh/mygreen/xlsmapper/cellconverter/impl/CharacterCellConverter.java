@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -22,14 +22,14 @@ public class CharacterCellConverter extends AbstractCellConverter<Character> {
     
     @Override
     protected Character parseDefaultValue(final String defaultValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         return defaultValue.charAt(0);
     }
     
     @Override
     protected Character parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         if(!formattedValue.isEmpty()) {
             return formattedValue.charAt(0);
@@ -45,7 +45,7 @@ public class CharacterCellConverter extends AbstractCellConverter<Character> {
 
     @Override
     protected void setupCell(final Cell cell, Optional<Character> cellValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         // \u0000 は、初期値として空と判定する。
         

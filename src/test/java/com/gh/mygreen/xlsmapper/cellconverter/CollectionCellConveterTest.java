@@ -66,12 +66,11 @@ public class CollectionCellConveterTest {
     public void test_load_collection() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(CollectionSheet.class);
-            
-            CollectionSheet sheet = mapper.load(in, CollectionSheet.class, errors);
+            SheetBindingErrors<CollectionSheet> errors = mapper.loadDetail(in, CollectionSheet.class);
+            CollectionSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 for(SimpleRecord record : sheet.simpleRecords) {
@@ -100,7 +99,7 @@ public class CollectionCellConveterTest {
         }
     }
     
-    private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -160,20 +159,20 @@ public class CollectionCellConveterTest {
         } else if(record.no == 6) {
             // 空の項目がある
             assertThat(record.listText, contains("  abc", " def "));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("listInteger"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("listInteger"))).isConversionFailure(), is(true));
             
             assertThat(record.arrayText, arrayContaining("  abc", " def "));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("arrayInteger"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("arrayInteger"))).isConversionFailure(), is(true));
             
             assertThat(record.setText, contains("  abc", " def "));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("setInteger"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("setInteger"))).isConversionFailure(), is(true));
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
         }
     }
     
-    private void assertRecord(final FormattedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -247,7 +246,7 @@ public class CollectionCellConveterTest {
         
     }
     
-    private void assertRecord(final CustomRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final CustomRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -305,7 +304,7 @@ public class CollectionCellConveterTest {
         
     }
     
-    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -476,7 +475,7 @@ public class CollectionCellConveterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "convert_collection.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
@@ -487,10 +486,8 @@ public class CollectionCellConveterTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
-            
-            SheetBindingErrors errors = new SheetBindingErrors(CollectionSheet.class);
-            
-            CollectionSheet sheet = mapper.load(in, CollectionSheet.class, errors);
+            SheetBindingErrors<CollectionSheet> errors = mapper.loadDetail(in, CollectionSheet.class);
+            CollectionSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
@@ -533,7 +530,7 @@ public class CollectionCellConveterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -587,7 +584,7 @@ public class CollectionCellConveterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -651,7 +648,7 @@ public class CollectionCellConveterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final CustomRecord inRecord, final CustomRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final CustomRecord inRecord, final CustomRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -707,7 +704,7 @@ public class CollectionCellConveterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);

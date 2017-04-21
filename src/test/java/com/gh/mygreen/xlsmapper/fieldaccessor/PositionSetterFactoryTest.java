@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 /**
  * {@link PositionSetterFactory}のテスタ
@@ -90,7 +90,7 @@ public class PositionSetterFactoryTest {
         }
         
         /**
-         * マップのタイプが{@link CellAddress}の場合
+         * マップのタイプが{@link CellPosition}の場合
          */
         @Test
         public void testCreateWithCellAddress() {
@@ -103,7 +103,7 @@ public class PositionSetterFactoryTest {
                 CellAddressRecord record = new CellAddressRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
@@ -129,7 +129,7 @@ public class PositionSetterFactoryTest {
                 PointRecord record = new PointRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
@@ -155,13 +155,13 @@ public class PositionSetterFactoryTest {
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
                 assertThat(record.positions)
                     .hasSize(1)
-                    .containsEntry("test", position.toPoiCellAddress());
+                    .containsEntry("test", position.toCellAddress());
             }
             
         }
@@ -172,7 +172,7 @@ public class PositionSetterFactoryTest {
          */
         private static class NoMapRecord {
             
-            CellAddress positions;
+            CellPosition positions;
             
         }
         
@@ -188,7 +188,7 @@ public class PositionSetterFactoryTest {
         
         private static class CellAddressRecord {
             
-            Map<String, CellAddress> positions;
+            Map<String, CellPosition> positions;
             
         }
         
@@ -230,7 +230,7 @@ public class PositionSetterFactoryTest {
                 CellAddressRecord record = new CellAddressRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
@@ -250,7 +250,7 @@ public class PositionSetterFactoryTest {
                 PointRecord record = new PointRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
@@ -270,7 +270,7 @@ public class PositionSetterFactoryTest {
                 IntRecord record = new IntRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
@@ -290,20 +290,20 @@ public class PositionSetterFactoryTest {
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
-                assertThat(record.address).isEqualTo(position.toPoiCellAddress());
+                assertThat(record.address).isEqualTo(position.toCellAddress());
             }
             
         }
         
         private static class CellAddressRecord {
             
-            private CellAddress address;
+            private CellPosition address;
             
-            public void setTestPosition(CellAddress address) {
+            public void setTestPosition(CellPosition address) {
                 this.address = address;
             }
             
@@ -365,7 +365,7 @@ public class PositionSetterFactoryTest {
                 CellAddressRecord record = new CellAddressRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
@@ -385,7 +385,7 @@ public class PositionSetterFactoryTest {
                 PointRecord record = new PointRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
@@ -405,11 +405,11 @@ public class PositionSetterFactoryTest {
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
                 PositionSetter accessor = positionSetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position);
                 
-                assertThat(record.testPosition).isEqualTo(position.toPoiCellAddress());
+                assertThat(record.testPosition).isEqualTo(position.toCellAddress());
             }
             
         }
@@ -424,7 +424,7 @@ public class PositionSetterFactoryTest {
         
         private static class CellAddressRecord {
             
-            private CellAddress testPosition;
+            private CellPosition testPosition;
             
             
         }

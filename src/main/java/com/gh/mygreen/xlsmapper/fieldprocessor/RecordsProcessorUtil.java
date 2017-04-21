@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
@@ -40,7 +40,7 @@ public class RecordsProcessorUtil {
      * @throws XlsMapperException
      */
     public static void checkColumns(final Sheet sheet, final Class<?> recordClass,
-            final List<RecordHeader> headers, final AnnotationReader reader, final XlsMapperConfig config)
+            final List<RecordHeader> headers, final AnnotationReader reader, final Configuration config)
                     throws XlsMapperException {
         
         List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsColumn.class);

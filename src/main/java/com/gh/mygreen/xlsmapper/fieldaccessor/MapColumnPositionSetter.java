@@ -1,7 +1,7 @@
 package com.gh.mygreen.xlsmapper.fieldaccessor;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 /**
  * {@link XlsMapColumns}のフィールドに対する位置情報のsetter
@@ -19,7 +19,7 @@ public interface MapColumnPositionSetter {
      * @param position 位置情報
      * @param key マップのキー
      */
-    void set(Object beanObj, CellAddress position, String key);
+    void set(Object beanObj, CellPosition position, String key);
     
     
 }

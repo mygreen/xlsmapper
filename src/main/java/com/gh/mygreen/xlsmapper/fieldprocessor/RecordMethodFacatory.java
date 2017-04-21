@@ -3,7 +3,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
@@ -24,7 +24,7 @@ public class RecordMethodFacatory {
     
     private final AnnotationReader annoReader;
     
-    private final XlsMapperConfig config;
+    private final Configuration config;
     
     /**
      * コンストラクタ
@@ -32,7 +32,7 @@ public class RecordMethodFacatory {
      * @param config システム設定
      * @throws NullPointerException {@literal annoReader == null or config == null.}
      */
-    public RecordMethodFacatory(final AnnotationReader annoReader, final XlsMapperConfig config) {
+    public RecordMethodFacatory(final AnnotationReader annoReader, final Configuration config) {
         ArgUtils.notNull(annoReader, "annoReader");
         ArgUtils.notNull(config, "config");
         

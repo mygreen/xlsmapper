@@ -6,22 +6,24 @@ import org.apache.poi.ss.usermodel.Sheet;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 
 /**
  * アノテーション {@link XlsCell} を処理するクラスです。
  * 
+ * @version 2.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  */
@@ -29,13 +31,17 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
     
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsCell anno, final FieldAccessor accessor,
-            final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final CellAddress cellAddress = getCellPosition(accessor, anno);
+        final CellPosition cellAddress = getCellPosition(accessor, anno);
         accessor.setPosition(beansObj, cellAddress);
         
         final Cell xlsCell = POIUtils.getCell(sheet, cellAddress);
         final CellConverter<?> converter = getCellConverter(accessor, config);
+        
+        if(converter instanceof FieldFormatter) {
+            work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
+        }
         
         try {
             final Object value = converter.toObject(xlsCell, accessor, config);
@@ -56,11 +62,11 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
      * @return 値が設定されているセルのアドレス
      * @throws AnnotationInvalidException アドレスの設定値が不正な場合
      */
-    private CellAddress getCellPosition(final FieldAccessor accessor, final XlsCell anno) throws AnnotationInvalidException {
+    private CellPosition getCellPosition(final FieldAccessor accessor, final XlsCell anno) throws AnnotationInvalidException {
         
         if(Utils.isNotEmpty(anno.address())) {
             try {
-                return CellAddress.of(anno.address());
+                return CellPosition.of(anno.address());
             } catch(IllegalArgumentException e) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
                         .var("property", accessor.getNameWithClass())
@@ -92,7 +98,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
                 
             }
             
-            return CellAddress.of(anno.row(), anno.column());
+            return CellPosition.of(anno.row(), anno.column());
         }
         
     }
@@ -100,9 +106,9 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsCell anno, final FieldAccessor accessor,
-            final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
-        final CellAddress cellAddress = getCellPosition(accessor, anno);
+        final CellPosition cellAddress = getCellPosition(accessor, anno);
         accessor.setPosition(targetObj, cellAddress);
         
         final CellConverter converter = getCellConverter(accessor, config);

@@ -68,12 +68,12 @@ public class AnnoIterateTablesTest {
     public void test_load_it_normal() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
-            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            NormalSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(2));
@@ -92,12 +92,12 @@ public class AnnoIterateTablesTest {
     public void test_load_it_normal_array() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NormalArraySheet.class);
+            SheetBindingErrors<NormalArraySheet> errors = mapper.loadDetail(in, NormalArraySheet.class);
             
-            NormalArraySheet sheet = mapper.load(in, NormalArraySheet.class, errors);
+            NormalArraySheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, arrayWithSize(2));
@@ -115,12 +115,12 @@ public class AnnoIterateTablesTest {
     public void test_load_it_vertical() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            SheetBindingErrors<VerticalSheet> errors = mapper.loadDetail(in, VerticalSheet.class);
             
-            VerticalSheet sheet = mapper.load(in, VerticalSheet.class, errors);
+            VerticalSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(2));
@@ -139,13 +139,11 @@ public class AnnoIterateTablesTest {
     public void test_load_it_horizontal_vertical() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
-            
             try {
-                mapper.load(in, HorizontalAndVerticalSheet.class, errors);
+                mapper.load(in, HorizontalAndVerticalSheet.class);
                 
                 fail();
             } catch(AnnotationInvalidException e) {
@@ -162,12 +160,11 @@ public class AnnoIterateTablesTest {
     public void test_load_it_not_found_cell() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NotFoundCellSheet.class);
             
-            NotFoundCellSheet sheet = mapper.load(in, NotFoundCellSheet.class, errors);
+            mapper.load(in, NotFoundCellSheet.class);
             
             fail();
         }
@@ -181,12 +178,12 @@ public class AnnoIterateTablesTest {
     public void test_load_it_optional() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(OptionalCellSheet.class);
+            SheetBindingErrors<OptionalCellSheet> errors = mapper.loadDetail(in, OptionalCellSheet.class);
             
-            OptionalCellSheet sheet = mapper.load(in, OptionalCellSheet.class, errors);
+            OptionalCellSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(2));
@@ -204,12 +201,12 @@ public class AnnoIterateTablesTest {
     public void test_load_it_concat_table() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(ConcatTableSheet.class);
+            SheetBindingErrors<ConcatTableSheet> errors = mapper.loadDetail(in, ConcatTableSheet.class);
             
-            ConcatTableSheet sheet = mapper.load(in, ConcatTableSheet.class, errors);
+            ConcatTableSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(2));
@@ -228,12 +225,12 @@ public class AnnoIterateTablesTest {
     public void test_load_it_methodAnno() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
-            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            MethodAnnoSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(2));
@@ -253,14 +250,14 @@ public class AnnoIterateTablesTest {
     public void test_load_it_regex() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
-            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            RegexSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(2));
@@ -272,7 +269,7 @@ public class AnnoIterateTablesTest {
         
     }
     
-    private void assertTable(final HorizontalClassTable table, final SheetBindingErrors errors) {
+    private void assertTable(final HorizontalClassTable table, final SheetBindingErrors<?> errors) {
         
         if(table.name.equals("1年2組")) {
             
@@ -322,7 +319,7 @@ public class AnnoIterateTablesTest {
         
     }
     
-    private void assertTable(final VerticalClassTable table, final SheetBindingErrors errors) {
+    private void assertTable(final VerticalClassTable table, final SheetBindingErrors<?> errors) {
         
         if(table.name.equals("1年2組")) {
             
@@ -372,7 +369,7 @@ public class AnnoIterateTablesTest {
         
     }
     
-    private void assertTable(final OptionalClassTable table, final SheetBindingErrors errors) {
+    private void assertTable(final OptionalClassTable table, final SheetBindingErrors<?> errors) {
         
         if(equalsStr(table.name, "1年2組")) {
             
@@ -420,7 +417,7 @@ public class AnnoIterateTablesTest {
         }
     }
     
-    private void assertTable(final ConcatClassTable table, final SheetBindingErrors errors) {
+    private void assertTable(final ConcatClassTable table, final SheetBindingErrors<?> errors) {
         
         if(table.name.equals("1年2組")) {
             
@@ -524,7 +521,7 @@ public class AnnoIterateTablesTest {
         
     }
     
-    private void assertTable(final MethodAnnoTable table, final SheetBindingErrors errors) {
+    private void assertTable(final MethodAnnoTable table, final SheetBindingErrors<?> errors) {
         
         if(table.name.equals("1年2組")) {
             
@@ -574,7 +571,7 @@ public class AnnoIterateTablesTest {
         
     }
     
-    private void assertTable(final RegexSheet.RegexpTable table, final SheetBindingErrors errors) {
+    private void assertTable(final RegexSheet.RegexpTable table, final SheetBindingErrors<?> errors) {
         
         if(table.name.equals("1年2組")) {
             
@@ -649,7 +646,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -660,10 +657,9 @@ public class AnnoIterateTablesTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
-            
-            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            NormalSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
@@ -701,7 +697,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -712,10 +708,9 @@ public class AnnoIterateTablesTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<NormalArraySheet> errors = mapper.loadDetail(in, NormalArraySheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(NormalArraySheet.class);
-            
-            NormalArraySheet sheet = mapper.load(in, NormalArraySheet.class, errors);
+            NormalArraySheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, arrayWithSize(outSheet.classTables.length));
@@ -753,7 +748,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -764,10 +759,9 @@ public class AnnoIterateTablesTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<VerticalSheet> errors = mapper.loadDetail(in, VerticalSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
-            
-            VerticalSheet sheet = mapper.load(in, VerticalSheet.class, errors);
+            VerticalSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
@@ -806,7 +800,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -843,7 +837,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -854,10 +848,9 @@ public class AnnoIterateTablesTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<OptionalCellSheet> errors = mapper.loadDetail(in, OptionalCellSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(OptionalCellSheet.class);
-            
-            OptionalCellSheet sheet = mapper.load(in, OptionalCellSheet.class, errors);
+            OptionalCellSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
@@ -903,7 +896,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -914,10 +907,9 @@ public class AnnoIterateTablesTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<ConcatTableSheet> errors = mapper.loadDetail(in, ConcatTableSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(ConcatTableSheet.class);
-            
-            ConcatTableSheet sheet = mapper.load(in, ConcatTableSheet.class, errors);
+            ConcatTableSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
@@ -955,7 +947,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
@@ -966,10 +958,9 @@ public class AnnoIterateTablesTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
-            
-            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            MethodAnnoSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
@@ -1008,7 +999,7 @@ public class AnnoIterateTablesTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
@@ -1021,10 +1012,9 @@ public class AnnoIterateTablesTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
-            
-            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            RegexSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
@@ -1045,7 +1035,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final HorizontalClassTable inRecord, final HorizontalClassTable outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final HorizontalClassTable inRecord, final HorizontalClassTable outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1069,7 +1059,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final VerticalClassTable inRecord, final VerticalClassTable outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final VerticalClassTable inRecord, final VerticalClassTable outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1093,7 +1083,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final OptionalClassTable inRecord, final OptionalClassTable outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final OptionalClassTable inRecord, final OptionalClassTable outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1124,7 +1114,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final ConcatClassTable inRecord, final ConcatClassTable outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final ConcatClassTable inRecord, final ConcatClassTable outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1157,7 +1147,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final PersonRecord inRecord, final PersonRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final PersonRecord inRecord, final PersonRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1173,7 +1163,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final ResultRecord inRecord, final ResultRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final ResultRecord inRecord, final ResultRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1192,7 +1182,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final MethodAnnoTable inRecord, final MethodAnnoTable outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final MethodAnnoTable inRecord, final MethodAnnoTable outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1216,7 +1206,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final RegexSheet.RegexpTable inRecord, final RegexSheet.RegexpTable outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final RegexSheet.RegexpTable inRecord, final RegexSheet.RegexpTable outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1240,7 +1230,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final RegexSheet.RegexRecord inRecord, final RegexSheet.RegexRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final RegexSheet.RegexRecord inRecord, final RegexSheet.RegexRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);

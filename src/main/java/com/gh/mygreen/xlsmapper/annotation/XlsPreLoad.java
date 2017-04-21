@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 
 
 /**
@@ -18,7 +18,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * </p>
  * <ul>
  *   <li>処理対象のシートオブジェクト {@link org.apache.poi.ss.usermodel.Sheet}</li>
- *   <li>XlsMapperの設定オブジェクト {@link com.gh.mygreen.xlsmapper.XlsMapperConfig}</li>
+ *   <li>XlsMapperの設定オブジェクト {@link com.gh.mygreen.xlsmapper.Configuration}</li>
  *   <li>シートのエラー情報を格納するオブジェクト {@link com.gh.mygreen.xlsmapper.validation.SheetBindingErrors}</li>
  *   <li>処理対象のBeanオブジェクト</li>
  * </ul>
@@ -62,7 +62,7 @@ import com.gh.mygreen.xlsmapper.XlsMapperConfig;
  * 
  * <h3 class="description">リスナークラスに実装する場合</h3>
  * <p>クラスにアノテーション{@link XlsListener#listenerClass()} で処理が実装されたクラスを指定します。 </p>
- * <p>インスタンスは、システム設定{@link XlsMapperConfig#getBeanFactory()}経由で作成されるため、
+ * <p>インスタンスは、システム設定{@link Configuration#getBeanFactory()}経由で作成されるため、
  *   SpringFrameworkのコンテナからインスタンスを取得することもできます。
  * </p>
  * 

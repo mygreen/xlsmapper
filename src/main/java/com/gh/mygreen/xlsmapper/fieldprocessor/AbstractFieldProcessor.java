@@ -2,7 +2,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import java.lang.annotation.Annotation;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
@@ -43,7 +43,7 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Lo
      * @return {@link CellConverter}のインスタンス
      * @throws ConversionException {@link CellConverter}が見つからない場合。
      */
-    protected CellConverter<?> getCellConverter(final FieldAccessor accessor, final XlsMapperConfig config) throws ConversionException {
+    protected CellConverter<?> getCellConverter(final FieldAccessor accessor, final Configuration config) throws ConversionException {
         
         final CellConverter<?> converter;
         

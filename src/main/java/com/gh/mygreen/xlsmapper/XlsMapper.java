@@ -160,50 +160,72 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  *     );
  * </code></pre>
  * 
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
 public class XlsMapper {
     
-    private XlsMapperConfig config;
+    private Configuration configuration;
     
     private XlsLoader loader;
     
     private XlsSaver saver;
     
+    /**
+     * デフォルトコンストラクタ
+     */
     public XlsMapper() {
-        this.config = new XlsMapperConfig();
-        this.loader = new XlsLoader(getConig());
-        this.saver = new XlsSaver(getConig());
+        this.configuration = new Configuration();
+        this.loader = new XlsLoader(getConiguration());
+        this.saver = new XlsSaver(getConiguration());
     }
     
-    public XlsMapperConfig getConig() {
-        return config;
+    /**
+     * システム情報を取得します。
+     * @return 現在のシステム情報
+     */
+    public Configuration getConiguration() {
+        return configuration;
     }
     
-    public void setConig(XlsMapperConfig config) {
-        this.config = config;
-        getLoader().setConfig(config);
-        getSaver().setConfig(config);
+    /**
+     * システム情報を設定します。
+     * @param configuration システム情報
+     */
+    public void setConiguration(Configuration config) {
+        this.configuration = config;
+        getLoader().setConfiguration(config);
+        getSaver().setConfiguration(config);
     }
     
+    /**
+     * 読み込み用クラスを取得します。
+     * @return 読み込み用クラス
+     */
     public XlsLoader getLoader() {
         return loader;
     }
     
+    /**
+     * 保存用クラスを取得します。
+     * @return 保存用クラス。
+     */
     public XlsSaver getSaver() {
         return saver;
     }
     
     /**
      * Excelファイルの１シートを読み込み、任意のクラスにマッピングする。
+     * 
+     * @param <P> シートをマッピングするクラスタイプ
      * @param xlsIn 読み込みもとのExcelファイルのストリーム。
      * @param clazz マッピング先のクラスタイプ。
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     * @throws IllegalArgumentException xlsIn == null.
-     * @throws IllegalArgumentException clazz == null.
+     * @return シートをマッピングしたオブジェクト。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
+     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws XlsMapperException Excelファイルのマッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
      * 
      */
     public <P> P load(final InputStream xlsIn, final Class<P> clazz) throws XlsMapperException, IOException {
@@ -212,57 +234,31 @@ public class XlsMapper {
     
     /**
      * Excelファイルの１シートを読み込み、任意のクラスにマッピングする。
-     * @param xlsIn 読み込みもとのExcelファイルのストリーム。
-     * @param clazz マッピング先のクラスタイプ。
-     * @param xmlIn XMLによる定義を必要としない場合は、nullを指定する。
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     * @throws IllegalArgumentException xlsIn == null.
-     * @throws IllegalArgumentException clazz == null.
-     */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn) throws XlsMapperException, IOException {
-        return loader.load(xlsIn, clazz, xmlIn);
-    }
-    
-    /**
-     * Excelファイルの１シートを読み込み、任意のクラスにマッピングする。
-     * @param xlsIn 読み込みもとのExcelファイルのストリーム。
-     * @param clazz マッピング先のクラスタイプ。
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     * @throws IllegalArgumentException xlsIn == null.
-     * @throws IllegalArgumentException clazz == null.
      * 
-     */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final SheetBindingErrors errors) throws XlsMapperException, IOException {
-        return loader.load(xlsIn, clazz, errors);
-    }
-    
-    /**
-     * Excelファイルの１シートを読み込み、任意のクラスにマッピングする。
+     * @param <P> シートをマッピングするクラスタイプ
      * @param xlsIn 読み込みもとのExcelファイルのストリーム。
      * @param clazz マッピング先のクラスタイプ。
-     * @param xmlIn XMLによる定義を必要としない場合は、nullを指定する。
-     * @param errors マッピング時のエラー情報。指定しない場合は、nulを指定する。
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     * @throws IllegalArgumentException xlsIn == null.
-     * @throws IllegalArgumentException clazz == null.
+     * @return シートのマッピング結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
+     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws XlsMapperException Excelファイルのマッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
      */
-    public <P> P load(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn, final SheetBindingErrors errors) throws XlsMapperException, IOException {
-        return loader.load(xlsIn, clazz, xmlIn, errors);
+    public <P> SheetBindingErrors<P> loadDetail(final InputStream xlsIn, final Class<P> clazz) throws XlsMapperException, IOException {
+        return loader.loadDetail(xlsIn, clazz);
     }
     
     /**
      * Excelファイルの複数シートを読み込み、任意のクラスにマップする。
-     * @param xlsIn
-     * @param clazz
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
+     * <p>{@link XlsSheet#regex()}により、複数のシートが同じ形式で、同じクラスにマッピングすする際に使用します。</p>
+     * 
+     * @param xlsIn 読み込み元のExcelファイルのストリーム。
+     * @param clazz マッピング先のクラスタイプ。
+     * @return マッピングした複数のシート。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
+     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
      */
     public <P> P[] loadMultiple(final InputStream xlsIn, final Class<P> clazz) throws XlsMapperException, IOException {
         return loader.loadMultiple(xlsIn, clazz);
@@ -270,97 +266,99 @@ public class XlsMapper {
     
     /**
      * XMLによるマッピングを指定し、Excelファイルの複数シートを読み込み、任意のクラスにマップする。
-     * @param xlsIn
-     * @param clazz
-     * @param xmlIn
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
+     * <p>{@link XlsSheet#regex()}により、複数のシートが同じ形式で、同じクラスにマッピングすする際に使用します。</p>
+     * 
+     * @param <P> シートをマッピングするクラスタイプ
+     * @param xlsIn 読み込み元のExcelファイルのストリーム。
+     * @param clazz マッピング先のクラスタイプ。
+     * @return 複数のシートのマッピング結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
+     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
      */
-    public <P> P[] loadMultiple(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn) throws XlsMapperException, IOException {
-        return loader.loadMultiple(xlsIn, clazz, xmlIn);
+    public <P> SheetBindingErrorsStore<P> loadMultipleDetail(final InputStream xlsIn, final Class<P> clazz) 
+            throws XlsMapperException, IOException {
+        return loader.loadMultipleDetail(xlsIn, clazz);
     }
     
     /**
-     * XMLによるマッピングを指定し、Excelファイルの複数シートを読み込み、任意のクラスにマップする。
-     * @param xlsIn
-     * @param clazz
-     * @param errorsContainer
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
+     * Excelファイルの複数シートを読み込み、任意のクラスにマップする。
+     * <p>複数のシートの形式を一度に読み込む際に使用します。</p>
+     * 
+     * @param xlsIn 読み込み元のExcelファイルのストリーム。
+     * @param classes マッピング先のクラスタイプの配列。
+     * @return マッピングした複数のシート。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
+     * @throws NullPointerException {@literal xlsIn == null or classes == null}
+     * @throws IllegalArgumentException {@literal calsses.length == 0}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException ファイルの読み込みに失敗した場合
      */
-    public <P> P[] loadMultiple(final InputStream xlsIn, final Class<P> clazz,
-            final SheetBindingErrorsContainer errorsContainer) throws XlsMapperException, IOException {
-        return loader.loadMultiple(xlsIn, clazz, errorsContainer);
-    }
-    
-    /**
-     * XMLによるマッピングを指定し、Excelファイルの複数シートを読み込み、任意のクラスにマップする。
-     * @param xlsIn
-     * @param clazz
-     * @param xmlIn
-     * @param errorsContainer
-     * @return
-     * @throws XlsMapperException 
-     * @throws IOException 
-     */
-    public <P> P[] loadMultiple(final InputStream xlsIn, final Class<P> clazz, final InputStream xmlIn,
-            SheetBindingErrorsContainer errorsContainer) throws XlsMapperException, IOException {
-        return loader.loadMultiple(xlsIn, clazz, xmlIn, errorsContainer);
-    }
-    
-    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes) throws XlsMapperException {
+    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes) throws XlsMapperException, IOException {
         return loader.loadMultiple(xlsIn, classes);
     }
     
-    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes, final InputStream xmlIn) throws XlsMapperException {
-        return loader.loadMultiple(xlsIn, classes, xmlIn);
-    }
-    
-    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes,
-            final SheetBindingErrorsContainer errorsContainer) throws XlsMapperException {
-        return loader.loadMultiple(xlsIn, classes, errorsContainer);
-    }
-    
-    public Object[] loadMultiple(final InputStream xlsIn, final Class<?>[] classes, final InputStream xmlIn,
-            final SheetBindingErrorsContainer errorsContainer) throws XlsMapperException {
-        return loader.loadMultiple(xlsIn, classes, xmlIn, errorsContainer);
+    /**
+     * Excelファイルの複数シートを読み込み、任意のクラスにマップする。
+     * <p>複数のシートの形式を一度に読み込む際に使用します。</p>
+     * 
+     * @param xlsIn 読み込み元のExcelファイルのストリーム。
+     * @param classes マッピング先のクラスタイプの配列。
+     * @return マッピングした複数のシートの結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
+     * @throws NullPointerException {@literal xlsIn == null or classes == null}
+     * @throws IllegalArgumentException {@link calsses.length == 0}
+     * @throws IOException ファイルの読み込みに失敗した場合
+     * @throws XlsMapperException マッピングに失敗した場合
+     */
+    public SheetBindingErrorsStore<Object> loadMultipleDetail(final InputStream xlsIn, final Class<?>[] classes)
+            throws XlsMapperException, IOException {
+        return loader.loadMultipleDetail(xlsIn, classes);
     }
     
     /**
      * JavaのオブジェクトをExeclファイルに出力する。
-     * <p>出力するファイルは、引数で指定した雛形となるテンプレート用のExcelファイルをもとに出力する。
-     * @param templateXlsIn 雛形となるExcelファイルの
-     * @param xlsOut 出力
-     * @param beansObj 書き込み元のオブジェクト
-     * @throws XlsMapperException 
-     * @throws IOException 
+     * <p>出力するファイルは、引数で指定した雛形となるテンプレート用のExcelファイルをもとに出力する。</p>
+     * 
+     * @param templateXlsIn 雛形となるExcelファイルの入力
+     * @param xlsOut 出力先のストリーム
+     * @param beanObj 書き込むBeanオブジェクト
+     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
     public void save(final InputStream templateXlsIn, final OutputStream xlsOut, final Object beansObj) throws XlsMapperException, IOException {
         saver.save(templateXlsIn, xlsOut, beansObj);
     }
     
     /**
-     * XMLによるマッピングを指定して、JavaのオブジェクトをExcelファイルに出力する。
-     * @param templateXlsIn
-     * @param xlsOut
-     * @param beansObj
-     * @param xmlIn
-     * @throws XlsMapperException 
-     * @throws IOException 
+     * JavaのオブジェクトをExeclファイルに出力する。
+     * <p>出力するファイルは、引数で指定した雛形となるテンプレート用のExcelファイルをもとに出力する。</p>
+     * 
+     * @param <P> マッピング対象のクラスタイプ
+     * @param templateXlsIn 雛形となるExcelファイルの入力
+     * @param xlsOut 出力先のストリーム
+     * @param beanObj 書き込むBeanオブジェクト
+     * @return マッピング結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
+     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public void save(final InputStream templateXlsIn, final OutputStream xlsOut, final Object beansObj, final InputStream xmlIn) throws XlsMapperException, IOException {
-        saver.save(templateXlsIn, xlsOut, beansObj, xmlIn);
+    public <P> SheetBindingErrors<P> saveDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final P beansObj) throws XlsMapperException, IOException {
+        return saver.saveDetail(templateXlsIn, xlsOut, beansObj);
     }
     
     /**
      * 複数のオブジェクトをそれぞれのシートへ保存する。
      * @param templateXlsIn 雛形となるExcelファイルの入力
-     * @param xlsOut 出力
+     * @param xlsOut xlsOut 出力先のストリーム
      * @param beanObjs 書き込むオブジェクトの配列。
-     * @throws XlsMapperException
-     * @throws IOException 
+     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
+     * @throws IllegalArgumentException {@literal }
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
     public void saveMultiple(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs) throws XlsMapperException, IOException {
         saver.saveMultiple(templateXlsIn, xlsOut, beanObjs);
@@ -369,14 +367,17 @@ public class XlsMapper {
     /**
      * 複数のオブジェクトをそれぞれのシートへ保存する。
      * @param templateXlsIn 雛形となるExcelファイルの入力
-     * @param xlsOut 出力
+     * @param xlsOut xlsOut 出力先のストリーム
      * @param beanObjs 書き込むオブジェクトの配列。
-     * @param xmlIn アノテーションの定義をしているXMLファイルの入力。
-     * @throws XlsMapperException
-     * @throws IOException 
+     * @return マッピング結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、結果に含まれません。
+     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
+     * @throws IllegalArgumentException {@literal }
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public void saveMultiple(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs, final InputStream xmlIn) throws XlsMapperException, IOException {
-        saver.saveMultiple(templateXlsIn, xlsOut, beanObjs, xmlIn);
+    public SheetBindingErrorsStore<Object> saveMultipleDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs) throws XlsMapperException, IOException {
+        return saver.saveMultipleDetail(templateXlsIn, xlsOut, beanObjs);
     }
     
 }

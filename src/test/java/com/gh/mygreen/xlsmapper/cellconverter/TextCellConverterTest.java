@@ -59,12 +59,12 @@ public class TextCellConverterTest {
     public void test_load_text() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(TextSheet.class);
+            SheetBindingErrors<TextSheet> errors = mapper.loadDetail(in, TextSheet.class);
             
-            TextSheet sheet = mapper.load(in, TextSheet.class, errors);
+            TextSheet sheet = errors.getTarget();
             
             for(SimpleRecord record : sheet.simpleRecords) {
                 assertRecord(record, errors);
@@ -81,7 +81,7 @@ public class TextCellConverterTest {
         }
     }
     
-    private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -119,7 +119,7 @@ public class TextCellConverterTest {
         
     }
     
-    private void assertRecord(final FormattedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -149,7 +149,7 @@ public class TextCellConverterTest {
         
     }
     
-    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -224,7 +224,7 @@ public class TextCellConverterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "convert_text.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
@@ -236,9 +236,9 @@ public class TextCellConverterTest {
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
             
-            SheetBindingErrors errors = new SheetBindingErrors(TextSheet.class);
+            SheetBindingErrors<TextSheet> errors = mapper.loadDetail(in, TextSheet.class);
             
-            TextSheet sheet = mapper.load(in, TextSheet.class, errors);
+            TextSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
@@ -274,7 +274,7 @@ public class TextCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -293,7 +293,7 @@ public class TextCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -342,7 +342,7 @@ public class TextCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);

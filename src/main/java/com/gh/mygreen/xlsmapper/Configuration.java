@@ -23,7 +23,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  * @author T.TSUCHIE
  *
  */
-public class XlsMapperConfig {
+public class Configuration {
     
     /** シートが見つからなくても無視するかどうか */
     private boolean ignoreSheetNotFound = false;
@@ -71,7 +71,7 @@ public class XlsMapperConfig {
     /** Beanに対するアノテーションのマッピング情報 */
     private XmlInfo annotationMapping = null;
     
-    public XlsMapperConfig() {
+    public Configuration() {
         
         // 数式をフォーマットする際のEL関数を登録する。
         ExpressionLanguageJEXLImpl formulaEL = new ExpressionLanguageJEXLImpl();
@@ -105,7 +105,7 @@ public class XlsMapperConfig {
      * @param ignoreSheetNotFound 初期値は、'false'です。
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setIgnoreSheetNotFound(boolean ignoreSheetNotFound) {
+    public Configuration setIgnoreSheetNotFound(boolean ignoreSheetNotFound) {
         this.ignoreSheetNotFound = ignoreSheetNotFound;
         return this;
     }
@@ -127,7 +127,7 @@ public class XlsMapperConfig {
      * @param normalizeLabelText 初期値は、'false'です。
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setNormalizeLabelText(boolean normalizeLabelText) {
+    public Configuration setNormalizeLabelText(boolean normalizeLabelText) {
         this.normalizeLabelText = normalizeLabelText;
         return this;
     }
@@ -149,7 +149,7 @@ public class XlsMapperConfig {
      * @param regexLabelText 正規表現でマッピングするかどうか。
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setRegexLabelText(boolean regexLabelText) {
+    public Configuration setRegexLabelText(boolean regexLabelText) {
         this.regexLabelText = regexLabelText;
         return this;
     }
@@ -167,7 +167,7 @@ public class XlsMapperConfig {
      * @param continueTypeBindFailure 初期値は、'false'です。
      * @return
      */
-    public XlsMapperConfig setContinueTypeBindFailure(boolean continueTypeBindFailure) {
+    public Configuration setContinueTypeBindFailure(boolean continueTypeBindFailure) {
         this.continueTypeBindFailure = continueTypeBindFailure;
         return this;
     }
@@ -185,7 +185,7 @@ public class XlsMapperConfig {
      * @param mergeCellOnSave 初期値は、'false'です。
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setMergeCellOnSave(boolean mergeCellOnSave) {
+    public Configuration setMergeCellOnSave(boolean mergeCellOnSave) {
         this.mergeCellOnSave = mergeCellOnSave;
         return this;
     }
@@ -205,7 +205,7 @@ public class XlsMapperConfig {
      * @param correctNameRangeOnSave 初期値は、'false'です。
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setCorrectNameRangeOnSave(boolean correctNameRangeOnSave) {
+    public Configuration setCorrectNameRangeOnSave(boolean correctNameRangeOnSave) {
         this.correctNameRangeOnSave = correctNameRangeOnSave;
         return this;
     }
@@ -225,7 +225,7 @@ public class XlsMapperConfig {
      * <p>POI-3.10以前の場合、データの修正は行われません。
      * @param correctCellDataValidationOnSave 初期値は、'false'です。
      */
-    public XlsMapperConfig setCorrectCellDataValidationOnSave(boolean correctCellDataValidationOnSave) {
+    public Configuration setCorrectCellDataValidationOnSave(boolean correctCellDataValidationOnSave) {
         this.correctCellDataValidationOnSave = correctCellDataValidationOnSave;
         return this;
     }
@@ -249,7 +249,7 @@ public class XlsMapperConfig {
      * @param formulaRecalcurationOnSave
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setFormulaRecalcurationOnSave(boolean formulaRecalcurationOnSave) {
+    public Configuration setFormulaRecalcurationOnSave(boolean formulaRecalcurationOnSave) {
         this.formulaRecalcurationOnSave = formulaRecalcurationOnSave;
         return this;
     }
@@ -267,7 +267,7 @@ public class XlsMapperConfig {
      * @param cellFormatter セルのフォーマッタ
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setCellFormatter(CellFormatter cellFormatter) {
+    public Configuration setCellFormatter(CellFormatter cellFormatter) {
         this.cellFormatter = cellFormatter;
         return this;
     }
@@ -285,7 +285,7 @@ public class XlsMapperConfig {
      * @param converterRegistry
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setConverterRegistry(CellConverterRegistry converterRegistry) {
+    public Configuration setConverterRegistry(CellConverterRegistry converterRegistry) {
         this.converterRegistry = converterRegistry;
         return this;
     }
@@ -302,7 +302,7 @@ public class XlsMapperConfig {
      * アノテーションを処理するプロセッサの管理クラスを設定します。
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setFieldProcessorRegistry(FieldProcessorRegistry fieldProcessorRegistry) {
+    public Configuration setFieldProcessorRegistry(FieldProcessorRegistry fieldProcessorRegistry) {
         this.fieldProcessorRegistry = fieldProcessorRegistry;
         return this;
     }
@@ -311,7 +311,7 @@ public class XlsMapperConfig {
      * Beanを生成するためのFactoryクラスを設定します。
      * @return
      */
-    public XlsMapperConfig setBeanFactory(BeanFactory<Class<?>, Object> beanFactory) {
+    public Configuration setBeanFactory(BeanFactory<Class<?>, Object> beanFactory) {
         this.beanFactory = beanFactory;
         return this;
     }
@@ -342,7 +342,7 @@ public class XlsMapperConfig {
      * @param sheetFinder シートを処理するクラスのインタンス。
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setSheetFinder(SheetFinder sheetFinder) {
+    public Configuration setSheetFinder(SheetFinder sheetFinder) {
         this.sheetFinder = sheetFinder;
         return this;
     }
@@ -365,7 +365,7 @@ public class XlsMapperConfig {
      * @param itemConverter 任意のクラス型に変換するクラス
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setItemConverter(ItemConverter<?> itemConverter) {
+    public Configuration setItemConverter(ItemConverter<?> itemConverter) {
         this.itemConverter = itemConverter;
         return this;
     }
@@ -389,7 +389,7 @@ public class XlsMapperConfig {
      * @param formulaFormatter 数式をフォーマットするクラス。
      * @return 自身のインスタンス
      */
-    public XlsMapperConfig setFormulaFormatter(MessageInterpolator formulaFormatter) {
+    public Configuration setFormulaFormatter(MessageInterpolator formulaFormatter) {
         this.formulaFormatter = formulaFormatter;
         return this;
     }
@@ -397,7 +397,7 @@ public class XlsMapperConfig {
     /**
      * アノテーションのマッピング情報を取得する。
      * @since 2.0
-     * @return 設定されていない場合は、nullを返す。
+     * @return 設定されていない場合は、空を返す。
      */
     public Optional<XmlInfo> getAnnotationMapping() {
         return Optional.ofNullable(annotationMapping);

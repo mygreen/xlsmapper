@@ -61,12 +61,11 @@ public class DateTimeCellConverterTest {
     public void test_load_date_time() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(DateTimeSheet.class);
-            
-            DateTimeSheet sheet = mapper.load(in, DateTimeSheet.class, errors);
+            SheetBindingErrors<DateTimeSheet> errors = mapper.loadDetail(in, DateTimeSheet.class);
+            DateTimeSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 for(SimpleRecord record : sheet.simpleRecords) {
@@ -90,7 +89,7 @@ public class DateTimeCellConverterTest {
         
     }
     
-    private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -117,11 +116,11 @@ public class DateTimeCellConverterTest {
             
         } else if(record.no == 4) {
             // 文字列型の場合
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("utilDate"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("calendar"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlDate"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("timestamp"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("utilDate"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("calendar"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlDate"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("timestamp"))).isConversionFailure(), is(true));
             
         } else if(record.no == 5) {
             // Excelの日時型（日本語）
@@ -153,14 +152,14 @@ public class DateTimeCellConverterTest {
         
     }
     
-    private void assertRecord(final FormattedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2000-12-31 03:41:12"))));
             assertThat(record.calendar, is(toCalendar(toTimestamp("2000-12-31 03:41:12"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2000-12-31 00:00:00.000"))));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isConversionFailure(), is(true));
             assertThat(record.timestamp, is(toTimestamp("1999-12-31 10:12:00.000")));
             
         } else if(record.no == 2) {
@@ -173,10 +172,10 @@ public class DateTimeCellConverterTest {
             
         } else if(record.no == 3) {
             // 文字列型の場合（存在しない日付）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("utilDate"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("calendar"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlDate"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("utilDate"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("calendar"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlDate"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isConversionFailure(), is(true));
             assertThat(record.timestamp, is(toTimestamp("2016-01-02 03:45:00.000")));
             
         } else {
@@ -185,7 +184,7 @@ public class DateTimeCellConverterTest {
         
     }
     
-    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -248,7 +247,7 @@ public class DateTimeCellConverterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "convert_datetime.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
@@ -260,9 +259,8 @@ public class DateTimeCellConverterTest {
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
             
-            SheetBindingErrors errors = new SheetBindingErrors(DateTimeSheet.class);
-            
-            DateTimeSheet sheet = mapper.load(in, DateTimeSheet.class, errors);
+            SheetBindingErrors<DateTimeSheet> errors = mapper.loadDetail(in, DateTimeSheet.class);
+            DateTimeSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
@@ -297,7 +295,7 @@ public class DateTimeCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -318,7 +316,7 @@ public class DateTimeCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -350,7 +348,7 @@ public class DateTimeCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);

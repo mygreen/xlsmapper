@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -26,7 +26,7 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
     private ListCellConverter listConverter = new ListCellConverter();
     
     @Override
-    protected Object[] parseDefaultValue(final String defaultValue,final  FieldAccessor accessor, final  XlsMapperConfig config) 
+    protected Object[] parseDefaultValue(final String defaultValue,final  FieldAccessor accessor, final  Configuration config) 
             throws TypeBindException {
         
         List<?> list = listConverter.parseDefaultValue(defaultValue, accessor, config);
@@ -44,7 +44,7 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
 
     @Override
     protected Object[] parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         
         List<?> list = listConverter.parseCell(evaluatedCell, formattedValue, accessor, config);
@@ -64,7 +64,7 @@ public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
     @SuppressWarnings("rawtypes")
     @Override
     protected void setupCell(final Cell cell, final Optional<Object[]> cellValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         Optional<List> list = cellValue.map(c -> Arrays.asList(c));
         

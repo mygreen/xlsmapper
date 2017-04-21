@@ -14,7 +14,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
-import com.gh.mygreen.xlsmapper.SheetBindingErrorsContainer;
 import com.gh.mygreen.xlsmapper.SheetNotFoundException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
@@ -24,7 +23,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * アノテーション{@link XlsSheet}のテスト
  * 
- * @since 0.5
+ * @since 2.0
  * @author T.TSUCHIE
  *
  */
@@ -47,12 +46,12 @@ public class AnnoSheetTest {
     public void test_load_sheet_name() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NamedSheet.class);
+            SheetBindingErrors<NamedSheet> errors = mapper.loadDetail(in, NamedSheet.class);
             
-            NamedSheet sheet = mapper.load(in, NamedSheet.class, errors);
+            NamedSheet sheet = errors.getTarget();
             
             assertThat(sheet.sheetName, is("シート名（１）"));
             
@@ -64,12 +63,10 @@ public class AnnoSheetTest {
     public void test_load_sheet_name_notFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NamedSheet2.class);
-            
-            NamedSheet2 sheet = mapper.load(in, NamedSheet2.class, errors);
+            SheetBindingErrors<NamedSheet2> errors = mapper.loadDetail(in, NamedSheet2.class);
             
             fail();
             
@@ -85,13 +82,13 @@ public class AnnoSheetTest {
     public void test_load_sheet_skip_notFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NamedSheet2.class);
+            SheetBindingErrors<NamedSheet2> errors = mapper.loadDetail(in, NamedSheet2.class);
             
-            NamedSheet2 sheet = mapper.load(in, NamedSheet2.class, errors);
+            NamedSheet2 sheet = errors.getTarget();
             
             assertThat(sheet, is(nullValue()));
             
@@ -103,12 +100,12 @@ public class AnnoSheetTest {
     public void test_load_sheet_indexed() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(IndexedSheet.class);
+            SheetBindingErrors<IndexedSheet> errors = mapper.loadDetail(in, IndexedSheet.class);
             
-            IndexedSheet sheet = mapper.load(in, IndexedSheet.class, errors);
+            IndexedSheet sheet = errors.getTarget();
             
             assertThat(sheet.sheetName, is("あいう"));
             
@@ -120,12 +117,12 @@ public class AnnoSheetTest {
     public void test_load_sheet_indexed_nofFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(IndexedSheet2.class);
+            SheetBindingErrors<IndexedSheet2> errors = mapper.loadDetail(in, IndexedSheet2.class);
             
-            IndexedSheet2 sheet = mapper.load(in, IndexedSheet2.class, errors);
+            IndexedSheet2 sheet = errors.getTarget();
             
             fail();
             
@@ -140,13 +137,12 @@ public class AnnoSheetTest {
     public void test_load_sheet_regexp_single() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
+            SheetBindingErrors<RegexpSheet> errors = mapper.loadDetail(in, RegexpSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(IndexedSheet.class);
-            
-            RegexpSheet sheet = mapper.load(in, RegexpSheet.class, errors);
+            RegexpSheet sheet = errors.getTarget();
             
             assertThat(sheet.sheetName, is("編集条件（1）"));
             
@@ -161,13 +157,10 @@ public class AnnoSheetTest {
     public void test_load_sheet_regexp_single_notFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
-            
-            SheetBindingErrors errors = new SheetBindingErrors(RegexpSheet2.class);
-            
-            RegexpSheet2 sheet = mapper.load(in, RegexpSheet2.class, errors);
+            SheetBindingErrors<RegexpSheet2> errors = mapper.loadDetail(in, RegexpSheet2.class);
             
             fail();
             
@@ -182,13 +175,10 @@ public class AnnoSheetTest {
     public void test_load_sheetName_regexp_multiple() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
-            
-            SheetBindingErrorsContainer errorsContainer = new SheetBindingErrorsContainer(RegexpSheet.class);
-            
-            RegexpSheet[] sheet = mapper.loadMultiple(in, RegexpSheet.class, errorsContainer);
+            RegexpSheet[] sheet = mapper.loadMultiple(in, RegexpSheet.class);
             
             assertThat(sheet[0].sheetName, is("編集条件（1）"));
             assertThat(sheet[1].sheetName, is("編集条件（2）"));
@@ -204,12 +194,12 @@ public class AnnoSheetTest {
     public void test_load_sheet_noSetting() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NoSettingSheet.class);
+            SheetBindingErrors<NoSettingSheet> errors = mapper.loadDetail(in, NoSettingSheet.class);
             
-            NoSettingSheet sheet = mapper.load(in, NoSettingSheet.class, errors);
+            NoSettingSheet sheet = errors.getTarget();
             
             fail();
             
@@ -228,7 +218,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -239,10 +229,9 @@ public class AnnoSheetTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<NamedSheet> errors = mapper.loadDetail(in, NamedSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(NamedSheet.class);
-            
-            NamedSheet sheet = mapper.load(in, NamedSheet.class, errors);
+            NamedSheet sheet = errors.getTarget();
             
             assertThat(sheet.sheetName, is(outSheet.sheetName));
             
@@ -261,7 +250,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -284,7 +273,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
@@ -309,7 +298,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
@@ -334,7 +323,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -359,7 +348,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -383,7 +372,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -407,7 +396,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -435,7 +424,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
@@ -460,7 +449,7 @@ public class AnnoSheetTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_Sheet_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_Sheet_template.xlsx");
