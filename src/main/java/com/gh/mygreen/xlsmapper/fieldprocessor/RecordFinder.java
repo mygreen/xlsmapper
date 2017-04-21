@@ -2,9 +2,9 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordFinder;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 /**
  * レコードの開始位置を検索するためのインタフェース。
@@ -26,5 +26,5 @@ public interface RecordFinder {
      * @return データレコードの開始位置を返します。
      * @throws CellNotFoundException 開始位置が見つからない場合
      */
-    CellAddress find(ProcessType type, String[] args, Sheet sheet, CellAddress address, XlsMapperConfig config);
+    CellPosition find(ProcessType type, String[] args, Sheet sheet, CellPosition address, Configuration config);
 }

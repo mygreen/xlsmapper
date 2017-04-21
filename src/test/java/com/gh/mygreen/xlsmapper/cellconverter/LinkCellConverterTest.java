@@ -70,12 +70,12 @@ public class LinkCellConverterTest {
     @Test
     public void test_load_link() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(LinkSheet.class);
+            SheetBindingErrors<LinkSheet> errors = mapper.loadDetail(in, LinkSheet.class);
             
-            LinkSheet sheet = mapper.load(in, LinkSheet.class, errors);
+            LinkSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 for(SimpleRecord record : sheet.simpleRecords) {
@@ -98,7 +98,7 @@ public class LinkCellConverterTest {
         }
     }
     
-    private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) throws URISyntaxException {
+    private void assertRecord(final SimpleRecord record, final SheetBindingErrors<?> errors) throws URISyntaxException {
         if(record.no == 1) {
             // 空文字
             assertThat(record.uri, is(nullValue()));
@@ -141,7 +141,7 @@ public class LinkCellConverterTest {
             
         } else if(record.no == 9) {
             // 空白の文字列
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("uri"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("uri"))).isConversionFailure(), is(true));
             assertThat(record.link, is(new CellLink(null, "  http://www.google.co.jp/  ")));
             
         } else if(record.no == 10) {
@@ -151,7 +151,7 @@ public class LinkCellConverterTest {
             
         } else if(record.no == 11) {
             // 空白の文字
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("uri"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("uri"))).isConversionFailure(), is(true));
             assertThat(record.link, is(new CellLink(null, "   ")));
             
         } else {
@@ -160,7 +160,7 @@ public class LinkCellConverterTest {
         
     }
     
-    private void assertRecord(final FormattedRecord record, final SheetBindingErrors errors) throws URISyntaxException {
+    private void assertRecord(final FormattedRecord record, final SheetBindingErrors<?> errors) throws URISyntaxException {
         if(record.no == 1) {
             // 空文字
             assertThat(record.uri, is(new URI("http://myhome.com/")));
@@ -221,7 +221,7 @@ public class LinkCellConverterTest {
         }
     }
     
-    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) throws URISyntaxException {
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors<?> errors) throws URISyntaxException {
         if(record.no == 1) {
             // 空文字
             assertThat(record.uri, is(nullValue()));
@@ -331,7 +331,7 @@ public class LinkCellConverterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "convert_link.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
@@ -343,9 +343,9 @@ public class LinkCellConverterTest {
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
             
-            SheetBindingErrors errors = new SheetBindingErrors(LinkSheet.class);
+            SheetBindingErrors<LinkSheet> errors = mapper.loadDetail(in, LinkSheet.class);
             
-            LinkSheet sheet = mapper.load(in, LinkSheet.class, errors);
+            LinkSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
@@ -381,7 +381,7 @@ public class LinkCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -399,7 +399,7 @@ public class LinkCellConverterTest {
      * @param errors
      * @throws URISyntaxException 
      */
-    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) throws URISyntaxException {
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors<?> errors) throws URISyntaxException {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -438,7 +438,7 @@ public class LinkCellConverterTest {
      * @param errors
      * @throws URISyntaxException 
      */
-    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) throws URISyntaxException {
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors<?> errors) throws URISyntaxException {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);

@@ -3,10 +3,10 @@ package com.gh.mygreen.xlsmapper.cellconverter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 
 /**
@@ -26,7 +26,7 @@ public interface CellConverter<T> {
      * @return 変換したJavaオブジェクト
      * @throws XlsMapperException 変換に失敗した場合
      */
-    T toObject(Cell cell, FieldAccessor accessor, XlsMapperConfig config) throws XlsMapperException;
+    T toObject(Cell cell, FieldAccessor accessor, Configuration config) throws XlsMapperException;
     
     /**
      * シート書き込み時のJavaオブジェクト {@literal =>} Excel Cellに変換する。
@@ -39,7 +39,7 @@ public interface CellConverter<T> {
      * @return 書き込んだセル
      * @throws XlsMapperException 変換に失敗した場合
      */
-    Cell toCell(FieldAccessor accessor, T targetValue, Object targetBean, Sheet sheet, CellAddress address, XlsMapperConfig config)
+    Cell toCell(FieldAccessor accessor, T targetValue, Object targetBean, Sheet sheet, CellPosition address, Configuration config)
             throws XlsMapperException;
     
 }

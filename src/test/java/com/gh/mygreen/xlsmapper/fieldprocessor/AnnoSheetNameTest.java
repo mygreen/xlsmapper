@@ -48,12 +48,12 @@ public class AnnoSheetNameTest {
     public void test_load_sheetName_name() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_SheetName.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
+            SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
-            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            NormalSheet sheet = errors.getTarget();
             
             assertThat(sheet.sheetName, is("シート名（１）"));
             
@@ -69,12 +69,12 @@ public class AnnoSheetNameTest {
     public void test_load_sheetName_methodAnno() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_SheetName.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+            SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
-            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            MethodAnnoSheet sheet = errors.getTarget();
             
             assertThat(sheet.sheetName, is("メソッドに付与したアノテーション"));
             
@@ -93,7 +93,7 @@ public class AnnoSheetNameTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_SheetName_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_SheetName_template.xlsx");
@@ -104,10 +104,9 @@ public class AnnoSheetNameTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(NormalSheet.class);
-            
-            NormalSheet sheet = mapper.load(in, NormalSheet.class, errors);
+            NormalSheet sheet = errors.getTarget();
             
             assertThat(outSheet.sheetName, is("シート名（１）"));
             assertThat(sheet.sheetName, is(outSheet.sheetName));
@@ -128,7 +127,7 @@ public class AnnoSheetNameTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_SheetName_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_SheetName_template.xlsx");
@@ -139,10 +138,9 @@ public class AnnoSheetNameTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
-            
-            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            MethodAnnoSheet sheet = errors.getTarget();
             
             assertThat(outSheet.sheetName, is("メソッドに付与したアノテーション"));
             assertThat(sheet.sheetName, is(outSheet.sheetName));

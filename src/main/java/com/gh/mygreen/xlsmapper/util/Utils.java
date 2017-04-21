@@ -16,7 +16,7 @@ import java.util.Set;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.BeanFactory;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.cellconverter.DefaultItemConverter;
@@ -235,7 +235,7 @@ public class Utils {
      * @param config システム設定
      * @return true:ラベルが一致する。
      */
-    public static boolean matches(final String text1, final String text2, final XlsMapperConfig config){
+    public static boolean matches(final String text1, final String text2, final Configuration config){
         if(config.isRegexLabelText() && text2.startsWith("/") && text2.endsWith("/")){
             return normalize(text1, config).matches(text2.substring(1, text2.length() - 1));
         } else {
@@ -251,7 +251,7 @@ public class Utils {
      * @param config システム設定
      * @return true:ラベルが一致する。
      */
-    private static String normalize(final String text, final XlsMapperConfig config){
+    private static String normalize(final String text, final Configuration config){
         if(text != null && config.isNormalizeLabelText()){
             return text.trim().replaceAll("[\n\r]", "").replaceAll("[\t 　]+", " ");
         }
@@ -399,7 +399,7 @@ public class Utils {
      * @throws XlsMapperException 
      */
     public static void invokeNeedProcessMethod(final Object processObj, final Method method, final Object beanObj, 
-            final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) throws XlsMapperException {
+            final Sheet sheet, final Configuration config, final SheetBindingErrors errors) throws XlsMapperException {
         
         final Class<?>[] paramTypes = method.getParameterTypes();
         final Object[] paramValues =  new Object[paramTypes.length];
@@ -408,7 +408,7 @@ public class Utils {
             if(Sheet.class.isAssignableFrom(paramTypes[i])) {
                 paramValues[i] = sheet;
                 
-            } else if(XlsMapperConfig.class.isAssignableFrom(paramTypes[i])) {
+            } else if(Configuration.class.isAssignableFrom(paramTypes[i])) {
                 paramValues[i] = config;
                 
             } else if(SheetBindingErrors.class.isAssignableFrom(paramTypes[i])) {

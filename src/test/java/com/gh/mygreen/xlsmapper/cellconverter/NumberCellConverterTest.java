@@ -64,11 +64,11 @@ public class NumberCellConverterTest {
     public void test_load_number() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NumberSheet.class);
-            NumberSheet sheet = mapper.load(in, NumberSheet.class, errors);
+            SheetBindingErrors<NumberSheet> errors = mapper.loadDetail(in, NumberSheet.class);
+            NumberSheet sheet = errors.getTarget();
             
             if(sheet.primitiveRecords != null) {
                 for(PrimitiveRecord record : sheet.primitiveRecords) {
@@ -109,7 +109,7 @@ public class NumberCellConverterTest {
      * @param record
      * @param errors
      */
-    private void assertRecord(final PrimitiveRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final PrimitiveRecord record, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
@@ -260,10 +260,10 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 17) {
             // 最大置+1（文字列型）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
             
             assertThat(record.f, is(Float.valueOf("3.4028234663852887E38")));
             assertThat(record.d, is(Double.valueOf("1.7976931348623158E308")));
@@ -279,30 +279,30 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 19) {
             // 最小置-1（文字列型）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
             
             assertThat(record.f, is(Float.valueOf("-3.40282346638528E38")));
             assertThat(record.d, is(Double.valueOf("-1.7976931348623158E308")));
             
         } else if(record.no == 20) {
             // 最大置+1（数値型）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
             
             assertThat(record.f, is(Float.valueOf("9.99999999999999E307")));
             assertThat(record.d, is(Double.valueOf("9.99999999999999E307")));
             
         } else if(record.no == 21) {
             // 最小置-1（数値型）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
             
             assertThat(record.f, is(Float.valueOf("-9.99999999999999E307")));
             assertThat(record.d, is(Double.valueOf("-9.99999999999999E307")));
@@ -327,7 +327,7 @@ public class NumberCellConverterTest {
      * @param record
      * @param errors
      */
-    private void assertRecord(final WrapperRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final WrapperRecord record, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
@@ -469,7 +469,7 @@ public class NumberCellConverterTest {
      * @param record
      * @param errors
      */
-    private void assertRecord(final OtherRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final OtherRecord record, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
@@ -515,7 +515,7 @@ public class NumberCellConverterTest {
      * @param record
      * @param errors
      */
-    private void assertRecord(final FormattedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord record, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
@@ -559,10 +559,10 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 5) {
             // 最大置+1
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
             
 //            assertThat(record.f, is(Float.valueOf("3.4028234663852887E38")));
 //            assertThat(record.d, is(Double.valueOf("1.7976931348623158E308")));
@@ -579,22 +579,22 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 7) {
             // 最小置-1
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
             
 //            assertThat(record.f, is(Float.valueOf("-3.40282346638528E38")));
 //            assertThat(record.d, is(Double.valueOf("-1.7976931348623158E308")));
             
         } else if(record.no == 8) {
             // 不正な値（数値以外）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("f"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("d"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("f"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("d"))).isConversionFailure(), is(true));
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
@@ -609,7 +609,7 @@ public class NumberCellConverterTest {
      * @param record
      * @param errors
      */
-    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), record.getClass().getSimpleName(), record.no, record.comment);
@@ -841,7 +841,7 @@ public class NumberCellConverterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "convert_number.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
@@ -853,9 +853,8 @@ public class NumberCellConverterTest {
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
             
-            SheetBindingErrors errors = new SheetBindingErrors(NumberSheet.class);
-            
-            NumberSheet sheet = mapper.load(in, NumberSheet.class, errors);
+            SheetBindingErrors<NumberSheet> errors = mapper.loadDetail(in, NumberSheet.class);
+            NumberSheet sheet = errors.getTarget();
             
             if(sheet.primitiveRecords != null) {
                 assertThat(sheet.primitiveRecords, hasSize(outSheet.primitiveRecords.size()));
@@ -906,7 +905,7 @@ public class NumberCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final PrimitiveRecord inRecord, final PrimitiveRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final PrimitiveRecord inRecord, final PrimitiveRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -928,7 +927,7 @@ public class NumberCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final WrapperRecord inRecord, final WrapperRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final WrapperRecord inRecord, final WrapperRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -963,7 +962,7 @@ public class NumberCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final OtherRecord inRecord, final OtherRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final OtherRecord inRecord, final OtherRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -989,7 +988,7 @@ public class NumberCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -1024,7 +1023,7 @@ public class NumberCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);

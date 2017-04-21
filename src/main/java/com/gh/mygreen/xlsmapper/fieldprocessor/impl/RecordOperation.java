@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Cell;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 
 /**
@@ -157,7 +157,7 @@ public class RecordOperation {
      * @param address アドレス情報
      * @throws NullPointerException {@literal address == null.}
      */
-    public void setupCellPositoin(final CellAddress address) {
+    public void setupCellPositoin(final CellPosition address) {
         ArgUtils.notNull(address, "address");
         setupCellPositoin(address.getRow(), address.getColumn());
     }

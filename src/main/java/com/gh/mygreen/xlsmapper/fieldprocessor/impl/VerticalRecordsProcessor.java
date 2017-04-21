@@ -32,7 +32,7 @@ import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
@@ -57,7 +57,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.RecordHeader;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordsProcessorUtil;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
 import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
@@ -79,7 +79,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
-            final FieldAccessor accessor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
@@ -134,10 +134,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     }
     
    private List<?> loadRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAccessor accessor,
-           final Class<?> recordClass, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+           final Class<?> recordClass, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         // get table starting position
-        final Optional<CellAddress> initPosition = getHeaderPosition(sheet, anno, accessor, config);
+        final Optional<CellPosition> initPosition = getHeaderPosition(sheet, anno, accessor, config);
         if(!initPosition.isPresent()) {
             return null;
         }
@@ -193,7 +193,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // データ行の開始位置の調整
         hColumn += anno.headerRight();
-        CellAddress startPosition = CellAddress.of(initRow, hColumn);
+        CellPosition startPosition = CellPosition.of(initRow, hColumn);
         
         // 独自の開始位置を指定する場合
         final Optional<XlsRecordFinder> finderAnno = accessor.getAnnotation(XlsRecordFinder.class);
@@ -208,9 +208,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
    
    private List<?> loadRecords(final Sheet sheet, final List<RecordHeader> headers,
            final XlsVerticalRecords anno,
-           final CellAddress initPosition, final int parentMergedSize,
+           final CellPosition initPosition, final int parentMergedSize,
            final FieldAccessor accessor, final Class<?> recordClass,
-           final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+           final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
        
         final List<Object> result = new ArrayList<>();
         
@@ -264,7 +264,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             final List<MergedRecord> mergedRecords = new ArrayList<>();
             
-            loadMapColumns(sheet, headers, mergedRecords, CellAddress.of(initRow, hColumn), record, config, work);
+            loadMapColumns(sheet, headers, mergedRecords, CellPosition.of(initRow, hColumn), record, config, work);
             
             for(int i=0; i < headers.size() && hColumn < POIUtils.getColumns(sheet); i++){
                 final RecordHeader headerInfo = headers.get(i);
@@ -345,7 +345,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     }
                     
                     // set for value
-                    property.setPosition(record, CellAddress.of(valueCell));
+                    property.setPosition(record, CellPosition.of(valueCell));
                     property.setLabel(record, headerInfo.getLabel());
                     
                     final CellConverter<?> converter = getCellConverter(property, config);
@@ -362,7 +362,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
             
             // execute nested record
-            final int skipSize = loadNestedRecords(sheet, headers, mergedRecords, anno, CellAddress.of(initRow, hColumn), record, config, work);
+            final int skipSize = loadNestedRecords(sheet, headers, mergedRecords, anno, CellPosition.of(initRow, hColumn), record, config, work);
             if(parentMergedSize > 0 && skipSize > 0 && (hColumn + skipSize) > maxColumn) {
                 // check over merged cell.
                 String message = String.format("Over merged size. In sheet '%s' with columnIndex=%d, over the columnIndex=%s.",
@@ -418,12 +418,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * @throws AnnotationInvalidException アノテーションの値が不正で、表の開始位置が位置が見つからない場合。
      * @throws CellNotFoundException 指定したラベルが見つからない場合。
      */
-    private Optional<CellAddress> getHeaderPosition(final Sheet sheet, final XlsVerticalRecords anno,
-            final FieldAccessor accessor, final XlsMapperConfig config) throws AnnotationInvalidException, CellNotFoundException {
+    private Optional<CellPosition> getHeaderPosition(final Sheet sheet, final XlsVerticalRecords anno,
+            final FieldAccessor accessor, final Configuration config) throws AnnotationInvalidException, CellNotFoundException {
         
         if(Utils.isNotEmpty(anno.headerAddress())) {
             try {
-                return Optional.of(CellAddress.of(anno.headerAddress()));
+                return Optional.of(CellPosition.of(anno.headerAddress()));
                 
             } catch(IllegalArgumentException e) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
@@ -443,13 +443,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     // 表の見出しが上にある場合、左側に補正する
                     int initColumn = labelCell.getColumnIndex() + anno.right()-1;
                     int initRow = labelCell.getRowIndex() + anno.bottom();
-                    return Optional.of(CellAddress.of(initRow, initColumn));
+                    return Optional.of(CellPosition.of(initRow, initColumn));
                     
                 } else {
                     
                     int initColumn = labelCell.getColumnIndex() + anno.right();
                     int initRow = labelCell.getRowIndex();
-                    return Optional.of(CellAddress.of(initRow, initColumn));
+                    return Optional.of(CellPosition.of(initRow, initColumn));
                     
                 }
                 
@@ -481,7 +481,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         .format());
                 
             }
-            return Optional.of(CellAddress.of(anno.headerRow(), anno.headerColumn()));
+            return Optional.of(CellPosition.of(anno.headerRow(), anno.headerColumn()));
         }
     }
     
@@ -495,7 +495,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * @return 引数「headers」の該当する要素のインデックス番号。不明な場合は0を返す。
      */
     private int getStartHeaderIndexForLoading(final List<RecordHeader> headers, Class<?> recordClass, 
-            final AnnotationReader annoReader,  final XlsMapperConfig config) {
+            final AnnotationReader annoReader,  final Configuration config) {
         
         // レコードクラスが不明の場合、0を返す。
         if((recordClass == null || recordClass.equals(Object.class))) {
@@ -519,7 +519,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     }
     
     private void loadMapColumns(final Sheet sheet, final List<RecordHeader> headers, final List<MergedRecord> mergedRecords,
-            final CellAddress beginPosition, final Object record, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final CellPosition beginPosition, final Object record, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
@@ -557,7 +557,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 if(foundPreviousColumn){
                     final Cell cell = POIUtils.getCell(sheet, beginPosition.getColumn(), hRow);
-                    property.setMapColumnPosition(record, CellAddress.of(cell), headerInfo.getLabel());
+                    property.setMapColumnPosition(record, CellPosition.of(cell), headerInfo.getLabel());
                     property.setMapColumnLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
                     
                     CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
@@ -588,9 +588,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     @SuppressWarnings("unchecked")
     private int loadNestedRecords(final Sheet sheet, final List<RecordHeader> headers, final List<MergedRecord> mergedRecords,
             final XlsVerticalRecords anno,
-            final CellAddress beginPosition, 
+            final CellPosition beginPosition, 
             final Object record,
-            final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         // 読み飛ばす、レコード数。
         // 基本的に結合している個数による。
@@ -698,7 +698,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     
     @Override
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
-            final FieldAccessor accessor, final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final FieldAccessor accessor, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         // ラベルの設定
         if(Utils.isNotEmpty(anno.tableLabel())) {
@@ -746,12 +746,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     
     private void saveRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAccessor accessor, 
             final Class<?> recordClass, final List<Object> result,
-            final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         RecordsProcessorUtil.checkSavingNestedRecordClass(recordClass, accessor, work.getAnnoReader());
         
         // get table starting position
-        final Optional<CellAddress> initPosition = getHeaderPosition(sheet, anno, accessor, config);
+        final Optional<CellPosition> initPosition = getHeaderPosition(sheet, anno, accessor, config);
         if(!initPosition.isPresent()) {
             return;
         }
@@ -802,7 +802,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // データ行の開始位置の調整
         hColumn += anno.headerRight();
-        CellAddress startPosition = CellAddress.of(initRow, hColumn);
+        CellPosition startPosition = CellPosition.of(initRow, hColumn);
         
         // 独自の開始位置を指定する場合
         final Optional<XlsRecordFinder> finderAnno = accessor.getAnnotation(XlsRecordFinder.class);
@@ -872,9 +872,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     
     private void saveRecords(final Sheet sheet, final List<RecordHeader> headers,
             final XlsVerticalRecords anno,
-            final CellAddress initPosition, final AtomicInteger nestedRecordSize,
+            final CellPosition initPosition, final AtomicInteger nestedRecordSize,
             final FieldAccessor accessor, final Class<?> recordClass, final List<Object> result,
-            final XlsMapperConfig config, final SavingWorkObject work,
+            final Configuration config, final SavingWorkObject work,
             final List<CellRangeAddress> mergedRanges, final RecordOperation recordOperation) throws XlsMapperException {
 
         final int initColumn = initPosition.getColumn();
@@ -945,7 +945,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             // 書き込んだセルの座標
             // ネストしたときに、結合するための情報として使用する。
-            List<CellAddress> valueCellPositions = new ArrayList<>();
+            List<CellPosition> valueCellPositions = new ArrayList<>();
             
             // hRowという上限がない
             for(int i=0; i < headers.size(); i++) {
@@ -1046,15 +1046,15 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                             
                         }
                         
-                        valueCellPositions.add(CellAddress.of(valueCell));
+                        valueCellPositions.add(CellPosition.of(valueCell));
                         
                         // set for cell value
-                        property.setPosition(record, CellAddress.of(valueCell));
+                        property.setPosition(record, CellPosition.of(valueCell));
                         property.setLabel(record, headerInfo.getLabel());
                         
                         final CellConverter converter = getCellConverter(property, config);
                         try {
-                            converter.toCell(property, property.getValue(record), record, sheet, CellAddress.of(valueCell), config);
+                            converter.toCell(property, property.getValue(record), record, sheet, CellPosition.of(valueCell), config);
                         } catch(TypeBindException e) {
                             work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getLabel());
                             if(!config.isContinueTypeBindFailure()) {
@@ -1098,13 +1098,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             // マップ形式のカラムを出力する
             if(record != null) {
-                saveMapColumn(sheet, headers, valueCellPositions, CellAddress.of(initRow, hColumn), record, terminal, anno, config, work, recordOperation);
+                saveMapColumn(sheet, headers, valueCellPositions, CellPosition.of(initRow, hColumn), record, terminal, anno, config, work, recordOperation);
             }
             
             // execute nested record.
             int skipSize = 0;
             if(record != null) {
-                skipSize = saveNestedRecords(sheet, headers, valueCellPositions, anno, CellAddress.of(initRow, hColumn), record,
+                skipSize = saveNestedRecords(sheet, headers, valueCellPositions, anno, CellPosition.of(initRow, hColumn), record,
                         config, work, mergedRanges, recordOperation);
                 nestedRecordSize.addAndGet(skipSize);
             }
@@ -1150,7 +1150,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * @return 引数「headers」の該当する要素のインデックス番号。不明な場合は、0を返す。
      */
     private int getStartHeaderIndexForSaving(final List<RecordHeader> headers, Class<?> recordClass,
-            final AnnotationReader annoReader, final XlsMapperConfig config) {
+            final AnnotationReader annoReader, final Configuration config) {
         
         // レコードクラスが不明の場合、0を返す。
         if((recordClass == null || recordClass.equals(Object.class))) {
@@ -1181,7 +1181,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * @return
      */
     private boolean processSavingMergedCell(final Cell currentCell, final Sheet sheet,
-            final List<CellRangeAddress> mergedRanges, final XlsMapperConfig config) {
+            final List<CellRangeAddress> mergedRanges, final Configuration config) {
         
         final int row = currentCell.getRowIndex();
         final int column = currentCell.getColumnIndex();
@@ -1230,9 +1230,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
     }
     
-    private void saveMapColumn(final Sheet sheet, final List<RecordHeader> headers, final List<CellAddress> valueCellPositions,
-            final CellAddress beginPosition, final Object record, final RecordTerminal terminal,
-            final XlsVerticalRecords anno, final XlsMapperConfig config, final SavingWorkObject work,
+    private void saveMapColumn(final Sheet sheet, final List<RecordHeader> headers, final List<CellPosition> valueCellPositions,
+            final CellPosition beginPosition, final Object record, final RecordTerminal terminal,
+            final XlsVerticalRecords anno, final Configuration config, final SavingWorkObject work,
             final RecordOperation recordOperation) throws XlsMapperException {
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
@@ -1310,15 +1310,15 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         }
                     }
                     
-                    valueCellPositions.add(CellAddress.of(cell));
+                    valueCellPositions.add(CellPosition.of(cell));
                     
                     // セルの値を出力する
-                    property.setMapColumnPosition(record, CellAddress.of(cell), headerInfo.getLabel());
+                    property.setMapColumnPosition(record, CellPosition.of(cell), headerInfo.getLabel());
                     property.setMapColumnLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
                     
                     try {
                         Object itemValue = property.getValueOfMap(headerInfo.getLabel(), record);
-                        converter.toCell(property, itemValue, record, sheet, CellAddress.of(cell), config);
+                        converter.toCell(property, itemValue, record, sheet, CellPosition.of(cell), config);
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, cell, String.format("%s[%s]", property.getName(), headerInfo.getLabel()), headerInfo.getLabel());
                         if(!config.isContinueTypeBindFailure()) {
@@ -1335,11 +1335,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     }
     
     @SuppressWarnings("unchecked")
-    private int saveNestedRecords(final Sheet sheet, final List<RecordHeader> headers, final List<CellAddress> valueCellPositions,
+    private int saveNestedRecords(final Sheet sheet, final List<RecordHeader> headers, final List<CellPosition> valueCellPositions,
             final XlsVerticalRecords anno,
-            final CellAddress beginPositoin,
+            final CellPosition beginPositoin,
             final Object record,
-            final XlsMapperConfig config, final SavingWorkObject work,
+            final Configuration config, final SavingWorkObject work,
             final List<CellRangeAddress> mergedRanges, final RecordOperation recordOperation) throws XlsMapperException {
         
         int skipSize = 0;
@@ -1448,14 +1448,14 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
      * @param valueCellPositions 結合する開始位置のセルのアドレス
      */
     private void processSavingNestedMergedRecord(final Sheet sheet, final int mergedSize,
-            final List<CellAddress> valueCellPositions) {
+            final List<CellPosition> valueCellPositions) {
         
         if(mergedSize <= 1) {
             return;
         }
         
         // ネストした場合、上のセルのスタイルをコピーして、結合する
-        for(CellAddress position : valueCellPositions) {
+        for(CellPosition position : valueCellPositions) {
             Cell valueCell = POIUtils.getCell(sheet, position);
             if(valueCell == null) {
                 continue;

@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 
 /**
- * {@link CellAddress}のテスタ
+ * {@link CellPosition}のテスタ
  *
  * @since 2.0
  * @author T.TSUCHIE
@@ -18,19 +18,19 @@ public class CellAddressTest {
     public void testOfString() {
         
         {
-            CellAddress address = CellAddress.of("A1");
+            CellPosition address = CellPosition.of("A1");
             assertThat(0).isEqualTo(address.getRow());
             assertThat(0).isEqualTo(address.getColumn());
         }
         
         {
-            CellAddress address =  CellAddress.of("AX232");
+            CellPosition address =  CellPosition.of("AX232");
             assertThat(231).isEqualTo(address.getRow());
             assertThat(49).isEqualTo(address.getColumn());
         }
         
         {
-            assertThatThrownBy(() -> CellAddress.of("a32A132"))
+            assertThatThrownBy(() -> CellPosition.of("a32A132"))
                 .isInstanceOf(IllegalArgumentException.class);
         }
         

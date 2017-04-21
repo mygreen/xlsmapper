@@ -11,14 +11,14 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -35,7 +35,7 @@ import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 public abstract class AbstractCellConverter<T> implements CellConverter<T> {
     
     @Override
-    public T toObject(final Cell cell, final FieldAccessor accessor, final XlsMapperConfig config)
+    public T toObject(final Cell cell, final FieldAccessor accessor, final Configuration config)
             throws XlsMapperException {
         
         final Optional<XlsTrim> trimAnno = accessor.getAnnotation(XlsTrim.class);
@@ -80,7 +80,7 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
      * @param config システム情報設定
      * @return trueの場合、空と判定する。
      */
-    protected boolean isEmptyCell(final String formattedValue, final Cell cell, final XlsMapperConfig config) {
+    protected boolean isEmptyCell(final String formattedValue, final Cell cell, final Configuration config) {
         return formattedValue.isEmpty();
     }
     
@@ -92,7 +92,7 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
      * @return 変換した値を返す。
      * @throws TypeBindException 変換に失敗した場合
      */
-    protected abstract T parseDefaultValue(String defaultValue, FieldAccessor accessor, XlsMapperConfig config) throws TypeBindException;
+    protected abstract T parseDefaultValue(String defaultValue, FieldAccessor accessor, Configuration config) throws TypeBindException;
     
     /**
      * セルをJavaのオブジェクト型に変換します。
@@ -103,11 +103,11 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
      * @return 変換した値を返す。
      * @throws TypeBindException 変換に失敗した場合
      */
-    protected abstract T parseCell(Cell evaluatedCell, String formattedValue, FieldAccessor accessor, XlsMapperConfig config) throws TypeBindException;
+    protected abstract T parseCell(Cell evaluatedCell, String formattedValue, FieldAccessor accessor, Configuration config) throws TypeBindException;
     
     @Override
     public Cell toCell(final FieldAccessor accessor, final T targetValue, final Object targetBean, final Sheet sheet,
-            final CellAddress address, final XlsMapperConfig config) throws XlsMapperException {
+            final CellPosition address, final Configuration config) throws XlsMapperException {
         
         final Cell cell = POIUtils.getCell(sheet, address);
         
@@ -149,7 +149,7 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
      * @return trueの場合、空と判定する。
      */
     @SuppressWarnings("rawtypes")
-    protected boolean isEmptyValue(final T obj, final FieldAccessor accessor, final XlsMapperConfig config) {
+    protected boolean isEmptyValue(final T obj, final FieldAccessor accessor, final Configuration config) {
         if(obj == null) {
             return true;
         }
@@ -185,7 +185,7 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
      * @param config システム情報の設定
      * @throws TypeBindException 変換に失敗した場合
      */
-    protected abstract void setupCell(Cell cell, Optional<T> cellValue, FieldAccessor accessor, XlsMapperConfig config) throws TypeBindException;
+    protected abstract void setupCell(Cell cell, Optional<T> cellValue, FieldAccessor accessor, Configuration config) throws TypeBindException;
     
     /**
      * 初期値の型変換失敗したときの例外{@link TypeBindException}をスローします。

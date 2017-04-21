@@ -18,7 +18,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -39,7 +39,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 public abstract class AbstractNumberCellConverter<T extends Number> extends AbstractCellConverter<T> {
     
     @Override
-    protected T parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected T parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         final Optional<XlsNumberConverter> convertAnno = accessor.getAnnotation(XlsNumberConverter.class);
@@ -95,7 +95,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
     
     @SuppressWarnings("unchecked")
     @Override
-    protected T parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected T parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         final Optional<XlsNumberConverter> convertAnno = accessor.getAnnotation(XlsNumberConverter.class);
@@ -256,7 +256,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
     protected abstract T convertTypeValue(final BigDecimal value) throws ArithmeticException;
     
     @Override
-    protected void setupCell(final Cell cell, final Optional<T> cellValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected void setupCell(final Cell cell, final Optional<T> cellValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         Optional<XlsNumberConverter> converterAnno = accessor.getAnnotation(XlsNumberConverter.class);

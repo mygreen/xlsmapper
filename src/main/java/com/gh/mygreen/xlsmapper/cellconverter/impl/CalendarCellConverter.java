@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -24,7 +24,7 @@ public class CalendarCellConverter extends AbstractCellConverter<Calendar> {
     private DateCellConverter dateConverter = new DateCellConverter();
     
     @Override
-    protected Calendar parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected Calendar parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         Date date = dateConverter.parseDefaultValue(defaultValue, accessor, config);
@@ -35,7 +35,7 @@ public class CalendarCellConverter extends AbstractCellConverter<Calendar> {
     }
     
     @Override
-    protected Calendar parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected Calendar parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         Date date = dateConverter.parseCell(evaluatedCell, formattedValue, accessor, config);
@@ -50,7 +50,7 @@ public class CalendarCellConverter extends AbstractCellConverter<Calendar> {
     }
 
     @Override
-    protected void setupCell(final Cell cell, Optional<Calendar> cellValue, final FieldAccessor accessor, final XlsMapperConfig config)
+    protected void setupCell(final Cell cell, Optional<Calendar> cellValue, final FieldAccessor accessor, final Configuration config)
             throws TypeBindException {
         
         Optional<Date> date = cellValue.map(c -> c.getTime());

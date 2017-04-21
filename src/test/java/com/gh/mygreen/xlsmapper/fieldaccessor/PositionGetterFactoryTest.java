@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 
 /**
@@ -94,7 +94,7 @@ public class PositionGetterFactoryTest {
         }
         
         /**
-         * マップのタイプが{@link CellAddress}の場合
+         * マップのタイプが{@link CellPosition}の場合
          */
         @Test
         public void testCreateWithCellAddress() {
@@ -109,7 +109,7 @@ public class PositionGetterFactoryTest {
                 PositionGetter accessor = positionGetter.get();
                 
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 assertThat(actual).isEmpty();
             }
             
@@ -118,12 +118,12 @@ public class PositionGetterFactoryTest {
                 CellAddressRecord record = new CellAddressRecord();
                 
                 PositionGetter accessor = positionGetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 record.positions = new HashMap<>();
                 record.positions.put("test", position);
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).contains(position);
             }
@@ -136,7 +136,7 @@ public class PositionGetterFactoryTest {
                 
                 record.positions = new HashMap<>();
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).isEmpty();
             }
@@ -159,7 +159,7 @@ public class PositionGetterFactoryTest {
                 PositionGetter accessor = positionGetter.get();
                 
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 assertThat(actual).isEmpty();
             }
             
@@ -168,12 +168,12 @@ public class PositionGetterFactoryTest {
                 PointRecord record = new PointRecord();
                 
                 PositionGetter accessor = positionGetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 record.positions = new HashMap<>();
                 record.positions.put("test", position.toPoint());
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).contains(position);
             }
@@ -186,7 +186,7 @@ public class PositionGetterFactoryTest {
                 
                 record.positions = new HashMap<>();
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).isEmpty();
             }
@@ -209,7 +209,7 @@ public class PositionGetterFactoryTest {
                 PositionGetter accessor = positionGetter.get();
                 
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 assertThat(actual).isEmpty();
             }
             
@@ -218,12 +218,12 @@ public class PositionGetterFactoryTest {
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
                 PositionGetter accessor = positionGetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 
                 record.positions = new HashMap<>();
-                record.positions.put("test", position.toPoiCellAddress());
+                record.positions.put("test", position.toCellAddress());
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).contains(position);
             }
@@ -236,7 +236,7 @@ public class PositionGetterFactoryTest {
                 
                 record.positions = new HashMap<>();
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).isEmpty();
             }
@@ -249,7 +249,7 @@ public class PositionGetterFactoryTest {
          */
         private static class NoMapRecord {
             
-            CellAddress positions;
+            CellPosition positions;
             
         }
         
@@ -265,7 +265,7 @@ public class PositionGetterFactoryTest {
         
         private static class CellAddressRecord {
             
-            Map<String, CellAddress> positions;
+            Map<String, CellPosition> positions;
             
         }
         
@@ -307,10 +307,10 @@ public class PositionGetterFactoryTest {
                 CellAddressRecord record = new CellAddressRecord();
                 
                 PositionGetter accessor = positionGetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 record.address = position;
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).contains(position);
             }
@@ -328,10 +328,10 @@ public class PositionGetterFactoryTest {
                 PointRecord record = new PointRecord();
                 
                 PositionGetter accessor = positionGetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 record.address = position.toPoint();
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).contains(position);
             }
@@ -349,10 +349,10 @@ public class PositionGetterFactoryTest {
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
                 PositionGetter accessor = positionGetter.get();
-                CellAddress position = CellAddress.of("B24");
-                record.address = position.toPoiCellAddress();
+                CellPosition position = CellPosition.of("B24");
+                record.address = position.toCellAddress();
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).contains(position);
             }
@@ -370,9 +370,9 @@ public class PositionGetterFactoryTest {
         
         private static class CellAddressRecord {
             
-            private CellAddress address;
+            private CellPosition address;
             
-            public CellAddress getTestPosition() {
+            public CellPosition getTestPosition() {
                 return address;
             }
             
@@ -434,10 +434,10 @@ public class PositionGetterFactoryTest {
                 CellAddressRecord record = new CellAddressRecord();
                 
                 PositionGetter accessor = positionGetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 record.testPosition = position;
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).contains(position);
             }
@@ -455,10 +455,10 @@ public class PositionGetterFactoryTest {
                 PointRecord record = new PointRecord();
                 
                 PositionGetter accessor = positionGetter.get();
-                CellAddress position = CellAddress.of("B24");
+                CellPosition position = CellPosition.of("B24");
                 record.testPosition = position.toPoint();
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).contains(position);
             }
@@ -476,10 +476,10 @@ public class PositionGetterFactoryTest {
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
                 PositionGetter accessor = positionGetter.get();
-                CellAddress position = CellAddress.of("B24");
-                record.testPosition = position.toPoiCellAddress();
+                CellPosition position = CellPosition.of("B24");
+                record.testPosition = position.toCellAddress();
                 
-                Optional<CellAddress> actual = accessor.get(record);
+                Optional<CellPosition> actual = accessor.get(record);
                 
                 assertThat(actual).contains(position);
             }
@@ -496,7 +496,7 @@ public class PositionGetterFactoryTest {
         
         private static class CellAddressRecord {
             
-            private CellAddress testPosition;
+            private CellPosition testPosition;
             
             
         }

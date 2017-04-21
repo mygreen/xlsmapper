@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -31,7 +31,7 @@ public class SetCellConverter extends AbstractCellConverter<Set> {
     @SuppressWarnings("unchecked")
     @Override
     protected Set parseDefaultValue(final String defaultValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         List list = listConverter.parseDefaultValue(defaultValue, accessor, config);
         
@@ -44,7 +44,7 @@ public class SetCellConverter extends AbstractCellConverter<Set> {
     @SuppressWarnings("unchecked")
     @Override
     protected Set parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         List list = listConverter.parseCell(evaluatedCell, formattedValue, accessor, config);
         
@@ -58,7 +58,7 @@ public class SetCellConverter extends AbstractCellConverter<Set> {
     @SuppressWarnings("unchecked")
     @Override
     protected void setupCell(final Cell cell, final Optional<Set> cellValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         Optional<List> set = cellValue.map(v -> new ArrayList<>(v));
         

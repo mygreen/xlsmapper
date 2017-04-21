@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.CellFormatter;
 import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
@@ -155,7 +155,7 @@ public class POIUtils {
      * @return セル
      * @throws NullPointerException {@link sheet == null or address == null.}
      */
-    public static Cell getCell(final Sheet sheet, final CellAddress address) {
+    public static Cell getCell(final Sheet sheet, final CellPosition address) {
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notNull(address, "address");
         return getCell(sheet, address.getColumn(), address.getRow());
@@ -998,7 +998,7 @@ public class POIUtils {
      * @throws XlsMapperException
      */
     public static String getFormulaValue(final FieldAccessor accessor, final XlsFormula formulaAnno,
-            final XlsMapperConfig config, final Cell cell, final Object targetBean) throws XlsMapperException {
+            final Configuration config, final Cell cell, final Object targetBean) throws XlsMapperException {
         
         if(Utils.isNotEmpty(formulaAnno.value())) {
             final Map<String, Object> vars = new HashMap<>();
@@ -1053,19 +1053,19 @@ public class POIUtils {
                 if(Cell.class.isAssignableFrom(paramTypes[i])) {
                     paramValues[i] = cell;
                     
-                } else if(CellAddress.class.isAssignableFrom(paramTypes[i])) {
-                    paramValues[i] = CellAddress.of(cell);
+                } else if(CellPosition.class.isAssignableFrom(paramTypes[i])) {
+                    paramValues[i] = CellPosition.of(cell);
                     
                 } else if(Point.class.isAssignableFrom(paramTypes[i])) {
-                    paramValues[i] = CellAddress.of(cell).toPoint();
+                    paramValues[i] = CellPosition.of(cell).toPoint();
                     
                 } else if(org.apache.poi.ss.util.CellAddress.class.isAssignableFrom(paramTypes[i])) {
-                    paramValues[i] = CellAddress.of(cell).toPoiCellAddress();
+                    paramValues[i] = CellPosition.of(cell).toCellAddress();
                     
                 } else if(Sheet.class.isAssignableFrom(paramTypes[i])) {
                     paramValues[i] = cell.getSheet();
                     
-                } else if(XlsMapperConfig.class.isAssignableFrom(paramTypes[i])) {
+                } else if(Configuration.class.isAssignableFrom(paramTypes[i])) {
                     paramValues[i] = config;
                     
                 } else {
@@ -1106,7 +1106,7 @@ public class POIUtils {
      * @throws XlsMapperException
      */
     public static void setupCellFormula(final FieldAccessor accessor, final XlsFormula formulaAnno,
-            final XlsMapperConfig config, final Cell cell, final Object targetBean) throws XlsMapperException {
+            final Configuration config, final Cell cell, final Object targetBean) throws XlsMapperException {
         
         ArgUtils.notNull(accessor, "adaptor");
         ArgUtils.notNull(formulaAnno, "formulaAnno");

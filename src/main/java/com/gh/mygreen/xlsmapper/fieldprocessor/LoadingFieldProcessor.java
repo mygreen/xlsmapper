@@ -5,7 +5,7 @@ import java.lang.annotation.Annotation;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 
@@ -28,6 +28,6 @@ public interface LoadingFieldProcessor<A extends Annotation> extends FieldProces
      * @param work 一時オブジェクト
      * @throws XlsMapperException 
      */
-    void loadProcess(Sheet sheet, Object beansObj, A anno, FieldAccessor accessor, XlsMapperConfig config, LoadingWorkObject work) throws XlsMapperException;
+    void loadProcess(Sheet sheet, Object beansObj, A anno, FieldAccessor accessor, Configuration config, LoadingWorkObject work) throws XlsMapperException;
     
 }

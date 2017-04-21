@@ -4,7 +4,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -22,7 +22,7 @@ public class SheetNameProcessor extends AbstractFieldProcessor<XlsSheetName> {
 
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsSheetName anno, final FieldAccessor accessor,
-            final XlsMapperConfig config, final LoadingWorkObject work) {
+            final Configuration config, final LoadingWorkObject work) {
         
         final String sheetName = sheet.getSheetName();
         accessor.setValue(beansObj, sheetName);
@@ -31,7 +31,7 @@ public class SheetNameProcessor extends AbstractFieldProcessor<XlsSheetName> {
     
     @Override
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsSheetName anno, final FieldAccessor accessor,
-            final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         final String sheetName = sheet.getSheetName();
         accessor.setValue(targetObj, sheetName);

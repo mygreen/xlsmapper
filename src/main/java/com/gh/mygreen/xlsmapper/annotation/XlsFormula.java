@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 /**
  * 書き込み時にセルの数式を定義するためのアノテーションです。
@@ -23,7 +23,7 @@ import com.gh.mygreen.xlsmapper.util.CellAddress;
  * <p>数式を直接指定する場合は、EL式の1つの実装である <a href="http://commons.apache.org/proper/commons-jexl/" target="_blnak">JEXL</a> 
  *    が利用できますが、実装を切り替えたり、デフォルトの関数を登録したりとカスタマイズができます。
  * </p>
- * <p>設定を変更したい場合は、{@link XlsMapperConfig#getFormulaFormatter()} の値を変更します。</p>
+ * <p>設定を変更したい場合は、{@link Configuration#getFormulaFormatter()} の値を変更します。</p>
  * 
  * <pre class="highlight"><code class="java">
  * // 数式をフォーマットする際のEL関数を登録する。
@@ -142,9 +142,9 @@ public @interface XlsFormula {
      *        <li>セルのオブジェクト : {@link Cell}</li>
      *        <li>シートのオブジェクト : {@link Sheet}</li>
      *        <li>セルの座標 : {@link Point}。0から始まります。</li>
-     *        <li>セルの座標 : {@link CellAddress}。</li>
+     *        <li>セルの座標 : {@link CellPosition}。</li>
      *        <li>セルの座標 : {@link org.apache.poi.ss.util.CellAddress}。</li>
-     *        <li>システム設定 : {@link XlsMapperConfig}</li>
+     *        <li>システム設定 : {@link Configuration}</li>
      *      </ul>
      *    </li>
      *    <li>戻り値は、String型。

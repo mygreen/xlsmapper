@@ -58,12 +58,11 @@ public class BooleanCellConverterTest {
     @Test
     public void test_load_boolean() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(BooleanSheet.class);
-            
-            BooleanSheet sheet = mapper.load(in, BooleanSheet.class, errors);
+            SheetBindingErrors<BooleanSheet> errors = mapper.loadDetail(in, BooleanSheet.class);
+            BooleanSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 for(SimpleRecord record : sheet.simpleRecords) {
@@ -91,7 +90,7 @@ public class BooleanCellConverterTest {
      * @param record
      * @param errors
      */
-    private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord record, final SheetBindingErrors<?> errors) {
         if(record.no == 1) {
             // 空文字
             assertThat(record.b1, is(false));
@@ -119,13 +118,13 @@ public class BooleanCellConverterTest {
             
         } else if(record.no == 6) {
             // 不正な文字
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b1"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b2"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b1"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b2"))).isConversionFailure(), is(true));
             
         } else if(record.no == 7) {
             // 空白の文字
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b1"))).isTypeBindFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b2"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b1"))).isConversionFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b2"))).isConversionFailure(), is(true));
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
@@ -137,7 +136,7 @@ public class BooleanCellConverterTest {
      * @param record
      * @param errors
      */
-    private void assertRecord(final FormattedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -199,7 +198,7 @@ public class BooleanCellConverterTest {
      * @param record
      * @param errors
      */
-    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -269,7 +268,7 @@ public class BooleanCellConverterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "convert_boolean.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
@@ -281,9 +280,8 @@ public class BooleanCellConverterTest {
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
             
-            SheetBindingErrors errors = new SheetBindingErrors(BooleanSheet.class);
-            
-            BooleanSheet sheet = mapper.load(in, BooleanSheet.class, errors);
+            SheetBindingErrors<BooleanSheet> errors = mapper.loadDetail(in, BooleanSheet.class);
+            BooleanSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
@@ -321,7 +319,7 @@ public class BooleanCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -338,7 +336,7 @@ public class BooleanCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -369,7 +367,7 @@ public class BooleanCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);

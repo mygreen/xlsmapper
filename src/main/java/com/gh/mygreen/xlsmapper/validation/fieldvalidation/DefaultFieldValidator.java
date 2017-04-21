@@ -1,11 +1,11 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
-import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import java.util.Set;
 
 
 /**
- * 何もしないフィールドValidator.
- * <p>CellFiledValidatorを組み立てる際に、ロジック上何か設定すべきときに利用する。
+ * 何もしないフィールドバリデータ。.
+ * <p>{@link FieldValidator}を組み立てる際に、ロジック上何か設定すべきときに利用します。</p>
  * 
  * @since 0.2.2
  * @author T.TSUCHIE
@@ -14,7 +14,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 public class DefaultFieldValidator<T> implements FieldValidator<T> {
     
     @Override
-    public boolean validate(final String fieldName, final T value, final SheetBindingErrors errors) {
+    public boolean validate(final CellField<T> cellField, final Set<Object> hints) {
         return true;
     }
     

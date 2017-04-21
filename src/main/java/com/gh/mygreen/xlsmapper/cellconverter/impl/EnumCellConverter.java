@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsEnumConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
@@ -49,7 +49,7 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
     
     @SuppressWarnings("unchecked")
     @Override
-    protected Enum<?> parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected Enum<?> parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         final Optional<XlsEnumConverter> convertAnno = accessor.getAnnotation(XlsEnumConverter.class);
@@ -69,7 +69,7 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
     @SuppressWarnings("unchecked")
     @Override
     protected Enum parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         if(!formattedValue.isEmpty()) {
             
@@ -248,7 +248,7 @@ public class EnumCellConverter extends AbstractCellConverter<Enum> {
     
     @SuppressWarnings("unchecked")
     @Override
-    protected void setupCell(final Cell cell, final Optional<Enum> cellValue, final FieldAccessor accessor, final XlsMapperConfig config)
+    protected void setupCell(final Cell cell, final Optional<Enum> cellValue, final FieldAccessor accessor, final Configuration config)
             throws TypeBindException {
         
         final Optional<XlsEnumConverter> convertAnno = accessor.getAnnotation(XlsEnumConverter.class);

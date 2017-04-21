@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
@@ -69,7 +69,7 @@ public class MapColumnPositionSetterFactory {
     /**
      * {@link Map}フィールドに位置情報が格納されている場合。
      * <p>キーはフィールド名。</p>
-     * <p>マップの値は、{@link CellAddress}、{@link Point}、{@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
+     * <p>マップの値は、{@link CellPosition}、{@link Point}、{@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
      * 
      * @param beanClass フィールドが定義してあるクラスのインスタンス
      * @param fieldName フィールド名
@@ -95,17 +95,17 @@ public class MapColumnPositionSetterFactory {
         final Class<?> keyType = (Class<?>) type.getActualTypeArguments()[0];
         final Class<?> valueType = (Class<?>) type.getActualTypeArguments()[1];
         
-        if(keyType.equals(String.class) && valueType.equals(CellAddress.class)) {
+        if(keyType.equals(String.class) && valueType.equals(CellPosition.class)) {
             return Optional.of(new MapColumnPositionSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
                     try {
-                        Map<String, CellAddress> positionsMapObj = (Map<String, CellAddress>) positionsField.get(beanObj);
+                        Map<String, CellPosition> positionsMapObj = (Map<String, CellPosition>) positionsField.get(beanObj);
                         if(positionsMapObj == null) {
                             positionsMapObj = new LinkedHashMap<>();
                             positionsField.set(beanObj, positionsMapObj);
@@ -127,7 +127,7 @@ public class MapColumnPositionSetterFactory {
                 
                 @SuppressWarnings("unchecked")
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
@@ -154,7 +154,7 @@ public class MapColumnPositionSetterFactory {
                 
                 @SuppressWarnings("unchecked")
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
@@ -166,7 +166,7 @@ public class MapColumnPositionSetterFactory {
                         }
                         
                         final String mapKey = createMapKey(fieldName, key);
-                        positionsMapObj.put(mapKey, position.toPoiCellAddress());
+                        positionsMapObj.put(mapKey, position.toCellAddress());
                         
                     } catch (IllegalArgumentException | IllegalAccessException e) {
                         throw new RuntimeException("fail access positions field.", e);
@@ -186,7 +186,7 @@ public class MapColumnPositionSetterFactory {
     /**
      * setterメソッドによる位置情報を格納する場合。
      * <p>{@code set + <フィールド名> + Position}のメソッド名</p>
-     * <p>引数として、{@link CellAddress}、{@link Point}、{@code int（列番号）, int（行番号）}、 {@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
+     * <p>引数として、{@link CellPosition}、{@link Point}、{@code int（列番号）, int（行番号）}、 {@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
      * 
      * @param beanClass フィールドが定義してあるクラスのインスタンス
      * @param fieldName フィールド名
@@ -197,14 +197,14 @@ public class MapColumnPositionSetterFactory {
         final String positionMethodName = "set" + Utils.capitalize(fieldName) + "Position";
         
         try {
-            final Method method = beanClass.getDeclaredMethod(positionMethodName, String.class, CellAddress.class);
+            final Method method = beanClass.getDeclaredMethod(positionMethodName, String.class, CellPosition.class);
             method.setAccessible(true);
             
             return Optional.of(new MapColumnPositionSetter() {
                 
                 
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
@@ -230,7 +230,7 @@ public class MapColumnPositionSetterFactory {
                 
                 
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
@@ -256,12 +256,12 @@ public class MapColumnPositionSetterFactory {
                 
                 
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
                     try {
-                        method.invoke(beanObj, key, position.toPoiCellAddress());
+                        method.invoke(beanObj, key, position.toCellAddress());
                         
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                         throw new RuntimeException("fail access position field.", e);
@@ -282,7 +282,7 @@ public class MapColumnPositionSetterFactory {
                 
                 
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
@@ -307,7 +307,7 @@ public class MapColumnPositionSetterFactory {
     /**
      * フィールドによる位置情報を格納する場合。
      * <p>{@code <フィールド名> + Position}のメソッド名</p>
-     * <p>引数として、{@link CellAddress}、{@link Point}、 {@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
+     * <p>引数として、{@link CellPosition}、{@link Point}、 {@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
      * 
      * @param beanClass フィールドが定義してあるクラスのインスタンス
      * @param fieldName フィールド名
@@ -334,18 +334,18 @@ public class MapColumnPositionSetterFactory {
         final Class<?> keyType = (Class<?>) type.getActualTypeArguments()[0];
         final Class<?> valueType = (Class<?>) type.getActualTypeArguments()[1];
         
-        if(keyType.equals(String.class) && valueType.equals(CellAddress.class)) {
+        if(keyType.equals(String.class) && valueType.equals(CellPosition.class)) {
             
             return Optional.of(new MapColumnPositionSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
                    try {
-                       Map<String, CellAddress> positionMapObj = (Map<String, CellAddress>) positionField.get(beanObj);
+                       Map<String, CellPosition> positionMapObj = (Map<String, CellPosition>) positionField.get(beanObj);
                        if(positionMapObj == null) {
                            positionMapObj = new LinkedHashMap<>();
                            positionField.set(beanObj, positionMapObj);
@@ -365,7 +365,7 @@ public class MapColumnPositionSetterFactory {
                 
                 @SuppressWarnings("unchecked")
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
@@ -391,7 +391,7 @@ public class MapColumnPositionSetterFactory {
                 
                 @SuppressWarnings("unchecked")
                 @Override
-                public void set(final Object beanObj, final CellAddress position, final String key) {
+                public void set(final Object beanObj, final CellPosition position, final String key) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     ArgUtils.notNull(position, "position");
                     
@@ -403,7 +403,7 @@ public class MapColumnPositionSetterFactory {
                         }
                         
                         
-                        positionMapObj.put(key, position.toPoiCellAddress());
+                        positionMapObj.put(key, position.toCellAddress());
                         
                     } catch (IllegalArgumentException | IllegalAccessException e) {
                         throw new RuntimeException("fail access position field.", e);

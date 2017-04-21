@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper.cellconverter;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

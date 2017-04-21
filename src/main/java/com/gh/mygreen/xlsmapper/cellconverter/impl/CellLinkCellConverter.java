@@ -3,10 +3,11 @@ package com.gh.mygreen.xlsmapper.cellconverter.impl;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Hyperlink;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellLink;
@@ -28,14 +29,14 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
     
     @Override
     protected CellLink parseDefaultValue(final String defaultValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         return new CellLink(defaultValue, defaultValue);
     }
 
     @Override
     protected CellLink parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         final Optional<XlsTrim> trimAnno = accessor.getAnnotation(XlsTrim.class);
         
@@ -55,7 +56,7 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
     }
     
     @Override
-    protected boolean isEmptyCell(final String formattedValue, final Cell cell, final XlsMapperConfig config) {
+    protected boolean isEmptyCell(final String formattedValue, final Cell cell, final Configuration config) {
         
         if(cell.getHyperlink() != null) {
             return false;
@@ -67,7 +68,7 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
     
     @Override
     protected void setupCell(final Cell cell, final Optional<CellLink> cellValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         // 既存のハイパーリンクを削除
         // 削除しないと、Excelの見た目上はリンクは変わっているが、データ上は2重にリンクが設定されている。
@@ -91,7 +92,7 @@ public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
             }
             
         } else {
-            cell.setCellType(Cell.CELL_TYPE_BLANK);
+            cell.setCellType(CellType.BLANK);
         }
         
     }

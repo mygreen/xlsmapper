@@ -7,7 +7,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 
 /**
@@ -28,7 +28,7 @@ public class CellFinder {
     /**
      * システム設定
      */
-    private final XlsMapperConfig config;
+    private final Configuration config;
     
     /**
      * 検索対象のラベル
@@ -57,14 +57,14 @@ public class CellFinder {
      * @param sheet 検索対象のシート
      * @param label 検索するセルのラベル
      * @param config システム設定。
-     *        設定値 {@link XlsMapperConfig#isNormalizeLabelText()}、{@link XlsMapperConfig#isRegexLabelText()}の値によって、
+     *        設定値 {@link Configuration#isNormalizeLabelText()}、{@link Configuration#isRegexLabelText()}の値によって、
      *        検索する際にラベルを正規化、または正規表現により一致するかで判定を行う。
      */
-    public static CellFinder query(final Sheet sheet, final String label, final XlsMapperConfig config) {
+    public static CellFinder query(final Sheet sheet, final String label, final Configuration config) {
         return new CellFinder(sheet, label, config);
     }
     
-    private CellFinder(final Sheet sheet, final String label, final XlsMapperConfig config) {
+    private CellFinder(final Sheet sheet, final String label, final Configuration config) {
         
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(label, "label");
@@ -110,7 +110,7 @@ public class CellFinder {
      * @return 自身のインスタンス。メソッドチェーンとして続ける。
      * @throws NullPointerException {@literal address == null.}
      */
-    public CellFinder startPosition(final CellAddress address) {
+    public CellFinder startPosition(final CellPosition address) {
         ArgUtils.notNull(address, "address");
         
         return startPosition(address.getColumn(), address.getRow());

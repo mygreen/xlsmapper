@@ -1,10 +1,8 @@
 package com.gh.mygreen.xlsmapper.validation;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,11 +43,11 @@ public class SheetMessageConverter {
      * @return
      * @throws IllegalArgumentException errors == null.
      */
-    public List<String> convertMessages(final Collection<ObjectError> errors) {
+    public List<String> convertMessages(final Collection<SheetObjectError> errors) {
         ArgUtils.notNull(errors, "errors");
         
-        final List<String> messageList = new ArrayList<String>();
-        for(ObjectError error : errors) {
+        final List<String> messageList = new ArrayList<>();
+        for(SheetObjectError error : errors) {
             messageList.add(convertMessage(error));
         }
         
@@ -57,91 +55,30 @@ public class SheetMessageConverter {
     }
     
     /**
-     * {@link ObjectError}をメッセージに変換する。
-     * @param error
-     * @return
-     * @throws IllegalArgumentException errors == null.
+     * エラーオブジェクトをメッセージに変換する。
+     * @param error エラーオブジェクト
+     * @return メッセージ
+     * @throws NullPointerException {@literal error == null.}
      */
-    public String convertMessage(final ObjectError error) {
+    public String convertMessage(final SheetObjectError error) {
         ArgUtils.notNull(error, "error");
         
-        if(error.getArgs() != null) {
-            return convertMessageWithIndexArgs(error);
-        } else if(error.getVars() != null) {
-            return convertMessageWithNameArgs(error);
-        } else {
-            return convertMessageWithNameArgs(error);
-        }
+        final Map<String, Object> vars = new HashMap<>();
+        vars.putAll(error.getVariables());
         
-    }
-    
-    /**
-     * インデックス形式の変数のメッセージとして{@link ObjectError}を変換する。
-     * @param error
-     * @return
-     */
-    protected String convertMessageWithIndexArgs(final ObjectError error) {
-        
-        final List<Object> args = new ArrayList<Object>();
-        if(error instanceof FieldError) {
-            if(error.getLabel() != null) {
-                args.add(error.getLabel());
-            } else {
-                final String[] labelCode = messageCodeGenerator.generateFieldNameCodes(error.getObjectName(), ((FieldError) error).getFieldPath());
-                try {
-                    args.add(getMessage(labelCode, error.getDefaultMessage()));
-                } catch(Throwable e) {
-    //                args.add(null);
-                }
-            }
-        } else {
-            final String[] labelCode = messageCodeGenerator.generateObjectNameCodes(error.getObjectName());
-            if(error.getLabel() != null) {
-                args.add(error.getLabel());
-            } else {
-                try {
-                    args.add(getMessage(labelCode, error.getDefaultMessage()));
-                } catch(Throwable e) {
-    //                args.add(null);
-                }
-            }
-        }
-        
-        if(error.getArgs() != null) {
-            args.add(Arrays.asList(error.getArgs()));
-        }
-        
-        final String message = getMessage(error.getCodes(), error.getDefaultMessage());
-        
-        return MessageFormat.format(message, args.toArray(new Object[args.size()]));
-        
-    }
-    
-    /**
-     * 名前付き変数のメッセージとして{@link ObjectError}を変換する。
-     * @param error
-     * @return
-     */
-    protected String convertMessageWithNameArgs(final ObjectError error) {
-        
-        final Map<String, Object> vars = new LinkedHashMap<String, Object>();
-        if(error.getVars() != null) {
-            vars.putAll(error.getVars());
-        }
-        
-        if(error instanceof FieldError) {
+        if(error instanceof CellFieldError) {
             // フィールドエラーのメッセージを処理する
             
-            final FieldError fieldError = (FieldError) error;
-            final String[] labelCode = messageCodeGenerator.generateFieldNameCodes(fieldError.getObjectName(), fieldError.getFieldPath());
+            final CellFieldError fieldError = (CellFieldError) error;
+            final String[] labelCode = messageCodeGenerator.generateFieldNameCodes(fieldError.getObjectName(), fieldError.getField());
             
             try {
                 vars.put("fieldLabel", getMessage(labelCode, null));
             } catch(Throwable e) {
             }
             
-            if(error.getLabel() != null) {
-                vars.put("label", error.getLabel());
+            if(error.getLabelAsOptional() != null) {
+                vars.put("label", error.getLabelAsOptional());
             } else {
                 try {
                     vars.put("label", getMessage(labelCode, null));
@@ -151,7 +88,7 @@ public class SheetMessageConverter {
             
             try {
                 // 親のラベル名を取得する
-                String[] parentCode = messageCodeGenerator.generateParentNameCodes(fieldError.getObjectName(), fieldError.getFieldPath());
+                String[] parentCode = messageCodeGenerator.generateParentNameCodes(fieldError.getObjectName(), fieldError.getField());
                 vars.put("parentLabel", getMessage(parentCode, null));
             } catch(Throwable e) {
             }
@@ -163,18 +100,15 @@ public class SheetMessageConverter {
                 
             }
             
-            if(error instanceof CellFieldError) {
-                final CellFieldError cellFieldError = (CellFieldError) error;
-                vars.put("sheetName", cellFieldError.getSheetName());
-                vars.put("cellAddress", cellFieldError.getCellAddress().formatAsString());
-            }
+            fieldError.getSheetName().ifPresent(s -> vars.put("sheetName", s));
+            fieldError.getAddressAsOptional().ifPresent(a -> vars.put("cellAddress", a));
             
         } else {
             // オブジェクトエラーのメッセージを処理する。
             
             final String[] labelCode = messageCodeGenerator.generateObjectNameCodes(error.getObjectName());
-            if(error.getLabel() != null) {
-                vars.put("label", error.getLabel());
+            if(error.getLabelAsOptional() != null) {
+                vars.put("label", error.getLabelAsOptional());
             } else {
                 try {
                     vars.put("label", getMessage(labelCode, null));
@@ -189,10 +123,7 @@ public class SheetMessageConverter {
                 
             }
             
-            if(error instanceof SheetObjectError) {
-                final SheetObjectError sheetObjectError = (SheetObjectError) error;
-                vars.put("sheetName", sheetObjectError.getSheetName());
-            }
+            error.getSheetName().ifPresent(s -> vars.put("sheetName", s));
             
         }
         
@@ -207,7 +138,7 @@ public class SheetMessageConverter {
      * @param defaultMessage メッセージコードが見つからない場合のメッセージ
      * @return
      */
-    public String getMessage(final String[] codes, final String defaultMessage) {
+    public String getMessage(final String[] codes, final Optional<String> defaultMessage) {
         for(String code : codes) {
             try {
                 final Optional<String> message = messageResolver.getMessage(code);
@@ -220,8 +151,8 @@ public class SheetMessageConverter {
             }
         }
         
-        if(Utils.isNotEmpty(defaultMessage)) {
-            return defaultMessage;
+        if(defaultMessage.isPresent()) {
+            return defaultMessage.get();
         }
         
         throw new RuntimeException(String.format("not found message code [%s].", Utils.join(codes, ",")));

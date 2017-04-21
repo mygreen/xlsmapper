@@ -1,12 +1,13 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 
 /**
  * 文字列に関する入力値検証を行う。
+ * @version 2.0
  */
 public abstract class StringValidator extends AbstractFieldValidator<String>{
     
@@ -17,8 +18,9 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
     /**
      * 文字列が指定した文字長かどうかチェックする。
      * <ul>
-     *  <li>メッセージキーは、「fieldError.exactLength」。</li>
-     *  <li>メッセージ引数{0}は、文字長。</li>
+     *   <li>メッセージキーは、「fieldError.exactLength」。</li>
+     *   <li>「valueLength」：実際の値の文字長。</li>
+     *   <li>「length」：指定した文字長。</li>
      * </ul>
      */
     public static class ExactLengthValidator extends StringValidator {
@@ -27,40 +29,44 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
         private final int length;
         
         public ExactLengthValidator(final int length) {
-            super();
             ArgUtils.notMin(length, 0, "length");
             this.length = length;
         }
         
-        public int getLength() {
-            return length;
-        }
-        
         @Override
-        public String getDefaultMessageKey() {
+        public String getMessageKey() {
             return "cellFieldError.exactLength";
         }
         
         @Override
-        protected boolean validate(final String value) {
-            if(isNullValue(value)) {
-                return true;
-            }
+        protected Map<String, Object> getMessageVariables(final CellField<String> cellField) {
+            final Map<String, Object> vars = super.getMessageVariables(cellField);
             
-            if(value.length() == getLength()) {
-                return true;
-            }
-            return false;
+            vars.put("valueLength", cellField.getValue().length());
+            vars.put("length", getLength());
+            
+            return vars;
         }
         
         @Override
-        protected LinkedHashMap<String, Object> getMessageVars(final String value) {
-            final LinkedHashMap<String, Object> vars = new LinkedHashMap<>();
-            vars.put("validatedValue", value);
-            vars.put("valueLength", value.length());
-            vars.put("length", getLength());
-            return vars;
+        protected void onValidate(final CellField<String> cellField) {
+            
+            int valueLength = cellField.getValue().length();
+            if(valueLength == getLength()) {
+                return;
+            }
+            
+            error(cellField);
         }
+        
+        /**
+         * 文字長を取得します。
+         * @return
+         */
+        public int getLength() {
+            return length;
+        }
+        
         
     }
     
@@ -68,7 +74,8 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
      * 文字列が指定した文字長以内かどうかチェックする。
      * <ul>
      *  <li>メッセージキーは、「fieldError.maxLength」。</li>
-     *  <li>メッセージ引数{0}は、最大文字長。</li>
+     *  <li>「valueLength」：実際の値の文字長。</li>
+     *  <li>「maxLength」：指定した最大文字長。</li>
      * </ul>
      */
     public static class MaxLengthValidator extends StringValidator {
@@ -76,40 +83,48 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
         /** 最大文字長 */
         private final int maxLength;
         
+        /**
+         * 
+         * @param maxLength 最大文字長
+         * @throws IllegalArgumentException {@literal maxLength <= 0}
+         */
         public MaxLengthValidator(final int maxLength) {
-            super();
             ArgUtils.notMin(maxLength, 0, "maxLength");
             this.maxLength = maxLength;
         }
         
-        public int getMaxLength() {
-            return maxLength;
-        }
-        
         @Override
-        public String getDefaultMessageKey() {
+        public String getMessageKey() {
             return "cellFieldError.maxLength";
         }
         
         @Override
-        protected boolean validate(final String value) {
-            if(isNullValue(value)) {
-                return true;
-            }
+        protected Map<String, Object> getMessageVariables(final CellField<String> cellField) {
             
-            if(value.length() <= getMaxLength()) {
-                return true;
-            }
-            return false;
+            final Map<String, Object> vars = super.getMessageVariables(cellField);
+            vars.put("valueLength", cellField.getValue().length());
+            vars.put("maxLength", getMaxLength());
+            return vars;
         }
         
         @Override
-        protected LinkedHashMap<String, Object> getMessageVars(final String value) {
-            final LinkedHashMap<String, Object> vars = new LinkedHashMap<>();
-            vars.put("validatedValue", value);
-            vars.put("valueLength", value.length());
-            vars.put("maxLength", getMaxLength());
-            return vars;
+        protected void onValidate(final CellField<String> cellField) {
+            
+            final int valueLength = cellField.getValue().length();
+            if(valueLength <= getMaxLength()) {
+                return;
+            }
+            
+            error(cellField);
+            
+        }
+        
+        /**
+         * 指定した最大文字長を取得します。
+         * @return 最大文字長
+         */
+        public int getMaxLength() {
+            return maxLength;
         }
         
     }
@@ -118,7 +133,8 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
      * 文字列が指定した文字長以上かどうかチェックする。
      * <ul>
      *  <li>メッセージキーは、「fieldError.minLength」。</li>
-     *  <li>メッセージ引数{0}は、最小文字長。</li>
+     *  <li>「valueLength」：実際の値の文字長。</li>
+     *  <li>「minLength」：指定した最小文字長。</li>
      * </ul>
      */
     public static class MinLengthValidator extends StringValidator {
@@ -126,40 +142,46 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
         /** 最小文字長 */
         private final int minLength;
         
+        /**
+         * 
+         * @param minLength 最小文字長
+         * @throws IllegalArgumentException {@literal minLength <= 0}
+         */
         public MinLengthValidator(final int minLength) {
-            super();
             ArgUtils.notMin(minLength, 0, "minLength");
             this.minLength = minLength;
         }
         
-        public int getMinLength() {
-            return minLength;
-        }
-        
         @Override
-        public String getDefaultMessageKey() {
+        public String getMessageKey() {
             return "cellFieldError.minLength";
         }
         
         @Override
-        protected boolean validate(final String value) {
-            if(isNullValue(value)) {
-                return true;
-            }
+        protected Map<String, Object> getMessageVariables(final CellField<String> cellField) {
             
-            if(value.length() >= getMinLength()) {
-                return true;
-            }
-            return false;
+            final Map<String, Object> vars = super.getMessageVariables(cellField);
+            vars.put("valueLength", cellField.getValue().length());
+            vars.put("minLength", getMinLength());
+            return vars;
         }
         
         @Override
-        protected LinkedHashMap<String, Object> getMessageVars(final String value) {
-            final LinkedHashMap<String, Object> vars = new LinkedHashMap<>();
-            vars.put("validatedValue", value);
-            vars.put("valueLength", value.length());
-            vars.put("minLength", getMinLength());
-            return vars;
+        protected void onValidate(final CellField<String> cellField) {
+            final int valueLength = cellField.getValue().length();
+            if(valueLength >= getMinLength()) {
+                return;
+            }
+            
+            error(cellField);
+        }
+        
+        /**
+         * 最小文字長を取得する
+         * @return
+         */
+        public int getMinLength() {
+            return minLength;
         }
         
     }
@@ -168,8 +190,9 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
      * 文字列が指定した文字長の範囲内かどうかチェックする。
      * <ul>
      *  <li>メッセージキーは、「fieldError.betweenLength」。</li>
-     *  <li>メッセージ引数{0}は、最小文字長。</li>
-     *  <li>メッセージ引数{1}は、最大文字長。</li>
+     *  <li>「valueLength」：実際の値の文字長。</li>
+     *  <li>「minLength」：指定した最小文字長。</li>
+     *  <li>「maxLength」：指定した最大文字長。</li>
      * </ul>
      */
     public static class BetweenLengthValidator extends StringValidator {
@@ -180,8 +203,13 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
         /** 最大文字長 */
         private final int maxLength;
         
+        /**
+         * 
+         * @param minLength 最小文字長
+         * @param maxLength 最大文字長
+         * @throws IllegalArgumentException {@literal minLength <=0 or maxLength <= 0 or minLength > maxLength}
+         */
         public BetweenLengthValidator(final int minLength, final int maxLength) {
-            super();
             ArgUtils.notMin(minLength, 0, "minLength");
             ArgUtils.notMin(maxLength, 0, "maxLength");
             ArgUtils.notMax(minLength, maxLength, "minLength");
@@ -189,43 +217,50 @@ public abstract class StringValidator extends AbstractFieldValidator<String>{
             this.maxLength = maxLength;
         }
         
-        public int getMinLength() {
-            return minLength;
-        }
-        
-        public int getMaxLength() {
-            return maxLength;
-        }
-        
         @Override
-        public String getDefaultMessageKey() {
+        public String getMessageKey() {
             return "cellFieldError.betweenLength";
             
         }
         
         @Override
-        protected boolean validate(final String value) {
-            if(isNullValue(value)) {
-                return true;
-            }
+        protected Map<String, Object> getMessageVariables(final CellField<String> cellField) {
             
-            final int strLength = value.length();
-            if(getMinLength() <= strLength && strLength <= getMaxLength()) {
-                return true;
-            }
+            final Map<String, Object> vars = super.getMessageVariables(cellField);
+            vars.put("valueLength", cellField.getValue().length());
+            vars.put("minLength", getMinLength());
+            vars.put("maxLength", getMaxLength());
             
-            return false;
+            return vars;
         }
         
         @Override
-        protected LinkedHashMap<String, Object> getMessageVars(final String value) {
-            final LinkedHashMap<String, Object> vars = new LinkedHashMap<>();
-            vars.put("validatedValue", value);
-            vars.put("valueLength", value.length());
-            vars.put("minLength", getMinLength());
-            vars.put("maxLength", getMaxLength());
-            return vars;
+        protected void onValidate(final CellField<String> cellField) {
+            
+            final int valueLength = cellField.getValue().length();
+            if(getMinLength() <= valueLength && valueLength <= getMaxLength()) {
+                return;
+            }
+            
+            error(cellField);
         }
+        
+        /**
+         * 最小文字長を取得する
+         * @return 最小文字長
+         */
+        public int getMinLength() {
+            return minLength;
+        }
+        
+        /**
+         * 最大文字長を取得する
+         * @return 最大文字長
+         */
+        public int getMaxLength() {
+            return maxLength;
+        }
+        
         
     }
     

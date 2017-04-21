@@ -1,6 +1,6 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
@@ -11,14 +11,12 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
  * <p>メッセージ中で利用可能な変数は次の通り。</p>
  * <ul>
  *   <li>「validatedValue」：検証対象の値のオブジェクト。</li>
- *   <li>「formattedValidatedValue」：{@link FieldFormatter}により、文字列にフォーマットした検証対象の値。</li>
  *   <li>「min」：下限値となる最小値。</li>
- *   <li>「formattedMin」：{@link FieldFormatter}により、文字列にフォーマットした上限値となる最大値。</li>
  *   <li>「max」：上限値となる最大値。</li>
- *   <li>「formattedMax」：{@link FieldFormatter}により、文字列にフォーマットした上限値となる最大値。</li>
+ *   <li>「inclusive」：値を比較する際に指定した値を含むかどうか。</li>
  * </ul>
  * 
- * @version 1.0
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -28,79 +26,79 @@ public class RangeValidator<T extends Comparable<T>> extends AbstractFieldValida
     
     private final T max;
     
-    /** エラーメッセージ中のための値のフォーマッタ */
-    private FieldFormatter<T> formatter;
+    private final boolean inclusive;
     
     /**
-     * 値の範囲となる最小値と最大値を指定するコンストラクタ
-     * <p>値のフォーマットは、{@link DefaultFieldFormatter} を利用します。</p>
-     * @param min 下限値となる最小値
-     * @param max 上限値となる最大値
-     */
-    public RangeValidator(final T min, final T max) {
-        this(min, max, new DefaultFieldFormatter<T>(null));
-    }
-    
-    /**
-     * 値のフォーマットするための書式を指定するコンストラクタ
-     * <p>値のフォーマットは、{@link DefaultFieldFormatter} を利用します。</p>
-     * @param min 下限値となる最小値
-     * @param max 上限値となる最大値
-     * @param pattern メッセージ中に表示するための値をフォーマットする際の書式。
-     */
-    public RangeValidator(final T min, final T max, final String pattern) {
-        this(min, max, new DefaultFieldFormatter<T>(pattern));
-    }
-    
-    /**
-     * 値のフォーマッタ指定するコンストラクタ
+     * コンストラクタ
      * 
      * @since 1.0
      * @param min 下限値となる最小値
      * @param max 上限値となる最大値
-     * @param formatter エラーメッセージ中のための値のフォーマッタ
-     * @throws IllegalArgumentException formatter is null.
+     * @throws NullPointerException {@literal min == null or max == null}
+     * @throws IllegalArgumentException {@literal min > max}
      */
-    public RangeValidator(final T min, final T max, final FieldFormatter<T> formatter) {
-        super();
-        
+    public RangeValidator(final T min, final T max) {
+        this(min, max, true);
+    }
+    
+    /**
+     * コンストラクタ
+     * 
+     * @since 1.0
+     * @param min 下限値となる最小値
+     * @param max 上限値となる最大値
+     * @param inclusive 値を比較する際に指定した値を含むかどうかを指定します。
+     * @throws NullPointerException {@literal min == null or max == null}
+     * @throws IllegalArgumentException {@literal min > max}
+     */
+    public RangeValidator(final T min, final T max, final boolean inclusive) {
         ArgUtils.notNull(min, "min");
         ArgUtils.notNull(max, "max");
         ArgUtils.notMax(min, max, "min");
-        ArgUtils.notNull(formatter, "formatter");
         
         this.min = min;
         this.max = max;
-        this.formatter = formatter;
+        this.inclusive = inclusive;
     }
     
     @Override
-    public String getDefaultMessageKey() {
+    public String getMessageKey() {
         return "cellFieldError.range";
     }
     
     @Override
-    protected boolean validate(final T value) {
-        if(isNullValue(value)) {
-            return true;
-        }
-        
-        if(value.compareTo(getMin()) >= 0 && value.compareTo(getMax()) <= 0) {
-            return true;
-        }
-        return false;
+    protected Map<String, Object> getMessageVariables(final CellField<T> cellField) {
+        final Map<String, Object> vars = super.getMessageVariables(cellField);
+        vars.put("min", getMin());
+        vars.put("max", getMax());
+        vars.put("inclusive", isInclusive());
+        return vars;
     }
     
     @Override
-    protected LinkedHashMap<String, Object> getMessageVars(final T value) {
-        final LinkedHashMap<String, Object> vars = new LinkedHashMap<>();
-        vars.put("validatedValue", value);
-        vars.put("formattedValidatedValue", formatter.format(value));
-        vars.put("min", getMin());
-        vars.put("formattedMin", formatter.format(getMin()));
-        vars.put("max", getMax());
-        vars.put("formattedMax", formatter.format(getMax()));
-        return vars;
+    protected void onValidate(final CellField<T> cellField) {
+        final T value = cellField.getValue();
+        if(validate(value)) {
+            return;
+        }
+        
+        error(cellField);
+    }
+    
+    private boolean validate(final T value) {
+        final int comparedMin = value.compareTo(min);
+        final int comparedMax = value.compareTo(max);
+        
+        if(comparedMin > 0 && comparedMax < 0) {
+            return true;
+        }
+        
+        if(inclusive && (comparedMin == 0 || comparedMax == 0)) {
+            return true;
+        }
+        
+        return false;
+        
     }
     
     /**
@@ -117,6 +115,14 @@ public class RangeValidator<T extends Comparable<T>> extends AbstractFieldValida
      */
     public T getMax() {
         return max;
+    }
+    
+    /**
+     * 値を比較する際に指定した値を含むかどうかを取得します。
+     * @return 値を比較する際に指定した値を含むかどうか
+     */
+    public boolean isInclusive() {
+        return inclusive;
     }
     
 }

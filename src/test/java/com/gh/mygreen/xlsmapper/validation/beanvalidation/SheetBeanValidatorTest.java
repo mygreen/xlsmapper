@@ -40,14 +40,15 @@ import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
-import com.gh.mygreen.xlsmapper.validation.ObjectError;
 import com.gh.mygreen.xlsmapper.validation.ResourceBundleMessageResolver;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetObjectError;
 
 /**
  * {@link SheetBeanValidator}のテスタ
  * 
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -79,15 +80,15 @@ public class SheetBeanValidatorTest {
     public void test_simple_success() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
-        SheetBindingErrors errors;
+        SheetBindingErrors<SimpleBeanSheet> errors;
         SimpleBeanSheet sheet;
         try(InputStream in = new FileInputStream("src/test/data/validator_bean.xlsx")) {
             
-            errors = new SheetBindingErrors(SimpleBeanSheet.class);
-            sheet = mapper.load(in, SimpleBeanSheet.class, errors);
+            errors = mapper.loadDetail(in, SimpleBeanSheet.class);
+            sheet = errors.getTarget();
             
         }
         
@@ -106,14 +107,14 @@ public class SheetBeanValidatorTest {
     public void test_simple_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
-        SheetBindingErrors errors = new SheetBindingErrors(SimpleBeanSheet.class);;
+        SheetBindingErrors<SimpleBeanSheet> errors;
         SimpleBeanSheet sheet;
         try(InputStream in = new FileInputStream("src/test/data/validator_bean.xlsx")) {
-            
-            sheet = mapper.load(in, SimpleBeanSheet.class, errors);
+            errors = mapper.loadDetail(in, SimpleBeanSheet.class);
+            sheet = errors.getTarget();
             
         }
         
@@ -131,33 +132,33 @@ public class SheetBeanValidatorTest {
         
         {
             String fieldName = "description";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Length"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.description));
-            assertThat(fieldError.getVars(), hasEntry("min", (Object)0));
-            assertThat(fieldError.getVars(), hasEntry("max", (Object)10));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.description));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)0));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)10));
         }
         
         {
             String fieldName = "age";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Range"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.age));
-            assertThat(fieldError.getVars(), hasEntry("min", (Object)0L));
-            assertThat(fieldError.getVars(), hasEntry("max", (Object)100L));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.age));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)0L));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)100L));
         }
         
         {
             String fieldName = "email";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.email));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.email));
         }
         
         
@@ -170,13 +171,14 @@ public class SheetBeanValidatorTest {
     public void test_list_success() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
-        SheetBindingErrors errors = new SheetBindingErrors(ListBeanSheet.class);
+        SheetBindingErrors<ListBeanSheet> errors;
         ListBeanSheet sheet;
         try(InputStream in = new FileInputStream("src/test/data/validator_bean.xlsx")) {
-            sheet = mapper.load(in, ListBeanSheet.class, errors);
+            errors = mapper.loadDetail(in, ListBeanSheet.class);
+            sheet = errors.getTarget();
             
         }
         
@@ -197,14 +199,14 @@ public class SheetBeanValidatorTest {
     public void test_list_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
-        SheetBindingErrors errors = new SheetBindingErrors(ListBeanSheet.class);
+        SheetBindingErrors<ListBeanSheet> errors;
         ListBeanSheet sheet;
         try(InputStream in = new FileInputStream("src/test/data/validator_bean.xlsx")) {
-            sheet = mapper.load(in, ListBeanSheet.class, errors);
-            
+            errors = mapper.loadDetail(in, ListBeanSheet.class);
+            sheet = errors.getTarget();
         }
         
         // データの書き換え
@@ -220,22 +222,22 @@ public class SheetBeanValidatorTest {
         
         {
             String fieldName = "className";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("NotBlank"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.className));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.className));
         
         }
         try {
             errors.pushNestedPath("list", 1);
             PersonRecord record = sheet.list.get(1);
             String fieldName = "email";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(record.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(record.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.email));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)record.email));
         } finally {
             errors.popNestedPath();
         }
@@ -244,11 +246,11 @@ public class SheetBeanValidatorTest {
             errors.pushNestedPath("list", 2);
             PersonRecord record = sheet.list.get(2);
             String fieldName = "birthday";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(record.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(record.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(record.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Past"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)record.birthday));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)record.birthday));
             
         } finally {
             errors.popNestedPath();
@@ -263,14 +265,14 @@ public class SheetBeanValidatorTest {
     public void test_interpolator_el() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
-        SheetBindingErrors errors = new SheetBindingErrors(SimpleBeanSheet.class);;
+        SheetBindingErrors<SimpleBeanSheet> errors;
         SimpleBeanSheet sheet;
         try(InputStream in = new FileInputStream("src/test/data/validator_bean.xlsx")) {
-            
-            sheet = mapper.load(in, SimpleBeanSheet.class, errors);
+            errors = mapper.loadDetail(in, SimpleBeanSheet.class);
+            sheet = errors.getTarget();
             
         }
         
@@ -296,50 +298,50 @@ public class SheetBeanValidatorTest {
         
         {
             String fieldName = "updateTime";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Past"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.updateTime));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.updateTime));
         }
         
         {
             String fieldName = "description";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Length"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.description));
-            assertThat(fieldError.getVars(), hasEntry("min", (Object)0));
-            assertThat(fieldError.getVars(), hasEntry("max", (Object)10));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.description));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)0));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)10));
         }
         
         {
             String fieldName = "age";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Range"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.age));
-            assertThat(fieldError.getVars(), hasEntry("min", (Object)0L));
-            assertThat(fieldError.getVars(), hasEntry("max", (Object)100L));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.age));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)0L));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)100L));
         }
         
         {
             String fieldName = "email";
-            CellFieldError fieldError = errors.getFirstCellFieldError(fieldName);
-            assertThat(fieldError.getCellAddress().toPoint(), is(sheet.positions.get(fieldName)));
+            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
-            assertThat(fieldError.getVars(), hasEntry("validatedValue", (Object)sheet.email));
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.email));
         }
         
         
     }
     
-    private void printErrors(SheetBindingErrors errors) {
+    private void printErrors(SheetBindingErrors<?> errors) {
         
-        for(ObjectError error : errors.getAllErrors()) {
+        for(SheetObjectError error : errors.getAllErrors()) {
             String message = messageConverter.convertMessage(error);
             System.out.println(message);
         }

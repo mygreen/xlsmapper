@@ -6,20 +6,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellReference;
 
 /**
  * 単一のセルのアドレスを表現するクラス。
- * <p>java.awt.Pointだと、行、列の表現がわかりづらくmutableなので、、その代わりに使用する。
+ * <p>{@link java.awt.Point}だと、行、列の表現がわかりづらくmutableなので、、その代わりに使用する。
  * <p>{@link CellReference}との違いは、セルのアドレスの絶対一致を表現するためのもの。
- * <p>POIに同じ用途のクラス{@link org.apache.poi.ss.util.CellAddress}が存在するが、
+ * <p>POIに同じ用途のクラス{@link CellAddress}が存在するが、
  *    こちらは{@link Serializable}や{@link Cloneable}が実装されておらず、使い勝手が悪い。</p>
  * 
  * @since 1.4
  * @author T.TSUCHIE
  *
  */
-public class CellAddress implements Serializable, Comparable<CellAddress>, Cloneable {
+public class CellPosition implements Serializable, Comparable<CellPosition>, Cloneable {
     
     /** serialVersionUID */
     private static final long serialVersionUID = 8579701754512731611L;
@@ -27,12 +28,14 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
     /**
      * シート上の先頭の位置を表現するための定数。
      */
-    public static final CellAddress A1 = new CellAddress(0, 0);
+    public static final CellPosition A1 = new CellPosition(0, 0);
     
     private final int row;
     
     private final int column;
     
+    private final String toStringText;
+    
     /**
      * CellAddressのインスタンスを作成する。
      *
@@ -40,11 +43,12 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
      * @param column 列番号 (0から始まる)
      * @throws IllegalArgumentException {@literal row < 0 || column < 0}
      */
-    private CellAddress(int row, int column) {
+    private CellPosition(int row, int column) {
         ArgUtils.notMin(row, 0, "row");
         ArgUtils.notMin(column, 0, "column");
         this.row = row;
         this.column = column;
+        this.toStringText = CellReference.convertNumToColString(column) + (row + 1);
     }
     
     /**
@@ -52,23 +56,23 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
      *
      * @param row 行番号 (0から始まる)
      * @param column 列番号 (0から始まる)
-     * @return {@link CellAddress}のインスタンス
+     * @return {@link CellPosition}のインスタンス
      * @throws IllegalArgumentException {@literal row < 0 || column < 0}
      */
-    public static CellAddress of(int row, int column) {
+    public static CellPosition of(int row, int column) {
         ArgUtils.notMin(row, 0, "row");
         ArgUtils.notMin(column, 0, "column");
         
-        return new CellAddress(row, column);
+        return new CellPosition(row, column);
     }
     
     /**
      * CellAddressのインスタンスを作成する。
      * @param cell セルのインスタンス。
-     * @return {@link CellAddress}のインスタンス
+     * @return {@link CellPosition}のインスタンス
      * @throws NullPointerException {@link cell == null.}
      */
-    public static CellAddress of(final Cell cell) {
+    public static CellPosition of(final Cell cell) {
         ArgUtils.notNull(cell, "cell");
         
         return of(cell.getRowIndex(), cell.getColumnIndex());
@@ -77,10 +81,10 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
     /**
      * CellAddressのインスタンスを作成する。
      * @param reference セルの参照形式。
-     * @return {@link CellAddress}のインスタンス
+     * @return {@link CellPosition}のインスタンス
      * @throws NullPointerException {@link reference == null.}
      */
-    public static CellAddress of(final CellReference reference) {
+    public static CellPosition of(final CellReference reference) {
         ArgUtils.notNull(reference, "reference");
         
         return of(reference.getRow(), reference.getCol());
@@ -89,10 +93,10 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
     /**
      * CellAddressのインスタンスを作成する。
      * @param address セルのアドレス
-     * @return {@link CellAddress}のインスタンス
+     * @return {@link CellPosition}のインスタンス
      * @throws NullPointerException {@link address == null.}
      */
-    public static CellAddress of(final org.apache.poi.ss.util.CellAddress address) {
+    public static CellPosition of(final CellAddress address) {
         ArgUtils.notNull(address, "address");
         
         return of(address.getRow(), address.getColumn());
@@ -101,10 +105,10 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
     /**
      * CellAddressのインスタンスを作成する。
      * @param address 'A1'の形式のセルのアドレス
-     * @return {@link CellAddress}のインスタンス
+     * @return {@link CellPosition}のインスタンス
      * @throws IllegalArgumentException {@literal address == null || address.length() == 0 || アドレスの書式として不正}
      */
-    public static CellAddress of(final String address) {
+    public static CellPosition of(final String address) {
         ArgUtils.notEmpty(address, "address");
         
         if(!matchedCellAddress(address)) {
@@ -124,16 +128,16 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
     /**
      * CellAddressのインスタンスを作成する。
      * @param point セルの座標
-     * @return {@link CellAddress}のインスタンス
+     * @return {@link CellPosition}のインスタンス
      * @throws NullPointerException {@link point == null.}
      */
-    public static CellAddress of(final Point point) {
+    public static CellPosition of(final Point point) {
         ArgUtils.notNull(point, "point");
         return of(point.y, point.x);
     }
     
     @Override
-    public int compareTo(final CellAddress other) {
+    public int compareTo(final CellPosition other) {
         ArgUtils.notNull(other, "other");
         
         int r = this.row - other.row;
@@ -166,10 +170,10 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
         if(obj == null) {
             return false;
         }
-        if(!(obj instanceof CellAddress)) {
+        if(!(obj instanceof CellPosition)) {
             return false;
         }
-        CellAddress other = (CellAddress) obj;
+        CellPosition other = (CellPosition) obj;
         if(column != other.column) {
             return false;
         }
@@ -180,8 +184,8 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
     }
     
     @Override
-    public CellAddress clone() {
-        return new CellAddress(row, column);
+    public CellPosition clone() {
+        return new CellPosition(row, column);
     }
     
     /**
@@ -210,11 +214,11 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
     }
     
     /**
-     * POIの{@link org.apache.poi.ss.util.CellAddress}の形式に変換します。
-     * @return {@link org.apache.poi.ss.util.CellAddress}のインスタンス。
+     * POIの{@link CellAddress}の形式に変換します。
+     * @return {@link CellAddress}のインスタンス。
      */
-    public org.apache.poi.ss.util.CellAddress toPoiCellAddress() {
-        return new org.apache.poi.ss.util.CellAddress(row, column);
+    public CellAddress toCellAddress() {
+        return new CellAddress(row, column);
     }
     
     /**
@@ -222,7 +226,7 @@ public class CellAddress implements Serializable, Comparable<CellAddress>, Clone
      * @return 'A1'の形式で、セルノアドレスを文字列として表現する。
      */
     public String formatAsString() {
-        return CellReference.convertNumToColString(this.column) + (this.row + 1);
+        return toStringText;
     }
     
     /**

@@ -1,6 +1,6 @@
 package com.gh.mygreen.xlsmapper.fieldaccessor;
 
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 /**
  * フィールドの位置情報を設定するためのインタフェース。
@@ -17,6 +17,6 @@ public interface PositionSetter {
      * @param beanObj フィールドが定義してあるクラスのインスタンス
      * @param position 位置情報
      */
-    void set(Object beanObj, CellAddress position);
+    void set(Object beanObj, CellPosition position);
     
 }

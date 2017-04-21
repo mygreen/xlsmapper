@@ -59,12 +59,12 @@ public class TemporalCellConverterTest {
     public void test_load_date_time() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(TemporalSheet.class);
+            SheetBindingErrors<TemporalSheet> errors = mapper.loadDetail(in, TemporalSheet.class);
             
-            TemporalSheet sheet = mapper.load(in, TemporalSheet.class, errors);
+            TemporalSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 for(SimpleRecord record : sheet.simpleRecords) {
@@ -88,7 +88,7 @@ public class TemporalCellConverterTest {
         
     }
     
-    private void assertRecord(final SimpleRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -110,9 +110,9 @@ public class TemporalCellConverterTest {
             
         } else if(record.no == 4) {
             // 文字列型の場合（値が不正）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDateTime"))).isTypeBindFailure()).isTrue();
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDate"))).isTypeBindFailure()).isTrue();
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localTime"))).isTypeBindFailure()).isTrue();
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDateTime"))).isConversionFailure()).isTrue();
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDate"))).isConversionFailure()).isTrue();
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localTime"))).isConversionFailure()).isTrue();
             
         } else if(record.no == 5) {
             // Excelの日時型（日本語）
@@ -138,13 +138,13 @@ public class TemporalCellConverterTest {
         
     }
     
-    private void assertRecord(final FormattedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
             assertThat(record.localDateTime).isEqualTo(LocalDateTime.of(2000, 12, 31, 03, 41, 12));
             assertThat(record.localDate).isEqualTo(LocalDate.of(2000, 12, 31));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localTime"))).isTypeBindFailure()).isTrue();
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localTime"))).isConversionFailure()).isTrue();
             
         } else if(record.no == 2) {
             // 文字列型の場合（正常）
@@ -154,9 +154,9 @@ public class TemporalCellConverterTest {
             
         } else if(record.no == 3) {
             // 文字列型の場合（存在しない日付）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDateTime"))).isTypeBindFailure()).isTrue();
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDate"))).isTypeBindFailure()).isTrue();
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localTime"))).isTypeBindFailure()).isTrue();
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDateTime"))).isConversionFailure()).isTrue();
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDate"))).isConversionFailure()).isTrue();
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localTime"))).isConversionFailure()).isTrue();
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
@@ -164,7 +164,7 @@ public class TemporalCellConverterTest {
         
     }
     
-    private void assertRecord(final FormulaRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             // 空文字
@@ -222,7 +222,7 @@ public class TemporalCellConverterTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "convert_jsr310.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
@@ -234,9 +234,9 @@ public class TemporalCellConverterTest {
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
             
-            SheetBindingErrors errors = new SheetBindingErrors(TemporalSheet.class);
+            SheetBindingErrors<TemporalSheet> errors = mapper.loadDetail(in, TemporalSheet.class);
             
-            TemporalSheet sheet = mapper.load(in, TemporalSheet.class, errors);
+            TemporalSheet sheet = errors.getTarget();
             
             if(sheet.simpleRecords != null) {
                 assertThat(sheet.simpleRecords).hasSize(outSheet.simpleRecords.size());
@@ -271,7 +271,7 @@ public class TemporalCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final SimpleRecord inRecord, final SimpleRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -290,7 +290,7 @@ public class TemporalCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormattedRecord inRecord, final FormattedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -299,7 +299,7 @@ public class TemporalCellConverterTest {
             assertThat(inRecord.no).isEqualTo(outRecord.no);
             assertThat(inRecord.localDateTime).isEqualTo(LocalDateTime.of(2000, 12, 31, 3, 41, 12));
             assertThat(inRecord.localDate).isEqualTo(LocalDate.of(2000, 12, 31));
-            assertThat(cellFieldError(errors, cellAddress(inRecord.positions.get("localTime"))).isTypeBindFailure()).isTrue();
+            assertThat(cellFieldError(errors, cellAddress(inRecord.positions.get("localTime"))).isConversionFailure()).isTrue();
 //            assertThat(inRecord.localTime).isEqualTo(LocalTime.of(3, 41, 12));
             assertThat(inRecord.comment).isEqualTo(outRecord.comment);
             
@@ -319,7 +319,7 @@ public class TemporalCellConverterTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaRecord inRecord, final FormulaRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d, comment=%s\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);

@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
@@ -83,16 +83,16 @@ public class PositionGetterFactory {
         final Class<?> keyType = (Class<?>) type.getActualTypeArguments()[0];
         final Class<?> valueType = (Class<?>) type.getActualTypeArguments()[1];
         
-        if(keyType.equals(String.class) && valueType.equals(CellAddress.class)) {
+        if(keyType.equals(String.class) && valueType.equals(CellPosition.class)) {
             return Optional.of(new PositionGetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
-                public Optional<CellAddress> get(final Object beanObj) {
+                public Optional<CellPosition> get(final Object beanObj) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     
                     try {
-                        Map<String, CellAddress> positionsMapObj = (Map<String, CellAddress>) positionsField.get(beanObj);
+                        Map<String, CellPosition> positionsMapObj = (Map<String, CellPosition>) positionsField.get(beanObj);
                         if(positionsMapObj == null) {
                             return Optional.empty();
                         }
@@ -111,7 +111,7 @@ public class PositionGetterFactory {
                 
                 @SuppressWarnings("unchecked")
                 @Override
-                public Optional<CellAddress> get(final Object beanObj) {
+                public Optional<CellPosition> get(final Object beanObj) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     
                     try {
@@ -121,7 +121,7 @@ public class PositionGetterFactory {
                         }
                         
                         return Optional.ofNullable(positionsMapObj.get(fieldName))
-                                .map(a -> CellAddress.of(a));
+                                .map(a -> CellPosition.of(a));
                         
                     } catch (IllegalArgumentException | IllegalAccessException e) {
                         throw new RuntimeException("fail access positions field.", e);
@@ -136,7 +136,7 @@ public class PositionGetterFactory {
                 
                 @SuppressWarnings("unchecked")
                 @Override
-                public Optional<CellAddress> get(final Object beanObj) {
+                public Optional<CellPosition> get(final Object beanObj) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     
                     try {
@@ -146,7 +146,7 @@ public class PositionGetterFactory {
                         }
                         
                         return Optional.ofNullable(positionsMapObj.get(fieldName))
-                                .map(a -> CellAddress.of(a));
+                                .map(a -> CellPosition.of(a));
                         
                     } catch (IllegalArgumentException | IllegalAccessException e) {
                         throw new RuntimeException("fail access positions field.", e);
@@ -176,15 +176,15 @@ public class PositionGetterFactory {
             return Optional.empty();
         }
         
-        if(method.getReturnType().equals(CellAddress.class)) {
+        if(method.getReturnType().equals(CellPosition.class)) {
             return Optional.of(new PositionGetter() {
                 
                 @Override
-                public Optional<CellAddress> get(final Object beanObj) {
+                public Optional<CellPosition> get(final Object beanObj) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     
                     try {
-                        final CellAddress address = (CellAddress)method.invoke(beanObj);
+                        final CellPosition address = (CellPosition)method.invoke(beanObj);
                         return Optional.ofNullable(address);
                         
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -198,12 +198,12 @@ public class PositionGetterFactory {
             return Optional.of(new PositionGetter() {
                 
                 @Override
-                public Optional<CellAddress> get(final Object beanObj) {
+                public Optional<CellPosition> get(final Object beanObj) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     
                     try {
                         final Point point = (Point)method.invoke(beanObj);
-                        return Optional.ofNullable(point).map(p -> CellAddress.of(p));
+                        return Optional.ofNullable(point).map(p -> CellPosition.of(p));
                         
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                         throw new RuntimeException("fail access positions getter method.", e);
@@ -216,12 +216,12 @@ public class PositionGetterFactory {
             return Optional.of(new PositionGetter() {
                 
                 @Override
-                public Optional<CellAddress> get(final Object beanObj) {
+                public Optional<CellPosition> get(final Object beanObj) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     
                     try {
                         final org.apache.poi.ss.util.CellAddress address = (org.apache.poi.ss.util.CellAddress)method.invoke(beanObj);
-                        return Optional.ofNullable(address).map(a -> CellAddress.of(a));
+                        return Optional.ofNullable(address).map(a -> CellPosition.of(a));
                         
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                         throw new RuntimeException("fail access positions getter method.", e);
@@ -248,16 +248,16 @@ public class PositionGetterFactory {
             return Optional.empty();
         }
         
-        if(positionField.getType().equals(CellAddress.class)) {
+        if(positionField.getType().equals(CellPosition.class)) {
             
             return Optional.of(new PositionGetter() {
                 
                 @Override
-                public Optional<CellAddress> get(final Object beanObj) {
+                public Optional<CellPosition> get(final Object beanObj) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     
                     try {
-                        final CellAddress address = (CellAddress) positionField.get(beanObj);
+                        final CellPosition address = (CellPosition) positionField.get(beanObj);
                         return Optional.ofNullable(address);
                         
                     } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -271,12 +271,12 @@ public class PositionGetterFactory {
             return Optional.of(new PositionGetter() {
                 
                 @Override
-                public Optional<CellAddress> get(final Object beanObj) {
+                public Optional<CellPosition> get(final Object beanObj) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     
                     try {
                         final Point point = (Point) positionField.get(beanObj);
-                        return Optional.ofNullable(point).map(p -> CellAddress.of(p));
+                        return Optional.ofNullable(point).map(p -> CellPosition.of(p));
                         
                     } catch (IllegalArgumentException | IllegalAccessException e) {
                         throw new RuntimeException("fail access position field.", e);
@@ -289,12 +289,12 @@ public class PositionGetterFactory {
             return Optional.of(new PositionGetter() {
                 
                 @Override
-                public Optional<CellAddress> get(final Object beanObj) {
+                public Optional<CellPosition> get(final Object beanObj) {
                     ArgUtils.notNull(beanObj, "beanObj");
                     
                     try {
                         final org.apache.poi.ss.util.CellAddress address = (org.apache.poi.ss.util.CellAddress) positionField.get(beanObj);
-                        return Optional.ofNullable(address).map(a -> CellAddress.of(a));
+                        return Optional.ofNullable(address).map(a -> CellPosition.of(a));
                         
                     } catch (IllegalArgumentException | IllegalAccessException e) {
                         throw new RuntimeException("fail access position field.", e);

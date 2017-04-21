@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.cellconverter.DefaultItemConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.ItemConverter;
 
@@ -101,7 +101,7 @@ public @interface XlsArrayConverter {
      * <p>変換するクラスは、インタフェース{@link ItemConverter}を実装している必要があります。
      *   <br>標準では、{@link DefaultItemConverter} が使用され、基本的な型のみサポートしています。
      * </p>
-     * <p>インスタンスは、システム設定{@link XlsMapperConfig#getBeanFactory()}経由で作成されるため、
+     * <p>インスタンスは、システム設定{@link Configuration#getBeanFactory()}経由で作成されるため、
      *   SpringFrameworkのコンテナからインスタンスを取得することもできます。
      * </p>
      * 

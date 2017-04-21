@@ -8,7 +8,6 @@ import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -36,7 +35,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
-import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
  * マニュアルなどに明記するためのサンプル
@@ -230,7 +229,7 @@ public class SampleTest {
         Workbook workbook = WorkbookFactory.create(new FileInputStream("src/test/data/sample_template.xlsx"));
         Sheet sheet = workbook.getSheet("MapColumn(dynamic)");
         
-        XlsMapperConfig config = new XlsMapperConfig();
+        Configuration config = new Configuration();
         
         // 日付のセル[日付]を取得する
         Cell baseHeaderCell = CellFinder.query(sheet, "[日付]", config).findWhenNotFoundException();
@@ -275,7 +274,7 @@ public class SampleTest {
         
         // XlsMapColumnsのマッピング用のセルを作成する
         @XlsPreSave
-        public void onPreSave(final Sheet sheet, final XlsMapperConfig config) {
+        public void onPreSave(final Sheet sheet, final Configuration config) {
             
             try {
                 final Workbook workbook = sheet.getWorkbook();
@@ -403,21 +402,22 @@ public class SampleTest {
     @Test
     public void test_overide_sheetName() throws Exception {
         
-        InputStream xmlIn = createXml()
+        XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(OverrideSheetName.class)
                         .override(true)   // アノテーションを差分だけ反映する設定を有効にします。
                         .annotation(createAnnotation(XlsSheet.class)
                                 .attribute("name", "シート2")
                                 .buildAnnotation())
                         .buildClass())
-                .buildXml()
-                .toInputStream(); // XMLに変換後、さらにInputStreamに変換して取得します。。
-
+                .buildXml();
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        
         // XmlMapperクラスに直接渡せます。
-        OverrideSheetName sheet = new XlsMapper().load(
+        OverrideSheetName sheet = mapper.load(
             new FileInputStream("src/test/data/sample_overrideSheetName.xlsx"),
-            OverrideSheetName.class,
-            xmlIn);
+            OverrideSheetName.class);
         
         assertThat(sheet.sheetName, is("シート2"));
         assertThat(sheet.description, is("変更後のシートです。"));

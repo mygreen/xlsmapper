@@ -10,7 +10,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
@@ -20,7 +20,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessType;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
@@ -39,7 +39,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
 
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno,
-            final FieldAccessor accessor, final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+            final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         final Optional<FindInfo> info = findCell(accessor, sheet, anno, config, ProcessType.Load);
         if(!info.isPresent()) {
@@ -67,15 +67,15 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     
     private static class FindInfo {
         Cell targetCell;
-        CellAddress address;
+        CellPosition address;
         String label;
     }
     
     private Optional<FindInfo> findCell(final FieldAccessor accessor, final Sheet sheet, final XlsLabelledCell anno,
-            final XlsMapperConfig config, final ProcessType processType)
+            final Configuration config, final ProcessType processType)
             throws XlsMapperException {
         
-        final Optional<CellAddress> labelPosition = getLabelPosition(accessor, sheet, anno, config);
+        final Optional<CellPosition> labelPosition = getLabelPosition(accessor, sheet, anno, config);
         if(!labelPosition.isPresent()) {
             return Optional.empty();
         }
@@ -140,17 +140,17 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         
         final FindInfo info = new FindInfo();
         info.targetCell = targetCell;
-        info.address = CellAddress.of(targetPosition);
+        info.address = CellPosition.of(targetPosition);
         info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());
         
         return Optional.of(info);
     }
     
-    private Optional<CellAddress> getLabelPosition(final FieldAccessor accessor, final Sheet sheet, final XlsLabelledCell anno, final XlsMapperConfig config) throws XlsMapperException {
+    private Optional<CellPosition> getLabelPosition(final FieldAccessor accessor, final Sheet sheet, final XlsLabelledCell anno, final Configuration config) throws XlsMapperException {
         
         if(Utils.isNotEmpty(anno.labelAddress())) {
             try {
-                return Optional.of(CellAddress.of(anno.labelAddress()));
+                return Optional.of(CellPosition.of(anno.labelAddress()));
             
             } catch(IllegalArgumentException e) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.invalidAddress")
@@ -169,11 +169,11 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
                     Cell labelCell = CellFinder.query(sheet, anno.label(), config)
                             .startPosition(headerCell.getColumnIndex(), headerCell.getRowIndex() + 1)
                             .findWhenNotFoundException();
-                    return Optional.of(CellAddress.of(labelCell));
+                    return Optional.of(CellPosition.of(labelCell));
                     
                 } else {
                     Cell labelCell = CellFinder.query(sheet, anno.label(), config).findWhenNotFoundException();
-                    return Optional.of(CellAddress.of(labelCell));
+                    return Optional.of(CellPosition.of(labelCell));
                 }
             } catch(CellNotFoundException ex){
                 if(anno.optional()){
@@ -206,14 +206,14 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
                 
             }
             
-            return Optional.of(CellAddress.of(anno.labelRow(), anno.labelColumn()));
+            return Optional.of(CellPosition.of(anno.labelRow(), anno.labelColumn()));
         }
         
     }
     
     @Override
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledCell anno, final FieldAccessor accessor,
-            final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         final Optional<FindInfo> info = findCell(accessor, sheet, anno, config, ProcessType.Save);
         if(!info.isPresent()) {

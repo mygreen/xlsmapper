@@ -12,7 +12,7 @@ import java.util.Optional;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
@@ -35,7 +35,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 public class ListCellConverter extends AbstractCellConverter<List> {
     
     @Override
-    protected List parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final XlsMapperConfig config) 
+    protected List parseDefaultValue(final String defaultValue, final FieldAccessor accessor, final Configuration config) 
             throws TypeBindException {
         
         final XlsArrayConverter convertAnno = accessor.getAnnotation(XlsArrayConverter.class)
@@ -63,7 +63,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
 
     @Override
     protected List parseCell(final Cell evaluatedCell, final String formattedValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         if(!formattedValue.isEmpty()) {
             
@@ -96,7 +96,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
 
     @Override
     protected void setupCell(final Cell cell, Optional<List> cellValue, final FieldAccessor accessor,
-            final XlsMapperConfig config) throws TypeBindException {
+            final Configuration config) throws TypeBindException {
         
         final XlsArrayConverter convertAnno = accessor.getAnnotation(XlsArrayConverter.class)
                 .orElseGet(() -> getDefaultArrayConverterAnnotation());
@@ -116,7 +116,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
     
     @SuppressWarnings("unchecked")
     private List<?> convertList(final String value, Class<?> itemClass, final Optional<XlsTrim> trimAnno,
-            final XlsArrayConverter anno, final XlsMapperConfig config) throws ConversionException {
+            final XlsArrayConverter anno, final Configuration config) throws ConversionException {
         
         final String[] split = value.split(anno.separator());
         final List list = new ArrayList<>();
@@ -145,7 +145,7 @@ public class ListCellConverter extends AbstractCellConverter<List> {
      * @param config
      * @return
      */
-    private ItemConverter getItemConverter(Class<? extends ItemConverter> converterClass, final XlsMapperConfig config) {
+    private ItemConverter getItemConverter(Class<? extends ItemConverter> converterClass, final Configuration config) {
         
         if(converterClass.isAssignableFrom(DefaultItemConverter.class)) {
             return config.getItemConverter();

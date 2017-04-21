@@ -27,11 +27,10 @@ import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
@@ -49,7 +48,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.VerticalRecordsProcessor;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.util.IsEmptyComparator;
@@ -86,12 +85,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_startedPosition() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(StartedPositionSheet.class);
+            SheetBindingErrors<StartedPositionSheet> errors = mapper.loadDetail(in, StartedPositionSheet.class);
             
-            StartedPositionSheet sheet = mapper.load(in, StartedPositionSheet.class, errors);
+            StartedPositionSheet sheet = errors.getTarget();
             
             if(sheet.normalRecords1 != null) {
                 assertThat(sheet.normalRecords1, hasSize(2));
@@ -133,12 +132,10 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_startedPosition_error1() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(StartedPositionError1Sheet.class);
-            
-            StartedPositionError1Sheet sheet = mapper.load(in, StartedPositionError1Sheet.class, errors);
+            SheetBindingErrors<StartedPositionError1Sheet> errors = mapper.loadDetail(in, StartedPositionError1Sheet.class);
             
             fail();
         }
@@ -151,12 +148,10 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_startedPosition_error2() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(StartedPositionError2Sheet.class);
-            
-            StartedPositionError2Sheet sheet = mapper.load(in, StartedPositionError2Sheet.class, errors);
+            SheetBindingErrors<StartedPositionError2Sheet> errors = mapper.loadDetail(in, StartedPositionError2Sheet.class);
             
             fail();
         }
@@ -169,12 +164,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_startedPosition_error3() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(StartedPositionError3Sheet.class);
+            SheetBindingErrors<StartedPositionError3Sheet> errors = mapper.loadDetail(in, StartedPositionError3Sheet.class);
             
-            StartedPositionError3Sheet sheet = mapper.load(in, StartedPositionError3Sheet.class, errors);
+            StartedPositionError3Sheet sheet = errors.getTarget();
             
             fail();
         }
@@ -187,12 +182,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_endPosition() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(EndPositionSheet.class);
+            SheetBindingErrors<EndPositionSheet> errors = mapper.loadDetail(in, EndPositionSheet.class);
             
-            EndPositionSheet sheet = mapper.load(in, EndPositionSheet.class, errors);
+            EndPositionSheet sheet = errors.getTarget();
             
             if(sheet.normalRecords1 != null) {
                 assertThat(sheet.normalRecords1, hasSize(2));
@@ -233,12 +228,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_headerSpace() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(HeaderSpaceSheet.class);
+            SheetBindingErrors<HeaderSpaceSheet> errors = mapper.loadDetail(in, HeaderSpaceSheet.class);
             
-            HeaderSpaceSheet sheet = mapper.load(in, HeaderSpaceSheet.class, errors);
+            HeaderSpaceSheet sheet = errors.getTarget();
             
             if(sheet.records1 != null) {
                 assertThat(sheet.records1, hasSize(2));
@@ -279,12 +274,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_columnSetting() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(ColumnSettingSheet.class);
+            SheetBindingErrors<ColumnSettingSheet> errors = mapper.loadDetail(in, ColumnSettingSheet.class);
             
-            ColumnSettingSheet sheet = mapper.load(in, ColumnSettingSheet.class, errors);
+            ColumnSettingSheet sheet = errors.getTarget();
             
             if(sheet.mergedRecords != null) {
                 assertThat(sheet.mergedRecords, hasSize(7));
@@ -331,12 +326,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_mapColumnSetting() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(MapColumnSettingSheet.class);
+            SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
             
-            MapColumnSettingSheet sheet = mapper.load(in, MapColumnSettingSheet.class, errors);
+            MapColumnSettingSheet sheet = errors.getTarget();
             
             if(sheet.mapRecords1 != null) {
                 assertThat(sheet.mapRecords1, hasSize(2));
@@ -369,12 +364,10 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_mapColumnSetting_bind_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(false);
+        mapper.getConiguration().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(MapColumnSettingSheet.class);
-            
-            MapColumnSettingSheet sheet = mapper.load(in, MapColumnSettingSheet.class, errors);
+            SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
             
             fail();
         }
@@ -389,12 +382,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_recordSetting() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(RecodSettingSheet.class);
+            SheetBindingErrors<RecodSettingSheet> errors = mapper.loadDetail(in, RecodSettingSheet.class);
             
-            RecodSettingSheet sheet = mapper.load(in, RecodSettingSheet.class, errors);
+            RecodSettingSheet sheet = errors.getTarget();
             
             if(sheet.skipList != null) {
                 assertThat(sheet.skipList, hasSize(3));
@@ -428,12 +421,12 @@ public class AnnoVerticalRecordsTest {
     @Test
     public void test_load_vr_annoMethod() throws Exception {
          XlsMapper mapper = new XlsMapper();
-         mapper.getConig().setContinueTypeBindFailure(true);
+         mapper.getConiguration().setContinueTypeBindFailure(true);
          
          try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-             SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
+             SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
              
-             MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+             MethodAnnoSheet sheet = errors.getTarget();
              
              if(sheet.records != null) {
                  assertThat(sheet.records, hasSize(3));
@@ -460,12 +453,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_labelPosition() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(TableLabelSheet.class);
+            SheetBindingErrors<TableLabelSheet> errors = mapper.loadDetail(in, TableLabelSheet.class);
             
-            TableLabelSheet sheet = mapper.load(in, TableLabelSheet.class, errors);
+            TableLabelSheet sheet = errors.getTarget();
             
             if(sheet.leftRecords1 != null) {
                 assertThat(sheet.leftRecords1, hasSize(2));
@@ -507,12 +500,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_startedDataPosition() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(false);
+        mapper.getConiguration().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(StartedDataPositionSheet.class);
+            SheetBindingErrors<StartedDataPositionSheet> errors = mapper.loadDetail(in, StartedDataPositionSheet.class);
             
-            StartedDataPositionSheet sheet = mapper.load(in, StartedDataPositionSheet.class, errors);
+            StartedDataPositionSheet sheet = errors.getTarget();
             
             if(sheet.distantRecords != null) {
                 
@@ -552,15 +545,15 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_regexLabel() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(false)
+        mapper.getConiguration().setContinueTypeBindFailure(false)
             .setNormalizeLabelText(true)
             .setRegexLabelText(true);
         
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
+            SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
-            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            RegexSheet sheet = errors.getTarget();
             
             if(sheet.records1 != null) {
                 
@@ -609,12 +602,12 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_nestedRecords() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(NestedSheet.class);
+            SheetBindingErrors<NestedSheet> errors = mapper.loadDetail(in, NestedSheet.class);
             
-            NestedSheet sheet = mapper.load(in, NestedSheet.class, errors);
+            NestedSheet sheet = errors.getTarget();
             
             if(sheet.largeRecords1 != null) {
                 sheet.printRecord1();
@@ -661,13 +654,13 @@ public class AnnoVerticalRecordsTest {
     public void test_load_vr_customDataPosition() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(false)
+        mapper.getConiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(CustomDataPositionSheet.class);
+            SheetBindingErrors<CustomDataPositionSheet> errors = mapper.loadDetail(in, CustomDataPositionSheet.class);
             
-            CustomDataPositionSheet sheet = mapper.load(in, CustomDataPositionSheet.class, errors);
+            CustomDataPositionSheet sheet = errors.getTarget();
             
             if(sheet.classA != null) {
                 
@@ -690,7 +683,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final NormalRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final NormalRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             assertThat(record.name, is("名前1"));
@@ -703,7 +696,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final HeaderSpaceSheet.UserRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final HeaderSpaceSheet.UserRecord record, final SheetBindingErrors<?> errors) {
         
         assertThat(record.labels.get("no"), is("No."));
         assertThat(record.labels.get("name"), is("氏名"));
@@ -722,7 +715,7 @@ public class AnnoVerticalRecordsTest {
     
     }
     
-    private void assertRecord(final MergedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final MergedRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             assertThat(record.category, is(Category.Info));
@@ -756,7 +749,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final HeaderMergedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final HeaderMergedRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
@@ -774,7 +767,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final OptionalRecord record, final SheetBindingErrors errors, boolean hasCell) {
+    private void assertRecord(final OptionalRecord record, final SheetBindingErrors<?> errors, boolean hasCell) {
         
         if(record.no == 1) {
             assertThat(record.name, is("名前1"));
@@ -799,23 +792,23 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final ConvertedRecord record, final SheetBindingErrors errors, boolean hasCell) {
+    private void assertRecord(final ConvertedRecord record, final SheetBindingErrors<?> errors, boolean hasCell) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("birthday"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("birthday"))).isConversionFailure(), is(true));
             assertThat(record.age, is(14));
             
         } else if(record.no == 2) {
             assertThat(record.name, is("鈴木次郎"));
             assertThat(record.birthday, is(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("age"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("age"))).isConversionFailure(), is(true));
             
         }
         
     }
     
-    private void assertRecord(final MapRecord record, final SheetBindingErrors errors, boolean hasCell) {
+    private void assertRecord(final MapRecord record, final SheetBindingErrors<?> errors, boolean hasCell) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
@@ -832,7 +825,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final MapConvertedRecord record, final SheetBindingErrors errors, boolean hasCell) {
+    private void assertRecord(final MapConvertedRecord record, final SheetBindingErrors<?> errors, boolean hasCell) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
@@ -843,13 +836,13 @@ public class AnnoVerticalRecordsTest {
         } else if(record.no == 2) {
             assertThat(record.name, is("鈴木次郎"));
             assertThat(record.dateAttended.get("4月1日"), is(false));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("dateAttended[4月2日]"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.positions.get("dateAttended[4月2日]"))).isConversionFailure(), is(true));
             assertThat(record.dateAttended.get("4月3日"), is(true));
         }
         
     }
     
-    private void assertRecord(final MapEndRecord record, final SheetBindingErrors errors, boolean hasCell) {
+    private void assertRecord(final MapEndRecord record, final SheetBindingErrors<?> errors, boolean hasCell) {
         
         if(record.no == 1) {
             
@@ -871,7 +864,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final EmptySkipRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final EmptySkipRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
@@ -888,7 +881,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final MethodAnnoRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final MethodAnnoRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
@@ -905,7 +898,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final MethodAnnoMapRecord record, final SheetBindingErrors errors, boolean hasCell) {
+    private void assertRecord(final MethodAnnoMapRecord record, final SheetBindingErrors<?> errors, boolean hasCell) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
@@ -916,13 +909,13 @@ public class AnnoVerticalRecordsTest {
         } else if(record.no == 2) {
             assertThat(record.name, is("鈴木次郎"));
             assertThat(record.dateAttended.get("4月1日"), is(false));
-            assertThat(cellFieldError(errors, cellAddress(record.dateAttendedPosition.get("4月2日"))).isTypeBindFailure(), is(true));
+            assertThat(cellFieldError(errors, cellAddress(record.dateAttendedPosition.get("4月2日"))).isConversionFailure(), is(true));
             assertThat(record.dateAttended.get("4月3日"), is(true));
         }
         
     }
     
-    private void assertRecord(final StartedDataPositionSheet.DistantRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final StartedDataPositionSheet.DistantRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
@@ -940,7 +933,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final StartedDataPositionSheet.HeaderMergedRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final StartedDataPositionSheet.HeaderMergedRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
@@ -958,7 +951,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-    private void assertRecord(final RegexSheet.ResultRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final RegexSheet.ResultRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             assertThat(record.name, is("山田太郎"));
@@ -972,7 +965,7 @@ public class AnnoVerticalRecordsTest {
         
     }
     
-private void assertRecord(final NestedSheet.LargeRecord largeRecord, final SheetBindingErrors errors) {
+private void assertRecord(final NestedSheet.LargeRecord largeRecord, final SheetBindingErrors<?> errors) {
         
         final String largeName = largeRecord.largeName;
         assertThat(largeRecord.largeDescription, is(String.format("%sの説明", largeName)));
@@ -1021,7 +1014,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
     }
     
-    private void assertRecord(final NestedSheet.HeaderMergedLargeRecord largeRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final NestedSheet.HeaderMergedLargeRecord largeRecord, final SheetBindingErrors<?> errors) {
         
         final String largeName = largeRecord.largeName;
         assertThat(largeRecord.largeDescription, is(String.format("%sの説明", largeName)));
@@ -1070,7 +1063,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
     }
     
-    private void assertRecord(final NestedSheet.OneToOneRecord record, final SheetBindingErrors errors) {
+    private void assertRecord(final NestedSheet.OneToOneRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
             assertThat(record.className, is("A"));
@@ -1110,7 +1103,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
     }
     
-    private void assertRecord(final CustomDataPositionSheet.Record record, final SheetBindingErrors errors, final String className) {
+    private void assertRecord(final CustomDataPositionSheet.Record record, final SheetBindingErrors<?> errors, final String className) {
         
         if(className.equals("クラスA")) {
             if(record.no == 1) {
@@ -1177,7 +1170,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -1188,10 +1181,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<StartedPositionSheet> errors = mapper.loadDetail(in, StartedPositionSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(StartedPositionSheet.class);
-            
-            StartedPositionSheet sheet = mapper.load(in, StartedPositionSheet.class, errors);
+            StartedPositionSheet sheet = errors.getTarget();
             
             if(sheet.normalRecords1 != null) {
                 assertThat(sheet.normalRecords1, hasSize(outSheet.normalRecords1.size()));
@@ -1250,7 +1242,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -1278,7 +1270,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -1306,7 +1298,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -1342,7 +1334,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -1353,10 +1345,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<EndPositionSheet> errors = mapper.loadDetail(in, EndPositionSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(EndPositionSheet.class);
-            
-            EndPositionSheet sheet = mapper.load(in, EndPositionSheet.class, errors);
+            EndPositionSheet sheet = errors.getTarget();
             
             if(sheet.normalRecords1 != null) {
                 assertThat(sheet.normalRecords1, hasSize(outSheet.normalRecords1.size()));
@@ -1420,7 +1411,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -1431,10 +1422,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<HeaderSpaceSheet> errors = mapper.loadDetail(in, HeaderSpaceSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(HeaderSpaceSheet.class);
-            
-            HeaderSpaceSheet sheet = mapper.load(in, HeaderSpaceSheet.class, errors);
+            HeaderSpaceSheet sheet = errors.getTarget();
             
             if(sheet.records1 != null) {
                 assertThat(sheet.records1, hasSize(outSheet.records1.size()));
@@ -1484,7 +1474,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
     public void test_save_vr_columnSetting1() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         test_save_vr_columnSetting(mapper);
     }
@@ -1498,7 +1488,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
     public void test_save_vr_columnSetting2() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setMergeCellOnSave(true);
         
         test_save_vr_columnSetting(mapper);
@@ -1570,10 +1560,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<ColumnSettingSheet> errors = mapper.loadDetail(in, ColumnSettingSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(ColumnSettingSheet.class);
-            
-            ColumnSettingSheet sheet = mapper.load(in, ColumnSettingSheet.class, errors);
+            ColumnSettingSheet sheet = errors.getTarget();
             
             if(sheet.mergedRecords != null) {
                 assertThat(sheet.mergedRecords, hasSize(outSheet.mergedRecords.size()));
@@ -1662,7 +1651,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -1673,10 +1662,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(MapColumnSettingSheet.class);
-            
-            MapColumnSettingSheet sheet = mapper.load(in, MapColumnSettingSheet.class, errors);
+            MapColumnSettingSheet sheet = errors.getTarget();
             
             if(sheet.mapRecords1 != null) {
                 assertThat(sheet.mapRecords1, hasSize(outSheet.mapRecords1.size()));
@@ -1742,7 +1730,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -1753,10 +1741,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<RecodSettingSheet> errors = mapper.loadDetail(in, RecodSettingSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(RecodSettingSheet.class);
-            
-            RecodSettingSheet sheet = mapper.load(in, RecodSettingSheet.class, errors);
+            RecodSettingSheet sheet = errors.getTarget();
             
             if(sheet.skipList != null) {
                 int emptyRecordCount = 0;
@@ -1844,7 +1831,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
@@ -1857,10 +1844,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<RemainedOverSheet> errors = mapper.loadDetail(in, RemainedOverSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(RemainedOverSheet.class);
-            
-            RemainedOverSheet sheet = mapper.load(in, RemainedOverSheet.class, errors);
+            RemainedOverSheet sheet = errors.getTarget();
             
             if(sheet.overBreakRecrods != null) {
                 assertThat(sheet.overBreakRecrods, hasSize(2));
@@ -1965,7 +1951,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
@@ -1978,10 +1964,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<ValidationRuleSheet> errors = mapper.loadDetail(in, ValidationRuleSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(ValidationRuleSheet.class);
-            
-            ValidationRuleSheet sheet = mapper.load(in, ValidationRuleSheet.class, errors);
+            ValidationRuleSheet sheet = errors.getTarget();
             
             if(sheet.insertValidationRecrods != null) {
                 assertThat(sheet.insertValidationRecrods, hasSize(outSheet.insertValidationRecrods.size()-1));
@@ -2060,7 +2045,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -2071,10 +2056,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(MethodAnnoSheet.class);
-            
-            MethodAnnoSheet sheet = mapper.load(in, MethodAnnoSheet.class, errors);
+            MethodAnnoSheet sheet = errors.getTarget();
             
             if(sheet.records != null) {
                 int emptyRecordCount = 0;
@@ -2130,7 +2114,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -2141,10 +2125,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<TableLabelSheet> errors = mapper.loadDetail(in, TableLabelSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(TableLabelSheet.class);
-            
-            TableLabelSheet sheet = mapper.load(in, TableLabelSheet.class, errors);
+            TableLabelSheet sheet = errors.getTarget();
             
             if(sheet.leftRecords1 != null) {
                 assertThat(sheet.leftRecords1, hasSize(outSheet.leftRecords1.size()));
@@ -2206,7 +2189,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -2217,10 +2200,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<StartedDataPositionSheet> errors = mapper.loadDetail(in, StartedDataPositionSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(StartedDataPositionSheet.class);
-            
-            StartedDataPositionSheet sheet = mapper.load(in, StartedDataPositionSheet.class, errors);
+            StartedDataPositionSheet sheet = errors.getTarget();
             
             if(sheet.distantRecords != null) {
                 assertThat(sheet.distantRecords, hasSize(outSheet.distantRecords.size()));
@@ -2271,7 +2253,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
@@ -2284,10 +2266,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(RegexSheet.class);
-            
-            RegexSheet sheet = mapper.load(in, RegexSheet.class, errors);
+            RegexSheet sheet = errors.getTarget();
             
             if(sheet.records1 != null) {
                 assertThat(sheet.records1, hasSize(outSheet.records1.size()));
@@ -2444,10 +2425,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<NestedSheet> errors = mapper.loadDetail(in, NestedSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(NestedSheet.class);
-            
-            NestedSheet sheet = mapper.load(in, NestedSheet.class, errors);
+            NestedSheet sheet = errors.getTarget();
             
             if(sheet.largeRecords1 != null) {
                 sheet.printRecord1();
@@ -2515,7 +2495,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
@@ -2526,10 +2506,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(FormulaSheet.class);
-            
-            FormulaSheet sheet = mapper.load(in, FormulaSheet.class, errors);
+            FormulaSheet sheet = errors.getTarget();
             
             if(sheet.gradeRecrods != null) {
                 assertThat(sheet.gradeRecrods, hasSize(outSheet.gradeRecrods.size()));
@@ -2571,7 +2550,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true)
+        mapper.getConiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true);
         
         File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
@@ -2583,10 +2562,9 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<CustomDataPositionSheet> errors = mapper.loadDetail(in, CustomDataPositionSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(CustomDataPositionSheet.class);
-            
-            CustomDataPositionSheet sheet = mapper.load(in, CustomDataPositionSheet.class, errors);
+            CustomDataPositionSheet sheet = errors.getTarget();
             
             if(sheet.classA != null) {
                 assertThat(sheet.classA, hasSize(outSheet.classA.size()));
@@ -2616,7 +2594,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final NormalRecord inRecord, final NormalRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final NormalRecord inRecord, final NormalRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2632,7 +2610,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final HeaderSpaceSheet.UserRecord inRecord, final HeaderSpaceSheet.UserRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final HeaderSpaceSheet.UserRecord inRecord, final HeaderSpaceSheet.UserRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2649,7 +2627,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final MergedRecord inRecord, final MergedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final MergedRecord inRecord, final MergedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2665,7 +2643,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final HeaderMergedRecord inRecord, final HeaderMergedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final HeaderMergedRecord inRecord, final HeaderMergedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2685,7 +2663,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param errors
      * @param hasCell オプションのセルを持つかどうか。
      */
-    private void assertRecord(final OptionalRecord inRecord, final OptionalRecord outRecord, final SheetBindingErrors errors, boolean hasCell) {
+    private void assertRecord(final OptionalRecord inRecord, final OptionalRecord outRecord, final SheetBindingErrors<?> errors, boolean hasCell) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2707,7 +2685,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final ConvertedRecord inRecord, final ConvertedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final ConvertedRecord inRecord, final ConvertedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2724,7 +2702,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final MapRecord inRecord, final MapRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final MapRecord inRecord, final MapRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2753,7 +2731,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final MapConvertedRecord inRecord, final MapConvertedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final MapConvertedRecord inRecord, final MapConvertedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2782,7 +2760,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final MapEndRecord inRecord, final MapEndRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final MapEndRecord inRecord, final MapEndRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2817,7 +2795,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final EmptySkipRecord inRecord, final EmptySkipRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final EmptySkipRecord inRecord, final EmptySkipRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2833,7 +2811,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final RemainedOverRecord inRecord, final RemainedOverRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final RemainedOverRecord inRecord, final RemainedOverRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2849,7 +2827,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final DataValidationRecord inRecord, final DataValidationRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final DataValidationRecord inRecord, final DataValidationRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2872,7 +2850,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final NameDefRecord inRecord, final NameDefRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final NameDefRecord inRecord, final NameDefRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2887,7 +2865,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final MethodAnnoRecord inRecord, final MethodAnnoRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final MethodAnnoRecord inRecord, final MethodAnnoRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2903,7 +2881,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final MethodAnnoMapRecord inRecord, final MethodAnnoMapRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final MethodAnnoMapRecord inRecord, final MethodAnnoMapRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2933,7 +2911,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final StartedDataPositionSheet.DistantRecord inRecord, final StartedDataPositionSheet.DistantRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final StartedDataPositionSheet.DistantRecord inRecord, final StartedDataPositionSheet.DistantRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2953,7 +2931,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final StartedDataPositionSheet.HeaderMergedRecord inRecord, final StartedDataPositionSheet.HeaderMergedRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final StartedDataPositionSheet.HeaderMergedRecord inRecord, final StartedDataPositionSheet.HeaderMergedRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2973,7 +2951,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final RegexSheet.ResultRecord inRecord, final RegexSheet.ResultRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final RegexSheet.ResultRecord inRecord, final RegexSheet.ResultRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -2992,7 +2970,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final NestedSheet.LargeRecord inLargeRecord, final NestedSheet.LargeRecord outLargeRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final NestedSheet.LargeRecord inLargeRecord, final NestedSheet.LargeRecord outLargeRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s largeName=%s\n",
                 this.getClass().getSimpleName(), inLargeRecord.getClass().getSimpleName(), inLargeRecord.largeName);
@@ -3040,7 +3018,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final NestedSheet.OneToOneRecord inRecord, final NestedSheet.OneToOneRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final NestedSheet.OneToOneRecord inRecord, final NestedSheet.OneToOneRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -3069,7 +3047,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormulaSheet.GradeRecord inRecord, final FormulaSheet.GradeRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaSheet.GradeRecord inRecord, final FormulaSheet.GradeRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -3098,7 +3076,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final FormulaSheet.EntryRecord inRecord, final FormulaSheet.EntryRecord outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final FormulaSheet.EntryRecord inRecord, final FormulaSheet.EntryRecord outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -3130,7 +3108,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param errors
      * @param className
      */
-    private void assertRecord(final CustomDataPositionSheet.Record inRecord, final CustomDataPositionSheet.Record outRecord, final SheetBindingErrors errors,
+    private void assertRecord(final CustomDataPositionSheet.Record inRecord, final CustomDataPositionSheet.Record outRecord, final SheetBindingErrors<?> errors,
             final String className) {
         
         System.out.printf("%s - assertRecord::%s className=%s, no=%d\n",
@@ -6075,8 +6053,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        static class ClassNameRecordFinder implements RecordFinder {
            
            @Override
-           public CellAddress find(ProcessType type, String[] args, Sheet sheet,
-                   CellAddress address, XlsMapperConfig config) {
+           public CellPosition find(ProcessType type, String[] args, Sheet sheet,
+                   CellPosition address, Configuration config) {
                
                final String className = args[0];
                Cell classNameCell = CellFinder.query(sheet, className, config)
@@ -6084,7 +6062,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
                        .findWhenNotFoundException();
                
                // 見出し用のセルから1つ右がデータレコードの開始位置
-               return CellAddress.of(address.getRow(), classNameCell.getColumnIndex()+1);
+               return CellPosition.of(address.getRow(), classNameCell.getColumnIndex()+1);
            }
            
        }
@@ -6127,7 +6105,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         */
        private static class Record {
            
-           private Map<String, CellAddress> positions;
+           private Map<String, CellPosition> positions;
            
            private Map<String, String> labels;
            

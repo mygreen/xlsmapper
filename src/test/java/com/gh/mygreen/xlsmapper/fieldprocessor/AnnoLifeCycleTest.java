@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.XlsMapper;
-import com.gh.mygreen.xlsmapper.XlsMapperConfig;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
@@ -67,12 +67,12 @@ public class AnnoLifeCycleTest {
     public void test_load_lc_simple() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LifeCycle.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(SimpleSheet.class);
+            SheetBindingErrors<SimpleSheet> errors = mapper.loadDetail(in, SimpleSheet.class);
             
-            SimpleSheet sheet = mapper.load(in, SimpleSheet.class, errors);
+            SimpleSheet sheet = errors.getTarget();
             
             assertThat(sheet.executeInitLoad, is(true));
             assertThat(sheet.executeDestroyLoad, is(true));
@@ -106,12 +106,12 @@ public class AnnoLifeCycleTest {
     public void test_load_lc_iterate() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream("src/test/data/anno_LifeCycle.xlsx")) {
-            SheetBindingErrors errors = new SheetBindingErrors(IteratableSheet.class);
+            SheetBindingErrors<IteratableSheet> errors = mapper.loadDetail(in, IteratableSheet.class);
             
-            IteratableSheet sheet = mapper.load(in, IteratableSheet.class, errors);
+            IteratableSheet sheet = errors.getTarget();
             
             assertThat(sheet.executeInitLoad, is(true));
             assertThat(sheet.executeDestroyLoad, is(true));
@@ -132,7 +132,7 @@ public class AnnoLifeCycleTest {
     /**
      * 読み込み用のレコードの値の検証
      */
-    private void assertRecord(final Record record, final SheetBindingErrors errors) {
+    private void assertRecord(final Record record, final SheetBindingErrors<?> errors) {
         
         assertThat(record.executeInitLoad, is(true));
         assertThat(record.executeDestroyLoad, is(true));
@@ -154,7 +154,7 @@ public class AnnoLifeCycleTest {
     /**
      * 読み込み用の表の値の検証
      */
-    private void assertTable(final Table table, final SheetBindingErrors errors) {
+    private void assertTable(final Table table, final SheetBindingErrors<?> errors) {
         
         assertThat(table.executeInitLoad, is(true));
         assertThat(table.executeDestroyLoad, is(true));
@@ -197,7 +197,7 @@ public class AnnoLifeCycleTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_LifeCycle_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LifeCycle_template.xlsx");
@@ -208,10 +208,9 @@ public class AnnoLifeCycleTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<SimpleSheet> errors = mapper.loadDetail(in, SimpleSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(SimpleSheet.class);
-            
-            SimpleSheet sheet = mapper.load(in, SimpleSheet.class, errors);
+            SimpleSheet sheet = errors.getTarget();
             
             assertThat(outSheet.executeInitLoad, is(false));
             assertThat(outSheet.executeDestroyLoad, is(false));
@@ -263,7 +262,7 @@ public class AnnoLifeCycleTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConig().setContinueTypeBindFailure(true);
+        mapper.getConiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, "anno_LifeCycle_out.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/anno_LifeCycle_template.xlsx");
@@ -274,10 +273,9 @@ public class AnnoLifeCycleTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<IteratableSheet> errors = mapper.loadDetail(in, IteratableSheet.class);
             
-            SheetBindingErrors errors = new SheetBindingErrors(IteratableSheet.class);
-            
-            IteratableSheet sheet = mapper.load(in, IteratableSheet.class, errors);
+            IteratableSheet sheet = errors.getTarget();
             
             assertThat(outSheet.executeInitLoad, is(false));
             assertThat(outSheet.executeDestroyLoad, is(false));
@@ -303,7 +301,7 @@ public class AnnoLifeCycleTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final Record inRecord, final Record outRecord, final SheetBindingErrors errors) {
+    private void assertRecord(final Record inRecord, final Record outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -323,7 +321,7 @@ public class AnnoLifeCycleTest {
      * @param outRecord
      * @param errors
      */
-    private void assertTable(final Table inTable, final Table outTable, final SheetBindingErrors errors) {
+    private void assertTable(final Table inTable, final Table outTable, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertTable::%s name=%s\n",
                 this.getClass().getSimpleName(), inTable.getClass().getSimpleName(), inTable.name);
@@ -393,7 +391,7 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void initLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -402,7 +400,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void destroyLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -412,7 +410,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void initSave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -422,7 +420,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void destroySave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -441,7 +439,7 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void initLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -450,7 +448,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void destroyLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -460,7 +458,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void initSave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -470,7 +468,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors) {
+        public void destroySave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -510,7 +508,7 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+        public void initLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final IteratableSheet targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -520,7 +518,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+        public void destroyLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final IteratableSheet targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -531,7 +529,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+        public void initSave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final IteratableSheet targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -542,7 +540,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+        public void destroySave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final IteratableSheet targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -561,7 +559,7 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+        public void initLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final IteratableSheet targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -571,7 +569,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+        public void destroyLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final IteratableSheet targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -582,7 +580,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+        public void initSave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final IteratableSheet targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -593,7 +591,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final IteratableSheet targetObj) {
+        public void destroySave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final IteratableSheet targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -643,7 +641,7 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+        public void initLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -653,7 +651,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+        public void destroyLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -664,7 +662,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+        public void initSave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -675,7 +673,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+        public void destroySave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -695,7 +693,7 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+        public void initLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -705,7 +703,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+        public void destroyLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -716,7 +714,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+        public void initSave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -727,7 +725,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Table targetObj) {
+        public void destroySave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Table targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -774,7 +772,7 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+        public void initLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -784,7 +782,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+        public void destroyLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -795,7 +793,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+        public void initSave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -806,7 +804,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+        public void destroySave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -826,7 +824,7 @@ public class AnnoLifeCycleTest {
         private boolean executeDestroySave;
         
         @XlsPreLoad
-        public void initLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+        public void initLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -836,7 +834,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostLoad
-        public void destroyLoad(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+        public void destroyLoad(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -847,7 +845,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPreSave
-        public void initSave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+        public void initSave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));
@@ -858,7 +856,7 @@ public class AnnoLifeCycleTest {
         }
         
         @XlsPostSave
-        public void destroySave(final Sheet sheet, final XlsMapperConfig config, final SheetBindingErrors errors, final Record targetObj) {
+        public void destroySave(final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors, final Record targetObj) {
             assertThat(sheet, is(not(nullValue())));
             assertThat(config, is(not(nullValue())));
             assertThat(errors, is(not(nullValue())));

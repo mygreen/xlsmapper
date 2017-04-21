@@ -1,19 +1,17 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import org.springframework.validation.Errors;
+import java.util.Set;
 
 import com.gh.mygreen.xlsmapper.fieldaccessor.LabelGetterFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.PositionGetterFactory;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.util.CellAddress;
-import com.gh.mygreen.xlsmapper.util.PropertyNavigator;
-import com.gh.mygreen.xlsmapper.validation.FieldError;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+import com.gh.mygreen.xlsmapper.validation.CellFieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 
@@ -29,188 +27,175 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  */
 public class CellField<T> {
     
+    private static final PositionGetterFactory positionGetterFactory = new PositionGetterFactory();
+    private static final LabelGetterFactory labelGetterFactory = new LabelGetterFactory();
+    
+    private final SheetBindingErrors<?> errors;
+    
     /**
-     * プロパティにアクセスするための式言語。
-     * ・OGNLを利用し、private/protectedなどのフィールドにもアクセス可能にする。
+     * フィールドの名称
      */
-    private static final PropertyNavigator propertyNavigator = new PropertyNavigator();
-    static {
-        propertyNavigator.setAllowPrivate(true);
-        propertyNavigator.setIgnoreNull(true);
-        propertyNavigator.setIgnoreNotFoundKey(true);
-        propertyNavigator.setCacheWithPath(true);
-    }
+    private final String fieldName;
     
-    /** フィールド名（チェック対象のプロパティ名） */
-    final private String name;
+    /**
+     * フィールドが定義されているBeanクラスのインスタンス
+     */
+    private Object beanObj;
     
-    /** チェック対象の値 */
-    private T value;
+    /**
+     * フィールドの値
+     */
+    private T fieldValue;
     
-    /** セルのアドレス */
-    private CellAddress cellAddress;
+    /**
+     * フィールドのJavaBean上のパス
+     */
+    private String fieldPath;
     
-    /** 必須かどうか */
-    private boolean required;
+    /**
+     * セルの位置情報。
+     * Beanに定義されたプロパティ情報から取得する。
+     * 定義されていない場合は、nullが設定される。
+     */
+    private CellPosition position;
     
-    /** ラベル */
+    /**
+     * セルのラベル情報
+     * Beanに定義されたプロパティ情報から取得する。
+     * 定義されていない場合は、nullが設定される。
+     */
     private String label;
     
-    /** フィールドValidator */
+    /**
+     * 必須かどうか
+     */
+    private boolean required;
+    
     private List<FieldValidator<T>> validators;
     
-    public CellField(final String name) {
-        this(name, (T)null);
-    }
+    private FieldFormatter<T> formatter;
+    
+    private Class<T> fieldType;
     
     /**
-     * フィールド名とその値を指定するコンストラクタ
-     * @param fieldName フィールドの名称
-     * @param fieldValue フィールドの値
-     * @throws IllegalArgumentException fieledName is empty.
+     * 
+     * @param fieldName フィールドの名称。現在のBeanに対するフィールドの相対パスを指定します。
+     * @param errors エラー情報
      */
-    public CellField(final String fieldName, final T fieldValue) {
+    public CellField(final String fieldName, final Class<T> fieldType, final SheetBindingErrors<?> errors) {
+        
         ArgUtils.notEmpty(fieldName, "fieldName");
-        this.name = fieldName;
-        setValue(fieldValue);
-        this.validators = new ArrayList<FieldValidator<T>>();
+        ArgUtils.notNull(fieldType, "fieldType");
+        ArgUtils.notNull(errors, "errors");
+        
+        this.fieldName = fieldName;
+        this.fieldType = fieldType;
+        this.errors = errors;
+        
+        init();
     }
     
-    /**
-     * Commandから指定したフィールド名（プロパティ名）の値をBeanWrapperにて自動的に取得するコンストラクタ。
-     * @param targetObj Commandのインスタンス。
-     * @param fieldName Commandにおけるプロパティ名。
-     * @throws IllegalArgumentException commandObj is null.
-     * @throws IllegalArgumentException fieldName is empty.
-     */
-    public CellField(final Object targetObj, final String fieldName) {
-        ArgUtils.notNull(targetObj, "commandObj");
-        ArgUtils.notEmpty(fieldName, "fieldName");
+    @SuppressWarnings("unchecked")
+    private void init() {
         
-        this.name = fieldName;
-        @SuppressWarnings("unchecked")
-        final T fieldValue = (T) propertyNavigator.getProperty(targetObj, fieldName);
-        setValue(fieldValue);
+        this.beanObj = errors.getValue();
+        this.fieldValue = (T)errors.getFieldValue(fieldName);
+        this.fieldPath = errors.buildFieldPath(fieldName);
         
-        Optional<CellAddress> position = new PositionGetterFactory().create(targetObj.getClass(), fieldName)
-                .map(getter -> getter.get(targetObj)).orElse(Optional.empty());
-        position.ifPresent(p -> setCellAddress(p));
+        Optional<CellPosition> position = positionGetterFactory.create(beanObj.getClass(), fieldName)
+                .map(getter -> getter.get(beanObj)).orElse(Optional.empty());
+        position.ifPresent(p -> setPosition(p));
         
-        Optional<String> label = new LabelGetterFactory().create(targetObj.getClass(), fieldName)
-                .map(getter -> getter.get(targetObj)).orElse(Optional.empty());
+        Optional<String> label = labelGetterFactory.create(beanObj.getClass(), fieldName)
+                .map(getter -> getter.get(beanObj)).orElse(Optional.empty());
         label.ifPresent(l -> setLabel(l));
         
-        this.validators = new ArrayList<FieldValidator<T>>();
+        this.required = false;
+        this.validators = new ArrayList<>();
+        
+        this.formatter = errors.findFieldFormatter(fieldName, fieldType);
+    }
+    
+    /**
+     * 値が必須かの設定を行う。
+     * @param required 必須チェックを行いたい場合、「true」を設定する。
+     * @return 自身のインスタンス。メソッドチェーンで記述する。
+     */
+    public CellField<T> setRequired(final boolean required) {
+        this.required = required;
+        return this;
+    }
+    
+    /**
+     * 値が必須かチェックを行うかどうか。
+     * @return true: 必須入力チェックを行う。
+     *               初期値は、非必須（オプション）です。
+     */
+    public boolean isRequired() {
+        return required;
     }
     
     /**
      * {@link FieldValidator} を追加する。
      * @param validator validatorのインスタンス。
      * @return 自身のインスタンス。
-     * @throws IllegalArgumentException validator is null.
+     * @throws NullPointerException validator is null.
      */
     public CellField<T> add(final FieldValidator<T> validator) {
         ArgUtils.notNull(validator, "validator");
-        validators.add(validator);
+        this.validators.add(validator);
         
         return this;
     }
     
     /**
-     * 現在のValidatorを取得する。
-     * @return
+     * 現在の{@link FieldValidator}を取得する。
+     * @return 現在設定されている{@link FieldValidator}。
      */
     public List<FieldValidator<T>> getValidators() {
         return validators;
     }
     
     /**
-     * 入力値チェックを行う。
-     * <p>既に、引数のerrorsの中に自身に関するエラーがある場合は無視する。
-     * <p>チェック順は、(1)必須チェック、(2)追加したFieldValidatorの順。
+     * 入力値の検証を行う。
+     * <p>判定結果は、{@link #hasError()}で確認します。</p>
+     * <p>型変換エラーなどが既に存在するときには、処理は終了します。</p>
      * 
-     * @param errors エラーオブジェクト。
-     * @throws IllegalArgumentException errors is null.
+     * @return 自身のインスタンス。
      */
-    public CellField<T> validate(final SheetBindingErrors errors) {
-        ArgUtils.notNull(errors, "errors");
+    public CellField<T> validate() {
+        return validate(Collections.emptySet());
+    }
+    
+    /**
+     * グループなどのヒントを指定して、入力値の検証を行う。
+     * <p>判定結果は、{@link #hasError()}で確認します。</p>
+     * <p>型変換エラーなどが既に存在するときには、処理は終了します。</p>
+     * 
+     * @param hinsts 検証するときのヒント
+     * @return 自身のインスタンス。
+     */
+    public CellField<T> validate(final Set<Object> hinsts) {
         
-        if(hasErrors(errors)) {
-            // 既にフィールドに対するエラーがある場合
+        // 既に型変換エラーなどがある場合、値が設定されていないため処理を終了します。
+        if(hasError()) {
             return this;
         }
         
-        if(!validateAsRequired(errors)) {
-            // 必須エラーの場合
-            appendSheetInfo(errors);
+        // 必須チェック
+        if(!validateForRequired()) {
             return this;
         }
         
         if(getValidators() != null && !getValidators().isEmpty()) {
-            // 各種入力値チェックを行う。
             for(FieldValidator<T> validator : getValidators()) {
-                
-                if(!invokeValidate(validator, errors)) {
-                    // エラーがある場合
-                    break;
+                if(!validator.validate(this, hinsts)) {
+                    return this;
                 }
             }
         }
         
-        appendSheetInfo(errors);
         return this;
-    }
-    
-    /**
-     * 現在のエラーにシート情報を補完する
-     * @param errors
-     */
-    protected void appendSheetInfo(final SheetBindingErrors errors) {
-        
-        for(FieldError error : errors.getFieldErrors(getName())) {
-            error.setLabel(getLabel());
-        }
-    }
-    
-    /**
-     * 指定したFieldValidatorを実行し、値を検証する。
-     * @param validator 
-     * @param errors
-     * @return
-     */
-    protected boolean invokeValidate(final FieldValidator<T> validator, final SheetBindingErrors errors) {
-        
-        if(validator instanceof CellFieldValidator && getCellAddress() != null) {
-            CellFieldValidator<T> sheetValidator = (CellFieldValidator<T>) validator;
-            return sheetValidator.validate(getName(), getValue(), getCellAddress(), errors);
-        } else {
-            return validator.validate(getName(), getValue(), errors);
-        }
-        
-    }
-    
-    /**
-     * 必須チェックを行う。
-     * 
-     * @param errors
-     * @return true:エラーがない場合。既にエラーがある場合。
-     */
-    protected boolean validateAsRequired(final SheetBindingErrors errors) {
-        
-        if(isInputEmpty()) {
-            // 必須エラーチェックを行う場合
-            if(isRequired()) {
-                Map<String, Object> vars = new LinkedHashMap<>();
-                vars.put("validatedValue", getValue());
-                errors.rejectSheetValue(getName(), getCellAddress(), getMessageKeyRequired(), vars);
-                return false;
-            }
-            
-            return true;
-        }
-        
-        // エラーがない場合
-        return true;
         
     }
     
@@ -224,102 +209,136 @@ public class CellField<T> {
     }
     
     /**
-     * フィールドの値が空 or nullかどうか。
-     * @return
+     * 必須チェックを行う。
+     * @return trueの場合、必須エラーでない。
+     */
+    protected boolean validateForRequired() {
+        
+        if(isRequired() && isInputEmpty()) {
+            errors.createFieldError(fieldName, getMessageKeyRequired())
+                .address(getPosition())
+                .label(getLabel())
+                .variables("validatedValue", getValue())
+                .buildAndAddError();
+            return false;
+        }
+        
+        return true;
+        
+    }
+    
+    /**
+     * エラーを追加する。
+     * @param errorCode エラーコード
+     */
+    public void rejectValue(final String errorCode) {
+        rejectValue(errorCode, Collections.emptyMap());
+    }
+    
+    /**
+     * エラーを追加する
+     * @param errorCode エラコード
+     * @param variables エラーメッセージ中の変数
+     */
+    public void rejectValue(final String errorCode, final Map<String, Object> variables) {
+        
+        final String codes[] = errors.generateMessageCodes(errorCode, fieldPath, fieldType);
+        
+        new CellFieldError.Builder(errors, errors.getObjectName(), fieldPath, codes)
+            .sheetName(errors.getSheetName())
+            .rejectedValue(fieldValue)
+            .variables(variables)
+            .address(position)
+            .label(label)
+            .buildAndAddError();
+    }
+    
+    /**
+     * フィールドの値が空かどうか。
+     * <p>値がnullまたは、文字列の場合空文字のとき、空と判定する。
+     * @return trueの場合、値は空。
      */
     public boolean isInputEmpty() {
-        return (getValue() == null || getValue().toString().isEmpty());
+        if(fieldValue == null || fieldValue.toString().isEmpty()) {
+            return true;
+        }
+        
+        return false;
     }
     
     /**
-     * フィールドの値が空 or null出ない場合。
-     * @return
+     * フィールドに対してエラーが存在するかどうか。
+     * @return trueの場合、エラーが存在する。
      */
-    public boolean isNotInputEmpty() {
-        return !isInputEmpty();
+    public boolean hasError() {
+        return errors.hasFieldErrors(fieldName);
     }
     
     /**
-     * 検証対象の値を設定する。
-     * @param value 検証対象の値。
-     * @return
-     */
-    protected CellField<T> setValue(final T value) {
-        this.value = value;
-        return this;
-    }
-    
-    /**
-     * 検証対象の値を取得する。
-     * @return
+     * フィールドの値を取得する。
+     * @return フィールドの値。
      */
     public T getValue() {
-        return value;
+        return fieldValue;
     }
     
     /**
-     * フィールドの名前を取得する。
-     * @return
+     * フィールドのクラスタイプを取得する。
+     * @return クラスタイプ
      */
-    public String getName() {
-        return name;
+    public Class<T> getType() {
+        return fieldType;
     }
     
     /**
-     * 値が必須かの設定を行う。
-     * @param required 必須チェックを行いたい場合、「true」を設定する。
-     * @return
+     * セルの位置情報を取得します。
+     * <p>位置情報の取得用のフィールドやメソッドがbeanに定義されている場合は、コンストラクタの呼び出し時に設定されています。</p>
+     * @return 自身のインスタンス。
      */
-    public CellField<T> setRequired(final boolean required) {
-        this.required = required;
-        return this;
+    public CellPosition getPosition() {
+        return position;
     }
     
     /**
-     * 値が必須かチェックを行うかどうか。
-     * @return true: 必須入力チェックを行う。
+     * セルの位置情報を設定します。
+     * @param position セルの位置情報
      */
-    public boolean isRequired() {
-        return required;
+    public void setPosition(CellPosition position) {
+        this.position = position;
     }
     
     /**
-     * 自身のフィールドに対してフィールドエラーを持つかどうか。
-     * <p>{@link Errors#hasFieldErrors(String)}を呼び出す。
-     * @param errors Springのエラーオブジェクト。
-     * @return true:エラーを持つ場合。
-     * @throws IllegalArgumentException errors == null.
+     * セルのラベル情報を取得します。
+     * <p>ラベル情報の取得用のフィールドやメソッドがbeanに定義されている場合は、コンストラクタの呼び出し時に設定されています。</p>
+     * @return 自身のインスタンス。
      */
-    public boolean hasErrors(final SheetBindingErrors errors) {
-        ArgUtils.notNull(errors, "errors");
-        return errors.hasFieldErrors(getName());
-    }
-    
-    /**
-     * 自身のフィールドに対してエラーを持たないかどうか
-     * @param errors
-     * @return
-     */
-    public boolean hasNotErrors(SheetBindingErrors errors) {
-        return !hasErrors(errors);
-    }
-    
-    public CellAddress getCellAddress() {
-        return cellAddress;
-    }
-    
-    public CellField<T> setCellAddress(CellAddress cellAddress) {
-        this.cellAddress = cellAddress;
-        return this;
-    }
-    
     public String getLabel() {
         return label;
     }
     
-    public CellField<T> setLabel(String label) {
+    /**
+     * セルのラベル情報を設定します。
+     * @param label セルのラベル情報
+     */
+    public void setLabel(String label) {
         this.label = label;
-        return this;
     }
     
+    /**
+     * フォーマッタを取得する。
+     * @return フォーマッタ。
+     *         デフォルトでは、フィールドのクラスタイプ、付与されたアノテーションを元にしたもの。
+     * 
+     */
+    public FieldFormatter<T> getFormatter() {
+        return formatter;
+    }
+    
+    /**
+     * フォーマッタを設定する。
+     * @param formatter
+     */
+    public void setFormatter(FieldFormatter<T> formatter) {
+        this.formatter = formatter;
+    }
 }
