@@ -58,6 +58,15 @@ public class TestUtils {
     }
     
     /**
+     * セルのアドレス形式にフォーマットする。
+     * @param cellAddress
+     * @return
+     */
+    public static String cellAddress(final CellPosition cellAddress) {
+        return cellAddress.formatAsString();
+    }
+    
+    /**
      * 任意の時間でフォーマットする。
      * @param pattern
      * @param date

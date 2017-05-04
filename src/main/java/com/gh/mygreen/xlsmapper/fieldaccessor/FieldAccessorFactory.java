@@ -11,6 +11,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
@@ -33,11 +36,13 @@ public class FieldAccessorFactory {
     
     private PositionSetterFactory positionSetterFactory = new PositionSetterFactory();
     private PositionGetterFactory positionGetterFactory = new PositionGetterFactory();
-    private MapColumnPositionSetterFactory mapColumnPositionSetterFactory = new MapColumnPositionSetterFactory();
+    private MapPositionSetterFactory mapPositionSetterFactory = new MapPositionSetterFactory();
+    private ArrayPositionSetterFactory arrayPositionSetterFactory = new ArrayPositionSetterFactory();
     
     private LabelSetterFactory labelSetterFactory = new LabelSetterFactory();
     private LabelGetterFactory labelGetterFactory = new LabelGetterFactory();
-    private MapColumnLabelSetterFactory mapColumnLabelSetterFactory = new MapColumnLabelSetterFactory();
+    private MapLabelSetterFactory mapLabelSetterFactory = new MapLabelSetterFactory();
+    private ArrayLabelSetterFactory arrayLabelSetterFactory = new ArrayLabelSetterFactory();
     
     /**
      * コンストラクタ
@@ -99,11 +104,19 @@ public class FieldAccessorFactory {
         
         // 位置・ラベル情報のアクセッサの設定
         if(accessor.hasAnnotation(XlsMapColumns.class)) {
-            accessor.mapColumnPositionSetter = mapColumnPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-            accessor.mapColumnLabelSetter = mapColumnLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            // マップ形式の場合
+            accessor.mapPositionSetter = mapPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+        } else if(accessor.hasAnnotation(XlsArrayColumns.class)
+                || accessor.hasAnnotation(XlsArrayCell.class)
+                || accessor.hasAnnotation(XlsLabelledArrayCell.class)){
+            // リストや配列形式の場合
+            accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.arrayLabelSetter = arrayLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             
         } else {
-            // XlsMapColumnsを持たない通常のプロパティの場合
+            // リストやMapではない通常のプロパティの場合
             accessor.positionSetter = positionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             accessor.positionGetter = positionGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             
@@ -213,8 +226,8 @@ public class FieldAccessorFactory {
         
         // 位置・ラベル情報のアクセッサの設定
         if(accessor.hasAnnotation(XlsMapColumns.class)) {
-            accessor.mapColumnPositionSetter = mapColumnPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
-            accessor.mapColumnLabelSetter = mapColumnLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.mapPositionSetter = mapPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             
         } else {
             // XlsMapColumnsを持たない通常のプロパティの場合

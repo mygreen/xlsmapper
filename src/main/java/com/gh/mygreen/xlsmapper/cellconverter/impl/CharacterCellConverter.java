@@ -38,6 +38,9 @@ public class CharacterCellConverter extends AbstractCellConverter<Character> {
         
         if(accessor.getType().isPrimitive()) {
             return '\u0000';
+            
+        } else if(accessor.isComponentType() && accessor.getComponentType().isPrimitive()) {
+            return '\u0000';
         }
         
         return null;

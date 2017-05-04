@@ -129,7 +129,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             }
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsHorizontalRecords.class)
                     .varWithClass("actualType", clazz)
@@ -528,10 +528,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             }
             
             // get converter (map key class)
-            final CellConverter<?> converter = config.getConverterRegistry().getConverter(itemClass);
-            if(converter == null) {
-                throw newNotFoundCellConverterExpcetion(itemClass);
-            }
+            final CellConverter<?> converter = getCellConverter(itemClass, property, config);
             
             boolean foundPreviousColumn = false;
             final Map<String, Object> map = new LinkedHashMap<>();
@@ -549,8 +546,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
                 if(foundPreviousColumn){
                     final Cell cell = POIUtils.getCell(sheet, hColumn, beginPosition.getRow());
-                    property.setMapColumnPosition(record, CellPosition.of(cell), headerInfo.getLabel());
-                    property.setMapColumnLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
+                    property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
+                    property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
                     
                     CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
                     if(mergedRange != null) {
@@ -725,11 +722,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 recordClass = accessor.getComponentType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
+            final List<Object> list = Utils.asList(result, recordClass);
             saveRecords(sheet, anno, accessor, recordClass, list, config, work);
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsHorizontalRecords.class)
                     .varWithClass("actualType", clazz)
@@ -1289,10 +1286,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             }
             
             // get converter (map key class)
-            final CellConverter converter = config.getConverterRegistry().getConverter(itemClass);
-            if(converter == null) {
-                throw newNotFoundCellConverterExpcetion(itemClass);
-            }
+            final CellConverter converter = getCellConverter(itemClass, property, config);
             
             boolean foundPreviousColumn = false;
             for(RecordHeader headerInfo : headers) {
@@ -1350,8 +1344,8 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     valueCellPositions.add(CellPosition.of(cell));
                     
                     // セルの値を出力する
-                    property.setMapColumnPosition(record, CellPosition.of(cell), headerInfo.getLabel());
-                    property.setMapColumnLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
+                    property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
+                    property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
                     
                     try {
                         Object itemValue = property.getValueOfMap(headerInfo.getLabel(), record);

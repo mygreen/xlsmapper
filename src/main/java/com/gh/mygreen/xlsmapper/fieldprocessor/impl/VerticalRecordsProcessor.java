@@ -123,7 +123,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsVerticalRecords.class)
                     .varWithClass("actualType", clazz)
@@ -536,10 +536,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
             
             // get converter (map key class)
-            final CellConverter<?> converter = config.getConverterRegistry().getConverter(itemClass);
-            if(converter == null) {
-                throw newNotFoundCellConverterExpcetion(itemClass);
-            }
+            final CellConverter<?> converter = getCellConverter(itemClass, property, config);
             
             boolean foundPreviousColumn = false;
             final Map<String, Object> map = new LinkedHashMap<>();
@@ -557,8 +554,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 if(foundPreviousColumn){
                     final Cell cell = POIUtils.getCell(sheet, beginPosition.getColumn(), hRow);
-                    property.setMapColumnPosition(record, CellPosition.of(cell), headerInfo.getLabel());
-                    property.setMapColumnLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
+                    property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
+                    property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
                     
                     CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
                     if(mergedRange != null) {
@@ -730,11 +727,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 recordClass = accessor.getComponentType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
+            final List<Object> list = Utils.asList(result, recordClass);
             saveRecords(sheet, anno, accessor, recordClass, list, config, work);
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsVerticalRecords.class)
                     .varWithClass("actualType", clazz)
@@ -1250,10 +1247,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
             
             // get converter (map key class)
-            final CellConverter converter = config.getConverterRegistry().getConverter(itemClass);
-            if(converter == null) {
-                throw newNotFoundCellConverterExpcetion(itemClass);
-            }
+            final CellConverter converter = getCellConverter(itemClass, property, config);
             
             boolean foundPreviousColumn = false;
             for(RecordHeader headerInfo : headers) {
@@ -1275,7 +1269,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     boolean emptyFlag = true;
                     if(terminal == RecordTerminal.Border) {
                         CellStyle format = cell.getCellStyle();
-                        if(format != null && !(format.getBorderTop() == CellStyle.BORDER_NONE)) {
+                        if(format != null && !(format.getBorderTopEnum().equals(BorderStyle.NONE))) {
                             emptyFlag = false;
                         } else {
                             emptyFlag = true;
@@ -1313,8 +1307,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     valueCellPositions.add(CellPosition.of(cell));
                     
                     // セルの値を出力する
-                    property.setMapColumnPosition(record, CellPosition.of(cell), headerInfo.getLabel());
-                    property.setMapColumnLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
+                    property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
+                    property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
                     
                     try {
                         Object itemValue = property.getValueOfMap(headerInfo.getLabel(), record);

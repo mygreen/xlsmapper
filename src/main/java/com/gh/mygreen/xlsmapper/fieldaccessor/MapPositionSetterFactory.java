@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.poi.ss.util.CellAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,15 +18,15 @@ import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
- * {@link MapColumnMapColumnPositionSetter}のインスタンスを作成する
+ * {@link MapPositionSetter}のインスタンスを作成する
  *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
-public class MapColumnPositionSetterFactory {
+public class MapPositionSetterFactory {
     
-    private static final Logger log = LoggerFactory.getLogger(MapColumnPositionSetterFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(MapPositionSetterFactory.class);
     
     /**
      * フィールドの位置情報を設定するためのアクセッサを作成します。
@@ -35,27 +36,27 @@ public class MapColumnPositionSetterFactory {
      * @throws NullPointerException {@literal beanClass == null or fieldName == null}
      * @throws IllegalArgumentException {@literal fieldName.isEmpty() = true}
      */
-    public Optional<MapColumnPositionSetter> create(final Class<?> beanClass, final String fieldName) {
+    public Optional<MapPositionSetter> create(final Class<?> beanClass, final String fieldName) {
         
         ArgUtils.notNull(beanClass, "beanClass");
         ArgUtils.notEmpty(fieldName, "fieldName");
         
         // フィールド Map positionsの場合
-        Optional<MapColumnPositionSetter> MapColumnPositionSetter = createMapField(beanClass, fieldName);
-        if(MapColumnPositionSetter.isPresent()) {
-            return MapColumnPositionSetter;
+        Optional<MapPositionSetter> mapPositionSetter = createMapField(beanClass, fieldName);
+        if(mapPositionSetter.isPresent()) {
+            return mapPositionSetter;
         }
         
         // setter メソッドの場合
-        MapColumnPositionSetter = createMethod(beanClass, fieldName);
-        if(MapColumnPositionSetter.isPresent()) {
-            return MapColumnPositionSetter;
+        mapPositionSetter = createMethod(beanClass, fieldName);
+        if(mapPositionSetter.isPresent()) {
+            return mapPositionSetter;
         }
         
         // フィールド + positionの場合
-        MapColumnPositionSetter = createField(beanClass, fieldName);
-        if(MapColumnPositionSetter.isPresent()) {
-            return MapColumnPositionSetter;
+        mapPositionSetter = createField(beanClass, fieldName);
+        if(mapPositionSetter.isPresent()) {
+            return mapPositionSetter;
         }
         
         
@@ -69,13 +70,13 @@ public class MapColumnPositionSetterFactory {
     /**
      * {@link Map}フィールドに位置情報が格納されている場合。
      * <p>キーはフィールド名。</p>
-     * <p>マップの値は、{@link CellPosition}、{@link Point}、{@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
+     * <p>マップの値は、{@link CellPosition}、{@link Point}、{@link CellAddress}をサポートする。</p>
      * 
      * @param beanClass フィールドが定義してあるクラスのインスタンス
      * @param fieldName フィールド名
      * @return 位置情報の設定用クラス
      */
-    private Optional<MapColumnPositionSetter> createMapField(final Class<?> beanClass, final String fieldName) {
+    private Optional<MapPositionSetter> createMapField(final Class<?> beanClass, final String fieldName) {
         
         final Field positionsField;
         try {
@@ -96,7 +97,7 @@ public class MapColumnPositionSetterFactory {
         final Class<?> valueType = (Class<?>) type.getActualTypeArguments()[1];
         
         if(keyType.equals(String.class) && valueType.equals(CellPosition.class)) {
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -123,7 +124,7 @@ public class MapColumnPositionSetterFactory {
             
         } else if(keyType.equals(String.class) && valueType.equals(Point.class)) {
             
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -148,9 +149,9 @@ public class MapColumnPositionSetterFactory {
             });
             
             
-        } else if(keyType.equals(String.class) && valueType.equals(org.apache.poi.ss.util.CellAddress.class)) {
+        } else if(keyType.equals(String.class) && valueType.equals(CellAddress.class)) {
             
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -159,7 +160,7 @@ public class MapColumnPositionSetterFactory {
                     ArgUtils.notNull(position, "position");
                     
                     try {
-                        Map<String, org.apache.poi.ss.util.CellAddress> positionsMapObj = (Map<String, org.apache.poi.ss.util.CellAddress>) positionsField.get(beanObj);
+                        Map<String, CellAddress> positionsMapObj = (Map<String, CellAddress>) positionsField.get(beanObj);
                         if(positionsMapObj == null) {
                             positionsMapObj = new LinkedHashMap<>();
                             positionsField.set(beanObj, positionsMapObj);
@@ -186,13 +187,13 @@ public class MapColumnPositionSetterFactory {
     /**
      * setterメソッドによる位置情報を格納する場合。
      * <p>{@code set + <フィールド名> + Position}のメソッド名</p>
-     * <p>引数として、{@link CellPosition}、{@link Point}、{@code int（列番号）, int（行番号）}、 {@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
+     * <p>引数として、{@link CellPosition}、{@link Point}、{@code int（列番号）, int（行番号）}、 {@link CellAddress}をサポートする。</p>
      * 
      * @param beanClass フィールドが定義してあるクラスのインスタンス
      * @param fieldName フィールド名
      * @return 位置情報の設定用クラス
      */
-    private Optional<MapColumnPositionSetter> createMethod(final Class<?> beanClass, final String fieldName) {
+    private Optional<MapPositionSetter> createMethod(final Class<?> beanClass, final String fieldName) {
         
         final String positionMethodName = "set" + Utils.capitalize(fieldName) + "Position";
         
@@ -200,7 +201,7 @@ public class MapColumnPositionSetterFactory {
             final Method method = beanClass.getDeclaredMethod(positionMethodName, String.class, CellPosition.class);
             method.setAccessible(true);
             
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 
                 @Override
@@ -226,7 +227,7 @@ public class MapColumnPositionSetterFactory {
             final Method method = beanClass.getDeclaredMethod(positionMethodName, String.class, Point.class);
             method.setAccessible(true);
             
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 
                 @Override
@@ -249,10 +250,10 @@ public class MapColumnPositionSetterFactory {
         }
         
         try {
-            final Method method = beanClass.getDeclaredMethod(positionMethodName, String.class, org.apache.poi.ss.util.CellAddress.class);
+            final Method method = beanClass.getDeclaredMethod(positionMethodName, String.class, CellAddress.class);
             method.setAccessible(true);
             
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 
                 @Override
@@ -278,7 +279,7 @@ public class MapColumnPositionSetterFactory {
             final Method method = beanClass.getDeclaredMethod(positionMethodName, String.class, Integer.TYPE, Integer.TYPE);
             method.setAccessible(true);
             
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 
                 @Override
@@ -307,13 +308,13 @@ public class MapColumnPositionSetterFactory {
     /**
      * フィールドによる位置情報を格納する場合。
      * <p>{@code <フィールド名> + Position}のメソッド名</p>
-     * <p>引数として、{@link CellPosition}、{@link Point}、 {@link org.apache.poi.ss.util.CellAddress}をサポートする。</p>
+     * <p>引数として、{@link CellPosition}、{@link Point}、 {@link CellAddress}をサポートする。</p>
      * 
      * @param beanClass フィールドが定義してあるクラスのインスタンス
      * @param fieldName フィールド名
      * @return 位置情報の設定用クラス
      */
-    private Optional<MapColumnPositionSetter> createField(final Class<?> beanClass, final String fieldName) {
+    private Optional<MapPositionSetter> createField(final Class<?> beanClass, final String fieldName) {
         
         final String positionFieldName = fieldName + "Position";
         
@@ -336,7 +337,7 @@ public class MapColumnPositionSetterFactory {
         
         if(keyType.equals(String.class) && valueType.equals(CellPosition.class)) {
             
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -361,7 +362,7 @@ public class MapColumnPositionSetterFactory {
             
         } else if(keyType.equals(String.class) && valueType.equals(Point.class)) {
             
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -385,9 +386,9 @@ public class MapColumnPositionSetterFactory {
                 }
             });
             
-        } else if(keyType.equals(String.class) && valueType.equals(org.apache.poi.ss.util.CellAddress.class)) {
+        } else if(keyType.equals(String.class) && valueType.equals(CellAddress.class)) {
             
-            return Optional.of(new MapColumnPositionSetter() {
+            return Optional.of(new MapPositionSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -396,7 +397,7 @@ public class MapColumnPositionSetterFactory {
                     ArgUtils.notNull(position, "position");
                     
                     try {
-                        Map<String, org.apache.poi.ss.util.CellAddress> positionMapObj = (Map<String, org.apache.poi.ss.util.CellAddress>) positionField.get(beanObj);
+                        Map<String, CellAddress> positionMapObj = (Map<String, CellAddress>) positionField.get(beanObj);
                         if(positionMapObj == null) {
                             positionMapObj = new LinkedHashMap<>();
                             positionField.set(beanObj, positionMapObj);

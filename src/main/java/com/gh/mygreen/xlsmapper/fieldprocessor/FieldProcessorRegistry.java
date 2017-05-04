@@ -4,12 +4,14 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.ArrayCellProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.CellProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.HorizontalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
@@ -54,6 +56,7 @@ public class FieldProcessorRegistry {
         registerProcessor(XlsHorizontalRecords.class, new HorizontalRecordsProcessor());
         registerProcessor(XlsVerticalRecords.class, new VerticalRecordsProcessor());
         registerProcessor(XlsIterateTables.class, new IterateTablesProcessor());
+        registerProcessor(XlsArrayCell.class, new ArrayCellProcessor());
         
     }
     

@@ -15,15 +15,15 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
- * {@link MapColumnMapColumnLabelSetter}のインスタンスを作成する
+ * {@link MapLabelSetter}のインスタンスを作成する
  *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
-public class MapColumnLabelSetterFactory {
+public class MapLabelSetterFactory {
     
-    private static final Logger log = LoggerFactory.getLogger(MapColumnLabelSetterFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(MapLabelSetterFactory.class);
     
     /**
      * フィールドの位置情報を設定するためのアクセッサを作成します。
@@ -33,27 +33,27 @@ public class MapColumnLabelSetterFactory {
      * @throws NullPointerException {@literal beanClass == null or fieldName == null}
      * @throws IllegalArgumentException {@literal fieldName.isEmpty() = true}
      */
-    public Optional<MapColumnLabelSetter> create(final Class<?> beanClass, final String fieldName) {
+    public Optional<MapLabelSetter> create(final Class<?> beanClass, final String fieldName) {
         
         ArgUtils.notNull(beanClass, "beanClass");
         ArgUtils.notEmpty(fieldName, "fieldName");
         
         // フィールド Map labelsの場合
-        Optional<MapColumnLabelSetter> MapColumnLabelSetter = createMapField(beanClass, fieldName);
-        if(MapColumnLabelSetter.isPresent()) {
-            return MapColumnLabelSetter;
+        Optional<MapLabelSetter> mapLabelSetter = createMapField(beanClass, fieldName);
+        if(mapLabelSetter.isPresent()) {
+            return mapLabelSetter;
         }
         
         // setter メソッドの場合
-        MapColumnLabelSetter = createMethod(beanClass, fieldName);
-        if(MapColumnLabelSetter.isPresent()) {
-            return MapColumnLabelSetter;
+        mapLabelSetter = createMethod(beanClass, fieldName);
+        if(mapLabelSetter.isPresent()) {
+            return mapLabelSetter;
         }
         
         // フィールド + labelの場合
-        MapColumnLabelSetter = createField(beanClass, fieldName);
-        if(MapColumnLabelSetter.isPresent()) {
-            return MapColumnLabelSetter;
+        mapLabelSetter = createField(beanClass, fieldName);
+        if(mapLabelSetter.isPresent()) {
+            return mapLabelSetter;
         }
         
         
@@ -72,7 +72,7 @@ public class MapColumnLabelSetterFactory {
      * @param fieldName フィールド名
      * @return ラベル情報の設定用クラス
      */
-    private Optional<MapColumnLabelSetter> createMapField(final Class<?> beanClass, final String fieldName) {
+    private Optional<MapLabelSetter> createMapField(final Class<?> beanClass, final String fieldName) {
         
         final Field labelsField;
         try {
@@ -93,7 +93,7 @@ public class MapColumnLabelSetterFactory {
         final Class<?> valueType = (Class<?>) type.getActualTypeArguments()[1];
         
         if(keyType.equals(String.class) && valueType.equals(String.class)) {
-            return Optional.of(new MapColumnLabelSetter() {
+            return Optional.of(new MapLabelSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -134,7 +134,7 @@ public class MapColumnLabelSetterFactory {
      * @param fieldName フィールド名
      * @return ラベル情報の設定用クラス
      */
-    private Optional<MapColumnLabelSetter> createMethod(final Class<?> beanClass, final String fieldName) {
+    private Optional<MapLabelSetter> createMethod(final Class<?> beanClass, final String fieldName) {
         
         final String labelMethodName = "set" + Utils.capitalize(fieldName) + "Label";
         
@@ -142,7 +142,7 @@ public class MapColumnLabelSetterFactory {
             final Method method = beanClass.getDeclaredMethod(labelMethodName, String.class, String.class);
             method.setAccessible(true);
             
-            return Optional.of(new MapColumnLabelSetter() {
+            return Optional.of(new MapLabelSetter() {
                 
                 
                 @Override
@@ -176,7 +176,7 @@ public class MapColumnLabelSetterFactory {
      * @param fieldName フィールド名
      * @return ラベル情報の設定用クラス
      */
-    private Optional<MapColumnLabelSetter> createField(final Class<?> beanClass, final String fieldName) {
+    private Optional<MapLabelSetter> createField(final Class<?> beanClass, final String fieldName) {
         
         final String labelFieldName = fieldName + "Label";
         
@@ -199,7 +199,7 @@ public class MapColumnLabelSetterFactory {
         
         if(keyType.equals(String.class) && valueType.equals(String.class)) {
             
-            return Optional.of(new MapColumnLabelSetter() {
+            return Optional.of(new MapLabelSetter() {
                 
                 @SuppressWarnings("unchecked")
                 @Override

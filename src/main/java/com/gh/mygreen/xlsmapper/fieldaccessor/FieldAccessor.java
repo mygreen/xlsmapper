@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
@@ -76,7 +77,12 @@ public class FieldAccessor {
     /**
      * {@link XlsMapColumns}用の位置情報のSetter
      */
-    Optional<MapColumnPositionSetter> mapColumnPositionSetter = Optional.empty();
+    Optional<MapPositionSetter> mapPositionSetter = Optional.empty();
+    
+    /**
+     * {@link XlsArrayColumns}用の位置情報のSetter
+     */
+    Optional<ArrayPositionSetter> arrayPositionSetter = Optional.empty();
     
     /**
      * ラベル情報のSetter
@@ -91,7 +97,12 @@ public class FieldAccessor {
     /**
      * {@link XlsMapColumns}用のラベル情報のSetter
      */
-    Optional<MapColumnLabelSetter> mapColumnLabelSetter = Optional.empty();
+    Optional<MapLabelSetter> mapLabelSetter = Optional.empty();
+    
+    /**
+     * {@link XlsArrayColumns}用の位置情報のSetter
+     */
+    Optional<ArrayLabelSetter> arrayLabelSetter = Optional.empty();
     
     FieldAccessor() {
         
@@ -285,6 +296,14 @@ public class FieldAccessor {
     }
     
     /**
+     * フィールドタイプがListや配列の時の要素のGenericsのクラスタイプかどうか。
+     * @return trueの場合、Listや配列の時の要素のGenericsのクラスタイプの場合。
+     */
+    public boolean isComponentType() {
+        return componentType.isPresent();
+    }
+    
+    /**
      * フィールド情報を取得します。
      * @return フィールドを持たない場合は、空を返します。
      */
@@ -353,22 +372,42 @@ public class FieldAccessor {
     }
     
     /**
-     * 
      * {@link XlsMapColumns}フィールド用の位置情報を設定します。
      * <p>位置情報を保持するフィールドがない場合は、処理はスキップされます。</p>
+     * 
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @param position 位置情報
      * @param key マップのキー
      * @throws NullPointerException {@literal targetObj == null or position == null or key == null}
      * @throws IllegalArgumentException {@literal key is empty.}
      */
-    public void setMapColumnPosition(final Object targetObj, final CellPosition position, final String key) {
+    public void setMapPosition(final Object targetObj, final CellPosition position, final String key) {
         
         ArgUtils.notNull(targetObj, "targetObj");
         ArgUtils.notNull(position, "position");
         ArgUtils.notEmpty(key, "key");
         
-        mapColumnPositionSetter.ifPresent(setter -> setter.set(targetObj, position, key));
+        mapPositionSetter.ifPresent(setter -> setter.set(targetObj, position, key));
+        
+    }
+    
+    /**
+     * {@link XlsArrayColumns}フィールド用の位置情報を設定します。
+     * <p>位置情報を保持するフィールドがない場合は、処理はスキップされます。</p>
+     * 
+     * @param targetObj フィールドが定義されているクラスのインスタンス
+     * @param position 位置情報
+     * @param index インデックスのキー。0以上を指定します。
+     * @throws NullPointerException {@literal targetObj == null or position == null}
+     * @throws IllegalArgumentException {@literal index < 0}
+     */
+    public void setArrayPosition(final Object targetObj, final CellPosition position, final int index) {
+        
+        ArgUtils.notNull(targetObj, "targetObj");
+        ArgUtils.notNull(position, "position");
+        ArgUtils.notMin(index, 0, "index");
+        
+        arrayPositionSetter.ifPresent(setter -> setter.set(targetObj, position, index));
         
     }
     
@@ -401,22 +440,42 @@ public class FieldAccessor {
     }
     
     /**
-     * 
      * {@link XlsMapColumns}フィールド用のラベル情報を設定します。
      * <p>ラベル情報を保持するフィールドがない場合は、処理はスキップされます。</p>
+     * 
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @param label ラベル情報
      * @param key マップのキー
      * @throws NullPointerException {@literal targetObj == null or label == null or key == null}
      * @throws IllegalArgumentException {@literal label or key is empty.}
      */
-    public void setMapColumnLabel(final Object targetObj, final String label, final String key) {
+    public void setMapLabel(final Object targetObj, final String label, final String key) {
         
         ArgUtils.notNull(targetObj, "targetObj");
         ArgUtils.notEmpty(label, "label");
         ArgUtils.notEmpty(key, "key");
         
-        mapColumnLabelSetter.ifPresent(setter -> setter.set(targetObj, label, key));
+        mapLabelSetter.ifPresent(setter -> setter.set(targetObj, label, key));
+        
+    }
+    
+    /**
+     * {@link XlsArrayColumns}フィールド用のラベル情報を設定します。
+     * <p>ラベル情報を保持するフィールドがない場合は、処理はスキップされます。</p>
+     * 
+     * @param targetObj フィールドが定義されているクラスのインスタンス
+     * @param label ラベル情報
+     * @param index インデックスのキー。0以上を指定します。
+     * @throws NullPointerException {@literal targetObj == null or label == null
+     * @throws IllegalArgumentException {@literal label or index < 0}
+     */
+    public void setArrayLabel(final Object targetObj, final String label, final int index) {
+        
+        ArgUtils.notNull(targetObj, "targetObj");
+        ArgUtils.notEmpty(label, "label");
+        ArgUtils.notMin(index, 0, "index");
+        
+        arrayLabelSetter.ifPresent(setter -> setter.set(targetObj, label, index));
         
     }
     

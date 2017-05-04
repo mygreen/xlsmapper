@@ -1,9 +1,9 @@
 package com.gh.mygreen.xlsmapper.fieldaccessor;
 
 import static org.junit.Assert.*;
-import static org.assertj.core.api.Assertions.*;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,20 +11,24 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellReference;
 import org.junit.Before;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import com.gh.mygreen.xlsmapper.util.Utils;
+
 
 /**
- * {@link MapColumnLabelSetterFactory}のテスタ
+ * {@link ArrayLabelSetterFactory}のテスタ
  *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
 @RunWith(Enclosed.class)
-public class MapColumnLabelSetterFactoryTest {
+public class ArrayLabelSetterFactoryTest {
     
     /**
      * ラベル情報が無い場合
@@ -32,17 +36,17 @@ public class MapColumnLabelSetterFactoryTest {
      */
     public static class NotLabel {
         
-        private MapColumnLabelSetterFactory setterFactory;
+        private ArrayLabelSetterFactory setterFactory;
         
         @Before
         public void setUp() throws Exception {
-            this.setterFactory = new MapColumnLabelSetterFactory();
+            this.setterFactory = new ArrayLabelSetterFactory();
         }
         
         @Test
         public void testCreate() {
             
-            Optional<MapColumnLabelSetter> labelSetter = setterFactory.create(SampleRecord.class, "test");
+            Optional<ArrayLabelSetter> labelSetter = setterFactory.create(SampleRecord.class, "test");
             assertThat(labelSetter).isEmpty();
             
         }
@@ -59,11 +63,11 @@ public class MapColumnLabelSetterFactoryTest {
      */
     public static class ByMapField {
         
-        private MapColumnLabelSetterFactory setterFactory;
+        private ArrayLabelSetterFactory setterFactory;
         
         @Before
         public void setUp() throws Exception {
-            this.setterFactory = new MapColumnLabelSetterFactory();
+            this.setterFactory = new ArrayLabelSetterFactory();
         }
         
         /**
@@ -72,7 +76,7 @@ public class MapColumnLabelSetterFactoryTest {
         @Test
         public void testCreateWithNoMap() {
             
-            Optional<MapColumnLabelSetter> labelSetter = setterFactory.create(NoMapRecord.class, "test");
+            Optional<ArrayLabelSetter> labelSetter = setterFactory.create(NoMapRecord.class, "test");
             assertThat(labelSetter).isEmpty();
             
         }
@@ -83,7 +87,7 @@ public class MapColumnLabelSetterFactoryTest {
         @Test
         public void testCreateWithNoSupportType() {
             
-            Optional<MapColumnLabelSetter> labelSetter = setterFactory.create(NoSupportTypeRecord.class, "test");
+            Optional<ArrayLabelSetter> labelSetter = setterFactory.create(NoSupportTypeRecord.class, "test");
             assertThat(labelSetter).isEmpty();
             
         }
@@ -94,21 +98,21 @@ public class MapColumnLabelSetterFactoryTest {
         @Test
         public void testCreateWithString() {
             
-            Optional<MapColumnLabelSetter> labelSetter = setterFactory.create(StringRecord.class, "test");
+            Optional<ArrayLabelSetter> labelSetter = setterFactory.create(StringRecord.class, "test");
             assertThat(labelSetter).isNotEmpty();
             
             {
                 // ラベル情報を設定する
                 StringRecord record = new StringRecord();
                 
-                MapColumnLabelSetter accessor = labelSetter.get();
+                ArrayLabelSetter accessor = labelSetter.get();
                 String label = "サンプル";
                 
-                accessor.set(record, label, "abc");
+                accessor.set(record, label, 1);
                 
                 assertThat(record.labels)
                     .hasSize(1)
-                    .containsEntry("test[abc]", label);
+                    .containsEntry("test[1]", label);
             }
             
         }
@@ -141,48 +145,47 @@ public class MapColumnLabelSetterFactoryTest {
         
     }
     
-    
     /**
      * メソッドによるラベル情報を格納する場合
      *
      */
     public static class ByMethod {
         
-        private MapColumnLabelSetterFactory setterFactory;
+        private ArrayLabelSetterFactory setterFactory;
         
         @Before
         public void setUp() throws Exception {
-            this.setterFactory = new MapColumnLabelSetterFactory();
+            this.setterFactory = new ArrayLabelSetterFactory();
         }
         
         @Test
         public void testCreateWithString() {
             
-            Optional<MapColumnLabelSetter> labelSetter = setterFactory.create(StringRecord.class, "test");
+            Optional<ArrayLabelSetter> labelSetter = setterFactory.create(StringRecord.class, "test");
             assertThat(labelSetter).isNotEmpty();
             
             {
                 // ラベル情報を設定する
                 StringRecord record = new StringRecord();
                 
-                MapColumnLabelSetter accessor = labelSetter.get();
+                ArrayLabelSetter accessor = labelSetter.get();
                 String label = "サンプル";
                 
-                accessor.set(record, label, "abc");
+                accessor.set(record, label, 1);
                 
-                assertThat(record.addressMap)
-                    .hasSize(1)
-                    .containsEntry("abc", label);
+                assertThat(record.labelList)
+                    .hasSize(2)
+                    .containsExactly(null, "サンプル");
             }
             
         }
         
         private static class StringRecord {
             
-            private Map<String, String> addressMap = new HashMap<>();
+            private List<String> labelList = new ArrayList<>();
             
-            public void setTestLabel(String key, String address) {
-                this.addressMap.put(key, address);
+            public void setTestLabel(int index, String label) {
+                Utils.addListWithIndex(labelList, label, index);
             }
             
         }
@@ -195,31 +198,31 @@ public class MapColumnLabelSetterFactoryTest {
      */
     public static class ByField {
         
-        private MapColumnLabelSetterFactory setterFactory;
+        private ArrayLabelSetterFactory setterFactory;
         
         @Before
         public void setUp() throws Exception {
-            this.setterFactory = new MapColumnLabelSetterFactory();
+            this.setterFactory = new ArrayLabelSetterFactory();
         }
         
         @Test
         public void testCreateWithString() {
             
-            Optional<MapColumnLabelSetter> labelSetter = setterFactory.create(StringRecord.class, "test");
+            Optional<ArrayLabelSetter> labelSetter = setterFactory.create(StringRecord.class, "test");
             assertThat(labelSetter).isNotEmpty();
             
             {
                 // ラベル情報を設定する
                 StringRecord record = new StringRecord();
                 
-                MapColumnLabelSetter accessor = labelSetter.get();
+                ArrayLabelSetter accessor = labelSetter.get();
                 String label = "サンプル";
                 
-                accessor.set(record, label, "abc");
+                accessor.set(record, label, 1);
                 
                 assertThat(record.testLabel)
-                    .hasSize(1)
-                    .containsEntry("abc", label);
+                    .hasSize(2)
+                    .containsExactly(null, "サンプル");
             }
             
         }
@@ -227,24 +230,24 @@ public class MapColumnLabelSetterFactoryTest {
         @Test
         public void testCreateWithNotSupportType() {
             
-            Optional<MapColumnLabelSetter> labelSetter = setterFactory.create(NotSupportTypeRecord.class, "test");
+            Optional<ArrayLabelSetter> labelSetter = setterFactory.create(NotSupportTypeRecord.class, "test");
             assertThat(labelSetter).isEmpty();
             
         }
         
         private static class StringRecord {
             
-            private Map<String, String> testLabel;
+            private List<String> testLabel;
             
             
         }
         
         private static class NotSupportTypeRecord {
             
-            private Map<String, Cell> testLabel;
+            private List<Cell> testLabel;
             
             
         }
     }
-
+    
 }

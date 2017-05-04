@@ -88,7 +88,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             }
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsIterateTables.class)
                     .varWithClass("actualType", clazz)
@@ -345,11 +345,11 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 tableClass = accessor.getComponentType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
+            final List<Object> list = Utils.asList(result, tableClass);
             saveTables(sheet, anno, accessor, tableClass, list, config, work);
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsIterateTables.class)
                     .varWithClass("actualType", clazz)

@@ -114,12 +114,15 @@ public abstract class AbstractTemporalCellConverter<T extends TemporalAccessor &
             excelPattern = getDefaultExcelPattern();
         }
         
-        // 現在設定されている書式が異なる場合、変更する。
-        if(!POIUtils.getCellFormatPattern(cell).equalsIgnoreCase(excelPattern)) {
-            CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
-            style.cloneStyleFrom(cell.getCellStyle());
-            style.setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), excelPattern));
-            cell.setCellStyle(style);
+        final String templateFormatPatten = POIUtils.getCellFormatPattern(cell);
+        
+        if(!converterAnno.isPresent() && templateFormatPatten.isEmpty()) {
+            // アノテーションが設定されておらず、テンプレートの書式が設定されていない場合、標準の書式を設定する
+            POIUtils.setupCellFormat(cell, getDefaultExcelPattern());
+            
+        } else if(!templateFormatPatten.equalsIgnoreCase(excelPattern)) {
+            // 現在設定されている書式が異なる場合、変更する。
+            POIUtils.setupCellFormat(cell, excelPattern);
         }
         
         if(cellValue.isPresent()) {

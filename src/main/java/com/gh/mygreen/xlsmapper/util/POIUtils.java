@@ -23,6 +23,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
@@ -404,6 +405,29 @@ public class POIUtils {
         
         return false;
     }
+    
+    /**
+     * 領域の列サイズ（横セル数）を計算します。
+     * 
+     * @since 2.0
+     * @param region 領域
+     * @return 列サイズ（横セル数）
+     */
+    public static int getColumnSize(final CellRangeAddress region) {
+        return region.getLastColumn() - region.getFirstColumn() + 1;
+    }
+    
+    /**
+     * 領域の行サイズ（行セル数）を計算します。
+     * 
+     * @since 2.0
+     * @param region 領域
+     * @return 行サイズ（行セル数）
+     */
+    public static int getRowSize(final CellRangeAddress region) {
+        return region.getLastRow() - region.getFirstRow() + 1;
+    }
+
     
     /**
      * 指定した行の下に行を1行追加する
@@ -1016,7 +1040,7 @@ public class POIUtils {
             } catch(Exception e) {
                 throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.invalidEL")
                         .var("property", accessor.getNameWithClass())
-                        .var("attr", XlsFormula.class)
+                        .varWithAnno("anno", XlsFormula.class)
                         .var("attrName", "value")
                         .var("attrValue", formulaAnno.value())
                         .format(), e);
@@ -1153,6 +1177,23 @@ public class POIUtils {
             
         }
         
+    }
+    
+    /**
+     * セルの書式のパターンを新たに設定する。
+     * <p>書式以外のスタイルはそのままコピーする。</p>
+     * <p>既に定義済みのパターンの場合は、それを利用する。</p>
+     * 
+     * @since 2.0
+     * @param cell 変更対象のセル
+     * @param formatPattern 書式のパターン
+     */
+    public static void setupCellFormat(final Cell cell, final String formatPattern) {
+        
+        CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
+        style.cloneStyleFrom(cell.getCellStyle());
+        style.setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), formatPattern));
+        cell.setCellStyle(style);
     }
     
 }
