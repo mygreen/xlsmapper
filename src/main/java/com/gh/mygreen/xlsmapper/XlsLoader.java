@@ -128,6 +128,7 @@ public class XlsLoader {
             if(configuration.isIgnoreSheetNotFound()){
                 logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), e);
                 return null;
+                
             } else {
                 throw e;
             }

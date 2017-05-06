@@ -1547,10 +1547,12 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         toCell.setCellStyle(style);
         toCell.setCellType(CellType.BLANK);
         
-        // 結合情報のコピー
+        // 横方向に結合されている場合、結合情報のコピーする。（XlsArrayColumns用）
         final Sheet sheet = fromCell.getSheet();
-        CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, fromCell.getRowIndex(), fromCell.getColumnIndex());
-        if(mergedRegion != null) {
+        final CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, fromCell.getRowIndex(), fromCell.getColumnIndex());
+        final int mergedSize = POIUtils.getColumnSize(mergedRegion);
+        
+        if(POIUtils.getColumnSize(mergedRegion) >= 2) {
             CellRangeAddress newMergedRegion = POIUtils.getMergedRegion(sheet, toCell.getRowIndex(), toCell.getColumnIndex());
             if(newMergedRegion != null) {
                 // 既に結合している場合 - 通常はありえない。
@@ -1561,16 +1563,13 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     mergedRegion.getFirstColumn(), toCell.getRowIndex(), mergedRegion.getLastColumn(), toCell.getRowIndex());
             
             // 結合先のセルの書式も設定する
-            final int size = POIUtils.getColumnSize(newMergedRegion);
-            if(size >= 2) {
-                // 中間のセルの設定
-                for(int i=1; i < size; i++) {
-                    Cell mergedFromCell = POIUtils.getCell(sheet, toCell.getColumnIndex()+i, fromCell.getRowIndex());
-                    
-                    Cell mergedToCell = POIUtils.getCell(sheet, toCell.getColumnIndex()+i, toCell.getRowIndex());
-                    mergedToCell.setCellStyle(mergedFromCell.getCellStyle());
-                    mergedToCell.setCellType(CellType.BLANK);
-                }
+            // 中間のセルの設定
+            for(int i=1; i < mergedSize; i++) {
+                Cell mergedFromCell = POIUtils.getCell(sheet, toCell.getColumnIndex()+i, fromCell.getRowIndex());
+                
+                Cell mergedToCell = POIUtils.getCell(sheet, toCell.getColumnIndex()+i, toCell.getRowIndex());
+                mergedToCell.setCellStyle(mergedFromCell.getCellStyle());
+                mergedToCell.setCellType(CellType.BLANK);
             }
             
         }

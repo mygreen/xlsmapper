@@ -88,9 +88,7 @@ public class AnnoSheetTest {
         try(InputStream in = new FileInputStream("src/test/data/anno_Sheet.xlsx")) {
             SheetBindingErrors<NamedSheet2> errors = mapper.loadDetail(in, NamedSheet2.class);
             
-            NamedSheet2 sheet = errors.getTarget();
-            
-            assertThat(sheet, is(nullValue()));
+            assertThat(errors, is(nullValue()));
             
         }
         

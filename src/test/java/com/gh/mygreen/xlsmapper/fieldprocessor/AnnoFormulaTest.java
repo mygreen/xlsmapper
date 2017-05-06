@@ -272,7 +272,7 @@ public class AnnoFormulaTest {
             Sheet sheet = book.getSheet("Formula(通常)");
             
             Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
-            assertThat(cell.getCellTypeEnum(), is(CellType.FORMULA));
+            assertThat(cell.getCellTypeEnum(), is(CellType.NUMERIC));
             
             CellFormatter formatter = mapper.getConiguration().getCellFormatter();
             String value = formatter.format(cell);
