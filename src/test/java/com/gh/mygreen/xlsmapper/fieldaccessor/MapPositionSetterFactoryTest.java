@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.junit.Before;
 
@@ -19,14 +20,14 @@ import org.junit.runner.RunWith;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 
 /**
- * {@link MapColumnPositionSetterFactory}のテスタ
+ * {@link MapPositionSetterFactory}のテスタ
  *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
 @RunWith(Enclosed.class)
-public class MapColumnPositionSetterFactoryTest {
+public class MapPositionSetterFactoryTest {
     
     /**
      * 位置情報が無い場合
@@ -34,17 +35,17 @@ public class MapColumnPositionSetterFactoryTest {
      */
     public static class NotPosition {
         
-        private MapColumnPositionSetterFactory setterFactory;
+        private MapPositionSetterFactory setterFactory;
         
         @Before
         public void setUp() throws Exception {
-            this.setterFactory = new MapColumnPositionSetterFactory();
+            this.setterFactory = new MapPositionSetterFactory();
         }
         
         @Test
         public void testCreate() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(SampleRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(SampleRecord.class, "test");
             assertThat(positionSetter).isEmpty();
             
         }
@@ -61,11 +62,11 @@ public class MapColumnPositionSetterFactoryTest {
      */
     public static class ByMapField {
         
-        private MapColumnPositionSetterFactory setterFactory;
+        private MapPositionSetterFactory setterFactory;
         
         @Before
         public void setUp() throws Exception {
-            this.setterFactory = new MapColumnPositionSetterFactory();
+            this.setterFactory = new MapPositionSetterFactory();
         }
         
         /**
@@ -74,7 +75,7 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithNoMap() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(NoMapRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(NoMapRecord.class, "test");
             assertThat(positionSetter).isEmpty();
             
         }
@@ -85,7 +86,7 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithNoSupportType() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(NoSupportTypeRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(NoSupportTypeRecord.class, "test");
             assertThat(positionSetter).isEmpty();
             
         }
@@ -96,14 +97,14 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithCellAddress() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(CellAddressRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(CellAddressRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             {
                 // 位置情報を設定する
                 CellAddressRecord record = new CellAddressRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -121,7 +122,7 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithPoint() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(PointRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(PointRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             
@@ -129,7 +130,7 @@ public class MapColumnPositionSetterFactoryTest {
                 // 位置情報を設定する
                 PointRecord record = new PointRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -147,7 +148,7 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithPoiCellAddress() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(PoiCellAddressRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(PoiCellAddressRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             
@@ -155,7 +156,7 @@ public class MapColumnPositionSetterFactoryTest {
                 // 位置情報を設定する
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -201,7 +202,7 @@ public class MapColumnPositionSetterFactoryTest {
         
         private static class PoiCellAddressRecord {
             
-            Map<String, org.apache.poi.ss.util.CellAddress> positions;
+            Map<String, CellAddress> positions;
             
         }
         
@@ -214,24 +215,24 @@ public class MapColumnPositionSetterFactoryTest {
      */
     public static class ByMethod {
         
-        private MapColumnPositionSetterFactory setterFactory;
+        private MapPositionSetterFactory setterFactory;
         
         @Before
         public void setUp() throws Exception {
-            this.setterFactory = new MapColumnPositionSetterFactory();
+            this.setterFactory = new MapPositionSetterFactory();
         }
         
         @Test
         public void testCreateWithCellAddress() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(CellAddressRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(CellAddressRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             {
                 // 位置情報を設定する
                 CellAddressRecord record = new CellAddressRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -246,14 +247,14 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithPoint() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(PointRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(PointRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             {
                 // 位置情報を設定する
                 PointRecord record = new PointRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -268,14 +269,14 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithInt() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(IntRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(IntRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             {
                 // 位置情報を設定する
                 IntRecord record = new IntRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -290,14 +291,14 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithPoiCellAddress() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(PoiCellAddressRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(PoiCellAddressRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             {
                 // 位置情報を設定する
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -341,9 +342,9 @@ public class MapColumnPositionSetterFactoryTest {
         
         private static class PoiCellAddressRecord {
             
-            private Map<String, org.apache.poi.ss.util.CellAddress> addressMap = new HashMap<>();
+            private Map<String, CellAddress> addressMap = new HashMap<>();
             
-            protected void setTestPosition(String key, org.apache.poi.ss.util.CellAddress address) {
+            protected void setTestPosition(String key, CellAddress address) {
                 this.addressMap.put(key, address);
             }
             
@@ -357,24 +358,24 @@ public class MapColumnPositionSetterFactoryTest {
      */
     public static class ByField {
         
-        private MapColumnPositionSetterFactory setterFactory;
+        private MapPositionSetterFactory setterFactory;
         
         @Before
         public void setUp() throws Exception {
-            this.setterFactory = new MapColumnPositionSetterFactory();
+            this.setterFactory = new MapPositionSetterFactory();
         }
         
         @Test
         public void testCreateWithCellAddress() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(CellAddressRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(CellAddressRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             {
                 // 位置情報を設定する
                 CellAddressRecord record = new CellAddressRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -389,14 +390,14 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithPoint() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(PointRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(PointRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             {
                 // 位置情報を設定する
                 PointRecord record = new PointRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -411,14 +412,14 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithPoiCellAddress() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(PoiCellAddressRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(PoiCellAddressRecord.class, "test");
             assertThat(positionSetter).isNotEmpty();
             
             {
                 // 位置情報を設定する
                 PoiCellAddressRecord record = new PoiCellAddressRecord();
                 
-                MapColumnPositionSetter accessor = positionSetter.get();
+                MapPositionSetter accessor = positionSetter.get();
                 CellPosition position = CellPosition.of("B24");
                 
                 accessor.set(record, position, "abc");
@@ -433,7 +434,7 @@ public class MapColumnPositionSetterFactoryTest {
         @Test
         public void testCreateWithNotSupportType() {
             
-            Optional<MapColumnPositionSetter> positionSetter = setterFactory.create(NotSupportTypeRecord.class, "test");
+            Optional<MapPositionSetter> positionSetter = setterFactory.create(NotSupportTypeRecord.class, "test");
             assertThat(positionSetter).isEmpty();
             
         }
@@ -454,7 +455,7 @@ public class MapColumnPositionSetterFactoryTest {
         
         private static class PoiCellAddressRecord {
             
-            private Map<String, org.apache.poi.ss.util.CellAddress> testPosition;
+            private Map<String, CellAddress> testPosition;
             
             
         }

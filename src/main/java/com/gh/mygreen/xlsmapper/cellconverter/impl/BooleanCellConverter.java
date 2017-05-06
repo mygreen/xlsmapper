@@ -71,7 +71,10 @@ public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
         }
         
         if(accessor.getType().isPrimitive()) {
-            return Boolean.FALSE;
+            return false;
+            
+        } else if(accessor.isComponentType() && accessor.getComponentType().isPrimitive()) {
+            return false;
         }
         
         return null;

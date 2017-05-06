@@ -1,5 +1,6 @@
 package com.gh.mygreen.xlsmapper.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -246,6 +247,47 @@ public class ClassUtils {
         method.setAccessible(true);
         
         return Optional.of(method);
+    }
+    
+    /**
+     * アノテーションの指定した属性値を取得する。
+     * <p>アノテーションの修飾子はpublicである必要があります。</p>
+     * @param anno アノテーションのインスタンス
+     * @param attrName 属性名
+     * @param attrType 属性のタイプ。
+     * @return 属性を持たない場合、空を返す。
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> getAnnotationAttribute(final Annotation anno, final String attrName, final Class<T> attrType) {
+        
+        try {
+            final Method method = anno.annotationType().getMethod(attrName);
+            method.setAccessible(true);
+            if(!attrType.equals(method.getReturnType())) {
+                return Optional.empty();
+            }
+            
+            final Object value = method.invoke(anno);
+            return Optional.of((T)value);
+            
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+        
+    }
+    
+    /**
+     * アノテーションの指定した属性値を持つかどうか判定する。
+     * <p>アノテーションの修飾子はpublicである必要があります。</p>
+     * @param anno アノテーションのインスタンス
+     * @param attrName 属性名
+     * @param attrType 属性のタイプ。
+     * @return 属性を持つ場合trueを返す。
+     */
+    public static <T>  boolean hasAnnotationAttribute(final Annotation anno, final String attrName, final Class<T> attrType) {
+        
+        return getAnnotationAttribute(anno, attrName, attrType).isPresent();
+        
     }
     
 }

@@ -2,7 +2,6 @@ package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -12,14 +11,16 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecordsForIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCellForIterateTable;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCellForIterateTable;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
@@ -62,7 +63,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 tableClass = accessor.getComponentType();
             }
             
-            List<?> value = loadTables(sheet, anno, accessor, tableClass, config, work);
+            List<?> value = loadTables(sheet, beansObj, anno, accessor, tableClass, config, work);
             if(value != null) {
                 @SuppressWarnings({"unchecked", "rawtypes"})
                 Collection<?> collection = Utils.convertListToCollection(value, (Class<Collection>)clazz, config.getBeanFactory());
@@ -76,7 +77,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 tableClass = accessor.getComponentType();
             }
             
-            final List<?> value = loadTables(sheet, anno, accessor, tableClass, config, work);
+            final List<?> value = loadTables(sheet, beansObj, anno, accessor, tableClass, config, work);
             if(value != null) {
                 
                 final Object array = Array.newInstance(tableClass, value.size());
@@ -88,7 +89,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             }
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsIterateTables.class)
                     .varWithClass("actualType", clazz)
@@ -98,7 +99,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         
     }
     
-    private List<?> loadTables(final Sheet sheet, final XlsIterateTables iterateTablesAnno, final FieldAccessor accessor,
+    private List<?> loadTables(final Sheet sheet, final Object beansObj, final XlsIterateTables iterateTablesAnno, final FieldAccessor accessor,
             final Class<?> tableClass, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         // アノテーションの整合性のチェック
@@ -121,6 +122,9 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             // 1 table object instance
             final Object tableObj = config.createBean(tableClass);
             
+            // ラベルの設定
+            accessor.setArrayLabel(beansObj, POIUtils.getCellContents(currentCell, config.getCellFormatter()), resultTableList.size());
+            
             // パスの位置の変更
             work.getErrors().pushNestedPath(accessor.getName(), resultTableList.size());
             
@@ -137,6 +141,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             // process single label.
             loadSingleLabelledCell(sheet, tableObj, currentCell, config, work);
+            
+            loadSingleLabelledArrayCell(sheet, tableObj, currentCell, config, work);
             
             // process horizontal table.
             loadMultipleHorizontalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);
@@ -195,7 +201,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     }
     
     /**
-     * XlsLabelledCellによる繰り返しを処理する。
+     * XlsLabelledCellによる処理する。
      * @param sheet
      * @param tableObj
      * @param headerCell
@@ -237,6 +243,52 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                     POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
             
             labelledCellProcessor.loadProcess(sheet, tableObj, labelledCell, property, config, work);
+        }
+    }
+    
+    /**
+     * XlsLabelledArrayCellを処理する。
+     * @param sheet
+     * @param tableObj
+     * @param headerCell
+     * @param config
+     * @throws XlsMapperException
+     */
+    private void loadSingleLabelledArrayCell(final Sheet sheet, final Object tableObj, 
+            final Cell headerCell, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+        
+        final LabelledArrayCellProcessor labelledArrayCellProcessor = 
+                (LabelledArrayCellProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsLabelledArrayCell.class);
+        
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
+                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCell.class)
+                .stream()
+                .filter(p -> p.isReadable())
+                .collect(Collectors.toList());
+        
+        for(FieldAccessor property : properties) {
+            final XlsLabelledArrayCell anno = property.getAnnotation(XlsLabelledArrayCell.class).get();
+            
+            Cell titleCell = null;
+            try {
+                titleCell = CellFinder.query(sheet, anno.label(), config)
+                        .startPosition(headerCell)
+                        .excludeStartPosition(true)
+                        .findWhenNotFoundException();
+                
+            } catch (CellNotFoundException e) {
+                if (anno.optional()) {
+                    continue;
+                } else {
+                    throw e;
+                }
+            }
+            
+            final XlsLabelledArrayCell wrapAnno = new XlsLabelledArrayCellForIterateTable(
+                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
+                    POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
+            
+            labelledArrayCellProcessor.loadProcess(sheet, tableObj, wrapAnno, property, config, work);
         }
     }
     
@@ -345,17 +397,17 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 tableClass = accessor.getComponentType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
+            final List<Object> list = Utils.asList(result, tableClass);
             saveTables(sheet, anno, accessor, tableClass, list, config, work);
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsIterateTables.class)
                     .varWithClass("actualType", clazz)
                     .var("expectedType", "Collection(List/Set) or Array")
                     .format());
-                    }
+        }
     }
     
     private void saveTables(final Sheet sheet, final XlsIterateTables iterateTablesAnno, final FieldAccessor accessor,
@@ -408,6 +460,8 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             
             // process single label.
             saveSingleLabelledCell(sheet, tableObj, currentCell, config, work);
+            
+            saveSingleLabelledArrayCell(sheet, tableObj, currentCell, config, work);
             
             // process horizontal table.
             saveMultipleHorizontalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);
@@ -470,6 +524,46 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                     POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
             
             labelledCellProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);
+        }
+        
+    }
+    
+    private void saveSingleLabelledArrayCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+        
+        final LabelledArrayCellProcessor labelledArrayCellProcessor = 
+                (LabelledArrayCellProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsLabelledArrayCell.class);
+        
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
+                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCell.class)
+                .stream()
+                .filter(p -> p.isWritable())
+                .collect(Collectors.toList());
+        
+        for(FieldAccessor property : properties) {
+            
+            final XlsLabelledArrayCell anno = property.getAnnotation(XlsLabelledArrayCell.class).get();
+            
+            Cell titleCell = null;
+            try {
+                titleCell = CellFinder.query(sheet, anno.label(), config)
+                        .startPosition(headerCell)
+                        .excludeStartPosition(true)
+                        .findWhenNotFoundException();
+                
+            } catch (CellNotFoundException e) {
+                if (anno.optional()) {
+                    continue;
+                } else {
+                    throw e;
+                }
+            }
+            
+            final XlsLabelledArrayCell labelledCell = new XlsLabelledArrayCellForIterateTable(
+                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
+                    POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
+            
+            labelledArrayCellProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);
         }
         
     }

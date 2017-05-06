@@ -3,6 +3,7 @@ package com.gh.mygreen.xlsmapper.xml;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 
 import java.awt.Point;
 import java.io.File;
@@ -11,10 +12,6 @@ import java.lang.annotation.Annotation;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-
-
-import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

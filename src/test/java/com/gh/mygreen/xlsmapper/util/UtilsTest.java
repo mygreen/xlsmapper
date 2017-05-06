@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.util;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.BeanFactory;
@@ -24,16 +24,12 @@ import com.gh.mygreen.xlsmapper.Configuration;
 /**
  * {@link Utils}のテスタ
  * 
- * @version 1.1
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
  */
 public class UtilsTest {
-    
-    @Before
-    public void setUp() throws Exception {
-    }
     
     /**
      * {@link Utils#capitalize(String)}
@@ -196,6 +192,161 @@ public class UtilsTest {
         collection = new ArrayDeque<>(data);
         value = Utils.convertCollectionToList(collection);
         assertThat(value, is(instanceOf(ArrayList.class)));
+        
+    }
+    
+    @Test
+    public void testAddListWithIndex() {
+        
+        {
+            // 引数の確認
+            List<String> list = null;
+            assertThatThrownBy(() -> Utils.addListWithIndex(list, "abc", 0)).isInstanceOf(NullPointerException.class);
+        
+        }
+        
+        {
+            // 引数の確認 - インデックスが-1
+            List<String> list = new ArrayList<>();
+            assertThatThrownBy(() -> Utils.addListWithIndex(list, "abc", -1)).isInstanceOf(IllegalArgumentException.class);
+        
+        }
+        
+        {
+            List<String> list = new ArrayList<>();
+            
+            // サイズが1つ足りない - サイズとインデックス番号が同じ
+            Utils.addListWithIndex(list, "abc", 0);
+            assertThat(list).hasSize(1).containsExactly("abc");
+            
+            // サイズが足りない
+            Utils.addListWithIndex(list, "efg", 2);
+            assertThat(list).hasSize(3).containsExactly("abc", null, "efg");
+            
+            // サイズが足りている
+            Utils.addListWithIndex(list, "hij", 1);
+            assertThat(list).hasSize(3).containsExactly("abc", "hij", "efg");
+            
+            
+        }
+
+    }
+    
+    @Test
+    public void testGetPrimitiveDefaultValue() {
+        
+        {
+            // null
+            assertThatThrownBy(() -> Utils.getPrimitiveDefaultValue(null)).isInstanceOf(NullPointerException.class);
+        }
+        
+        {
+            // non-primitive
+            assertThat(Utils.getPrimitiveDefaultValue(Integer.class)).isNull();
+        }
+        
+        {
+            // primitive
+            assertThat(Utils.getPrimitiveDefaultValue(boolean.class)).isEqualTo(false);
+            assertThat(Utils.getPrimitiveDefaultValue(char.class)).isEqualTo('\u0000');
+            assertThat(Utils.getPrimitiveDefaultValue(byte.class)).isEqualTo((byte)0);
+            assertThat(Utils.getPrimitiveDefaultValue(short.class)).isEqualTo((short)0);
+            assertThat(Utils.getPrimitiveDefaultValue(int.class)).isEqualTo(0);
+            assertThat(Utils.getPrimitiveDefaultValue(long.class)).isEqualTo(0L);
+            assertThat(Utils.getPrimitiveDefaultValue(float.class)).isEqualTo(0.0f);
+            assertThat(Utils.getPrimitiveDefaultValue(double.class)).isEqualTo(0.0d);
+            
+            
+        }
+        
+    
+    }
+    
+    @Test
+    public void testAsList() {
+        
+        {
+            // 引数 - データがnullの場合
+            assertThat(Utils.asList(null, Integer.class))
+                .isNotNull()
+                .hasSize(0);
+        }
+        
+        {
+            // 引数 - 型がnullの場合
+            assertThatThrownBy(() -> Utils.asList(new int[]{123, 456}, null))
+                .isInstanceOf(NullPointerException.class);
+        }
+        
+        {
+            // 引数が配列出ない場合
+            assertThatThrownBy(() -> Utils.asList("text", String.class))
+                .isInstanceOf(IllegalArgumentException.class);
+        }
+        
+        {
+            // 非プリミティブ型の配列の場合
+            assertThat(Utils.asList(new String[]{"a", "b"}, String.class))
+                .hasSize(2)
+                .containsExactly("a", "b");
+        }
+        
+        {
+            // プリミティブ型(boolean)の配列の場合
+            assertThat(Utils.asList(new boolean[]{true, false}, boolean.class))
+                .hasSize(2)
+                .containsExactly(true, false);
+        }
+        
+        {
+            // プリミティブ型(char)の配列の場合
+            assertThat(Utils.asList(new char[]{'a', 'b'}, char.class))
+                .hasSize(2)
+                .containsExactly('a', 'b');
+        }
+        
+        {
+            // プリミティブ型(byte)の配列の場合
+            assertThat(Utils.asList(new byte[]{1, 2}, byte.class))
+                .hasSize(2)
+                .containsExactly((byte)1, (byte)2);
+        }
+        
+        {
+            // プリミティブ型(short)の配列の場合
+            assertThat(Utils.asList(new short[]{1, 2}, short.class))
+                .hasSize(2)
+                .containsExactly((short)1, (short)2);
+        }
+        
+        {
+            // プリミティブ型(int)の配列の場合
+            assertThat(Utils.asList(new int[]{1, 2}, int.class))
+                .hasSize(2)
+                .containsExactly(1, 2);
+        }
+        
+        {
+            // プリミティブ型(long)の配列の場合
+            assertThat(Utils.asList(new long[]{1l, 2l}, long.class))
+                .hasSize(2)
+                .containsExactly(1l, 2l);
+        }
+        
+        {
+            // プリミティブ型(float)の配列の場合
+            assertThat(Utils.asList(new float[]{1.2f, 2.3f}, float.class))
+                .hasSize(2)
+                .containsExactly(1.2f, 2.3f);
+        }
+        
+        {
+            // プリミティブ型(double)の配列の場合
+            assertThat(Utils.asList(new double[]{1.2d, 2.3d}, double.class))
+                .hasSize(2)
+                .containsExactly(1.2d, 2.3d);
+        }
+        
         
     }
 }

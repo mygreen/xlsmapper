@@ -23,6 +23,7 @@ import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
@@ -30,6 +31,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
@@ -37,6 +39,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -261,7 +264,34 @@ public class AnnoIterateTablesTest {
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(2));
-                for(RegexSheet.RegexpTable table : sheet.classTables) {
+                for(RegexSheet.RegexTable table : sheet.classTables) {
+                    assertTable(table, errors);
+                }
+            }
+        }
+        
+    }
+    
+    /**
+     * 配列セルのマッピング
+     * @since 2.0
+     */
+    @Test
+    public void test_load_it_arrayCell() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(false)
+            .setRegexLabelText(true)
+            .setNormalizeLabelText(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+            SheetBindingErrors<ArrayCellSheet> errors = mapper.loadDetail(in, ArrayCellSheet.class);
+            
+            ArrayCellSheet sheet = errors.getTarget();
+            
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(2));
+                for(ArrayCellSheet.ArrayCellTable table : sheet.classTables) {
                     assertTable(table, errors);
                 }
             }
@@ -571,7 +601,7 @@ public class AnnoIterateTablesTest {
         
     }
     
-    private void assertTable(final RegexSheet.RegexpTable table, final SheetBindingErrors<?> errors) {
+    private void assertTable(final RegexSheet.RegexTable table, final SheetBindingErrors<?> errors) {
         
         if(table.name.equals("1年2組")) {
             
@@ -612,6 +642,56 @@ public class AnnoIterateTablesTest {
                 } else if(record.no == 3) {
                     assertThat(record.name, is("山田太郎"));
                     assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))));
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    private void assertTable(final ArrayCellSheet.ArrayCellTable table, final SheetBindingErrors<?> errors) {
+        
+        if(table.name[0].equals("1年") && table.name[1].equals("2年")) {
+            
+            assertThat(table.no, is(1));
+            assertThat(table.name, is(arrayContaining("1年", "2組")));
+            
+            assertThat(table.persons, hasSize(2));
+            for(ArrayCellSheet.ArrayCellRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("阿部一郎"));
+                    assertThat(record.telNumber, is(contains("090", "1111", "1111")));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("泉太郎"));
+                    assertThat(record.telNumber, is(contains("090", "1111", "2222")));
+                    
+                }
+                
+            }
+            
+        } else if(table.name[0].equals("2年") && table.name[1].equals("3年")) {
+            
+            assertThat(table.no, is(2));
+            assertThat(table.name, is(arrayContaining("2年", "3組")));
+            
+            assertThat(table.persons, hasSize(3));
+            for(ArrayCellSheet.ArrayCellRecord record : table.persons) {
+                
+                if(record.no == 1) {
+                    assertThat(record.name, is("鈴木一郎"));
+                    assertThat(record.telNumber, is(contains("090", "2222", "1111")));
+                    
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("林次郎"));
+                    assertThat(record.telNumber, is(contains("090", "2222", "2222")));
+                    
+                } else if(record.no == 3) {
+                    assertThat(record.name, is("山田太郎"));
+                    assertThat(record.telNumber, is(contains("090", "2222", "3333")));
                     
                 }
                 
@@ -985,13 +1065,13 @@ public class AnnoIterateTablesTest {
         // テストデータの作成
         RegexSheet outSheet = new RegexSheet();
         
-        outSheet.add(new RegexSheet.RegexpTable().name("1年2組")
+        outSheet.add(new RegexSheet.RegexTable().name("1年2組")
                 .add(new RegexSheet.RegexRecord().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))))
                 .add(new RegexSheet.RegexRecord().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
                 .add(new RegexSheet.RegexRecord().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))))
         );
         
-        outSheet.add(new RegexSheet.RegexpTable().name("2年3組")
+        outSheet.add(new RegexSheet.RegexTable().name("2年3組")
                 .add(new RegexSheet.RegexRecord().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
                 .add(new RegexSheet.RegexRecord().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))))
                 .add(new RegexSheet.RegexRecord().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
@@ -1015,6 +1095,59 @@ public class AnnoIterateTablesTest {
             SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
             RegexSheet sheet = errors.getTarget();
+            
+            if(sheet.classTables != null) {
+                assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
+                
+                for(int i=0; i < sheet.classTables.size(); i++) {
+                    assertRecord(sheet.classTables.get(i), outSheet.classTables.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - 配列セルの確認
+     * @since 2.0
+     */
+    @Test
+    public void test_save_it_arrayCell() throws Exception {
+        
+        // テストデータの作成
+        ArrayCellSheet outSheet = new ArrayCellSheet();
+        
+        outSheet.add(new ArrayCellSheet.ArrayCellTable().name(new String[]{"1年", "2組"})
+                .add(new ArrayCellSheet.ArrayCellRecord().name("阿部一郎").telNumber(Arrays.asList("090", "1111", "1111")))
+                .add(new ArrayCellSheet.ArrayCellRecord().name("泉太郎").telNumber(Arrays.asList("090", "1111", "2222")))
+        );
+        
+        outSheet.add(new ArrayCellSheet.ArrayCellTable().name(new String[]{"2年", "3組"})
+                .add(new ArrayCellSheet.ArrayCellRecord().name("鈴木一郎").telNumber(Arrays.asList("090", "2222", "1111")))
+                .add(new ArrayCellSheet.ArrayCellRecord().name("林次郎").telNumber(Arrays.asList("090", "2222", "2222")))
+                .add(new ArrayCellSheet.ArrayCellRecord().name("山田太郎").telNumber(Arrays.asList("090", "2222", "3333")))
+        );
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(false)
+            .setRegexLabelText(true)
+            .setNormalizeLabelText(true);
+        
+        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<ArrayCellSheet> errors = mapper.loadDetail(in, ArrayCellSheet.class);
+            
+            ArrayCellSheet sheet = errors.getTarget();
             
             if(sheet.classTables != null) {
                 assertThat(sheet.classTables, hasSize(outSheet.classTables.size()));
@@ -1206,7 +1339,7 @@ public class AnnoIterateTablesTest {
      * @param outRecord
      * @param errors
      */
-    private void assertRecord(final RegexSheet.RegexpTable inRecord, final RegexSheet.RegexpTable outRecord, final SheetBindingErrors<?> errors) {
+    private void assertRecord(final RegexSheet.RegexTable inRecord, final RegexSheet.RegexTable outRecord, final SheetBindingErrors<?> errors) {
         
         System.out.printf("%s - assertRecord::%s no=%d\n",
                 this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
@@ -1238,6 +1371,46 @@ public class AnnoIterateTablesTest {
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.name, is(outRecord.name));
         assertThat(inRecord.birthday, is(outRecord.birthday));
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final ArrayCellSheet.ArrayCellTable inRecord, final ArrayCellSheet.ArrayCellTable outRecord, final SheetBindingErrors<?> errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        
+        if(inRecord.persons != null) {
+            assertThat(inRecord.persons, hasSize(outRecord.persons.size()));
+            
+            for(int i=0; i < inRecord.persons.size(); i++) {
+                assertRecord(inRecord.persons.get(i), outRecord.persons.get(i), errors);
+            }
+            
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final ArrayCellSheet.ArrayCellRecord inRecord, final ArrayCellSheet.ArrayCellRecord outRecord, final SheetBindingErrors<?> errors) {
+        
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        assertThat(inRecord.telNumber, is(outRecord.telNumber));
     }
     
     @XlsSheet(name="通常の表")
@@ -1893,9 +2066,9 @@ public class AnnoIterateTablesTest {
         private Map<String, String> labels;
         
         @XlsIterateTables(tableLabel="/クラス情報.*/", bottom=3)
-        private List<RegexpTable> classTables;
+        private List<RegexTable> classTables;
         
-        public RegexSheet add(RegexpTable table) {
+        public RegexSheet add(RegexTable table) {
             
             if(classTables == null) {
                 this.classTables = new ArrayList<>();
@@ -1907,13 +2080,11 @@ public class AnnoIterateTablesTest {
             return this;
         }
         
-        private static class RegexpTable {
+        private static class RegexTable {
             
+            private Map<String, Point> positions;
             
-            // 位置情報／ラベル情報
-            private Point classTablesPoint;
-            
-            private String classTablesLabel;
+            private Map<String, String> labels;
             
             @XlsOrder(value=1)
             @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
@@ -1930,17 +2101,17 @@ public class AnnoIterateTablesTest {
             
             // 値設定用のメソッド
             
-            public RegexpTable no(int no) {
+            public RegexTable no(int no) {
                 this.no = no;
                 return this;
             }
             
-            public RegexpTable name(String name) {
+            public RegexTable name(String name) {
                 this.name = name;
                 return this;
             }
             
-            public RegexpTable add(RegexRecord record) {
+            public RegexTable add(RegexRecord record) {
                 
                 if(persons == null) {
                     this.persons = new ArrayList<>();
@@ -1996,6 +2167,114 @@ public class AnnoIterateTablesTest {
         }
     }
     
+    @XlsSheet(name="配列カラムの設定")
+    private static class ArrayCellSheet {
+        
+        private Map<String, CellPosition> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsIterateTables(tableLabel="/クラス情報.*/", bottom=3)
+        private List<ArrayCellTable> classTables;
+        
+        public ArrayCellSheet add(ArrayCellTable table) {
+            
+            if(classTables == null) {
+                this.classTables = new ArrayList<>();
+            }
+            
+            this.classTables.add(table);
+            table.no(classTables.size());
+            
+            return this;
+        }
+        
+        private static class ArrayCellTable {
+            
+            private Map<String, CellPosition> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsOrder(value=1)
+            @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+            private int no;
+            
+            @XlsOrder(value=2)
+            @XlsLabelledArrayCell(label="/クラス名.*/", type=LabelledCellType.Right, size=2)
+            private String[] name;
+            
+            @XlsOrder(value=3)
+            @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border)
+            @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+            private List<ArrayCellRecord> persons;
+            
+            // 値設定用のメソッド
+            
+            public ArrayCellTable no(int no) {
+                this.no = no;
+                return this;
+            }
+            
+            public ArrayCellTable name(String[] name) {
+                this.name = name;
+                return this;
+            }
+            
+            public ArrayCellTable add(ArrayCellRecord record) {
+                
+                if(persons == null) {
+                    this.persons = new ArrayList<>();
+                }
+                
+                this.persons.add(record);
+                record.no(persons.size());
+                
+                return this;
+            }
+            
+        }
+        
+        /**
+         * HorizontalRecordsのレコードの定義
+         */
+        private static class ArrayCellRecord {
+            
+            private Map<String, CellPosition> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsColumn(columnName="No.")
+            private int no;
+            
+            @XlsColumn(columnName="/氏名.*/")
+            private String name;
+            
+            @XlsArrayColumns(columnName="電話番号", size=3)
+            private List<String> telNumber;
+            
+            @XlsIgnorable
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+            }
+            
+            public ArrayCellRecord no(int no) {
+                this.no = no;
+                return this;
+            }
+            
+            public ArrayCellRecord name(String name) {
+                this.name = name;
+                return this;
+            }
+            
+            public ArrayCellRecord telNumber(List<String> telNumber) {
+                this.telNumber = telNumber;
+                return this;
+            }
+            
+        }
+        
+    }
     
     
 }

@@ -34,7 +34,9 @@ import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.ArrayDirection;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
@@ -81,16 +83,6 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
-        // ラベルの設定
-        if(Utils.isNotEmpty(anno.tableLabel())) {
-            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
-            tableLabelCell.ifPresent(c -> {
-                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
-                accessor.setLabel(beansObj, label);
-                
-            });
-        }
-        
         final Class<?> clazz = accessor.getType();
         if(Collection.class.isAssignableFrom(clazz)) {
             
@@ -99,7 +91,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 recordClass = accessor.getComponentType();
             }
             
-            final List<?> value = loadRecords(sheet, anno, accessor, recordClass, config, work);
+            final List<?> value = loadRecords(sheet, beansObj, anno, accessor, recordClass, config, work);
             if(value != null) {
                 @SuppressWarnings({"unchecked", "rawtypes"})
                 Collection<?> collection = Utils.convertListToCollection(value, (Class<Collection>)clazz, config.getBeanFactory());
@@ -112,7 +104,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 recordClass = accessor.getComponentType();
             }
             
-            final List<?> value = loadRecords(sheet, anno, accessor, recordClass, config, work);
+            final List<?> value = loadRecords(sheet, beansObj, anno, accessor, recordClass, config, work);
             if(value != null) {
                 final Object array = Array.newInstance(recordClass, value.size());
                 for(int i=0; i < value.size(); i++) {
@@ -123,7 +115,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsVerticalRecords.class)
                     .varWithClass("actualType", clazz)
@@ -133,13 +125,23 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
     }
     
-   private List<?> loadRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAccessor accessor,
+   private List<?> loadRecords(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno, final FieldAccessor accessor,
            final Class<?> recordClass, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         // get table starting position
         final Optional<CellPosition> initPosition = getHeaderPosition(sheet, anno, accessor, config);
         if(!initPosition.isPresent()) {
             return null;
+        }
+        
+        // ラベルの設定
+        if(Utils.isNotEmpty(anno.tableLabel())) {
+            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
+            tableLabelCell.ifPresent(c -> {
+                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
+                accessor.setLabel(beansObj, label);
+                
+            });
         }
         
         final int initColumn = initPosition.get().getColumn();
@@ -264,7 +266,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             final List<MergedRecord> mergedRecords = new ArrayList<>();
             
-            loadMapColumns(sheet, headers, mergedRecords, CellPosition.of(initRow, hColumn), record, config, work);
+            loadMapColumns(sheet, headers, mergedRecords, CellPosition.of(initRow, hColumn), recordClass, record, config, work);
+            
+            loadArrayColumns(sheet, headers, mergedRecords, CellPosition.of(initRow, hColumn), recordClass, record, config, work);
             
             for(int i=0; i < headers.size() && hColumn < POIUtils.getColumns(sheet); i++){
                 final RecordHeader headerInfo = headers.get(i);
@@ -277,8 +281,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 }
                 
                 if(terminal==RecordTerminal.Border && i == startHeaderIndex){
-                    final CellStyle format = cell.getCellStyle();
-                    if(format!=null && !(format.getBorderTopEnum().equals(BorderStyle.NONE))){
+                    if(!POIUtils.getBorderTop(cell).equals(BorderStyle.NONE)){
                         emptyFlag = false;
                     } else {
                         emptyFlag = true;
@@ -314,13 +317,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     // for merged cell
                     if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())){
                         CellStyle valueCellFormat = valueCell.getCellStyle();
-                        if(column.merged() && 
-                                (valueCellFormat == null || valueCellFormat.getBorderRightEnum().equals(BorderStyle.NONE))){
+                        if(column.merged() && POIUtils.getBorderRight(valueCell).equals(BorderStyle.NONE)){
                             for(int k=hColumn; k > initColumn; k--){
                                 final Cell tmpCell = POIUtils.getCell(sheet, k, hRow);
                                 final CellStyle tmpCellFormat = tmpCell.getCellStyle();
                                 
-                                if(tmpCellFormat!=null && !(tmpCellFormat.getBorderLeftEnum().equals(BorderStyle.NONE))){
+                                if(!POIUtils.getBorderLeft(tmpCell).equals(BorderStyle.NONE)){
                                     break;
                                 }
                                 
@@ -519,10 +521,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     }
     
     private void loadMapColumns(final Sheet sheet, final List<RecordHeader> headers, final List<MergedRecord> mergedRecords,
-            final CellPosition beginPosition, final Object record, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+            final CellPosition beginPosition, final Class<?> recordClass, final Object record, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
-                record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
+                recordClass, work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
                 .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
@@ -536,10 +538,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
             
             // get converter (map key class)
-            final CellConverter<?> converter = config.getConverterRegistry().getConverter(itemClass);
-            if(converter == null) {
-                throw newNotFoundCellConverterExpcetion(itemClass);
-            }
+            final CellConverter<?> converter = getCellConverter(itemClass, property, config);
             
             boolean foundPreviousColumn = false;
             final Map<String, Object> map = new LinkedHashMap<>();
@@ -557,8 +556,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 if(foundPreviousColumn){
                     final Cell cell = POIUtils.getCell(sheet, beginPosition.getColumn(), hRow);
-                    property.setMapColumnPosition(record, CellPosition.of(cell), headerInfo.getLabel());
-                    property.setMapColumnLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
+                    property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
+                    property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
                     
                     CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
                     if(mergedRange != null) {
@@ -583,6 +582,70 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             property.setValue(record, map);
         }
+    }
+    
+    private void loadArrayColumns(final Sheet sheet, final List<RecordHeader> headers, final List<MergedRecord> mergedRecords,
+            final CellPosition beginPosition, final Class<?> recordClass, final Object record, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+        
+        for(RecordHeader headerInfo : headers) {
+            int hRow = beginPosition.getRow() + headerInfo.getInterval();
+            
+            // アノテーション「@XlsArrayColumns」の属性「columnName」と一致するプロパティを取得する。
+            final List<FieldAccessor> arrayProperties = FieldAccessorUtils.getArrayColumnsPropertiesByName(
+                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel());
+                    
+            if(arrayProperties.isEmpty()) {
+                continue;
+            }
+            
+            for(FieldAccessor property : arrayProperties) {
+                
+                final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();
+                
+                Class<?> itemClass = arrayAnno.itemClass();
+                if(itemClass == Object.class) {
+                    itemClass = property.getComponentType();
+                }
+                
+                // get converter (component class)
+                final CellConverter<?> converter = getCellConverter(itemClass, property, config);
+                
+                final CellPosition initPosition = CellPosition.of(hRow, beginPosition.getColumn());
+                
+                ArrayCellHandler arrayHandler = new ArrayCellHandler(property, record, itemClass, sheet, config);
+                arrayHandler.setLabel(headerInfo.getLabel());
+                
+                final List<Object> result = arrayHandler.handleOnLoading(arrayAnno, initPosition, converter, work, ArrayDirection.Vertical);
+                
+                final Class<?> propertyType = property.getType();
+                if(Collection.class.isAssignableFrom(propertyType)) {
+                    if(result != null) {
+                        @SuppressWarnings({"unchecked", "rawtypes"})
+                        Collection<?> collection = Utils.convertListToCollection(result, (Class<Collection>)propertyType, config.getBeanFactory());
+                        property.setValue(record, collection);
+                    }
+                    
+                } else if(propertyType.isArray()) {
+                    
+                    if(result != null) {
+                        final Object array = Array.newInstance(itemClass, result.size());
+                        for(int i=0; i < result.size(); i++) {
+                            Array.set(array, i, result.get(i));
+                        }
+                        property.setValue(record, array);
+                    }
+                    
+                } else {
+                    throw new AnnotationInvalidException(arrayAnno, MessageBuilder.create("anno.notSupportType")
+                            .var("property", property.getNameWithClass())
+                            .varWithAnno("anno", XlsArrayColumns.class)
+                            .varWithClass("actualType", propertyType)
+                            .var("expectedType", "Collection(List/Set) or Array")
+                            .format());
+                }
+            }
+        }
+        
     }
     
     @SuppressWarnings("unchecked")
@@ -700,16 +763,6 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
             final FieldAccessor accessor, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
-        // ラベルの設定
-        if(Utils.isNotEmpty(anno.tableLabel())) {
-            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
-            tableLabelCell.ifPresent(c -> {
-                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
-                accessor.setLabel(beansObj, label);
-                
-            });
-        }
-        
         final Class<?> clazz = accessor.getType();
         final Object result = accessor.getValue(beansObj);
         if(Collection.class.isAssignableFrom(clazz)) {
@@ -721,7 +774,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             final Collection<Object> value = (result == null ? new ArrayList<Object>() : (Collection<Object>) result);
             final List<Object> list = Utils.convertCollectionToList(value);
-            saveRecords(sheet, anno, accessor, recordClass, list, config, work);
+            saveRecords(sheet, beansObj, anno, accessor, recordClass, list, config, work);
             
         } else if(clazz.isArray()) {
             
@@ -730,11 +783,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 recordClass = accessor.getComponentType();
             }
             
-            final List<Object> list = (result == null ? new ArrayList<Object>() : Arrays.asList((Object[]) result));
-            saveRecords(sheet, anno, accessor, recordClass, list, config, work);
+            final List<Object> list = Utils.asList(result, recordClass);
+            saveRecords(sheet, beansObj, anno, accessor, recordClass, list, config, work);
             
         } else {
-            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSpportType")
+            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
                     .varWithAnno("anno", XlsVerticalRecords.class)
                     .varWithClass("actualType", clazz)
@@ -744,7 +797,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
     }
     
-    private void saveRecords(final Sheet sheet, XlsVerticalRecords anno, final FieldAccessor accessor, 
+    private void saveRecords(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno, final FieldAccessor accessor, 
             final Class<?> recordClass, final List<Object> result,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
@@ -754,6 +807,16 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final Optional<CellPosition> initPosition = getHeaderPosition(sheet, anno, accessor, config);
         if(!initPosition.isPresent()) {
             return;
+        }
+        
+        // ラベルの設定
+        if(Utils.isNotEmpty(anno.tableLabel())) {
+            final Optional<Cell> tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();
+            tableLabelCell.ifPresent(c -> {
+                final String label = POIUtils.getCellContents(c, config.getCellFormatter());
+                accessor.setLabel(beansObj, label);
+                
+            });
         }
         
         final int initColumn = initPosition.get().getColumn();
@@ -960,7 +1023,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 if(terminal == RecordTerminal.Border && i == startHeaderIndex){
                     final CellStyle format = cell.getCellStyle();
-                    if(format!=null && !(format.getBorderTopEnum().equals(BorderStyle.NONE))){
+                    if(!POIUtils.getBorderTop(cell).equals(BorderStyle.NONE)){
                         emptyFlag = false;
                     } else {
                         emptyFlag = true;
@@ -997,13 +1060,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         
                         // for merged cell
                         if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())) {
-                            final CellStyle valueCellFormat = valueCell.getCellStyle();
-                            if(column.merged()
-                                    && (valueCellFormat == null || valueCellFormat.getBorderRightEnum().equals(BorderStyle.NONE))){
+                            if(column.merged() && POIUtils.getBorderRight(valueCell).equals(BorderStyle.NONE)){
                                 for(int k=hColumn-1; k > hColumn; k--){
                                     Cell tmpCell = POIUtils.getCell(sheet, k, hRow);
                                     final CellStyle tmpCellFormat = tmpCell.getCellStyle();
-                                    if(tmpCellFormat!=null && !(tmpCellFormat.getBorderLeftEnum().equals(BorderStyle.NONE))){
+                                    if(!POIUtils.getBorderLeft(tmpCell).equals(BorderStyle.NONE)){
                                         break;
                                     }
                                     if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){
@@ -1098,7 +1159,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             // マップ形式のカラムを出力する
             if(record != null) {
-                saveMapColumn(sheet, headers, valueCellPositions, CellPosition.of(initRow, hColumn), record, terminal, anno, config, work, recordOperation);
+                saveMapColumns(sheet, headers, valueCellPositions, CellPosition.of(initRow, hColumn), recordClass, record, terminal, anno, config, work, recordOperation);
+                
+                saveArrayColumns(sheet, headers, valueCellPositions, CellPosition.of(initRow, hColumn), recordClass, record, terminal, anno, config, work, recordOperation);
             }
             
             // execute nested record.
@@ -1230,13 +1293,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
     }
     
-    private void saveMapColumn(final Sheet sheet, final List<RecordHeader> headers, final List<CellPosition> valueCellPositions,
-            final CellPosition beginPosition, final Object record, final RecordTerminal terminal,
+    private void saveMapColumns(final Sheet sheet, final List<RecordHeader> headers, final List<CellPosition> valueCellPositions,
+            final CellPosition beginPosition, final Class<?> recordClass, final Object record, final RecordTerminal terminal,
             final XlsVerticalRecords anno, final Configuration config, final SavingWorkObject work,
             final RecordOperation recordOperation) throws XlsMapperException {
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
-                record.getClass(), work.getAnnoReader(), XlsMapColumns.class)
+                recordClass, work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
                 .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
@@ -1250,10 +1313,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             }
             
             // get converter (map key class)
-            final CellConverter converter = config.getConverterRegistry().getConverter(itemClass);
-            if(converter == null) {
-                throw newNotFoundCellConverterExpcetion(itemClass);
-            }
+            final CellConverter converter = getCellConverter(itemClass, property, config);
             
             boolean foundPreviousColumn = false;
             for(RecordHeader headerInfo : headers) {
@@ -1274,8 +1334,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     // 空セルか判断する
                     boolean emptyFlag = true;
                     if(terminal == RecordTerminal.Border) {
-                        CellStyle format = cell.getCellStyle();
-                        if(format != null && !(format.getBorderTop() == CellStyle.BORDER_NONE)) {
+                        if(!POIUtils.getBorderTop(cell).equals(BorderStyle.NONE)) {
                             emptyFlag = false;
                         } else {
                             emptyFlag = true;
@@ -1302,7 +1361,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                             // POIは列の追加をサポートしていないので非対応。
                             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                     .var("property", property.getNameWithClass())
-                                    .varWithAnno("anno", XlsVerticalRecords.class)
+                                    .varWithAnno("anno", XlsRecordOperator.class)
                                     .var("attrName", "overRecord")
                                     .varWithEnum("attrValue", OverOperate.Insert)
                                     .format());
@@ -1313,8 +1372,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     valueCellPositions.add(CellPosition.of(cell));
                     
                     // セルの値を出力する
-                    property.setMapColumnPosition(record, CellPosition.of(cell), headerInfo.getLabel());
-                    property.setMapColumnLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
+                    property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
+                    property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
                     
                     try {
                         Object itemValue = property.getValueOfMap(headerInfo.getLabel(), record);
@@ -1330,6 +1389,163 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 }
                 
             }
+        }
+        
+    }
+    
+    private void saveArrayColumns(final Sheet sheet, final List<RecordHeader> headers, final List<CellPosition> valueCellPositions,
+            final CellPosition beginPosition, Class<?> recordClass, Object record, RecordTerminal terminal,
+            XlsVerticalRecords anno, Configuration config, SavingWorkObject work,
+            RecordOperation recordOperation) throws XlsMapperException {
+        
+        
+        for(RecordHeader headerInfo : headers) {
+            int hRow = beginPosition.getRow() + headerInfo.getInterval();
+            
+            // アノテーション「@XlsArrayColumns」の属性「columnName」と一致するプロパティを取得する。
+            final List<FieldAccessor> arrayProperties = FieldAccessorUtils.getArrayColumnsPropertiesByName(
+                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel());
+                    
+            if(arrayProperties.isEmpty()) {
+                continue;
+            }
+            
+            for(FieldAccessor property : arrayProperties) {
+                
+                final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();
+                
+                Class<?> itemClass = arrayAnno.itemClass();
+                if(itemClass == Object.class) {
+                    itemClass = property.getComponentType();
+                }
+                final CellPosition initPosition = CellPosition.of(hRow, beginPosition.getColumn());
+                
+                // 書き込む領域について、上のセルをコピーなどする。
+                int iRow = initPosition.getRow();
+                for(int i=0; i < arrayAnno.size(); i++) {
+                    final Cell cell = POIUtils.getCell(sheet, initPosition.getColumn(), iRow);
+                    
+                    // 空セルか判断する - 値のセルかどうか
+                    boolean emptyFlag = true;
+                    
+                    if(terminal == RecordTerminal.Border) {
+                        if(!POIUtils.getBorderTop(cell).equals(BorderStyle.NONE)) {
+                            emptyFlag = false;
+                        } else {
+                            emptyFlag = true;
+                        }
+                    }
+                    
+                    if(!anno.terminateLabel().equals("")) {
+                        if(Utils.matches(POIUtils.getCellContents(cell, config.getCellFormatter()), anno.terminateLabel(), config)) {
+                            emptyFlag = true;
+                        }
+                    }
+                    
+                    // 空セルの場合
+                    if(emptyFlag) {
+                        if(recordOperation.getAnnotation().overCase().equals(OverOperate.Break)) {
+                            break;
+                            
+                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperate.Copy)) {
+                            final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex()-1, cell.getRowIndex());
+                            copyCellStyle(fromCell, cell);
+                            
+                        } else if(recordOperation.getAnnotation().overCase().equals(OverOperate.Insert)) {
+                            // POIは列の追加をサポートしていないので非対応。
+                            throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
+                                    .var("property", property.getNameWithClass())
+                                    .varWithAnno("anno", XlsRecordOperator.class)
+                                    .var("attrName", "overRecord")
+                                    .varWithEnum("attrValue", OverOperate.Insert)
+                                    .format());
+                            
+                            
+                        }
+                    }
+                    
+                    // 結合情報を考慮して、インデックス（列番号）を次のセルに進める。
+                    if(arrayAnno.itemMerged()) {
+                        final CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+                        if(mergedRegion != null) {
+                            iRow += POIUtils.getRowSize(mergedRegion);
+                        } else {
+                            iRow++;
+                        }
+                        
+                    } else {
+                        iRow++;
+                    }
+                    
+                    recordOperation.setupCellPositoin(cell);
+                }
+                
+                // get converter (component class)
+                final CellConverter<?> converter = getCellConverter(itemClass, property, config);
+                
+                ArrayCellHandler arrayHandler = new ArrayCellHandler(property, record, itemClass, sheet, config);
+                arrayHandler.setLabel(headerInfo.getLabel());
+                
+                final Class<?> propertyType = property.getType();
+                final Object result = property.getValue(record);
+                if(Collection.class.isAssignableFrom(propertyType)) {
+                    
+                    final Collection<Object> value = (result == null ? new ArrayList<Object>() : (Collection<Object>) result);
+                    final List<Object> list = Utils.convertCollectionToList(value);
+                    arrayHandler.handleOnSaving(list, arrayAnno, initPosition, converter, work, ArrayDirection.Vertical);
+                    
+                } else if(propertyType.isArray()) {
+                    
+                    final List<Object> list = Utils.asList(result, itemClass);
+                    arrayHandler.handleOnSaving(list, arrayAnno, initPosition, converter, work, ArrayDirection.Vertical);
+                }
+                
+            }
+        }
+        
+    }
+    
+    /**
+     * セルの書式をコピーする。
+     * <p>コピー先のセルの種類は、空セルとする。</p>
+     * <p>結合情報も列方向の結合をコピーする。</p>
+     * 
+     * @since 2.0
+     * @param fromCell コピー元
+     * @param toCell コピー先
+     */
+    private void copyCellStyle(final Cell fromCell, final Cell toCell) {
+        
+        final CellStyle style = fromCell.getCellStyle();
+        toCell.setCellStyle(style);
+        toCell.setCellType(CellType.BLANK);
+        
+        // 結合情報のコピー
+        final Sheet sheet = fromCell.getSheet();
+        CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, fromCell.getRowIndex(), fromCell.getColumnIndex());
+        if(mergedRegion != null) {
+            CellRangeAddress newMergedRegion = POIUtils.getMergedRegion(sheet, toCell.getRowIndex(), toCell.getColumnIndex());
+            if(newMergedRegion != null) {
+                // 既に結合している場合 - 通常はありえない。
+                return;
+            }
+            
+            newMergedRegion = POIUtils.mergeCells(sheet,
+                    toCell.getColumnIndex(), mergedRegion.getFirstRow(), toCell.getColumnIndex(), mergedRegion.getLastRow());
+            
+            // 結合先のセルの書式も設定する
+            final int size = POIUtils.getRowSize(newMergedRegion);
+            if(size >= 2) {
+                // 中間のセルの設定
+                for(int i=1; i < size; i++) {
+                    Cell mergedFromCell = POIUtils.getCell(sheet, fromCell.getColumnIndex(), toCell.getRowIndex()+i);
+                    
+                    Cell mergedToCell = POIUtils.getCell(sheet, toCell.getColumnIndex(), toCell.getRowIndex()+i);
+                    mergedToCell.setCellStyle(mergedFromCell.getCellStyle());
+                    mergedToCell.setCellType(CellType.BLANK);
+                }
+            }
+            
         }
         
     }

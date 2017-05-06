@@ -89,7 +89,7 @@ public @interface XlsRecordOperator {
         /** 次のセルの前に行または列を挿入します */
         Insert,
         
-        /** レコードの書き込みを中断します*/
+        /** レコードの書き込みを中断します */
         Break,
         ;
         

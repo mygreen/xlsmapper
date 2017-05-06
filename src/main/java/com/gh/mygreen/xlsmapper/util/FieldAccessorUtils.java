@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
@@ -84,6 +85,27 @@ public class FieldAccessorUtils {
         return getPropertiesWithAnnotation(targetClass, annoReader, XlsColumn.class)
             .stream()
             .filter(accessor -> Utils.matches(columnName, accessor.getAnnotation(XlsColumn.class).get().columnName(), config))
+            .collect(Collectors.toList());
+        
+    }
+    
+    /**
+     * アノテーション{@link XlsArrayColumns}が付与されているBeanのプロパティ（フィールド、アクセッサメソッド）の一覧を取得します。
+     * ただし、属性{@link XlsArrayColumns#columnName()}の値が、指定した値と等しいか判定します。
+     * 
+     * @param targetClass 取得元のクラス情報
+     * @param annoReader {@link AnnotationReader}のインスタンス。
+     * @param config システム設定情報
+     * @param columnName カラムの値
+     * @return プロパティの一覧。存在しない場合は、空のリストを返す。
+     * @throws NullPointerException {@literal config == null || columnName == null.}
+     */
+    public static List<FieldAccessor> getArrayColumnsPropertiesByName(final Class<?> targetClass, final AnnotationReader annoReader,
+            final Configuration config, final String columnName) {
+        
+        return getPropertiesWithAnnotation(targetClass, annoReader, XlsArrayColumns.class)
+            .stream()
+            .filter(accessor -> Utils.matches(columnName, accessor.getAnnotation(XlsArrayColumns.class).get().columnName(), config))
             .collect(Collectors.toList());
         
     }

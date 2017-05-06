@@ -61,4 +61,33 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Lo
         return converter;
     }
     
+    /**
+     * コンポーネントタイプを指定して、指定したタイプに対する{@link CellConverter}を取得します。
+     * <p>アノテーション「{@link XlsConverter}」が付与されている場合、そちらの設定値を優先します。</p>
+     * 
+     * @param componentType コンポーネントのクラスタイプ
+     * @param accessor フィールド情報
+     * @param config システム情報設定。
+     * @return {@link CellConverter}のインスタンス
+     * @throws ConversionException {@link CellConverter}が見つからない場合。
+     */
+    protected CellConverter<?> getCellConverter(final Class<?> componentType, final FieldAccessor accessor, final Configuration config)
+            throws ConversionException {
+        
+        final CellConverter<?> converter;
+        
+        if(accessor.hasAnnotation(XlsConverter.class)) {
+            XlsConverter converterAnno = accessor.getAnnotation(XlsConverter.class).get();
+            converter = config.createBean(converterAnno.converterClass());
+            
+        } else {
+            converter = config.getConverterRegistry().getConverter(componentType);
+            if(converter == null) {
+                throw newNotFoundCellConverterExpcetion(componentType);
+            }
+        }
+        
+        return converter;
+    }
+    
 }

@@ -3,6 +3,7 @@ package com.gh.mygreen.xlsmapper.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -12,6 +13,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -27,7 +29,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * ユーティリティクラス。
  * 
- * @version 1.5
+ * @version 2.0
  * @author T.TSUCHIE
  * @author Naoki Takezoe
  * @author Mitsuyoshi Hasegawa
@@ -251,7 +253,7 @@ public class Utils {
      * @param config システム設定
      * @return true:ラベルが一致する。
      */
-    private static String normalize(final String text, final Configuration config){
+    public static String normalize(final String text, final Configuration config){
         if(text != null && config.isNormalizeLabelText()){
             return text.trim().replaceAll("[\n\r]", "").replaceAll("[\t 　]+", " ");
         }
@@ -577,6 +579,173 @@ public class Utils {
         
     }
     
+    /**
+     * リストに要素のインデックスを指定して追加します。
+     * <p>リストのサイズが足りない場合は、サイズを自動的に変更します。</p>
+     * @since 2.0
+     * @param list リスト
+     * @param element 追加する要素。値はnullでもよい。
+     * @param index 追加する要素のインデックス番号(0以上)
+     * @throws NullPointerException {@literal list == null.}
+     * @throws IllegalArgumentException {@literal index < 0.}
+     */
+    public static <P> void addListWithIndex(final List<P> list, final P element, final int index) {
+        ArgUtils.notNull(list, "list");
+        ArgUtils.notMin(index, 0, "index");
+        
+        final int listSize = list.size();
+        if(listSize < index) {
+            // 足りない場合は、要素を追加する。
+            final int lackSize = index - listSize;
+            for(int i=0; i < lackSize; i++) {
+                list.add(null);
+            }
+            list.add(element);
+            
+        } else if(listSize == index) {
+            // 最後の要素に追加する
+            list.add(element);
+            
+        } else {
+            // リストのサイズが足りている場合
+            list.set(index, element);
+        }
+        
+    }
     
+    /**
+     * プリミティブ型のデフォルト値を取得します。
+     * @param type 変換対象のクラスタイプ。
+     * @return 対応していない型の場合は、nullを返します。
+     * @throws NullPointerException {@literal type is null.}
+     */
+    public static Object getPrimitiveDefaultValue(final Class<?> type) {
+        ArgUtils.notNull(type, "type");
+        
+        if(!type.isPrimitive()) {
+            return null;
+        }
+        
+        if(type.equals(boolean.class)) {
+            return false;
+            
+        } else if(type.equals(char.class)) {
+            return '\u0000';
+            
+        } else if(type.equals(byte.class)) {
+            return (byte)0;
+            
+        } else if(type.equals(short.class)) {
+            return (short)0;
+            
+        } else if(type.equals(int.class)) {
+            return 0;
+            
+        } else if(type.equals(long.class)) {
+            return 0l;
+            
+        } else if(type.equals(float.class)) {
+            return 0.0f;
+            
+        } else if(type.equals(double.class)) {
+            return 0.0d;
+            
+        }
+        
+        return null;
+    }
+    
+    /**
+     * 配列を{@link List}に変換します。
+     * プリミティブ型の配列をを考慮して処理します。
+     * @param object 変換対象の配列
+     * @param componentType 配列の要素のタイプ
+     * @return 配列がnullの場合は、空のリストに変換します。
+     * @throws IllegalArgumentException {@literal arrayが配列出ない場合。componentTypeがサポートしていないプリミティブ型の場合。}
+     */
+    public static List<Object> asList(final Object object, final Class<?> componentType) {
+        ArgUtils.notNull(componentType, "componentType");
+        
+        if(object == null) {
+            return new ArrayList<>();
+        }
+        
+        if(!object.getClass().isArray()) {
+            throw new IllegalArgumentException(String.format("args0 is not arrays : %s.", object.getClass().getName()));
+        }
+        
+        if(!componentType.isPrimitive()) {
+            return Arrays.asList((Object[])object);
+        }
+        
+        if(componentType.equals(boolean.class)) {
+            boolean[] array = (boolean[])object;
+            List<Object> list = new ArrayList<>(array.length);
+            for(boolean v : array) {
+                list.add(v);
+            }
+            return list;
+            
+        } else if(componentType.equals(char.class)) {
+            char[] array = (char[])object;
+            List<Object> list = new ArrayList<>(array.length);
+            for(char v : array) {
+                list.add(v);
+            }
+            return list;
+            
+        } else if(componentType.equals(byte.class)) {
+            byte[] array = (byte[])object;
+            List<Object> list = new ArrayList<>(array.length);
+            for(byte v : array) {
+                list.add(v);
+            }
+            return list;
+            
+        } else if(componentType.equals(short.class)) {
+            short[] array = (short[])object;
+            List<Object> list = new ArrayList<>(array.length);
+            for(short v : array) {
+                list.add(v);
+            }
+            return list;
+            
+        } else if(componentType.equals(int.class)) {
+            int[] array = (int[])object;
+            List<Object> list = new ArrayList<>(array.length);
+            for(int v : array) {
+                list.add(v);
+            }
+            return list;
+            
+        } else if(componentType.equals(long.class)) {
+            long[] array = (long[])object;
+            List<Object> list = new ArrayList<>(array.length);
+            for(long v : array) {
+                list.add(v);
+            }
+            return list;
+            
+        } else if(componentType.equals(float.class)) {
+            float[] array = (float[])object;
+            List<Object> list = new ArrayList<>(array.length);
+            for(float v : array) {
+                list.add(v);
+            }
+            return list;
+            
+        } else if(componentType.equals(double.class)) {
+            double[] array = (double[])object;
+            List<Object> list = new ArrayList<>(array.length);
+            for(double v : array) {
+                list.add(v);
+            }
+            return list;
+            
+        }
+        
+        throw new IllegalArgumentException(String.format("not support primitive type : %s.", componentType.getName()));
+        
+    }
     
 }

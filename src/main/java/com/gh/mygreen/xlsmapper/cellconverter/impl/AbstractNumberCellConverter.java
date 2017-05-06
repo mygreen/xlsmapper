@@ -23,7 +23,6 @@ import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
-import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
@@ -125,39 +124,10 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         
         // プリミティブ型の場合、値がnullの時は初期値を設定する
         if(accessor.getType().isPrimitive()) {
-            return (T)getPrimitiveDefaultValue(accessor.getType());
-        }
-        
-        return null;
-        
-    }
-    
-    /**
-     * プリミティブ型の初期値を取得する。
-     * @param type プリミティブ型のクラス型。
-     * @return 非プリミティブ型や該当するクラスがない場合はnullを返す。
-     * @throws NullPointerException type is null.
-     */
-    protected Object getPrimitiveDefaultValue(final Class<?> type) {
-        ArgUtils.notNull(type, "type");
-        
-        if(byte.class.isAssignableFrom(type)) {
-            return (byte)0;
+            return (T)Utils.getPrimitiveDefaultValue(accessor.getType());
             
-        } else if(short.class.isAssignableFrom(type)) {
-            return (short)0;
-            
-        } else if(int.class.isAssignableFrom(type)) {
-            return 0;
-            
-        } else if(long.class.isAssignableFrom(type)) {
-            return 0l;
-            
-        } else if(float.class.isAssignableFrom(type)) {
-            return 0.0f;
-            
-        } else if(double.class.isAssignableFrom(type)) {
-            return 0.0d;
+        } else if(accessor.isComponentType() && accessor.getComponentType().isPrimitive()) {
+            return (T)Utils.getPrimitiveDefaultValue(accessor.getComponentType());
         }
         
         return null;
@@ -262,13 +232,12 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         Optional<XlsNumberConverter> converterAnno = accessor.getAnnotation(XlsNumberConverter.class);
         
         final String excelPattern = converterAnno.map(a -> a.excelPattern()).orElse("");
+        final String templateFormatPatten = POIUtils.getCellFormatPattern(cell);
         
         // 現在設定されている書式が異なる場合、変更する。
-        if(!excelPattern.isEmpty() && !POIUtils.getCellFormatPattern(cell).equalsIgnoreCase(excelPattern)) {
-            CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
-            style.cloneStyleFrom(cell.getCellStyle());
-            style.setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), excelPattern));
-            cell.setCellStyle(style);
+        if(!excelPattern.isEmpty() && !templateFormatPatten.equalsIgnoreCase(excelPattern)) {
+            POIUtils.setupCellFormat(cell, excelPattern);
+            
         }
         
         if(cellValue.isPresent()) {
