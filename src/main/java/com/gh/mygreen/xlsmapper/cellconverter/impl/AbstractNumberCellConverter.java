@@ -232,13 +232,12 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
         Optional<XlsNumberConverter> converterAnno = accessor.getAnnotation(XlsNumberConverter.class);
         
         final String excelPattern = converterAnno.map(a -> a.excelPattern()).orElse("");
+        final String templateFormatPatten = POIUtils.getCellFormatPattern(cell);
         
         // 現在設定されている書式が異なる場合、変更する。
-        if(!excelPattern.isEmpty() && !POIUtils.getCellFormatPattern(cell).equalsIgnoreCase(excelPattern)) {
-            CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
-            style.cloneStyleFrom(cell.getCellStyle());
-            style.setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), excelPattern));
-            cell.setCellStyle(style);
+        if(!excelPattern.isEmpty() && !templateFormatPatten.equalsIgnoreCase(excelPattern)) {
+            POIUtils.setupCellFormat(cell, excelPattern);
+            
         }
         
         if(cellValue.isPresent()) {

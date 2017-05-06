@@ -27,6 +27,19 @@ public @interface XlsLabelledArrayCell {
     int size();
     
     /**
+     * 値のセルが結合しているかどうか考慮するかどうか指定します。
+     * この値により、属性{@link #size()}の指定方法が変わります。
+     * <p>trueの場合は、結合されているセルを1つのセルとしてマッピングします。</p>
+     * <p>falseの場合は、結合されていても解除した状態と同じマッピング結果となります。
+     *  <br>ただし、書き込む際には、結合を解除して書き込まれます。
+     * </p>
+     * 
+     * @return trueの場合、値のセルが結合されていることを考慮する。
+     */
+    boolean itemMerged() default true;
+    
+    //TODO: direction.Horizonとtype.Leftの組みあわせはサポートしないことを明記する。
+    /**
      * 連続する隣接するセルの方向を指定します。
      * @return セルの方向
      */

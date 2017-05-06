@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
+import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
@@ -110,7 +111,8 @@ public class FieldAccessorFactory {
             
         } else if(accessor.hasAnnotation(XlsArrayColumns.class)
                 || accessor.hasAnnotation(XlsArrayCell.class)
-                || accessor.hasAnnotation(XlsLabelledArrayCell.class)){
+                || accessor.hasAnnotation(XlsLabelledArrayCell.class)
+                || accessor.hasAnnotation(XlsIterateTables.class)){
             // リストや配列形式の場合
             accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             accessor.arrayLabelSetter = arrayLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
@@ -228,6 +230,14 @@ public class FieldAccessorFactory {
         if(accessor.hasAnnotation(XlsMapColumns.class)) {
             accessor.mapPositionSetter = mapPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+        } else if(accessor.hasAnnotation(XlsArrayColumns.class)
+                || accessor.hasAnnotation(XlsArrayCell.class)
+                || accessor.hasAnnotation(XlsLabelledArrayCell.class)
+                || accessor.hasAnnotation(XlsIterateTables.class)){
+            // リストや配列形式の場合
+            accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.arrayLabelSetter = arrayLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             
         } else {
             // XlsMapColumnsを持たない通常のプロパティの場合

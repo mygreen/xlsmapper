@@ -1,8 +1,9 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
-import static com.gh.mygreen.xlsmapper.TestUtils.*;
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
 import java.awt.Point;
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -31,6 +33,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
@@ -721,6 +724,53 @@ public class AnnoHorizontalRecordsTest {
         
     }
     
+    /**
+     * {@link XlsArrayColumns}によるマッピングのテスト
+     * 
+     * @since 2.0
+     */
+    @Test
+    public void test_load_hr_arrayColumns() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(false)
+            .setRegexLabelText(true);
+        
+        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+            SheetBindingErrors<ArrayColumnsSheet> errors = mapper.loadDetail(in, ArrayColumnsSheet.class);
+            
+            ArrayColumnsSheet sheet = errors.getTarget();
+            
+            if(sheet.normal != null) {
+                
+                assertThat(sheet.normal, hasSize(2));
+                for(ArrayColumnsSheet.NormalRecord record : sheet.normal) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+            
+            if(sheet.merged != null) {
+                
+                assertThat(sheet.merged, hasSize(2));
+                for(ArrayColumnsSheet.MergedRecord record : sheet.merged) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+            
+            if(sheet.converted != null) {
+                
+                assertThat(sheet.converted, hasSize(2));
+                for(ArrayColumnsSheet.ConvertRecord record : sheet.converted) {
+                    assertRecord(record, errors);
+                }
+                
+            }
+        }
+        
+    }
+    
     private void assertRecord(final NormalRecord record, final SheetBindingErrors<?> errors) {
         
         if(record.no == 1) {
@@ -1258,6 +1308,69 @@ public class AnnoHorizontalRecordsTest {
                 
             }
         }
+        
+    }
+    
+    private void assertRecord(final ArrayColumnsSheet.NormalRecord record, final SheetBindingErrors<?> errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.telNumber, is(contains("090", "1111", "2222")));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.telNumber, is(contains("03", "1234", "5678")));
+            
+        }
+        
+        String label = "電話番号";
+        assertThat(record.labels)
+            .containsEntry("telNumber[0]", label)
+            .containsEntry("telNumber[1]", label)
+            .containsEntry("telNumber[2]", label)
+            ;
+        
+    }
+    
+    private void assertRecord(final ArrayColumnsSheet.MergedRecord record, final SheetBindingErrors<?> errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.contacted, is(contains("東京都", "test01@example.com", "090-1111-2222")));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.contacted, is(contains("栃木県", "test02@example.com", "03-1234-5678")));
+            
+        }
+        
+        String label = "連絡先";
+        assertThat(record.labels)
+            .containsEntry("contacted[0]", label)
+            .containsEntry("contacted[1]", label)
+            .containsEntry("contacted[2]", label)
+            ;
+        
+    }
+    
+    private void assertRecord(final ArrayColumnsSheet.ConvertRecord record, final SheetBindingErrors<?> errors) {
+        
+        if(record.no == 1) {
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.dates, is(contains(LocalDate.of(2017, 5, 1), LocalDate.of(2017, 5, 2), null)));
+            
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.dates, is(contains(LocalDate.of(2017, 5, 6), LocalDate.of(2017, 5, 7), LocalDate.of(2017, 5, 8))));
+            
+        }
+        
+        String label = "候補日";
+        assertThat(record.labels)
+            .containsEntry("dates[0]", label)
+            .containsEntry("dates[1]", label)
+            .containsEntry("dates[2]", label)
+            ;
         
     }
     
@@ -2922,6 +3035,73 @@ public class AnnoHorizontalRecordsTest {
     }
     
     /**
+     * 書き込みのテスト - {@link XlsArrayColumns}のテスト
+     * @since 2.0
+     */
+    @Test
+    public void test_save_hr_arrayColumns() throws Exception {
+        // テストデータの作成
+        ArrayColumnsSheet outSheet = new ArrayColumnsSheet();
+        
+        outSheet.addNormalRecord(new ArrayColumnsSheet.NormalRecord().name("山田太郎").telNumber(Arrays.asList("090", "1111", "2222")));
+        outSheet.addNormalRecord(new ArrayColumnsSheet.NormalRecord().name("鈴木次郎").telNumber(Arrays.asList("03", "1234", "5678")));
+        
+        outSheet.addMergedRecord(new ArrayColumnsSheet.MergedRecord().name("山田太郎").contacted(Arrays.asList("東京都", "test01@example.com", "090-1111-2222")));
+        outSheet.addMergedRecord(new ArrayColumnsSheet.MergedRecord().name("鈴木次郎").contacted(Arrays.asList("栃木県", "test02@example.com", "03-1234-5678")));
+        
+        outSheet.addConvertRecord(new ArrayColumnsSheet.ConvertRecord().name("山田太郎").dates(Arrays.asList(LocalDate.of(2017, 5, 1), LocalDate.of(2017, 5, 2), null)));
+        outSheet.addConvertRecord(new ArrayColumnsSheet.ConvertRecord().name("鈴木次郎").dates(Arrays.asList(LocalDate.of(2017, 5, 6), LocalDate.of(2017, 5, 7), LocalDate.of(2017, 5, 8))));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(false)
+            .setRegexLabelText(true);
+        
+        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
+        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<ArrayColumnsSheet> errors = mapper.loadDetail(in, ArrayColumnsSheet.class);
+            
+            ArrayColumnsSheet sheet = errors.getTarget();
+            
+            if(sheet.normal != null) {
+                assertThat(sheet.normal, hasSize(outSheet.normal.size()));
+                
+                for(int i=0; i < sheet.normal.size(); i++) {
+                    assertRecord(sheet.normal.get(i), outSheet.normal.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.merged != null) {
+                assertThat(sheet.merged, hasSize(outSheet.merged.size()));
+                
+                for(int i=0; i < sheet.merged.size(); i++) {
+                    assertRecord(sheet.merged.get(i), outSheet.merged.get(i), errors);
+                }
+                
+            }
+            
+            if(sheet.converted != null) {
+                assertThat(sheet.converted, hasSize(outSheet.converted.size()));
+                
+                for(int i=0; i < sheet.converted.size(); i++) {
+                    assertRecord(sheet.converted.get(i), outSheet.converted.get(i), errors);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
      * 書き込んだレコードを検証するための
      * @param inRecord
      * @param outRecord
@@ -3490,6 +3670,60 @@ public class AnnoHorizontalRecordsTest {
         assertThat(inRecord.sansu, is(outRecord.sansu));
         assertThat(inRecord.kokugo, is(outRecord.kokugo));
         assertThat(inRecord.sum, is(outRecord.sum));
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 2.0
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final ArrayColumnsSheet.NormalRecord inRecord, final ArrayColumnsSheet.NormalRecord outRecord, final SheetBindingErrors<?> errors) {
+        
+        System.out.printf("%s - assertRecord::%s, no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.telNumber, is(outRecord.telNumber));
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 2.0
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final ArrayColumnsSheet.MergedRecord inRecord, final ArrayColumnsSheet.MergedRecord outRecord, final SheetBindingErrors<?> errors) {
+        
+        System.out.printf("%s - assertRecord::%s, no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.contacted, is(outRecord.contacted));
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @since 2.0
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final ArrayColumnsSheet.ConvertRecord inRecord, final ArrayColumnsSheet.ConvertRecord outRecord, final SheetBindingErrors<?> errors) {
+        
+        System.out.printf("%s - assertRecord::%s, no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+        
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(trim(outRecord.name)));
+        assertThat(inRecord.dates, is(outRecord.dates));
         
     }
     
@@ -6954,6 +7188,203 @@ public class AnnoHorizontalRecordsTest {
             }
             
         }
+    }
+    
+    /**
+     * {@link XlsArrayColumns}によるマッピング
+     */
+    @XlsSheet(name="配列カラムの設定")
+    public static class ArrayColumnsSheet {
+        
+        private Map<String, CellPosition> positions;
+        
+        private Map<String, String> labels;
+        
+        @XlsOrder(value=1)
+        @XlsHorizontalRecords(tableLabel="配列カラム（文字列）", terminal=RecordTerminal.Border)
+        @XlsRecordOperator(overCase=OverOperate.Insert)
+        private List<NormalRecord> normal;
+        
+        @XlsOrder(value=2)
+        @XlsHorizontalRecords(tableLabel="配列カラム（結合がある）", terminal=RecordTerminal.Border)
+        @XlsRecordOperator(overCase=OverOperate.Insert)
+        private List<MergedRecord> merged;
+        
+        @XlsOrder(value=3)
+        @XlsHorizontalRecords(tableLabel="配列カラム（型変換）", terminal=RecordTerminal.Border)
+        @XlsRecordOperator(overCase=OverOperate.Insert)
+        private List<ConvertRecord> converted;
+        
+        /**
+         * noを自動的に付与する。
+         * @param record クラスAのレコード
+         * @return 自身のインスタンス
+         */
+        public ArrayColumnsSheet addNormalRecord(NormalRecord record) {
+            if(normal == null) {
+                this.normal = new ArrayList<>();
+            }
+            
+            this.normal.add(record);
+            record.no(normal.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record クラスAのレコード
+         * @return 自身のインスタンス
+         */
+        public ArrayColumnsSheet addMergedRecord(MergedRecord record) {
+            if(merged == null) {
+                this.merged = new ArrayList<>();
+            }
+            
+            this.merged.add(record);
+            record.no(merged.size());
+            
+            return this;
+        }
+        
+        /**
+         * noを自動的に付与する。
+         * @param record クラスAのレコード
+         * @return 自身のインスタンス
+         */
+        public ArrayColumnsSheet addConvertRecord(ConvertRecord record) {
+            if(converted == null) {
+                this.converted = new ArrayList<>();
+            }
+            
+            this.converted.add(record);
+            record.no(converted.size());
+            
+            return this;
+        }
+        
+        /**
+         * 通常のレコードの定義
+         */
+        private static class NormalRecord {
+            
+            private Map<String, CellPosition> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsColumn(columnName="No.")
+            private int no;
+            
+            @XlsColumn(columnName="氏名")
+            private String name;
+            
+            @XlsArrayColumns(columnName="電話番号", size=3)
+            @XlsTrim
+            private List<String> telNumber;
+            
+            @XlsIgnorable
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+            }
+            
+            public NormalRecord no(int no) {
+                this.no = no;
+                return this;
+            }
+            
+            public NormalRecord name(String name) {
+                this.name = name;
+                return this;
+            }
+            
+            public NormalRecord telNumber(List<String> telNumber) {
+                this.telNumber = telNumber;
+                return this;
+            }
+        }
+        
+        /**
+         * 結合のレコードの定義
+         *
+         */
+        private static class MergedRecord {
+            
+            private Map<String, CellPosition> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsColumn(columnName="No.")
+            private int no;
+            
+            @XlsColumn(columnName="氏名")
+            private String name;
+            
+            @XlsArrayColumns(columnName="連絡先", size=3, itemMerged=true)
+            private List<String> contacted;
+            
+            @XlsIgnorable
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+            }
+            
+            public MergedRecord no(int no) {
+                this.no = no;
+                return this;
+            }
+            
+            public MergedRecord name(String name) {
+                this.name = name;
+                return this;
+            }
+            
+            public MergedRecord contacted(List<String> contacted) {
+                this.contacted = contacted;
+                return this;
+            }
+            
+        }
+        
+        /**
+         * 型変換のレコードの定義
+         */
+        private static class ConvertRecord {
+            
+            private Map<String, CellPosition> positions;
+            
+            private Map<String, String> labels;
+            
+            @XlsColumn(columnName="No.")
+            private int no;
+            
+            @XlsColumn(columnName="氏名")
+            private String name;
+            
+            @XlsArrayColumns(columnName="候補日", size=3)
+            @XlsDateConverter(javaPattern="yyyy\"年\"M\"月\"d\"日", excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
+            private List<LocalDate> dates;
+            
+            @XlsIgnorable
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+            }
+            
+            public ConvertRecord no(int no) {
+                this.no = no;
+                return this;
+            }
+            
+            public ConvertRecord name(String name) {
+                this.name = name;
+                return this;
+            }
+            
+            public ConvertRecord dates(List<LocalDate> dates) {
+                this.dates = dates;
+                return this;
+            }
+            
+        }
+        
     }
     
 }

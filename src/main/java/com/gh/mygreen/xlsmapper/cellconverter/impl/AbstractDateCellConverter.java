@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
@@ -84,18 +83,14 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
         
         Optional<XlsDateConverter> converterAnno = accessor.getAnnotation(XlsDateConverter.class);
         
-        String excelPattern = converterAnno.map(a -> a.excelPattern()).orElseGet(() -> getDefaultExcelPattern());
-        if(excelPattern.isEmpty()) {
-            excelPattern = getDefaultExcelPattern();
-        }
-        
+        final String excelPattern = converterAnno.map(a -> a.excelPattern()).orElse("");
         final String templateFormatPatten = POIUtils.getCellFormatPattern(cell);
         
-        if(!converterAnno.isPresent() && templateFormatPatten.isEmpty()) {
+        if(excelPattern.isEmpty()  && templateFormatPatten.isEmpty()) {
             // アノテーションが設定されておらず、テンプレートの書式が設定されていない場合、標準の書式を設定する
-            POIUtils.setupCellFormat(cell, excelPattern);
+            POIUtils.setupCellFormat(cell, getDefaultExcelPattern());
             
-        } else if(!templateFormatPatten.equalsIgnoreCase(excelPattern)) {
+        } else if(!excelPattern.isEmpty() && !templateFormatPatten.equalsIgnoreCase(excelPattern)) {
             // 現在設定されている書式が異なる場合、変更する。
             POIUtils.setupCellFormat(cell, excelPattern);
             

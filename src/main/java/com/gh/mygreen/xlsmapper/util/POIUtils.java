@@ -22,6 +22,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.FormulaParseException;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -1194,6 +1195,158 @@ public class POIUtils {
         style.cloneStyleFrom(cell.getCellStyle());
         style.setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), formatPattern));
         cell.setCellStyle(style);
+    }
+    
+    /**
+     * 結合を考慮してセルの罫線（上部）を取得する。
+     * 
+     * @param cell セル
+     * @return {@literal BorderStyle}
+     * @throws NullPointerException {@literal cell is null.}
+     */
+    public static BorderStyle getBorderTop(final Cell cell) {
+        
+        ArgUtils.notNull(cell, "cell");
+        
+        final Sheet sheet = cell.getSheet();
+        CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+        
+        final Cell target;
+        if(mergedRegion == null) {
+            // 結合されていない場合
+            target = cell;
+            
+        } else {
+            if(mergedRegion.getFirstRow() == cell.getRowIndex()) {
+                // 引数のCellが上部のセルの場合
+                target = cell;
+            } else {
+                target = getCell(sheet, cell.getColumnIndex(), mergedRegion.getFirstRow());
+            }
+            
+        }
+        
+        final CellStyle style = target.getCellStyle();
+        if(style == null) {
+            return BorderStyle.NONE;
+        } else {
+            return style.getBorderTopEnum();
+        }
+        
+    }
+    
+    /**
+     * 結合を考慮してセルの罫線（下部）を取得する。
+     * 
+     * @param cell セル
+     * @return {@literal BorderStyle}
+     * @throws NullPointerException {@literal cell is null.}
+     */
+    public static BorderStyle getBorderBottom(final Cell cell) {
+        
+        ArgUtils.notNull(cell, "cell");
+        
+        final Sheet sheet = cell.getSheet();
+        CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+        
+        final Cell target;
+        if(mergedRegion == null) {
+            // 結合されていない場合
+            target = cell;
+            
+        } else {
+            if(mergedRegion.getLastRow() == cell.getRowIndex()) {
+                // 引数のCellが下部のセルの場合
+                target = cell;
+            } else {
+                target = getCell(sheet, cell.getColumnIndex(), mergedRegion.getLastRow());
+            }
+            
+        }
+        
+        final CellStyle style = target.getCellStyle();
+        if(style == null) {
+            return BorderStyle.NONE;
+        } else {
+            return style.getBorderBottomEnum();
+        }
+        
+    }
+    
+    /**
+     * 結合を考慮してセルの罫線（左部）を取得する。
+     * 
+     * @param cell セル
+     * @return {@literal BorderStyle}
+     * @throws NullPointerException {@literal cell is null.}
+     */
+    public static BorderStyle getBorderRight(final Cell cell) {
+        
+        ArgUtils.notNull(cell, "cell");
+        
+        final Sheet sheet = cell.getSheet();
+        CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+        
+        final Cell target;
+        if(mergedRegion == null) {
+            // 結合されていない場合
+            target = cell;
+            
+        } else {
+            if(mergedRegion.getLastColumn() == cell.getColumnIndex()) {
+                // 引数のCellが右部のセルの場合
+                target = cell;
+            } else {
+                target = getCell(sheet, mergedRegion.getLastColumn(), cell.getRowIndex());
+            }
+            
+        }
+        
+        final CellStyle style = target.getCellStyle();
+        if(style == null) {
+            return BorderStyle.NONE;
+        } else {
+            return style.getBorderRightEnum();
+        }
+        
+    }
+    
+    /**
+     * 結合を考慮してセルの罫線（右部）を取得する。
+     * 
+     * @param cell セル
+     * @return {@literal BorderStyle}
+     * @throws NullPointerException {@literal cell is null.}
+     */
+    public static BorderStyle getBorderLeft(final Cell cell) {
+        
+        ArgUtils.notNull(cell, "cell");
+        
+        final Sheet sheet = cell.getSheet();
+        CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+        
+        final Cell target;
+        if(mergedRegion == null) {
+            // 結合されていない場合
+            target = cell;
+            
+        } else {
+            if(mergedRegion.getFirstColumn() == cell.getColumnIndex()) {
+                // 引数のCellが左部のセルの場合
+                target = cell;
+            } else {
+                target = getCell(sheet, mergedRegion.getFirstColumn(), cell.getRowIndex());
+            }
+            
+        }
+        
+        final CellStyle style = target.getCellStyle();
+        if(style == null) {
+            return BorderStyle.NONE;
+        } else {
+            return style.getBorderLeftEnum();
+        }
+        
     }
     
 }

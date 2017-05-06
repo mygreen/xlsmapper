@@ -32,7 +32,6 @@ import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayOperator.RemainedOperate;
-import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.ArrayCellProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -109,7 +108,7 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        // アノテーションの変更 - addressが不正
+        // アノテーションの変更 - タイプが不正
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
@@ -419,7 +418,7 @@ public class AnnoArrayCellTest {
         outSheet.field1 = Arrays.asList("あ", "い", "う");
         outSheet.field2 = "あいう";
         
-        // アノテーションの変更 - addressが不正
+        // アノテーションの変更 - タイプが不正
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
@@ -438,7 +437,7 @@ public class AnnoArrayCellTest {
             
             assertThatThrownBy(() -> mapper.save(template, out, outSheet))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$InvalidAnnoSheet#field2' において、アノテーション @XlsArrayCell を付与したタイプ 'java.lang.String' はサポートしていません。'Collection(List/Set) or Array' で設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoLabelledArrayCellTest$InvalidAnnoSheet#field1' において、 @XlsLabelledArrayCell の属性 'type' の値が 'com.gh.mygreen.xlsmapper.annotation.LabelledCellType#Left' の時は、属性 'direction' は、'com.gh.mygreen.xlsmapper.annotation.ArrayDirection#Horizon' の値以外を設定してください。");
             
         }
         
