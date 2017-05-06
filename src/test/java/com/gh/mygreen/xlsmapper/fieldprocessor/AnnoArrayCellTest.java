@@ -437,7 +437,7 @@ public class AnnoArrayCellTest {
             
             assertThatThrownBy(() -> mapper.save(template, out, outSheet))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoLabelledArrayCellTest$InvalidAnnoSheet#field1' において、 @XlsLabelledArrayCell の属性 'type' の値が 'com.gh.mygreen.xlsmapper.annotation.LabelledCellType#Left' の時は、属性 'direction' は、'com.gh.mygreen.xlsmapper.annotation.ArrayDirection#Horizon' の値以外を設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$InvalidAnnoSheet#field2' において、アノテーション @XlsArrayCell を付与したタイプ 'java.lang.String' はサポートしていません。'Collection(List/Set) or Array' で設定してください。");
             
         }
         
