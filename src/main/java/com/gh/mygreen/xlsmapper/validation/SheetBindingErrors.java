@@ -90,12 +90,8 @@ public class SheetBindingErrors<P> {
      * <p>エラーメッセージを組み立てる際に、パスのルートとなる。
      * @param target 検証対象のオブジェクト
      * @param objectName オブジェクト名
-     * @throws NullPointerException {@link target == null.}
-     * @throws IllegalArgumentException {@link objectName is empty.}
      */
     public SheetBindingErrors(final P target, final String objectName) {
-        ArgUtils.notNull(target, "target");
-        ArgUtils.notEmpty(objectName, "objectName");
         
         this.target = target;
         this.objectName = objectName;

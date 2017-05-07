@@ -412,9 +412,12 @@ public class POIUtils {
      * 
      * @since 2.0
      * @param region 領域
-     * @return 列サイズ（横セル数）
+     * @return 列サイズ（横セル数）。引数がnullの時は、0を返します。
      */
     public static int getColumnSize(final CellRangeAddress region) {
+        if(region == null) {
+            return 0;
+        }
         return region.getLastColumn() - region.getFirstColumn() + 1;
     }
     
@@ -423,12 +426,14 @@ public class POIUtils {
      * 
      * @since 2.0
      * @param region 領域
-     * @return 行サイズ（行セル数）
+     * @return 行サイズ（行セル数）。引数がnullの時は、0を返します。
      */
     public static int getRowSize(final CellRangeAddress region) {
+        if(region == null) {
+            return 0;
+        }
         return region.getLastRow() - region.getFirstRow() + 1;
     }
-
     
     /**
      * 指定した行の下に行を1行追加する

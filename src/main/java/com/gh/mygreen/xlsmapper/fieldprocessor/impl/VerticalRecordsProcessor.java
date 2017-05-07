@@ -1520,10 +1520,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         toCell.setCellStyle(style);
         toCell.setCellType(CellType.BLANK);
         
-        // 結合情報のコピー
+        // 縦方向に結合されている場合、結合情報のコピーする。（XlsArrayColumns用）
         final Sheet sheet = fromCell.getSheet();
-        CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, fromCell.getRowIndex(), fromCell.getColumnIndex());
-        if(mergedRegion != null) {
+        final CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, fromCell.getRowIndex(), fromCell.getColumnIndex());
+        final int mergedSize = POIUtils.getRowSize(mergedRegion);
+        
+        if(mergedSize >= 2) {
             CellRangeAddress newMergedRegion = POIUtils.getMergedRegion(sheet, toCell.getRowIndex(), toCell.getColumnIndex());
             if(newMergedRegion != null) {
                 // 既に結合している場合 - 通常はありえない。
@@ -1534,18 +1536,13 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     toCell.getColumnIndex(), mergedRegion.getFirstRow(), toCell.getColumnIndex(), mergedRegion.getLastRow());
             
             // 結合先のセルの書式も設定する
-            final int size = POIUtils.getRowSize(newMergedRegion);
-            if(size >= 2) {
-                // 中間のセルの設定
-                for(int i=1; i < size; i++) {
-                    Cell mergedFromCell = POIUtils.getCell(sheet, fromCell.getColumnIndex(), toCell.getRowIndex()+i);
-                    
-                    Cell mergedToCell = POIUtils.getCell(sheet, toCell.getColumnIndex(), toCell.getRowIndex()+i);
-                    mergedToCell.setCellStyle(mergedFromCell.getCellStyle());
-                    mergedToCell.setCellType(CellType.BLANK);
-                }
+            for(int i=1; i < mergedSize; i++) {
+                Cell mergedFromCell = POIUtils.getCell(sheet, fromCell.getColumnIndex(), toCell.getRowIndex()+i);
+                
+                Cell mergedToCell = POIUtils.getCell(sheet, toCell.getColumnIndex(), toCell.getRowIndex()+i);
+                mergedToCell.setCellStyle(mergedFromCell.getCellStyle());
+                mergedToCell.setCellType(CellType.BLANK);
             }
-            
         }
         
     }
