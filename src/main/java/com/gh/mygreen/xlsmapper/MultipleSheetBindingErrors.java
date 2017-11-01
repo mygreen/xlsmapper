@@ -16,7 +16,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * @author T.TSUCHIE
  *
  */
-public class SheetBindingErrorsStore<P> {
+public class MultipleSheetBindingErrors<P> {
     
     private final List<SheetBindingErrors<P>> list = new ArrayList<>();
     

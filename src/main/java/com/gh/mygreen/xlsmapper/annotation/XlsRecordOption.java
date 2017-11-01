@@ -16,11 +16,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface XlsRecordOperator {
+public @interface XlsRecordOption {
     
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
-     * <p>値は、列挙型{@link OverOperationn}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
+     * <p>値は、列挙型{@link OverOperate}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
      *    <br>デフォルトでは何もしません。
      * </p>
      * <p>ただし、{@link XlsVerticalRecords}の場合、{@link OverOperate#Insert}は対応していません。</p>
@@ -30,7 +30,7 @@ public @interface XlsRecordOperator {
      * public class SampleSheet {
      *     
      *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
-     *     {@literal @XlsRecordOperator(overCase=OverOperate.Insert)}
+     *     {@literal @XlsRecordOption(overCase=OverOperate.Insert)}
      *     private {@literal List<UserRecord>} records;
      *     
      * }
@@ -58,7 +58,7 @@ public @interface XlsRecordOperator {
      * public class SampleSheet {
      *     
      *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
-     *     {@literal @XlsRecordOperator(remainedCase=RemainedRecordOperate.Clear)}
+     *     {@literal @XlsRecordOption(remainedCase=RemainedRecordOperate.Clear)}
      *     private {@literal List<UserRecord>} records;
      *     
      * }

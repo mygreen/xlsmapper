@@ -25,18 +25,18 @@ import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
-import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.RemainedOperate;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
@@ -65,6 +65,21 @@ public class AnnoIterateTablesTest {
     }
     
     /**
+     * 読み込み用のファイルの定義
+     */
+    private File inputFile = new File("src/test/data/anno_IterateTables.xlsx");
+    
+    /**
+     * 出力用のテンプレートファイルの定義
+     */
+    private File templateFile = new File("src/test/data/anno_IterateTables_template.xlsx");
+    
+    /**
+     * 出力用のファイル名の定義
+     */
+    private String outFilename = "anno_IterateTables_out.xlsx";
+    
+    /**
      * 通常の表のテスト
      */
     @Test
@@ -73,7 +88,7 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
             NormalSheet sheet = errors.getTarget();
@@ -97,7 +112,7 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalArraySheet> errors = mapper.loadDetail(in, NormalArraySheet.class);
             
             NormalArraySheet sheet = errors.getTarget();
@@ -120,7 +135,7 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<VerticalSheet> errors = mapper.loadDetail(in, VerticalSheet.class);
             
             VerticalSheet sheet = errors.getTarget();
@@ -144,7 +159,7 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             try {
                 mapper.load(in, HorizontalAndVerticalSheet.class);
                 
@@ -165,7 +180,7 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             mapper.load(in, NotFoundCellSheet.class);
             
@@ -183,7 +198,7 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<OptionalCellSheet> errors = mapper.loadDetail(in, OptionalCellSheet.class);
             
             OptionalCellSheet sheet = errors.getTarget();
@@ -206,7 +221,7 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ConcatTableSheet> errors = mapper.loadDetail(in, ConcatTableSheet.class);
             
             ConcatTableSheet sheet = errors.getTarget();
@@ -230,7 +245,7 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
             MethodAnnoSheet sheet = errors.getTarget();
@@ -257,7 +272,7 @@ public class AnnoIterateTablesTest {
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
             RegexSheet sheet = errors.getTarget();
@@ -284,7 +299,7 @@ public class AnnoIterateTablesTest {
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_IterateTables.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ArrayCellSheet> errors = mapper.loadDetail(in, ArrayCellSheet.class);
             
             ArrayCellSheet sheet = errors.getTarget();
@@ -728,8 +743,8 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -779,8 +794,8 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -830,8 +845,8 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -882,8 +897,8 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -919,8 +934,8 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -978,8 +993,8 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1029,8 +1044,8 @@ public class AnnoIterateTablesTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1083,8 +1098,8 @@ public class AnnoIterateTablesTest {
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1136,8 +1151,8 @@ public class AnnoIterateTablesTest {
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        File outFile = new File(OUT_DIR, "anno_IterateTables_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_IterateTables_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1527,12 +1542,12 @@ public class AnnoIterateTablesTest {
             
             @XlsOrder(value=3)
             @XlsHorizontalRecords(terminal=RecordTerminal.Border, headerLimit=3)
-            @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+            @XlsRecordOption(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
             private List<PersonRecord> persons;
             
             @XlsOrder(value=4)
             @XlsVerticalRecords(terminal=RecordTerminal.Border, right=4)
-            @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+            @XlsRecordOption(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
             private List<AttendRecord> attends;
         }
         
@@ -1593,7 +1608,7 @@ public class AnnoIterateTablesTest {
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<PersonRecord> persons;
         
         public HorizontalClassTable no(int no) {
@@ -1639,7 +1654,7 @@ public class AnnoIterateTablesTest {
         
         @XlsOrder(value=3)
         @XlsVerticalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+        @XlsRecordOption(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
         private List<PersonRecord> persons;
         
         public VerticalClassTable no(int no) {
@@ -1681,7 +1696,7 @@ public class AnnoIterateTablesTest {
         @XlsColumn(columnName="氏名")
         private String name;
         
-        @XlsDateConverter(javaPattern="yyyy年M月d日", excelPattern="yyyy/m/d")
+        @XlsDateTimeConverter(javaPattern="yyyy年M月d日", excelPattern="yyyy/m/d")
         @XlsColumn(columnName="誕生日")
         private Date birthday;
         
@@ -1753,7 +1768,7 @@ public class AnnoIterateTablesTest {
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<PersonRecord> persons;
         
         public OptionalClassTable no(int no) {
@@ -1821,12 +1836,12 @@ public class AnnoIterateTablesTest {
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3)
-        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<PersonRecord> persons;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4)
-        @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+        @XlsRecordOption(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
         private List<ResultRecord> results;
         
         public ConcatClassTable no(int no) {
@@ -1989,7 +2004,7 @@ public class AnnoIterateTablesTest {
         }
         
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         public List<PersonRecord> getPersons() {
             return persons;
         }
@@ -2096,7 +2111,7 @@ public class AnnoIterateTablesTest {
             
             @XlsOrder(value=3)
             @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border)
-            @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+            @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
             private List<RegexRecord> persons;
             
             // 値設定用のメソッド
@@ -2140,7 +2155,7 @@ public class AnnoIterateTablesTest {
             @XlsColumn(columnName="/氏名.*/")
             private String name;
             
-            @XlsDateConverter(javaPattern="yyyy年M月d日")
+            @XlsDateTimeConverter(javaPattern="yyyy年M月d日")
             @XlsColumn(columnName="誕生日")
             private Date birthday;
             
@@ -2200,12 +2215,12 @@ public class AnnoIterateTablesTest {
             private int no;
             
             @XlsOrder(value=2)
-            @XlsLabelledArrayCell(label="/クラス名.*/", type=LabelledCellType.Right, size=2)
+            @XlsLabelledArrayCells(label="/クラス名.*/", type=LabelledCellType.Right, size=2)
             private String[] name;
             
             @XlsOrder(value=3)
             @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border)
-            @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+            @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
             private List<ArrayCellRecord> persons;
             
             // 値設定用のメソッド

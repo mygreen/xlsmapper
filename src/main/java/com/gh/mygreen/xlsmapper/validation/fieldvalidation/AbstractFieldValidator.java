@@ -67,10 +67,10 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
     }
     
     /**
-     * 設定されているバリデーションのヒントを取得する。
+     * 設定されているバリデーションのグループを取得する。
      * @return
      */
-    public Set<Class<?>> getHints() {
+    public Set<Class<?>> getSettingGroups() {
         return settingGroups;
     }
     
@@ -81,24 +81,33 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
      */
     protected boolean containsValidationGroups(final List<Class<?>> validationGroups) {
         
-        if(settingGroups.isEmpty() && validationGroups.isEmpty()) {
-            // バリデーション時のグループの指定が無い場合は、全てに該当する。
+        // バリデーション時のグループの指定が無い場合
+        if(getSettingGroups().isEmpty() && validationGroups.isEmpty()) {
             return true;
             
         }
         
+        // デフォルトグループ指定されている場合、該当する。
+        if(validationGroups.isEmpty()) {
+            for(Class<?> settingGroup : getSettingGroups()) {
+                if(DefaultGroup.class.isAssignableFrom(settingGroup)) {
+                    return true;
+                }
+            }
+        }
+        
         for(Class<?> group : validationGroups) {
             
-            if(settingGroups.isEmpty() && DefaultGroup.class.isAssignableFrom(group)) {
+            if(getSettingGroups().isEmpty() && DefaultGroup.class.isAssignableFrom(group)) {
                 return true;
             }
             
-            if(settingGroups.contains(group)) {
+            if(getSettingGroups().contains(group)) {
                 return true;
             }
             
             // 親子関係のチェック
-            for(Class<?> parent : settingGroups) {
+            for(Class<?> parent : getSettingGroups()) {
                 if(parent.isAssignableFrom(group)) {
                     return true;
                 }
@@ -139,7 +148,7 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
     /**
      * エラー情報を追加します。
      * <p>エラーメッセージのキーは、{@link #getMessageKey()}の値を使用するため、必ず空以外の値を返す必要があります。</p>
-     * <p>エラーメッセージ中の変数は、{@link #getMessageVariables(CellField)()}の値を使用します。</p>
+     * <p>エラーメッセージ中の変数は、{@link #getMessageVariables(CellField)}の値を使用します。</p>
      * @param cellField フィールド情報
      */
     public void error(final CellField<T> cellField) {
@@ -159,7 +168,7 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
     
     /**
      * メッセージキーを指定して、エラー情報を追加します。
-     * <p>エラーメッセージ中の変数は、{@link #getMessageVariables(CellField)()}の値を使用します。</p>
+     * <p>エラーメッセージ中の変数は、{@link #getMessageVariables(CellField)}の値を使用します。</p>
      * @param cellField フィールド情報
      * @param messageKey メッセージキー
      * @throws IllegalArgumentException {@literal cellField == null or messageKey == null}

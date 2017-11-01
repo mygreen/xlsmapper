@@ -95,7 +95,7 @@ public abstract class AbstractTemporalCellConverter<T extends TemporalAccessor &
     
     /**
      * Excelの書式を設定する
-     * @param excelPattern
+     * @param excelPattern Excelの書式
      */
     public void setExcelPattern(String excelPattern) {
         this.excelPattern = excelPattern;

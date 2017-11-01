@@ -37,7 +37,7 @@ public class BigIntegerCellConverterFactory extends AbstractNumberCellConverterF
         
         private final BigIntegerCellConverterFactory convererFactory;
         
-        public BigIntegerCellConverter(final FieldAccessor field, final Configuration config,
+        private BigIntegerCellConverter(final FieldAccessor field, final Configuration config,
                 final BigIntegerCellConverterFactory convererFactory) {
             
             super(field, config);

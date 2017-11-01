@@ -37,7 +37,7 @@ public class IntegerCellConverterFactory extends AbstractNumberCellConverterFact
         
         private final IntegerCellConverterFactory convererFactory;
         
-        public IntegerCellConverter(final FieldAccessor field, final Configuration config,
+        private IntegerCellConverter(final FieldAccessor field, final Configuration config,
                 final IntegerCellConverterFactory convererFactory) {
             super(field, config);
             this.convererFactory = convererFactory;

@@ -12,10 +12,10 @@ import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.expression.ExpressionEvaluationException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 
 /**
  * {@link CellConverter}を作成するための抽象クラス。

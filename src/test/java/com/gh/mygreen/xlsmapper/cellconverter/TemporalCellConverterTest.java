@@ -24,16 +24,16 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -128,7 +128,7 @@ public class TemporalCellConverterTest {
                 assertThat(fieldError.isConversionFailure()).isTrue();
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message).isEqualTo("[JSR310]:LocalDateTimeクラス - B10の値'a01'は、'uuuu-MM-dd HH:mm:ss'の日時形式で設定してください。");
+                assertThat(message).isEqualTo("[JSR310]:LocalDateTimeクラス - セル(B10)の値'a01'は、'uuuu-MM-dd HH:mm:ss'の日時形式で設定してください。");
                 
             }
             
@@ -137,7 +137,7 @@ public class TemporalCellConverterTest {
                 assertThat(fieldError.isConversionFailure()).isTrue();
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message).isEqualTo("[JSR310]:LocalDateクラス - C10の値'b02'は、'uuuu-MM-dd'の日付形式で設定してください。");
+                assertThat(message).isEqualTo("[JSR310]:LocalDateクラス - セル(C10)の値'b02'は、'uuuu-MM-dd'の日付形式で設定してください。");
             }
             
             {
@@ -145,7 +145,7 @@ public class TemporalCellConverterTest {
                 assertThat(fieldError.isConversionFailure()).isTrue();
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message).isEqualTo("[JSR310]:LocalTimeクラス - D10の値'c03'は、'HH:mm:ss'の時刻形式で設定してください。");
+                assertThat(message).isEqualTo("[JSR310]:LocalTimeクラス - セル(D10)の値'c03'は、'HH:mm:ss'の時刻形式で設定してください。");
             }
             
         } else if(record.no == 5) {
@@ -193,7 +193,7 @@ public class TemporalCellConverterTest {
                 assertThat(fieldError.isConversionFailure()).isTrue();
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message).isEqualTo("[JSR310]:LocalDateTimeクラス - B22の値'2015-13-02 03:45:06'は、'uuuu-MM-dd HH:mm:ss'の日時形式で設定してください。");
+                assertThat(message).isEqualTo("[JSR310]:LocalDateTimeクラス - セル(B22)の値'2015-13-02 03:45:06'は、'uuuu-MM-dd HH:mm:ss'の日時形式で設定してください。");
                 
             }
             
@@ -202,7 +202,7 @@ public class TemporalCellConverterTest {
                 assertThat(fieldError.isConversionFailure()).isTrue();
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message).isEqualTo("[JSR310]:LocalDateクラス - C22の値'2015-12-40'は、'uuuu-MM-dd'の日付形式で設定してください。");
+                assertThat(message).isEqualTo("[JSR310]:LocalDateクラス - セル(C22)の値'2015-12-40'は、'uuuu-MM-dd'の日付形式で設定してください。");
             }
             
             {
@@ -210,7 +210,7 @@ public class TemporalCellConverterTest {
                 assertThat(fieldError.isConversionFailure()).isTrue();
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message).isEqualTo("[JSR310]:LocalTimeクラス - D22の値'12時80分'は、'H時m分'の時刻形式で設定してください。");
+                assertThat(message).isEqualTo("[JSR310]:LocalTimeクラス - セル(D22)の値'12時80分'は、'H時m分'の時刻形式で設定してください。");
             }
             
         } else {
@@ -407,17 +407,17 @@ public class TemporalCellConverterTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="日時型（数式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormulaRecord> formulaRecords;
         
         /**
@@ -544,7 +544,7 @@ public class TemporalCellConverterTest {
         
         /** 書式付き */
         @XlsDefaultValue("0時0分")
-        @XlsDateConverter(javaPattern="H時m分", excelPattern="h\"時\"mm\"分\"")
+        @XlsDateTimeConverter(javaPattern="H時m分", excelPattern="h\"時\"mm\"分\"")
         @XlsColumn(columnName="LocalTimeクラス")
         private LocalTime localTime;
         

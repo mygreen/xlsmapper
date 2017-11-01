@@ -21,32 +21,32 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.ArrayDirection;
-import com.gh.mygreen.xlsmapper.annotation.XlsArrayCell;
-import com.gh.mygreen.xlsmapper.annotation.XlsArrayOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayCells;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.annotation.XlsArrayOperator.OverOperate;
-import com.gh.mygreen.xlsmapper.annotation.XlsArrayOperator.RemainedOperate;
-import com.gh.mygreen.xlsmapper.fieldprocessor.impl.ArrayCellProcessor;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayOption.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayOption.RemainedOperate;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.ArrayCellsProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
- * {@link ArrayCellProcessor}のテスタ。
- * アノテーション{@link XlsArrayCell}のテスタ。
+ * {@link ArrayCellsProcessor}のテスタ。
+ * アノテーション{@link XlsArrayCells}のテスタ。
  *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
-public class AnnoArrayCellTest {
+public class AnnoArrayCellsTest {
     
     /**
      * テスト結果ファイルの出力ディレクトリ
@@ -59,6 +59,21 @@ public class AnnoArrayCellTest {
     }
     
     /**
+     * 読み込み用のファイルの定義
+     */
+    private File inputFile = new File("src/test/data/anno_ArrayCells.xlsx");
+    
+    /**
+     * 出力用のテンプレートファイルの定義
+     */
+    private File templateFile = new File("src/test/data/anno_ArrayCells_template.xlsx");
+    
+    /**
+     * 出力用のファイル名の定義
+     */
+    private String outFilename = "anno_ArrayCell_out.xlsx.xlsx";
+    
+    /**
      * 読み込みのテスト - 通常のデータ
      * <p>クラスタイプ、座標の指定方法の確認</p>
      */
@@ -67,7 +82,7 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_ArrayCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
             NormalSheet sheet = errors.getTarget();
@@ -113,7 +128,7 @@ public class AnnoArrayCellTest {
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
-                                .annotation(createAnnotation(XlsArrayCell.class)
+                                .annotation(createAnnotation(XlsArrayCells.class)
                                         .attribute("address", "B4")
                                         .attribute("size", 3)
                                         .buildAnnotation())
@@ -122,11 +137,11 @@ public class AnnoArrayCellTest {
                 .buildXml();
         mapper.getConiguration().setAnnotationMapping(xmlInfo);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_ArrayCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             assertThatThrownBy(() -> mapper.load(in, InvalidAnnoSheet.class))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$InvalidAnnoSheet#field2' において、アノテーション @XlsArrayCell を付与したタイプ 'java.lang.String' はサポートしていません。'Collection(List/Set) or Array' で設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellsTest$InvalidAnnoSheet#field2'において、アノテーション'@XlsArrayCells'を付与したタイプ'java.lang.String'はサポートしていません。'Collection(List/Set) or Array'で設定してください。");
         }
         
     }
@@ -145,7 +160,7 @@ public class AnnoArrayCellTest {
             XmlInfo xmlInfo = createXml()
                     .classInfo(createClass(InvalidAnnoSheet.class)
                             .field(createField("field1")
-                                    .annotation(createAnnotation(XlsArrayCell.class)
+                                    .annotation(createAnnotation(XlsArrayCells.class)
                                             .attribute("address", "あいう")
                                             .buildAnnotation())
                                     .buildField())
@@ -153,11 +168,11 @@ public class AnnoArrayCellTest {
                     .buildXml();
             mapper.getConiguration().setAnnotationMapping(xmlInfo);
             
-            try(InputStream in = new FileInputStream("src/test/data/anno_ArrayCell.xlsx")) {
+            try(InputStream in = new FileInputStream(inputFile)) {
                 
                 assertThatThrownBy(() -> mapper.load(in, InvalidAnnoSheet.class))
                     .isInstanceOf(AnnotationInvalidException.class)
-                    .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$InvalidAnnoSheet#field1' において、アノテーション @XlsArrayCell の属性 'address' の値（あいう）は、セルのアドレスの書式として不正です。");
+                    .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellsTest$InvalidAnnoSheet#field1'において、アノテーション'@XlsArrayCells'の属性'address'の値'あいう'は、セルのアドレスの書式として不正です。");
             }
         
         }
@@ -167,7 +182,7 @@ public class AnnoArrayCellTest {
             XmlInfo xmlInfo = createXml()
                     .classInfo(createClass(InvalidAnnoSheet.class)
                             .field(createField("field1")
-                                    .annotation(createAnnotation(XlsArrayCell.class)
+                                    .annotation(createAnnotation(XlsArrayCells.class)
                                             .attribute("address", "")
                                             .attribute("row", -1)
                                             .attribute("column", 3)
@@ -177,11 +192,11 @@ public class AnnoArrayCellTest {
                     .buildXml();
             mapper.getConiguration().setAnnotationMapping(xmlInfo);
             
-            try(InputStream in = new FileInputStream("src/test/data/anno_ArrayCell.xlsx")) {
+            try(InputStream in = new FileInputStream(inputFile)) {
                 
                 assertThatThrownBy(() -> mapper.load(in, InvalidAnnoSheet.class))
                     .isInstanceOf(AnnotationInvalidException.class)
-                    .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$InvalidAnnoSheet#field1' において、アノテーション @XlsArrayCell の属性 'row' の値（-1）は、0以上の値を設定してください。");
+                    .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellsTest$InvalidAnnoSheet#field1'において、アノテーション'@XlsArrayCells'の属性'row'の値'-1'は、0以上の値を設定してください。");
             }
         
         }
@@ -191,7 +206,7 @@ public class AnnoArrayCellTest {
             XmlInfo xmlInfo = createXml()
                     .classInfo(createClass(InvalidAnnoSheet.class)
                             .field(createField("field1")
-                                    .annotation(createAnnotation(XlsArrayCell.class)
+                                    .annotation(createAnnotation(XlsArrayCells.class)
                                             .attribute("address", "")
                                             .attribute("row", 2)
                                             .attribute("column", -1)
@@ -201,11 +216,11 @@ public class AnnoArrayCellTest {
                     .buildXml();
             mapper.getConiguration().setAnnotationMapping(xmlInfo);
             
-            try(InputStream in = new FileInputStream("src/test/data/anno_ArrayCell.xlsx")) {
+            try(InputStream in = new FileInputStream(inputFile)) {
                 
                 assertThatThrownBy(() -> mapper.load(in, InvalidAnnoSheet.class))
                     .isInstanceOf(AnnotationInvalidException.class)
-                    .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$InvalidAnnoSheet#field1' において、アノテーション @XlsArrayCell の属性 'column' の値（-1）は、0以上の値を設定してください。");
+                    .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellsTest$InvalidAnnoSheet#field1'において、アノテーション'@XlsArrayCells'の属性'column'の値'-1'は、0以上の値を設定してください。");
             }
         
         }
@@ -225,7 +240,7 @@ public class AnnoArrayCellTest {
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
-                                .annotation(createAnnotation(XlsArrayCell.class)
+                                .annotation(createAnnotation(XlsArrayCells.class)
                                         .attribute("address", "B4")
                                         .attribute("size", 0)
                                         .buildAnnotation())
@@ -234,11 +249,11 @@ public class AnnoArrayCellTest {
                 .buildXml();
         mapper.getConiguration().setAnnotationMapping(xmlInfo);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_ArrayCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             assertThatThrownBy(() -> mapper.load(in, InvalidAnnoSheet.class))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$InvalidAnnoSheet#field1' において、アノテーション @XlsArrayCell の属性 'size' の値（0）は、1以上の値を設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellsTest$InvalidAnnoSheet#field1'において、アノテーション'@XlsArrayCells'の属性'size'の値'0'は、1以上の値を設定してください。");
         }
         
     }
@@ -252,10 +267,10 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_ArrayCell.xlsx")) {
-            SheetBindingErrors<ItemMergedSheet> errors = mapper.loadDetail(in, ItemMergedSheet.class);
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<ElementMergedSheet> errors = mapper.loadDetail(in, ElementMergedSheet.class);
             
-            ItemMergedSheet sheet = errors.getTarget();
+            ElementMergedSheet sheet = errors.getTarget();
             
             assertThat(sheet.labels).isNull();
             
@@ -319,7 +334,7 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_ArrayCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ConverterSheet> errors = mapper.loadDetail(in, ConverterSheet.class);
             
             ConverterSheet sheet = errors.getTarget();
@@ -378,7 +393,7 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_ArrayCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
             
             FormulaSheet sheet = errors.getTarget();
@@ -410,8 +425,8 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -451,7 +466,7 @@ public class AnnoArrayCellTest {
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
-                                .annotation(createAnnotation(XlsArrayCell.class)
+                                .annotation(createAnnotation(XlsArrayCells.class)
                                         .attribute("address", "B4")
                                         .attribute("size", 3)
                                         .buildAnnotation())
@@ -460,13 +475,13 @@ public class AnnoArrayCellTest {
                 .buildXml();
         mapper.getConiguration().setAnnotationMapping(xmlInfo);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             assertThatThrownBy(() -> mapper.save(template, out, outSheet))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$InvalidAnnoSheet#field2' において、アノテーション @XlsArrayCell を付与したタイプ 'java.lang.String' はサポートしていません。'Collection(List/Set) or Array' で設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellsTest$InvalidAnnoSheet#field2'において、アノテーション'@XlsArrayCells'を付与したタイプ'java.lang.String'はサポートしていません。'Collection(List/Set) or Array'で設定してください。");
             
         }
         
@@ -489,7 +504,7 @@ public class AnnoArrayCellTest {
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
-                                .annotation(createAnnotation(XlsArrayCell.class)
+                                .annotation(createAnnotation(XlsArrayCells.class)
                                         .attribute("address", "B4")
                                         .attribute("size", 0)
                                         .buildAnnotation())
@@ -498,13 +513,13 @@ public class AnnoArrayCellTest {
                 .buildXml();
         mapper.getConiguration().setAnnotationMapping(xmlInfo);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             assertThatThrownBy(() -> mapper.save(template, out, outSheet))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$InvalidAnnoSheet#field1' において、アノテーション @XlsArrayCell の属性 'size' の値（0）は、1以上の値を設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellsTest$InvalidAnnoSheet#field1'において、アノテーション'@XlsArrayCells'の属性'size'の値'0'は、1以上の値を設定してください。");
             
         }
         
@@ -517,7 +532,7 @@ public class AnnoArrayCellTest {
     public void test_save_array_cell_itemMerged() throws Exception {
         
         // テストデータの作成
-        ItemMergedSheet outSheet = new ItemMergedSheet();
+        ElementMergedSheet outSheet = new ElementMergedSheet();
         
         outSheet.hMergedFalse = Arrays.asList("今日は", "、", "いい天気ですね。", "明日も", "晴れると良いですね。");
         outSheet.hMergedTrue = Arrays.asList("今日は", "、", "いい天気ですね。");
@@ -529,8 +544,8 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -538,9 +553,9 @@ public class AnnoArrayCellTest {
         
         // 書き込んだファイルを読み込み値の検証を行う。
         try(InputStream in = new FileInputStream(outFile)) {
-            SheetBindingErrors<ItemMergedSheet> errors = mapper.loadDetail(in, ItemMergedSheet.class);
+            SheetBindingErrors<ElementMergedSheet> errors = mapper.loadDetail(in, ElementMergedSheet.class);
             
-            ItemMergedSheet sheet = errors.getTarget();
+            ElementMergedSheet sheet = errors.getTarget();
             
             assertThat(sheet.positions).containsAllEntriesOf(outSheet.positions);
             assertThat(sheet.labels).isNull();
@@ -573,8 +588,8 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -613,13 +628,13 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             assertThatThrownBy(() -> mapper.save(template, out, outSheet))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$HorizontalArrayOperatorSheet#overError' において、 @XlsArrayCell の属性 'size' の値（3）は、書き込むデータサイズ（4）超えています。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellsTest$HorizontalArrayOperatorSheet#overError'において、アノテーション'@XlsArrayCells'の属性'size'の値'3'は、書き込むデータサイズ'4'を超えています。");
             
         }
     }
@@ -642,8 +657,8 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -682,13 +697,13 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             assertThatThrownBy(() -> mapper.save(template, out, outSheet))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellTest$VerticalArrayOperatorSheet#overError' において、 @XlsArrayCell の属性 'size' の値（3）は、書き込むデータサイズ（4）超えています。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoArrayCellsTest$VerticalArrayOperatorSheet#overError'において、アノテーション'@XlsArrayCells'の属性'size'の値'3'は、書き込むデータサイズ'4'を超えています。");
             
         }
     }
@@ -711,8 +726,8 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -756,8 +771,8 @@ public class AnnoArrayCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_ArrayCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_ArrayCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -790,11 +805,11 @@ public class AnnoArrayCellTest {
         
         private Map<String, String> labels;
         
-        @XlsArrayCell(address="B4", size=5)
+        @XlsArrayCells(address="B4", size=5)
         private List<String> horizontal1;
         
-        @XlsArrayCell(column=1, row=5, size=3, direction=ArrayDirection.Vertical)
-        @XlsDateConverter(excelPattern="yyyy\"年\"m\"月\"d\"日\"")
+        @XlsArrayCells(column=1, row=5, size=3, direction=ArrayDirection.Vertical)
+        @XlsDateTimeConverter(excelPattern="yyyy\"年\"m\"月\"d\"日\"")
         private LocalDate[] vertical1;
         
         
@@ -807,7 +822,7 @@ public class AnnoArrayCellTest {
     @XlsSheet(name="通常")
     private static class InvalidAnnoSheet {
         
-        @XlsArrayCell(address="B4", size=5)
+        @XlsArrayCells(address="B4", size=5)
         private List<String> field1;
         
         private String field2;
@@ -815,22 +830,22 @@ public class AnnoArrayCellTest {
     }
     
     @XlsSheet(name="結合の考慮")
-    private static class ItemMergedSheet {
+    private static class ElementMergedSheet {
         
         private Map<String, CellPosition> positions;
         
         private Map<String, String> labels;
         
-        @XlsArrayCell(address="B4", direction=ArrayDirection.Horizon, size=5, itemMerged=false)
+        @XlsArrayCells(address="B4", direction=ArrayDirection.Horizon, size=5, elementMerged=false)
         private List<String> hMergedFalse;
         
-        @XlsArrayCell(address="B5", direction=ArrayDirection.Horizon, size=3, itemMerged=true)
+        @XlsArrayCells(address="B5", direction=ArrayDirection.Horizon, size=3, elementMerged=true)
         private List<String> hMergedTrue;
         
-        @XlsArrayCell(address="C7", direction=ArrayDirection.Vertical, size=5, itemMerged=false)
+        @XlsArrayCells(address="C7", direction=ArrayDirection.Vertical, size=5, elementMerged=false)
         private List<String> vMergedFalse;
         
-        @XlsArrayCell(address="D7", direction=ArrayDirection.Vertical, size=3, itemMerged=true)
+        @XlsArrayCells(address="D7", direction=ArrayDirection.Vertical, size=3, elementMerged=true)
         private List<String> vMergedTrue;
     }
     
@@ -841,20 +856,20 @@ public class AnnoArrayCellTest {
         
         private Map<String, String> labels;
         
-        @XlsArrayCell(address="A5", size=3, direction=ArrayDirection.Horizon)
-        @XlsArrayOperator(overCase=OverOperate.Break)
+        @XlsArrayCells(address="A5", size=3, direction=ArrayDirection.Horizon)
+        @XlsArrayOption(overCase=OverOperate.Break)
         private List<String> overBreak;
         
-        @XlsArrayCell(address="A8", size=3, direction=ArrayDirection.Horizon)
-        @XlsArrayOperator(overCase=OverOperate.Error)
+        @XlsArrayCells(address="A8", size=3, direction=ArrayDirection.Horizon)
+        @XlsArrayOption(overCase=OverOperate.Error)
         private List<String> overError;
         
-        @XlsArrayCell(address="A12", size=5, direction=ArrayDirection.Horizon)
-        @XlsArrayOperator(remainedCase=RemainedOperate.None)
+        @XlsArrayCells(address="A12", size=5, direction=ArrayDirection.Horizon)
+        @XlsArrayOption(remainedCase=RemainedOperate.None)
         private List<String> remainedNone;
         
-        @XlsArrayCell(address="A15", size=5, direction=ArrayDirection.Horizon)
-        @XlsArrayOperator(remainedCase=RemainedOperate.Clear)
+        @XlsArrayCells(address="A15", size=5, direction=ArrayDirection.Horizon)
+        @XlsArrayOption(remainedCase=RemainedOperate.Clear)
         private List<String> remainedClear;
         
     }
@@ -866,20 +881,20 @@ public class AnnoArrayCellTest {
         
         private Map<String, String> labels;
         
-        @XlsArrayCell(address="A5", size=3, direction=ArrayDirection.Vertical)
-        @XlsArrayOperator(overCase=OverOperate.Break)
+        @XlsArrayCells(address="A5", size=3, direction=ArrayDirection.Vertical)
+        @XlsArrayOption(overCase=OverOperate.Break)
         private List<String> overBreak;
         
-        @XlsArrayCell(address="D5", size=3, direction=ArrayDirection.Vertical)
-        @XlsArrayOperator(overCase=OverOperate.Error)
+        @XlsArrayCells(address="D5", size=3, direction=ArrayDirection.Vertical)
+        @XlsArrayOption(overCase=OverOperate.Error)
         private List<String> overError;
         
-        @XlsArrayCell(address="A11", size=5, direction=ArrayDirection.Vertical)
-        @XlsArrayOperator(remainedCase=RemainedOperate.None)
+        @XlsArrayCells(address="A11", size=5, direction=ArrayDirection.Vertical)
+        @XlsArrayOption(remainedCase=RemainedOperate.None)
         private List<String> remainedNone;
         
-        @XlsArrayCell(address="D11", size=5, direction=ArrayDirection.Vertical)
-        @XlsArrayOperator(remainedCase=RemainedOperate.Clear)
+        @XlsArrayCells(address="D11", size=5, direction=ArrayDirection.Vertical)
+        @XlsArrayOption(remainedCase=RemainedOperate.Clear)
         private List<String> remainedClear;
         
     }
@@ -891,20 +906,20 @@ public class AnnoArrayCellTest {
         
         private Map<String, String> labels;
         
-        @XlsArrayCell(address="A5", size=4)
+        @XlsArrayCells(address="A5", size=4)
         @XlsTrim
         private List<String> text;
         
-        @XlsArrayCell(address="A8", size=4)
+        @XlsArrayCells(address="A8", size=4)
         @XlsBooleanConverter(loadForTrue="○", loadForFalse="×", saveAsTrue="○", saveAsFalse="×" )
         private List<Boolean> bool;
         
-        @XlsArrayCell(address="A11", size=4)
+        @XlsArrayCells(address="A11", size=4)
         @XlsNumberConverter(javaPattern="###,##0", excelPattern="###,##0")
         @XlsDefaultValue("100")
         private List<Integer> number_int;
         
-        @XlsArrayCell(address="F5", size=4, direction=ArrayDirection.Vertical)
+        @XlsArrayCells(address="F5", size=4, direction=ArrayDirection.Vertical)
         private double[] number_double;
         
     }
@@ -916,12 +931,12 @@ public class AnnoArrayCellTest {
         
         private Map<String, String> labels;
         
-        @XlsArrayCell(address="B5", size=3, direction=ArrayDirection.Vertical)
+        @XlsArrayCells(address="B5", size=3, direction=ArrayDirection.Vertical)
         @XlsFormula(value="ROW()-4", primary=true)
         private int[] continueNumber;
         
-        @XlsArrayCell(address="D5", size=3)
-        @XlsDateConverter(excelPattern="yyyy/m/d;@", javaPattern="yyyy/M/d")
+        @XlsArrayCells(address="D5", size=3)
+        @XlsDateTimeConverter(excelPattern="yyyy/m/d;@", javaPattern="yyyy/M/d")
         @XlsFormula("\\$I\\$5+{columnNumber}")
         private List<LocalDate> dateList;
     }

@@ -23,25 +23,25 @@ import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.ArrayDirection;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
-import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledArrayCellProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledArrayCellsProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 
 /**
- * {@link LabelledArrayCellProcessor}のテスタ。
- * アノテーション{@link XlsLabelledArrayCell}のテスタ。
+ * {@link LabelledArrayCellsProcessor}のテスタ。
+ * アノテーション{@link XlsLabelledArrayCells}のテスタ。
  *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
-public class AnnoLabelledArrayCellTest {
+public class AnnoLabelledArrayCellsTest {
     
     
     /**
@@ -57,17 +57,17 @@ public class AnnoLabelledArrayCellTest {
     /**
      * 読み込み用のファイルの定義
      */
-    private File inputFile = new File("src/test/data/anno_LabelledArrayCell.xlsx");
+    private File inputFile = new File("src/test/data/anno_LabelledArrayCells.xlsx");
     
     /**
      * 出力用のテンプレートファイルの定義
      */
-    private File templateFile = new File("src/test/data/anno_LabelledArrayCell_template.xlsx");
+    private File templateFile = new File("src/test/data/anno_LabelledArrayCells_template.xlsx");
     
     /**
      * 出力用のファイル名の定義
      */
-    private String outFilename = "anno_LabelledArrayCell_out.xlsx";
+    private String outFilename = "anno_LabelledArrayCells_out.xlsx";
     
     /**
      * 読み込みテスト - 通常のテスト
@@ -252,7 +252,7 @@ public class AnnoLabelledArrayCellTest {
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
-                                .annotation(createAnnotation(XlsLabelledArrayCell.class)
+                                .annotation(createAnnotation(XlsLabelledArrayCells.class)
                                         .attribute("label", "右側＋水平")
                                         .attribute("type", LabelledCellType.Right)
                                         .attribute("size", 3)
@@ -266,7 +266,7 @@ public class AnnoLabelledArrayCellTest {
             
             assertThatThrownBy(() -> mapper.load(in, InvalidAnnoSheet.class))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoLabelledArrayCellTest$InvalidAnnoSheet#field2' において、アノテーション @XlsLabelledArrayCell を付与したタイプ 'java.lang.String' はサポートしていません。'Collection(List/Set) or Array' で設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoLabelledArrayCellsTest$InvalidAnnoSheet#field2'において、アノテーション'@XlsLabelledArrayCells'を付与したタイプ'java.lang.String'はサポートしていません。'Collection(List/Set) or Array'で設定してください。");
         }
         
     }
@@ -284,7 +284,7 @@ public class AnnoLabelledArrayCellTest {
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
-                                .annotation(createAnnotation(XlsLabelledArrayCell.class)
+                                .annotation(createAnnotation(XlsLabelledArrayCells.class)
                                         .attribute("label", "あいう")
                                         .attribute("type", LabelledCellType.Right)
                                         .attribute("size", 3)
@@ -319,7 +319,7 @@ public class AnnoLabelledArrayCellTest {
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
-                                .annotation(createAnnotation(XlsLabelledArrayCell.class)
+                                .annotation(createAnnotation(XlsLabelledArrayCells.class)
                                         .attribute("label", "右側＋水平")
                                         .attribute("type", LabelledCellType.Left)
                                         .attribute("direction", ArrayDirection.Horizon)
@@ -334,7 +334,7 @@ public class AnnoLabelledArrayCellTest {
             
             assertThatThrownBy(() -> mapper.load(in, InvalidAnnoSheet.class))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoLabelledArrayCellTest$InvalidAnnoSheet#field1' において、 @XlsLabelledArrayCell の属性 'type' の値が 'com.gh.mygreen.xlsmapper.annotation.LabelledCellType#Left' の時は、属性 'direction' は、'com.gh.mygreen.xlsmapper.annotation.ArrayDirection#Horizon' の値以外を設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoLabelledArrayCellsTest$InvalidAnnoSheet#field1'において、アノテーション'@XlsLabelledArrayCells'の属性'type'の値が'LabelledCellType#Left'の時は、属性'direction'は、'ArrayDirection#Horizon'の値以外を設定してください。");
         }
         
     }
@@ -435,7 +435,7 @@ public class AnnoLabelledArrayCellTest {
             try(InputStream in = new FileInputStream(inputFile)) {
                 assertThatThrownBy(() -> mapper.loadDetail(in, RegexSheet.class))
                     .isInstanceOf(CellNotFoundException.class)
-                    .hasMessage("シート '正規表現で一致' において、ラベル '/ヘッダー.*/' を持つセルが見つかりません。");
+                    .hasMessage("シート'正規表現で一致'において、ラベル'/ヘッダー.*/'を持つセルが見つかりません。");
                 
                 
             }
@@ -454,7 +454,7 @@ public class AnnoLabelledArrayCellTest {
             try(InputStream in = new FileInputStream(inputFile)) {
                 assertThatThrownBy(() -> mapper.loadDetail(in, RegexSheet.class))
                     .isInstanceOf(CellNotFoundException.class)
-                    .hasMessage("シート '正規表現で一致' において、ラベル '/ヘッダー.*/' を持つセルが見つかりません。");
+                    .hasMessage("シート'正規表現で一致'において、ラベル'/ヘッダー.*/'を持つセルが見つかりません。");
                 
                 
             }
@@ -644,7 +644,7 @@ public class AnnoLabelledArrayCellTest {
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
-                                .annotation(createAnnotation(XlsLabelledArrayCell.class)
+                                .annotation(createAnnotation(XlsLabelledArrayCells.class)
                                         .attribute("label", "右側＋水平")
                                         .attribute("type", LabelledCellType.Right)
                                         .attribute("size", 3)
@@ -660,7 +660,7 @@ public class AnnoLabelledArrayCellTest {
             
             assertThatThrownBy(() -> mapper.save(template, out, outSheet))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoLabelledArrayCellTest$InvalidAnnoSheet#field2' において、アノテーション @XlsLabelledArrayCell を付与したタイプ 'java.lang.String' はサポートしていません。'Collection(List/Set) or Array' で設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoLabelledArrayCellsTest$InvalidAnnoSheet#field2'において、アノテーション'@XlsLabelledArrayCells'を付与したタイプ'java.lang.String'はサポートしていません。'Collection(List/Set) or Array'で設定してください。");
             
         }
         
@@ -683,7 +683,7 @@ public class AnnoLabelledArrayCellTest {
         XmlInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
-                                .annotation(createAnnotation(XlsLabelledArrayCell.class)
+                                .annotation(createAnnotation(XlsLabelledArrayCells.class)
                                         .attribute("label", "あいう")
                                         .attribute("type", LabelledCellType.Right)
                                         .attribute("size", 3)
@@ -846,25 +846,25 @@ public class AnnoLabelledArrayCellTest {
         
         private Map<String, String> labels;
         
-        @XlsLabelledArrayCell(label="右側＋水平", type=LabelledCellType.Right, size=5)
+        @XlsLabelledArrayCells(label="右側＋水平", type=LabelledCellType.Right, size=5)
         private List<String> rightHorizon;
         
-        @XlsLabelledArrayCell(label="下側＋水平", type=LabelledCellType.Bottom, size=5)
+        @XlsLabelledArrayCells(label="下側＋水平", type=LabelledCellType.Bottom, size=5)
         private List<String> bottomHorizon;
         
-        @XlsLabelledArrayCell(label="右側＋垂直", type=LabelledCellType.Right, direction=ArrayDirection.Vertical, size=3)
+        @XlsLabelledArrayCells(label="右側＋垂直", type=LabelledCellType.Right, direction=ArrayDirection.Vertical, size=3)
         private LocalDate[] rightVertical;
         
-        @XlsLabelledArrayCell(label="左側＋垂直", type=LabelledCellType.Left, direction=ArrayDirection.Vertical, size=3)
+        @XlsLabelledArrayCells(label="左側＋垂直", type=LabelledCellType.Left, direction=ArrayDirection.Vertical, size=3)
         private LocalDate[] leftVertical;
         
-        @XlsLabelledArrayCell(label="下側＋垂直", type=LabelledCellType.Bottom, direction=ArrayDirection.Vertical, size=3)
+        @XlsLabelledArrayCells(label="下側＋垂直", type=LabelledCellType.Bottom, direction=ArrayDirection.Vertical, size=3)
         private LocalDate[] bottomVertical;
         
-        @XlsLabelledArrayCell(label="ラベル名", headerLabel="見出し１", type=LabelledCellType.Bottom, direction=ArrayDirection.Horizon, size=5)
+        @XlsLabelledArrayCells(label="ラベル名", headerLabel="見出し１", type=LabelledCellType.Bottom, direction=ArrayDirection.Horizon, size=5)
         private List<String> headerHorizon;
         
-        @XlsLabelledArrayCell(label="ラベル名", headerLabel="見出し２", type=LabelledCellType.Bottom, direction=ArrayDirection.Vertical, size=3)
+        @XlsLabelledArrayCells(label="ラベル名", headerLabel="見出し２", type=LabelledCellType.Bottom, direction=ArrayDirection.Vertical, size=3)
         private LocalDate[] headerVertical;
         
     }
@@ -876,7 +876,7 @@ public class AnnoLabelledArrayCellTest {
     @XlsSheet(name="通常")
     private static class InvalidAnnoSheet {
         
-        @XlsLabelledArrayCell(label="右側＋水平", type=LabelledCellType.Right, size=5)
+        @XlsLabelledArrayCells(label="右側＋水平", type=LabelledCellType.Right, size=5)
         private List<String> field1;
         
         private String field2;
@@ -890,13 +890,13 @@ public class AnnoLabelledArrayCellTest {
         
         private Map<String, String> labels;
         
-        @XlsLabelledArrayCell(label="ラベルが結合", type=LabelledCellType.Right, labelMerged=true, size=3)
+        @XlsLabelledArrayCells(label="ラベルが結合", type=LabelledCellType.Right, labelMerged=true, size=3)
         private List<String> labelMerged;
         
-        @XlsLabelledArrayCell(label="値が結合", type=LabelledCellType.Right, itemMerged=true, size=3)
+        @XlsLabelledArrayCells(label="値が結合", type=LabelledCellType.Right, elementMerged=true, size=3)
         private List<String> valueMerged;
         
-        @XlsLabelledArrayCell(label="ラベルと値が結合", type=LabelledCellType.Bottom, labelMerged=true, itemMerged=true, direction=ArrayDirection.Vertical, size=3)
+        @XlsLabelledArrayCells(label="ラベルと値が結合", type=LabelledCellType.Bottom, labelMerged=true, elementMerged=true, direction=ArrayDirection.Vertical, size=3)
         private List<String> labelAndValueMerged;
         
     }
@@ -909,17 +909,17 @@ public class AnnoLabelledArrayCellTest {
         private Map<String, String> labels;
         
         /** 正規表現によるマッピング */
-        @XlsLabelledArrayCell(label="/見出し\\([0-9]+\\)/", type=LabelledCellType.Right, size=3)
+        @XlsLabelledArrayCells(label="/見出し\\([0-9]+\\)/", type=LabelledCellType.Right, size=3)
         private List<String> regexp;
         
-        @XlsLabelledArrayCell(label="見出し(a)", type=LabelledCellType.Right, size=3)
+        @XlsLabelledArrayCells(label="見出し(a)", type=LabelledCellType.Right, size=3)
         private List<String> notRegexp;
         
         /** 正規化による空白などの削除 */
-        @XlsLabelledArrayCell(label="更新日時", type=LabelledCellType.Bottom, size=3, direction=ArrayDirection.Vertical)
+        @XlsLabelledArrayCells(label="更新日時", type=LabelledCellType.Bottom, size=3, direction=ArrayDirection.Vertical)
         private List<String> normalize;
         
-        @XlsLabelledArrayCell(headerLabel="/ヘッダー.*/", label="ラベル", type=LabelledCellType.Right, size=3)
+        @XlsLabelledArrayCells(headerLabel="/ヘッダー.*/", label="ラベル", type=LabelledCellType.Right, size=3)
         private List<String> headerRegexp;
         
     }
@@ -931,12 +931,12 @@ public class AnnoLabelledArrayCellTest {
         
         private Map<String, String> labels;
         
-        @XlsLabelledArrayCell(label="連番", type=LabelledCellType.Bottom, size=3, direction=ArrayDirection.Vertical)
+        @XlsLabelledArrayCells(label="連番", type=LabelledCellType.Bottom, size=3, direction=ArrayDirection.Vertical)
         @XlsFormula(value="ROW()-4", primary=true)
         private int[] continueNumber;
         
-        @XlsLabelledArrayCell(label="日付", type=LabelledCellType.Bottom, size=3)
-        @XlsDateConverter(excelPattern="yyyy/m/d;@", javaPattern="yyyy/M/d")
+        @XlsLabelledArrayCells(label="日付", type=LabelledCellType.Bottom, size=3)
+        @XlsDateTimeConverter(excelPattern="yyyy/m/d;@", javaPattern="yyyy/M/d")
         @XlsFormula("\\$I\\$5+{columnNumber}")
         private List<LocalDate> dateList;
     }

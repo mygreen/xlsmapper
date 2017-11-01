@@ -18,7 +18,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface XlsLabelledArrayCell {
+public @interface XlsLabelledArrayCells {
     
     /**
      * 連続するセルの個数を指定します。
@@ -36,7 +36,7 @@ public @interface XlsLabelledArrayCell {
      * 
      * @return trueの場合、値のセルが結合されていることを考慮する。
      */
-    boolean itemMerged() default true;
+    boolean elementMerged() default true;
     
     //TODO: direction.Horizonとtype.Leftの組みあわせはサポートしないことを明記する。
     /**
@@ -49,7 +49,7 @@ public @interface XlsLabelledArrayCell {
      * 配列またはリスト要素の値のクラスを指定します。
      * <p>省略した場合、定義されたたGenericsの情報から取得します。
      */
-    Class<?> itemClass() default Object.class;
+    Class<?> elementClass() default Object.class;
     
     /**
      * セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。

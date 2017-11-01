@@ -8,7 +8,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 
 /**
- * {@link {@link Time}を処理する{@link CellConverter}を作成するためのファクトリクラス。}を処理するCellConverterを作成するためのファクトリクラス。
+ * {@link Timestamp}を処理する{@link CellConverter}を作成するためのファクトリクラス。
  * @since 2.0
  * @author T.TSUCHIE
  *
@@ -51,7 +51,7 @@ public class SqlTimestampCellConverterFactory extends AbstractDateCellConverterF
         
         private final SqlTimestampCellConverterFactory convererFactory;
         
-        public SqlTimestampCellConverter(final FieldAccessor field, final Configuration config,
+        private SqlTimestampCellConverter(final FieldAccessor field, final Configuration config,
                 final SqlTimestampCellConverterFactory convererFactory) {
             super(field, config);
             this.convererFactory = convererFactory;

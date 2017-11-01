@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
@@ -223,7 +224,7 @@ public class FieldAccessor {
      * @param targetObj オブジェクト（インスタンス）
      * @return マップの値
      * @throws IllegalArgumentException {@literal targetObj == null.}
-     * @throws IllegalStateException {@link フィールドのタイプがMap出ない場合}
+     * @throws IllegalStateException {@literal フィールドのタイプがMap出ない場合}
      */
     @SuppressWarnings("unchecked")
     public Object getValueOfMap(final Object key, final Object targetObj) {
@@ -466,7 +467,7 @@ public class FieldAccessor {
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @param label ラベル情報
      * @param index インデックスのキー。0以上を指定します。
-     * @throws IllegalArgumentException {@literal targetObj == null or label == null
+     * @throws IllegalArgumentException {@literal targetObj == null or label == null.}
      * @throws IllegalArgumentException {@literal label or index < 0}
      */
     public void setArrayLabel(final Object targetObj, final String label, final int index) {

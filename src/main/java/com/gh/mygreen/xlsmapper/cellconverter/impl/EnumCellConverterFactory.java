@@ -49,16 +49,16 @@ public class EnumCellConverterFactory extends AbstractCellConverterFactorySuppor
         
         Optional<XlsEnumConverter> converterAnno = field.getAnnotation(XlsEnumConverter.class);
         
-        return converterAnno.map(anno -> anno.valueMethodName().isEmpty() ? 
+        return converterAnno.map(anno -> anno.selector().isEmpty() ? 
                 new EnumFormatter(field.getType(), anno.ignoreCase())
-                : new EnumFormatter(field.getType(), anno.ignoreCase(), anno.valueMethodName()))
+                : new EnumFormatter(field.getType(), anno.ignoreCase(), anno.selector()))
                 .orElseGet(() -> new EnumFormatter(field.getType()));
         
     }
     
     public class EnumCellConverter extends AbstractCellConverter<Enum> {
         
-        public EnumCellConverter(final FieldAccessor field, final Configuration config) {
+        private EnumCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

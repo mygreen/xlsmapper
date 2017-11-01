@@ -41,7 +41,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
  *
  *     // フィールド独自のCellConveterの設定
  *     {@literal @XlsColumn(columnName="更新日付")}
- *     {@literal @XlsConverter(converter=LocaleDateConvereter.class)}
+ *     {@literal @XlsConverter(converterClass=LocaleDateConvereter.class)}
  *     private LocaleDate localeDate;
  *    
  * }
@@ -57,7 +57,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 public @interface XlsConverter {
     
     /**
-     * 
+     * セルの変換クラスを指定します。
      * @return {@link CellConverter}の実装クラスを指定します。
      */
     @SuppressWarnings("rawtypes")

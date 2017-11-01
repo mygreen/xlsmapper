@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -36,9 +38,9 @@ import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
@@ -64,6 +66,16 @@ public class AnnoFormulaTest {
     public static void setUpBeforeClass() throws Exception {
         OUT_DIR = createOutDir();
     }
+    
+    /**
+     * 出力用のテンプレートファイルの定義
+     */
+    private File templateFile = new File("src/test/data/anno_Formula_template.xlsx");
+    
+    /**
+     * 出力用のファイル名の定義
+     */
+    private String outFilename = "anno_Formula_out.xlsx";
     
     /**
      * 正常 - 式を直接指定
@@ -92,8 +104,8 @@ public class AnnoFormulaTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -145,8 +157,8 @@ public class AnnoFormulaTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);;
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -201,8 +213,8 @@ public class AnnoFormulaTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);;
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -258,8 +270,8 @@ public class AnnoFormulaTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);;
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -310,8 +322,8 @@ public class AnnoFormulaTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -361,8 +373,8 @@ public class AnnoFormulaTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);;
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -399,8 +411,8 @@ public class AnnoFormulaTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -437,8 +449,8 @@ public class AnnoFormulaTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -475,8 +487,8 @@ public class AnnoFormulaTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -507,8 +519,8 @@ public class AnnoFormulaTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_Formula_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Formula_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -560,7 +572,7 @@ public class AnnoFormulaTest {
         private Map<String, Point> positions;
         
         @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<SampleRecord> records;
         
         // レコードを追加する
@@ -648,10 +660,10 @@ public class AnnoFormulaTest {
                 
                 // 塗りつぶし
                 style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-                style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                 
                 // 罫線の上部を変更
-                style.setBorderTop(CellStyle.BORDER_DOUBLE);
+                style.setBorderTop(BorderStyle.DOUBLE);
                 
                 cell.setCellStyle(style);
             }

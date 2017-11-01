@@ -13,10 +13,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReadException;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 

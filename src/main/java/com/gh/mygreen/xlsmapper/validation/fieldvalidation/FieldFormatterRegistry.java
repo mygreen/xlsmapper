@@ -43,7 +43,7 @@ public class FieldFormatterRegistry {
      * @param <T> 処理対象のタイプ
      * @param requiredType クラスタイプ
      * @param formatter 登録対象のフォーマッタ
-     * @throws IllegalArgumentException {@link requiredType == null or formatter == null}
+     * @throws IllegalArgumentException {@literal requiredType == null or formatter == null}
      */
     public <T> void registerFormatter(final Class<T> requiredType, FieldFormatter<T> formatter) {
         ArgUtils.notNull(requiredType, "requiredType");

@@ -1,4 +1,4 @@
-package com.gh.mygreen.xlsmapper.validation;
+package com.gh.mygreen.xlsmapper.localization;
 
 import java.util.Formatter;
 import java.util.HashMap;
@@ -36,8 +36,6 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 public class MessageInterpolator {
     
     private static final Logger logger = LoggerFactory.getLogger(MessageInterpolator.class);
-    
-    private final Formatter formatter = new Formatter();
     
     private ExpressionLanguage expressionLanguage;
     
@@ -261,7 +259,7 @@ public class MessageInterpolator {
         context.putAll(values);
         
         // フォーマッターの追加
-        context.computeIfAbsent("formatter", key -> formatter);
+        context.computeIfAbsent("formatter", key -> new Formatter());
         
         /*
          * JEXLで存在しない変数名の場合、nullが帰ってくるため、null判定を行う。

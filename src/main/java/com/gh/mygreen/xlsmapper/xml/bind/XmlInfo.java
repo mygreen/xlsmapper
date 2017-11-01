@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.JAXB;
@@ -26,7 +27,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
  * {@literal </annotations>}
  * </code></pre>
  * 
- * @version 1.4.1
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  * 
@@ -67,6 +68,15 @@ public class XmlInfo implements Serializable {
         
         removeClassInfo(classInfo.getClassName());
         this.classInfos.add(classInfo);
+    }
+    
+    /**
+     * 複数のクラス上方を追加する。
+     * @since 2.0
+     * @param classInfos 複数のクラス情報
+     */
+    public void addClassInfos(Collection<ClassInfo> classInfos) {
+        classInfos.forEach(info -> addClassInfo(info));
     }
     
     /**

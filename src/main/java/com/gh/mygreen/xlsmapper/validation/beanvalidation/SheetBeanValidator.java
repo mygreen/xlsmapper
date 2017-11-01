@@ -24,10 +24,13 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.ObjectValidator;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 
 /**
  * BeanValidaion JSR-303(ver.1.0)/JSR-349(ver.1.1)を利用したValidator.
+ * 
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -111,13 +114,22 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
             }
             
             final ConstraintDescriptor<?> cd = violation.getConstraintDescriptor();
-            final String errorCode = cd.getAnnotation().annotationType().getSimpleName();
+            
+            /*
+             * エラーメッセージのコードは、後から再変換できるよう、BeanValidationの形式のエラーコードも付けておく。
+             */
+            final String[] errorCodes = new String[]{
+                    cd.getAnnotation().annotationType().getSimpleName(),
+                    cd.getAnnotation().annotationType().getCanonicalName(),
+                    cd.getAnnotation().annotationType().getCanonicalName() + ".message"
+                    };
+            
             final Map<String, Object> errorVars = createVariableForConstraint(cd);
             
             final String nestedPath = errors.buildFieldPath(fieldName);
             if(Utils.isEmpty(nestedPath)) {
                 // オブジェクトエラーの場合
-                errors.createGlobalError(errorCode)
+                errors.createGlobalError(errorCodes)
                     .variables(errorVars)
                     .defaultMessage(violation.getMessage())
                     .buildAndAddError();
@@ -140,10 +152,19 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                     
                 }
                 
+                // フィールドフォーマッタ
+                Class<?> fieldType = errors.getFieldType(nestedPath);
+                if(fieldType != null) {
+                    FieldFormatter<?> fieldFormatter = errors.findFieldFormatter(nestedPath, fieldType);
+                    if(fieldFormatter != null) {
+                        errorVars.putIfAbsent("fieldFormatter", fieldFormatter);
+                    }
+                }
+                
                 // 実際の値を取得する
                 errorVars.putIfAbsent("validatedValue", violation.getInvalidValue());
                 
-                errors.createFieldError(fieldName, errorCode)
+                errors.createFieldError(fieldName, errorCodes)
                     .variables(errorVars)
                     .address(cellAddress)
                     .label(label)

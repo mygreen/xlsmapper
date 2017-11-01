@@ -29,14 +29,14 @@ import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
-import com.gh.mygreen.xlsmapper.cellconverter.ItemConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.ElementConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -178,7 +178,7 @@ public class CollectionCellConveterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[リスト型]:List（数値） - C10の値'123, 456 'は、配列の形式に変換できません。"));
+                assertThat(message, is("[リスト型]:List（数値） - セル(C10)の値'123, 456 'は、配列の形式に変換できません。"));
             }
             
             assertThat(record.arrayText, arrayContaining("  abc", " def "));
@@ -188,7 +188,7 @@ public class CollectionCellConveterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[リスト型]:Array（数値） - E10の値'123, 456 'の型変換に失敗しました。"));
+                assertThat(message, is("[リスト型]:Array（数値） - セル(E10)の値'123, 456 'は、配列の形式に変換できません。"));
             
             }
             
@@ -199,7 +199,7 @@ public class CollectionCellConveterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[リスト型]:Set（数値） - G10の値'123, 456 'は、配列の形式に変換できません。"));
+                assertThat(message, is("[リスト型]:Set（数値） - セル(G10)の値'123, 456 'は、配列の形式に変換できません。"));
             }
             
         } else {
@@ -767,22 +767,22 @@ public class CollectionCellConveterTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="リスト型（アノテーションなし）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="リスト型（初期値、書式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="リスト型（任意の型）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<CustomRecord> customRecords;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="リスト型（数式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormulaRecord> formulaRecords;
         
         /**
@@ -934,35 +934,35 @@ public class CollectionCellConveterTest {
         private int no;
         
         @XlsTrim
-        @XlsArrayConverter(separator="\n", ignoreEmptyItem=true)
+        @XlsArrayConverter(separator="\n", ignoreEmptyElement=true)
         @XlsColumn(columnName="List（文字列）")
         private List<String> listText;
         
         @XlsDefaultValue("0")
         @XlsTrim
-        @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyElement=true)
         @XlsColumn(columnName="List（数値）")
         private List<Integer> listInteger;
         
         @XlsTrim
-        @XlsArrayConverter(separator="\n", ignoreEmptyItem=true)
+        @XlsArrayConverter(separator="\n", ignoreEmptyElement=true)
         @XlsColumn(columnName="Array（文字列）")
         private String[] arrayText;
         
         @XlsDefaultValue("0")
         @XlsTrim
-        @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyElement=true)
         @XlsColumn(columnName="Array（数値）")
         private Integer[] arrayInteger;
         
         @XlsTrim
-        @XlsArrayConverter(separator="\n", ignoreEmptyItem=true)
+        @XlsArrayConverter(separator="\n", ignoreEmptyElement=true)
         @XlsColumn(columnName="Set（文字列）")
         private Set<String> setText;
         
         @XlsDefaultValue("0")
         @XlsTrim
-        @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyElement=true)
         @XlsColumn(columnName="Set（数値）")
         private Set<Integer> setInteger;
         
@@ -1026,17 +1026,17 @@ public class CollectionCellConveterTest {
         private int no;
         
         @XlsTrim
-        @XlsArrayConverter(separator="\n", ignoreEmptyItem=true, itemConverterClass=DateItemConverter.class)
+        @XlsArrayConverter(separator="\n", ignoreEmptyElement=true, elementConverterClass=DateElementConverter.class)
         @XlsColumn(columnName="List（Date型）")
         private List<Date> listDate;
         
         @XlsTrim
-        @XlsArrayConverter(separator=";", ignoreEmptyItem=true, itemConverterClass=DateItemConverter.class)
+        @XlsArrayConverter(separator=";", ignoreEmptyElement=true, elementConverterClass=DateElementConverter.class)
         @XlsColumn(columnName="Array（Date型）")
         private Date[] arrayDate;
         
         @XlsTrim
-        @XlsArrayConverter(separator=",", ignoreEmptyItem=true, itemConverterClass=DateItemConverter.class)
+        @XlsArrayConverter(separator=",", ignoreEmptyElement=true, elementConverterClass=DateElementConverter.class)
         @XlsColumn(columnName="Set（Date型）")
         private Set<Date> setDate;
         
@@ -1073,7 +1073,7 @@ public class CollectionCellConveterTest {
             return this;
         }
         
-        private static class DateItemConverter implements ItemConverter<Date> {
+        private static class DateElementConverter implements ElementConverter<Date> {
             
             @Override
             public Date convertToObject(final String text, final Class<Date> targetClass) throws ConversionException {
@@ -1111,19 +1111,19 @@ public class CollectionCellConveterTest {
         private int no;
         
         @XlsTrim
-        @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyElement=true)
         @XlsColumn(columnName="List（数式）")
         @XlsFormula("E{rowNumber}")
         private List<String> listStr;
         
         @XlsTrim
-        @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyElement=true)
         @XlsColumn(columnName="Array（数式）")
         @XlsFormula("E{rowNumber}")
         private String[] arrayStr;
         
         @XlsTrim
-        @XlsArrayConverter(separator=";", ignoreEmptyItem=true)
+        @XlsArrayConverter(separator=";", ignoreEmptyElement=true)
         @XlsColumn(columnName="Set（数式）")
         @XlsFormula("E{rowNumber}")
         private Set<String> setStr;

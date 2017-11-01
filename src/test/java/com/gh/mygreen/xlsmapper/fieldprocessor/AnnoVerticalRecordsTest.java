@@ -34,14 +34,14 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordFinder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.RemainedOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
@@ -82,6 +82,21 @@ public class AnnoVerticalRecordsTest {
     }
     
     /**
+     * 読み込み用のファイルの定義
+     */
+    private File inputFile = new File("src/test/data/anno_VerticalRecords.xlsx");
+    
+    /**
+     * 出力用のテンプレートファイルの定義
+     */
+    private File templateFile = new File("src/test/data/anno_VerticalRecords_template.xlsx");
+    
+    /**
+     * 出力用のファイル名の定義
+     */
+    private String outFilename = "anno_VerticalRecords_out.xlsx";
+    
+    /**
      * 開始位置の指定のテスト
      */
     @Test
@@ -90,7 +105,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<StartedPositionSheet> errors = mapper.loadDetail(in, StartedPositionSheet.class);
             
             StartedPositionSheet sheet = errors.getTarget();
@@ -137,7 +152,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<StartedPositionError1Sheet> errors = mapper.loadDetail(in, StartedPositionError1Sheet.class);
             
             fail();
@@ -153,7 +168,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<StartedPositionError2Sheet> errors = mapper.loadDetail(in, StartedPositionError2Sheet.class);
             
             fail();
@@ -169,7 +184,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<StartedPositionError3Sheet> errors = mapper.loadDetail(in, StartedPositionError3Sheet.class);
             
             StartedPositionError3Sheet sheet = errors.getTarget();
@@ -187,7 +202,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<EndPositionSheet> errors = mapper.loadDetail(in, EndPositionSheet.class);
             
             EndPositionSheet sheet = errors.getTarget();
@@ -233,7 +248,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<HeaderSpaceSheet> errors = mapper.loadDetail(in, HeaderSpaceSheet.class);
             
             HeaderSpaceSheet sheet = errors.getTarget();
@@ -279,7 +294,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ColumnSettingSheet> errors = mapper.loadDetail(in, ColumnSettingSheet.class);
             
             ColumnSettingSheet sheet = errors.getTarget();
@@ -331,7 +346,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
             
             MapColumnSettingSheet sheet = errors.getTarget();
@@ -369,7 +384,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
             
             fail();
@@ -387,7 +402,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RecodSettingSheet> errors = mapper.loadDetail(in, RecodSettingSheet.class);
             
             RecodSettingSheet sheet = errors.getTarget();
@@ -426,7 +441,7 @@ public class AnnoVerticalRecordsTest {
          XlsMapper mapper = new XlsMapper();
          mapper.getConiguration().setContinueTypeBindFailure(true);
          
-         try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+         try(InputStream in = new FileInputStream(inputFile)) {
              SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
              
              MethodAnnoSheet sheet = errors.getTarget();
@@ -458,7 +473,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<TableLabelSheet> errors = mapper.loadDetail(in, TableLabelSheet.class);
             
             TableLabelSheet sheet = errors.getTarget();
@@ -505,7 +520,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<StartedDataPositionSheet> errors = mapper.loadDetail(in, StartedDataPositionSheet.class);
             
             StartedDataPositionSheet sheet = errors.getTarget();
@@ -553,7 +568,7 @@ public class AnnoVerticalRecordsTest {
             .setRegexLabelText(true);
         
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
             RegexSheet sheet = errors.getTarget();
@@ -607,7 +622,7 @@ public class AnnoVerticalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NestedSheet> errors = mapper.loadDetail(in, NestedSheet.class);
             
             NestedSheet sheet = errors.getTarget();
@@ -660,7 +675,7 @@ public class AnnoVerticalRecordsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<CustomDataPositionSheet> errors = mapper.loadDetail(in, CustomDataPositionSheet.class);
             
             CustomDataPositionSheet sheet = errors.getTarget();
@@ -698,7 +713,7 @@ public class AnnoVerticalRecordsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_VerticalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ArrayColumnsSheet> errors = mapper.loadDetail(in, ArrayColumnsSheet.class);
             
             ArrayColumnsSheet sheet = errors.getTarget();
@@ -1286,8 +1301,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1358,8 +1373,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1386,8 +1401,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1414,8 +1429,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1450,8 +1465,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1527,8 +1542,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1665,8 +1680,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
                 .name("  鈴木次郎  ").birthday(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
         
         // ファイルへの書き込み
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1767,8 +1782,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1846,8 +1861,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1949,8 +1964,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2069,8 +2084,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2161,8 +2176,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2230,8 +2245,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2305,8 +2320,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2371,8 +2386,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2530,8 +2545,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2611,8 +2626,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2667,8 +2682,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2725,8 +2740,8 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         mapper.getConiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
         
-        File outFile = new File(OUT_DIR, "anno_VerticalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_VerticalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -3674,22 +3689,22 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="見出しに空白なし", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<UserRecord> records1;
        
        @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<UserRecord> records2;
        
        @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="見出しに空白がある", terminal=RecordTerminal.Border, range=2)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<UserRecord> records3;
        
        @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="開始位置がずれている", terminal=RecordTerminal.Border, range=3)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<UserRecord> records4;
        
        /**
@@ -3802,27 +3817,27 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="結合セル", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<MergedRecord> mergedRecords;
        
        @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<HeaderMergedRecord> headerMergedRecords;
        
        @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="オプションのセル（セルがある）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<OptionalRecord> optionalRecords1;
        
        @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="オプションのセル（セルがない）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<OptionalRecord> optionalRecords2;
        
        @XlsOrder(value=5)
        @XlsVerticalRecords(tableLabel="Converterがある", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<ConvertedRecord> convertedRecord;
        
        /**
@@ -4055,7 +4070,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        @XlsColumn(columnName="氏名")
        private String name;
        
-       @XlsDateConverter(javaPattern="yyyy年M月d日", lenient=true)
+       @XlsDateTimeConverter(javaPattern="yyyy年M月d日", lenient=true)
        @XlsColumn(columnName="生年月日")
        private Date birthday;
        
@@ -4092,15 +4107,15 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    private static class MapColumnSettingSheet {
        
        @XlsVerticalRecords(tableLabel="マップカラム（文字列）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<MapRecord> mapRecords1;
        
        @XlsVerticalRecords(tableLabel="マップカラム（Converterあり）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<MapConvertedRecord> mapRecords2;
        
        @XlsVerticalRecords(tableLabel="マップカラム（終了条件がある）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<MapEndRecord> mapRecords3;
        
        /**
@@ -4305,7 +4320,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         */
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="名簿（リスト）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<EmptySkipRecord> skipList;
        
        /**
@@ -4313,7 +4328,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         */
        @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="名簿（集合）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private Set<EmptySkipRecord> skipSet;
        
        /**
@@ -4321,7 +4336,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         */
        @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="名簿（配列）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private EmptySkipRecord[] skipArray;
        
        /**
@@ -4395,7 +4410,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        @XlsColumn(columnName="氏名")
        private String name;
        
-       @XlsDateConverter(javaPattern="yyyy年M月d日", excelPattern="yyyy\"年\"m\"月\"d\"日\"")
+       @XlsDateTimeConverter(javaPattern="yyyy年M月d日", excelPattern="yyyy\"年\"m\"月\"d\"日\"")
        @XlsColumn(columnName="生年月日")
        private Date birthday;
        
@@ -4429,7 +4444,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Break)
+       @XlsRecordOption(overCase=OverOperate.Break)
        private List<RemainedOverRecord> overBreakRecrods;
        
 //       @XlsHint(order=2)
@@ -4439,17 +4454,17 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<RemainedOverRecord> overCopyRecrods;
        
        @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(remainedCase=RemainedOperate.None)
+       @XlsRecordOption(remainedCase=RemainedOperate.None)
        private List<RemainedOverRecord> remainedNoneRecrods;
        
        @XlsOrder(value=5)
        @XlsVerticalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(remainedCase=RemainedOperate.Clear)
+       @XlsRecordOption(remainedCase=RemainedOperate.Clear)
        private List<RemainedOverRecord> remainedClearRecrods;
        
 //       @XlsHint(order=6)
@@ -4653,7 +4668,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         */
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="入力規則（レコードの挿入）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<DataValidationRecord> insertValidationRecrods;
        
        /**
@@ -4661,7 +4676,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         */
        @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="名前の定義", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<NameDefRecord> nameRecords;
        
        /**
@@ -4669,7 +4684,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         */
        @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="入力規則（レコードの削除）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Break, remainedCase=RemainedOperate.Clear)
+       @XlsRecordOption(overCase=OverOperate.Break, remainedCase=RemainedOperate.Clear)
        private List<DataValidationRecord> deleteValidationRecrods;
        
        /**
@@ -4677,7 +4692,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         */
        @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="入力規則（レコードの削除）（データなし）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Break, remainedCase=RemainedOperate.Clear)
+       @XlsRecordOption(overCase=OverOperate.Break, remainedCase=RemainedOperate.Clear)
        private List<DataValidationRecord> nonDeleteValidationRecrods;
        
        /**
@@ -4685,7 +4700,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         */
        @XlsOrder(value=5)
        @XlsVerticalRecords(tableLabel="入力規則（レコードのコピー）", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+       @XlsRecordOption(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
        private List<DataValidationRecord> copyValidationRecrods;
        
        /**
@@ -4880,7 +4895,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="名簿")
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        public List<MethodAnnoRecord> getRecords() {
            return records;
        }
@@ -4895,7 +4910,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        }
        
        @XlsVerticalRecords(tableLabel="出欠")
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        public void setMapRecords(MethodAnnoMapRecord[] mapRecords) {
            this.mapRecords = mapRecords;
        }
@@ -4981,7 +4996,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            return birthday;
        }
        
-       @XlsDateConverter(javaPattern="yyyy年M月d日")
+       @XlsDateTimeConverter(javaPattern="yyyy年M月d日")
        public void setBirthday(Date birthday) {
            this.birthday = birthday;
        }
@@ -5250,17 +5265,17 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="データの開始位置が離れている", terminal=RecordTerminal.Border, headerRight=2)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<DistantRecord> distantRecords;
        
        @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border, headerRight=2)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<HeaderMergedRecord> headerMergedRecords1;
        
        @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="見出しが結合（タイトルが上）", terminal=RecordTerminal.Border, headerRight=2, tableLabelAbove=true)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<HeaderMergedRecord> headerMergedRecords2;
        
        /**
@@ -5575,22 +5590,22 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="通常の表")
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<LargeRecord> largeRecords1;
        
        @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="空のレコードがある表", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+       @XlsRecordOption(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
        private List<LargeRecord> largeRecords2;
        
        @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="見出しが結合している表", terminal=RecordTerminal.Border, headerRight=2)
-       @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+       @XlsRecordOption(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
        private List<HeaderMergedLargeRecord> largeRecords3;
        
        @XlsOrder(value=4)
        @XlsVerticalRecords(tableLabel="1対1のネスト")
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<OneToOneRecord> oneToOneRecords;
        
        public NestedSheet addRecord1(LargeRecord record) {
@@ -6001,7 +6016,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            private String name;
            
            @XlsColumn(columnName="生年月日")
-           @XlsDateConverter(excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
+           @XlsDateTimeConverter(excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
            private Date birthday;
            
            @XlsNestedRecords
@@ -6082,12 +6097,12 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="成績一覧", headerRight=2, terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<GradeRecord> gradeRecrods;
        
        @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="出欠確認", terminal=RecordTerminal.Border)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<EntryRecord> entryRecords;
        
        /**
@@ -6406,17 +6421,17 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        
        @XlsOrder(value=1)
        @XlsVerticalRecords(tableLabel="配列カラム（文字列）", terminal=RecordTerminal.Border, tableLabelAbove=true)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<NormalRecord> normal;
        
        @XlsOrder(value=2)
        @XlsVerticalRecords(tableLabel="配列カラム（結合がある）", terminal=RecordTerminal.Border, tableLabelAbove=true)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<MergedRecord> merged;
        
        @XlsOrder(value=3)
        @XlsVerticalRecords(tableLabel="配列カラム（型変換）", terminal=RecordTerminal.Border, tableLabelAbove=true)
-       @XlsRecordOperator(overCase=OverOperate.Copy)
+       @XlsRecordOption(overCase=OverOperate.Copy)
        private List<ConvertRecord> converted;
        
        /**
@@ -6523,7 +6538,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            @XlsColumn(columnName="氏名")
            private String name;
            
-           @XlsArrayColumns(columnName="連絡先", size=3, itemMerged=true)
+           @XlsArrayColumns(columnName="連絡先", size=3, elementMerged=true)
            private List<String> contacted;
            
            @XlsIgnorable
@@ -6564,7 +6579,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            private String name;
            
            @XlsArrayColumns(columnName="候補日", size=3)
-           @XlsDateConverter(javaPattern="yyyy\"年\"M\"月\"d\"日", excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
+           @XlsDateTimeConverter(javaPattern="yyyy\"年\"M\"月\"d\"日", excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
            private List<LocalDate> dates;
            
            @XlsIgnorable

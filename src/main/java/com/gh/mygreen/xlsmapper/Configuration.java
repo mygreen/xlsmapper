@@ -7,12 +7,12 @@ import java.util.Optional;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterRegistry;
-import com.gh.mygreen.xlsmapper.cellconverter.DefaultItemConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.ItemConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.DefaultElementConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.ElementConverter;
 import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegistry;
-import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 
@@ -61,9 +61,6 @@ public class Configuration {
     
     /** 処理対象のシートを取得するクラス */
     private SheetFinder sheetFinder = new SheetFinder();
-    
-    /** 単純なクラスオブジェクトの変換するクラス */
-    private ItemConverter<?> itemConverter = new DefaultItemConverter();
     
     /** 数式をフォーマットするクラス */
     private MessageInterpolator formulaFormatter = new MessageInterpolator();
@@ -344,29 +341,6 @@ public class Configuration {
      */
     public Configuration setSheetFinder(SheetFinder sheetFinder) {
         this.sheetFinder = sheetFinder;
-        return this;
-    }
-    
-    /**
-     * 任意のクラス型に変換するクラスを設定します。
-     * <p>{@link XlsArrayConverter#itemConverterClass()}の処理クラスです。
-     * 
-     * @since 1.1
-     * @return
-     */
-    public ItemConverter<?> getItemConverter() {
-        return itemConverter;
-    }
-    
-    /**
-     * 任意のクラス型に変換するクラスを取得します。
-     * <p>{@link XlsArrayConverter#itemConverterClass()}の処理クラスです。
-     * @since 1.1
-     * @param itemConverter 任意のクラス型に変換するクラス
-     * @return 自身のインスタンス
-     */
-    public Configuration setItemConverter(ItemConverter<?> itemConverter) {
-        this.itemConverter = itemConverter;
         return this;
     }
     

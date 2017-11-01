@@ -49,7 +49,7 @@ public class LocalTimeCellConverterFactory extends AbstractTemporalCellConverter
     
     public class LocalTimeCellConverter extends AbstractTemporalCellConverter<LocalTime> {
         
-        public LocalTimeCellConverter(final FieldAccessor field, final Configuration config) {
+        private LocalTimeCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

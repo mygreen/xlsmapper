@@ -13,7 +13,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
  * 読み込み時、または書き込み時に値がnullの時に、代わりにとなる値を指定します。
  * 
  * <ul>
- *   <li>日付などの書式がある場合、専用のアノテーションで指定した書式{@link XlsDateConverter#javaPattern()}を元に、
+ *   <li>日付などの書式がある場合、専用のアノテーションで指定した書式{@link XlsDateTimeConverter#javaPattern()}を元に、
  *       文字列をそのオブジェクトに変換し処理します。
  *   </li>
  *   <li>指定したデフォルト値がマッピング先の型として不正な場合は、
@@ -35,7 +35,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
  *     
  *     {@literal @XlsColumn(columnName="更新日時")}
  *     {@literal @XlsDefaultValue("2010/01/01"} // 属性javaPatternで指定した書式に沿った値を指定します。
- *     {@literal @XlsDateConverter(javaPattern="yyyy/MM/dd")}
+ *     {@literal @XlsDateTimeConverter(javaPattern="yyyy/MM/dd")}
  *     private Date updateTime;
  * 
  * }

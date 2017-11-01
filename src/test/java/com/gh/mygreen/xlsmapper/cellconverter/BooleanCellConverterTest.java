@@ -25,12 +25,12 @@ import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -136,7 +136,7 @@ public class BooleanCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[ブール型]:boolean型 - B11の値'abc'は、trueの値「true, 1, yes, on, y, t」、またはfalseの値「false, 0, no, off, f, n」の何れかの値で設定してください。"));
+                assertThat(message, is("[ブール型]:boolean型 - セル(B11)の値'abc'は、trueの値[true, 1, yes, on, y, t]、またはfalseの値[false, 0, no, off, f, n]の何れかの値で設定してください。"));
             }
             
             {
@@ -144,7 +144,7 @@ public class BooleanCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[ブール型]:Boolean型 - C11の値' def'は、trueの値「true, 1, yes, on, y, t」、またはfalseの値「false, 0, no, off, f, n」の何れかの値で設定してください。"));
+                assertThat(message, is("[ブール型]:Boolean型 - セル(C11)の値' def'は、trueの値[true, 1, yes, on, y, t]、またはfalseの値[false, 0, no, off, f, n]の何れかの値で設定してください。"));
             
             }
             
@@ -425,17 +425,17 @@ public class BooleanCellConverterTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="ブール型（アノテーションなし）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="ブール型（初期値、書式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="ブール型（数式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormulaRecord> formulaRecords;
         
         /**

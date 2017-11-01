@@ -4,7 +4,7 @@ import java.awt.Point;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 
@@ -21,7 +21,7 @@ import com.gh.mygreen.xlsmapper.util.CellPosition;
 public class RecordOperation {
     
     /** レコード操作のアノテーション */
-    private final XlsRecordOperator annotation;
+    private final XlsRecordOption annotation;
     
     /** レコードのコピー回数 */
     private int countCopyRecord;
@@ -38,7 +38,7 @@ public class RecordOperation {
     /** 右下のセルの位置 */
     private Point bottomRightPosition;
     
-    public RecordOperation(final XlsRecordOperator annotation) {
+    public RecordOperation(final XlsRecordOption annotation) {
         this.annotation = annotation;
         this.countCopyRecord = 0;
         this.countInsertRecord = 0;
@@ -52,7 +52,7 @@ public class RecordOperation {
      * @since 2.0
      * @return 付与されていない場合は、属性がデフォルト値が設定される。
      */
-    public XlsRecordOperator getAnnotation() {
+    public XlsRecordOption getAnnotation() {
         return annotation;
     }
     

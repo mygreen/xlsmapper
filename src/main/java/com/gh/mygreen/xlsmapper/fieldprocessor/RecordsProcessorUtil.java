@@ -10,15 +10,17 @@ import org.apache.poi.ss.usermodel.Sheet;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
+import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.HorizontalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.VerticalRecordsProcessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 
@@ -31,36 +33,120 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 public class RecordsProcessorUtil {
     
     /**
-     * アノテーションXlsColumnの属性columnNameで指定した値が、ヘッダーセルに存在するかチェックする。
+     * アノテーション{@link XlsColumn}の属性columnNameで指定した値が、ヘッダーセルに存在するかチェックする。
      * @param sheet
      * @param recordClass
      * @param headers
      * @param reader
      * @param config
-     * @throws XlsMapperException
+     * @throws CellNotFoundException セルが見つからない場合
      */
     public static void checkColumns(final Sheet sheet, final Class<?> recordClass,
             final List<RecordHeader> headers, final AnnotationReader reader, final Configuration config)
-                    throws XlsMapperException {
+                    throws CellNotFoundException {
         
         List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsColumn.class);
         
         for(FieldAccessor property : properties) {
             final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
             
-            if(!column.optional()){
-                String columnName = column.columnName();
-                boolean find = false;
-                for(RecordHeader info: headers){
-                    if(Utils.matches(info.getLabel(), columnName, config)){
-                        find = true;
-                        break;
-                    }
-                }
-                if(!find){
-                    throw new CellNotFoundException(sheet.getSheetName(), columnName);
+            if(column.optional()){
+                continue;
+            }
+            
+            String columnName = column.columnName();
+            boolean find = false;
+            for(RecordHeader info: headers){
+                if(Utils.matches(info.getLabel(), columnName, config)){
+                    find = true;
+                    break;
                 }
             }
+            if(!find){
+                throw new CellNotFoundException(sheet.getSheetName(), columnName);
+            }
+        }
+        
+    }
+    
+    /**
+     * アノテーション{@link XlsMapColumns}の属性previousColumnName、nextColumnNameで指定した値がヘッダーセルに存在するかチェックする。
+     * @since 2.0
+     * @param sheet
+     * @param recordClass
+     * @param headers
+     * @param reader
+     * @param config
+     * @throws CellNotFoundException セルが見つからない場合
+     */
+    public static void checkMapColumns(final Sheet sheet, final Class<?> recordClass,
+            final List<RecordHeader> headers, final AnnotationReader reader, final Configuration config)
+                    throws CellNotFoundException {
+        
+        List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsMapColumns.class);
+        
+        for(FieldAccessor property : properties) {
+            final XlsMapColumns mapColumns = property.getAnnotation(XlsMapColumns.class).get();
+            if(mapColumns.optional()) {
+                continue;
+            }
+            
+            final String previousColumnName = mapColumns.previousColumnName();
+            boolean foundPrevious = headers.stream()
+                .filter(info -> Utils.matches(info.getLabel(), previousColumnName, config))
+                .findFirst()
+                .isPresent();
+            
+            if(!foundPrevious) {
+                throw new CellNotFoundException(sheet.getSheetName(), previousColumnName);
+            }
+            
+            final String nextColumnName = mapColumns.nextColumnName();
+            if(!nextColumnName.isEmpty()) {
+                boolean foundNext = headers.stream()
+                        .filter(info -> Utils.matches(info.getLabel(), nextColumnName, config))
+                        .findFirst()
+                        .isPresent();
+                
+                if(!foundNext) {
+                    throw new CellNotFoundException(sheet.getSheetName(), nextColumnName);
+                }
+            }
+            
+        }
+    }
+    
+    /**
+     * アノテーション{@link XlsArrayColumns}の属性columnNameで指定した値がヘッダーセルに存在するかチェックする。
+     * @since 2.0
+     * @param sheet
+     * @param recordClass
+     * @param headers
+     * @param reader
+     * @param config
+     * @throws CellNotFoundException セルが見つからない場合
+     */
+    public static void checkArrayColumns(final Sheet sheet, final Class<?> recordClass,
+            final List<RecordHeader> headers, final AnnotationReader reader, final Configuration config) {
+        
+        List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsArrayColumns.class);
+        
+        for(FieldAccessor property : properties) {
+            final XlsArrayColumns arrayColumns = property.getAnnotation(XlsArrayColumns.class).get();
+            if(arrayColumns.optional()) {
+                continue;
+            }
+            
+            final String columnName = arrayColumns.columnName();
+            boolean found = headers.stream()
+                .filter(info -> Utils.matches(info.getLabel(), columnName, config))
+                .findFirst()
+                .isPresent();
+            
+            if(!found) {
+                throw new CellNotFoundException(sheet.getSheetName(), columnName);
+            }
+            
         }
         
     }

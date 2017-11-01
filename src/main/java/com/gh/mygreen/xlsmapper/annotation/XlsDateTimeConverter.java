@@ -16,6 +16,7 @@ import java.util.TimeZone;
  *   <li>{@link java.util.Date}</li>
  *   <li>{@link java.sql.Date}/{@link java.sql.Time}/{@link java.sql.Timestamp}</li>
  *   <li>{@link java.util.Calendar}</li>
+ *   <li>{@link java.time.LocalDateTime}/{@link java.time.LocalDate}/{@link java.time.LocalTime}</li>
  * </ul>
  * 
  * 
@@ -34,7 +35,7 @@ import java.util.TimeZone;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface XlsDateConverter {
+public @interface XlsDateTimeConverter {
     
     /**
      * 日時の書式パターン。{@link java.text.SimpleDateFormat}の書式を指定します。
@@ -60,19 +61,22 @@ public @interface XlsDateConverter {
      * public class SampleRecord {
      * 
      *     {@literal @XlsColumn(columnName="有効期限")}
-     *     {@literal @XlsDateConverter(javaPattern="yyyy年MM月dd日 HH時mm分ss秒", locale="ja_JP", lenient=true)}
+     *     {@literal @XlsDateTimeConverter(javaPattern="yyyy年MM月dd日 HH時mm分ss秒", locale="ja_JP", lenient=true)}
      *     private Date expired;
      * 
      * }
      * </code></pre>
      * 
-     * <p>アノテーション{@link XlsDateConverter}を付与しない場合、Javaの型ごとに次の書式が標準で適用されます。</p>
+     * <p>アノテーション{@link XlsDateTimeConverter}を付与しない場合、Javaの型ごとに次の書式が標準で適用されます。</p>
      * <ul>
      *   <li>{@link java.util.Date}の場合、{@literal "yyyy-MM-dd HH:mm:ss"}</li>
      *   <li>{@link java.sql.Date}の場合、{@literal "yyyy-MM-dd HH:mm:ss"}</li>
      *   <li>{@link java.sql.Time}の場合、{@literal "HH:mm:ss"}</li>
      *   <li>{@link java.sql.Timestamp}の場合、{@literal "yyyy-MM-dd HH:mm:ss.SSS"}</li>
      *   <li>{@link java.util.Calendar}の場合、{@literal "yyyy-MM-dd HH:mm:ss"}</li>
+     *   <li>{@link java.time.LocalDateTime}の場合、{@literal "uuuu-MM-dd HH:mm:ss"}</li>
+     *   <li>{@link java.time.LocalDate}の場合、{@literal "uuuu-MM-dd"}</li>
+     *   <li>{@link java.time.LocalTime}の場合、{@literal "HH:mm:ss"}</li>
      * </ul>
      * 
      * @since 1.1
@@ -122,7 +126,7 @@ public @interface XlsDateConverter {
      * public class SampleRecord {
      * 
      *     {@literal @XlsColumn(columnName="有効期限")}
-     *     {@literal @XlsDateConverter(excelPattern="[$-411]yyyy\"年\"mm\"月\"dd\"日\" hh\"時\"mm\"分\"ss\"秒\"")}
+     *     {@literal @XlsDateTimeConverter(excelPattern="[$-411]yyyy\"年\"mm\"月\"dd\"日\" hh\"時\"mm\"分\"ss\"秒\"")}
      *     private Date expired;
      * 
      * }

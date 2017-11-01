@@ -5,7 +5,7 @@ import java.util.Optional;
 
 /**
  * {@link SheetBindingErrors}経由で呼び出される{@link ObjectError}のビルダクラス。
- * <p>{@link #buildAndAddError()}</p>でチェインでより使い安くする。
+ * <p>{@link #buildAndAddError()}でチェインでより使い安くする。</p>
  * 
  * @since 2.0
  * @author T.TSUCHIE

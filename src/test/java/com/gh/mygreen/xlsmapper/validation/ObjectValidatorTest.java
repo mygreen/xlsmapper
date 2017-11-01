@@ -18,7 +18,7 @@ import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
@@ -248,7 +248,7 @@ public class ObjectValidatorTest {
         @XlsColumn(columnName="メールアドレス")
         private String email;
         
-        @XlsDateConverter(lenient=true, javaPattern="yyyy年M月d日")
+        @XlsDateTimeConverter(lenient=true, javaPattern="yyyy年M月d日")
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
@@ -335,5 +335,6 @@ public class ObjectValidatorTest {
     
     private static interface Group1 {}
     private static interface Group2 {}
+    private static interface Group3 extends Group1, Group2 {}
     
 }

@@ -161,9 +161,9 @@ public @interface XlsColumn {
     int headerMerged() default 0;
     
     /**
-     * 該当するカラム（セル）が見つからない場合、trueと設定すると無視して処理を続行します。
+     * 属性{@link #columnName()}で指定したカラム（セル）が見つからない場合、trueと設定すると無視して処理を続行します。
      * <p>falseを指定し、セルが見つからない場合は、例外{@link CellNotFoundException}がスローされます。</p>
-     * @return 
+     * @return trueの場合、該当するカラム（セル）が見つからないときは無視して処理を続行します。
      */
     boolean optional() default false;
 }

@@ -75,7 +75,7 @@ public class CalendarCellConverterFactory extends AbstractCellConverterFactorySu
         
         private final  DateCellConverterFactory.DateCellConverter dateCellConverter;
         
-        public CalendarCellConverter(final FieldAccessor field, final Configuration config,
+        private CalendarCellConverter(final FieldAccessor field, final Configuration config,
                 final DateCellConverterFactory.DateCellConverter dateCellConverter) {
             super(field, config);
             this.dateCellConverter = dateCellConverter;

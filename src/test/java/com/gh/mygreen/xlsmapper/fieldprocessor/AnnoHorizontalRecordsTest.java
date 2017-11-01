@@ -37,7 +37,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
@@ -47,9 +47,9 @@ import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordFinder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.RemainedOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -85,6 +85,21 @@ public class AnnoHorizontalRecordsTest {
     }
     
     /**
+     * 読み込み用のファイルの定義
+     */
+    private File inputFile = new File("src/test/data/anno_HorizonalRecords.xlsx");
+    
+    /**
+     * 出力用のテンプレートファイルの定義
+     */
+    private File templateFile = new File("src/test/data/anno_HorizonalRecords_template.xlsx");
+    
+    /**
+     * 出力用のファイル名の定義
+     */
+    private String outFilename = "anno_HorizonalRecords_out.xlsx";
+    
+    /**
      * 開始位置の指定のテスト
      */
     @Test
@@ -93,7 +108,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             SheetBindingErrors<StartedPositionSheet> errors = mapper.loadDetail(in, StartedPositionSheet.class);
             
@@ -141,7 +156,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             StartedPositionError1Sheet sheet = mapper.load(in, StartedPositionError1Sheet.class);
             
@@ -158,7 +173,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             StartedPositionError2Sheet sheet = mapper.load(in, StartedPositionError2Sheet.class);
             
@@ -175,7 +190,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             StartedPositionError3Sheet sheet = mapper.load(in, StartedPositionError3Sheet.class);
             
@@ -192,7 +207,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<EndPositionSheet> errors = mapper.loadDetail(in, EndPositionSheet.class);
             
             EndPositionSheet sheet = errors.getTarget();
@@ -238,7 +253,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             SheetBindingErrors<HeaderSpaceSheet> errors = mapper.loadDetail(in, HeaderSpaceSheet.class);
             
@@ -285,7 +300,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ColumnSettingSheet> errors = mapper.loadDetail(in, ColumnSettingSheet.class);
             
             ColumnSettingSheet sheet = errors.getTarget();
@@ -337,7 +352,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             ColumnSettingSheet sheet = mapper.load(in, ColumnSettingSheet.class);
             
@@ -355,7 +370,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
             
             MapColumnSettingSheet sheet = errors.getTarget();
@@ -393,7 +408,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             MapColumnSettingSheet sheet = mapper.load(in, MapColumnSettingSheet.class);
             
@@ -412,7 +427,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RecodSettingSheet> errors = mapper.loadDetail(in, RecodSettingSheet.class);
             
             RecodSettingSheet sheet = errors.getTarget();
@@ -451,7 +466,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
             MethodAnnoSheet sheet = errors.getTarget();
@@ -484,7 +499,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<StartedDataPositionSheet> errors = mapper.loadDetail(in, StartedDataPositionSheet.class);
             
             StartedDataPositionSheet sheet = errors.getTarget();
@@ -520,7 +535,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ConcatSheet> errors = mapper.loadDetail(in, ConcatSheet.class);
             
             ConcatSheet sheet = errors.getTarget();
@@ -560,7 +575,7 @@ public class AnnoHorizontalRecordsTest {
             .setRegexLabelText(true);
         
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
             RegexSheet sheet = errors.getTarget();
@@ -614,7 +629,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NestedSheet> errors = mapper.loadDetail(in, NestedSheet.class);
             
             NestedSheet sheet = errors.getTarget();
@@ -665,7 +680,7 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
             
             FormulaSheet sheet = errors.getTarget();
@@ -698,7 +713,7 @@ public class AnnoHorizontalRecordsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<CustomDataPositionSheet> errors = mapper.loadDetail(in, CustomDataPositionSheet.class);
             
             CustomDataPositionSheet sheet = errors.getTarget();
@@ -736,7 +751,7 @@ public class AnnoHorizontalRecordsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_HorizonalRecords.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ArrayColumnsSheet> errors = mapper.loadDetail(in, ArrayColumnsSheet.class);
             
             ArrayColumnsSheet sheet = errors.getTarget();
@@ -1402,8 +1417,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1474,8 +1489,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1502,8 +1517,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1530,8 +1545,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1566,8 +1581,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1643,8 +1658,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1781,8 +1796,8 @@ public class AnnoHorizontalRecordsTest {
                 .name("  鈴木次郎  ").birthday(toUtilDate(toTimestamp("1990-02-28 00:00:00.000"))));
         
         // ファイルへの書き込み
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1883,8 +1898,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -1962,8 +1977,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2065,8 +2080,8 @@ public class AnnoHorizontalRecordsTest {
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2185,8 +2200,8 @@ public class AnnoHorizontalRecordsTest {
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2278,8 +2293,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2352,8 +2367,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2415,8 +2430,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2472,8 +2487,8 @@ public class AnnoHorizontalRecordsTest {
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2631,8 +2646,8 @@ public class AnnoHorizontalRecordsTest {
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2712,8 +2727,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2793,8 +2808,8 @@ public class AnnoHorizontalRecordsTest {
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2906,8 +2921,8 @@ public class AnnoHorizontalRecordsTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -2999,8 +3014,8 @@ public class AnnoHorizontalRecordsTest {
         mapper.getConiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -3057,8 +3072,8 @@ public class AnnoHorizontalRecordsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
         
-        File outFile = new File(OUT_DIR, "anno_HorizonalRecords_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_HorizonalRecords_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -4046,22 +4061,22 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="見出しに空白なし", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<UserRecord> records1;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<UserRecord> records2;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="見出しに空白がある", terminal=RecordTerminal.Border, range=2)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<UserRecord> records3;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="開始位置がずれている", terminal=RecordTerminal.Border, range=3)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<UserRecord> records4;
         
         /**
@@ -4174,27 +4189,27 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="結合セル", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<MergedRecord> mergedRecords;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<HeaderMergedRecord> headerMergedRecords;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="オプションのセル（セルがある）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<OptionalRecord> optionalRecords1;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="オプションのセル（セルがない）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<OptionalRecord> optionalRecords2;
         
         @XlsOrder(value=5)
         @XlsHorizontalRecords(tableLabel="Converterがある", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<ConvertedRecord> convertedRecord;
         
         /**
@@ -4429,7 +4444,7 @@ public class AnnoHorizontalRecordsTest {
         @XlsColumn(columnName="氏名")
         private String name;
         
-        @XlsDateConverter(javaPattern="yyyy年M月d日", lenient=true)
+        @XlsDateTimeConverter(javaPattern="yyyy年M月d日", lenient=true)
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
@@ -4466,15 +4481,15 @@ public class AnnoHorizontalRecordsTest {
     private static class MapColumnSettingSheet {
         
         @XlsHorizontalRecords(tableLabel="マップカラム（文字列）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<MapRecord> mapRecords1;
         
         @XlsHorizontalRecords(tableLabel="マップカラム（Converterあり）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<MapConvertedRecord> mapRecords2;
         
         @XlsHorizontalRecords(tableLabel="マップカラム（終了条件がある）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<MapEndRecord> mapRecords3;
         
         /**
@@ -4679,7 +4694,7 @@ public class AnnoHorizontalRecordsTest {
          */
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="名簿（リスト）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<EmptySkipRecord> skipList;
         
         /**
@@ -4687,7 +4702,7 @@ public class AnnoHorizontalRecordsTest {
          */
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="名簿（集合）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private Set<EmptySkipRecord> skipSet;
         
         /**
@@ -4695,7 +4710,7 @@ public class AnnoHorizontalRecordsTest {
          */
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="名簿（配列）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private EmptySkipRecord[] skipArray;
         
         /**
@@ -4769,7 +4784,7 @@ public class AnnoHorizontalRecordsTest {
         @XlsColumn(columnName="氏名")
         private String name;
         
-        @XlsDateConverter(javaPattern="yyyy年M月d日", excelPattern="yyyy\"年\"m\"月\"d\"日\"")
+        @XlsDateTimeConverter(javaPattern="yyyy年M月d日", excelPattern="yyyy\"年\"m\"月\"d\"日\"")
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         
@@ -4803,37 +4818,37 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Break)
+        @XlsRecordOption(overCase=OverOperate.Break)
         private List<RemainedOverRecord> overBreakRecrods;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<RemainedOverRecord> overInsertRecrods;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Copy)
+        @XlsRecordOption(overCase=OverOperate.Copy)
         private List<RemainedOverRecord> overCopyRecrods;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.None)
+        @XlsRecordOption(remainedCase=RemainedOperate.None)
         private List<RemainedOverRecord> remainedNoneRecrods;
         
         @XlsOrder(value=5)
         @XlsHorizontalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.Clear)
+        @XlsRecordOption(remainedCase=RemainedOperate.Clear)
         private List<RemainedOverRecord> remainedClearRecrods;
         
         @XlsOrder(value=6)
         @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(remainedCase=RemainedOperate.Delete)
         private List<RemainedOverRecord> remainedDeleteRecrods1;
         
         @XlsOrder(value=7)
         @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(remainedCase=RemainedOperate.Delete)
         private List<RemainedOverRecord> remainedDeleteRecrods2;
         
         /**
@@ -5027,7 +5042,7 @@ public class AnnoHorizontalRecordsTest {
          */
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="入力規則（レコードの挿入）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<DataValidationRecord> insertValidationRecrods;
         
         /**
@@ -5035,7 +5050,7 @@ public class AnnoHorizontalRecordsTest {
          */
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="名前の定義", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<NameDefRecord> nameRecords;
         
         /**
@@ -5043,7 +5058,7 @@ public class AnnoHorizontalRecordsTest {
          */
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="入力規則（レコードの削除）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Break, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Break, remainedCase=RemainedOperate.Delete)
         private List<DataValidationRecord> deleteValidationRecrods;
         
         /**
@@ -5051,7 +5066,7 @@ public class AnnoHorizontalRecordsTest {
          */
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="入力規則（レコードの削除）（データなし）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Break, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Break, remainedCase=RemainedOperate.Delete)
         private List<DataValidationRecord> nonDeleteValidationRecrods;
         
         /**
@@ -5059,7 +5074,7 @@ public class AnnoHorizontalRecordsTest {
          */
         @XlsOrder(value=5)
         @XlsHorizontalRecords(tableLabel="入力規則（レコードのコピー）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Delete)
         private List<DataValidationRecord> copyValidationRecrods;
         
         /**
@@ -5253,17 +5268,17 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="コメントがある表（行の追加）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<CommentRecord> insertRecords;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="コメントがある表（行の削除）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Break, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Break, remainedCase=RemainedOperate.Delete)
         private List<CommentRecord> deleteRecords;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="コメントがある表（行のコピー）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Copy)
+        @XlsRecordOption(overCase=OverOperate.Copy)
         private List<CommentRecord> copyRecords;
         
         /**
@@ -5377,7 +5392,7 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="名簿")
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         public List<MethodAnnoRecord> getRecords() {
             return records;
         }
@@ -5392,7 +5407,7 @@ public class AnnoHorizontalRecordsTest {
         }
         
         @XlsHorizontalRecords(tableLabel="出欠")
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         public void setMapRecords(MethodAnnoMapRecord[] mapRecords) {
             this.mapRecords = mapRecords;
         }
@@ -5478,7 +5493,7 @@ public class AnnoHorizontalRecordsTest {
             return birthday;
         }
         
-        @XlsDateConverter(javaPattern="yyyy年M月d日")
+        @XlsDateTimeConverter(javaPattern="yyyy年M月d日")
         public void setBirthday(Date birthday) {
             this.birthday = birthday;
         }
@@ -5679,7 +5694,7 @@ public class AnnoHorizontalRecordsTest {
             private String name;
             
             @XlsColumn(columnName="生年月日")
-            @XlsDateConverter(javaPattern="yyyy年M月d日")
+            @XlsDateTimeConverter(javaPattern="yyyy年M月d日")
             private Date birthDady;
             
             @XlsIgnorable
@@ -5728,12 +5743,12 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="データの開始位置が離れている", terminal=RecordTerminal.Border, headerBottom=2)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<DistantRecord> distantRecords;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border, headerBottom=2)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<HeaderMergedRecord> headerMergedRecords;
         
         /**
@@ -6032,22 +6047,22 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="通常の表")
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<LargeRecord> largeRecords1;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="空のレコードがある表", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<LargeRecord> largeRecords2;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="見出しが結合している表", terminal=RecordTerminal.Border, headerBottom=2)
-        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Clear)
+        @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Clear)
         private List<HeaderMergedLargeRecord> largeRecords3;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="1対1のネスト")
-        @XlsRecordOperator(overCase=OverOperate.Copy)
+        @XlsRecordOption(overCase=OverOperate.Copy)
         private List<OneToOneRecord> oneToOneRecords;
         
         public NestedSheet addRecord1(LargeRecord record) {
@@ -6458,7 +6473,7 @@ public class AnnoHorizontalRecordsTest {
             private String name;
             
             @XlsColumn(columnName="生年月日")
-            @XlsDateConverter(excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
+            @XlsDateTimeConverter(excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
             private Date birthday;
             
             @XlsNestedRecords
@@ -6539,12 +6554,12 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="成績一覧", headerBottom=2, terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<GradeRecord> gradeRecrods;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="出欠確認", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<EntryRecord> entryRecords;
         
         /**
@@ -6728,37 +6743,37 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Break)
+        @XlsRecordOption(overCase=OverOperate.Break)
         private List<RemainedOverRecord> overBreakRecrods;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<RemainedOverRecord> overInsertRecrods;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Copy)
+        @XlsRecordOption(overCase=OverOperate.Copy)
         private List<RemainedOverRecord> overCopyRecrods;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.None)
+        @XlsRecordOption(remainedCase=RemainedOperate.None)
         private List<RemainedOverRecord> remainedNoneRecrods;
         
         @XlsOrder(value=5)
         @XlsHorizontalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.Clear)
+        @XlsRecordOption(remainedCase=RemainedOperate.Clear)
         private List<RemainedOverRecord> remainedClearRecrods;
         
         @XlsOrder(value=6)
         @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(remainedCase=RemainedOperate.Delete)
         private List<RemainedOverRecord> remainedDeleteRecrods1;
         
         @XlsOrder(value=7)
         @XlsHorizontalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(remainedCase=RemainedOperate.Delete)
         private List<RemainedOverRecord> remainedDeleteRecrods2;
         
         /**
@@ -6879,32 +6894,32 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="挿入より上にある表", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Break)
+        @XlsRecordOption(overCase=OverOperate.Break)
         List<Record> insertAbobeRecords; 
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="挿入する表", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         List<Record> insertRecords;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="挿入より下にある表", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Break)
+        @XlsRecordOption(overCase=OverOperate.Break)
         List<Record> insertBelowRecords;
         
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="削除より上にある表", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.None)
+        @XlsRecordOption(remainedCase=RemainedOperate.None)
         List<Record> deleteAbobeRecords; 
         
         @XlsOrder(value=5)
         @XlsHorizontalRecords(tableLabel="削除する表", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(remainedCase=RemainedOperate.Delete)
         List<Record> deleteRecords;
         
         @XlsOrder(value=6)
         @XlsHorizontalRecords(tableLabel="削除より下にある表", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(remainedCase=RemainedOperate.None)
+        @XlsRecordOption(remainedCase=RemainedOperate.None)
         List<Record> deleteBelowRecords;
         
         /**
@@ -7202,17 +7217,17 @@ public class AnnoHorizontalRecordsTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="配列カラム（文字列）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<NormalRecord> normal;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="配列カラム（結合がある）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<MergedRecord> merged;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="配列カラム（型変換）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<ConvertRecord> converted;
         
         /**
@@ -7319,7 +7334,7 @@ public class AnnoHorizontalRecordsTest {
             @XlsColumn(columnName="氏名")
             private String name;
             
-            @XlsArrayColumns(columnName="連絡先", size=3, itemMerged=true)
+            @XlsArrayColumns(columnName="連絡先", size=3, elementMerged=true)
             private List<String> contacted;
             
             @XlsIgnorable
@@ -7360,7 +7375,7 @@ public class AnnoHorizontalRecordsTest {
             private String name;
             
             @XlsArrayColumns(columnName="候補日", size=3)
-            @XlsDateConverter(javaPattern="yyyy\"年\"M\"月\"d\"日", excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
+            @XlsDateTimeConverter(javaPattern="yyyy\"年\"M\"月\"d\"日", excelPattern="yyyy\"年\"m\"月\"d\"日\";@")
             private List<LocalDate> dates;
             
             @XlsIgnorable

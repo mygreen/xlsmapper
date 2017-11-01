@@ -5,13 +5,13 @@ import java.lang.annotation.Annotation;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
 
 /**
- * {@link XlsLabelledArrayCell}を{@link IterateTablesProcessor}にブリッジするためのアノテーションクラス。
+ * {@link XlsLabelledArrayCells}を{@link IterateTablesProcessor}にブリッジするためのアノテーションクラス。
  * 
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
-public class XlsLabelledArrayCellForIterateTable implements XlsLabelledArrayCell {
+public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCells {
     
     private final Class<? extends Annotation> annotationType;
     
@@ -20,9 +20,9 @@ public class XlsLabelledArrayCellForIterateTable implements XlsLabelledArrayCell
     private final String labelAddress;
     
     private final int size;
-    private final boolean itemMerged;
+    private final boolean elementMerged;
     private final ArrayDirection direction;
-    private final Class<?> itemClass;
+    private final Class<?> elementClass;
     private final boolean optional;
     private final int range;
     private final LabelledCellType type;
@@ -30,16 +30,16 @@ public class XlsLabelledArrayCellForIterateTable implements XlsLabelledArrayCell
     private final boolean labelMarged;
     
     
-    public XlsLabelledArrayCellForIterateTable(XlsLabelledArrayCell anno, int labelRow, int labelColumn, String labelAddress) {
+    public XlsLabelledArrayCellsForIterateTable(XlsLabelledArrayCells anno, int labelRow, int labelColumn, String labelAddress) {
         this.annotationType = anno.annotationType();
         this.labelRow = labelRow;
         this.labelColumn = labelColumn;
         this.labelAddress = labelAddress;
         
         this.size = anno.size();
-        this.itemMerged = anno.itemMerged();
+        this.elementMerged = anno.elementMerged();
         this.direction = anno.direction();
-        this.itemClass = anno.itemClass();
+        this.elementClass = anno.elementClass();
         this.optional = anno.optional();
         this.range = anno.range();
         this.type = anno.type();
@@ -59,8 +59,8 @@ public class XlsLabelledArrayCellForIterateTable implements XlsLabelledArrayCell
     }
     
     @Override
-    public boolean itemMerged() {
-        return itemMerged;
+    public boolean elementMerged() {
+        return elementMerged;
     }
     
     @Override
@@ -69,8 +69,8 @@ public class XlsLabelledArrayCellForIterateTable implements XlsLabelledArrayCell
     }
     
     @Override
-    public Class<?> itemClass() {
-        return itemClass;
+    public Class<?> elementClass() {
+        return elementClass;
     }
     
     @Override

@@ -11,15 +11,15 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gh.mygreen.xlsmapper.annotation.XlsArrayCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
-import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 /**
@@ -60,7 +60,7 @@ public class FieldAccessorFactory {
      * フィールド情報を元にインスタンスを作成する。
      * @param field フィールド
      * @return フィールド情報を元に組み立てられたインスタンス。
-     * @throws IllegalArgumentException {@literal field == null
+     * @throws IllegalArgumentException {@literal field == null.}
      */
     public FieldAccessor create(final Field field) {
         
@@ -110,8 +110,8 @@ public class FieldAccessorFactory {
             accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             
         } else if(accessor.hasAnnotation(XlsArrayColumns.class)
-                || accessor.hasAnnotation(XlsArrayCell.class)
-                || accessor.hasAnnotation(XlsLabelledArrayCell.class)
+                || accessor.hasAnnotation(XlsArrayCells.class)
+                || accessor.hasAnnotation(XlsLabelledArrayCells.class)
                 || accessor.hasAnnotation(XlsIterateTables.class)){
             // リストや配列形式の場合
             accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
@@ -134,7 +134,7 @@ public class FieldAccessorFactory {
      * メソッド情報を元にインスタンスを作成する。
      * @param method メソッド情報
      * @return メソッド情報を元に組み立てられたインスタンス。
-     * @throws IllegalArgumentException {@literal method == null
+     * @throws IllegalArgumentException {@literal method == null.}
      * @throws IllegalArgumentException {@literal methodの名称がsetterまたはgetterの書式でない場合。}
      */
     public FieldAccessor create(final Method method) {
@@ -232,8 +232,8 @@ public class FieldAccessorFactory {
             accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             
         } else if(accessor.hasAnnotation(XlsArrayColumns.class)
-                || accessor.hasAnnotation(XlsArrayCell.class)
-                || accessor.hasAnnotation(XlsLabelledArrayCell.class)
+                || accessor.hasAnnotation(XlsArrayCells.class)
+                || accessor.hasAnnotation(XlsLabelledArrayCells.class)
                 || accessor.hasAnnotation(XlsIterateTables.class)){
             // リストや配列形式の場合
             accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());

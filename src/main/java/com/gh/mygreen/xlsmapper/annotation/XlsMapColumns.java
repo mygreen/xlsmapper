@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 
 /**
  * アノテーション{@link XlsHorizontalRecords}や{@link XlsVerticalRecords}で指定されたレコード用のクラスにおいて、
@@ -156,7 +157,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
  * }
  * </code></pre>
  *
- * @version 1.2
+ * @version 2.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  */
@@ -208,5 +209,13 @@ public @interface XlsMapColumns {
      * マップの値のクラスを指定します。
      * <p>省略した場合、定義されたたGenericsの情報から取得します。
      */
-    Class<?> itemClass() default Object.class;
+    Class<?> valueClass() default Object.class;
+    
+    /**
+     * 属性{@link #previousColumnName()}、{@link #nextColumnName()}で指定したカラム（セル）が見つからない場合、trueと設定すると無視して処理を続行します。
+     * <p>falseを指定し、セルが見つからない場合は、例外{@link CellNotFoundException}がスローされます。</p>
+     * @since 2.0
+     * @return trueの場合、該当するカラム（セル）が見つからないときは無視して処理を続行します。
+     */
+    boolean optional() default false;
 }

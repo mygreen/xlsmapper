@@ -30,7 +30,7 @@ public class RecordMethodFacatory {
      * コンストラクタ
      * @param annoReader XMLで定義したアノテーション情報を提供するクラス。
      * @param config システム設定
-     * @throws NullPointerException {@literal annoReader == null or config == null.}
+     * @throws IllegalArgumentException {@literal annoReader == null or config == null.}
      */
     public RecordMethodFacatory(final AnnotationReader annoReader, final Configuration config) {
         ArgUtils.notNull(annoReader, "annoReader");
@@ -41,10 +41,11 @@ public class RecordMethodFacatory {
     }
     
     /**
+     * レコードクラスを元に、{@link RecordMethodCache}のインスタンスを組み立てる。
      * 
      * @param recordClass レコードクラス
-     * @return
-     * @throws NullPointerException {@link recordClass == null}
+     * @return {@link RecordMethodCache}のインスタンス
+     * @throws IllegalArgumentException {@literal recordClass == null}
      */
     public RecordMethodCache create(final Class<?> recordClass) {
         

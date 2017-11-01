@@ -611,7 +611,7 @@ public class FieldAccessorFactoryTest {
             
             assertThatThrownBy(() -> builder.create(method))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(String.format("'%s#%s' は、アクセッサーの形式でないメソッドです。", SampleCalss.class.getName(), "executeTest"));
+                .hasMessage(String.format("'%s#%s'は、アクセッサーの形式でないメソッドです。", SampleCalss.class.getName(), "executeTest"));
             
         }
         

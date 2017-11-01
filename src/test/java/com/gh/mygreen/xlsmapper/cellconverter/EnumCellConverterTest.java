@@ -25,12 +25,12 @@ import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsEnumConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -120,7 +120,7 @@ public class EnumCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[列挙型]:Enum型（英字）1 - B8の値'Blue'は、何れかの値「Red, Green, Yellow」で設定してください。"));
+                assertThat(message, is("[列挙型]:Enum型（英字）1 - セル(B8)の値'Blue'は、何れかの値[Red, Green, Yellow]で設定してください。"));
                 
             }
             
@@ -129,7 +129,7 @@ public class EnumCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[列挙型]:Enum型（英字）2 - C8の値'Remove'は、何れかの値「Refer, Edit, Delete」で設定してください。"));
+                assertThat(message, is("[列挙型]:Enum型（英字）2 - セル(C8)の値'Remove'は、何れかの値[Refer, Edit, Delete]で設定してください。"));
             
             }
             
@@ -140,7 +140,7 @@ public class EnumCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[列挙型]:Enum型（英字）1 - B9の値'yellow'は、何れかの値「Red, Green, Yellow」で設定してください。"));
+                assertThat(message, is("[列挙型]:Enum型（英字）1 - セル(B9)の値'yellow'は、何れかの値[Red, Green, Yellow]で設定してください。"));
                 
             }
             
@@ -149,7 +149,7 @@ public class EnumCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[列挙型]:Enum型（英字）2 - C9の値'edit'は、何れかの値「Refer, Edit, Delete」で設定してください。"));
+                assertThat(message, is("[列挙型]:Enum型（英字）2 - セル(C9)の値'edit'は、何れかの値[Refer, Edit, Delete]で設定してください。"));
             
             }
             
@@ -160,7 +160,7 @@ public class EnumCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[列挙型]:Enum型（英字）1 - B10の値' Yellow  'は、何れかの値「Red, Green, Yellow」で設定してください。"));
+                assertThat(message, is("[列挙型]:Enum型（英字）1 - セル(B10)の値' Yellow  'は、何れかの値[Red, Green, Yellow]で設定してください。"));
                 
             }
             
@@ -169,7 +169,7 @@ public class EnumCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[列挙型]:Enum型（英字）2 - C10の値' Edit 'は、何れかの値「Refer, Edit, Delete」で設定してください。"));
+                assertThat(message, is("[列挙型]:Enum型（英字）2 - セル(C10)の値' Edit 'は、何れかの値[Refer, Edit, Delete]で設定してください。"));
             
             }
             
@@ -197,7 +197,7 @@ public class EnumCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[列挙型]:Enum型（英字） - B17の値'Blue'は、何れかの値「Red, Green, Yellow」で設定してください。"));
+                assertThat(message, is("[列挙型]:Enum型（英字） - セル(B17)の値'Blue'は、何れかの値[Red, Green, Yellow]で設定してください。"));
                 
             }
             
@@ -206,7 +206,7 @@ public class EnumCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[列挙型]:Enum型（日本語） - C17の値'追加'は、何れかの値「参照, 編集, 削除」で設定してください。"));
+                assertThat(message, is("[列挙型]:Enum型（日本語） - セル(C17)の値'追加'は、何れかの値[参照, 編集, 削除]で設定してください。"));
                 
             }
             
@@ -422,17 +422,17 @@ public class EnumCellConverterTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="列挙型（アノテーションなし）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="列挙型（初期値、書式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="列挙型（数式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormulaRecord> formulaRecords;
         
         /**
@@ -547,7 +547,7 @@ public class EnumCellConverterTest {
         
         @XlsDefaultValue("参照")
         @XlsTrim
-        @XlsEnumConverter(ignoreCase=true, valueMethodName="localeName")
+        @XlsEnumConverter(ignoreCase=true, selector="localeName")
         @XlsColumn(columnName="Enum型（日本語）")
         private Operate operate;
         
@@ -599,7 +599,7 @@ public class EnumCellConverterTest {
         @XlsFormula("IF(\\$D{rowNumber}=\"R\",\"Red\",\"\")")
         private Color color;
         
-        @XlsEnumConverter(ignoreCase=true, valueMethodName="localeName")
+        @XlsEnumConverter(ignoreCase=true, selector="localeName")
         @XlsColumn(columnName="Enum型（日本語）")
         @XlsFormula("IF(\\$D{rowNumber}=\"R\",\"参照\",\"\")")
         private Operate operate;

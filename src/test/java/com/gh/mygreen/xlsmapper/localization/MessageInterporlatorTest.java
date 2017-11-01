@@ -1,4 +1,4 @@
-package com.gh.mygreen.xlsmapper.validation;
+package com.gh.mygreen.xlsmapper.localization;
 
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static org.hamcrest.Matchers.*;
@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+
+import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
 
 /**
  * {@link MessageInterpolator}のテスタ

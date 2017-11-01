@@ -66,7 +66,7 @@ public class StringCellConverterFactory extends AbstractCellConverterFactorySupp
     
     public class StringCellConverter extends AbstractCellConverter<String> {
         
-        public StringCellConverter(final FieldAccessor field, final Configuration config) {
+        private StringCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

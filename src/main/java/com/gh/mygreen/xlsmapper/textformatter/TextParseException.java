@@ -32,7 +32,7 @@ public class TextParseException extends RuntimeException {
     private final Map<String, Object> errorVariables = new HashMap<>();
     
     /**
-     * 
+     * 文字列をオブジェクトへパース時に発生した例外を指定するコンストラクタ。
      * @param fromText パース対象の文字列
      * @param toType パース先のクラスタイプ
      * @param error パースする際に発生した冷害
@@ -42,7 +42,7 @@ public class TextParseException extends RuntimeException {
     }
     
     /**
-     * 
+     * 文字列をオブジェクトへパース時に発生した例外を指定し、さらにメッセージ変数を指定するコンストラクタ。
      * @param fromText パース対象の文字列
      * @param toType パース先のクラスタイプ
      * @param error パースする際に発生した例外

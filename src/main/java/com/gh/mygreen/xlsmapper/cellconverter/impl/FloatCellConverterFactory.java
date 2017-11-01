@@ -34,7 +34,7 @@ public class FloatCellConverterFactory extends AbstractNumberCellConverterFactor
         
         private final FloatCellConverterFactory convererFactory;
         
-        public FloatCellConverter(final FieldAccessor field, final Configuration config,
+        private FloatCellConverter(final FieldAccessor field, final Configuration config,
                 final FloatCellConverterFactory convererFactory) {
             super(field, config);
             this.convererFactory = convererFactory;

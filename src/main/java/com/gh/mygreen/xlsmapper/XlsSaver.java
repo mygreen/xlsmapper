@@ -26,10 +26,10 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxy;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxyComparator;
 import com.gh.mygreen.xlsmapper.fieldprocessor.SavingFieldProcessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
@@ -171,7 +171,7 @@ public class XlsSaver {
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public SheetBindingErrorsStore<Object> saveMultipleDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs)
+    public MultipleSheetBindingErrors<Object> saveMultipleDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs)
             throws XlsMapperException, IOException {
         
         ArgUtils.notNull(templateXlsIn, "templateXlsIn");
@@ -180,7 +180,7 @@ public class XlsSaver {
         
         final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));
         
-        final SheetBindingErrorsStore<Object> multipleResult = new SheetBindingErrorsStore<>();
+        final MultipleSheetBindingErrors<Object> multipleResult = new MultipleSheetBindingErrors<>();
         
         final Workbook book;
         try {

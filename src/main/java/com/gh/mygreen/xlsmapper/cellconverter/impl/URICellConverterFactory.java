@@ -70,7 +70,7 @@ public class URICellConverterFactory extends AbstractCellConverterFactorySupport
     
     public class URICellConverter extends AbstractCellConverter<URI> {
         
-        public URICellConverter(final FieldAccessor field, final Configuration config) {
+        private URICellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

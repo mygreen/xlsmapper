@@ -8,7 +8,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 
 
 /**

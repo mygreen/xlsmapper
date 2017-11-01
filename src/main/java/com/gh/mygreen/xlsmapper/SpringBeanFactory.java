@@ -1,5 +1,7 @@
 package com.gh.mygreen.xlsmapper;
 
+import java.lang.reflect.Constructor;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,10 @@ public class SpringBeanFactory implements BeanFactory<Class<?>, Object>, Applica
             // 通常のBeanクラスの場合
             Object obj;
             try {
-                obj = clazz.newInstance();
+                Constructor<?> cons = clazz.getDeclaredConstructor();
+                cons.setAccessible(true);
+                obj = cons.newInstance();
+                
             } catch (ReflectiveOperationException  e) {
                 throw new RuntimeException(String.format("fail create Bean instance of '%s'", clazz.getName()), e);
             }
@@ -89,6 +94,10 @@ public class SpringBeanFactory implements BeanFactory<Class<?>, Object>, Applica
             this.beanFactory = applicationContext.getAutowireCapableBeanFactory();
         }
         
+    }
+    
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
     
     @Override

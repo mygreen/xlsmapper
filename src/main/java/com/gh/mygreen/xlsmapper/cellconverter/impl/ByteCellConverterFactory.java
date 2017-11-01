@@ -37,12 +37,12 @@ public class ByteCellConverterFactory extends AbstractNumberCellConverterFactory
         
         private final ByteCellConverterFactory convererFactory;
         
-        public ByteCellConverter(final FieldAccessor field, final Configuration config,
+        private ByteCellConverter(final FieldAccessor field, final Configuration config,
                 final ByteCellConverterFactory convererFactory) {
             super(field, config);
             this.convererFactory = convererFactory;
         }
-
+        
         @Override
         protected Byte convertTypeValue(final BigDecimal value) {
             return convererFactory.convertTypeValue(value);

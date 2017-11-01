@@ -82,7 +82,7 @@ public @interface XlsListener {
     
     /**
      * リスナークラスの指定。
-     * @return
+     * @return 任意の実装クラスを指定します。
      */
     Class<?> listenerClass();
     

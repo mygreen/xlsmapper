@@ -38,7 +38,7 @@ public @interface XlsArrayColumns {
      * 配列またはリスト要素の値のクラスを指定します。
      * <p>省略した場合、定義されたたGenericsの情報から取得します。
      */
-    Class<?> itemClass() default Object.class;
+    Class<?> elementClass() default Object.class;
     
     /**
      * 値のセルが結合しているかどうか考慮するかどうか指定します。
@@ -50,12 +50,12 @@ public @interface XlsArrayColumns {
      * 
      * @return trueの場合、値のセルが結合されていることを考慮する。
      */
-    boolean itemMerged() default false;
+    boolean elementMerged() default false;
     
     /**
-     * 該当するカラム（セル）が見つからない場合、trueと設定すると無視して処理を続行します。
+     * 属性{@link #columnName()}で指定したカラム（セル）が見つからない場合、trueと設定すると無視して処理を続行します。
      * <p>falseを指定し、セルが見つからない場合は、例外{@link CellNotFoundException}がスローされます。</p>
-     * @return 
+     * @return trueの場合、該当するカラム（セル）が見つからないときは無視して処理を続行します。
      */
     boolean optional() default false;
     

@@ -1,7 +1,7 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 
 
 /**

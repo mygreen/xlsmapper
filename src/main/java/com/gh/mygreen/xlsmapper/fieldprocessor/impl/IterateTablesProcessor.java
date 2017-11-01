@@ -19,8 +19,8 @@ import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecordsForIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
-import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCell;
-import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCellForIterateTable;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCellsForIterateTable;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCellForIterateTable;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
@@ -32,11 +32,11 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
 import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 
@@ -257,17 +257,17 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     private void loadSingleLabelledArrayCell(final Sheet sheet, final Object tableObj, 
             final Cell headerCell, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
-        final LabelledArrayCellProcessor labelledArrayCellProcessor = 
-                (LabelledArrayCellProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsLabelledArrayCell.class);
+        final LabelledArrayCellsProcessor labelledArrayCellProcessor = 
+                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsLabelledArrayCells.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
-                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCell.class)
+                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)
                 .stream()
                 .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
         
         for(FieldAccessor property : properties) {
-            final XlsLabelledArrayCell anno = property.getAnnotation(XlsLabelledArrayCell.class).get();
+            final XlsLabelledArrayCells anno = property.getAnnotation(XlsLabelledArrayCells.class).get();
             
             Cell titleCell = null;
             try {
@@ -284,7 +284,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 }
             }
             
-            final XlsLabelledArrayCell wrapAnno = new XlsLabelledArrayCellForIterateTable(
+            final XlsLabelledArrayCells wrapAnno = new XlsLabelledArrayCellsForIterateTable(
                     anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
                     POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
             
@@ -531,18 +531,18 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     private void saveSingleLabelledArrayCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
-        final LabelledArrayCellProcessor labelledArrayCellProcessor = 
-                (LabelledArrayCellProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsLabelledArrayCell.class);
+        final LabelledArrayCellsProcessor labelledArrayCellProcessor = 
+                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsLabelledArrayCells.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
-                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCell.class)
+                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)
                 .stream()
                 .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
         
         for(FieldAccessor property : properties) {
             
-            final XlsLabelledArrayCell anno = property.getAnnotation(XlsLabelledArrayCell.class).get();
+            final XlsLabelledArrayCells anno = property.getAnnotation(XlsLabelledArrayCells.class).get();
             
             Cell titleCell = null;
             try {
@@ -559,7 +559,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 }
             }
             
-            final XlsLabelledArrayCell labelledCell = new XlsLabelledArrayCellForIterateTable(
+            final XlsLabelledArrayCells labelledCell = new XlsLabelledArrayCellsForIterateTable(
                     anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
                     POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
             

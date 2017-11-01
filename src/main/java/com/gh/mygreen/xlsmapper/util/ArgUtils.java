@@ -125,4 +125,24 @@ public class ArgUtils {
         
     }
     
+    /**
+     * 検証対象の値が、指定したクラスを継承しているかどうか検証する。
+     * 
+     * @since 2.0
+     * @param arg 検証対象の値
+     * @param clazz 親クラス
+     * @param name 検証対象の引数の名前
+     */
+    public static void instanceOf(final Object arg, final Class<?> clazz, final String name) {
+        
+        if(arg == null) {
+            throw new IllegalArgumentException(String.format("%s should not be null.", name));
+        }
+        
+        if(!clazz.isAssignableFrom(arg.getClass())) {
+            throw new IllegalArgumentException(String.format("%s should not be class with '%s'.", name, clazz.getName()));
+        }
+        
+    }
+    
 }

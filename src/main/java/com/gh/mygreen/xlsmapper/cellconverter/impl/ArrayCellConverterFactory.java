@@ -69,7 +69,7 @@ public class ArrayCellConverterFactory extends AbstractCellConverterFactorySuppo
     
     public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
         
-        public ArrayCellConverter(final FieldAccessor field, final Configuration config) {
+        private ArrayCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -103,10 +103,10 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * 
  * <p>続いて、読み込み時に作成したシート用のマッピングクラスに、書き込み時の設定を付け加えるために修正します。</p>
  * <ul>
- *   <li>セル「Date」の書き込み時の書式を指定するために、アノテーション {@link XlsDateConverter} に付与します。
- *     <br>属性 {@link XlsDateConverter#excelPattern()} でExcelのセルの書式を設定します。
+ *   <li>セル「Date」の書き込み時の書式を指定するために、アノテーション {@link XlsDateTimeConverter} に付与します。
+ *     <br>属性 {@link XlsDateTimeConverter#excelPattern()} でExcelのセルの書式を設定します。
  *   </li>
- *   <li>表「User List」のレコードを追加する操作を指定するために、アノテーションの属性 {@link XlsRecordOperator#overCase()}を指定します。
+ *   <li>表「User List」のレコードを追加する操作を指定するために、アノテーションの属性 {@link XlsRecordOption#overCase()}を指定します。
  *     <br>テンプレート上は、レコードが1行分しかないですが、実際に書き込むレコード数が2つ以上の場合、足りなくなるため、その際のシートの操作方法を指定します。
  *     <br>今回の{@link OverOperate#Insert}は、行の挿入を行います。
  *   </li>
@@ -118,7 +118,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * public class UserSheet {
  *
  *     {@literal @XlsLabelledCell(label="Date", type=LabelledCellType.Right)}
- *     {@literal @XlsDateConverter(excelPattern="yyyy/m/d")}
+ *     {@literal @XlsDateTimeConverter(excelPattern="yyyy/m/d")}
  *     Date createDate;
  *     
  *     {@literal @XlsHorizontalRecords(tableLabel="User List")}
@@ -193,10 +193,10 @@ public class XlsMapper {
      * システム情報を設定します。
      * @param configuration システム情報
      */
-    public void setConiguration(Configuration config) {
-        this.configuration = config;
-        getLoader().setConfiguration(config);
-        getSaver().setConfiguration(config);
+    public void setConiguration(Configuration configuration) {
+        this.configuration = configuration;
+        getLoader().setConfiguration(configuration);
+        getSaver().setConfiguration(configuration);
     }
     
     /**
@@ -277,7 +277,7 @@ public class XlsMapper {
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException ファイルの読み込みに失敗した場合
      */
-    public <P> SheetBindingErrorsStore<P> loadMultipleDetail(final InputStream xlsIn, final Class<P> clazz) 
+    public <P> MultipleSheetBindingErrors<P> loadMultipleDetail(final InputStream xlsIn, final Class<P> clazz) 
             throws XlsMapperException, IOException {
         return loader.loadMultipleDetail(xlsIn, clazz);
     }
@@ -308,11 +308,11 @@ public class XlsMapper {
      * @return マッピングした複数のシートの結果。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
      * @throws IllegalArgumentException {@literal xlsIn == null or classes == null}
-     * @throws IllegalArgumentException {@link calsses.length == 0}
+     * @throws IllegalArgumentException {@literal calsses.length == 0}
      * @throws IOException ファイルの読み込みに失敗した場合
      * @throws XlsMapperException マッピングに失敗した場合
      */
-    public SheetBindingErrorsStore<Object> loadMultipleDetail(final InputStream xlsIn, final Class<?>[] classes)
+    public MultipleSheetBindingErrors<Object> loadMultipleDetail(final InputStream xlsIn, final Class<?>[] classes)
             throws XlsMapperException, IOException {
         return loader.loadMultipleDetail(xlsIn, classes);
     }
@@ -328,8 +328,8 @@ public class XlsMapper {
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public void save(final InputStream templateXlsIn, final OutputStream xlsOut, final Object beansObj) throws XlsMapperException, IOException {
-        saver.save(templateXlsIn, xlsOut, beansObj);
+    public void save(final InputStream templateXlsIn, final OutputStream xlsOut, final Object beanObj) throws XlsMapperException, IOException {
+        saver.save(templateXlsIn, xlsOut, beanObj);
     }
     
     /**
@@ -339,29 +339,29 @@ public class XlsMapper {
      * @param <P> マッピング対象のクラスタイプ
      * @param templateXlsIn 雛形となるExcelファイルの入力
      * @param xlsOut 出力先のストリーム
-     * @param beanObj 書き込むBeanオブジェクト
+     * @param beanObjs 書き込むBeanオブジェクト
      * @return マッピング結果。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
      * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public <P> SheetBindingErrors<P> saveDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final P beansObj) throws XlsMapperException, IOException {
-        return saver.saveDetail(templateXlsIn, xlsOut, beansObj);
+    public <P> SheetBindingErrors<P> saveDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final P beanObjs) throws XlsMapperException, IOException {
+        return saver.saveDetail(templateXlsIn, xlsOut, beanObjs);
     }
     
     /**
      * 複数のオブジェクトをそれぞれのシートへ保存する。
      * @param templateXlsIn 雛形となるExcelファイルの入力
      * @param xlsOut xlsOut 出力先のストリーム
-     * @param beanObjs 書き込むオブジェクトの配列。
+     * @param beanObj 書き込むオブジェクトの配列。
      * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
      * @throws IllegalArgumentException {@literal }
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public void saveMultiple(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs) throws XlsMapperException, IOException {
-        saver.saveMultiple(templateXlsIn, xlsOut, beanObjs);
+    public void saveMultiple(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObj) throws XlsMapperException, IOException {
+        saver.saveMultiple(templateXlsIn, xlsOut, beanObj);
     }
     
     /**
@@ -376,7 +376,7 @@ public class XlsMapper {
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
-    public SheetBindingErrorsStore<Object> saveMultipleDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs) throws XlsMapperException, IOException {
+    public MultipleSheetBindingErrors<Object> saveMultipleDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs) throws XlsMapperException, IOException {
         return saver.saveMultipleDetail(templateXlsIn, xlsOut, beanObjs);
     }
     

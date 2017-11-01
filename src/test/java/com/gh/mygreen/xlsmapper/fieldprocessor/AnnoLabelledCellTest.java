@@ -52,6 +52,21 @@ public class AnnoLabelledCellTest {
     }
     
     /**
+     * 読み込み用のファイルの定義
+     */
+    private File inputFile = new File("src/test/data/anno_LabelledCell.xlsx");
+    
+    /**
+     * 出力用のテンプレートファイルの定義
+     */
+    private File templateFile = new File("src/test/data/anno_LabelledCell_template.xlsx");
+    
+    /**
+     * 出力用のファイル名の定義
+     */
+    private String outFilename = "anno_LabelledCell_out.xlsx";
+    
+    /**
      * 読み込みテスト - 通常のテスト
      */
     @Test
@@ -59,7 +74,7 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
             NormalSheet sheet = errors.getTarget();
@@ -98,7 +113,7 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             mapper.load(in, NormalSheet.class);
             
@@ -115,7 +130,7 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             mapper.load(in, NotFounceLabelCellSheet.class);
             
             fail();
@@ -132,7 +147,7 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             mapper.load(in, InvalidAnnoSheet1.class);
             
             fail();
@@ -150,7 +165,7 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             mapper.load(in, InvalidAnnoSheet2.class);
             
             fail();
@@ -169,7 +184,7 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
             MethodAnnoSheet sheet = errors.getTarget();
@@ -207,7 +222,7 @@ public class AnnoLabelledCellTest {
         mapper.getConiguration().setRegexLabelText(false)
             .setNormalizeLabelText(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
             RegexSheet sheet = errors.getTarget();
@@ -220,7 +235,7 @@ public class AnnoLabelledCellTest {
         // エラー確認（正規化が無効）
         mapper.getConiguration().setRegexLabelText(true)
             .setNormalizeLabelText(false);
-        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
             RegexSheet sheet = errors.getTarget();
@@ -233,7 +248,7 @@ public class AnnoLabelledCellTest {
         // 正規表現、正規化の両方が有効
         mapper.getConiguration().setRegexLabelText(true)
             .setNormalizeLabelText(true);
-        try(InputStream in = new FileInputStream("src/test/data/anno_LabelledCell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
             
             RegexSheet sheet = errors.getTarget();
@@ -304,8 +319,8 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_LabelledCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -373,8 +388,8 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_LabelledCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -455,8 +470,8 @@ public class AnnoLabelledCellTest {
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
-        File outFile = new File(OUT_DIR, "anno_LabelledCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -503,8 +518,8 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_LabelledCell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_LabelledCell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);

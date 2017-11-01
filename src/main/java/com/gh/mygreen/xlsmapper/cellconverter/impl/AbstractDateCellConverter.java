@@ -75,14 +75,14 @@ public abstract class AbstractDateCellConverter<T extends Date> extends Abstract
     
     /**
      * その型における型に変換する
-     * @param value 変換対象の値
+     * @param date 変換対象の値
      * @return 変換後の値
      */
     protected abstract T convertTypeValue(Date date);
     
     /**
      * Excelの書式を設定する
-     * @param excelPattern
+     * @param excelPattern Excelの書式
      */
     public void setExcelPattern(String excelPattern) {
         this.excelPattern = excelPattern;

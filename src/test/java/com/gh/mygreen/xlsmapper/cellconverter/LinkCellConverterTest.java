@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Hyperlink;
@@ -31,8 +32,8 @@ import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
@@ -158,7 +159,7 @@ public class LinkCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[リンク型]:URI - B13の値'  http://www.google.co.jp/  'は、URI(Uniform Resource Identifier)の形式として不正です。"));
+                assertThat(message, is("[リンク型]:URI - セル(B13)の値'  http://www.google.co.jp/  'は、URI(Uniform Resource Identifier)の形式として不正です。"));
             }
             
             assertThat(record.link, is(new CellLink(null, "  http://www.google.co.jp/  ")));
@@ -175,7 +176,7 @@ public class LinkCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[リンク型]:URI - B15の値'   'は、URI(Uniform Resource Identifier)の形式として不正です。"));
+                assertThat(message, is("[リンク型]:URI - セル(B15)の値'   'は、URI(Uniform Resource Identifier)の形式として不正です。"));
                 
             }
             assertThat(record.link, is(new CellLink(null, "   ")));
@@ -491,17 +492,17 @@ public class LinkCellConverterTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="リンク型（アノテーションなし）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="リンク型（初期値、書式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="リンク型（数式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormulaRecord> formulaRecords;
         
         /**
@@ -697,7 +698,7 @@ public class LinkCellConverterTest {
             
             // ダミーでリンクも設定する
             final CreationHelper helper = cell.getSheet().getWorkbook().getCreationHelper();
-            final Hyperlink link = helper.createHyperlink(Hyperlink.LINK_URL);
+            final Hyperlink link = helper.createHyperlink(HyperlinkType.URL);
             link.setAddress(comment);
             cell.setHyperlink(link);
             

@@ -15,12 +15,12 @@ import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 /**
@@ -117,12 +117,10 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
      * @since 2.0
      * @param error 例外情報
      * @param cell 例外が発生したセル
-     * @param accessor フィールド情報
      * @param cellValue マッピングに失敗した値
      * @return マッピングに失敗したときの例外のインスタンス
      */
-    public TypeBindException newTypeBindExceptionWithParse(final Exception error, 
-            final Cell cell, final Object cellValue) {
+    public TypeBindException newTypeBindExceptionWithParse(final Exception error,  final Cell cell, final Object cellValue) {
         
         final String message = MessageBuilder.create("cell.typeBind.failParse")
                 .var("property", field.getNameWithClass())
@@ -289,7 +287,7 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
     
     /**
      * セルの設定 - セルを縮小して表示するかどうか設定します。
-     * @param wrapText trueの場合、セルを縮小して表示します。
+     * @param shrinktToFit trueの場合、セルを縮小して表示します。
      */
     public void setShrinktToFit(boolean shrinktToFit) {
         this.shrinktToFit = shrinktToFit;

@@ -206,7 +206,6 @@ public class ClassUtils {
      * クラスから、指定したboolean型のgetterメソッド情報を取得します。
      * @param targetClass 抽出先のクラス
      * @param propertyName プロパティ名
-     * @param propertyType プロパティタイプ
      * @return 存在しない場合、空を返します。
      */
     public static Optional<Method> extractBooleanGetter(final Class<?> targetClass, final String propertyName) {

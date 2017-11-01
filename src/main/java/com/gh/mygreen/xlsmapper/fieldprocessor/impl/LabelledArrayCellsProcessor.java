@@ -15,39 +15,39 @@ import com.gh.mygreen.xlsmapper.SavingWorkObject;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.ArrayDirection;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
-import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessType;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellHandler.LabelInfo;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 
 /**
- * {@link XlsLabelledArrayCell}を処理するプロセッサ。
+ * {@link XlsLabelledArrayCells}を処理するプロセッサ。
  *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
-public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabelledArrayCell> {
+public class LabelledArrayCellsProcessor extends AbstractFieldProcessor<XlsLabelledArrayCells> {
 
     @Override
-    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCell anno,
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCells anno,
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work)
             throws XlsMapperException {
         
         final Class<?> clazz = accessor.getType();
         if(Collection.class.isAssignableFrom(clazz)) {
             
-            Class<?> itemClass = anno.itemClass();
-            if(itemClass == Object.class) {
-                itemClass = accessor.getComponentType();
+            Class<?> elementClass = anno.elementClass();
+            if(elementClass == Object.class) {
+                elementClass = accessor.getComponentType();
             }
             
-            List<?> value = loadValues(sheet, beansObj, anno, accessor, itemClass, config, work);
+            List<?> value = loadValues(sheet, beansObj, anno, accessor, elementClass, config, work);
             if(value != null) {
                 @SuppressWarnings({"unchecked", "rawtypes"})
                 Collection<?> collection = Utils.convertListToCollection(value, (Class<Collection>)clazz, config.getBeanFactory());
@@ -56,14 +56,14 @@ public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabell
             
         } else if(clazz.isArray()) {
             
-            Class<?> itemClass = anno.itemClass();
-            if(itemClass == Object.class) {
-                itemClass = accessor.getComponentType();
+            Class<?> elementClass = anno.elementClass();
+            if(elementClass == Object.class) {
+                elementClass = accessor.getComponentType();
             }
             
-            final List<?> value = loadValues(sheet, beansObj, anno, accessor, itemClass, config, work);
+            final List<?> value = loadValues(sheet, beansObj, anno, accessor, elementClass, config, work);
             if(value != null) {
-                final Object array = Array.newInstance(itemClass, value.size());
+                final Object array = Array.newInstance(elementClass, value.size());
                 for(int i=0; i < value.size(); i++) {
                     Array.set(array, i, value.get(i));
                 }
@@ -74,7 +74,7 @@ public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabell
         } else {
             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
-                    .varWithAnno("anno", XlsLabelledArrayCell.class)
+                    .varWithAnno("anno", XlsLabelledArrayCells.class)
                     .varWithClass("actualType", clazz)
                     .var("expectedType", "Collection(List/Set) or Array")
                     .format());
@@ -83,8 +83,8 @@ public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabell
         
     }
     
-    private List<Object> loadValues(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCell anno, 
-            final FieldAccessor accessor, final Class<?> itemClass, final Configuration config,
+    private List<Object> loadValues(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCells anno, 
+            final FieldAccessor accessor, final Class<?> elementClass, final Configuration config,
             final LoadingWorkObject work) {
         
         // マッピング対象のセル情報の取得
@@ -100,11 +100,11 @@ public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabell
         }
         
         final CellPosition initPosition = labelInfo.get().valueAddress;
-        final CellConverter<?> converter = getCellConverter(itemClass, accessor, config);
+        final CellConverter<?> converter = getCellConverter(elementClass, accessor, config);
         
         validateAnnotation(accessor, anno);
         
-        ArrayCellHandler arrayHandler = new ArrayCellHandler(accessor, beansObj, itemClass, sheet, config);
+        ArrayCellsHandler arrayHandler = new ArrayCellsHandler(accessor, beansObj, elementClass, sheet, config);
         arrayHandler.setLabel(labelInfo.get().label);
         
         List<Object> result = arrayHandler.handleOnLoading(anno, initPosition, converter, work, anno.direction());
@@ -119,13 +119,13 @@ public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabell
      * @param accessor フィールド情報
      * @param anno チェック対象のアノテーション
      */
-    private void validateAnnotation(final FieldAccessor accessor, final XlsLabelledArrayCell anno) {
+    private void validateAnnotation(final FieldAccessor accessor, final XlsLabelledArrayCells anno) {
         
         // 左側のとき、水平方向の配列はサポートしない
         if(anno.type().equals(LabelledCellType.Left) && anno.direction().equals(ArrayDirection.Horizon)) {
             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.XlsLabelledArrayCell.notSupportTypeAndDirection")
                     .var("property", accessor.getNameWithClass())
-                    .varWithAnno("anno", XlsLabelledArrayCell.class)
+                    .varWithAnno("anno", XlsLabelledArrayCells.class)
                     .varWithEnum("typeValue", anno.type())
                     .varWithEnum("directionValue", anno.direction())
                     .format());
@@ -135,7 +135,7 @@ public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabell
     
     @SuppressWarnings("unchecked")
     @Override
-    public void saveProcess(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCell anno,
+    public void saveProcess(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCells anno,
             final FieldAccessor accessor, final Configuration config, final SavingWorkObject work)
             throws XlsMapperException {
         
@@ -143,29 +143,29 @@ public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabell
         final Object result = accessor.getValue(beansObj);
         if(Collection.class.isAssignableFrom(clazz)) {
             
-            Class<?> itemClass = anno.itemClass();
-            if(itemClass == Object.class) {
-                itemClass = accessor.getComponentType();
+            Class<?> elementClass = anno.elementClass();
+            if(elementClass == Object.class) {
+                elementClass = accessor.getComponentType();
             }
             
             final Collection<Object> value = (result == null ? new ArrayList<Object>() : (Collection<Object>) result);
             final List<Object> list = Utils.convertCollectionToList(value);
-            saveRecords(sheet, anno, accessor, itemClass, beansObj, list, config, work);
+            saveRecords(sheet, anno, accessor, elementClass, beansObj, list, config, work);
             
         } else if(clazz.isArray()) {
             
-            Class<?> itemClass = anno.itemClass();
-            if(itemClass == Object.class) {
-                itemClass = accessor.getComponentType();
+            Class<?> elementClass = anno.elementClass();
+            if(elementClass == Object.class) {
+                elementClass = accessor.getComponentType();
             }
             
-            final List<Object> list = Utils.asList(result, itemClass);
-            saveRecords(sheet, anno, accessor, itemClass, beansObj, list, config, work);
+            final List<Object> list = Utils.asList(result, elementClass);
+            saveRecords(sheet, anno, accessor, elementClass, beansObj, list, config, work);
             
         } else {
             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.notSupportType")
                     .var("property", accessor.getNameWithClass())
-                    .varWithAnno("anno", XlsLabelledArrayCell.class)
+                    .varWithAnno("anno", XlsLabelledArrayCells.class)
                     .varWithClass("actualType", clazz)
                     .var("expectedType", "Collection(List/Set) or Array")
                     .format());
@@ -174,8 +174,8 @@ public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabell
     }
     
     @SuppressWarnings("rawtypes")
-    private void saveRecords(final Sheet sheet, final XlsLabelledArrayCell anno, final FieldAccessor accessor, 
-            final Class<?> itemClass, final Object beansObj, final List<Object> result, final Configuration config,
+    private void saveRecords(final Sheet sheet, final XlsLabelledArrayCells anno, final FieldAccessor accessor, 
+            final Class<?> elementClass, final Object beansObj, final List<Object> result, final Configuration config,
             final SavingWorkObject work) throws XlsMapperException {
         
         // マッピング対象のセル情報の取得
@@ -191,11 +191,11 @@ public class LabelledArrayCellProcessor extends AbstractFieldProcessor<XlsLabell
         }
         
         final CellPosition initPosition = labelInfo.get().valueAddress;
-        final CellConverter converter = getCellConverter(itemClass, accessor, config);
+        final CellConverter converter = getCellConverter(elementClass, accessor, config);
         
         validateAnnotation(accessor, anno);
         
-        ArrayCellHandler arrayHandler = new ArrayCellHandler(accessor, beansObj, itemClass, sheet, config);
+        ArrayCellsHandler arrayHandler = new ArrayCellsHandler(accessor, beansObj, elementClass, sheet, config);
         arrayHandler.setLabel(labelInfo.get().label);
         
         arrayHandler.handleOnSaving(result, anno, initPosition, converter, work, anno.direction());

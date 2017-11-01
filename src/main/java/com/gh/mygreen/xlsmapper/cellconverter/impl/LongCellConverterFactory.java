@@ -37,7 +37,7 @@ public class LongCellConverterFactory extends AbstractNumberCellConverterFactory
         
         private final LongCellConverterFactory convererFactory;
         
-        public LongCellConverter(final FieldAccessor field, final Configuration config,
+        private LongCellConverter(final FieldAccessor field, final Configuration config,
                 final LongCellConverterFactory convererFactory) {
             super(field, config);
             this.convererFactory = convererFactory;

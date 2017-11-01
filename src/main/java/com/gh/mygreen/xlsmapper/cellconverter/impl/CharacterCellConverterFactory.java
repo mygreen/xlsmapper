@@ -74,7 +74,7 @@ public class CharacterCellConverterFactory extends AbstractCellConverterFactoryS
     
     public class CharacterCellConverter extends AbstractCellConverter<Character> {
         
-        public CharacterCellConverter(final FieldAccessor field, final Configuration config) {
+        private CharacterCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

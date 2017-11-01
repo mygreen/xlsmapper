@@ -1,5 +1,5 @@
 /**
- * ExcelとJavaBeansをマップするためのアノテーションを提供します。
+ * ExcelとJavaBeanをマップするためのアノテーションを提供します。
  * 
  * @author T.TSUCHIE
  * 

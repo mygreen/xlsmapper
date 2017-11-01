@@ -8,7 +8,7 @@ import java.util.Map;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 /**
- * 標準の{@link ItemConverter}の実装クラス。
+ * 標準の{@link ElementConverter}の実装クラス。
  * <p>次の基本的な型のみ対応しています。</p>
  * <ul>
  *   <li>String型</li>
@@ -21,7 +21,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  * @author T.TSUCHIE
  *
  */
-public class DefaultItemConverter implements ItemConverter<Object> {
+public class DefaultElementConverter implements ElementConverter<Object> {
     
     /** プリミティブ型のデフォルト値 */
     private static final Map<Class<?>, Object> primitiveDefaults = new HashMap<>();

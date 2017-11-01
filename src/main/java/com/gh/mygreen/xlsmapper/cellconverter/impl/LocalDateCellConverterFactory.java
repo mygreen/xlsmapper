@@ -48,7 +48,7 @@ public class LocalDateCellConverterFactory extends AbstractTemporalCellConverter
     
     public class LocalDateCellConverter extends AbstractTemporalCellConverter<LocalDate> {
         
-        public LocalDateCellConverter(final FieldAccessor field, final Configuration config) {
+        private LocalDateCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

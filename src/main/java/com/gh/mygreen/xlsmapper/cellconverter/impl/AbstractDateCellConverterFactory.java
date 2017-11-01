@@ -11,13 +11,14 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 import com.gh.mygreen.xlsmapper.Configuration;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
@@ -33,12 +34,14 @@ public abstract class AbstractDateCellConverterFactory<T extends Date> extends A
     @Override
     protected void setupCustom(final AbstractCellConverter<T> cellConverter, final FieldAccessor field, final Configuration config) {
         
+        ArgUtils.instanceOf(cellConverter, AbstractDateCellConverter.class, "cellConverter");
+        
         if(cellConverter instanceof AbstractDateCellConverter) {
             
             final AbstractDateCellConverter<T> dateCellConverter = (AbstractDateCellConverter<T>)cellConverter;
             
             // 書き込み時のセルの書式を設定する
-            Optional<XlsDateConverter> converterAnno = field.getAnnotation(XlsDateConverter.class);
+            Optional<XlsDateTimeConverter> converterAnno = field.getAnnotation(XlsDateTimeConverter.class);
             String excelPattern = getExcelPattern(converterAnno);
             
             dateCellConverter.setExcelPattern(excelPattern);
@@ -50,7 +53,7 @@ public abstract class AbstractDateCellConverterFactory<T extends Date> extends A
     @Override
     protected TextFormatter<T> createTextFormatter(final FieldAccessor field, final Configuration config) {
         
-        final Optional<XlsDateConverter> converterAnno = field.getAnnotation(XlsDateConverter.class);
+        final Optional<XlsDateTimeConverter> converterAnno = field.getAnnotation(XlsDateTimeConverter.class);
         DateFormat formatter = createFormatter(converterAnno);
         
         return new TextFormatter<T>() {
@@ -83,7 +86,7 @@ public abstract class AbstractDateCellConverterFactory<T extends Date> extends A
      * @param converterAnno アノテーション
      * @return 日時のフォーマッタ
      */
-    protected DateFormat createFormatter(final Optional<XlsDateConverter> converterAnno) {
+    protected DateFormat createFormatter(final Optional<XlsDateTimeConverter> converterAnno) {
         
         final boolean lenient = converterAnno.map(a -> a.lenient()).orElse(false);
         if(!converterAnno.isPresent()) {
@@ -105,7 +108,7 @@ public abstract class AbstractDateCellConverterFactory<T extends Date> extends A
         return formatter;
     }
     
-    private String getJavaPattern(final Optional<XlsDateConverter> converterAnno) {
+    private String getJavaPattern(final Optional<XlsDateTimeConverter> converterAnno) {
         if(!converterAnno.isPresent()) {
             return getDefaultJavaPattern();
         }
@@ -118,7 +121,7 @@ public abstract class AbstractDateCellConverterFactory<T extends Date> extends A
         return pattern;
     }
     
-    private String getExcelPattern(final Optional<XlsDateConverter> converterAnno) {
+    private String getExcelPattern(final Optional<XlsDateTimeConverter> converterAnno) {
         if(!converterAnno.isPresent()) {
             return getDefaultExcelPattern();
         }
@@ -133,7 +136,7 @@ public abstract class AbstractDateCellConverterFactory<T extends Date> extends A
     
     /**
      * その型における型に変換する
-     * @param value 変換対象の値
+     * @param date 変換対象の値
      * @return 変換後の値
      */
     protected abstract T convertTypeValue(Date date);

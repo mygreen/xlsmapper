@@ -42,9 +42,9 @@ import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordFinder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.RemainedOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -59,12 +59,12 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.RecordHeader;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordsProcessorUtil;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
 import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReadException;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
@@ -225,6 +225,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // Check for columns
         RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader(), config);
+        RecordsProcessorUtil.checkMapColumns(sheet, recordClass, headers, work.getAnnoReader(), config);
+        RecordsProcessorUtil.checkArrayColumns(sheet, recordClass, headers, work.getAnnoReader(), config);
         
         RecordTerminal terminal = anno.terminal();
         if(terminal == null){
@@ -540,15 +542,15 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         for(FieldAccessor property : properties) {
             final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();
             
-            Class<?> itemClass = mapAnno.itemClass();
-            if(itemClass == Object.class) {
-                itemClass = property.getComponentType();
+            Class<?> valueClass = mapAnno.valueClass();
+            if(valueClass == Object.class) {
+                valueClass = property.getComponentType();
             }
             
             // get converter (map key class)
-            final CellConverter<?> converter = getCellConverter(itemClass, property, config);
+            final CellConverter<?> converter = getCellConverter(valueClass, property, config);
             if(converter instanceof FieldFormatter) {
-                work.getErrors().registerFieldFormatter(property.getName(), itemClass, (FieldFormatter<?>)converter, true);
+                work.getErrors().registerFieldFormatter(property.getName(), valueClass, (FieldFormatter<?>)converter, true);
             }
             
             boolean foundPreviousColumn = false;
@@ -582,7 +584,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         final Object value = converter.toObject(cell);
                         map.put(headerInfo.getLabel(), value);
                     } catch(TypeBindException e) {
-                        e.setBindClass(itemClass);  // マップの項目のタイプに変更
+                        e.setBindClass(valueClass);  // マップの項目のタイプに変更
                         work.addTypeBindError(e, cell, String.format("%s[%s]", property.getName(), headerInfo.getLabel()), headerInfo.getLabel());     
                         if(!config.isContinueTypeBindFailure()) {
                             throw e;
@@ -613,20 +615,20 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();
                 
-                Class<?> itemClass = arrayAnno.itemClass();
-                if(itemClass == Object.class) {
-                    itemClass = property.getComponentType();
+                Class<?> elementClass = arrayAnno.elementClass();
+                if(elementClass == Object.class) {
+                    elementClass = property.getComponentType();
                 }
                 
                 // get converter (component class)
-                final CellConverter<?> converter = getCellConverter(itemClass, property, config);
+                final CellConverter<?> converter = getCellConverter(elementClass, property, config);
                 if(converter instanceof FieldFormatter) {
-                    work.getErrors().registerFieldFormatter(property.getName(), itemClass, (FieldFormatter<?>)converter, true);
+                    work.getErrors().registerFieldFormatter(property.getName(), elementClass, (FieldFormatter<?>)converter, true);
                 }
                 
                 final CellPosition initPosition = CellPosition.of(hRow, beginPosition.getColumn());
                 
-                ArrayCellHandler arrayHandler = new ArrayCellHandler(property, record, itemClass, sheet, config);
+                ArrayCellsHandler arrayHandler = new ArrayCellsHandler(property, record, elementClass, sheet, config);
                 arrayHandler.setLabel(headerInfo.getLabel());
                 
                 final List<Object> result = arrayHandler.handleOnLoading(arrayAnno, initPosition, converter, work, ArrayDirection.Vertical);
@@ -642,7 +644,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 } else if(propertyType.isArray()) {
                     
                     if(result != null) {
-                        final Object array = Array.newInstance(itemClass, result.size());
+                        final Object array = Array.newInstance(elementClass, result.size());
                         for(int i=0; i < result.size(); i++) {
                             Array.set(array, i, result.get(i));
                         }
@@ -875,7 +877,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         }
         
         // レコードの操作のアノテーション
-        final XlsRecordOperator recordOperationAnno = getRecordOperateAnnotation(accessor);
+        final XlsRecordOption recordOptionAnno = getRecordOptionAnnotation(accessor);
         
         // データ行の開始位置の調整
         hColumn += anno.headerRight();
@@ -890,7 +892,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         }
         
         // 書き込んだセルの範囲などの情報
-        final RecordOperation recordOperation = new RecordOperation(recordOperationAnno);
+        final RecordOperation recordOperation = new RecordOperation(recordOptionAnno);
         recordOperation.setupCellPositoin(startPosition);
         
         // XlsColumn(merged=true)の結合したセルの情報
@@ -918,19 +920,19 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     }
     
     /**
-     * アノテーション{@link XlsRecordOperator}を取得する。
+     * アノテーション{@link XlsRecordOption}を取得する。
      * ただし、付与されていない場合は、属性にデフォルト値が指定されているものを取得する。
      * @param accessor フィールド情報
      * @return アノテーションのインスタンス
      */
-    private XlsRecordOperator getRecordOperateAnnotation(final FieldAccessor accessor) {
+    private XlsRecordOption getRecordOptionAnnotation(final FieldAccessor accessor) {
         
-        return accessor.getAnnotation(XlsRecordOperator.class)
-                .orElseGet(() -> new XlsRecordOperator() {
+        return accessor.getAnnotation(XlsRecordOption.class)
+                .orElseGet(() -> new XlsRecordOption() {
                     
                     @Override
                     public Class<? extends Annotation> annotationType() {
-                        return XlsRecordOperator.class;
+                        return XlsRecordOption.class;
                     }
                     
                     @Override
@@ -961,6 +963,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         
         // Check for columns
         RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader(), config);
+        RecordsProcessorUtil.checkMapColumns(sheet, recordClass, headers, work.getAnnoReader(), config);
+        RecordsProcessorUtil.checkArrayColumns(sheet, recordClass, headers, work.getAnnoReader(), config);
         
         /*
          * 書き込む時には終了位置の判定は、Borderで固定する必要がある。
@@ -1116,7 +1120,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                                 // POIは列の追加をサポートしていないので非対応。
                                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                         .var("property", accessor.getNameWithClass())
-                                        .varWithAnno("anno", XlsRecordOperator.class)
+                                        .varWithAnno("anno", XlsRecordOption.class)
                                         .var("attrName", "overCase")
                                         .varWithEnum("attrValue", OverOperate.Insert)
                                         .format());
@@ -1169,7 +1173,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         // POIは列の削除をサポートしていないので非対応。
                         throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                 .var("property", accessor.getNameWithClass())
-                                .varWithAnno("anno", XlsRecordOperator.class)
+                                .varWithAnno("anno", XlsRecordOption.class)
                                 .var("attrName", "remainedCase")
                                 .varWithEnum("attrValue", RemainedOperate.Delete)
                                 .format());
@@ -1328,15 +1332,15 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             
             final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();
             
-            Class<?> itemClass = mapAnno.itemClass();
-            if(itemClass == Object.class) {
-                itemClass = property.getComponentType();
+            Class<?> valueClass = mapAnno.valueClass();
+            if(valueClass == Object.class) {
+                valueClass = property.getComponentType();
             }
             
             // get converter (map key class)
-            final CellConverter converter = getCellConverter(itemClass, property, config);
+            final CellConverter converter = getCellConverter(valueClass, property, config);
             if(converter instanceof FieldFormatter) {
-                work.getErrors().registerFieldFormatter(property.getName(), itemClass, (FieldFormatter<?>)converter, true);
+                work.getErrors().registerFieldFormatter(property.getName(), valueClass, (FieldFormatter<?>)converter, true);
             }
             
             boolean foundPreviousColumn = false;
@@ -1385,8 +1389,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                             // POIは列の追加をサポートしていないので非対応。
                             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                     .var("property", property.getNameWithClass())
-                                    .varWithAnno("anno", XlsRecordOperator.class)
-                                    .var("attrName", "overRecord")
+                                    .varWithAnno("anno", XlsRecordOption.class)
+                                    .var("attrName", "overCase")
                                     .varWithEnum("attrValue", OverOperate.Insert)
                                     .format());
                             
@@ -1400,8 +1404,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
                     
                     try {
-                        Object itemValue = property.getValueOfMap(headerInfo.getLabel(), record);
-                        converter.toCell(itemValue, record, sheet, CellPosition.of(cell));
+                        Object value = property.getValueOfMap(headerInfo.getLabel(), record);
+                        converter.toCell(value, record, sheet, CellPosition.of(cell));
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, cell, String.format("%s[%s]", property.getName(), headerInfo.getLabel()), headerInfo.getLabel());
                         if(!config.isContinueTypeBindFailure()) {
@@ -1438,9 +1442,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 
                 final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();
                 
-                Class<?> itemClass = arrayAnno.itemClass();
-                if(itemClass == Object.class) {
-                    itemClass = property.getComponentType();
+                Class<?> elementClass = arrayAnno.elementClass();
+                if(elementClass == Object.class) {
+                    elementClass = property.getComponentType();
                 }
                 final CellPosition initPosition = CellPosition.of(hRow, beginPosition.getColumn());
                 
@@ -1479,8 +1483,8 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                             // POIは列の追加をサポートしていないので非対応。
                             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                     .var("property", property.getNameWithClass())
-                                    .varWithAnno("anno", XlsRecordOperator.class)
-                                    .var("attrName", "overRecord")
+                                    .varWithAnno("anno", XlsRecordOption.class)
+                                    .var("attrName", "overCase")
                                     .varWithEnum("attrValue", OverOperate.Insert)
                                     .format());
                             
@@ -1489,7 +1493,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     }
                     
                     // 結合情報を考慮して、インデックス（列番号）を次のセルに進める。
-                    if(arrayAnno.itemMerged()) {
+                    if(arrayAnno.elementMerged()) {
                         final CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
                         if(mergedRegion != null) {
                             iRow += POIUtils.getRowSize(mergedRegion);
@@ -1505,12 +1509,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 }
                 
                 // get converter (component class)
-                final CellConverter<?> converter = getCellConverter(itemClass, property, config);
+                final CellConverter<?> converter = getCellConverter(elementClass, property, config);
                 if(converter instanceof FieldFormatter) {
-                    work.getErrors().registerFieldFormatter(property.getName(), itemClass, (FieldFormatter<?>)converter, true);
+                    work.getErrors().registerFieldFormatter(property.getName(), elementClass, (FieldFormatter<?>)converter, true);
                 }
                 
-                ArrayCellHandler arrayHandler = new ArrayCellHandler(property, record, itemClass, sheet, config);
+                ArrayCellsHandler arrayHandler = new ArrayCellsHandler(property, record, elementClass, sheet, config);
                 arrayHandler.setLabel(headerInfo.getLabel());
                 
                 final Class<?> propertyType = property.getType();
@@ -1523,7 +1527,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     
                 } else if(propertyType.isArray()) {
                     
-                    final List<Object> list = Utils.asList(result, itemClass);
+                    final List<Object> list = Utils.asList(result, elementClass);
                     arrayHandler.handleOnSaving(list, arrayAnno, initPosition, converter, work, ArrayDirection.Vertical);
                 }
                 

@@ -56,7 +56,7 @@ public class BooleanCellConverterFactory extends AbstractCellConverterFactorySup
     
     public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
         
-        public BooleanCellConverter(final FieldAccessor field, final Configuration config) {
+        private BooleanCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

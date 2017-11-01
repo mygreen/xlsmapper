@@ -20,8 +20,8 @@ import com.gh.mygreen.xlsmapper.BeanFactory;
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.cellconverter.DefaultItemConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.ItemConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.DefaultElementConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.ElementConverter;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 
@@ -37,50 +37,50 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 public class Utils {
     
     @SuppressWarnings("rawtypes")
-    private static final ItemConverter ITEM_CONVERTER = new DefaultItemConverter();
+    private static final ElementConverter ELEMENT_CONVERTER = new DefaultElementConverter();
     
     /**
      * コレクションの要素を指定した区切り文字で繋げて1つの文字列とする。
      * @param col 処理対象のコレクション。
      * @param separator 区切り文字。
-     * @param ignoreEmptyItem 空、nullの要素を無視するかどうか。
+     * @param ignoreEmptyElement 空、nullの要素を無視するかどうか。
      * @param trim トリムをするかどうか。
-     * @param itemConverter 要素を変換するクラス。
-     * @return
+     * @param elementConverter 要素を変換するクラス。
+     * @return 結合した文字列
      */
     @SuppressWarnings("rawtypes")
     public static String join(final Collection<?> col, final String separator,
-            final boolean ignoreEmptyItem, final boolean trim, final ItemConverter itemConverter) {
+            final boolean ignoreEmptyElement, final boolean trim, final ElementConverter elementConverter) {
         
         final List<Object> list = new ArrayList<Object>();
-        for(Object item : col) {
-            if(item == null) {
+        for(Object element : col) {
+            if(element == null) {
                 continue;
             }
             
-            Object value = item;
+            Object value = element;
             
-            if(item instanceof String) {
-                String str = (String) item;
-                if(ignoreEmptyItem && isEmpty(str)) {
+            if(element instanceof String) {
+                String str = (String) element;
+                if(ignoreEmptyElement && isEmpty(str)) {
                     continue;
                     
                 } else if(trim) {
                     value = str.trim();
                 }
                 
-            } else if(item instanceof Character && isEmpty(item.toString())) {
-                String str = item.toString();
-                if(ignoreEmptyItem && isEmpty(str)) {
+            } else if(element instanceof Character && isEmpty(element.toString())) {
+                String str = element.toString();
+                if(ignoreEmptyElement && isEmpty(str)) {
                     continue;
                     
                 } else if(trim) {
                     value = str.trim().charAt(0);
                 }
                 
-            } else if(char.class.isAssignableFrom(item.getClass())) {
-                String str = item.toString();
-                if(ignoreEmptyItem && isEmpty(str)) {
+            } else if(char.class.isAssignableFrom(element.getClass())) {
+                String str = element.toString();
+                if(ignoreEmptyElement && isEmpty(str)) {
                     continue;
                     
                 } else if(trim) {
@@ -92,31 +92,31 @@ public class Utils {
             
         }
         
-        return join(list, separator, itemConverter);
+        return join(list, separator, elementConverter);
         
     }
     
     /**
      * 配列の要素を指定した区切り文字で繋げて1つの文字列とする。
-     * @param arrays
-     * @param separator
-     * @return
+     * @param arrays 結合対象の配列
+     * @param separator 区切り文字
+     * @return 結合した文字列
      */
     public static String join(final Object[] arrays, final String separator) {
         
-        return join(arrays, separator, ITEM_CONVERTER);
+        return join(arrays, separator, ELEMENT_CONVERTER);
         
     }
     
     /**
      * 配列の要素を指定した区切り文字で繋げて1つの文字列とする。
-     * @param arrays
-     * @param separator
-     * @param itemConverter
-     * @return
+     * @param arrays 結合対象の配列
+     * @param separator 区切り文字
+     * @param elementConverter 要素を変換するクラス。
+     * @return 結合した文字列
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static String join(final Object[] arrays, final String separator, final ItemConverter itemConverter) {
+    public static String join(final Object[] arrays, final String separator, final ElementConverter elementConverter) {
         
         if(arrays == null) {
             return "";
@@ -129,8 +129,8 @@ public class Utils {
         
         StringBuilder sb = new StringBuilder();
         for(int i=0; i < len; i++) {
-            final Object item = arrays[i];
-            sb.append(itemConverter.convertToString(item));
+            final Object element = arrays[i];
+            sb.append(elementConverter.convertToString(element));
             
             if(separator != null && (i < len-1)) {
                 sb.append(separator);
@@ -143,23 +143,23 @@ public class Utils {
     
     /**
      * Collectionの要素を指定した区切り文字で繋げて1つの文字列とする。
-     * @param col
-     * @param separator
-     * @return
+     * @param col 結合対象のコレクション
+     * @param separator 区切り文字
+     * @return 結合した文字列
      */
     public static String join(final Collection<?> col, final String separator) {
-        return join(col, separator, ITEM_CONVERTER);
+        return join(col, separator, ELEMENT_CONVERTER);
     }
     
     /**
      * Collectionの要素を指定した区切り文字で繋げて1つの文字列とする。
-     * @param col
-     * @param separator
-     * @param itemConverter
-     * @return
+     * @param col 結合対象のコレクション
+     * @param separator 区切り文字
+     * @param elementConverter 要素を変換するクラス。
+     * @return 結合した文字列
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static String join(final Collection<?> col, final String separator, final ItemConverter itemConverter) {
+    public static String join(final Collection<?> col, final String separator, final ElementConverter elementConverter) {
         
         if(col == null) {
             return "";
@@ -172,8 +172,8 @@ public class Utils {
         
         StringBuilder sb = new StringBuilder();
         for(Iterator<?> itr = col.iterator(); itr.hasNext();) {
-            final Object item = itr.next();
-            String text = itemConverter.convertToString(item);
+            final Object element = itr.next();
+            String text = elementConverter.convertToString(element);
             sb.append(text);
             
             if(separator != null && itr.hasNext()) {
@@ -766,7 +766,7 @@ public class Utils {
      * コレクションを配列に変換する。
      * @param collection 変換対象のコレクション。
      * @return 変換した配列。
-     * @throws IllegalArgumentException {@lteral collection is null.}
+     * @throws IllegalArgumentException {@literal collection is null.}
      */
     public static int[] toArray(final Collection<Integer> collection) {
         ArgUtils.notNull(collection, "collection");
@@ -781,6 +781,40 @@ public class Utils {
         }
         
         return array;
+    }
+    
+    /**
+     * 文字列配列の結合
+     * @param array1
+     * @param array2
+     * @return 結合した配列。引数のどちらからnullの場合は、cloneした配列を返します。
+     */
+    public static String[] concat(final String[] array1, final String[] array2) {
+        
+        if(array1 == null || array1.length == 0) {
+            return clone(array2);
+            
+        } else if(array2 == null || array2.length == 0) {
+            return clone(array1);
+        }
+        
+        final String[] joinedArray = new String[array1.length + array2.length];
+        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
+        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
+        return joinedArray;
+        
+    }
+    
+    /**
+     * 文字列の配列をクローンします。
+     * @param array クローン対象の配列
+     * @return クローンした配列。引数がnullの場合は、nullを返します。
+     */
+    public static String[] clone(final String[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
     }
     
 }

@@ -1,4 +1,4 @@
-package com.gh.mygreen.xlsmapper.validation;
+package com.gh.mygreen.xlsmapper.localization;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -15,7 +15,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 /**
  * {@link ResourceBundle}を元にメッセージを解決するクラス。
- * <p>クラスパスのルートにリソース名が{@literal SuperCsvMessages}のプロパティファイルを配置していると自動的に読み込みます。</p>
+ * <p>クラスパスのルートにリソース名が{@literal SheetValidationMessages}のプロパティファイルを配置していると自動的に読み込みます。</p>
  * <p>デフォルトでは、{@link ResourceBundleMessageResolver#DEFAULT_MESSAGE}に配置されているリソースファイルを読み込みます。</p>
  * 
  * @version 2.0
@@ -27,7 +27,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
     /**
      * デフォルトのメッセージソースのパス
      */
-    public static final String DEFAULT_MESSAGE = "com.gh.mygreen.xlsmapper.validation.SheetValidationMessages";
+    public static final String DEFAULT_MESSAGE = "com.gh.mygreen.xlsmapper.localization.SheetValidationMessages";
     
     private final Map<ResourceBundle, List<String>> messageBundleKeys = new HashMap<ResourceBundle, List<String>>(8);
     
@@ -43,7 +43,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
     public ResourceBundleMessageResolver(final String baseName, final boolean appendUserResource) {
         ArgUtils.notEmpty(baseName, "baseName");
         
-        addResourceBundle(ResourceBundle.getBundle(baseName));
+        addResourceBundle(ResourceBundle.getBundle(baseName, new EncodingControl("UTF-8")));
         
         // ユーザ定義のリソースを読み込む
         if(appendUserResource) {
@@ -52,7 +52,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
             if(index > 0) {
                 final String userName = baseName.substring(index+1);
                 try {
-                    addResourceBundle(ResourceBundle.getBundle(userName));
+                    addResourceBundle(ResourceBundle.getBundle(userName, new EncodingControl("UTF-8")));
                 } catch(Throwable e) { }
             }
         }

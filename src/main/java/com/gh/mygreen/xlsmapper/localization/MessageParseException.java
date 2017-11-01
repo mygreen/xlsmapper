@@ -1,4 +1,4 @@
-package com.gh.mygreen.xlsmapper.validation;
+package com.gh.mygreen.xlsmapper.localization;
 
 
 /**

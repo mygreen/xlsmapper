@@ -12,6 +12,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  * メッセージのコードを生成するクラス。
  * <p>Stringの「DefaultMessageCodeResolver」を参照。
  * 
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -48,8 +49,9 @@ public class MessageCodeGenerator {
     
     /**
      * オブジェクト名のキーの候補を生成する。
-     * @param objectName
-     * @return
+     * <p>クラスパスの区切り文字(.)がある場合、それらを除いたものを候補とする。</p>
+     * @param objectName クラス名など。
+     * @return キーの候補
      */
     public String[] generateObjectNameCodes(final String objectName) {
         
@@ -150,9 +152,15 @@ public class MessageCodeGenerator {
         if(fieldType != null) {
             addCode(codeList, code, null, fieldType.getName());
             
-            // 列挙型の場合は、java.lang.Enumとしてクラスタイプを追加する。
             if(Enum.class.isAssignableFrom(fieldType)) {
+                // 列挙型の場合は、java.lang.Enumとしてクラスタイプを追加する。
                 addCode(codeList, code, null, Enum.class.getName());
+                
+            } else if(fieldType.isArray()) {
+                // 配列の場合は、"配列のクラスタイプ+[]"を追加する。
+                Class<?> componentType = fieldType.getComponentType();
+                addCode(codeList, code, null, componentType.getName() + "[]");
+                addCode(codeList, code, null, "java.lang.Object[]");
             }
         }
         
@@ -222,18 +230,34 @@ public class MessageCodeGenerator {
         
     }
     
+    /**
+     * メッセージの接頭語を取得する。
+     * @return 接頭語を返す。デフォルトは、空文字。
+     */
     public String getPrefix() {
         return prefix;
     }
     
+    /**
+     * メッセージの接頭語を設定する。
+     * @param prefix 接頭語
+     */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
     
+    /**
+     * 型変換エラー時のエラーコードを取得する。
+     * @return デフォルトは、'{@literal cellTypeMismatch}'。
+     */
     public String getTypeMismatchCode() {
         return typeMismatchCode;
     }
     
+    /**
+     * 型変換エラー時のエラーコードを設定する。
+     * @param typeMismatchCode 型変換エラー時のエラーコード
+     */
     public void setTypeMismatchCode(String typeMismatchCode) {
         this.typeMismatchCode = typeMismatchCode;
     }

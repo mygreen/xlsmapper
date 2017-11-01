@@ -26,10 +26,10 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxy;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxyComparator;
 import com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
@@ -139,6 +139,7 @@ public class XlsLoader {
      * Excelファイルの複数シートを読み込み、任意のクラスにマップする。
      * <p>{@link XlsSheet#regex()}により、複数のシートが同じ形式で、同じクラスにマッピングすする際に使用します。</p>
      * 
+     * @param <P> シートをマッピングするクラスタイプ
      * @param xlsIn 読み込み元のExcelファイルのストリーム。
      * @param clazz マッピング先のクラスタイプ。
      * @return マッピングした複数のシート。
@@ -168,7 +169,7 @@ public class XlsLoader {
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException ファイルの読み込みに失敗した場合
      */
-    public <P> SheetBindingErrorsStore<P> loadMultipleDetail(final InputStream xlsIn, final Class<P> clazz) 
+    public <P> MultipleSheetBindingErrors<P> loadMultipleDetail(final InputStream xlsIn, final Class<P> clazz) 
             throws XlsMapperException, IOException {
         
         ArgUtils.notNull(xlsIn, "xlsIn");
@@ -184,7 +185,7 @@ public class XlsLoader {
                     .format());
         }
         
-        final SheetBindingErrorsStore<P> multipleResult = new SheetBindingErrorsStore<>();
+        final MultipleSheetBindingErrors<P> multipleResult = new MultipleSheetBindingErrors<>();
         
         final Workbook book;
         try {
@@ -235,7 +236,7 @@ public class XlsLoader {
      * @return マッピングした複数のシート。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
      * @throws IllegalArgumentException {@literal xlsIn == null or classes == null}
-     * @throws IllegalArgumentException {@link calsses.length == 0}
+     * @throws IllegalArgumentException {@literal calsses.length == 0}
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException ファイルの読み込みに失敗した場合
      */
@@ -255,12 +256,12 @@ public class XlsLoader {
      * @return マッピングした複数のシートの結果。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
      * @throws IllegalArgumentException {@literal xlsIn == null or classes == null}
-     * @throws IllegalArgumentException {@link calsses.length == 0}
+     * @throws IllegalArgumentException {@literal calsses.length == 0}
      * @throws IOException ファイルの読み込みに失敗した場合
      * @throws XlsMapperException マッピングに失敗した場合
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public SheetBindingErrorsStore<Object> loadMultipleDetail(final InputStream xlsIn, final Class<?>[] classes) 
+    public MultipleSheetBindingErrors<Object> loadMultipleDetail(final InputStream xlsIn, final Class<?>[] classes) 
             throws XlsMapperException, IOException {
         
         ArgUtils.notNull(xlsIn, "xlsIn");
@@ -268,7 +269,7 @@ public class XlsLoader {
         
         final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));
         
-        final SheetBindingErrorsStore<Object> multipleStore = new SheetBindingErrorsStore<>();
+        final MultipleSheetBindingErrors<Object> multipleStore = new MultipleSheetBindingErrors<>();
         
         final Workbook book;
         try {

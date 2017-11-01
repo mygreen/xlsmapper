@@ -66,7 +66,7 @@ public class CellLinkCellConverterFactory extends AbstractCellConverterFactorySu
     
     public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
         
-        public CellLinkCellConverter(final FieldAccessor field, final Configuration config) {
+        private CellLinkCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
             
         }

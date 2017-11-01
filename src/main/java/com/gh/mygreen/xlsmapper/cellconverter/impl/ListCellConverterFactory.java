@@ -14,8 +14,8 @@ import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
-import com.gh.mygreen.xlsmapper.cellconverter.DefaultItemConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.ItemConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.DefaultElementConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.ElementConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.ListFormatter;
@@ -57,11 +57,15 @@ public class ListCellConverterFactory extends AbstractCellConverterFactorySuppor
         final ListFormatter formatter = new ListFormatter(field.getComponentType());
         converterAnno.ifPresent(anno -> {
             formatter.setSeparator(anno.separator());
-            formatter.setIgnoreEmptyItem(anno.ignoreEmptyItem());
+            formatter.setIgnoreEmptyElement(anno.ignoreEmptyElement());
             
-            ItemConverter itemConverter = anno.itemConverterClass().isAssignableFrom(DefaultItemConverter.class) ?
-                    config.getItemConverter() : (ItemConverter)config.getBeanFactory().create(anno.itemConverterClass());
-            formatter.setItemConverter(itemConverter);
+            final ElementConverter elementConverter;
+            if(anno.elementConverterClass().equals(DefaultElementConverter.class)) {
+                elementConverter = new DefaultElementConverter();
+            } else {
+                elementConverter = (ElementConverter)config.getBeanFactory().create(anno.elementConverterClass());
+            }
+            formatter.setElementConverter(elementConverter);
         });
         trimAnno.ifPresent(a -> formatter.setTrimmed(true));
         
@@ -70,7 +74,7 @@ public class ListCellConverterFactory extends AbstractCellConverterFactorySuppor
     
     public class ListCellConverter extends AbstractCellConverter<List> {
         
-        public ListCellConverter(final FieldAccessor field, final Configuration config) {
+        private ListCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

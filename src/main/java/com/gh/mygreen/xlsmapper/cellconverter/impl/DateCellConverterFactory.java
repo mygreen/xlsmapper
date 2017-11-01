@@ -51,7 +51,7 @@ public class DateCellConverterFactory extends AbstractDateCellConverterFactory<D
         
         private final DateCellConverterFactory convererFactory;
         
-        public DateCellConverter(final DateCellConverterFactory convererFactory,
+        private DateCellConverter(final DateCellConverterFactory convererFactory,
                 final FieldAccessor field, final Configuration config) {
             super(field, config);
             this.convererFactory = convererFactory;

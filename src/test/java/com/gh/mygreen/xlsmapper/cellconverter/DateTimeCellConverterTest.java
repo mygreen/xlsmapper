@@ -25,16 +25,16 @@ import org.junit.Test;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
@@ -134,7 +134,7 @@ public class DateTimeCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[日時型]:Dateクラス(util) - B10の値'a01'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
+                assertThat(message, is("[日時型]:Dateクラス(util) - セル(B10)の値'a01'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
                 
             }
             
@@ -143,7 +143,7 @@ public class DateTimeCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[日時型]:Calendarクラス - C10の値'a01'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
+                assertThat(message, is("[日時型]:Calendarクラス - セル(C10)の値'a01'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
             
             }
             
@@ -152,7 +152,7 @@ public class DateTimeCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[日時型]:Dateクラス(sql) - D10の値'b02'は、'yyyy-MM-dd'の日付形式で設定してください。"));
+                assertThat(message, is("[日時型]:Dateクラス(sql) - セル(D10)の値'b02'は、'yyyy-MM-dd'の日付形式で設定してください。"));
                 
             }
             
@@ -161,7 +161,7 @@ public class DateTimeCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[日時型]:Timeクラス(sql) - E10の値'c03'は、'HH:mm:ss'の時刻形式で設定してください。"));
+                assertThat(message, is("[日時型]:Timeクラス(sql) - セル(E10)の値'c03'は、'HH:mm:ss'の時刻形式で設定してください。"));
             
             }
             
@@ -170,7 +170,7 @@ public class DateTimeCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[日時型]:Timesamp(sql) - F10の値'd04'は、'yyyy-MM-dd HH:mm:ss.SSS'のタイムスタンプ形式で設定してください。"));
+                assertThat(message, is("[日時型]:Timesamp(sql) - セル(F10)の値'd04'は、'yyyy-MM-dd HH:mm:ss.SSS'のタイムスタンプ形式で設定してください。"));
             
             }
             
@@ -230,7 +230,7 @@ public class DateTimeCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[日時型]:Dateクラス(util) - B22の値'2015-13-02 03:45:06'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
+                assertThat(message, is("[日時型]:Dateクラス(util) - セル(B22)の値'2015-13-02 03:45:06'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
                 
             }
             
@@ -239,7 +239,7 @@ public class DateTimeCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[日時型]:Calendarクラス - C22の値'2015-13-02 03:45:06'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
+                assertThat(message, is("[日時型]:Calendarクラス - セル(C22)の値'2015-13-02 03:45:06'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
             
             }
             
@@ -248,7 +248,7 @@ public class DateTimeCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[日時型]:Dateクラス(sql) - D22の値'2015-12-40'は、'yyyy-MM-dd'の日付形式で設定してください。"));
+                assertThat(message, is("[日時型]:Dateクラス(sql) - セル(D22)の値'2015-12-40'は、'yyyy-MM-dd'の日付形式で設定してください。"));
                 
             }
             
@@ -257,7 +257,7 @@ public class DateTimeCellConverterTest {
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
                 String message = messageConverter.convertMessage(fieldError);
-                assertThat(message, is("[日時型]:Timeクラス(sql) - E22の値'12時80分'は、'H時m分'の時刻形式で設定してください。"));
+                assertThat(message, is("[日時型]:Timeクラス(sql) - セル(E22)の値'12時80分'は、'H時m分'の時刻形式で設定してください。"));
                 
             }
             
@@ -470,17 +470,17 @@ public class DateTimeCellConverterTest {
         
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="日時型（アノテーションなし）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<SimpleRecord> simpleRecords;
         
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="日付型（初期値、書式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormattedRecord> formattedRecords;
         
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="日時型（数式）", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         private List<FormulaRecord> formulaRecords;
         
         /**
@@ -628,13 +628,13 @@ public class DateTimeCellConverterTest {
         
         /** 書式付き（時間指定） */
         @XlsDefaultValue("0時0分")
-        @XlsDateConverter(javaPattern="H時m分", excelPattern="h\"時\"mm\"分\"")
+        @XlsDateTimeConverter(javaPattern="H時m分", excelPattern="h\"時\"mm\"分\"")
         @XlsColumn(columnName="Timeクラス(sql)")
         private Time sqlTime;
         
         /** 書式付き(lenient=true) */
         @XlsDefaultValue("1999/12/31 10:12")
-        @XlsDateConverter(javaPattern="yyyy/M/d H:mm", lenient=true, locale="ja_JP", excelPattern="yyyy/m/d h:mm")
+        @XlsDateTimeConverter(javaPattern="yyyy/M/d H:mm", lenient=true, locale="ja_JP", excelPattern="yyyy/m/d h:mm")
         @XlsColumn(columnName="Timesamp(sql)")
         private Timestamp timestamp;
         

@@ -219,16 +219,16 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((Object[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new Object[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new Object[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new Object[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new Object[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((String[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new String[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new String[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new String[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new String[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new String[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)new String[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append((Object)new String[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append((Object)new String[1]).isEmpty(), is(false));
         
     }
     
@@ -237,11 +237,11 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((boolean[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new boolean[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new boolean[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new boolean[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new boolean[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new boolean[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)new boolean[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append((Object)new boolean[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append((Object)new boolean[1]).isEmpty(), is(false));
     }
     
     @Test
@@ -249,11 +249,11 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((byte[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new byte[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new byte[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new byte[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new byte[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new byte[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)new byte[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append((Object)new byte[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append((Object)new byte[1]).isEmpty(), is(false));
     }
     
     @Test
@@ -261,11 +261,11 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((char[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new char[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new char[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new char[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new char[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new char[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)new char[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append((Object)new char[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append((Object)new char[1]).isEmpty(), is(false));
     }
     
     @Test
@@ -273,11 +273,11 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((short[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new short[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new short[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new short[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new short[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new short[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)new short[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append((Object)new short[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append((Object)new short[1]).isEmpty(), is(false));
     }
     
     @Test
@@ -285,11 +285,11 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((int[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new int[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new int[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new int[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new int[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new int[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)new int[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new Object[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new Object[1]).isEmpty(), is(false));
     }
     
     @Test
@@ -297,11 +297,11 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((long[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new long[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new long[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new int[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new int[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new long[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)new long[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append((Object)new int[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append((Object)new int[1]).isEmpty(), is(false));
     }
     
     @Test
@@ -309,11 +309,11 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((float[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new float[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new float[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new float[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new float[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new float[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)new float[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append((Object)new float[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append((Object)new float[1]).isEmpty(), is(false));
     }
     
     @Test
@@ -321,11 +321,11 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((double[])null).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new double[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append(new double[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append(new double[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append(new double[1]).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new double[0]).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)new double[1]).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayItem(false)).append((Object)new double[1]).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestArrayElement(false)).append((Object)new double[1]).isEmpty(), is(false));
     }
     
     @Test
@@ -338,7 +338,7 @@ public class IsEmptyBuilderTest {
         assertThat(new IsEmptyBuilder().append((Object)Arrays.asList("1")).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)Arrays.asList("")).isEmpty(), is(true));
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestCollectionItem(false)).append((Object)Arrays.asList("")).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestCollectionElement(false)).append((Object)Arrays.asList("")).isEmpty(), is(false));
         
     }
     
@@ -357,7 +357,7 @@ public class IsEmptyBuilderTest {
         
         Map<String, Integer> map3 = new HashMap<String, Integer>();
         map3.put("key1", 0);
-        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestMapItem(false)).append(map3).isEmpty(), is(false));
+        assertThat(new IsEmptyBuilder(IsEmptyConfig.create().withTestMapValue(false)).append(map3).isEmpty(), is(false));
         
         assertThat(new IsEmptyBuilder().append((Object)new HashMap<String, Integer>()).isEmpty(), is(true));
         assertThat(new IsEmptyBuilder().append((Object)map1).isEmpty(), is(false));

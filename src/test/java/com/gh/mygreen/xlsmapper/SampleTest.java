@@ -25,13 +25,13 @@ import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
@@ -160,11 +160,11 @@ public class SampleTest {
     private static class UserSheet {
         
         @XlsLabelledCell(label="Date", type=LabelledCellType.Right)
-        @XlsDateConverter(excelPattern="yyyy/m/d")
+        @XlsDateTimeConverter(excelPattern="yyyy/m/d")
         Date createDate;
         
         @XlsHorizontalRecords(tableLabel="User List")
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         List<UserRecord> users;
         
     }
@@ -269,7 +269,7 @@ public class SampleTest {
     private static class MapColumnsDynamicSheet {
         
         @XlsHorizontalRecords(tableLabel="ユーザ一覧")
-        @XlsRecordOperator(overCase=OverOperate.Insert)
+        @XlsRecordOption(overCase=OverOperate.Insert)
         List<SampleRecord> records;
         
         // XlsMapColumnsのマッピング用のセルを作成する

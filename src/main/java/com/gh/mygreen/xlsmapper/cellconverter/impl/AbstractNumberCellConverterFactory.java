@@ -21,6 +21,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
@@ -35,6 +36,8 @@ public abstract class AbstractNumberCellConverterFactory<T extends Number> exten
     
     @Override
     protected void setupCustom(final AbstractCellConverter<T> cellConverter, final FieldAccessor field, final Configuration config) {
+        
+        ArgUtils.instanceOf(cellConverter, AbstractNumberCellConverter.class, "cellConverter");
         
         if(cellConverter instanceof AbstractNumberCellConverter) {
             

@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * {@literal @XlsIsEmpty}
  * public boolean isEmpty() {
  *     return IsEmptyBuilder.reflectionIsEmpty(this
- *         , IsEmptyConfig.create().withTestArrayItem(false).withTestCollectionItem(false)
+ *         , IsEmptyConfig.create().withTestArrayElement(false).withTestCollectionElement(false)
  *         , "positions", "labels");
  * }
  * </code></pre>
@@ -69,17 +69,17 @@ public class IsEmptyBuilder {
     /**
      * 配列の場合、値も検証対象とするかどうか。
      */
-    private boolean testArrayItem;
+    private boolean testArrayElement;
     
     /**
      * Collectionの場合、値も検証対象とするかどうか。
      */
-    private boolean testCollectionItem;
+    private boolean testCollectionElement;
     
     /**
      * Mapの場合、値も対象とするかどうか。
      */
-    private boolean testMapItem;
+    private boolean testMapValue;
     
     /**
      * transientが付与されたフィールドも対象とするかどうか。
@@ -105,9 +105,9 @@ public class IsEmptyBuilder {
         this.result = new AtomicBoolean(true);
         
         this.zeroAsEmpty = config.isZeroAsEmpty();
-        this.testArrayItem = config.isTestArrayItem();
-        this.testCollectionItem = config.isTestCollectionItem();
-        this.testMapItem = config.isTestMapItem();
+        this.testArrayElement = config.isTestArrayElement();
+        this.testCollectionElement = config.isTestCollectionElement();
+        this.testMapValue = config.isTestMapValue();
         this.testTransient = config.isTestTransient();
     }
     
@@ -476,7 +476,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestArrayItem()) {
+        if(value != null && isTestArrayElement()) {
             for(Object o : value) {
                 if(isNotEmpty()) {
                     return this;
@@ -503,7 +503,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestArrayItem()) {
+        if(value != null && isTestArrayElement()) {
             for(boolean o : value) {
                 if(isNotEmpty()) {
                     return this;
@@ -529,7 +529,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestArrayItem()) {
+        if(value != null && isTestArrayElement()) {
             for(char o : value) {
                 if(isNotEmpty()) {
                     return this;
@@ -555,7 +555,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestArrayItem()) {
+        if(value != null && isTestArrayElement()) {
             for(byte o : value) {
                 if(isNotEmpty()) {
                     return this;
@@ -581,7 +581,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestArrayItem()) {
+        if(value != null && isTestArrayElement()) {
             for(short o : value) {
                 if(isNotEmpty()) {
                     return this;
@@ -607,7 +607,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestArrayItem()) {
+        if(value != null && isTestArrayElement()) {
             for(int o : value) {
                 if(isNotEmpty()) {
                     return this;
@@ -633,7 +633,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestArrayItem()) {
+        if(value != null && isTestArrayElement()) {
             for(long o : value) {
                 if(isNotEmpty()) {
                     return this;
@@ -659,7 +659,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestArrayItem()) {
+        if(value != null && isTestArrayElement()) {
             for(float o : value) {
                 if(isNotEmpty()) {
                     return this;
@@ -685,7 +685,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestArrayItem()) {
+        if(value != null && isTestArrayElement()) {
             for(double o : value) {
                 if(isNotEmpty()) {
                     return this;
@@ -711,7 +711,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestCollectionItem()) {
+        if(value != null && isTestCollectionElement()) {
             // コレクションの値も検証する。
             for(Object o : value) {
                 if(isNotEmpty()) {
@@ -739,7 +739,7 @@ public class IsEmptyBuilder {
             return this;
         }
         
-        if(value != null && isTestMapItem()) {
+        if(value != null && isTestMapValue()) {
             // コレクションの値も検証する。
             for(Object o : value.values()) {
                 if(isNotEmpty()) {
@@ -814,24 +814,24 @@ public class IsEmptyBuilder {
      * Collectionの値も検証するかどうか。
      * @return true:Collectionの値も検証する。
      */
-    private boolean isTestArrayItem() {
-        return testArrayItem;
+    private boolean isTestArrayElement() {
+        return testArrayElement;
     }
     
     /**
      * Collectionの値も検証するかどうか。
      * @return true:Collectionの値も検証する。
      */
-    private boolean isTestCollectionItem() {
-        return testCollectionItem;
+    private boolean isTestCollectionElement() {
+        return testCollectionElement;
     }
     
     /**
      * Mapの値も検証するかどうか。
      * @return true:Mapの値も検証する。
      */
-    private boolean isTestMapItem() {
-        return testMapItem;
+    private boolean isTestMapValue() {
+        return testMapValue;
     }
     
 }

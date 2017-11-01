@@ -34,7 +34,7 @@ public class BigDecimalCellConverterFactory extends AbstractNumberCellConverterF
         
         private final BigDecimalCellConverterFactory convererFactory;
         
-        public BigDecimalCellConverter(final FieldAccessor field, final Configuration config,
+        private BigDecimalCellConverter(final FieldAccessor field, final Configuration config,
                 final BigDecimalCellConverterFactory convererFactory) {
             
             super(field, config);

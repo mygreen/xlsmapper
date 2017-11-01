@@ -53,7 +53,7 @@ public class EnumFormatter<T extends Enum<T>> implements TextFormatter<T> {
         
         this.type = type;
         this.ignoreCase = ignoreCase;
-        this.selectorMethod = Optional.of(getEnumValueMethod(type, selector));
+        this.selectorMethod = Optional.of(getEnumSelectorMethod(type, selector));
         
         this.toStringMap = createToStringMap(type, selector);
         this.toObjectMap = createToObjectMap(type, ignoreCase, selector);
@@ -68,7 +68,7 @@ public class EnumFormatter<T extends Enum<T>> implements TextFormatter<T> {
         this(type, false, selector);
     }
     
-    private static <T extends Enum<T>> Method getEnumValueMethod(final Class<T> enumClass, final String selector) {
+    private static <T extends Enum<T>> Method getEnumSelectorMethod(final Class<T> enumClass, final String selector) {
         
         try {
             final Method method = enumClass.getMethod(selector);
@@ -96,7 +96,7 @@ public class EnumFormatter<T extends Enum<T>> implements TextFormatter<T> {
     
     private static <T extends Enum<T>> Map<Enum<?>, String> createToStringMap(final Class<T> enumClass, final String selector) {
         
-        final Method method = getEnumValueMethod(enumClass, selector);
+        final Method method = getEnumSelectorMethod(enumClass, selector);
         
         final Map<Enum<?>, String> map = new LinkedHashMap<>();
         try {
@@ -131,7 +131,7 @@ public class EnumFormatter<T extends Enum<T>> implements TextFormatter<T> {
     private static <T extends Enum<T>> Map<String, Enum<?>> createToObjectMap(final Class<T> enumClass, final boolean ignoreCase,
             final String selector) {
         
-        final Method method = getEnumValueMethod(enumClass, selector);
+        final Method method = getEnumSelectorMethod(enumClass, selector);
         
         final Map<String, Enum<?>> map = new LinkedHashMap<>();
         try {

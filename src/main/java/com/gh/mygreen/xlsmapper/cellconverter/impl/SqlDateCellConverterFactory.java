@@ -52,7 +52,7 @@ public class SqlDateCellConverterFactory extends AbstractDateCellConverterFactor
         
         private final SqlDateCellConverterFactory convererFactory;
         
-        public SqlDateCellConverter(final FieldAccessor field, final Configuration config,
+        private SqlDateCellConverter(final FieldAccessor field, final Configuration config,
                 final SqlDateCellConverterFactory convererFactory) {
             super(field, config);
             this.convererFactory = convererFactory;

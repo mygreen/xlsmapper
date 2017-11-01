@@ -17,6 +17,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
@@ -31,16 +32,18 @@ import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
+import com.gh.mygreen.xlsmapper.localization.EncodingControl;
+import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.localization.MessageResolver;
+import com.gh.mygreen.xlsmapper.localization.ResourceBundleMessageResolver;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
-import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
-import com.gh.mygreen.xlsmapper.validation.ResourceBundleMessageResolver;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 import com.gh.mygreen.xlsmapper.validation.ObjectError;
@@ -94,6 +97,10 @@ public class SheetBeanValidatorTest {
         
         // 入力値検証
         SheetBeanValidator sheetValidator = new SheetBeanValidator(getBeanValidator());
+        
+        // 値の補正
+        sheet.updateTime = getDateByDay(new Date(), 1);
+        
         sheetValidator.validate(sheet, errors);
         
         assertThat(errors.getAllErrors(), hasSize(0));
@@ -119,6 +126,7 @@ public class SheetBeanValidatorTest {
         }
         
         // データの書き換え
+        sheet.updateTime = getDateByDay(new Date(), 1); // 正しい値に補正
         sheet.description = "あいうえおかきくけこさ";
         sheet.age = -1;
         sheet.email = "test";
@@ -139,6 +147,9 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.description));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10));
+            
+            String message = messageConverter.convertMessage(fieldError);
+            assertThat(message, is("[単純なBean]:説明 - セル(C7)の文字長'11'は、0～10の間で設定してください。"));
         }
         
         {
@@ -150,6 +161,10 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.age));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0L));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)100L));
+            
+            String message = messageConverter.convertMessage(fieldError);
+            assertThat(message, is("[単純なBean]:年齢 - セル(B9)の値'-1'は、0から100の間の値を設定してください。"));
+            
         }
         
         {
@@ -159,6 +174,10 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.email));
+            
+            String message = messageConverter.convertMessage(fieldError);
+            assertThat(message, is("[単純なBean]:e-mail(必須) - セル(B10)の値'test'は、E-mail形式で設定してください。"));
+            
         }
         
         
@@ -277,16 +296,21 @@ public class SheetBeanValidatorTest {
         }
         
         // データの書き換え
-        sheet.updateTime = getDateByDay(new Date(), 1);
+        sheet.updateTime = toTimestamp("2017-11-01 00:00:00.000");
         sheet.description = "あいうえおかきくけこさ";
         sheet.age = -1;
         sheet.email = "test";
         
         // BeanValidatorの式言語の実装を独自のものにする。
+        MessageResolver messageResolver = new ResourceBundleMessageResolver(
+                ResourceBundle.getBundle("com.gh.mygreen.xlsmapper.validation.beanvalidation.OtherElMessages", new EncodingControl("UTF-8")));
+        
+        messageConverter.setMessageResolver(messageResolver);
+        
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator beanValidator = validatorFactory.usingContext()
-                .messageInterpolator(new MessageInterpolatorAdapter(
-                        new ResourceBundleMessageResolver(ResourceBundle.getBundle("com.gh.mygreen.xlsmapper.validation.beanvalidation.OtherElMessages")),
+                .messageInterpolator(
+                        new MessageInterpolatorAdapter(messageResolver,
                         new MessageInterpolator(new ExpressionLanguageJEXLImpl())))
                 .getValidator();
         
@@ -301,8 +325,11 @@ public class SheetBeanValidatorTest {
             FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
-            assertThat(fieldError.getCodes(), hasItemInArray("Past"));
+            assertThat(fieldError.getCodes(), hasItemInArray("Future"));
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.updateTime));
+            
+            String message = messageConverter.convertMessage(fieldError);
+            assertThat(message, is("[単純なBean]:更新日時 - セル(B4)は未来の日付を入力してください。現在の日付「2017/11/01」は過去日です。"));
         }
         
         {
@@ -314,6 +341,10 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.description));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10));
+            
+            String message = messageConverter.convertMessage(fieldError);
+            assertThat(message, is("[単純なBean]:説明 - セル(C7)は0～10文字以内で値を入力してください。"));
+            
         }
         
         {
@@ -325,6 +356,9 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.age));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0L));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)100L));
+            
+            String message = messageConverter.convertMessage(fieldError);
+            assertThat(message, is("[単純なBean]:年齢 - セル(B9)は0から100の間の値を入力してください。"));
         }
         
         {
@@ -334,6 +368,10 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.email));
+            
+            String message = messageConverter.convertMessage(fieldError);
+            assertThat(message, is("[単純なBean]:e-mail(必須) - セル(B10)はメールアドレスの形式(例:hoge@sample.co.jp)で値を入力してください。"));
+
         }
         
         
@@ -373,8 +411,8 @@ public class SheetBeanValidatorTest {
         private Double average;
         
         @NotNull
-        @Past
-        @XlsDateConverter(lenient=true, javaPattern="yyyy年M月d日")
+        @Future
+        @XlsDateTimeConverter(lenient=true, javaPattern="yyyy年M月d日")
         @XlsLabelledCell(label="更新日時", type=LabelledCellType.Right)
         private Date updateTime;
         
@@ -417,7 +455,7 @@ public class SheetBeanValidatorTest {
         
         @NotNull
         @Past
-        @XlsDateConverter(lenient=true, javaPattern="yyyy年M月d日")
+        @XlsDateTimeConverter(lenient=true, javaPattern="yyyy年M月d日")
         @XlsColumn(columnName="生年月日")
         private Date birthday;
         

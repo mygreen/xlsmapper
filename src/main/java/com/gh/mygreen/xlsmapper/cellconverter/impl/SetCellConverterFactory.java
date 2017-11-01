@@ -74,7 +74,7 @@ public class SetCellConverterFactory extends AbstractCellConverterFactorySupport
     
     public class SetCellConverter extends AbstractCellConverter<Set> {
         
-        public SetCellConverter(final FieldAccessor field, final Configuration config) {
+        private SetCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
         }
         

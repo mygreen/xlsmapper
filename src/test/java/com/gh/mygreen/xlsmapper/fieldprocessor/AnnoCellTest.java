@@ -50,6 +50,21 @@ public class AnnoCellTest {
     }
     
     /**
+     * 読み込み用のファイルの定義
+     */
+    private File inputFile = new File("src/test/data/anno_Cell.xlsx");
+    
+    /**
+     * 出力用のテンプレートファイルの定義
+     */
+    private File templateFile = new File("src/test/data/anno_Cell_template.xlsx");
+    
+    /**
+     * 出力用のファイル名の定義
+     */
+    private String outFilename = "anno_Cell_out.xlsx";
+    
+    /**
      * 読み込みのテスト - 通常のデータ
      */
     @Test
@@ -57,7 +72,7 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
             
             NormalSheet sheet = errors.getTarget();
@@ -78,11 +93,11 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(false);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             assertThatThrownBy(() -> mapper.load(in, NormalSheet.class))
                 .isInstanceOf(TypeBindException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoCellTest$NormalSheet#c4' において、セル（D12） の値（'abc'）を 'java.lang.Integer' に変換できませんでした。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoCellTest$NormalSheet#c4'において、セル(D12)の値'abc'を'java.lang.Integer'に変換できませんでした。");
         }
     }
     
@@ -95,11 +110,11 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             assertThatThrownBy(() -> mapper.load(in, InvalidAnno1Sheet1.class))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoCellTest$InvalidAnno1Sheet1#c1' において、アノテーション @XlsCell の属性 'row' の値（-1）は、0以上の値を設定してください。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoCellTest$InvalidAnno1Sheet1#c1'において、アノテーション'@XlsCell'の属性'row'の値'-1'は、0以上の値を設定してください。");
             
         }
     }
@@ -113,11 +128,11 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             assertThatThrownBy(() -> mapper.load(in, InvalidAnnoSheet2.class))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoCellTest$InvalidAnnoSheet2#c1' において、アノテーション @XlsCell の属性 'address' の値（あいう）は、セルのアドレスの書式として不正です。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoCellTest$InvalidAnnoSheet2#c1'において、アノテーション'@XlsCell'の属性'address'の値'あいう'は、セルのアドレスの書式として不正です。");
             
         }
     }
@@ -131,7 +146,7 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
             
             MethodAnnoSheet sheet = errors.getTarget();
@@ -153,7 +168,7 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_Cell.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
             
             FormulaSheet sheet = errors.getTarget();
@@ -184,8 +199,8 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_Cell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -229,8 +244,8 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_Cell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -278,8 +293,8 @@ public class AnnoCellTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_Cell_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_Cell_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);

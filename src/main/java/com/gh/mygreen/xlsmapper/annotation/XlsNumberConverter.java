@@ -124,7 +124,7 @@ public @interface XlsNumberConverter {
      * public class SampleRecord {
      * 
      *     {@literal @XlsColumn(name="給与")}
-     *     {@literal @XlsDateConverter(javaPattern="[$-411]\"￥\"#,##0.0000")}
+     *     {@literal @XlsNumberConverter(javaPattern="[$-411]\"￥\"#,##0.0000")}
      *     private double salary;
      * 
      * }

@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface XlsArrayCell {
+public @interface XlsArrayCells {
     
     /**
      * 連続するセルの個数を指定します。
@@ -34,7 +34,7 @@ public @interface XlsArrayCell {
      * 
      * @return trueの場合、値のセルが結合されていることを考慮する。
      */
-    boolean itemMerged() default true;
+    boolean elementMerged() default true;
     
     /**
      * 連続する隣接するセルの方向を指定します。
@@ -46,7 +46,7 @@ public @interface XlsArrayCell {
      * 配列またはリスト要素の値のクラスを指定します。
      * <p>省略した場合、定義されたたGenericsの情報から取得します。
      */
-    Class<?> itemClass() default Object.class;
+    Class<?> elementClass() default Object.class;
     
     /**
      * セルの行番号を指定します。0から始まります。

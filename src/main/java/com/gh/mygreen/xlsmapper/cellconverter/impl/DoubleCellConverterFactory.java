@@ -34,7 +34,7 @@ public class DoubleCellConverterFactory extends AbstractNumberCellConverterFacto
         
         private final DoubleCellConverterFactory convererFactory;
         
-        public DoubleCellConverter(final FieldAccessor field, final Configuration config,
+        private DoubleCellConverter(final FieldAccessor field, final Configuration config,
                 final DoubleCellConverterFactory convererFactory) {
             super(field, config);
             this.convererFactory = convererFactory;

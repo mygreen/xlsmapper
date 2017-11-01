@@ -15,16 +15,16 @@ import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
 import com.gh.mygreen.xlsmapper.annotation.ArrayDirection;
-import com.gh.mygreen.xlsmapper.annotation.XlsArrayOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayOption;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
 
 /**
  * 配列やリスト形式の要素を処理するためのクラス。
@@ -33,7 +33,7 @@ import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
  * @author T.TSUCHIE
  *
  */
-public class ArrayCellHandler {
+public class ArrayCellsHandler {
     
     private final FieldAccessor field;
     
@@ -42,7 +42,7 @@ public class ArrayCellHandler {
     /**
      * リストや配列の要素のクラスタイプ
      */
-    private final Class<?> itemClass;
+    private final Class<?> elementClass;
     
     private final Sheet sheet;
     
@@ -53,11 +53,11 @@ public class ArrayCellHandler {
      */
     private String label;
     
-    public ArrayCellHandler(final FieldAccessor field, final Object beansObj, final Class<?> itemClass,
+    public ArrayCellsHandler(final FieldAccessor field, final Object beansObj, final Class<?> elementClass,
             final Sheet sheet, final Configuration config) {
         this.field = field;
         this.beansObj = beansObj;
-        this.itemClass = itemClass;
+        this.elementClass = elementClass;
         this.sheet = sheet;
         this.config = config;
     }
@@ -101,10 +101,10 @@ public class ArrayCellHandler {
         
         /**
          * 値のセルが結合しているかどうか考慮するかどうか指定します。
-         * @return アノテーションの属性「itemMerged」の値
+         * @return アノテーションの属性「elementMerged」の値
          */
-        public boolean itemMerged() {
-            return ClassUtils.getAnnotationAttribute(target, "itemMerged", boolean.class).orElse(true);
+        public boolean elementMerged() {
+            return ClassUtils.getAnnotationAttribute(target, "elementMerged", boolean.class).orElse(true);
         }
     }
     
@@ -151,11 +151,11 @@ public class ArrayCellHandler {
                         throw e;
                     } else {
                         // 処理を続ける場合は、nullなどを入れる
-                        result.add(Utils.getPrimitiveDefaultValue(itemClass));
+                        result.add(Utils.getPrimitiveDefaultValue(elementClass));
                     }
                 }
                 
-                if(annoProxy.itemMerged()) {
+                if(annoProxy.elementMerged()) {
                     // 結合を考慮する場合
                     final CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, row, column);
                     if(mergedRegion != null) {
@@ -194,11 +194,11 @@ public class ArrayCellHandler {
                         throw e;
                     } else {
                         // 処理を続ける場合は、nullなどを入れる
-                        result.add(Utils.getPrimitiveDefaultValue(itemClass));
+                        result.add(Utils.getPrimitiveDefaultValue(elementClass));
                     }
                 }
                 
-                if(annoProxy.itemMerged()) {
+                if(annoProxy.elementMerged()) {
                     CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, row, column);
                     if(mergedRegion != null) {
                         // 結合を考慮する場合
@@ -232,12 +232,12 @@ public class ArrayCellHandler {
         
         final AnnotationProxy annoProxy = new AnnotationProxy(anno);
         
-        final Optional<XlsArrayOperator> arrayOperator = field.getAnnotation(XlsArrayOperator.class);
-        final XlsArrayOperator.OverOperate overOp = arrayOperator.map(op -> op.overCase())
-                .orElse(XlsArrayOperator.OverOperate.Break);
+        final Optional<XlsArrayOption> arrayOption = field.getAnnotation(XlsArrayOption.class);
+        final XlsArrayOption.OverOperate overOp = arrayOption.map(op -> op.overCase())
+                .orElse(XlsArrayOption.OverOperate.Break);
         
-        final XlsArrayOperator.RemainedOperate remainedOp = arrayOperator.map(op -> op.remainedCase())
-                .orElse(XlsArrayOperator.RemainedOperate.None);
+        final XlsArrayOption.RemainedOperate remainedOp = arrayOption.map(op -> op.remainedCase())
+                .orElse(XlsArrayOption.RemainedOperate.None);
         
         // 属性sizeの値のチェック
         if(annoProxy.size() <= 0) {
@@ -251,7 +251,7 @@ public class ArrayCellHandler {
             
         } else if(annoProxy.size() < dataList.size()) {
             // 書き込むデータサイズが、アノテーションの指定よりも多く、テンプレート側が不足している場合
-            if(overOp.equals(XlsArrayOperator.OverOperate.Error)) {
+            if(overOp.equals(XlsArrayOption.OverOperate.Error)) {
                 throw new AnnotationInvalidException(annoProxy.getTarget(), MessageBuilder.create("anno.attr.arraySizeOver")
                         .var("property", field.getNameWithClass())
                         .varWithAnno("anno", annoProxy.annotationType())
@@ -278,9 +278,9 @@ public class ArrayCellHandler {
                 }
                 
                 if(i < dataList.size()) {
-                    final Object itemValue = dataList.get(i);
+                    final Object elementValue = dataList.get(i);
                     try {
-                        converter.toCell(itemValue, beansObj, sheet, cellAddress);
+                        converter.toCell(elementValue, beansObj, sheet, cellAddress);
                         
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, cellAddress, field.getName(), label);
@@ -296,7 +296,7 @@ public class ArrayCellHandler {
                 }
                 
                 final CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, row, column);
-                if(annoProxy.itemMerged() && mergedRegion != null) {
+                if(annoProxy.elementMerged() && mergedRegion != null) {
                     // 結合を考慮する場合
                     column += POIUtils.getColumnSize(mergedRegion);
                     
@@ -312,7 +312,7 @@ public class ArrayCellHandler {
                 
                 if(i >= dataList.size()-1) {
                     // 書き込むデータサイズが少なく、テンプレート側が余っている場合
-                    if(remainedOp.equals(XlsArrayOperator.RemainedOperate.None)) {
+                    if(remainedOp.equals(XlsArrayOption.RemainedOperate.None)) {
                         // 処理を終了する場合
                         break;
                     }
@@ -336,9 +336,9 @@ public class ArrayCellHandler {
                 }
                 
                 if(i < dataList.size()) {
-                    final Object itemValue = dataList.get(i);
+                    final Object elementValue = dataList.get(i);
                     try {
-                        converter.toCell(itemValue, beansObj, sheet, cellAddress);
+                        converter.toCell(elementValue, beansObj, sheet, cellAddress);
                         
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, cellAddress, field.getName(), label);
@@ -354,7 +354,7 @@ public class ArrayCellHandler {
                 }
                 
                 final CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, row, column);
-                if(annoProxy.itemMerged() && mergedRegion != null) {
+                if(annoProxy.elementMerged() && mergedRegion != null) {
                     // 結合を考慮する場合
                     row += POIUtils.getRowSize(mergedRegion);
                     
@@ -370,7 +370,7 @@ public class ArrayCellHandler {
                 
                 if(i >= dataList.size()-1) {
                     // 書き込むデータサイズが少なく、テンプレート側が余っている場合
-                    if(remainedOp.equals(XlsArrayOperator.RemainedOperate.None)) {
+                    if(remainedOp.equals(XlsArrayOption.RemainedOperate.None)) {
                         // 処理を終了する場合
                         break;
                     }

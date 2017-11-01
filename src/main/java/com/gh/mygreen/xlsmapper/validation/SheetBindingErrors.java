@@ -148,7 +148,6 @@ public class SheetBindingErrors<P> {
     /**
      * 現在のシート名を設定します。
      * @param sheetName シートの名称
-     * @return 自身のインスタンス
      */
     public void setSheetName(final String sheetName) {
         this.sheetName = sheetName;
@@ -328,7 +327,7 @@ public class SheetBindingErrors<P> {
      * マップなどのキー付きのパスを１つ下位に移動します。
      * @param subPath ネストするパス
      * @param key マップのキー
-     * @throws IllegalArgumentException {@link subPath is empty or key is empty}
+     * @throws IllegalArgumentException {@literal subPath is empty or key is empty}
      */
     public void pushNestedPath(final String subPath, final String key) {
         final String canonicalPath = normalizePath(subPath);
@@ -580,8 +579,21 @@ public class SheetBindingErrors<P> {
      * @return {@link ObjectError}のインスタンスを組み立てるビルダクラス。
      */
     public InternalObjectErrorBuilder createGlobalError(final String errorCode) {
+        return createGlobalError(new String[]{errorCode});
+    }
+    
+    /**
+     * グローバルエラーのビルダーを作成します。
+     * @param errorCode エラーコード。先頭の要素が優先されます。
+     * @return {@link ObjectError}のインスタンスを組み立てるビルダクラス。
+     */
+    public InternalObjectErrorBuilder createGlobalError(final String[] errorCodes) {
         
-        final String codes[] = generateMessageCodes(errorCode);
+        String[] codes = new String[0];
+        for(String errorCode : errorCodes) {
+            codes = Utils.concat(codes, generateMessageCodes(errorCode));
+        }
+        
         return new InternalObjectErrorBuilder(this, getObjectName(), codes)
                 .sheetName(getSheetName());
     }
@@ -594,10 +606,26 @@ public class SheetBindingErrors<P> {
      */
     public InternalFieldErrorBuilder createFieldError(final String field, final String errorCode) {
         
+        return createFieldError(field, new String[]{errorCode});
+        
+    }
+    
+    /**
+     * フィールドエラーのビルダーを作成します。
+     * @param field フィールドパス。
+     * @param errorCodes エラーコード。先頭の要素が優先されます。
+     * @return {@link FieldError}のインスタンスを組み立てるビルダクラス。
+     */
+    public InternalFieldErrorBuilder createFieldError(final String field, final String[] errorCodes) {
+        
         final String fieldPath = buildFieldPath(field);
         final Class<?> fieldType = getFieldType(field);
         final Object fieldValue = getFieldValue(field);
-        final String codes[] = generateMessageCodes(errorCode, fieldPath, fieldType);
+        
+        String[] codes = new String[0];
+        for(String errorCode : errorCodes) {
+            codes = Utils.concat(codes, generateMessageCodes(errorCode, fieldPath, fieldType));
+        }
         
         return new InternalFieldErrorBuilder(this, getObjectName(), fieldPath, codes)
                 .sheetName(getSheetName())

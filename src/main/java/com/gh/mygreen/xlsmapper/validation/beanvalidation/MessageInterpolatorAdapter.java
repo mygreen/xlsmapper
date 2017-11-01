@@ -1,15 +1,15 @@
 package com.gh.mygreen.xlsmapper.validation.beanvalidation;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.metadata.ConstraintDescriptor;
 
+import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.localization.MessageResolver;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.validation.MessageInterpolator;
-import com.gh.mygreen.xlsmapper.validation.MessageResolver;
 
 
 /**
@@ -43,8 +43,14 @@ public class MessageInterpolatorAdapter implements javax.validation.MessageInter
         return sheetMessageInterpolator.interpolate(messageTemplate, createMessageVars(context), true, messageResolver);
     }
     
+    /**
+     * メッセージ中で利用可能な変数を作成する
+     * @param context コンテキスト
+     * @return メッセージ変数のマップ
+     */
     protected Map<String, Object> createMessageVars(final Context context) {
-        final Map<String, Object> vars = new LinkedHashMap<String, Object>();
+        
+        final Map<String, Object> vars = new HashMap<String, Object>();
         
         final ConstraintDescriptor<?> descriptor = context.getConstraintDescriptor();
         for(Map.Entry<String, Object> entry : descriptor.getAttributes().entrySet()) {
@@ -55,12 +61,11 @@ public class MessageInterpolatorAdapter implements javax.validation.MessageInter
         }
         
         // 検証対象の値
-        vars.put("validatedValue", context.getValidatedValue());
+        vars.computeIfAbsent("validatedValue", key -> context.getValidatedValue());
         
         // デフォルトのメッセージ
         final String defaultCode = String.format("%s.message", descriptor.getAnnotation().annotationType().getCanonicalName());
         final Optional<String> defaultMessage = messageResolver.getMessage(defaultCode);
-        
         
         vars.put(defaultCode, 
                 defaultMessage.orElseThrow(() -> new RuntimeException(String.format("not found message code '%s'", defaultCode))));

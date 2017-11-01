@@ -32,9 +32,9 @@ import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.RemainedOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.RemainedOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
@@ -61,6 +61,21 @@ public class AnnoLifeCycleTest {
     }
     
     /**
+     * 読み込み用のファイルの定義
+     */
+    private File inputFile = new File("src/test/data/anno_LifeCycle.xlsx");
+    
+    /**
+     * 出力用のテンプレートファイルの定義
+     */
+    private File templateFile = new File("src/test/data/anno_LifeCycle_template.xlsx");
+    
+    /**
+     * 出力用のファイル名の定義
+     */
+    private String outFilename = "anno_LifeCycle_out.xlsx";
+    
+    /**
      * 読み込みのテスト - 単純な表
      */
     @Test
@@ -69,7 +84,7 @@ public class AnnoLifeCycleTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_LifeCycle.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<SimpleSheet> errors = mapper.loadDetail(in, SimpleSheet.class);
             
             SimpleSheet sheet = errors.getTarget();
@@ -108,7 +123,7 @@ public class AnnoLifeCycleTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_LifeCycle.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<IteratableSheet> errors = mapper.loadDetail(in, IteratableSheet.class);
             
             IteratableSheet sheet = errors.getTarget();
@@ -199,8 +214,8 @@ public class AnnoLifeCycleTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_LifeCycle_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_LifeCycle_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -264,8 +279,8 @@ public class AnnoLifeCycleTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_LifeCycle_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_LifeCycle_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -352,11 +367,11 @@ public class AnnoLifeCycleTest {
         private String name;
         
         @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<Record> hRecords;
         
         @XlsVerticalRecords(tableLabel="縦方向", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
+        @XlsRecordOption(overCase=OverOperate.Copy, remainedCase=RemainedOperate.Clear)
         private List<Record> vRecords;
         
         public SimpleSheet addHoritonzal(final Record record) {
@@ -614,7 +629,7 @@ public class AnnoLifeCycleTest {
         private String name;
         
         @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border)
-        @XlsRecordOperator(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
+        @XlsRecordOption(overCase=OverOperate.Insert, remainedCase=RemainedOperate.Delete)
         private List<Record> hRecords;
         
         public Table name(final String name) {

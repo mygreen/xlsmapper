@@ -5,12 +5,13 @@ import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 /**
  * {@link XlsArrayConverter}で指定する、配列やリストの要素をオブジェクトに変換するためのクラス。
  * 
+ * @version 2.0
  * @since 1.1
  * @author T.TSUCHIE
  * @param <T> 変換対象のクラスタイプ
  *
  */
-public interface ItemConverter<T> {
+public interface ElementConverter<T> {
     
     /**
      * 文字列を指定したクラス型に変換する。

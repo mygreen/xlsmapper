@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * {@link XlsArrayCell}や{@link XlsLabelledArrayCell}の書き込み時の配列の操作を指定するためのアノテーションです。
+ * {@link XlsArrayCells}や{@link XlsLabelledArrayCells}の書き込み時の配列の操作を指定するためのアノテーションです。
  *
  * @since 2.0
  * @author T.TSUCHIE
@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface XlsArrayOperator {
+public @interface XlsArrayOption {
     
     /**
      * 書き込み時にデータの配列のサイズ数に対して属性size()の値が小さく、足りない場合の操作を指定します。
@@ -31,7 +31,7 @@ public @interface XlsArrayOperator {
     RemainedOperate remainedCase() default RemainedOperate.None;
     
     /**
-     * アノテーション {@link XlsArrayCell}や{@link XlsLabelledArrayCell}で、
+     * アノテーション {@link XlsArrayCells}や{@link XlsLabelledArrayCells}で、
      * 書き込み時に、配列やリストのデータサイズ数に対して、属性size()の値が小さい場合の操作を指定します。
      *
      * @since 2.0
@@ -50,7 +50,7 @@ public @interface XlsArrayOperator {
     }
     
     /**
-     * アノテーション {@link XlsArrayCell}や{@link XlsLabelledArrayCell}で、
+     * アノテーション {@link XlsArrayCells}や{@link XlsLabelledArrayCells}で、
      * 書き込み時に、配列やリストのデータサイズ数に対して、属性size()の値が大きい場合の操作を指定します。
      *
      * @since 2.0

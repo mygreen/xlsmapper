@@ -37,7 +37,7 @@ public class ShortCellConverterFactory extends AbstractNumberCellConverterFactor
             
             private final ShortCellConverterFactory convererFactory;
             
-            public ShortCellConverter(final FieldAccessor field, final Configuration config,
+            private ShortCellConverter(final FieldAccessor field, final Configuration config,
                     final ShortCellConverterFactory convererFactory) {
                 super(field, config);
                 this.convererFactory = convererFactory;

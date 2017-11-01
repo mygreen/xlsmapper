@@ -23,7 +23,7 @@ import java.util.Map;
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
-import com.gh.mygreen.xlsmapper.annotation.XlsDateConverter;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
@@ -56,6 +56,21 @@ public class AnnoDefaultValueTest {
     }
     
     /**
+     * 読み込み用のファイルの定義
+     */
+    private File inputFile = new File("src/test/data/anno_DefaultValue.xlsx");
+    
+    /**
+     * 出力用のテンプレートファイルの定義
+     */
+    private File templateFile = new File("src/test/data/anno_DefaultValue_template.xlsx");
+    
+    /**
+     * 出力用のファイル名の定義
+     */
+    private String outFilename = "anno_DefaultValue_out.xlsx";
+    
+    /**
      * 初期値の通常の読み込みのテスト 
      */
     @Test
@@ -64,7 +79,7 @@ public class AnnoDefaultValueTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_DefaultValue.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalValueSheet> errors = mapper.loadDetail(in, NormalValueSheet.class);
             NormalValueSheet sheet = errors.getTarget();
             
@@ -101,11 +116,11 @@ public class AnnoDefaultValueTest {
         mapper.getConiguration().setContinueTypeBindFailure(true);
         mapper.getConiguration().setAnnotationMapping(xmlInfo);
         
-        try(InputStream in = new FileInputStream("src/test/data/anno_DefaultValue.xlsx")) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             
             assertThatThrownBy(() -> mapper.loadDetail(in, NormalValueSheet.class))
                 .isInstanceOf(AnnotationInvalidException.class)
-                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoDefaultValueTest$NormalValueSheet#blankWithDefaultFormat' において、アノテーション @XlsDefaultValue の値 'abc' を 'java.time.LocalDate' に変換でませんでした。");
+                .hasMessage("'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoDefaultValueTest$NormalValueSheet#blankWithDefaultFormat'において、アノテーション'@XlsDefaultValue'の値'abc'を'java.time.LocalDate'に変換でませんでした。");
             
             
         }
@@ -126,8 +141,8 @@ public class AnnoDefaultValueTest {
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
-        File outFile = new File(OUT_DIR, "anno_DefaultValue_out.xlsx");
-        try(InputStream template = new FileInputStream("src/test/data/anno_DefaultValue_template.xlsx");
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
@@ -194,7 +209,7 @@ public class AnnoDefaultValueTest {
         
         @XlsDefaultValue(value="2017-08-20")
         @XlsLabelledCell(label="空のセル（初期値設定あり）(書式指定あり)", type=LabelledCellType.Right)
-        @XlsDateConverter(javaPattern="uuuu-MM-dd")
+        @XlsDateTimeConverter(javaPattern="uuuu-MM-dd")
         private LocalDate blankWithDefaultFormat;
         
         

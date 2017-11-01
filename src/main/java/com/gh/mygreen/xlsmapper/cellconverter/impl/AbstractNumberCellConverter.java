@@ -19,7 +19,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * 数値型のConverterの抽象クラス。
- * <p>数値型のConverterは、基本的にこのクラスを継承して作成する。
+ * <p>数値型のConverterは、基本的にこのクラスを継承して作成する。</p>
  * 
  * @version 2.0
  * @author T.TSUCHIE
@@ -79,7 +79,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
      * その型における型に変換する
      * BigDecimalから変換する際には、exactXXX()メソッドを呼ぶ。
      * 
-     * @param bg 変換対象のBigDecimal
+     * @param value 変換対象のBigDecimal
      * @return 変換した値
      * @throws ArithmeticException 変換する数値型に合わない場合
      */
@@ -111,7 +111,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Abst
     
     /**
      * Excelの書式を設定する
-     * @param excelPattern
+     * @param excelPattern excelの書式
      */
     public void setExcelPattern(String excelPattern) {
         this.excelPattern = Optional.of(excelPattern);

@@ -1,4 +1,4 @@
-package com.gh.mygreen.xlsmapper.validation;
+package com.gh.mygreen.xlsmapper.localization;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
  */
 public class MessageBuilder {
     
-    private static final MessageResolver MESSAGE_RESOLVER = new ResourceBundleMessageResolver("com.gh.mygreen.xlsmapper.validation.Messages", false);
+    private static final MessageResolver MESSAGE_RESOLVER = new ResourceBundleMessageResolver("com.gh.mygreen.xlsmapper.localization.Messages", false);
     private static final MessageInterpolator MESSAGE_INTERPOLATOR = new MessageInterpolator();
     
     private final String code;
@@ -25,7 +25,7 @@ public class MessageBuilder {
     /**
      * メッセージコードを指定してインスタンスを作成します。
      * @param code メッセージコード
-     * @throws IllegalArgumentException {@lteral code is null or empty.}
+     * @throws IllegalArgumentException {@literal code is null or empty.}
      */
     public MessageBuilder(final String code) {
         ArgUtils.notEmpty(code, "code");
@@ -95,7 +95,7 @@ public class MessageBuilder {
      */
     public MessageBuilder varWithEnum(final String key, final Enum<?> enums) {
         
-        vars.put(key, enums.getClass().getName() + "#" + enums.name());
+        vars.put(key, enums.getClass().getSimpleName() + "#" + enums.name());
         return this;
         
     }
