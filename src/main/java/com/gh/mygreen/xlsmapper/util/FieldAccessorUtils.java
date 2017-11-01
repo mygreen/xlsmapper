@@ -29,7 +29,7 @@ public class FieldAccessorUtils {
      * @param annoReader {@link AnnotationReader}のインスタンス。
      * @param annoClass アノテーションのクラス
      * @return プロパティの一覧。存在しない場合は、空のリストを返す。
-     * @throws NullPointerException {@literal targetClass == null or annoReader == null or annoClass == null.}
+     * @throws IllegalArgumentException {@literal targetClass == null or annoReader == null or annoClass == null.}
      */
     public static List<FieldAccessor> getPropertiesWithAnnotation(final Class<?> targetClass, final AnnotationReader annoReader,
             final Class<? extends Annotation> annoClass) {
@@ -77,7 +77,7 @@ public class FieldAccessorUtils {
      * @param config システム設定情報
      * @param columnName カラムの値
      * @return プロパティの一覧。存在しない場合は、空のリストを返す。
-     * @throws NullPointerException {@literal config == null || columnName == null.}
+     * @throws IllegalArgumentException {@literal config == null || columnName == null.}
      */
     public static List<FieldAccessor> getColumnPropertiesByName(final Class<?> targetClass, final AnnotationReader annoReader,
             final Configuration config, final String columnName) {
@@ -98,7 +98,7 @@ public class FieldAccessorUtils {
      * @param config システム設定情報
      * @param columnName カラムの値
      * @return プロパティの一覧。存在しない場合は、空のリストを返す。
-     * @throws NullPointerException {@literal config == null || columnName == null.}
+     * @throws IllegalArgumentException {@literal config == null || columnName == null.}
      */
     public static List<FieldAccessor> getArrayColumnsPropertiesByName(final Class<?> targetClass, final AnnotationReader annoReader,
             final Configuration config, final String columnName) {

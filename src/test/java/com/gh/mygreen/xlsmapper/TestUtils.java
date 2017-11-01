@@ -17,7 +17,7 @@ import org.apache.poi.ss.util.CellReference;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
-import com.gh.mygreen.xlsmapper.validation.CellFieldError;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 
@@ -37,8 +37,8 @@ public class TestUtils {
      * @param address
      * @return 見つからない場合はnullを返す。
      */
-    public static CellFieldError cellFieldError(final SheetBindingErrors<?> errors, final String address) {
-        for(CellFieldError error : errors.getFieldErrors()) {
+    public static FieldError cellFieldError(final SheetBindingErrors<?> errors, final String address) {
+        for(FieldError error : errors.getFieldErrors()) {
             Optional<CellPosition> position = error.getAddressAsOptional();
             if(position.isPresent() && position.get().formatAsString().equalsIgnoreCase(address)) {
                 return error;

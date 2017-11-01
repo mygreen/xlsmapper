@@ -69,7 +69,7 @@ public class XlsSaver {
      * @param templateXlsIn 雛形となるExcelファイルの入力
      * @param xlsOut 出力先のストリーム
      * @param beanObj 書き込むBeanオブジェクト
-     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
+     * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
@@ -89,7 +89,7 @@ public class XlsSaver {
      * @param beanObj 書き込むBeanオブジェクト
      * @return マッピング結果。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
-     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
+     * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
@@ -150,8 +150,7 @@ public class XlsSaver {
      * @param templateXlsIn 雛形となるExcelファイルの入力
      * @param xlsOut xlsOut 出力先のストリーム
      * @param beanObjs 書き込むオブジェクトの配列。
-     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
-     * @throws IllegalArgumentException {@literal }
+     * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */
@@ -168,8 +167,7 @@ public class XlsSaver {
      * @param beanObjs 書き込むオブジェクトの配列。
      * @return マッピング結果。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、結果に含まれません。
-     * @throws NullPointerException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
-     * @throws IllegalArgumentException {@literal }
+     * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
      */

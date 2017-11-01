@@ -1,9 +1,14 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import com.gh.mygreen.xlsmapper.validation.DefaultGroup;
 import com.github.mygreen.cellformatter.lang.ArgUtils;
 
 /**
@@ -17,11 +22,21 @@ import com.github.mygreen.cellformatter.lang.ArgUtils;
  */
 public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
     
+    /**
+     * バリデーション時のヒントとなるグループ
+     */
+    protected Set<Class<?>> settingGroups = new LinkedHashSet<>();
+    
     @Override
-    public boolean validate(final CellField<T> cellField, final Set<Object> hints) {
+    public boolean validate(final CellField<T> cellField, final List<Class<?>> validationGroups) {
         
         // 必須チェックは、CellFieldで行っているため、値が空の場合は無視する。
         if(cellField.isInputEmpty() && !validateOnEmptyValue()) {
+            return true;
+        }
+        
+        if(!containsValidationGroups(validationGroups)) {
+            // バリデーション時のヒントが該当しない場合は、スキップする。
             return true;
         }
         
@@ -41,8 +56,61 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
     }
     
     /**
+     * バリデーション時のヒントを追加する。
+     * @param groups バリデーション時のヒント。
+     * @return 自身のインスタンス。
+     */
+    public AbstractFieldValidator<T> addGroup(final Class<?>... groups) {
+        this.settingGroups.addAll(Arrays.asList(groups));
+        
+        return this;
+    }
+    
+    /**
+     * 設定されているバリデーションのヒントを取得する。
+     * @return
+     */
+    public Set<Class<?>> getHints() {
+        return settingGroups;
+    }
+    
+    /**
+     * バリデーション時のヒントが該当するかどうか。
+     * @param validationGroups 判定対象のグループ
+     * @return 該当する。
+     */
+    protected boolean containsValidationGroups(final List<Class<?>> validationGroups) {
+        
+        if(settingGroups.isEmpty() && validationGroups.isEmpty()) {
+            // バリデーション時のグループの指定が無い場合は、全てに該当する。
+            return true;
+            
+        }
+        
+        for(Class<?> group : validationGroups) {
+            
+            if(settingGroups.isEmpty() && DefaultGroup.class.isAssignableFrom(group)) {
+                return true;
+            }
+            
+            if(settingGroups.contains(group)) {
+                return true;
+            }
+            
+            // 親子関係のチェック
+            for(Class<?> parent : settingGroups) {
+                if(parent.isAssignableFrom(group)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
      * エラー用のメッセージキーを取得します。
-     * @return メッセージキー。独自に指定するような場合は、nuullを返します。
+     * @return メッセージキー。独自に指定するような場合は、nullを返します。
      */
     protected String getMessageKey() {
         return null;
@@ -55,8 +123,9 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
     protected Map<String, Object> getMessageVariables(final CellField<T> cellField) {
         
         final Map<String, Object> variables = new HashMap<>();
-        variables.put("formatter", cellField.getFormatter());
-        variables.put("rejectedValue", cellField.getValue());
+        variables.put("validatedValue", cellField.getValue());
+        Optional.ofNullable(cellField.getFormatter())
+            .ifPresent(f -> variables.put("fieldFormatter", f));
         return variables;
         
     }
@@ -93,7 +162,7 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
      * <p>エラーメッセージ中の変数は、{@link #getMessageVariables(CellField)()}の値を使用します。</p>
      * @param cellField フィールド情報
      * @param messageKey メッセージキー
-     * @throws NullPointerException {@literal cellField == null or messageKey == null}
+     * @throws IllegalArgumentException {@literal cellField == null or messageKey == null}
      * @throws IllegalArgumentException {@literal messageKey.length() == 0}
      */
     public void error(final CellField<T> cellField, final String messageKey) {
@@ -105,7 +174,7 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
      * @param cellField フィールド情報
      * @param messageKey メッセージキー
      * @param messageVariables メッセージ中の変数
-     * @throws NullPointerException {@literal cellField == null or messageKey == null or messageVariables == null}
+     * @throws IllegalArgumentException {@literal cellField == null or messageKey == null or messageVariables == null}
      * @throws IllegalArgumentException {@literal messageKey.length() == 0}
      */
     public void error(final CellField<T> cellField, final String messageKey, final Map<String, Object> messageVariables) {

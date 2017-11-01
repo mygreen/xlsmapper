@@ -33,7 +33,7 @@ public class FieldAccessorProxy {
      * @param annotation アノテーション
      * @param processor {@link FieldProcessor}
      * @param field フィールド
-     * @throws NullPointerException {@literal annotation == null or processor == null or field == null}
+     * @throws IllegalArgumentException {@literal annotation == null or processor == null or field == null}
      */
     public FieldAccessorProxy(final Annotation annotation, final FieldProcessor<?> processor, final FieldAccessor field) {
         ArgUtils.notNull(annotation, "annotation");

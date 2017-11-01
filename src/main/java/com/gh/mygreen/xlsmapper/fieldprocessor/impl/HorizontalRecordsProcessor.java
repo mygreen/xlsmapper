@@ -68,6 +68,7 @@ import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReadException;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
@@ -242,6 +243,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // レコードの見出しに対するカラム情報のキャッシュ
         final Map<String, List<FieldAccessor>> propertiesCache = new HashMap<>();
         
+        // カラムに対するConverterのキャッシュ
+        final Map<String, CellConverter<?>> converterCache = new HashMap<>();
+        
         // get records
         while(hRow < POIUtils.getRows(sheet)){
             
@@ -348,9 +352,13 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     property.setPosition(record, CellPosition.of(valueCell));
                     property.setLabel(record, headerInfo.getLabel());
                     
-                    final CellConverter<?> converter = getCellConverter(property, config);
+                    final CellConverter<?> converter = converterCache.computeIfAbsent(property.getName(), key -> getCellConverter(property, config));
+                    if(converter instanceof FieldFormatter) {
+                        work.getErrors().registerFieldFormatter(property.getName(), property.getType(), (FieldFormatter<?>)converter, true);
+                    }
+                    
                     try {
-                        final Object value = converter.toObject(valueCell, property, config);
+                        final Object value = converter.toObject(valueCell);
                         property.setValue(record, value);
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getLabel());
@@ -530,6 +538,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             // get converter (map key class)
             final CellConverter<?> converter = getCellConverter(itemClass, property, config);
+            if(converter instanceof FieldFormatter) {
+                work.getErrors().registerFieldFormatter(property.getName(), itemClass, (FieldFormatter<?>)converter, true);
+            }
             
             boolean foundPreviousColumn = false;
             final Map<String, Object> map = new LinkedHashMap<>();
@@ -559,7 +570,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     }
                     
                     try {
-                        final Object value = converter.toObject(cell, property, config);
+                        final Object value = converter.toObject(cell);
                         map.put(headerInfo.getLabel(), value);
                     } catch(TypeBindException e) {
                         e.setBindClass(itemClass);  // マップの項目のタイプに変更
@@ -600,6 +611,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
                 // get converter (component class)
                 final CellConverter<?> converter = getCellConverter(itemClass, property, config);
+                if(converter instanceof FieldFormatter) {
+                    work.getErrors().registerFieldFormatter(property.getName(), itemClass, (FieldFormatter<?>)converter, true);
+                }
                 
                 final CellPosition initPosition = CellPosition.of(beginPosition.getRow(), hColumn);
                 
@@ -976,6 +990,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         // レコードの見出しに対するカラム情報のキャッシュ
         final Map<String, List<FieldAccessor>> propertiesCache = new HashMap<>();
         
+        // カラムに対するConverterのキャッシュ
+        final Map<String, CellConverter<?>> converterCache = new HashMap<>();
+        
         final int startHeaderIndex = getStartHeaderIndexForSaving(headers, recordClass, work.getAnnoReader(), config);
         
         // get records
@@ -1127,9 +1144,13 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         property.setPosition(record, CellPosition.of(valueCell));
                         property.setLabel(record, headerInfo.getLabel());
                         
-                        final CellConverter converter = getCellConverter(property, config);
+                        final CellConverter converter = converterCache.computeIfAbsent(property.getName(), key -> getCellConverter(property, config));
+                        if(converter instanceof FieldFormatter) {
+                            work.getErrors().registerFieldFormatter(property.getName(), property.getType(), (FieldFormatter<?>)converter, true);
+                        }
+                        
                         try {
-                            converter.toCell(property, property.getValue(record), record, sheet, CellPosition.of(valueCell), config);
+                            converter.toCell(property.getValue(record), record, sheet, CellPosition.of(valueCell));
                         } catch(TypeBindException e) {
                             work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getLabel());
                             if(!config.isContinueTypeBindFailure()) {
@@ -1349,6 +1370,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             
             // get converter (map key class)
             final CellConverter converter = getCellConverter(itemClass, property, config);
+            if(converter instanceof FieldFormatter) {
+                work.getErrors().registerFieldFormatter(property.getName(), itemClass, (FieldFormatter<?>)converter, true);
+            }
             
             boolean foundPreviousColumn = false;
             for(RecordHeader headerInfo : headers) {
@@ -1407,7 +1431,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     
                     try {
                         Object itemValue = property.getValueOfMap(headerInfo.getLabel(), record);
-                        converter.toCell(property, itemValue, record, sheet, CellPosition.of(cell), config);
+                        converter.toCell(itemValue, record, sheet, CellPosition.of(cell));
                         
                     } catch(TypeBindException e) {
                         
@@ -1509,6 +1533,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 
                 // get converter (component class)
                 final CellConverter<?> converter = getCellConverter(itemClass, property, config);
+                if(converter instanceof FieldFormatter) {
+                    work.getErrors().registerFieldFormatter(property.getName(), itemClass, (FieldFormatter<?>)converter, true);
+                }
                 
                 ArrayCellHandler arrayHandler = new ArrayCellHandler(property, record, itemClass, sheet, config);
                 arrayHandler.setLabel(headerInfo.getLabel());

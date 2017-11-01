@@ -5,8 +5,11 @@ import static org.hamcrest.Matchers.*;
 import static org.assertj.core.api.Assertions.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -30,6 +33,21 @@ public class SheetBindingErrorsTest {
      */
     private static class SampleSheet {
         
+        List<Nested> list;
+        
+        Map<String, Nested> map;
+        
+        private static class Nested {
+            
+            Integer f01;
+            
+            String f02;
+            
+            Nested(Integer f01, String f02) {
+                this.f01 = f01;
+                this.f02 = f02;
+            }
+        }
     }
     
     
@@ -125,7 +143,15 @@ public class SheetBindingErrorsTest {
     @Test
     public void test_addError_and_getError() {
         
+        // オブジェクトデータの作成
         SampleSheet sheet = new SampleSheet();
+        sheet.list = new ArrayList<>();
+        sheet.list.add(new SampleSheet.Nested(1, "list01"));
+        sheet.list.add(new SampleSheet.Nested(2, "list02"));
+        
+        sheet.map = new HashMap<>();
+        sheet.map.put("a01", new SampleSheet.Nested(1, "map01"));
+        sheet.map.put("a02", new SampleSheet.Nested(2, "map02"));
         
         SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         
@@ -134,33 +160,19 @@ public class SheetBindingErrorsTest {
         assertThat(errors.getFirstGlobalError()).isEmpty();
         assertThat(errors.getFirstFieldError()).isEmpty();
         
-        errors.createGlobalError("obj01")
-            .buildAndAddError()
-            .createGlobalError("obj02")
-            .buildAndAddError();
+        errors.addError(new ObjectErrorBuilder(errors.getObjectName(), new String[]{"obj01"}).build());
+        errors.addError(new ObjectErrorBuilder(errors.getObjectName(), new String[]{"obj02"}).build());
         
-//        errors.addError(new SheetObjectError(errors.getObjectName(), new String[]{"obj01"}, Collections.emptyMap()));
-//        errors.addError(new SheetObjectError(errors.getObjectName(), new String[]{"obj02"}, Collections.emptyMap()));
-        
-//        errors.createFieldError("list[0].f01", "obj03")
-//            .buildAndAddError()
-//            .createFieldError("list[0].f01", "obj03")
-//            .buildAndAddError()
-//            .createFieldError("list[1].f01", "obj03")
-//            .buildAndAddError()
-//            .createFieldError("map[a01].f01", "obj04")
-//            .buildAndAddError();
-        
-        errors.addError(new CellFieldError(errors.getObjectName(), "list[0].f01", false, new String[]{"obj03"}, Collections.emptyMap()));
-        errors.addError(new CellFieldError(errors.getObjectName(), "list[0].f02", false, new String[]{"obj03"}, Collections.emptyMap()));
-        errors.addError(new CellFieldError(errors.getObjectName(), "list[1].f01", false, new String[]{"obj03"}, Collections.emptyMap()));
-        errors.addError(new CellFieldError(errors.getObjectName(), "map[a01].f01", false, new String[]{"obj04"}, Collections.emptyMap()));
+        errors.addError(new FieldErrorBuilder(errors.getObjectName(), "list[0].f01", new String[]{"obj03"}).build());
+        errors.addError(new FieldErrorBuilder(errors.getObjectName(), "list[0].f02", new String[]{"obj03"}).build());
+        errors.addError(new FieldErrorBuilder(errors.getObjectName(), "list[1].f01", new String[]{"obj03"}).build());
+        errors.addError(new FieldErrorBuilder(errors.getObjectName(), "map[a01].f01", new String[]{"obj04"}).build());
         
         assertThat(errors.hasGlobalErrors()).isTrue();
         assertThat(errors.getGlobalErrorCount()).isEqualTo(2);
         
         {
-            SheetObjectError objError = errors.getFirstGlobalError().get();
+            ObjectError objError = errors.getFirstGlobalError().get();
             assertThat(objError.getObjectName()).isEqualTo(SampleSheet.class.getCanonicalName());
         }
         
@@ -174,12 +186,12 @@ public class SheetBindingErrorsTest {
         assertThat(errors.getFieldErrorCount("list[0].*")).isEqualTo(2);
         
         {
-            CellFieldError fieldError = errors.getFirstFieldError("list[0].*").get();
+            FieldError fieldError = errors.getFirstFieldError("list[0].*").get();
             assertThat(fieldError.getField()).isEqualTo("list[0].f01");
         }
         
         {
-            CellFieldError fieldError = errors.getFirstFieldError().get();
+            FieldError fieldError = errors.getFirstFieldError().get();
             assertThat(fieldError.getField()).isEqualTo("list[0].f01");
         
         }
@@ -189,238 +201,99 @@ public class SheetBindingErrorsTest {
         
         // リセット
         errors.clearAllErrors();
-        assertThat(errors.hasErrors(), is(false));
+        assertThat(errors.hasErrors()).isFalse();
         
 
     }
     
-//    /**
-//     * シート、セルなどの情報のエラーのテスト
-//     */
-//    @Test
-//    public void test_Sheet_addError_and_getError() {
-//        
-//        String sheetName = "名簿シート";
-//        
-//        SampleSheet sheet = new SampleSheet();
-//        
-//        SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
-//        
-//        assertThat(errors.getObjectName()).isEqualTo(SampleSheet.class.getCanonicalName());
-//        assertThat(errors.hasErrors()).isFalse();
-//        assertThat(errors.getFirstGlobalError()).isEmpty();
-//        assertThat(errors.getFirstFieldError()).isEmpty();
-//        assertThat(errors.getSheetName()).isEqualTo(sheetName);
-//        
-//        errors.addError(new SheetObjectError(errors.getObjectName(), new String[]{"obj01"}, Collections.emptyMap()));
-//        errors.addError(new SheetObjectError(errors.getObjectName(), new String[]{"obj02"}, Collections.emptyMap()));
-//        
-//        errors.addError(new CellFieldError(errors.getObjectName(), "list[0].f01", false, new String[]{"obj03"}, Collections.emptyMap()));
-//        errors.addError(new CellFieldError(errors.getObjectName(), "list[0].f02", false, new String[]{"obj03"}, Collections.emptyMap()));
-//        errors.addError(new CellFieldError(errors.getObjectName(), "list[1].f01", false, new String[]{"obj03"}, Collections.emptyMap()));
-//        errors.addError(new CellFieldError(errors.getObjectName(), "map[a01].f01", false, new String[]{"obj04"}, Collections.emptyMap()));
-//        
-//        
-//        errors.addError(new CellFieldError("obj03", "list[0].f01", sheetName, CellPosition.of("A2")));
-//        errors.addError(new CellFieldError("obj03", "list[0].f02", sheetName, CellPosition.of("B2")));
-//        errors.addError(new CellFieldError("obj03", "list[1].f01", sheetName, CellPosition.of("A3")));
-//        errors.addError(new CellFieldError("obj04", "map[a01].f01", sheetName, CellPosition.of("D3")));
-//        
-//        assertThat(errors.hasSheetGlobalErrors(), is(true));
-//        assertThat(errors.getSheetGlobalErrorCount(), is(2));
-//        
-//        SheetObjectError objError01 = errors.getFirstSheetGlobalError();
-//        assertThat(objError01.getObjectName(), is("obj01"));
-//        assertThat(objError01.getSheetName(), is(sheetName));
-//        
-//        assertThat(errors.hasCellFieldErrors(), is(true));
-//        assertThat(errors.getCellFieldErrorCount(), is(4));
-//        
-//        assertThat(errors.hasCellFieldErrors("list[0].f01"), is(true));
-//        assertThat(errors.getCellFieldErrorCount("list[0].f01"), is(1));
-//        
-//        assertThat(errors.hasCellFieldErrors("list[0].*"), is(true));
-//        assertThat(errors.getCellFieldErrorCount("list[0].*"), is(2));
-//        
-//        CellFieldError fieldError01 = errors.getFirstCellFieldError("list[0].*");
-//        assertThat(fieldError01.getFieldPath(), is("list[0].f01"));
-//        assertThat(fieldError01.getSheetName(), is(sheetName));
-//        assertThat(fieldError01.getCellAddress().toPoint(), is(toPointAddress("A2")));
-//        
-//        CellFieldError fieldError02 = errors.getFirstCellFieldError();
-//        assertThat(fieldError02.getFieldPath(), is("list[0].f01"));
-//        assertThat(fieldError01.getSheetName(), is(sheetName));
-//        assertThat(fieldError01.getCellAddress().toPoint(), is(toPointAddress("A2")));
-//        
-//        assertThat(errors.hasCellFieldErrors("list*"), is(true));
-//        assertThat(errors.getCellFieldErrorCount("list*"), is(3));
-//        
-//        // リセット
-//        errors.clearAllErrors();
-//        assertThat(errors.hasErrors(), is(false));
-//        
-//    }
+    /**
+     * シート、セルなどの情報のエラーのテスト
+     */
+    @Test
+    public void test_Sheet_addError_and_getError() {
+        
+        String sheetName = "名簿シート";
+        
+        // オブジェクトデータの作成
+        SampleSheet sheet = new SampleSheet();
+        sheet.list = new ArrayList<>();
+        sheet.list.add(new SampleSheet.Nested(1, "list01"));
+        sheet.list.add(new SampleSheet.Nested(2, "list02"));
+        
+        sheet.map = new HashMap<>();
+        sheet.map.put("a01", new SampleSheet.Nested(1, "map01"));
+        sheet.map.put("a02", new SampleSheet.Nested(2, "map02"));
+        
+        SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
+        errors.setSheetName(sheetName);
+        
+        assertThat(errors.getObjectName()).isEqualTo(SampleSheet.class.getCanonicalName());
+        assertThat(errors.hasErrors()).isFalse();
+        assertThat(errors.getFirstGlobalError()).isEmpty();
+        assertThat(errors.getFirstFieldError()).isEmpty();
+        assertThat(errors.getSheetName()).isEqualTo(sheetName);
+        
+        errors.createGlobalError("obj01")
+            .buildAndAddError()
+            .createGlobalError("obj02")
+            .buildAndAddError();
+        
+        errors.createFieldError("list[0].f01", "obj03").address(CellPosition.of("A2"))
+            .buildAndAddError()
+            .createFieldError("list[0].f02", "obj03").address(CellPosition.of("B2"))
+            .buildAndAddError()
+            .createFieldError("list[1].f01", "obj03").address(CellPosition.of("A3"))
+            .buildAndAddError()
+            .createFieldError("map[a01].f01", "obj04").address(CellPosition.of("D3"))
+            .buildAndAddError()
+            ;
+        
+        assertThat(errors.hasGlobalErrors()).isTrue();
+        assertThat(errors.getGlobalErrorCount()).isEqualTo(2);
+        
+        
+        {
+            ObjectError objError = errors.getFirstGlobalError().get();
+            assertThat(objError.getObjectName()).isEqualTo(SampleSheet.class.getCanonicalName());
+            assertThat(objError.getSheetName().get()).isEqualTo(sheetName);
+        }
+        
+        assertThat(errors.hasFieldErrors()).isTrue();
+        assertThat(errors.getFieldErrorCount()).isEqualTo(4);
+        
+        assertThat(errors.hasFieldErrors("list[0].f01")).isTrue();
+        assertThat(errors.getFieldErrorCount("list[0].f01")).isEqualTo(1);
+        
+        {
+            // フィールドパスを指定してエラーを取得
+            FieldError fieldError = errors.getFirstFieldError("list[0].f01").get();
+            assertThat(fieldError.getObjectName()).isEqualTo(SampleSheet.class.getCanonicalName());
+            assertThat(fieldError.getSheetName().get()).isEqualTo(sheetName);
+            assertThat(fieldError.getField()).isEqualTo("list[0].f01");
+            assertThat(fieldError.getAddress().toString()).isEqualTo("A2");
+            
+            assertThat(fieldError.getRejectedValue()).isEqualTo(1);
+        }
+        
+        assertThat(errors.hasFieldErrors("list[0].*")).isTrue();
+        assertThat(errors.getFieldErrorCount("list[0].*")).isEqualTo(2);
+        
+        {
+            // 先頭のフィールド情報を取得
+            FieldError fieldError = errors.getFirstFieldError("list[0].*").get();
+            assertThat(fieldError.getField()).isEqualTo("list[0].f01");
+        }
+        
+        assertThat(errors.hasFieldErrors("list*")).isTrue();
+        assertThat(errors.getFieldErrorCount("list*")).isEqualTo(3);
+        
+        // リセット
+        errors.clearAllErrors();
+        assertThat(errors.hasErrors()).isFalse();
+        
+    }
+    
 //    
-//    /**
-//     * オブジェクトエラーの追加
-//     */
-//    @Test
-//    public void test_reject() {
-//        
-//        SheetBindingErrors errors = new SheetBindingErrors("SampleSheet");
-//        
-//        errors.reject("error001");
-//        errors.reject("error002", "error02.default");
-//        
-//        errors.reject("error003", new HashMap<String, Object>());
-//        errors.reject("error004", new HashMap<String, Object>(), "error004.default");
-//        
-//        assertThat(errors.hasGlobalErrors(), is(true));
-//        assertThat(errors.getGlobalErrorCount(), is(6));
-//        
-//        assertThat(errors.hasSheetGlobalErrors(), is(false));
-//        assertThat(errors.getSheetGlobalErrorCount(), is(0));
-//        
-//        ObjectError objError001 = errors.getFirstGlobalError();
-//        assertThat(objError001.getObjectName(), is("SampleSheet"));
-//        assertThat(objError001.getCodes(), is(hasItemInArray("error001")));
-//        
-//    }
-//    
-//    /**
-//     * シートのオブジェクトエラーの追加
-//     */
-//    @Test
-//    public void test_rejectSheet() {
-//        
-//        SheetBindingErrors errors = new SheetBindingErrors("SampleSheet");
-//        errors.setSheetName("名簿用シート");
-//        
-//        errors.rejectSheet("error001");
-//        errors.rejectSheet("error002", "error02.default");
-//        
-//        errors.rejectSheet("error003", new HashMap<String, Object>());
-//        errors.rejectSheet("error004", new HashMap<String, Object>(), "error004.default");
-//        
-//        assertThat(errors.hasGlobalErrors(), is(true));
-//        assertThat(errors.getGlobalErrorCount(), is(6));
-//        
-//        assertThat(errors.hasSheetGlobalErrors(), is(true));
-//        assertThat(errors.getSheetGlobalErrorCount(), is(6));
-//        
-//        SheetObjectError objError001 = errors.getFirstSheetGlobalError();
-//        assertThat(objError001.getObjectName(), is("SampleSheet"));
-//        assertThat(objError001.getCodes(), is(hasItemInArray("error001")));
-//        assertThat(objError001.getSheetName(), is("名簿用シート"));        
-//    }
-//    
-//    /**
-//     * フィールドエラーの追加
-//     */
-//    @Test
-//    public void test_rejectValue() {
-//        
-//        SheetBindingErrors errors = new SheetBindingErrors("SampleSheet");
-//        
-//        errors.rejectValue("name01[0]", "error001");
-//        errors.rejectValue("name01[1]", "error002", "error02.default");
-//        
-//        errors.rejectValue("name02[1]", "error003", new HashMap<String, Object>());
-//        errors.rejectValue("name02[2]", "error004", new HashMap<String, Object>(), "error03.default");
-//        
-//        assertThat(errors.hasGlobalErrors(), is(false));
-//        
-//        assertThat(errors.hasFieldErrors(), is(true));
-//        assertThat(errors.getFieldErrorCount(), is(6));
-//        
-//        assertThat(errors.getFieldErrorCount("name*"), is(4));
-//        assertThat(errors.getFieldErrorCount("name01*"), is(2));
-//        
-//        
-//        FieldError fieldError001 = errors.getFirstFieldError("name01*");
-//        assertThat(fieldError001.getObjectName(), is("SampleSheet"));
-//        assertThat(fieldError001.getFieldPath(), is("name01[0]"));
-//        assertThat(fieldError001.getCodes(), is(hasItemInArray("error001")));
-//        
-//        
-//    }
-//    
-//    /**
-//     * シートのフィールドエラーの追加
-//     */
-//    @Test
-//    public void test_rejectSheetValue() {
-//        
-//        SheetBindingErrors errors = new SheetBindingErrors("SampleSheet");
-//        errors.setSheetName("名簿用シート");
-//        
-//        errors.rejectSheetValue("name01[0]", CellPosition.of("A2"), "error001");
-//        errors.rejectSheetValue("name01[1]", CellPosition.of("A3"), "error002", "error02.default");
-//        
-//        errors.rejectSheetValue("name02[1]", CellPosition.of("B2"), "error003", new HashMap<String, Object>());
-//        errors.rejectSheetValue("name02[2]", CellPosition.of("B2"), "error004", new HashMap<String, Object>(), "error03.default");
-//        
-//        assertThat(errors.hasGlobalErrors(), is(false));
-//        
-//        assertThat(errors.hasFieldErrors(), is(true));
-//        assertThat(errors.getFieldErrorCount(), is(6));
-//        
-//        assertThat(errors.hasCellFieldErrors(), is(true));
-//        assertThat(errors.getCellFieldErrorCount(), is(6));
-//        
-//        assertThat(errors.getCellFieldErrorCount("name*"), is(4));
-//        assertThat(errors.getCellFieldErrorCount("name01*"), is(2));
-//        
-//        
-//        CellFieldError fieldError001 = errors.getFirstCellFieldError("name01*");
-//        assertThat(fieldError001.getObjectName(), is("SampleSheet"));
-//        assertThat(fieldError001.getFieldPath(), is("name01[0]"));
-//        assertThat(fieldError001.getCodes(), is(hasItemInArray("error001")));
-//        assertThat(fieldError001.getSheetName(), is("名簿用シート"));
-//        assertThat(fieldError001.getCellAddress().toPoint(), is(toPointAddress("A2")));
-//        
-//        
-//    }
-//    
-//    /**
-//     * シートのフィールドエラーの追加
-//     * ・フィールドの値の指定
-//     */
-//    @Test
-//    public void test_rejectSheetValue2() {
-//        
-//        SheetBindingErrors errors = new SheetBindingErrors("SampleSheet");
-//        errors.setSheetName("名簿用シート");
-//        
-//        errors.rejectSheetValue("name01[0]", "山田太郎", String.class, CellPosition.of("A2"), "error001");
-//        errors.rejectSheetValue("name01[1]", "山田次郎", String.class, CellPosition.of("A3"), "error002", "error02.default");
-//        
-//        errors.rejectSheetValue("name02[1]", "鈴木一郎", String.class, CellPosition.of("B2"), "error003", new HashMap<String, Object>());
-//        errors.rejectSheetValue("name02[2]", "鈴木次郎", String.class, CellPosition.of("B2"), "error004", new HashMap<String, Object>(), "error03.default");
-//        
-//        assertThat(errors.hasGlobalErrors(), is(false));
-//        
-//        assertThat(errors.hasFieldErrors(), is(true));
-//        assertThat(errors.getFieldErrorCount(), is(6));
-//        
-//        assertThat(errors.hasCellFieldErrors(), is(true));
-//        assertThat(errors.getCellFieldErrorCount(), is(6));
-//        
-//        assertThat(errors.getCellFieldErrorCount("name*"), is(4));
-//        assertThat(errors.getCellFieldErrorCount("name01*"), is(2));
-//        
-//        
-//        CellFieldError fieldError001 = errors.getFirstCellFieldError("name01*");
-//        assertThat(fieldError001.getObjectName(), is("SampleSheet"));
-//        assertThat(fieldError001.getFieldPath(), is("name01[0]"));
-//        assertThat(fieldError001.getCodes(), is(hasItemInArray("error001")));
-//        assertThat(fieldError001.getSheetName(), is("名簿用シート"));
-//        assertThat(fieldError001.getCellAddress().toPoint(), is(toPointAddress("A2")));
-//        assertThat(fieldError001.getFieldValue(), is((Object)"山田太郎"));
-//        assertThat(fieldError001.getFieldType(), is(typeCompatibleWith(String.class)));
-//        
-//        
-//    }
 //    
 //    /**
 //     * フィールドの指定

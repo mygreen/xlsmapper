@@ -1,6 +1,6 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * フィールドに対する値の検証を行うためのインタフェース。
@@ -15,10 +15,10 @@ public interface FieldValidator<T> {
     
     /**
      * 値の検証を行います。
-     * @param cellField 検証対象のフィールド情報
-     * @param hints 検証する際のヒント
+     * @param cellField 検証対象のフィールド情報。
+     * @param groups 検証する際のヒントとなるグループ。
      * @return trueの場合、正常の値と判定します。
      */
-    boolean validate(CellField<T> cellField, Set<Object> hints);
+    boolean validate(CellField<T> cellField, List<Class<?>> groups);
     
 }

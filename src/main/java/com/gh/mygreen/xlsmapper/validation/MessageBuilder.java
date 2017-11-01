@@ -25,8 +25,7 @@ public class MessageBuilder {
     /**
      * メッセージコードを指定してインスタンスを作成します。
      * @param code メッセージコード
-     * @throws NullPointerException code is null.
-     * @throws IllegalArgumentException code is empty.
+     * @throws IllegalArgumentException {@lteral code is null or empty.}
      */
     public MessageBuilder(final String code) {
         ArgUtils.notEmpty(code, "code");

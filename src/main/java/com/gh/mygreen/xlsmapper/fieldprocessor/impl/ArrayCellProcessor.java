@@ -19,6 +19,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 /**
  * アノテーション{@link XlsArrayCell}を処理するプロセッサ。
@@ -83,6 +84,10 @@ public class ArrayCellProcessor extends AbstractFieldProcessor<XlsArrayCell> {
         
         final CellPosition initPosition = getCellPosition(accessor, anno);
         final CellConverter<?> converter = getCellConverter(itemClass, accessor, config);
+        
+        if(converter instanceof FieldFormatter) {
+            work.getErrors().registerFieldFormatter(accessor.getName(), itemClass, (FieldFormatter<?>)converter, true);
+        }
         
         ArrayCellHandler arrayHandler = new ArrayCellHandler(accessor, beansObj, itemClass, sheet, config);
         List<Object> result = arrayHandler.handleOnLoading(anno, initPosition, converter, work, anno.direction());

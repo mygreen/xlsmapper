@@ -37,14 +37,14 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
         accessor.setPosition(beansObj, cellAddress);
         
         final Cell xlsCell = POIUtils.getCell(sheet, cellAddress);
-        final CellConverter<?> converter = getCellConverter(accessor, config);
         
+        final CellConverter<?> converter = getCellConverter(accessor, config);
         if(converter instanceof FieldFormatter) {
             work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
         }
         
         try {
-            final Object value = converter.toObject(xlsCell, accessor, config);
+            final Object value = converter.toObject(xlsCell);
             accessor.setValue(beansObj, value);
             
         } catch(TypeBindException e) {
@@ -112,8 +112,12 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
         accessor.setPosition(targetObj, cellAddress);
         
         final CellConverter converter = getCellConverter(accessor, config);
+        if(converter instanceof FieldFormatter) {
+            work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
+        }
+        
         try {
-            converter.toCell(accessor, accessor.getValue(targetObj), targetObj, sheet, cellAddress, config);
+            converter.toCell(accessor.getValue(targetObj), targetObj, sheet, cellAddress);
             
         } catch(TypeBindException e) {
             work.addTypeBindError(e, cellAddress, accessor.getName(), null);

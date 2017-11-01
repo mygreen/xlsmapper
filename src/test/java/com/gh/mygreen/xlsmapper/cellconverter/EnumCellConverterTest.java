@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -30,15 +31,16 @@ import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
-import com.gh.mygreen.xlsmapper.cellconverter.impl.EnumCellConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 
 
 /**
  * {@link EnumCellConverter}のテスタ
  * 
- * @version 1.5
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -53,6 +55,17 @@ public class EnumCellConverterTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         OUT_DIR = createOutDir();
+    }
+    
+    
+    /**
+     * エラーメッセージのコンバーター
+     */
+    private SheetMessageConverter messageConverter;
+    
+    @Before
+    public void setUp() throws Exception {
+        this.messageConverter = new SheetMessageConverter();
     }
     
     /**
@@ -102,18 +115,63 @@ public class EnumCellConverterTest {
             
         } else if(record.no == 3) {
             // 不正な値
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("color")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[列挙型]:Enum型（英字）1 - B8の値'Blue'は、何れかの値「Red, Green, Yellow」で設定してください。"));
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("operate")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[列挙型]:Enum型（英字）2 - C8の値'Remove'は、何れかの値「Refer, Edit, Delete」で設定してください。"));
+            
+            }
             
         } else if(record.no == 4) {
             // 小文字
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("color")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[列挙型]:Enum型（英字）1 - B9の値'yellow'は、何れかの値「Red, Green, Yellow」で設定してください。"));
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("operate")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[列挙型]:Enum型（英字）2 - C9の値'edit'は、何れかの値「Refer, Edit, Delete」で設定してください。"));
+            
+            }
             
         } else if(record.no == 5) {
             // 空白
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("color")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[列挙型]:Enum型（英字）1 - B10の値' Yellow  'は、何れかの値「Red, Green, Yellow」で設定してください。"));
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("operate")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[列挙型]:Enum型（英字）2 - C10の値' Edit 'は、何れかの値「Refer, Edit, Delete」で設定してください。"));
+            
+            }
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
@@ -134,8 +192,23 @@ public class EnumCellConverterTest {
             
         } else if(record.no == 3) {
             // 不正な値
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("color"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("operate"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("color")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[列挙型]:Enum型（英字） - B17の値'Blue'は、何れかの値「Red, Green, Yellow」で設定してください。"));
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("operate")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[列挙型]:Enum型（日本語） - C17の値'追加'は、何れかの値「参照, 編集, 削除」で設定してください。"));
+                
+            }
             
         } else if(record.no == 4) {
             // 小文字

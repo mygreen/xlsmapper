@@ -142,7 +142,7 @@ public class ArrayCellHandler {
                 }
                 
                 try {
-                    final Object value = converter.toObject(cell, field, config);
+                    final Object value = converter.toObject(cell);
                     result.add(value);
                     
                 } catch(TypeBindException e) {
@@ -185,7 +185,7 @@ public class ArrayCellHandler {
                 }
                 
                 try {
-                    final Object value = converter.toObject(cell, field, config);
+                    final Object value = converter.toObject(cell);
                     result.add(value);
                     
                 } catch(TypeBindException e) {
@@ -280,7 +280,7 @@ public class ArrayCellHandler {
                 if(i < dataList.size()) {
                     final Object itemValue = dataList.get(i);
                     try {
-                        converter.toCell(field, itemValue, beansObj, sheet, cellAddress, config);
+                        converter.toCell(itemValue, beansObj, sheet, cellAddress);
                         
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, cellAddress, field.getName(), label);
@@ -338,7 +338,7 @@ public class ArrayCellHandler {
                 if(i < dataList.size()) {
                     final Object itemValue = dataList.get(i);
                     try {
-                        converter.toCell(field, itemValue, beansObj, sheet, cellAddress, config);
+                        converter.toCell(itemValue, beansObj, sheet, cellAddress);
                         
                     } catch(TypeBindException e) {
                         work.addTypeBindError(e, cellAddress, field.getName(), label);

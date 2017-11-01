@@ -2,7 +2,7 @@ package com.gh.mygreen.xlsmapper.util;
 
 
 /**
- * {@link PropertyNavigator}でプロパティのアクセスに失敗した際にスローされる。
+ * {@link PropertyValueNavigator}でプロパティのアクセスに失敗した際にスローされる。
  * @since 1.0
  * @author T.TSUCHIE
  *

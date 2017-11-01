@@ -19,6 +19,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Hyperlink;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,27 +28,28 @@ import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
-import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
+import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
-import com.gh.mygreen.xlsmapper.cellconverter.CellLink;
-import com.gh.mygreen.xlsmapper.cellconverter.impl.URICellConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 
 /**
  * リンクの変換テスト。
  * <p>下記のConverterのテスタ
  * <ol>
- *   <li>{@link URICellConverter}
- *   <li>{@link CellLink}
+ *   <li>{@link URICellConverter}</li>
+ *   <li>{@link CellLink}</li>
+ * </ol>
  * 
- * @version 1.5
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -62,6 +64,16 @@ public class LinkCellConverterTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         OUT_DIR = createOutDir();
+    }
+    
+    /**
+     * エラーメッセージのコンバーター
+     */
+    private SheetMessageConverter messageConverter;
+    
+    @Before
+    public void setUp() throws Exception {
+        this.messageConverter = new SheetMessageConverter();
     }
     
     /**
@@ -141,7 +153,14 @@ public class LinkCellConverterTest {
             
         } else if(record.no == 9) {
             // 空白の文字列
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("uri"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("uri")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[リンク型]:URI - B13の値'  http://www.google.co.jp/  'は、URI(Uniform Resource Identifier)の形式として不正です。"));
+            }
+            
             assertThat(record.link, is(new CellLink(null, "  http://www.google.co.jp/  ")));
             
         } else if(record.no == 10) {
@@ -151,7 +170,14 @@ public class LinkCellConverterTest {
             
         } else if(record.no == 11) {
             // 空白の文字
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("uri"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("uri")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[リンク型]:URI - B15の値'   'は、URI(Uniform Resource Identifier)の形式として不正です。"));
+                
+            }
             assertThat(record.link, is(new CellLink(null, "   ")));
             
         } else {

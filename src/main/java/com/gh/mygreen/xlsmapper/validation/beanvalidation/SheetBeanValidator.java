@@ -21,7 +21,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.PositionGetterFactory;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.CellFieldError;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.ObjectValidator;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
@@ -76,23 +76,20 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
         return targetValidator;
     }
     
-    @Override
-    public void validate(final Object targetObj, final SheetBindingErrors<?> errors) {
-        validate(targetObj, errors, new Class<?>[0]);
-        
-    }
-    
     /**
      * グループを指定して検証を実行する。
      * @param targetObj 検証対象のオブジェクト。
      * @param errors エラーオブジェクト
      * @param groups BeanValiationのグループのクラス
      */
+    @Override
     public void validate(final Object targetObj, final SheetBindingErrors<?> errors, final Class<?>... groups) {
+        
         ArgUtils.notNull(targetObj, "targetObj");
         ArgUtils.notNull(errors, "errors");
         
         processConstraintViolation(getTargetValidator().validate(targetObj, groups), errors);
+        
     }
     
     /**
@@ -106,7 +103,7 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
         for(ConstraintViolation<Object> violation : violations) {
             
             final String fieldName = violation.getPropertyPath().toString();
-            final Optional<CellFieldError> fieldError = errors.getFirstFieldError(fieldName);
+            final Optional<FieldError> fieldError = errors.getFirstFieldError(fieldName);
             
             if(fieldError.isPresent() && fieldError.get().isConversionFailure()) {
                 // 型変換エラーが既存のエラーにある場合は、処理をスキップする。

@@ -52,7 +52,7 @@ public class ExpressionLanguageJEXLImplTest {
         
     }
     
-    @Test(expected=NullPointerException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testEvaluate_valueNull() {
         
         {

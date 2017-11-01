@@ -6,7 +6,7 @@ import com.gh.mygreen.xlsmapper.util.PropertyPath.Token;
 
 /**
  * プロパティアクセス用の式をパースする。
- * <p>{@link PropertyNavigator}で使用する。
+ * <p>{@link PropertyValueNavigator}で使用する。
  * @since 1.0
  * @author T.TSUCHIE
  *
@@ -36,8 +36,9 @@ public class PropertyPathTokenizer {
     /**
      * パスを最小限の項目に分割する。
      * 
-     * @param path
-     * @return
+     * @param tokenStore 分割した結果
+     * @param path パス
+     * 
      */
     private void splitToken(final PropertyPath tokenStore, final String path) {
         

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -30,13 +31,15 @@ import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
-import com.gh.mygreen.xlsmapper.cellconverter.impl.BooleanCellConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 
 /**
  * {@link BooleanCellConverter}のテスタ
- * @version 1.5
+ * 
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -50,6 +53,16 @@ public class BooleanCellConverterTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         OUT_DIR = createOutDir();
+    }
+    
+    /**
+     * エラーメッセージのコンバーター
+     */
+    private SheetMessageConverter messageConverter;
+    
+    @Before
+    public void setUp() throws Exception {
+        this.messageConverter = new SheetMessageConverter();
     }
     
     /**
@@ -118,8 +131,22 @@ public class BooleanCellConverterTest {
             
         } else if(record.no == 6) {
             // 不正な文字
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b1"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b2"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b1")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[ブール型]:boolean型 - B11の値'abc'は、trueの値「true, 1, yes, on, y, t」、またはfalseの値「false, 0, no, off, f, n」の何れかの値で設定してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b2")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[ブール型]:Boolean型 - C11の値' def'は、trueの値「true, 1, yes, on, y, t」、またはfalseの値「false, 0, no, off, f, n」の何れかの値で設定してください。"));
+            
+            }
             
         } else if(record.no == 7) {
             // 空白の文字

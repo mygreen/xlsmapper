@@ -48,7 +48,7 @@ public class FieldAccessorFactory {
     /**
      * コンストラクタ
      * @param annoReader XMLで定義したアノテーション情報を提供するクラス。
-     * @throws NullPointerException {@literal annoReader == null.}
+     * @throws IllegalArgumentException {@literal annoReader == null.}
      */
     public FieldAccessorFactory(final AnnotationReader annoReader) {
         ArgUtils.notNull(annoReader, "annoReader");
@@ -60,7 +60,7 @@ public class FieldAccessorFactory {
      * フィールド情報を元にインスタンスを作成する。
      * @param field フィールド
      * @return フィールド情報を元に組み立てられたインスタンス。
-     * @throws NullPointerException {@literal field == null
+     * @throws IllegalArgumentException {@literal field == null
      */
     public FieldAccessor create(final Field field) {
         
@@ -134,7 +134,7 @@ public class FieldAccessorFactory {
      * メソッド情報を元にインスタンスを作成する。
      * @param method メソッド情報
      * @return メソッド情報を元に組み立てられたインスタンス。
-     * @throws NullPointerException {@literal method == null
+     * @throws IllegalArgumentException {@literal method == null
      * @throws IllegalArgumentException {@literal methodの名称がsetterまたはgetterの書式でない場合。}
      */
     public FieldAccessor create(final Method method) {

@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
@@ -52,10 +53,11 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Lo
             converter = config.createBean(converterAnno.converterClass());
             
         } else {
-            converter = config.getConverterRegistry().getConverter(accessor.getType());
-            if(converter == null) {
+            CellConverterFactory<?> converterFactory = config.getConverterRegistry().getConverterFactory(accessor.getType());
+            if(converterFactory == null) {
                 throw newNotFoundCellConverterExpcetion(accessor.getType());
             }
+            converter = converterFactory.create(accessor, config);
         }
         
         return converter;
@@ -81,10 +83,11 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Lo
             converter = config.createBean(converterAnno.converterClass());
             
         } else {
-            converter = config.getConverterRegistry().getConverter(componentType);
-            if(converter == null) {
+            CellConverterFactory<?> converterFactory = config.getConverterRegistry().getConverterFactory(componentType);
+            if(converterFactory == null) {
                 throw newNotFoundCellConverterExpcetion(componentType);
             }
+            converter = converterFactory.create(accessor, config);
         }
         
         return converter;

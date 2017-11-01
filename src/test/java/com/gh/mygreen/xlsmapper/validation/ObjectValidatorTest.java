@@ -26,9 +26,9 @@ import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.CellField;
-import com.gh.mygreen.xlsmapper.validation.fieldvalidation.MaxValidator;
-import com.gh.mygreen.xlsmapper.validation.fieldvalidation.PatternValidator;
-import com.gh.mygreen.xlsmapper.validation.fieldvalidation.StringValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.LengthMaxValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.MaxValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.PatternValidator;
 
 /**
  * {@link AbstractObjectValidator}のテスタ
@@ -87,7 +87,7 @@ public class ObjectValidatorTest {
             
             SampleSheet sheet = errors.getTarget();
             
-         // データの書き換え
+            // データの書き換え
             sheet.className = null;
             sheet.list.get(1).email = "test";
             sheet.list.get(2).birthday = getDateByDay(new Date(), 1);
@@ -100,9 +100,9 @@ public class ObjectValidatorTest {
             
             {
                 String fieldName = "className";
-                CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+                FieldError fieldError = errors.getFirstFieldError(fieldName).get();
                 assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-                assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+                assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
                 assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
                 assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.className));
             }
@@ -112,9 +112,9 @@ public class ObjectValidatorTest {
                     errors.pushNestedPath("list", 1);
                     PersonRecord record = sheet.list.get(1);
                     String fieldName = "email";
-                    CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+                    FieldError fieldError = errors.getFirstFieldError(fieldName).get();
                     assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(record.positions.get(fieldName)));
-                    assertThat(fieldError.getLabelAsOptional(), is(record.labels.get(fieldName)));
+                    assertThat(fieldError.getLabelAsOptional().get(), is(record.labels.get(fieldName)));
                     assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.pattern"));
                     assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)record.email));
                 } finally {
@@ -127,9 +127,9 @@ public class ObjectValidatorTest {
                     errors.pushNestedPath("list", 2);
                     PersonRecord record = sheet.list.get(2);
                     String fieldName = "birthday";
-                    CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+                    FieldError fieldError = errors.getFirstFieldError(fieldName).get();
                     assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(record.positions.get(fieldName)));
-                    assertThat(fieldError.getLabelAsOptional(), is(record.labels.get(fieldName)));
+                    assertThat(fieldError.getLabelAsOptional().get(), is(record.labels.get(fieldName)));
                     assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
                     assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)record.birthday));
                     
@@ -143,9 +143,69 @@ public class ObjectValidatorTest {
         
     }
     
+    /**
+     * ヒントの指定あり - デフォルトグループ
+     */
+    @Test
+    public void test_success_group() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        // シートの読み込み
+        try(InputStream in = new FileInputStream("src/test/data/validator_field.xlsx")) {
+            
+            SheetBindingErrors<SampleSheet> errors = mapper.loadDetail(in, SampleSheet.class);
+            
+            SampleSheet sheet = errors.getTarget();
+            
+            // 入力値検証
+            SampleSheetValidator validator = new SampleSheetValidator();
+            validator.validate(sheet, errors, DefaultGroup.class);
+            
+            assertThat(errors.getAllErrors(), hasSize(0));
+        }
+        
+    }
+    
+    /**
+     * ヒントの指定あり - エラーあり
+     */
+    @Test
+    public void test_error_group() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        // シートの読み込み
+        try(InputStream in = new FileInputStream("src/test/data/validator_field.xlsx")) {
+            
+            SheetBindingErrors<SampleSheet> errors = mapper.loadDetail(in, SampleSheet.class);
+            
+            SampleSheet sheet = errors.getTarget();
+            
+            // 入力値検証
+            SampleSheetValidator validator = new SampleSheetValidator();
+            validator.validate(sheet, errors, Group1.class);
+            
+            printErrors(errors);
+            
+            {
+                String fieldName = "className";
+                FieldError fieldError = errors.getFirstFieldError(fieldName).get();
+                assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+                assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
+                assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.lengthMax"));
+                assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.className));
+            }
+            
+        }
+        
+    }
+    
     private void printErrors(SheetBindingErrors<?> errors) {
         
-        for(SheetObjectError error : errors.getAllErrors()) {
+        for(ObjectError error : errors.getAllErrors()) {
             String message = messageConverter.convertMessage(error);
             System.out.println(message);
         }
@@ -228,14 +288,17 @@ public class ObjectValidatorTest {
         }
         
         @Override
-        public void validate(final SampleSheet targetObj, final SheetBindingErrors<?> errors) {
+        public void validate(final SampleSheet targetObj, final SheetBindingErrors<?> errors, final Class<?>... groups) {
             
-            CellField<String> classNameField = new CellField<>("className", String.class, errors)
+            CellField<String> classNameField = new CellField<String>("className", errors)
                     .setRequired(true)
-                    .validate();
+                    .add(new LengthMaxValidator(3).addGroup(Group1.class))  // グループ指定
+                    .validate(groups);
             
-            for(int i=0; i < targetObj.list.size();i ++) {
-                invokeNestedValidator(personRecordValidator, targetObj.list.get(i), errors, "list", i);
+            if(targetObj.list != null) {
+                for(int i=0; i < targetObj.list.size();i ++) {
+                    invokeNestedValidator(personRecordValidator, targetObj.list.get(i), errors, "list", i, groups);
+                }
             }
             
         }
@@ -249,24 +312,28 @@ public class ObjectValidatorTest {
     private static class PersonRecordVaidator extends AbstractObjectValidator<PersonRecord> {
         
         @Override
-        public void validate(final PersonRecord targetObj, final SheetBindingErrors<?> errors) {
+        public void validate(final PersonRecord targetObj, final SheetBindingErrors<?> errors, final Class<?>... groups) {
             
-            CellField<String> nameField = new CellField<>("name", String.class, errors)
+            CellField<String> nameField = new CellField<String>("name", errors)
                     .setRequired(true)
-                    .add(StringValidator.maxLength(10))
-                    .validate();
+                    .add(new LengthMaxValidator(10))
+                    .validate(groups);
             
-            CellField<String> emailField = new CellField<String>("email", String.class, errors)
+            CellField<String> emailField = new CellField<String>("email", errors)
                     .setRequired(true)
                     .add(new PatternValidator(".*@.*", "メールアドレス"))
-                    .validate();
+                    .validate(groups);
             
-            CellField<Date> birthdayField = new CellField<Date>("birthday", Date.class, errors)
+            CellField<Date> birthdayField = new CellField<Date>("birthday", errors)
                     .setRequired(true)
                     .add(new MaxValidator<Date>(new Date()))
-                    .validate();
+                    .validate(groups);
             
         }
         
     }
+    
+    private static interface Group1 {}
+    private static interface Group2 {}
+    
 }

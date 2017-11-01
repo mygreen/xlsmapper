@@ -12,7 +12,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 
 /**
- * エラーオブジェクトを解釈して、メッセージに変換するクラス。
+ * シート用のエラーオブジェクトを解釈して、メッセージに変換するクラス。
  * <p>オブジェクトの種類ごとに、デフォルトメッセージ変数が利用できます。</p>
  * <ul>
  *  <li>'fieldLabel'：フィールドのラベル。メッセージ用のプロパティファイルにフィールド名を定義している場合、自動的に設定されます。</li>
@@ -22,6 +22,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  *  <li>'cellAddress':シート用のフィールドエラーの場合、セルのアドレスが設定されます。'A1'のような形式になります。</li>
  * </ul>
  * 
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -43,11 +44,11 @@ public class SheetMessageConverter {
      * @return
      * @throws IllegalArgumentException errors == null.
      */
-    public List<String> convertMessages(final Collection<SheetObjectError> errors) {
+    public List<String> convertMessages(final Collection<ObjectError> errors) {
         ArgUtils.notNull(errors, "errors");
         
         final List<String> messageList = new ArrayList<>();
-        for(SheetObjectError error : errors) {
+        for(ObjectError error : errors) {
             messageList.add(convertMessage(error));
         }
         
@@ -58,18 +59,18 @@ public class SheetMessageConverter {
      * エラーオブジェクトをメッセージに変換する。
      * @param error エラーオブジェクト
      * @return メッセージ
-     * @throws NullPointerException {@literal error == null.}
+     * @throws IllegalArgumentException {@literal error == null.}
      */
-    public String convertMessage(final SheetObjectError error) {
+    public String convertMessage(final ObjectError error) {
         ArgUtils.notNull(error, "error");
         
         final Map<String, Object> vars = new HashMap<>();
         vars.putAll(error.getVariables());
         
-        if(error instanceof CellFieldError) {
+        if(error instanceof FieldError) {
             // フィールドエラーのメッセージを処理する
             
-            final CellFieldError fieldError = (CellFieldError) error;
+            final FieldError fieldError = (FieldError) error;
             final String[] labelCode = messageCodeGenerator.generateFieldNameCodes(fieldError.getObjectName(), fieldError.getField());
             
             try {
@@ -77,8 +78,8 @@ public class SheetMessageConverter {
             } catch(Throwable e) {
             }
             
-            if(error.getLabelAsOptional() != null) {
-                vars.put("label", error.getLabelAsOptional());
+            if(error.getLabelAsOptional().isPresent()) {
+                vars.put("label", error.getLabelAsOptional().get());
             } else {
                 try {
                     vars.put("label", getMessage(labelCode, null));
@@ -107,8 +108,8 @@ public class SheetMessageConverter {
             // オブジェクトエラーのメッセージを処理する。
             
             final String[] labelCode = messageCodeGenerator.generateObjectNameCodes(error.getObjectName());
-            if(error.getLabelAsOptional() != null) {
-                vars.put("label", error.getLabelAsOptional());
+            if(error.getLabelAsOptional().isPresent()) {
+                vars.put("label", error.getLabelAsOptional().get());
             } else {
                 try {
                     vars.put("label", getMessage(labelCode, null));
@@ -128,7 +129,7 @@ public class SheetMessageConverter {
         }
         
         final String message = getMessage(error.getCodes(), error.getDefaultMessage());
-        return messageInterporlator.interpolate(message, vars, false, messageResolver);
+        return messageInterporlator.interpolate(message, vars, true, messageResolver);
         
     }
     
@@ -136,7 +137,8 @@ public class SheetMessageConverter {
      * 指定した引数の候補からメッセージを取得する。
      * @param codes メッセージコードの候補
      * @param defaultMessage メッセージコードが見つからない場合のメッセージ
-     * @return
+     * @return メッセージ
+     * @throws RuntimeException メッセージコード 'codes' で指定したメッセージキーが見つからない場合。
      */
     public String getMessage(final String[] codes, final Optional<String> defaultMessage) {
         for(String code : codes) {

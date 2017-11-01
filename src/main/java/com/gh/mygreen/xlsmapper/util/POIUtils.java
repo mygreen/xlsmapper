@@ -29,6 +29,7 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -48,10 +49,9 @@ import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.CellFormatter;
-import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
 import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
 import com.gh.mygreen.xlsmapper.cellconverter.LinkType;
@@ -79,7 +79,7 @@ public class POIUtils {
      * @since 2.0
      * @param sheet 判定対象のオブジェクト
      * @return シートの種類。不明な場合はnullを返す。
-     * @throws NullPointerException {@literal sheet == null}
+     * @throws IllegalArgumentException {@literal sheet == null}
      */
     public static SpreadsheetVersion getVersion(final Sheet sheet) {
         ArgUtils.notNull(sheet, "sheet");
@@ -99,7 +99,7 @@ public class POIUtils {
      * <p>{@literal jxl.Sheet.getColumns()}</p>
      * @param sheet シートオブジェクト
      * @return 最大列数
-     * @throws NullPointerException {@link sheet == null.}
+     * @throws IllegalArgumentException {@link sheet == null.}
      */
     public static int getColumns(final Sheet sheet) {
         ArgUtils.notNull(sheet, "sheet");
@@ -128,7 +128,7 @@ public class POIUtils {
      * <p>{@literal jxl.Sheet.getRows()}</p>
      * @param sheet シートオブジェクト
      * @return 最大行数
-     * @throws NullPointerException {@link sheet == null.}
+     * @throws IllegalArgumentException {@link sheet == null.}
      */
     public static int getRows(final Sheet sheet) {
         ArgUtils.notNull(sheet, "sheet");
@@ -141,7 +141,7 @@ public class POIUtils {
      * @param sheet シートオブジェクト
      * @param address アドレス（Point.x=column, Point.y=row）
      * @return セル
-     * @throws NullPointerException {@link sheet == null or address == null.}
+     * @throws IllegalArgumentException {@link sheet == null or address == null.}
      */
     public static Cell getCell(final Sheet sheet, final Point address) {
         ArgUtils.notNull(sheet, "sheet");
@@ -155,7 +155,7 @@ public class POIUtils {
      * @param sheet シートオブジェクト
      * @param address セルのアドレス
      * @return セル
-     * @throws NullPointerException {@link sheet == null or address == null.}
+     * @throws IllegalArgumentException {@link sheet == null or address == null.}
      */
     public static Cell getCell(final Sheet sheet, final CellPosition address) {
         ArgUtils.notNull(sheet, "sheet");
@@ -171,7 +171,7 @@ public class POIUtils {
      * @param column 列番号（0から始まる）
      * @param row 行番号（0から始まる）
      * @return セル
-     * @throws NullPointerException {@link sheet == null}
+     * @throws IllegalArgumentException {@link sheet == null}
      */
     public static Cell getCell(final Sheet sheet, final int column, final int row) {
         ArgUtils.notNull(sheet, "sheet");
@@ -196,7 +196,7 @@ public class POIUtils {
      * @param row 行番号（0から始まる）
      * @return 行レコード（カラムの集合）。
      *         ただし、シートの最大列数以下の場合、空のセルを補完する。
-     * @throws NullPointerException {@link sheet == null}
+     * @throws IllegalArgumentException {@link sheet == null}
      */
     public static Cell[] getRow(final Sheet sheet, final int row) {
         ArgUtils.notNull(sheet, "sheet");
@@ -225,7 +225,7 @@ public class POIUtils {
      * @param col 列番号（0から始まる）
      * @return 列レコード（行の集合）。
      *         ただし、シートの最大行数以下の場合、空のセルを補完する。
-     * @throws NullPointerException {@link sheet == null}
+     * @throws IllegalArgumentException {@link sheet == null}
      */
     public static Cell[] getColumn(final Sheet sheet, final int col) {
         ArgUtils.notNull(sheet, "sheet");
@@ -255,7 +255,8 @@ public class POIUtils {
      * 
      * @param cell
      * @param cellFormatter 
-     * @return
+     * @return フォーマットした文字列
+     * @throws IllegalArgumentException {@literal cell or cellFormatter is null.}
      */
     public static String getCellContents(final Cell cell, final CellFormatter cellFormatter) {
         ArgUtils.notNull(cell, "cell");
@@ -280,8 +281,7 @@ public class POIUtils {
      * <p>ブランクセルなどの判定は優先的に行う。</p>
      * @param cell セル
      * @param cellFormatter
-     * @throws IllegalArgumentException {@literal sheet == null.}
-     * @throws IllegalArgumentException {@literal cellFormatter == null.}
+     * @throws IllegalArgumentException {@literal  sheet == null or cellFormatter == null.}
      * @return
      */
     public static boolean isEmptyCellContents(final Cell cell, final CellFormatter cellFormatter) {
@@ -337,7 +337,7 @@ public class POIUtils {
      * @param endCol
      * @param endRow
      * @return 結合した範囲のアドレス情報
-     * @throws NullPointerException {@literal sheet == null}
+     * @throws IllegalArgumentException {@literal sheet == null}
      */
     public static CellRangeAddress mergeCells(final Sheet sheet, int startCol, int startRow, int endCol, int endRow) {
         ArgUtils.notNull(sheet, "sheet");
@@ -720,97 +720,6 @@ public class POIUtils {
         
     }
     
-//    public static boolean removeDataValidation(final Sheet sheet, final DataValidation dataValidation) {
-//        ArgUtils.notNull(sheet, "sheet");
-//        ArgUtils.notNull(dataValidation, "dataValidation");
-//        
-//        if(sheet instanceof XSSFSheet) {
-//            final XSSFSheet xssfSheet = (XSSFSheet) sheet;
-//            final XSSFDataValidation xssfDataValidation = (XSSFDataValidation) dataValidation;
-//            
-//            try {
-//                final Field fWorksheet = XSSFSheet.class.getDeclaredField("worksheet");
-//                fWorksheet.setAccessible(true);
-//                CTWorksheet worksheet = (CTWorksheet) fWorksheet.get(xssfSheet);
-//                
-//                // 既存の入力規則の取得
-//                CTDataValidations dataValidations = worksheet.getDataValidations();
-//                if(dataValidations == null) {
-//                    return false;
-//                }
-//                
-//                final Method mCtVal = XSSFDataValidation.class.getDeclaredMethod("getCtDdataValidation");
-//                mCtVal.setAccessible(true);
-//                
-//                CTDataValidation removeVal = (CTDataValidation) mCtVal.invoke(xssfDataValidation);
-//                
-//                List<CTDataValidation> newList = new ArrayList<>();
-//                for(int i=0; i < dataValidations.getCount(); i++) {
-//                    CTDataValidation itemVal = dataValidations.getDataValidationArray(i);
-//                    if(!itemVal.equals(removeVal)) {
-//                        newList.add(itemVal);
-//                    }
-//                    
-//                }
-//                
-//                // 削除された（サイズが変わった）場合に、入力規則を設定し直す。
-//                if(newList.size() != dataValidations.getCount()) {
-//                    dataValidations.setDataValidationArray(newList.toArray(new CTDataValidation[newList.size()]));
-//                    return true;
-//                }
-//                
-//                return false;
-//                
-//            } catch (Exception e) {
-//                throw new RuntimeException("fail remove sheet validation rule.", e);
-//            }
-//            
-//        } else if(sheet instanceof HSSFSheet) {
-//            
-//            final HSSFSheet hssfSheet = (HSSFSheet) sheet;
-//            final HSSFDataValidation hssfDataValidation = (HSSFDataValidation) dataValidation;
-//            try {
-//                
-//                Field fWorksheet = HSSFSheet.class.getDeclaredField("_sheet");
-//                fWorksheet.setAccessible(true);
-//                InternalSheet worksheet = (InternalSheet) fWorksheet.get(hssfSheet);
-//                
-//                DataValidityTable dvt = worksheet.getOrCreateDataValidityTable();
-//                final CellRangeAddressList removeRegion = hssfDataValidation.getRegions();
-//                
-//                // シート内の入力規則のデータを検索して、一致するものがあれば書き換える。
-//                final AtomicBoolean removed = new AtomicBoolean(false);
-//                RecordVisitor visitor = new RecordVisitor() {
-//                    
-//                    @Override
-//                    public void visitRecord(final Record r) {
-//                        if (!(r instanceof DVRecord)) {
-//                            return;
-//                        }
-//                        
-//                        final DVRecord dvRecord = (DVRecord) r;
-//                        final CellRangeAddressList region = dvRecord.getCellRangeAddress();
-//                        if(equalsRegion(region, removeRegion)) {
-//                            //TODO:
-//                            
-//                        }
-//                        
-//                    }
-//                };
-//                
-//                dvt.visitContainedRecords(visitor);
-//                
-//                return removed.get();
-//                
-//            } catch (Exception e) {
-//                throw new RuntimeException("fail remove sheet validation rule.", e);
-//            }
-//            
-//        } else {
-//            throw new UnsupportedOperationException("not supported remove dava validation's region for type " + sheet.getClass().getName());
-//        }
-//    }
-    
     /**
      * テンプレートの入力規則の制約「リスト」を追加する。
      * <p>POI-3.7以上が必要。
@@ -1166,26 +1075,6 @@ public class POIUtils {
     }
     
     /**
-     * アノテーション{@link XlsCellOption}を元に、セルの制御の設定「折り返し設定」「縮小して表示」を設定します。
-     * @param cell セル
-     * @param cellOptionAnno セルの制御を設定するアノテーション。
-     * @throws NullPointerException {@literal cell == null.}
-     */
-    public static void setupCellOption(final Cell cell, final XlsCellOption cellOptionAnno) {
-        
-        ArgUtils.notNull(cell, "cell");
-        
-        if(cellOptionAnno.shrinkToFit()) {
-            cell.getCellStyle().setShrinkToFit(true);
-            
-        } else if(cellOptionAnno.wrapText()) {
-            cell.getCellStyle().setWrapText(true);
-            
-        }
-        
-    }
-    
-    /**
      * セルの書式のパターンを新たに設定する。
      * <p>書式以外のスタイルはそのままコピーする。</p>
      * <p>既に定義済みのパターンの場合は、それを利用する。</p>
@@ -1207,7 +1096,7 @@ public class POIUtils {
      * 
      * @param cell セル
      * @return {@literal BorderStyle}
-     * @throws NullPointerException {@literal cell is null.}
+     * @throws IllegalArgumentException {@literal cell is null.}
      */
     public static BorderStyle getBorderTop(final Cell cell) {
         
@@ -1245,7 +1134,7 @@ public class POIUtils {
      * 
      * @param cell セル
      * @return {@literal BorderStyle}
-     * @throws NullPointerException {@literal cell is null.}
+     * @throws IllegalArgumentException {@literal cell is null.}
      */
     public static BorderStyle getBorderBottom(final Cell cell) {
         
@@ -1283,7 +1172,7 @@ public class POIUtils {
      * 
      * @param cell セル
      * @return {@literal BorderStyle}
-     * @throws NullPointerException {@literal cell is null.}
+     * @throws IllegalArgumentException {@literal cell is null.}
      */
     public static BorderStyle getBorderRight(final Cell cell) {
         
@@ -1321,7 +1210,7 @@ public class POIUtils {
      * 
      * @param cell セル
      * @return {@literal BorderStyle}
-     * @throws NullPointerException {@literal cell is null.}
+     * @throws IllegalArgumentException {@literal cell is null.}
      */
     public static BorderStyle getBorderLeft(final Cell cell) {
         
@@ -1351,6 +1240,40 @@ public class POIUtils {
         } else {
             return style.getBorderLeftEnum();
         }
+        
+    }
+    
+    /**
+     * ハイパーリンクを取得する。
+     * <p>結合されているセルの場合にも対応。
+     * @param cell
+     * @return 見つからない場合は、nullを返す。
+     * @throws IllegalArgumentException {@literal cell is null.}
+     */
+    public static Hyperlink getHyperlink(final Cell cell) {
+        
+        ArgUtils.notNull(cell, "cell");
+        
+        Hyperlink link = cell.getHyperlink();
+        if(link != null) {
+            return link;
+        }
+        
+        final Sheet sheet = cell.getSheet();
+        CellRangeAddress mergedRange = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
+        if(mergedRange == null) {
+            return null;
+        }
+        
+        for(Hyperlink item : sheet.getHyperlinkList()) {
+            if(item.getFirstRow() == mergedRange.getFirstRow()
+                    && item.getFirstColumn() == mergedRange.getFirstColumn()) {
+                return item;
+            }
+            
+        }
+        
+        return null;
         
     }
     

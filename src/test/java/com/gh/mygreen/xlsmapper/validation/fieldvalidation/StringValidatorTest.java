@@ -13,12 +13,17 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.validation.CellFieldError;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.LengthBetweenValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.LengthExactValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.LengthMaxValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.LengthMinValidator;
 
 /**
- * {@link StringValidatorTest}に関するテスタ
+ * 文字列に関するテスタ
  * 
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -53,43 +58,47 @@ public class StringValidatorTest {
         SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
-        CellField<String> field;
-        CellFieldError fieldError;
+        {
+            // 必須チェック(値がnull)
+            errors.clearAllErrors();
+            sheet.str = null;
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(true);
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
+            
+        }
         
-        // 必須チェック(値がnull)
-        errors.clearAllErrors();
-        sheet.str = null;
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(true);
+        {
+            // 必須チェック(値が空文字)
+            errors.clearAllErrors();
+            sheet.str = "";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(true);
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
         
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-        assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
-        assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
+        }
         
-        // 必須チェック(値が空文字)
-        errors.clearAllErrors();
-        sheet.str = "";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(true);
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-        assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
-        assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
-        
-        // 必須チェック(値がある
-        errors.clearAllErrors();
-        sheet.str = "あいう";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(true);
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
-        
+        {
+            // 必須チェック(値がある
+            errors.clearAllErrors();
+            sheet.str = "あいう";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(true);
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
+        }
         
     }
     
@@ -107,39 +116,43 @@ public class StringValidatorTest {
         SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
-        CellField<String> field;
-        CellFieldError fieldError;
+        {
+            // オプション指定(値がnull)
+            errors.clearAllErrors();
+            sheet.str = null;
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
         
-        // オプション指定(値がnull)
-        errors.clearAllErrors();
-        sheet.str = null;
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
+        }
         
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
+        {
+            // オプション指定(値が空文字)
+            errors.clearAllErrors();
+            sheet.str = "";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
+        }
         
-        // オプション指定(値が空文字)
-        errors.clearAllErrors();
-        sheet.str = "";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
+        {
+            // オプション指定(値がある)
+            errors.clearAllErrors();
+            sheet.str = "あいう";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
         
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
-        
-        // オプション指定(値がある)
-        errors.clearAllErrors();
-        sheet.str = "あいう";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
-        
+        }
     }
     
     /**
@@ -156,47 +169,50 @@ public class StringValidatorTest {
         SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
-        CellField<String> field;
-        CellFieldError fieldError;
+        {
+            // 文字数(値がnull)
+            errors.clearAllErrors();
+            sheet.str = null;
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthExactValidator(5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
+        }
         
-        // 文字数(値がnull)
-        errors.clearAllErrors();
-        sheet.str = null;
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.exactLength(5));
+        {
+            // 文字数(値が不正)
+            errors.clearAllErrors();
+            sheet.str = "あいうえ";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthExactValidator(5, 10));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.lengthExact"));
+            
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
+            assertThat(fieldError.getVariables(), hasEntry("length", (Object)4));
+            assertThat(fieldError.getVariables(), hasEntry("requiredLengths", (Object)new int[]{5, 10}));
+        }
         
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
-        
-        // 文字数(値が不正)
-        errors.clearAllErrors();
-        sheet.str = "あいうえ";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.exactLength(5));
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-        assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
-        assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.exactLength"));
-        
-        assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
-        assertThat(fieldError.getVariables(), hasEntry("valueLength", (Object)4));
-        assertThat(fieldError.getVariables(), hasEntry("length", (Object)5));
-        
-        // 文字数(値が正しい)
-        errors.clearAllErrors();
-        sheet.str = "あいうえお";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.exactLength(5));
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
+        {
+            // 文字数(値が正しい)
+            errors.clearAllErrors();
+            sheet.str = "あいうえお";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthExactValidator(5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
+        }
         
     }
     
@@ -214,48 +230,52 @@ public class StringValidatorTest {
         SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
-        CellField<String> field;
-        CellFieldError fieldError;
+        {
+            // 文字数(値がnull)
+            errors.clearAllErrors();
+            sheet.str = null;
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthMaxValidator(5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
+        }
         
-        // 文字数(値がnull)
-        errors.clearAllErrors();
-        sheet.str = null;
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.maxLength(5));
+        {
+            // 文字数(値が不正)
+            errors.clearAllErrors();
+            sheet.str = "あいうえおか";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthMaxValidator(5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.lengthMax"));
+            
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
+            assertThat(fieldError.getVariables(), hasEntry("length", (Object)6));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)5));
         
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
+        }
         
-        // 文字数(値が不正)
-        errors.clearAllErrors();
-        sheet.str = "あいうえおか";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.maxLength(5));
+        {
+            // 文字数(値が正しい)
+            errors.clearAllErrors();
+            sheet.str = "あいうえお";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthMaxValidator(5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
         
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-        assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
-        assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.maxLength"));
-        
-        assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
-        assertThat(fieldError.getVariables(), hasEntry("valueLength", (Object)6));
-        assertThat(fieldError.getVariables(), hasEntry("maxLength", (Object)5));
-        
-        // 文字数(値が正しい)
-        errors.clearAllErrors();
-        sheet.str = "あいうえお";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.maxLength(5));
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
-        
+        }
     }
     
     /**
@@ -272,47 +292,50 @@ public class StringValidatorTest {
         SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
-        CellField<String> field;
-        CellFieldError fieldError;
+        {
+            // 文字数(値がnull)
+            errors.clearAllErrors();
+            sheet.str = null;
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthMinValidator(5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
+        }
         
-        // 文字数(値がnull)
-        errors.clearAllErrors();
-        sheet.str = null;
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.minLength(5));
+        {
+            // 文字数(値が不正)
+            errors.clearAllErrors();
+            sheet.str = "あいうえ";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthMinValidator(5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.lengthMin"));
+            
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
+            assertThat(fieldError.getVariables(), hasEntry("length", (Object)4));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)5));
+        }
         
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
-        
-        // 文字数(値が不正)
-        errors.clearAllErrors();
-        sheet.str = "あいうえ";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.minLength(5));
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-        assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
-        assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.minLength"));
-        
-        assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
-        assertThat(fieldError.getVariables(), hasEntry("valueLength", (Object)4));
-        assertThat(fieldError.getVariables(), hasEntry("minLength", (Object)5));
-        
-        // 文字数(値が正しい)
-        errors.clearAllErrors();
-        sheet.str = "あいうえお";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.minLength(5));
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
+        {
+            // 文字数(値が正しい)
+            errors.clearAllErrors();
+            sheet.str = "あいうえお";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthMinValidator(5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
+        }
         
     }
     
@@ -330,66 +353,71 @@ public class StringValidatorTest {
         SheetBindingErrors<SampleSheet> errors = new SheetBindingErrors<>(sheet);
         errors.setSheetName("サンプルシート");
         
-        CellField<String> field;
-        CellFieldError fieldError;
+        {
+            // 文字数(値がnull)
+            errors.clearAllErrors();
+            sheet.str = null;
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthBetweenValidator(3, 5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
+        }
         
-        // 文字数(値がnull)
-        errors.clearAllErrors();
-        sheet.str = null;
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.betweenLength(3, 5));
+        {
+            // 文字数(値が不正)-小さい
+            errors.clearAllErrors();
+            sheet.str = "あい";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthBetweenValidator(3, 5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.lengthBetween"));
+            
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
+            assertThat(fieldError.getVariables(), hasEntry("length", (Object)2));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)3));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)5));
+        }
         
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
+        {
+            // 文字数(値が不正)-大きい
+            errors.clearAllErrors();
+            sheet.str = "あいうえおか";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthBetweenValidator(3, 5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.lengthBetween"));
+            
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
+            assertThat(fieldError.getVariables(), hasEntry("length", (Object)6));
+            assertThat(fieldError.getVariables(), hasEntry("min", (Object)3));
+            assertThat(fieldError.getVariables(), hasEntry("max", (Object)5));
+        }
         
-        // 文字数(値が不正)-小さい
-        errors.clearAllErrors();
-        sheet.str = "あい";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.betweenLength(3, 5));
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-        assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
-        assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.betweenLength"));
-        
-        assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
-        assertThat(fieldError.getVariables(), hasEntry("valueLength", (Object)2));
-        assertThat(fieldError.getVariables(), hasEntry("minLength", (Object)3));
-        assertThat(fieldError.getVariables(), hasEntry("maxLength", (Object)5));
-        
-        // 文字数(値が不正)-大きい
-        errors.clearAllErrors();
-        sheet.str = "あいうえおか";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.betweenLength(3, 5));
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-        assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
-        assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.betweenLength"));
-        
-        assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.str));
-        assertThat(fieldError.getVariables(), hasEntry("valueLength", (Object)6));
-        assertThat(fieldError.getVariables(), hasEntry("minLength", (Object)3));
-        assertThat(fieldError.getVariables(), hasEntry("maxLength", (Object)5));
-        
-        // 文字数(値が正しい)
-        errors.clearAllErrors();
-        sheet.str = "あいうえお";
-        field = new CellField<>(fieldName, String.class, errors);
-        field.setRequired(false);
-        field.add(StringValidator.betweenLength(3, 5));
-        
-        field.validate();
-        fieldError = errors.getFirstFieldError(fieldName).get();
-        assertThat(fieldError, is(nullValue()));
+        {
+            // 文字数(値が正しい)
+            errors.clearAllErrors();
+            sheet.str = "あいうえお";
+            CellField<String> field = new CellField<>(fieldName, errors);
+            field.setRequired(false);
+            field.add(new LengthBetweenValidator(3, 5));
+            
+            field.validate();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
+            assertThat(fieldError, is(nullValue()));
+        }
         
     }
     

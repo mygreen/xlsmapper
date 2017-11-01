@@ -10,8 +10,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.validation.CellFieldError;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.MaxValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.MinValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.RangeValidator;
 
 
 /**
@@ -51,13 +54,13 @@ public class NumberValidatorTest {
             // 必須チェック(値がnull)
             errors.clearAllErrors();
             sheet.numI = null;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(true);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
         }
         
@@ -65,11 +68,11 @@ public class NumberValidatorTest {
             // 必須チェック(値が0)
             errors.clearAllErrors();
             sheet.numI = 0;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(true);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         
         }
@@ -78,11 +81,11 @@ public class NumberValidatorTest {
             // 必須チェック(値がある)
             errors.clearAllErrors();
             sheet.numI = 123;
-            CellField<Integer>field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer>field = new CellField<>(fieldName, errors);
             field.setRequired(true);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -108,11 +111,11 @@ public class NumberValidatorTest {
             // 必須チェック(値がnull)
             errors.clearAllErrors();
             sheet.numI = null;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -120,11 +123,11 @@ public class NumberValidatorTest {
             // 必須チェック(値が0)
             errors.clearAllErrors();
             sheet.numI = 0;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -132,11 +135,11 @@ public class NumberValidatorTest {
             // 必須チェック(値がある)
             errors.clearAllErrors();
             sheet.numI = 123;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -162,12 +165,12 @@ public class NumberValidatorTest {
             // 最大値チェック(値がnull)
             errors.clearAllErrors();
             sheet.numI = null;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Integer>(10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -175,48 +178,50 @@ public class NumberValidatorTest {
             // 最大値チェック(値が不正)
             errors.clearAllErrors();
             sheet.numI = 11;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Integer>(10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numI));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 最大値チェック(値が不正)（フォーマット指定あり）
             errors.clearAllErrors();
             sheet.numI = 1234567;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Integer>(123456));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numI));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)123456));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 最大値チェック(値が正しい)
             errors.clearAllErrors();
             sheet.numI = 10;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Integer>(10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
     }
@@ -241,12 +246,12 @@ public class NumberValidatorTest {
             // 最小値チェック(値がnull)
             errors.clearAllErrors();
             sheet.numI = null;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MinValidator<Integer>(10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -254,18 +259,19 @@ public class NumberValidatorTest {
             // 最小値チェック(値が不正)
             errors.clearAllErrors();
             sheet.numI = 9;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MinValidator<Integer>(10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numI));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)10));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
             
         }
         
@@ -273,30 +279,31 @@ public class NumberValidatorTest {
             // 最小値チェック(値が不正)（フォーマット指定あり）
             errors.clearAllErrors();
             sheet.numI = 123456;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MinValidator<Integer>(1234567));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numI));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)1234567));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 最小値チェック(値が正しい)
             errors.clearAllErrors();
             sheet.numI = 10;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MinValidator<Integer>(10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -322,12 +329,12 @@ public class NumberValidatorTest {
             // 範囲チェック(値がnull)
             errors.clearAllErrors();
             sheet.numI = null;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Integer>(0, 10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         
         }
@@ -336,69 +343,72 @@ public class NumberValidatorTest {
             // 範囲チェック(値が不正)（小さい）
             errors.clearAllErrors();
             sheet.numI = -1;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Integer>(0, 10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numI));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 範囲チェック(値が不正)（大きい）
             errors.clearAllErrors();
             sheet.numI = 11;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Integer>(0, 10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numI));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 範囲チェック(値が不正)（フォーマット指定あり）
             errors.clearAllErrors();
             sheet.numI = 12345678;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Integer>(-1234567, 1234567));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numI));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)(-1234567)));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)1234567));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 範囲チェック(値が正しい)
             errors.clearAllErrors();
             sheet.numI = 10;
-            CellField<Integer> field = new CellField<>(fieldName, Integer.class, errors);
+            CellField<Integer> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Integer>(0, 10));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
     }
@@ -423,13 +433,13 @@ public class NumberValidatorTest {
             // 必須チェック(値がnull)
             errors.clearAllErrors();
             sheet.numD = null;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(true);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.required"));
         }
         
@@ -437,11 +447,11 @@ public class NumberValidatorTest {
             // 必須チェック(値が0)
             errors.clearAllErrors();
             sheet.numD = 0.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(true);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -449,11 +459,11 @@ public class NumberValidatorTest {
             // 必須チェック(値がある)
             errors.clearAllErrors();
             sheet.numD = 123.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(true);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         
         }
@@ -480,11 +490,11 @@ public class NumberValidatorTest {
             // 必須チェック(値がnull)
             errors.clearAllErrors();
             sheet.numD = null;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -492,11 +502,11 @@ public class NumberValidatorTest {
             // 必須チェック(値が0)
             errors.clearAllErrors();
             sheet.numD = 0.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -504,11 +514,11 @@ public class NumberValidatorTest {
             // 必須チェック(値がある)
             errors.clearAllErrors();
             sheet.numD = 123.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
     }
@@ -533,12 +543,12 @@ public class NumberValidatorTest {
             // 最大値チェック(値がnull)
             errors.clearAllErrors();
             sheet.numD = null;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Double>(10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         
         }
@@ -547,18 +557,19 @@ public class NumberValidatorTest {
             // 最大値チェック(値が不正)
             errors.clearAllErrors();
             sheet.numD = 11.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Double>(10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numD));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10.0));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
             
         }
         
@@ -566,18 +577,19 @@ public class NumberValidatorTest {
             // 最大値チェック(値が不正)（フォーマット指定あり）
             errors.clearAllErrors();
             sheet.numD = 1234567.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Double>(123456.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.max"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numD));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)123456.0));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
             
         }
         
@@ -585,12 +597,12 @@ public class NumberValidatorTest {
             // 最大値チェック(値が正しい)
             errors.clearAllErrors();
             sheet.numD = 10.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MaxValidator<Double>(10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
             
         }
@@ -617,12 +629,12 @@ public class NumberValidatorTest {
             // 最小値チェック(値がnull)
             errors.clearAllErrors();
             sheet.numD = null;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MinValidator<Double>(10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -630,48 +642,50 @@ public class NumberValidatorTest {
             // 最小値チェック(値が不正)
             errors.clearAllErrors();
             sheet.numD = 9.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MinValidator<Double>(10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numD));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)10.0));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 最小値チェック(値が不正)（フォーマット指定あり）
             errors.clearAllErrors();
             sheet.numD = 123456.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MinValidator<Double>(1234567.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.min"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numD));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)1234567.0));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 最小値チェック(値が正しい)
             errors.clearAllErrors();
             sheet.numD = 10.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new MinValidator<Double>(10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
     }
@@ -696,12 +710,12 @@ public class NumberValidatorTest {
             // 範囲チェック(値がnull)
             errors.clearAllErrors();
             sheet.numD = null;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Double>(0.0, 10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         }
         
@@ -709,69 +723,72 @@ public class NumberValidatorTest {
             // 範囲チェック(値が不正)（小さい）
             errors.clearAllErrors();
             sheet.numD = -1.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Double>(0.0, 10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numD));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0.0));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10.0));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 範囲チェック(値が不正)（大きい）
             errors.clearAllErrors();
             sheet.numD = 11.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Double>(0.0, 10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numD));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0.0));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10.0));
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
         }
         
         {
             // 範囲チェック(値が不正)（フォーマット指定あり）
             errors.clearAllErrors();
             sheet.numD = 12345678.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Double>(-1234567.0, 1234567.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
             assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(sheet.positions.get(fieldName)));
-            assertThat(fieldError.getLabelAsOptional(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getLabelAsOptional().get(), is(sheet.labels.get(fieldName)));
             assertThat(fieldError.getCodes(), hasItemInArray("cellFieldError.range"));
             
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.numD));
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)(-1234567.0)));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)1234567.0));
-            }
+            assertThat(fieldError.getVariables(), hasEntry("inclusive", (Object)true));
+        }
         
         {
             // 範囲チェック(値が正しい)
             errors.clearAllErrors();
             sheet.numD = 10.0;
-            CellField<Double> field = new CellField<>(fieldName, Double.class, errors);
+            CellField<Double> field = new CellField<>(fieldName, errors);
             field.setRequired(false);
             field.add(new RangeValidator<Double>(0.0, 10.0));
             
             field.validate();
-            CellFieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            FieldError fieldError = errors.getFirstFieldError(fieldName).orElse(null);
             assertThat(fieldError, is(nullValue()));
         
         }

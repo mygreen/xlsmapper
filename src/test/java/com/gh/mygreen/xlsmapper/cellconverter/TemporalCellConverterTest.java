@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,7 +35,9 @@ import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 
 /**
  * JSR-310('Date and Time API')のテスト
@@ -53,6 +56,16 @@ public class TemporalCellConverterTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         OUT_DIR = createOutDir();
+    }
+    
+    /**
+     * エラーメッセージのコンバーター
+     */
+    private SheetMessageConverter messageConverter;
+    
+    @Before
+    public void setUp() throws Exception {
+        this.messageConverter = new SheetMessageConverter();
     }
     
     @Test
@@ -110,9 +123,30 @@ public class TemporalCellConverterTest {
             
         } else if(record.no == 4) {
             // 文字列型の場合（値が不正）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDateTime"))).isConversionFailure()).isTrue();
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDate"))).isConversionFailure()).isTrue();
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localTime"))).isConversionFailure()).isTrue();
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("localDateTime")));
+                assertThat(fieldError.isConversionFailure()).isTrue();
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message).isEqualTo("[JSR310]:LocalDateTimeクラス - B10の値'a01'は、'uuuu-MM-dd HH:mm:ss'の日時形式で設定してください。");
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("localDate")));
+                assertThat(fieldError.isConversionFailure()).isTrue();
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message).isEqualTo("[JSR310]:LocalDateクラス - C10の値'b02'は、'uuuu-MM-dd'の日付形式で設定してください。");
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("localTime")));
+                assertThat(fieldError.isConversionFailure()).isTrue();
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message).isEqualTo("[JSR310]:LocalTimeクラス - D10の値'c03'は、'HH:mm:ss'の時刻形式で設定してください。");
+            }
             
         } else if(record.no == 5) {
             // Excelの日時型（日本語）
@@ -144,7 +178,7 @@ public class TemporalCellConverterTest {
             // 空文字
             assertThat(record.localDateTime).isEqualTo(LocalDateTime.of(2000, 12, 31, 03, 41, 12));
             assertThat(record.localDate).isEqualTo(LocalDate.of(2000, 12, 31));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localTime"))).isConversionFailure()).isTrue();
+            assertThat(record.localTime).isEqualTo(LocalTime.of(0, 0));
             
         } else if(record.no == 2) {
             // 文字列型の場合（正常）
@@ -154,9 +188,30 @@ public class TemporalCellConverterTest {
             
         } else if(record.no == 3) {
             // 文字列型の場合（存在しない日付）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDateTime"))).isConversionFailure()).isTrue();
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localDate"))).isConversionFailure()).isTrue();
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("localTime"))).isConversionFailure()).isTrue();
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("localDateTime")));
+                assertThat(fieldError.isConversionFailure()).isTrue();
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message).isEqualTo("[JSR310]:LocalDateTimeクラス - B22の値'2015-13-02 03:45:06'は、'uuuu-MM-dd HH:mm:ss'の日時形式で設定してください。");
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("localDate")));
+                assertThat(fieldError.isConversionFailure()).isTrue();
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message).isEqualTo("[JSR310]:LocalDateクラス - C22の値'2015-12-40'は、'uuuu-MM-dd'の日付形式で設定してください。");
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("localTime")));
+                assertThat(fieldError.isConversionFailure()).isTrue();
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message).isEqualTo("[JSR310]:LocalTimeクラス - D22の値'12時80分'は、'H時m分'の時刻形式で設定してください。");
+            }
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
@@ -299,8 +354,7 @@ public class TemporalCellConverterTest {
             assertThat(inRecord.no).isEqualTo(outRecord.no);
             assertThat(inRecord.localDateTime).isEqualTo(LocalDateTime.of(2000, 12, 31, 3, 41, 12));
             assertThat(inRecord.localDate).isEqualTo(LocalDate.of(2000, 12, 31));
-            assertThat(cellFieldError(errors, cellAddress(inRecord.positions.get("localTime"))).isConversionFailure()).isTrue();
-//            assertThat(inRecord.localTime).isEqualTo(LocalTime.of(3, 41, 12));
+            assertThat(inRecord.localTime).isEqualTo(LocalTime.of(0, 0));
             assertThat(inRecord.comment).isEqualTo(outRecord.comment);
             
         } else {
@@ -488,9 +542,9 @@ public class TemporalCellConverterTest {
         @XlsColumn(columnName="LocalDateクラス")
         private LocalDate localDate;
         
-        /** 書式付き（初期値のフォーマットが不正） */
-        @XlsDefaultValue("abc")
-        @XlsDateConverter(javaPattern="H時m分")
+        /** 書式付き */
+        @XlsDefaultValue("0時0分")
+        @XlsDateConverter(javaPattern="H時m分", excelPattern="h\"時\"mm\"分\"")
         @XlsColumn(columnName="LocalTimeクラス")
         private LocalTime localTime;
         

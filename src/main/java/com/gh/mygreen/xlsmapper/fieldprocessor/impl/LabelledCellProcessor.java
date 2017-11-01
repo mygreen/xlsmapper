@@ -15,6 +15,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessType;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellHandler.LabelInfo;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 
 /**
@@ -47,8 +48,12 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         accessor.setLabel(beansObj, labelInfo.get().label);
         
         final CellConverter<?> converter = getCellConverter(accessor, config);
+        if(converter instanceof FieldFormatter) {
+            work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
+        }
+        
         try {
-            final Object value = converter.toObject(labelInfo.get().valueCell, accessor, config);
+            final Object value = converter.toObject(labelInfo.get().valueCell);
             accessor.setValue(beansObj, value);
         } catch(TypeBindException e) {
             work.addTypeBindError(e, labelInfo.get().valueAddress, accessor.getName(), labelInfo.get().label);
@@ -79,8 +84,12 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
         accessor.setLabel(targetObj, labelInfo.get().label);
         
         final CellConverter converter = getCellConverter(accessor, config);
+        if(converter instanceof FieldFormatter) {
+            work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
+        }
+        
         try {
-            converter.toCell(accessor, accessor.getValue(targetObj), targetObj, sheet, labelInfo.get().valueAddress, config);
+            converter.toCell(accessor.getValue(targetObj), targetObj, sheet, labelInfo.get().valueAddress);
             
         } catch(TypeBindException e) {
             work.addTypeBindError(e, labelInfo.get().valueAddress, accessor.getName(), labelInfo.get().label);

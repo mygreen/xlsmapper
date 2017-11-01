@@ -157,7 +157,7 @@ public class FieldAccessor {
      * <p>getterが存在する場合は、getterメソッド経由で取得します。</p>
      * @param targetObj オブジェクト（インスタンス）
      * @return フィールドの値。
-     * @throws NullPointerException {@literal targetObj == null.}
+     * @throws IllegalArgumentException {@literal targetObj == null.}
      * @throws FieldAccessException {@literal 値の取得に失敗した場合。}
      */
     public Object getValue(final Object targetObj) {
@@ -189,7 +189,7 @@ public class FieldAccessor {
      * <p>setterが存在する場合は、setterメソッド経由で値を設定します。</p>
      * @param targetObj オブジェクト（インスタンス）
      * @param value フィールドの値。
-     * @throws NullPointerException {@literal targetObj == null.}
+     * @throws IllegalArgumentException {@literal targetObj == null.}
      * @throws FieldAccessException {@literal 値の設定に失敗した場合。}
      * 
      */
@@ -222,7 +222,7 @@ public class FieldAccessor {
      * @param key マップキーの値
      * @param targetObj オブジェクト（インスタンス）
      * @return マップの値
-     * @throws NullPointerException {@literal targetObj == null.}
+     * @throws IllegalArgumentException {@literal targetObj == null.}
      * @throws IllegalStateException {@link フィールドのタイプがMap出ない場合}
      */
     @SuppressWarnings("unchecked")
@@ -349,7 +349,7 @@ public class FieldAccessor {
      * <p>位置情報を保持するフィールドがない場合は、処理はスキップされます。</p>
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @param position 位置情報
-     * @throws NullPointerException {@literal targetObj == null or position == null}
+     * @throws IllegalArgumentException {@literal targetObj == null or position == null}
      */
     public void setPosition(final Object targetObj, final CellPosition position) {
         
@@ -363,7 +363,7 @@ public class FieldAccessor {
      * 位置情報を取得します。
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @return 位置情報を保持するフィールドがない場合や、値が設定されていないときは空を返します。
-     * @throws NullPointerException {@literal targetObj == null or position == null}
+     * @throws IllegalArgumentException {@literal targetObj == null or position == null}
      */
     public Optional<CellPosition> getPosition(final Object targetObj) {
         ArgUtils.notNull(targetObj, "targetObj");
@@ -378,7 +378,7 @@ public class FieldAccessor {
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @param position 位置情報
      * @param key マップのキー
-     * @throws NullPointerException {@literal targetObj == null or position == null or key == null}
+     * @throws IllegalArgumentException {@literal targetObj == null or position == null or key == null}
      * @throws IllegalArgumentException {@literal key is empty.}
      */
     public void setMapPosition(final Object targetObj, final CellPosition position, final String key) {
@@ -398,7 +398,7 @@ public class FieldAccessor {
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @param position 位置情報
      * @param index インデックスのキー。0以上を指定します。
-     * @throws NullPointerException {@literal targetObj == null or position == null}
+     * @throws IllegalArgumentException {@literal targetObj == null or position == null}
      * @throws IllegalArgumentException {@literal index < 0}
      */
     public void setArrayPosition(final Object targetObj, final CellPosition position, final int index) {
@@ -416,7 +416,7 @@ public class FieldAccessor {
      * <p>ラベル情報を保持するフィールドがない場合は、処理はスキップされます。</p>
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @param label ラベル情報
-     * @throws NullPointerException {@literal targetObj == null or label == null}
+     * @throws IllegalArgumentException {@literal targetObj == null or label == null}
      * @throws IllegalArgumentException {@literal label is empty}
      */
     public void setLabel(final Object targetObj, final String label) {
@@ -431,7 +431,7 @@ public class FieldAccessor {
      * ラベル情報を取得します。
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @return ラベル情報を保持するフィールドがない場合や、値が設定されていないときは空を返します。
-     * @throws NullPointerException {@literal targetObj == null or label == null}
+     * @throws IllegalArgumentException {@literal targetObj == null or label == null}
      */
     public Optional<String> getLabel(final Object targetObj) {
         ArgUtils.notNull(targetObj, "targetObj");
@@ -446,7 +446,7 @@ public class FieldAccessor {
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @param label ラベル情報
      * @param key マップのキー
-     * @throws NullPointerException {@literal targetObj == null or label == null or key == null}
+     * @throws IllegalArgumentException {@literal targetObj == null or label == null or key == null}
      * @throws IllegalArgumentException {@literal label or key is empty.}
      */
     public void setMapLabel(final Object targetObj, final String label, final String key) {
@@ -466,7 +466,7 @@ public class FieldAccessor {
      * @param targetObj フィールドが定義されているクラスのインスタンス
      * @param label ラベル情報
      * @param index インデックスのキー。0以上を指定します。
-     * @throws NullPointerException {@literal targetObj == null or label == null
+     * @throws IllegalArgumentException {@literal targetObj == null or label == null
      * @throws IllegalArgumentException {@literal label or index < 0}
      */
     public void setArrayLabel(final Object targetObj, final String label, final int index) {

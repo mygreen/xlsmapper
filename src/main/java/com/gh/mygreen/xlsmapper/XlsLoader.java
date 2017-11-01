@@ -70,7 +70,7 @@ public class XlsLoader {
      * @param clazz マッピング先のクラスタイプ。
      * @return シートをマッピングしたオブジェクト。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
-     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws IllegalArgumentException {@literal xlsIn == null or clazz == null}
      * @throws XlsMapperException Excelファイルのマッピングに失敗した場合
      * @throws IOException ファイルの読み込みに失敗した場合
      * 
@@ -92,7 +92,7 @@ public class XlsLoader {
      * @return マッピングの詳細情報。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
      *         
-     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws IllegalArgumentException {@literal xlsIn == null or clazz == null}
      * @throws XlsMapperException Excelファイルのマッピングに失敗した場合
      * @throws IOException ファイルの読み込みに失敗した場合
      */
@@ -143,7 +143,7 @@ public class XlsLoader {
      * @param clazz マッピング先のクラスタイプ。
      * @return マッピングした複数のシート。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
-     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws IllegalArgumentException {@literal xlsIn == null or clazz == null}
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException ファイルの読み込みに失敗した場合
      */
@@ -164,7 +164,7 @@ public class XlsLoader {
      * @param clazz マッピング先のクラスタイプ。
      * @return 複数のシートのマッピング結果。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
-     * @throws NullPointerException {@literal xlsIn == null or clazz == null}
+     * @throws IllegalArgumentException {@literal xlsIn == null or clazz == null}
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException ファイルの読み込みに失敗した場合
      */
@@ -234,7 +234,7 @@ public class XlsLoader {
      * @param classes マッピング先のクラスタイプの配列。
      * @return マッピングした複数のシート。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
-     * @throws NullPointerException {@literal xlsIn == null or classes == null}
+     * @throws IllegalArgumentException {@literal xlsIn == null or classes == null}
      * @throws IllegalArgumentException {@link calsses.length == 0}
      * @throws XlsMapperException マッピングに失敗した場合
      * @throws IOException ファイルの読み込みに失敗した場合
@@ -254,7 +254,7 @@ public class XlsLoader {
      * @param classes マッピング先のクラスタイプの配列。
      * @return マッピングした複数のシートの結果。
      *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、マッピング結果には含まれません。
-     * @throws NullPointerException {@literal xlsIn == null or classes == null}
+     * @throws IllegalArgumentException {@literal xlsIn == null or classes == null}
      * @throws IllegalArgumentException {@link calsses.length == 0}
      * @throws IOException ファイルの読み込みに失敗した場合
      * @throws XlsMapperException マッピングに失敗した場合

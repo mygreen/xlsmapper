@@ -74,7 +74,6 @@ public class LoadingWorkObject {
             .label(label)
             .buildAndAddError();
         
-        
     }
 
 }

@@ -21,12 +21,13 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * 名前付き変数のメッセージをフォーマットするクラス。
- * <p><code>{...}</code>の場合、変数を単純に置換する。
- * <p><code>${...}</code>の場合、EL式を利用し処理する。
- * <p>文字'$', '{', '}'は特殊文字のため、<code>\</code>でエスケープを行う。
- * <p>ELのパーサは、{@link ExpressionLanguage}の実装クラスで切り替え可能。
+ * <p><code>{...}</code>の場合、変数を単純に置換する。</p>
+ * <p><code>${...}</code>の場合、EL式を利用し処理する。</p>
+ * <p>文字'$', '{', '}'は特殊文字のため、<code>\</code>でエスケープを行う。</p>
+ * <p>ELのパーサは、{@link ExpressionLanguage}の実装クラスで切り替え可能。</p>
  * <p>{@link MessageResolver}を指定した場合、メッセージ中の変数<code>{...}</code>をメッセージ定義コードとして解決する。
- *    ただし、メッセージ変数で指定されている変数が優先される。
+ *   <br>ただし、メッセージ変数で指定されている変数が優先される。
+ * </p>
  * 
  * @version 2.0
  * @author T.TSUCHIE
@@ -262,7 +263,12 @@ public class MessageInterpolator {
         // フォーマッターの追加
         context.computeIfAbsent("formatter", key -> formatter);
         
-        final String value = expressionLanguage.evaluate(expression, context).toString();
+        /*
+         * JEXLで存在しない変数名の場合、nullが帰ってくるため、null判定を行う。
+         */
+        Object eval = expressionLanguage.evaluate(expression, context);
+        String value = eval == null ? "" : eval.toString();
+        
         if(logger.isTraceEnabled()) {
             logger.trace("evaluate expression language: expression='{}' ===> value='{}'", expression, value);
         }

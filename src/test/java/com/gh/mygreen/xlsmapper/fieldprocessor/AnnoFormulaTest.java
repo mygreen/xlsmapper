@@ -46,8 +46,8 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
  * アノテーション{@link XlsFormula}のテスタ。
- * <p>このテスタは、式の解析の確認などのテストを行う。
- * <p>プロセッサとの組み合わせは、それぞれのテスタで行う。
+ * <p>このテスタは、式の解析の確認などのテストを行う。</p>
+ * <p>プロセッサとの組み合わせは、それぞれのテスタで行う。</p>
  *
  * @since 1.5
  * @author T.TSUCHIE
@@ -375,7 +375,7 @@ public class AnnoFormulaTest {
     /**
      * 式が不正 - 式言語として不正
      */
-    @Test(expected=AnnotationInvalidException.class)
+    @Test(expected=ConversionException.class)
     public void test_error_wrongFormula_forExpression() throws Exception {
         
         // テストデータの作成

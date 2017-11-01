@@ -201,7 +201,7 @@ public class UtilsTest {
         {
             // 引数の確認
             List<String> list = null;
-            assertThatThrownBy(() -> Utils.addListWithIndex(list, "abc", 0)).isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> Utils.addListWithIndex(list, "abc", 0)).isInstanceOf(IllegalArgumentException.class);
         
         }
         
@@ -237,7 +237,7 @@ public class UtilsTest {
         
         {
             // null
-            assertThatThrownBy(() -> Utils.getPrimitiveDefaultValue(null)).isInstanceOf(NullPointerException.class);
+            assertThatThrownBy(() -> Utils.getPrimitiveDefaultValue(null)).isInstanceOf(IllegalArgumentException.class);
         }
         
         {
@@ -275,7 +275,7 @@ public class UtilsTest {
         {
             // 引数 - 型がnullの場合
             assertThatThrownBy(() -> Utils.asList(new int[]{123, 456}, null))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(IllegalArgumentException.class);
         }
         
         {

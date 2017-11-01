@@ -70,7 +70,7 @@ public class CellPosition implements Serializable, Comparable<CellPosition>, Clo
      * CellAddressのインスタンスを作成する。
      * @param cell セルのインスタンス。
      * @return {@link CellPosition}のインスタンス
-     * @throws NullPointerException {@link cell == null.}
+     * @throws IllegalArgumentException {@link cell == null.}
      */
     public static CellPosition of(final Cell cell) {
         ArgUtils.notNull(cell, "cell");
@@ -82,7 +82,7 @@ public class CellPosition implements Serializable, Comparable<CellPosition>, Clo
      * CellAddressのインスタンスを作成する。
      * @param reference セルの参照形式。
      * @return {@link CellPosition}のインスタンス
-     * @throws NullPointerException {@link reference == null.}
+     * @throws IllegalArgumentException {@link reference == null.}
      */
     public static CellPosition of(final CellReference reference) {
         ArgUtils.notNull(reference, "reference");
@@ -94,7 +94,7 @@ public class CellPosition implements Serializable, Comparable<CellPosition>, Clo
      * CellAddressのインスタンスを作成する。
      * @param address セルのアドレス
      * @return {@link CellPosition}のインスタンス
-     * @throws NullPointerException {@link address == null.}
+     * @throws IllegalArgumentException {@link address == null.}
      */
     public static CellPosition of(final CellAddress address) {
         ArgUtils.notNull(address, "address");
@@ -129,7 +129,7 @@ public class CellPosition implements Serializable, Comparable<CellPosition>, Clo
      * CellAddressのインスタンスを作成する。
      * @param point セルの座標
      * @return {@link CellPosition}のインスタンス
-     * @throws NullPointerException {@link point == null.}
+     * @throws IllegalArgumentException {@link point == null.}
      */
     public static CellPosition of(final Point point) {
         ArgUtils.notNull(point, "point");

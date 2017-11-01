@@ -38,8 +38,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
      * @param baseName メッセージリソースのパス。
      * @param appendUserResource クラスパスのルートにあるユーザ定義のメッセージソースも読み込むかどうか指定します。
      *      引数baseNameの値が {@literal sample.SampleMessages}のとき、クラスパスのルート上にある「SampleMessages」を読み込みます。
-     * @throws NullPointerException baseName is null.
-     * @throws IllegalArgumentException baseName is empty.
+     * @throws IllegalArgumentException {@literal baseName is null or empty.}
      */
     public ResourceBundleMessageResolver(final String baseName, final boolean appendUserResource) {
         ArgUtils.notEmpty(baseName, "baseName");
@@ -73,7 +72,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
      * 独自のメッセージソースを指定してインスタンスを作成する。
      * <p>デフォルトのメッセージソース{@link #DEFAULT_MESSAGE}が自動的に読み込まれます。</p>
      * @param resourceBundle 独自のメッセージメース
-     * @throws NullPointerException resourceBundle is null.
+     * @throws IllegalArgumentException resourceBundle is null.
      */
     public ResourceBundleMessageResolver(final ResourceBundle resourceBundle) {
         this();
@@ -103,7 +102,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
      * メッセージソースを追加します。
      * @param resourceBundle 追加するメッセージソース。
      * @return 既に追加済みの場合はfalseを返します。
-     * @throws NullPointerException resourceBundle is null.
+     * @throws IllegalArgumentException resourceBundle is null.
      */
     public final boolean addResourceBundle(final ResourceBundle resourceBundle) {
         Objects.requireNonNull(resourceBundle, "resourceBundle should not be null.");
@@ -128,7 +127,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
      * メッセージソースを削除する。
      * @param resourceBundle 削除対象のメッセージソース
      * @return 登録されているメッセージソースがある場合はtrueを返します。
-     * @throws NullPointerException resourceBundle is null.
+     * @throws IllegalArgumentException resourceBundle is null.
      */
     public boolean removeResourceBundle(final ResourceBundle resourceBundle) {
         Objects.requireNonNull(resourceBundle, "resourceBundle should not be null.");

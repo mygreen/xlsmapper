@@ -35,7 +35,7 @@ public class ArrayPositionSetterFactory {
      * @param beanClass フィールドが定義されているクラス情報
      * @param fieldName フィールドの名称
      * @return 位置情報のsetterが存在しない場合は空を返す。
-     * @throws NullPointerException {@literal beanClass == null or fieldName == null}
+     * @throws IllegalArgumentException {@literal beanClass == null or fieldName == null}
      * @throws IllegalArgumentException {@literal fieldName.isEmpty() = true}
      */
     public Optional<ArrayPositionSetter> create(final Class<?> beanClass, final String fieldName) {

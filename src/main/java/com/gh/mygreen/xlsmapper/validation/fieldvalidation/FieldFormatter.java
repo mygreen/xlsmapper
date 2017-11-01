@@ -10,6 +10,7 @@ package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
  * @param <T> フォーマット対象のフィールドのタイプ。
  *
  */
+@FunctionalInterface
 public interface FieldFormatter<T> {
     
     /**

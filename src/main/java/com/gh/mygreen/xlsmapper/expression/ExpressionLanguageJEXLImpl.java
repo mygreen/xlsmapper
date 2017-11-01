@@ -28,6 +28,8 @@ public class ExpressionLanguageJEXLImpl implements ExpressionLanguage {
     
     public ExpressionLanguageJEXLImpl() {
         this(new JexlEngine());
+        this.jexlEngine.setLenient(true);
+        this.jexlEngine.setSilent(true);
     }
     
     /**

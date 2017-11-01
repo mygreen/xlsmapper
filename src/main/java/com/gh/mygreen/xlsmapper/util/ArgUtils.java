@@ -7,6 +7,7 @@ import java.util.Map;
 /**
  * 引数チェックに関するユーティリティクラス。
  * 
+ * @version 2.0
  * @author T.TSUCHIE
  *
  */
@@ -16,11 +17,11 @@ public class ArgUtils {
      * 値がnullでないかどうか検証する。
      * @param arg 検証対象の値
      * @param name 検証対象の引数の名前
-     * @throws NullPointerException {@literal arg == null.}
+     * @throws IllegalArgumentException {@literal arg == null.}
      */
     public static void notNull(final Object arg, final String name) {
         if(arg == null) {
-            throw new NullPointerException(String.format("%s should not be null.", name));
+            throw new IllegalArgumentException(String.format("%s should not be null.", name));
         }
     }
     
@@ -33,6 +34,18 @@ public class ArgUtils {
     public static void notEmpty(final String arg, final String name) {
         if(arg == null || arg.isEmpty()) {
             throw new IllegalArgumentException(String.format("%s should not be empty.", name));
+        }
+    }
+    
+    /**
+     * 配列のサイズが0または、nullでないかどうか検証する。
+     * @param arg 検証対象の値
+     * @param name 検証対象の引数の名前
+     * @throws IllegalArgumentException {@literal arg == null || arg.length == 0.}
+     */
+    public static void notEmpty(final int[] arg, final String name) {
+        if(arg == null || arg.length == 0) {
+            throw new IllegalArgumentException(String.format("%s should has length ararys.", name));
         }
     }
     

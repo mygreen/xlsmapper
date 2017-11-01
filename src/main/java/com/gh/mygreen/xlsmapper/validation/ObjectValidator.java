@@ -4,7 +4,8 @@ package com.gh.mygreen.xlsmapper.validation;
 
 /**
  * Validatorのインタフェース
- * @version 1.0
+ * 
+ * @version 2.0
  * @since 1.0
  * @param <T> チェック対象のBeanのクラスタイプ
  * @author T.TSUCHIE
@@ -12,5 +13,12 @@ package com.gh.mygreen.xlsmapper.validation;
  */
 public interface ObjectValidator<T> {
     
-    void validate(T targetObj, SheetBindingErrors<?> errors);
+    /**
+     * オブジェクトの値を検証する。
+     * 
+     * @param targetObj チェック対象のオブジェクト
+     * @param errors エラー情報
+     * @param validationHints バリデーション時のヒント
+     */
+    void validate(T targetObj, SheetBindingErrors<?> errors, Class<?>... validationHints);
 }

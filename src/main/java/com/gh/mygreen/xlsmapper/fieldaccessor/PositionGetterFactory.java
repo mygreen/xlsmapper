@@ -31,7 +31,7 @@ public class PositionGetterFactory {
      * @param beanClass フィールドが定義されているクラス情報
      * @param fieldName フィールドの名称
      * @return 位置情報のgetterが存在しない場合は空を返す。
-     * @throws NullPointerException {@literal beanClass == null or fieldName == null}
+     * @throws IllegalArgumentException {@literal beanClass == null or fieldName == null}
      * @throws IllegalArgumentException {@literal fieldName.isEmpty() = true}
      */
     public Optional<PositionGetter> create(final Class<?> beanClass, final String fieldName) {

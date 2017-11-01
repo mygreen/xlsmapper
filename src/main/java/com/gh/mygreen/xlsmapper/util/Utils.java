@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -389,6 +388,21 @@ public class Utils {
     }
     
     /**
+     * 文字列をトリムする。
+     * @param value トリム対象の文字
+     * @param trimmed トリムするかどうか。
+     * @return トリミングした結果。
+     */
+    public static String trim(final String value, final boolean trimmed) {
+        if(!trimmed || value == null) {
+            return value;
+        }
+        
+        return value.trim();
+        
+    }
+    
+    /**
      * PostProcessなどのメソッドを実行する。
      * <p>メソッドの引数が既知のものであれば、インスタンスを設定する。
      * 
@@ -586,7 +600,7 @@ public class Utils {
      * @param list リスト
      * @param element 追加する要素。値はnullでもよい。
      * @param index 追加する要素のインデックス番号(0以上)
-     * @throws NullPointerException {@literal list == null.}
+     * @throws IllegalArgumentException {@literal list == null.}
      * @throws IllegalArgumentException {@literal index < 0.}
      */
     public static <P> void addListWithIndex(final List<P> list, final P element, final int index) {
@@ -617,7 +631,7 @@ public class Utils {
      * プリミティブ型のデフォルト値を取得します。
      * @param type 変換対象のクラスタイプ。
      * @return 対応していない型の場合は、nullを返します。
-     * @throws NullPointerException {@literal type is null.}
+     * @throws IllegalArgumentException {@literal type is null.}
      */
     public static Object getPrimitiveDefaultValue(final Class<?> type) {
         ArgUtils.notNull(type, "type");
@@ -746,6 +760,27 @@ public class Utils {
         
         throw new IllegalArgumentException(String.format("not support primitive type : %s.", componentType.getName()));
         
+    }
+    
+    /**
+     * コレクションを配列に変換する。
+     * @param collection 変換対象のコレクション。
+     * @return 変換した配列。
+     * @throws IllegalArgumentException {@lteral collection is null.}
+     */
+    public static int[] toArray(final Collection<Integer> collection) {
+        ArgUtils.notNull(collection, "collection");
+        
+        final int size = collection.size();
+        final int[] array = new int[size];
+        
+        int i=0;
+        for(Integer value : collection) {
+            array[i] = value;
+            i++;
+        }
+        
+        return array;
     }
     
 }

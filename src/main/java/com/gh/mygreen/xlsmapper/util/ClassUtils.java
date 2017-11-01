@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+import com.github.mygreen.cellformatter.lang.ArgUtils;
+
 /**
  * クラスやメソッドに関するユーティリティクラス。
  * また、リフレクションについても処理する。
@@ -129,9 +131,11 @@ public class ClassUtils {
      * タイプがプリミティブのboolean型かどうか判定する。
      * @param type 判定対象のクラスタイプ。
      * @return trueの場合、プリミティブのboolean型。
-     * @throws NullPointerException {@literal type == null.}
+     * @throws IllegalArgumentException {@literal type == null.}
      */
     public static boolean isPrimitiveBoolean(final Class<?> type) {
+        ArgUtils.notNull(type, "type");
+        
         if(type.isPrimitive() && boolean.class.isAssignableFrom(type)) {
             return true;
         }

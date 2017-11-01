@@ -1,17 +1,18 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import com.gh.mygreen.xlsmapper.fieldaccessor.LabelGetterFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.PositionGetterFactory;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
-import com.gh.mygreen.xlsmapper.validation.CellFieldError;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
+import com.gh.mygreen.xlsmapper.validation.FieldErrorBuilder;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 
@@ -82,14 +83,12 @@ public class CellField<T> {
      * @param fieldName フィールドの名称。現在のBeanに対するフィールドの相対パスを指定します。
      * @param errors エラー情報
      */
-    public CellField(final String fieldName, final Class<T> fieldType, final SheetBindingErrors<?> errors) {
+    public CellField(final String fieldName, final SheetBindingErrors<?> errors) {
         
         ArgUtils.notEmpty(fieldName, "fieldName");
-        ArgUtils.notNull(fieldType, "fieldType");
         ArgUtils.notNull(errors, "errors");
         
         this.fieldName = fieldName;
-        this.fieldType = fieldType;
         this.errors = errors;
         
         init();
@@ -100,6 +99,7 @@ public class CellField<T> {
         
         this.beanObj = errors.getValue();
         this.fieldValue = (T)errors.getFieldValue(fieldName);
+        this.fieldType = (Class<T>)errors.getFieldType(fieldName);
         this.fieldPath = errors.buildFieldPath(fieldName);
         
         Optional<CellPosition> position = positionGetterFactory.create(beanObj.getClass(), fieldName)
@@ -157,25 +157,14 @@ public class CellField<T> {
     }
     
     /**
-     * 入力値の検証を行う。
-     * <p>判定結果は、{@link #hasError()}で確認します。</p>
-     * <p>型変換エラーなどが既に存在するときには、処理は終了します。</p>
-     * 
-     * @return 自身のインスタンス。
-     */
-    public CellField<T> validate() {
-        return validate(Collections.emptySet());
-    }
-    
-    /**
      * グループなどのヒントを指定して、入力値の検証を行う。
      * <p>判定結果は、{@link #hasError()}で確認します。</p>
      * <p>型変換エラーなどが既に存在するときには、処理は終了します。</p>
      * 
-     * @param hinsts 検証するときのヒント
+     * @param groups 検証するときのヒントとなるグループ。
      * @return 自身のインスタンス。
      */
-    public CellField<T> validate(final Set<Object> hinsts) {
+    public CellField<T> validate(final Class<?>... groups) {
         
         // 既に型変換エラーなどがある場合、値が設定されていないため処理を終了します。
         if(hasError()) {
@@ -187,9 +176,11 @@ public class CellField<T> {
             return this;
         }
         
+        final List<Class<?>> hints = Arrays.asList(groups);
+        
         if(getValidators() != null && !getValidators().isEmpty()) {
             for(FieldValidator<T> validator : getValidators()) {
-                if(!validator.validate(this, hinsts)) {
+                if(!validator.validate(this, hints)) {
                     return this;
                 }
             }
@@ -244,13 +235,15 @@ public class CellField<T> {
         
         final String codes[] = errors.generateMessageCodes(errorCode, fieldPath, fieldType);
         
-        new CellFieldError.Builder(errors, errors.getObjectName(), fieldPath, codes)
+        final FieldError error = new FieldErrorBuilder(errors.getObjectName(), fieldPath, codes)
             .sheetName(errors.getSheetName())
             .rejectedValue(fieldValue)
             .variables(variables)
             .address(position)
             .label(label)
-            .buildAndAddError();
+            .build();
+        
+        errors.addError(error);
     }
     
     /**

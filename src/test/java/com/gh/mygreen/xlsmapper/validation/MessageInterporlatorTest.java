@@ -13,6 +13,7 @@ import org.junit.Test;
 /**
  * {@link MessageInterpolator}のテスタ
  * 
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -188,6 +189,40 @@ public class MessageInterporlatorTest {
         
         String actual = interpolator.interpolate(message, vars, true);
         assertThat(actual, is("{abc} : 3"));
+        
+    }
+    
+    /**
+     * 式中の変数の値がない場合
+     */
+    @Test
+    public void testInterpolate_no_define_vars() {
+        
+        MessageInterpolator interpolator = new MessageInterpolator();
+        
+        String message = "{rowNumber}";
+        
+        Map<String, Object> vars = new HashMap<>();
+        
+        String actual = interpolator.interpolate(message, vars, true);
+        assertThat(actual, is("{rowNumber}"));
+        
+    }
+    
+    /**
+     * 式中の変数の値がない場合
+     */
+    @Test
+    public void testInterpolate_no_define_vars2() {
+        
+        MessageInterpolator interpolator = new MessageInterpolator();
+        
+        String message = "${rowNumber}";
+        
+        Map<String, Object> vars = new HashMap<>();
+        
+        String actual = interpolator.interpolate(message, vars, true);
+        assertThat(actual, is(""));
         
     }
     

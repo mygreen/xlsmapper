@@ -35,6 +35,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsArrayOperator.RemainedOperate;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.ArrayCellProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
@@ -335,6 +336,34 @@ public class AnnoArrayCellTest {
             
             assertThat(sheet.number_double).containsExactly(1234.567d, 0.0d, 0.0d, 0.0d);
             assertThat(cellFieldError(errors, cellAddress(sheet.positions.get("number_double[3]"))).isConversionFailure()).isTrue();
+            
+            
+            // converter
+            {
+                FieldFormatter<String> formatter = errors.getFieldFormatterRegistry().getFormatter("text", String.class);
+                assertThat(formatter).isNotNull();
+                assertThat(formatter.format(" あいう  ")).isEqualTo(" あいう  ");
+            }
+            
+            {
+                FieldFormatter<Boolean> formatter = errors.getFieldFormatterRegistry().getFormatter("bool", Boolean.class);
+                assertThat(formatter).isNotNull();
+                assertThat(formatter.format(true)).isEqualTo("○");
+            }
+            
+            {
+                FieldFormatter<Integer> formatter = errors.getFieldFormatterRegistry().getFormatter("number_int", Integer.class);
+                assertThat(formatter).isNotNull();
+                assertThat(formatter.format(123456)).isEqualTo("123,456");
+                
+            }
+            
+            {
+                FieldFormatter<Double> formatter = errors.getFieldFormatterRegistry().getFormatter("number_double", double.class);
+                assertThat(formatter).isNotNull();
+                assertThat(formatter.format(123.456)).isEqualTo("123.456");
+                
+            }
             
         }
         

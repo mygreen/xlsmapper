@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,12 +36,14 @@ import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 
 /**
  * 日付、時刻型のタイプのチェック
  * 
- * @version 1.5
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -55,6 +58,16 @@ public class DateTimeCellConverterTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         OUT_DIR = createOutDir();
+    }
+    
+    /**
+     * エラーメッセージのコンバーター
+     */
+    private SheetMessageConverter messageConverter;
+    
+    @Before
+    public void setUp() throws Exception {
+        this.messageConverter = new SheetMessageConverter();
     }
     
     @Test
@@ -116,11 +129,50 @@ public class DateTimeCellConverterTest {
             
         } else if(record.no == 4) {
             // 文字列型の場合
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("utilDate"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("calendar"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlDate"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("timestamp"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("utilDate")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[日時型]:Dateクラス(util) - B10の値'a01'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("calendar")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[日時型]:Calendarクラス - C10の値'a01'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
+            
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("sqlDate")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[日時型]:Dateクラス(sql) - D10の値'b02'は、'yyyy-MM-dd'の日付形式で設定してください。"));
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("sqlTime")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[日時型]:Timeクラス(sql) - E10の値'c03'は、'HH:mm:ss'の時刻形式で設定してください。"));
+            
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("timestamp")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[日時型]:Timesamp(sql) - F10の値'd04'は、'yyyy-MM-dd HH:mm:ss.SSS'のタイムスタンプ形式で設定してください。"));
+            
+            }
             
         } else if(record.no == 5) {
             // Excelの日時型（日本語）
@@ -159,7 +211,7 @@ public class DateTimeCellConverterTest {
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2000-12-31 03:41:12"))));
             assertThat(record.calendar, is(toCalendar(toTimestamp("2000-12-31 03:41:12"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2000-12-31 00:00:00.000"))));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isConversionFailure(), is(true));
+            assertThat(record.sqlTime, is(toSqlDate(toTimestamp("1970-01-01 00:00:00.000"))));
             assertThat(record.timestamp, is(toTimestamp("1999-12-31 10:12:00.000")));
             
         } else if(record.no == 2) {
@@ -172,10 +224,43 @@ public class DateTimeCellConverterTest {
             
         } else if(record.no == 3) {
             // 文字列型の場合（存在しない日付）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("utilDate"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("calendar"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlDate"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("sqlTime"))).isConversionFailure(), is(true));
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("utilDate")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[日時型]:Dateクラス(util) - B22の値'2015-13-02 03:45:06'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("calendar")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[日時型]:Calendarクラス - C22の値'2015-13-02 03:45:06'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
+            
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("sqlDate")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[日時型]:Dateクラス(sql) - D22の値'2015-12-40'は、'yyyy-MM-dd'の日付形式で設定してください。"));
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("sqlTime")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[日時型]:Timeクラス(sql) - E22の値'12時80分'は、'H時m分'の時刻形式で設定してください。"));
+                
+            }
+            
             assertThat(record.timestamp, is(toTimestamp("2016-01-02 03:45:00.000")));
             
         } else {
@@ -326,7 +411,7 @@ public class DateTimeCellConverterTest {
             assertThat(inRecord.utilDate, is(toUtilDate(toTimestamp("2000-12-31 03:41:12.000"))));
             assertThat(inRecord.calendar, is(toCalendar(toTimestamp("2000-12-31 03:41:12.000"))));
             assertThat(inRecord.sqlDate, is(toSqlDate(toTimestamp("2000-12-31 00:00:00.000"))));
-            assertThat(inRecord.sqlTime, is(nullValue()));
+            assertThat(inRecord.sqlTime, is(toSqlTime(toTimestamp("1970-01-01 00:00:00.000"))));
             assertThat(inRecord.timestamp, is(toTimestamp("1999-12-31 10:12:00.000")));
             assertThat(inRecord.comment, is(outRecord.comment));
             
@@ -541,9 +626,9 @@ public class DateTimeCellConverterTest {
         @XlsColumn(columnName="Dateクラス(sql)")
         private java.sql.Date sqlDate;
         
-        /** 書式付き（初期値のフォーマットが不正） */
-        @XlsDefaultValue("abc")
-        @XlsDateConverter(javaPattern="H時m分")
+        /** 書式付き（時間指定） */
+        @XlsDefaultValue("0時0分")
+        @XlsDateConverter(javaPattern="H時m分", excelPattern="h\"時\"mm\"分\"")
         @XlsColumn(columnName="Timeクラス(sql)")
         private Time sqlTime;
         

@@ -8,7 +8,8 @@ import java.util.Optional;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
-import com.gh.mygreen.xlsmapper.util.PropertyNavigator;
+import com.gh.mygreen.xlsmapper.util.PropertyTypeNavigator;
+import com.gh.mygreen.xlsmapper.util.PropertyValueNavigator;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatterRegistry;
@@ -63,7 +64,7 @@ public class SheetBindingErrors<P> {
     /**
      * エラーオブジェクト
      */
-    private final List<SheetObjectError> errors = new ArrayList<>();
+    private final List<ObjectError> errors = new ArrayList<>();
     
     /**
      * フィールドの値のフォーマッタの管理クラス
@@ -74,15 +75,26 @@ public class SheetBindingErrors<P> {
     private MessageCodeGenerator messageCodeGenerator = new MessageCodeGenerator();
     
     /**
-     * プロパティにアクセスするための式言語。
-     * ・OGNLを利用し、private/protectedなどのフィールドにもアクセス可能にする。
+     * プロパティ式から、値を取得する。
+     * ・private/protectedなどのフィールドにもアクセス可能にする。
      */
-    private final PropertyNavigator propertyNavigator = new PropertyNavigator();
+    private final PropertyValueNavigator propertyValueNavigator = new PropertyValueNavigator();
     {
-        propertyNavigator.setAllowPrivate(true);
-        propertyNavigator.setIgnoreNull(true);
-        propertyNavigator.setIgnoreNotFoundKey(true);
-        propertyNavigator.setCacheWithPath(true);
+        propertyValueNavigator.setAllowPrivate(true);
+        propertyValueNavigator.setIgnoreNull(true);
+        propertyValueNavigator.setIgnoreNotFoundKey(true);
+        propertyValueNavigator.setCacheWithPath(true);
+    }
+    
+    /**
+     * プロパティ式から、クラスタイプを取得する。
+     * ・private/protectedなどのフィールドにもアクセス可能にする。
+     */
+    private final PropertyTypeNavigator propertyTypeNavigator = new PropertyTypeNavigator();
+    {
+        propertyTypeNavigator.setAllowPrivate(true);
+        propertyTypeNavigator.setIgnoreNotResolveType(true);
+        propertyTypeNavigator.setCacheWithPath(true);
     }
     
     /**
@@ -103,7 +115,7 @@ public class SheetBindingErrors<P> {
      * クラス名をオブジェクト名とするコンストラクタ。
      * <p>オブジェクト名として、{@link Class#getCanonicalName()}を設定します。</p>
      * @param target 検証対象のオブジェクト
-     * @throws NullPointerException {@link targe == null.}
+     * @throws IllegalArgumentException {@link target == null.}
      */
     public SheetBindingErrors(final P target) {
         this(target, target.getClass().getCanonicalName());
@@ -160,7 +172,25 @@ public class SheetBindingErrors<P> {
     
     /**
      * 指定したパスのフィールドのクラスタイプを取得する。
+     * @since 2.0
+     * @param field フィールド名
+     * @return クラスタイプ。ただし、リストなどGenericsのタイプが指定されていない場合、クラスタイプもnullとなる。
+     */
+    public Class<?> getFieldType(final String field) {
+        
+        final String fieldPath = buildFieldPath(field);
+        Class<?> type = propertyTypeNavigator.getPropertyType(target.getClass(), fieldPath);
+        if(type != null) {
+            return type;
+        }
+        
+        return getActualFieldType(fieldPath);
+    }
+    
+    /**
+     * 指定したパスのフィールドのクラスタイプを取得する。
      * <p>インスタンスを元に取得するため、サブクラスの可能性がある。</p>
+     * @since 2.0
      * @param field フィールド名
      * @return クラスタイプ。ただし、オブジェクトの値がnullの場合は、クラスタイプもnullとなる。
      */
@@ -173,12 +203,30 @@ public class SheetBindingErrors<P> {
     
     /**
      * 指定したパスのフィールドの値を取得する。
+     * <p>フィールドエラーにエラーが存在するときは、エラーオブジェクトから値を取得し、存在しない場合は、実際の値を取得する。</p>
      * @param field フィールド名
      * @return フィールドの値。
      */
     public Object getFieldValue(final String field) {
+        
+        final FieldError error = getFirstFieldError(field).orElse(null);
+        if(error != null && !error.isConversionFailure()) {
+            return error.getRejectedValue();
+        } else {
+            return getFieldActualValue(field);
+        }
+        
+    }
+    
+    /**
+     * 指定したパスのフィールドの値を取得する。
+     * @since 2.0
+     * @param field フィールド名
+     * @return フィールドの値。
+     */
+    public Object getFieldActualValue(final String field) {
         final String fieldPath = buildFieldPath(field);
-        return propertyNavigator.getProperty(target, fieldPath);
+        return propertyValueNavigator.getProperty(target, fieldPath);
     }
     
     /**
@@ -191,7 +239,7 @@ public class SheetBindingErrors<P> {
         if(Utils.isEmpty(currentPath)) {
             return target;
         } else {
-            return propertyNavigator.getProperty(target, currentPath);
+            return propertyValueNavigator.getProperty(target, currentPath);
         }
     }
     
@@ -349,9 +397,9 @@ public class SheetBindingErrors<P> {
     /**
      * エラー情報を追加する
      * @param error エラー情報
-     * @throws NullPointerException {@literal error == null.}
+     * @throws IllegalArgumentException {@literal error == null.}
      */
-    public void addError(final SheetObjectError error) {
+    public void addError(final ObjectError error) {
         ArgUtils.notNull(error, "error");
         this.errors.add(error);
     }
@@ -359,9 +407,9 @@ public class SheetBindingErrors<P> {
     /**
      * エラー情報を全て追加する。
      * @param errors エラー情報
-     * @throws NullPointerException {@literal errors == null.}
+     * @throws IllegalArgumentException {@literal errors == null.}
      */
-    public void addAllErrors(final Collection<SheetObjectError> errors) {
+    public void addAllErrors(final Collection<ObjectError> errors) {
         ArgUtils.notNull(errors, "errors");
         this.errors.addAll(errors);
     }
@@ -370,7 +418,7 @@ public class SheetBindingErrors<P> {
      * 全てのエラー情報を取得する
      * @return 全てのエラー情報
      */
-    public List<SheetObjectError> getAllErrors() {
+    public List<ObjectError> getAllErrors() {
         return new ArrayList<>(errors);
     }
     
@@ -386,9 +434,9 @@ public class SheetBindingErrors<P> {
      * グローバルエラーを取得する
      * @return エラーがない場合は空のリストを返す
      */
-    public List<SheetObjectError> getGlobalErrors() {
+    public List<ObjectError> getGlobalErrors() {
         return errors.stream()
-                .filter(e -> !(e instanceof CellFieldError))
+                .filter(e -> !(e instanceof FieldError))
                 .collect(Collectors.toList());
     }
     
@@ -396,9 +444,9 @@ public class SheetBindingErrors<P> {
      * 先頭のグローバルエラーを取得する。
      * @return 存在しない場合は、空を返す。
      */
-    public Optional<SheetObjectError> getFirstGlobalError() {
+    public Optional<ObjectError> getFirstGlobalError() {
         return errors.stream()
-                .filter(e -> !(e instanceof CellFieldError))
+                .filter(e -> !(e instanceof FieldError))
                 .findFirst();
         
     }
@@ -423,10 +471,10 @@ public class SheetBindingErrors<P> {
      * フィールドエラーを取得する
      * @return エラーがない場合は空のリストを返す
      */
-    public List<CellFieldError> getFieldErrors() {
+    public List<FieldError> getFieldErrors() {
         return errors.stream()
-                .filter(e -> e instanceof CellFieldError)
-                .map(e -> (CellFieldError)e)
+                .filter(e -> e instanceof FieldError)
+                .map(e -> (FieldError)e)
                 .collect(Collectors.toList());
         
     }
@@ -435,10 +483,10 @@ public class SheetBindingErrors<P> {
      * 先頭のフィールドエラーを取得する
      * @return エラーがない場合は空を返す
      */
-    public Optional<CellFieldError> getFirstFieldError() {
+    public Optional<FieldError> getFirstFieldError() {
         return errors.stream()
-                .filter(e -> e instanceof CellFieldError)
-                .map(e -> (CellFieldError)e)
+                .filter(e -> e instanceof FieldError)
+                .map(e -> (FieldError)e)
                 .findFirst();
         
     }
@@ -465,7 +513,7 @@ public class SheetBindingErrors<P> {
      * @param path 最後に'*'を付けるとワイルドカードが指定可能。
      * @return エラーがない場合は空のリストを返す
      */
-    public List<CellFieldError> getFieldErrors(final String path) {
+    public List<FieldError> getFieldErrors(final String path) {
         final String fullPath = buildFieldPath(path);
         
         return getFieldErrors().stream()
@@ -480,7 +528,7 @@ public class SheetBindingErrors<P> {
      * @param path 最後に'*'を付けるとワイルドカードが指定可能。
      * @return エラーがない場合は空を返す
      */
-    public Optional<CellFieldError> getFirstFieldError(final String path) {
+    public Optional<FieldError> getFirstFieldError(final String path) {
         final String fullPath = buildFieldPath(path);
         return getFieldErrors().stream()
                 .filter(e -> isMatchingFieldError(fullPath, e))
@@ -494,7 +542,7 @@ public class SheetBindingErrors<P> {
      * @return true:エラーがある場合。
      */
     public boolean hasFieldErrors(final String path) {
-        return getFirstFieldError().isPresent();
+        return getFirstFieldError(path).isPresent();
     }
     
     /**
@@ -512,7 +560,7 @@ public class SheetBindingErrors<P> {
      * @param fieldError フィールドエラー
      * @return true: 一致する場合。
      */
-    private boolean isMatchingFieldError(final String path, final CellFieldError fieldError) {
+    private boolean isMatchingFieldError(final String path, final FieldError fieldError) {
         
         if (fieldError.getField().equals(path)) {
             return true;
@@ -529,12 +577,12 @@ public class SheetBindingErrors<P> {
     /**
      * グローバルエラーのビルダーを作成します。
      * @param errorCode エラーコード
-     * @return {@link SheetObjectError}のインスタンスを組み立てるビルダクラス。
+     * @return {@link ObjectError}のインスタンスを組み立てるビルダクラス。
      */
-    public SheetObjectError.Builder createGlobalError(final String errorCode) {
+    public InternalObjectErrorBuilder createGlobalError(final String errorCode) {
         
         final String codes[] = generateMessageCodes(errorCode);
-        return new SheetObjectError.Builder(this, getObjectName(), codes)
+        return new InternalObjectErrorBuilder(this, getObjectName(), codes)
                 .sheetName(getSheetName());
     }
     
@@ -542,16 +590,16 @@ public class SheetBindingErrors<P> {
      * フィールドエラーのビルダーを作成します。
      * @param field フィールドパス。
      * @param errorCode エラーコード
-     * @return {@link CellFieldError}のインスタンスを組み立てるビルダクラス。
+     * @return {@link FieldError}のインスタンスを組み立てるビルダクラス。
      */
-    public CellFieldError.Builder createFieldError(final String field, final String errorCode) {
+    public InternalFieldErrorBuilder createFieldError(final String field, final String errorCode) {
         
         final String fieldPath = buildFieldPath(field);
-        final Class<?> fieldType = getActualFieldType(field);
+        final Class<?> fieldType = getFieldType(field);
         final Object fieldValue = getFieldValue(field);
         final String codes[] = generateMessageCodes(errorCode, fieldPath, fieldType);
         
-        return new CellFieldError.Builder(this, getObjectName(), fieldPath, codes)
+        return new InternalFieldErrorBuilder(this, getObjectName(), fieldPath, codes)
                 .sheetName(getSheetName())
                 .rejectedValue(fieldValue);
                 
@@ -562,14 +610,14 @@ public class SheetBindingErrors<P> {
      * @param field フィールドパス。
      * @param fieldType フィールドのクラスタイプ
      * @param rejectedValue 型変換に失敗した値
-     * @return {@link CellFieldError}のインスタンスを組み立てるビルダクラス。
+     * @return {@link FieldError}のインスタンスを組み立てるビルダクラス。
      */
-    public CellFieldError.Builder createFieldConversionError(final String field, final Class<?> fieldType, final Object rejectedValue) {
+    public InternalFieldErrorBuilder createFieldConversionError(final String field, final Class<?> fieldType, final Object rejectedValue) {
         
         final String fieldPath = buildFieldPath(field);
         final String[] codes = messageCodeGenerator.generateTypeMismatchCodes(getObjectName(), fieldPath, fieldType);
         
-        return new CellFieldError.Builder(this, getObjectName(), fieldPath, codes)
+        return new InternalFieldErrorBuilder(this, getObjectName(), fieldPath, codes)
                 .sheetName(getSheetName())
                 .rejectedValue(rejectedValue)
                 .conversionFailure(true);
@@ -579,6 +627,7 @@ public class SheetBindingErrors<P> {
     
     /**
      * フィールドに対するフォーマッタを登録する。
+     * @since 2.0
      * @param field フィールド名
      * @param fieldType フィールドのクラスタイプ
      * @param formatter フォーマッタ
@@ -591,6 +640,7 @@ public class SheetBindingErrors<P> {
     
     /**
      * フィールドに対するフォーマッタを登録する。
+     * @since 2.0
      * @param field フィールド名
      * @param fieldType フィールドのクラスタイプ
      * @param formatter フォーマッタ
@@ -620,21 +670,14 @@ public class SheetBindingErrors<P> {
     
     /**
      * フィールドとクラスタイプを指定してフォーマッタを取得する。
+     * @since 2.0
      * @param field フィールド名
      * @param fieldType フィールドのクラスタイプ
-     * @return
+     * @return 見つからない場合は、nullを返す。
      */
     public <T> FieldFormatter<T> findFieldFormatter(final String field, final Class<T> fieldType) {
         String fieldPath = buildFieldPath(field);
         return fieldFormatterRegistry.findFormatter(fieldPath, fieldType);
-    }
-    
-    public MessageCodeGenerator getMessageCodeGenerator() {
-        return messageCodeGenerator;
-    }
-    
-    public void setMessageCodeGenerator(MessageCodeGenerator messageCodeGenerator) {
-        this.messageCodeGenerator = messageCodeGenerator;
     }
     
     public String[] generateMessageCodes(final String code) {
@@ -647,6 +690,14 @@ public class SheetBindingErrors<P> {
     
     public String[] generateMessageCodes(final String code, final String field, final Class<?> fieldType) {
         return getMessageCodeGenerator().generateCodes(code, getObjectName(), field, fieldType);
+    }
+    
+    public MessageCodeGenerator getMessageCodeGenerator() {
+        return messageCodeGenerator;
+    }
+    
+    public void setMessageCodeGenerator(MessageCodeGenerator messageCodeGenerator) {
+        this.messageCodeGenerator = messageCodeGenerator;
     }
     
     /**

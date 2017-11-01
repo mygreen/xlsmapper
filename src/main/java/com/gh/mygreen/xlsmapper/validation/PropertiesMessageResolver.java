@@ -27,7 +27,7 @@ public class PropertiesMessageResolver implements MessageResolver {
     /**
      * プロパティを指定してインスタンスを作成する。
      * @param properties
-     * @throws NullPointerException properties is null.
+     * @throws IllegalArgumentException {@literal properties is null.}
      */
     public PropertiesMessageResolver(final Properties properties) {
         Objects.requireNonNull(properties, "properties should not be null.");

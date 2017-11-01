@@ -13,16 +13,15 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
-import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
-import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
-import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
+import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
+import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
-
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 /**
  * {@link CellConverter}を実装するときのベースとなる抽象クラス。
@@ -32,38 +31,113 @@ import com.gh.mygreen.xlsmapper.validation.MessageBuilder;
  * @author T.TSUCHIE
  *
  */
-public abstract class AbstractCellConverter<T> implements CellConverter<T> {
+public abstract class AbstractCellConverter<T> implements CellConverter<T>, FieldFormatter<T> {
+    
+    /**
+     * フィールド情報
+     */
+    protected final FieldAccessor field;
+    
+    /**
+     * システム設定
+     */
+    protected final Configuration config;
+    
+    /**
+     * 値をトリムするかどうか
+     */
+    protected boolean trimmed;
+    
+    /**
+     * 初期値 - 初期値を持たない場合は空
+     */
+    protected Optional<T> defaultValue = Optional.empty();
+    
+    /**
+     * セルの設定 - セルを縮小して表示するかどうか
+     */
+    protected boolean shrinktToFit;
+    
+    /**
+     * セルの設定 - 折り返して全体を表示するかどうか
+     */
+    protected boolean wrapText;
+    
+    /**
+     * 書き込み時の数式を設定する
+     */
+    protected Optional<CellFormulaHandler> formulaHandler = Optional.empty();
+    
+    /**
+     * 文字列とオブジェクトを相互変換するフォーマッタ
+     */
+    protected TextFormatter<T> textFormatter;
+    
+    public AbstractCellConverter(final FieldAccessor field, final Configuration config) {
+        this.field = field;
+        this.config = config;
+    }
     
     @Override
-    public T toObject(final Cell cell, final FieldAccessor accessor, final Configuration config)
-            throws XlsMapperException {
+    public T toObject(final Cell cell) throws XlsMapperException {
         
-        final Optional<XlsTrim> trimAnno = accessor.getAnnotation(XlsTrim.class);
+        final String formattedValue = Utils.trim(config.getCellFormatter().format(cell), trimmed);
         
-        // 文字列として取得する
-        final String formattedValue = Utils.trim(config.getCellFormatter().format(cell), trimAnno);
-        
-        // デフォルト値の処理
-        final Optional<XlsDefaultValue> defaultValueAnno = accessor.getAnnotation(XlsDefaultValue.class);
-        if(isEmptyCell(formattedValue, cell, config) && defaultValueAnno.isPresent()) {
-            final String defaultValue = Utils.trim(defaultValueAnno.get().value(), trimAnno);
-            return parseDefaultValue(defaultValue, accessor, config);
+        // デフォルト値の設定
+        if(isEmptyCell(formattedValue, cell) && defaultValue.isPresent()) {
+            return defaultValue.get();
         }
         
         // 数式のセルの場合、予め評価しておく
         final Cell evaluatedCell;
-        if(cell.getCellTypeEnum() == CellType.FORMULA) {
+        if(cell.getCellTypeEnum().equals(CellType.FORMULA)) {
             final Workbook workbook = cell.getSheet().getWorkbook();
             final CreationHelper helper = workbook.getCreationHelper();
             final FormulaEvaluator evaluator = helper.createFormulaEvaluator();
             
             evaluatedCell = evaluator.evaluateInCell(cell);
-            
         } else {
             evaluatedCell = cell;
         }
         
-        return parseCell(evaluatedCell, formattedValue, accessor, config);
+        return parseCell(evaluatedCell, formattedValue);
+    }
+    
+    /**
+     * セルをJavaのオブジェクト型に変換します。
+     * @param evaluatedCell 数式を評価済みのセル
+     * @param formattedValue フォーマット済みのセルの値。トリミングなど定期用済み。
+     * @return 変換した値を返す。
+     * @throws TypeBindException 変換に失敗した場合
+     */
+    protected abstract T parseCell(Cell evaluatedCell, String formattedValue) throws TypeBindException;
+    
+    /**
+     * セルの値をJavaオブジェクトに型変換するとに失敗したときの例外{@link TypeBindException}をスローします。
+     * @since 2.0
+     * @param error 例外情報
+     * @param cell 例外が発生したセル
+     * @param accessor フィールド情報
+     * @param cellValue マッピングに失敗した値
+     * @return マッピングに失敗したときの例外のインスタンス
+     */
+    public TypeBindException newTypeBindExceptionWithParse(final Exception error, 
+            final Cell cell, final Object cellValue) {
+        
+        final String message = MessageBuilder.create("cell.typeBind.failParse")
+                .var("property", field.getNameWithClass())
+                .var("cellAddress", POIUtils.formatCellAddress(cell))
+                .var("cellValue", cellValue.toString())
+                .varWithClass("type", field.getType())
+                .format();
+        
+        final TypeBindException bindException = new TypeBindException(error, message, field.getType(), cellValue);
+        if(error instanceof TextParseException) {
+            bindException.addAllMessageVars(((TextParseException)error).getErrorVariables());
+        }
+        
+        return bindException;
+        
     }
     
     /**
@@ -77,64 +151,40 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
      * 
      * @param formattedValue フォーマットしたセルの値
      * @param cell 評価対象のセル
-     * @param config システム情報設定
      * @return trueの場合、空と判定する。
      */
-    protected boolean isEmptyCell(final String formattedValue, final Cell cell, final Configuration config) {
+    protected boolean isEmptyCell(final String formattedValue, final Cell cell) {
         return formattedValue.isEmpty();
     }
     
-    /**
-     * 文字列の初期値をJavaのオブジェクト型に変換します。
-     * @param defaultValue 変換対象のオブジェクト
-     * @param accessor フィールド情報
-     * @param config システム情報の設定
-     * @return 変換した値を返す。
-     * @throws TypeBindException 変換に失敗した場合
-     */
-    protected abstract T parseDefaultValue(String defaultValue, FieldAccessor accessor, Configuration config) throws TypeBindException;
-    
-    /**
-     * セルをJavaのオブジェクト型に変換します。
-     * @param evaluatedCell 数式を評価済みのセル
-     * @param formattedValue フォーマット済みのセルの値。トリミングなど定期用済み。
-     * @param accessor フィールド情報
-     * @param config システム情報の設定
-     * @return 変換した値を返す。
-     * @throws TypeBindException 変換に失敗した場合
-     */
-    protected abstract T parseCell(Cell evaluatedCell, String formattedValue, FieldAccessor accessor, Configuration config) throws TypeBindException;
-    
     @Override
-    public Cell toCell(final FieldAccessor accessor, final T targetValue, final Object targetBean, final Sheet sheet,
-            final CellPosition address, final Configuration config) throws XlsMapperException {
+    public Cell toCell(final T targetValue, final Object targetBean, final Sheet sheet, final CellPosition address) throws XlsMapperException {
         
         final Cell cell = POIUtils.getCell(sheet, address);
         
-        final Optional<XlsTrim> trimAnno = accessor.getAnnotation(XlsTrim.class);
-        
         // セルの制御の設定
-        accessor.getAnnotation(XlsCellOption.class).ifPresent(cellOptionAnno -> {
-            POIUtils.setupCellOption(cell, cellOptionAnno);
-        });
+        if(shrinktToFit) {
+            cell.getCellStyle().setShrinkToFit(true);
+            
+        } else if(wrapText) {
+            cell.getCellStyle().setWrapText(true);
+        }
         
         // デフォルト値の設定
         final T cellValue;
-        final Optional<XlsDefaultValue> defaultValueAnno = accessor.getAnnotation(XlsDefaultValue.class);
-        if(targetValue == null && defaultValueAnno.isPresent()) {
-            final String defaultValue = Utils.trim(defaultValueAnno.get().value(), trimAnno);
-            cellValue = parseDefaultValue(defaultValue, accessor, config);
+        if(targetValue == null && defaultValue.isPresent()) {
+            cellValue = defaultValue.get();
         } else {
             cellValue = targetValue;
         }
         
         // 各書式に沿った値の設定
-        setupCell(cell, Optional.ofNullable(cellValue), accessor, config);
+        setupCell(cell, Optional.ofNullable(cellValue));
         
         // 数式の設定
-        accessor.getAnnotation(XlsFormula.class).ifPresent(formulaAnno -> {
-            if(isEmptyValue(cellValue, accessor, config) || formulaAnno.primary()) {
-                POIUtils.setupCellFormula(accessor, formulaAnno, config, cell, targetBean);
+        formulaHandler.ifPresent(handler -> {
+            if(isEmptyValue(cellValue, config) || handler.isPrimaryFormula()) {
+                handler.handleFormula(field, config, cell, targetBean);
             }
         });
         
@@ -144,12 +194,11 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
     /**
      * オブジェクトの値を空と判定する
      * @param obj 判定対象の値
-     * @param accessor フィールド情報
      * @param config システム情報
      * @return trueの場合、空と判定する。
      */
     @SuppressWarnings("rawtypes")
-    protected boolean isEmptyValue(final T obj, final FieldAccessor accessor, final Configuration config) {
+    protected boolean isEmptyValue(final T obj, final Configuration config) {
         if(obj == null) {
             return true;
         }
@@ -181,54 +230,117 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T> {
      * 書き込み時のセルに値と書式を設定します。
      * @param cell 設定対象のセル
      * @param cellValue 設定対象の値。
-     * @param accessor フィールド情報
-     * @param config システム情報の設定
      * @throws TypeBindException 変換に失敗した場合
      */
-    protected abstract void setupCell(Cell cell, Optional<T> cellValue, FieldAccessor accessor, Configuration config) throws TypeBindException;
+    protected abstract void setupCell(Cell cell, Optional<T> cellValue) throws TypeBindException;
     
     /**
-     * 初期値の型変換失敗したときの例外{@link TypeBindException}をスローします。
-     * @since 2.0
-     * @param error 例外情報
-     * @param accessor フィールド情報
-     * @param defaultValue 変換に失敗したときの初期値
-     * @return マッピングに失敗したときの例外のインスタンス
+     * フィールド情報を取得します。
+     * @return フィールド情報
      */
-    public TypeBindException newTypeBindExceptionWithDefaultValue(final Exception error, 
-            final FieldAccessor accessor, final String defaultValue) {
-        
-        final String message = MessageBuilder.create("anno.XlsDefaultValue.failParse")
-                .var("property", accessor.getNameWithClass())
-                .var("defaultValue", defaultValue)
-                .varWithClass("type", accessor.getType())
-                .format();
-        
-        return new TypeBindException(error, message, accessor.getType(), defaultValue);
-        
+    public FieldAccessor getField() {
+        return field;
     }
     
     /**
-     * セルの値をJavaオブジェクトに型変換するとに失敗したときの例外{@link TypeBindException}をスローします。
-     * @since 2.0
-     * @param error 例外情報
-     * @param cell 例外が発生したセル
-     * @param accessor フィールド情報
-     * @param cellValue マッピングに失敗した値
-     * @return マッピングに失敗したときの例外のインスタンス
+     * システム情報を取得します。
+     * @return システム情報
      */
-    public TypeBindException newTypeBindExceptionWithParse(final Exception error, 
-            final Cell cell, final FieldAccessor accessor, final Object cellValue) {
-        
-        final String message = MessageBuilder.create("cell.typeBind.failParse")
-                .var("property", accessor.getNameWithClass())
-                .var("cellAddress", POIUtils.formatCellAddress(cell))
-                .var("cellValue", cellValue.toString())
-                .varWithClass("type", accessor.getType())
-                .format();
-        
-        return new TypeBindException(error, message, accessor.getType(), cellValue);
-        
+    public Configuration getConfig() {
+        return config;
     }
     
+    @Override
+    public String format(T value) {
+        return textFormatter.format(value);
+    }
+    
+    /**
+     * 値をトリミングするかどうか設定する
+     * @param trimmed trueの場合、トリムする。
+     */
+    public void setTrimmed(boolean trimmed) {
+        this.trimmed = trimmed;
+    }
+    
+    /**
+     * 値をトリミングするかどうか。
+     * @return trueの場合、トリムする。
+     */
+    public boolean isTrimmed() {
+        return trimmed;
+    }
+    
+    /**
+     * 初期値を設定します。
+     * @param defaultValue 初期値となるオブジェクト。
+     */
+    public void setDefaultValue(T defaultValue) {
+        this.defaultValue = Optional.of(defaultValue);
+    }
+    
+    /**
+     * 初期値を取得します。
+     * @return 設定されていない場合、空を返します。
+     */
+    public Optional<T> getDefaultValue() {
+        return defaultValue;
+    }
+    
+    /**
+     * セルの設定 - セルを縮小して表示するかどうか設定します。
+     * @param wrapText trueの場合、セルを縮小して表示します。
+     */
+    public void setShrinktToFit(boolean shrinktToFit) {
+        this.shrinktToFit = shrinktToFit;
+    }
+    
+    /**
+     * セルの設定 - セルを縮小して表示するかどうか。
+     * @return trueの場合、セルを縮小して表示します。
+     */
+    public boolean isShrinktToFit() {
+        return shrinktToFit;
+    }
+    
+    /**
+     * セルの設定 - 折り返して全体を表示するかどうか設定します。
+     * @param wrapText trueの場合、折り返して全体を表示します。
+     */
+    public void setWrapText(boolean wrapText) {
+        this.wrapText = wrapText;
+    }
+    
+    /**
+     * セルの設定 - 折り返して全体を表示するかどうか。
+     * @return trueの場合、折り返して全体を表示します。
+     */
+    public boolean isWrapText() {
+        return wrapText;
+    }
+    
+    /**
+     * 数式を処理するハンドラを設定する
+     * @param formulaHandler 数式を処理するハンドラを
+     */
+    public void setFormulaHandler(CellFormulaHandler formulaHandler) {
+        this.formulaHandler = Optional.of(formulaHandler);
+    }
+    
+    /**
+     * 文字列とオブジェクトを相互変換するフォーマッタを取得します。
+     * @param textFormatter フォーマッタ
+     */
+    public void setTextFormatter(TextFormatter<T> textFormatter) {
+        this.textFormatter = textFormatter;
+    }
+    
+    /**
+     * 文字列とオブジェクトを相互変換するフォーマッタを取得します。
+     * @return フォーマッタ
+     */
+    public TextFormatter<T> getTextFormatter() {
+        return textFormatter;
+    }
+
 }

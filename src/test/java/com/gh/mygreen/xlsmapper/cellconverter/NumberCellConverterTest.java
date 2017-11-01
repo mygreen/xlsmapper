@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,12 +36,14 @@ import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 
 /**
  * 数値型の変換のテスタ
  * 
- * @version 1.5
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -55,6 +58,16 @@ public class NumberCellConverterTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         OUT_DIR = createOutDir();
+    }
+    
+    /**
+     * エラーメッセージのコンバーター
+     */
+    private SheetMessageConverter messageConverter;
+    
+    @Before
+    public void setUp() throws Exception {
+        this.messageConverter = new SheetMessageConverter();
     }
     
     /**
@@ -260,10 +273,39 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 17) {
             // 最大置+1（文字列型）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:byte型 - B22の値'128'は、整数（byte型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:short型 - C22の値'32768'は、整数（short型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:int型 - D22の値'2147483648'は、整数（int型）で入力してください。"));
+            }
+            
+            {
+                
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:long型 - E22の値'9223372036854775808'は、整数（long型）で入力してください。"));
+            
+            }
             
             assertThat(record.f, is(Float.valueOf("3.4028234663852887E38")));
             assertThat(record.d, is(Double.valueOf("1.7976931348623158E308")));
@@ -279,30 +321,115 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 19) {
             // 最小置-1（文字列型）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:byte型 - B24の値'-129'は、整数（byte型）で入力してください。"));
+            
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:short型 - C24の値'-32769'は、整数（short型）で入力してください。"));
+            }
+            
+            {
+                
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:int型 - D24の値'-2147483649'は、整数（int型）で入力してください。"));
+            
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:long型 - E24の値'-9223372036854775809'は、整数（long型）で入力してください。"));
+            }
             
             assertThat(record.f, is(Float.valueOf("-3.40282346638528E38")));
             assertThat(record.d, is(Double.valueOf("-1.7976931348623158E308")));
             
         } else if(record.no == 20) {
             // 最大置+1（数値型）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:byte型 - B25の値'128 'は、整数（byte型）で入力してください。"));
+                
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:short型 - C25の値'32768 'は、整数（short型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:int型 - D25の値'2147483648 'は、整数（int型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:long型 - E25の値'1.E+308'は、整数（long型）で入力してください。"));
+            }
             
             assertThat(record.f, is(Float.valueOf("9.99999999999999E307")));
             assertThat(record.d, is(Double.valueOf("9.99999999999999E307")));
             
         } else if(record.no == 21) {
             // 最小置-1（数値型）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:byte型 - B26の値'-129 'は、整数（byte型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:short型 - C26の値'-32769 'は、整数（short型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:int型 - D26の値'-2147483649 'は、整数（int型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:long型 - E26の値'-1.E+308'は、整数（long型）で入力してください。"));
+            }
             
             assertThat(record.f, is(Float.valueOf("-9.99999999999999E307")));
             assertThat(record.d, is(Double.valueOf("-9.99999999999999E307")));
@@ -504,6 +631,24 @@ public class NumberCellConverterTest {
             assertThat(record.bd, is(new BigDecimal(Double.parseDouble("12.345")).setScale(3, RoundingMode.HALF_UP)));
             assertThat(record.bi, is(new BigInteger("12")));
             
+        } else if(record.no == 7) {
+            // 値が数値以外
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("bd")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:BigDecimalクラス - B56の値'abc'は、小数（BigDecimal型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("bi")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:BigIntegerクラス - C56の値'abc'は、整数（BigInteger型）で入力してください。"));
+            }
+            
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
         }
@@ -559,10 +704,37 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 5) {
             // 最大置+1
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:byte型 - B65の値'128'は、整数（byte型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:short型 - C65の値'32768'は、整数（short型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:int型 - D65の値'￥2147483648'は、整数（int型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:long型 - E65の値'9,223,372,036,854,775,808'は、整数（long型）で入力してください。書式は#,###,##0で設定してください。"));
+            }
             
 //            assertThat(record.f, is(Float.valueOf("3.4028234663852887E38")));
 //            assertThat(record.d, is(Double.valueOf("1.7976931348623158E308")));
@@ -579,28 +751,95 @@ public class NumberCellConverterTest {
             
         } else if(record.no == 7) {
             // 最小置-1
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:byte型 - B67の値'-129'は、整数（byte型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:short型 - C67の値'-32769'は、整数（short型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:int型 - D67の値'-￥2147483649'は、整数（int型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:long型 - E67の値'-9,223,372,036,854,775,809'は、整数（long型）で入力してください。書式は#,###,##0で設定してください。"));
+            }
             
 //            assertThat(record.f, is(Float.valueOf("-3.40282346638528E38")));
 //            assertThat(record.d, is(Double.valueOf("-1.7976931348623158E308")));
             
         } else if(record.no == 8) {
             // 不正な値（数値以外）
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("b"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("s"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("i"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("l"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("f"))).isConversionFailure(), is(true));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("d"))).isConversionFailure(), is(true));
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:byte型 - B68の値'abc'は、整数（byte型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:short型 - C68の値'abc'は、整数（short型）で入力してください。"));
+            
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:int型 - D68の値'abc'は、整数（int型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:long型 - E68の値'abc'は、整数（long型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("f")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:float型 - F68の値'abc'は、小数（float型）で入力してください。"));
+            }
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("d")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[数値型]:double型 - G68の値'abc'は、小数（double型）で入力してください。"));
+            }
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
         }
-        
-        
         
     }
     

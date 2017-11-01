@@ -44,62 +44,67 @@ public class DefaultItemConverter implements ItemConverter<Object> {
         
         ArgUtils.notNull(targetClass, "targetClass");
         
-        if(targetClass.isAssignableFrom(String.class)) {
-            return (Object) (Utils.isEmpty(str) ? null : str.toString());
+        try {
+            if(targetClass.isAssignableFrom(String.class)) {
+                return (Object) (Utils.isEmpty(str) ? null : str.toString());
+                
+            } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(boolean.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Boolean.TYPE) : Boolean.valueOf(str));
             
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(boolean.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Boolean.TYPE) : Boolean.valueOf(str));
+            } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(char.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Character.TYPE) : str.charAt(0));
+            
+            } else if(targetClass.isAssignableFrom(Character.class)) {
+                return (Object) (Utils.isEmpty(str) ? null : str.charAt(0));
+                
+            } else if(targetClass.isAssignableFrom(Boolean.class)) {
+                return (Object) (Utils.isEmpty(str) ? null : Boolean.valueOf(str));
+                
+            } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(short.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Short.TYPE) : Short.valueOf(str));
+            
+            } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(byte.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Byte.TYPE) : Byte.valueOf(str));
+            
+            } else if(targetClass.isAssignableFrom(Byte.class)) {
+                return (Object) (Utils.isEmpty(str) ? null : Byte.valueOf(str));
+                
+            } else if(targetClass.isAssignableFrom(Short.class)) {
+                return (Object) (Utils.isEmpty(str) ? null : Short.valueOf(str));
+                
+            } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(int.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Integer.TYPE) : Integer.valueOf(str));
+            
+            } else if(targetClass.isAssignableFrom(Integer.class)) {
+                return (Object) (Utils.isEmpty(str) ? null : Integer.valueOf(str));
+                
+            } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(long.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Long.TYPE) : Long.valueOf(str));
+            
+            } else if(targetClass.isAssignableFrom(Long.class)) {
+                return (Object) (Utils.isEmpty(str) ? null : Long.valueOf(str));
+                
+            } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(float.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Float.TYPE) : Float.valueOf(str));
+            
+            } else if(targetClass.isAssignableFrom(Float.class)) {
+                return (Object) (Utils.isEmpty(str) ? null : Float.valueOf(str));
+                
+            } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(double.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Double.TYPE) : Double.valueOf(str));
+            
+            } else if(targetClass.isAssignableFrom(Double.class)) {
+                return (Object) (Utils.isEmpty(str) ? null : Double.valueOf(str));
+                
+            } else if(targetClass.isAssignableFrom(BigInteger.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(BigInteger.class) : new BigInteger(str));
+                
+            } else if(targetClass.isAssignableFrom(BigDecimal.class)) {
+                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(BigDecimal.class) : new BigDecimal(str));
+            }
         
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(char.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Character.TYPE) : str.charAt(0));
-        
-        } else if(targetClass.isAssignableFrom(Character.class)) {
-            return (Object) (Utils.isEmpty(str) ? null : str.charAt(0));
-            
-        } else if(targetClass.isAssignableFrom(Boolean.class)) {
-            return (Object) (Utils.isEmpty(str) ? null : Boolean.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(short.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Short.TYPE) : Short.valueOf(str));
-        
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(byte.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Byte.TYPE) : Byte.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Byte.class)) {
-            return (Object) (Utils.isEmpty(str) ? null : Byte.valueOf(str));
-            
-        } else if(targetClass.isAssignableFrom(Short.class)) {
-            return (Object) (Utils.isEmpty(str) ? null : Short.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(int.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Integer.TYPE) : Integer.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Integer.class)) {
-            return (Object) (Utils.isEmpty(str) ? null : Integer.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(long.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Long.TYPE) : Long.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Long.class)) {
-            return (Object) (Utils.isEmpty(str) ? null : Long.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(float.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Float.TYPE) : Float.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Float.class)) {
-            return (Object) (Utils.isEmpty(str) ? null : Float.valueOf(str));
-            
-        } else if(targetClass.isPrimitive() && targetClass.isAssignableFrom(double.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Double.TYPE) : Double.valueOf(str));
-        
-        } else if(targetClass.isAssignableFrom(Double.class)) {
-            return (Object) (Utils.isEmpty(str) ? null : Double.valueOf(str));
-            
-        } else if(targetClass.isAssignableFrom(BigInteger.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(BigInteger.class) : new BigInteger(str));
-            
-        } else if(targetClass.isAssignableFrom(BigDecimal.class)) {
-            return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(BigDecimal.class) : new BigDecimal(str));
+        } catch(NumberFormatException e) {
+            throw new ConversionException(String.format("Cannot convert string to %s.", str), e, targetClass);
         }
         
         throw new ConversionException(String.format("Cannot convert string to Object [%s].", targetClass.getName()), targetClass);

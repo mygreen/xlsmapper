@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,12 +38,14 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOperator.OverOperate;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
 import com.gh.mygreen.xlsmapper.cellconverter.ItemConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 
 /**
- * リスト/集合/配列型の
+ * リスト/集合/配列型のコンバータのテスト
  * 
- * @version 1.5
+ * @version 2.0
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -57,6 +60,16 @@ public class CollectionCellConveterTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         OUT_DIR = createOutDir();
+    }
+    
+    /**
+     * エラーメッセージのコンバーター
+     */
+    private SheetMessageConverter messageConverter;
+    
+    @Before
+    public void setUp() throws Exception {
+        this.messageConverter = new SheetMessageConverter();
     }
     
     /**
@@ -159,13 +172,35 @@ public class CollectionCellConveterTest {
         } else if(record.no == 6) {
             // 空の項目がある
             assertThat(record.listText, contains("  abc", " def "));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("listInteger"))).isConversionFailure(), is(true));
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("listInteger")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[リスト型]:List（数値） - C10の値'123, 456 'は、配列の形式に変換できません。"));
+            }
             
             assertThat(record.arrayText, arrayContaining("  abc", " def "));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("arrayInteger"))).isConversionFailure(), is(true));
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("arrayInteger")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[リスト型]:Array（数値） - E10の値'123, 456 'の型変換に失敗しました。"));
+            
+            }
             
             assertThat(record.setText, contains("  abc", " def "));
-            assertThat(cellFieldError(errors, cellAddress(record.positions.get("setInteger"))).isConversionFailure(), is(true));
+            
+            {
+                FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("setInteger")));
+                assertThat(fieldError.isConversionFailure(), is(true));
+                
+                String message = messageConverter.convertMessage(fieldError);
+                assertThat(message, is("[リスト型]:Set（数値） - G10の値'123, 456 'は、配列の形式に変換できません。"));
+            }
             
         } else {
             fail(String.format("not support test case. No=%d.", record.no));
