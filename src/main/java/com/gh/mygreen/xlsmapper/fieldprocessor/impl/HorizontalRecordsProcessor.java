@@ -1869,7 +1869,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         lastCellRef.getSheetName(),
                         recordOperation.getBottomRightPosition().y, lastCellRef.getCol(),
                         lastCellRef.isRowAbsolute(), lastCellRef.isColAbsolute());
-                areaRef = new AreaReference(firstCellRef, lastCellRef);
+                areaRef = new AreaReference(firstCellRef, lastCellRef, sheet.getWorkbook().getSpreadsheetVersion());
                 
                 // 修正した範囲を再設定する
                 name.setRefersToFormula(areaRef.formatAsString());

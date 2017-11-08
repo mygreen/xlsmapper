@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
 
+import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,7 +19,6 @@ import org.apache.poi.ss.util.CellRangeAddressList;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.cellconverter.LinkType;
 
 /**
  * {@link POIUtils}のテスタ
@@ -42,17 +42,17 @@ public class POIUtilsTest {
     @Test
     public void testJudgeLinkType() {
         
-        assertThat(POIUtils.judgeLinkType("!A1"), is(LinkType.DOCUMENT));
-        assertThat(POIUtils.judgeLinkType("Sheet(a)!A1"), is(LinkType.DOCUMENT));
+        assertThat(POIUtils.judgeLinkType("!A1"), is(HyperlinkType.DOCUMENT));
+        assertThat(POIUtils.judgeLinkType("Sheet(a)!A1"), is(HyperlinkType.DOCUMENT));
         
-        assertThat(POIUtils.judgeLinkType("sample@sample.co.jp"), is(LinkType.EMAIL));
-        assertThat(POIUtils.judgeLinkType("mailto:sample@sample.co.jp"), is(LinkType.EMAIL));
+        assertThat(POIUtils.judgeLinkType("sample@sample.co.jp"), is(HyperlinkType.EMAIL));
+        assertThat(POIUtils.judgeLinkType("mailto:sample@sample.co.jp"), is(HyperlinkType.EMAIL));
         
-        assertThat(POIUtils.judgeLinkType("http://sample.co.jp/"), is(LinkType.URL));
-        assertThat(POIUtils.judgeLinkType("http://sample.co.jp/?name1=1&name2=2"), is(LinkType.URL));
+        assertThat(POIUtils.judgeLinkType("http://sample.co.jp/"), is(HyperlinkType.URL));
+        assertThat(POIUtils.judgeLinkType("http://sample.co.jp/?name1=1&name2=2"), is(HyperlinkType.URL));
         
-        assertThat(POIUtils.judgeLinkType("sample.xls"), is(LinkType.FILE));
-        assertThat(POIUtils.judgeLinkType("../sample.xls"), is(LinkType.FILE));
+        assertThat(POIUtils.judgeLinkType("sample.xls"), is(HyperlinkType.FILE));
+        assertThat(POIUtils.judgeLinkType("../sample.xls"), is(HyperlinkType.FILE));
         
     }
     

@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.cellconverter.impl;
 
 import java.util.Optional;
 
+import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -14,7 +15,6 @@ import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySuppor
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.CellLink;
-import com.gh.mygreen.xlsmapper.cellconverter.LinkType;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
@@ -110,8 +110,8 @@ public class CellLinkCellConverterFactory extends AbstractCellConverterFactorySu
             
             if(cellValue.isPresent()) {
                 final CreationHelper helper = cell.getSheet().getWorkbook().getCreationHelper();
-                final LinkType type = POIUtils.judgeLinkType(cellValue.get().getLink());
-                final Hyperlink link = helper.createHyperlink(type.poiType());
+                final HyperlinkType type = POIUtils.judgeLinkType(cellValue.get().getLink());
+                final Hyperlink link = helper.createHyperlink(type);
                 link.setAddress(cellValue.get().getLink());
                 cell.setHyperlink(link);
                 

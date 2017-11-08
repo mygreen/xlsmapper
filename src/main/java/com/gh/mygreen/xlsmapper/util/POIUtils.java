@@ -7,11 +7,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.hssf.model.InternalSheet;
 import org.apache.poi.hssf.model.InternalWorkbook;
 import org.apache.poi.hssf.record.DVRecord;
@@ -21,7 +20,6 @@ import org.apache.poi.hssf.record.aggregates.RecordAggregate.RecordVisitor;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.SpreadsheetVersion;
-import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -47,16 +45,8 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.CellFormatter;
-import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
-import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
-import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
-import com.gh.mygreen.xlsmapper.cellconverter.LinkType;
-import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
-import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.github.mygreen.cellformatter.POICell;
 
 /**
@@ -524,35 +514,35 @@ public class POIUtils {
     /**
      * リンクのアドレスを判定する。
      * @param linkAddress リンクのアドレス（URL）
-     * @return 不明な場合は{@link LinkType#UNKNOWN}を返す。
+     * @return 不明な場合は{@link HyperlinkType#NONE}を返す。
      * @throws IllegalArgumentException linkAddress が空文字の場合。
      */
-    public static LinkType judgeLinkType(final String linkAddress) {
+    public static HyperlinkType judgeLinkType(final String linkAddress) {
         
         ArgUtils.notEmpty(linkAddress, "linkAddress");
         
         if(linkAddress.matches(".*![\\p{Alnum}]+")) {
             // !A1のアドレスを含むかどうか
-            return LinkType.DOCUMENT;
+            return HyperlinkType.DOCUMENT;
             
         } else if(linkAddress.matches("[\\p{Alpha}]+[0-9]+")) {
             // A1の通常のアドレスの形式
-            return LinkType.DOCUMENT;
+            return HyperlinkType.DOCUMENT;
             
         } else if(linkAddress.matches(".+@.+")) {
             // @を含むかどうか
-            return LinkType.EMAIL;
+            return HyperlinkType.EMAIL;
             
         } else if(linkAddress.matches("[\\p{Alpha}]+://.+")) {
             // プロトコル付きかどうか
-            return LinkType.URL;
+            return HyperlinkType.URL;
             
         } else if(linkAddress.matches(".+\\.[\\p{Alnum}]+")) {
             // 拡張子付きかどうか
-            return LinkType.FILE;
+            return HyperlinkType.FILE;
             
         } else {
-            return LinkType.UNKNOWN;
+            return HyperlinkType.NONE;
         }
         
     }
@@ -834,7 +824,8 @@ public class POIUtils {
             nameObj.setNameName(name);
         }
         
-        final AreaReference areaRef = buildNameArea(sheet.getSheetName(), startPosition, endPosition);
+        final AreaReference areaRef = buildNameArea(sheet.getSheetName(), startPosition, endPosition,
+                sheet.getWorkbook().getSpreadsheetVersion());
         nameObj.setRefersToFormula(areaRef.formatAsString());
         
         return nameObj;
@@ -847,10 +838,11 @@ public class POIUtils {
      * @param sheetName シート名
      * @param startPosition 設定するセルの開始位置
      * @param endPosition 設定するセルの終了位置
+     * @param sheetVersion シートの形式
      * @return
      */
     public static AreaReference buildNameArea(final String sheetName,
-            final Point startPosition, final Point endPosition) {
+            final Point startPosition, final Point endPosition, SpreadsheetVersion sheetVersion) {
         
         ArgUtils.notEmpty(sheetName, "sheetName");
         ArgUtils.notNull(startPosition, "startPosition");
@@ -859,7 +851,7 @@ public class POIUtils {
         final CellReference firstRefs = new CellReference(sheetName, startPosition.y, startPosition.x, true, true);
         final CellReference lastRefs = new CellReference(sheetName, endPosition.y, endPosition.x, true, true);
         
-        return new AreaReference(firstRefs, lastRefs);
+        return new AreaReference(firstRefs, lastRefs, sheetVersion);
     }
     
     /**

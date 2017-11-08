@@ -415,7 +415,7 @@ public class Utils {
      * @throws XlsMapperException 
      */
     public static void invokeNeedProcessMethod(final Object processObj, final Method method, final Object beanObj, 
-            final Sheet sheet, final Configuration config, final SheetBindingErrors errors) throws XlsMapperException {
+            final Sheet sheet, final Configuration config, final SheetBindingErrors<?> errors) throws XlsMapperException {
         
         final Class<?>[] paramTypes = method.getParameterTypes();
         final Object[] paramValues =  new Object[paramTypes.length];

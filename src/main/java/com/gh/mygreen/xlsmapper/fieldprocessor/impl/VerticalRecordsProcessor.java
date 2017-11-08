@@ -1830,7 +1830,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         lastCellRef.getSheetName(),
                         lastCellRef.getRow(), recordOperation.getBottomRightPosition().x,
                         lastCellRef.isRowAbsolute(), lastCellRef.isColAbsolute());
-                areaRef = new AreaReference(firstCellRef, lastCellRef);
+                areaRef = new AreaReference(firstCellRef, lastCellRef, sheet.getWorkbook().getSpreadsheetVersion());
                 
                 // 修正した範囲を再設定する
                 name.setRefersToFormula(areaRef.formatAsString());
