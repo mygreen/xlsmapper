@@ -40,7 +40,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.ElementConverter;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 
 /**
  * リスト/集合/配列型のコンバータのテスト
@@ -65,11 +65,11 @@ public class CollectionCellConveterTest {
     /**
      * エラーメッセージのコンバーター
      */
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     @Before
     public void setUp() throws Exception {
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
     }
     
     /**
@@ -177,7 +177,7 @@ public class CollectionCellConveterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("listInteger")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[リスト型]:List（数値） - セル(C10)の値'123, 456 'は、配列の形式に変換できません。"));
             }
             
@@ -187,7 +187,7 @@ public class CollectionCellConveterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("arrayInteger")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[リスト型]:Array（数値） - セル(E10)の値'123, 456 'は、配列の形式に変換できません。"));
             
             }
@@ -198,7 +198,7 @@ public class CollectionCellConveterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("setInteger")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[リスト型]:Set（数値） - セル(G10)の値'123, 456 'は、配列の形式に変換できません。"));
             }
             

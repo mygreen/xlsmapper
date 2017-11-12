@@ -11,6 +11,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.validation.MultipleSheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 

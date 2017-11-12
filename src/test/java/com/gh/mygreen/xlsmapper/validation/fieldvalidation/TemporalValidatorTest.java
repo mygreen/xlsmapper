@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.MaxValidator;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.MinValidator;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.RangeValidator;
@@ -90,7 +90,7 @@ public class TemporalValidatorTest {
         /**
          * エラーメッセージのコンバーター
          */
-        private SheetMessageConverter messageConverter;
+        private SheetErrorFormatter errorFormatter;
         
         /**
          * フィールド名の定義
@@ -121,7 +121,7 @@ public class TemporalValidatorTest {
         @Before
         public void setUp() {
             
-            this.messageConverter = new SheetMessageConverter();
+            this.errorFormatter = new SheetErrorFormatter();
             
             this.fieldName = "localDateTime";
             
@@ -159,7 +159,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日時 - セル(A5)の値'2015-06-02T00:00'は、'2015-06-01T00:00'より前の日時を設定してください。"));
             
         }
@@ -189,7 +189,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日時 - セル(A5)の値'2015年06月02日 00時00分00秒'は、'2015年06月01日 00時00分00秒'以前の日時を設定してください。"));
             
             
@@ -236,7 +236,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日時 - セル(A5)の値'2015-05-31T00:00'は、'2015-06-01T00:00'より後の日時を設定してください。"));
             
         }
@@ -266,7 +266,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日時 - セル(A5)の値'2015年05月31日 00時00分00秒'は、'2015年06月01日 00時00分00秒'以降の日時を設定してください。"));
             
             
@@ -314,7 +314,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日時 - セル(A5)の値'2015-07-01T00:00'は、'2015-06-01T00:00'より後から'2015-06-30T00:00'より前の日時を設定してください。"));
             
         }
@@ -345,7 +345,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日時 - セル(A5)の値'2015年07月01日 00時00分00秒'は、'2015年06月01日 00時00分00秒'以降から'2015年06月30日 00時00分00秒'以前の日時を設定してください。"));
             
             
@@ -379,7 +379,7 @@ public class TemporalValidatorTest {
         /**
          * エラーメッセージのコンバーター
          */
-        private SheetMessageConverter messageConverter;
+        private SheetErrorFormatter errorFormatter;
         
         /**
          * フィールド名の定義
@@ -410,7 +410,7 @@ public class TemporalValidatorTest {
         @Before
         public void setUp() {
             
-            this.messageConverter = new SheetMessageConverter();
+            this.errorFormatter = new SheetErrorFormatter();
             
             this.fieldName = "localDate";
             
@@ -448,7 +448,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日付 - セル(A5)の値'2015-06-02'は、'2015-06-01'より前の日付を設定してください。"));
             
         }
@@ -478,7 +478,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日付 - セル(A5)の値'2015年06月02日'は、'2015年06月01日'以前の日付を設定してください。"));
             
             
@@ -525,7 +525,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日付 - セル(A5)の値'2015-05-31'は、'2015-06-01'より後の日付を設定してください。"));
             
         }
@@ -555,7 +555,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日付 - セル(A5)の値'2015年05月31日'は、'2015年06月01日'以降の日付を設定してください。"));
             
             
@@ -603,7 +603,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日付 - セル(A5)の値'2015-07-01'は、'2015-06-01'より後から'2015-06-30'より前の日付を設定してください。"));
             
         }
@@ -634,7 +634,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:日付 - セル(A5)の値'2015年07月01日'は、'2015年06月01日'以降から'2015年06月30日'以前の日付を設定してください。"));
             
             
@@ -668,7 +668,7 @@ public class TemporalValidatorTest {
         /**
          * エラーメッセージのコンバーター
          */
-        private SheetMessageConverter messageConverter;
+        private SheetErrorFormatter errorFormatter;
         
         /**
          * フィールド名の定義
@@ -698,7 +698,7 @@ public class TemporalValidatorTest {
         @Before
         public void setUp() {
             
-            this.messageConverter = new SheetMessageConverter();
+            this.errorFormatter = new SheetErrorFormatter();
             
             this.fieldName = "localTime";
             
@@ -736,7 +736,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:時間 - セル(A5)の値'09:11:13'は、'09:10'より前の時間を設定してください。"));
             
         }
@@ -766,7 +766,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:時間 - セル(A5)の値'09時11分13秒'は、'09時10分00秒'以前の時間を設定してください。"));
             
             
@@ -813,7 +813,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:時間 - セル(A5)の値'09:09:13'は、'09:10'より後の時間を設定してください。"));
             
         }
@@ -843,7 +843,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:時間 - セル(A5)の値'09時09分13秒'は、'09時10分00秒'以降の時間を設定してください。"));
             
             
@@ -891,7 +891,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:時間 - セル(A5)の値'11:00'は、'09:10'より後から'10:59:59'より前の時間を設定してください。"));
             
         }
@@ -922,7 +922,7 @@ public class TemporalValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:時間 - セル(A5)の値'11時00分00秒'は、'09時10分00秒'以降から'10時59分59秒'以前の時間を設定してください。"));
             
             

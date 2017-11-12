@@ -45,7 +45,7 @@ import com.gh.mygreen.xlsmapper.localization.ResourceBundleMessageResolver;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 import com.gh.mygreen.xlsmapper.validation.ObjectError;
 
 /**
@@ -58,11 +58,11 @@ import com.gh.mygreen.xlsmapper.validation.ObjectError;
  */
 public class SheetBeanValidatorTest {
     
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     @Before
     public void setUp() throws Exception {
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
     }
     
     private Validator getBeanValidator() {
@@ -148,7 +148,7 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10));
             
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[単純なBean]:説明 - セル(C7)の文字長'11'は、0～10の間で設定してください。"));
         }
         
@@ -162,7 +162,7 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0L));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)100L));
             
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[単純なBean]:年齢 - セル(B9)の値'-1'は、0から100の間の値を設定してください。"));
             
         }
@@ -175,7 +175,7 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.email));
             
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[単純なBean]:e-mail(必須) - セル(B10)の値'test'は、E-mail形式で設定してください。"));
             
         }
@@ -305,7 +305,7 @@ public class SheetBeanValidatorTest {
         MessageResolver messageResolver = new ResourceBundleMessageResolver(
                 ResourceBundle.getBundle("com.gh.mygreen.xlsmapper.validation.beanvalidation.OtherElMessages", new EncodingControl("UTF-8")));
         
-        messageConverter.setMessageResolver(messageResolver);
+        errorFormatter.setMessageResolver(messageResolver);
         
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator beanValidator = validatorFactory.usingContext()
@@ -328,7 +328,7 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getCodes(), hasItemInArray("Future"));
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.updateTime));
             
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[単純なBean]:更新日時 - セル(B4)は未来の日付を入力してください。現在の日付「2017/11/01」は過去日です。"));
         }
         
@@ -342,7 +342,7 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)10));
             
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[単純なBean]:説明 - セル(C7)は0～10文字以内で値を入力してください。"));
             
         }
@@ -357,7 +357,7 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("min", (Object)0L));
             assertThat(fieldError.getVariables(), hasEntry("max", (Object)100L));
             
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[単純なBean]:年齢 - セル(B9)は0から100の間の値を入力してください。"));
         }
         
@@ -369,7 +369,7 @@ public class SheetBeanValidatorTest {
             assertThat(fieldError.getCodes(), hasItemInArray("Email"));
             assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.email));
             
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[単純なBean]:e-mail(必須) - セル(B10)はメールアドレスの形式(例:hoge@sample.co.jp)で値を入力してください。"));
 
         }
@@ -380,7 +380,7 @@ public class SheetBeanValidatorTest {
     private void printErrors(SheetBindingErrors<?> errors) {
         
         for(ObjectError error : errors.getAllErrors()) {
-            String message = messageConverter.convertMessage(error);
+            String message = errorFormatter.format(error);
             System.out.println(message);
         }
         

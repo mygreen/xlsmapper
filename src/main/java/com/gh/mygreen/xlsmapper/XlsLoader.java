@@ -31,6 +31,7 @@ import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.MultipleSheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 

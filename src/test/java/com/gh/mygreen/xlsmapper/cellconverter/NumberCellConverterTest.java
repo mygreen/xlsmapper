@@ -38,7 +38,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 
 /**
  * 数値型の変換のテスタ
@@ -63,11 +63,11 @@ public class NumberCellConverterTest {
     /**
      * エラーメッセージのコンバーター
      */
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     @Before
     public void setUp() throws Exception {
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
     }
     
     /**
@@ -277,7 +277,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:byte型 - セル(B22)の値'128'は、整数(byte型)で設定してください。"));
             }
             
@@ -285,7 +285,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:short型 - セル(C22)の値'32768'は、整数(short型)で設定してください。"));
             }
             
@@ -293,7 +293,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:int型 - セル(D22)の値'2147483648'は、整数(int型)で設定してください。"));
             }
             
@@ -302,7 +302,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:long型 - セル(E22)の値'9223372036854775808'は、整数(long型)で設定してください。"));
             
             }
@@ -325,7 +325,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:byte型 - セル(B24)の値'-129'は、整数(byte型)で設定してください。"));
             
             }
@@ -334,7 +334,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:short型 - セル(C24)の値'-32769'は、整数(short型)で設定してください。"));
             }
             
@@ -343,7 +343,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:int型 - セル(D24)の値'-2147483649'は、整数(int型)で設定してください。"));
             
             }
@@ -352,7 +352,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:long型 - セル(E24)の値'-9223372036854775809'は、整数(long型)で設定してください。"));
             }
             
@@ -365,7 +365,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:byte型 - セル(B25)の値'128 'は、整数(byte型)で設定してください。"));
                 
             }
@@ -374,7 +374,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:short型 - セル(C25)の値'32768 'は、整数(short型)で設定してください。"));
             }
             
@@ -382,7 +382,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:int型 - セル(D25)の値'2147483648 'は、整数(int型)で設定してください。"));
             }
             
@@ -390,7 +390,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:long型 - セル(E25)の値'1.E+308'は、整数(long型)で設定してください。"));
             }
             
@@ -403,7 +403,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:byte型 - セル(B26)の値'-129 'は、整数(byte型)で設定してください。"));
             }
             
@@ -411,7 +411,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:short型 - セル(C26)の値'-32769 'は、整数(short型)で設定してください。"));
             }
             
@@ -419,7 +419,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:int型 - セル(D26)の値'-2147483649 'は、整数(int型)で設定してください。"));
             }
             
@@ -427,7 +427,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:long型 - セル(E26)の値'-1.E+308'は、整数(long型)で設定してください。"));
             }
             
@@ -637,7 +637,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("bd")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:BigDecimalクラス - セル(B56)の値'abc'は、小数(BigDecimal型)で設定してください。"));
             }
             
@@ -645,7 +645,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("bi")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:BigIntegerクラス - セル(C56)の値'abc'は、整数(BigInteger型)で設定してください。"));
             }
             
@@ -708,7 +708,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:byte型 - セル(B65)の値'128'は、整数(byte型)で設定してください。"));
             }
             
@@ -716,7 +716,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:short型 - セル(C65)の値'32768'は、整数(short型)で設定してください。"));
             }
             
@@ -724,7 +724,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:int型 - セル(D65)の値'￥2147483648'は、整数(int型)で設定してください。"));
             }
             
@@ -732,7 +732,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:long型 - セル(E65)の値'9,223,372,036,854,775,808'は、整数(long型)で設定してください。書式は#,###,##0で設定してください。"));
             }
             
@@ -755,7 +755,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:byte型 - セル(B67)の値'-129'は、整数(byte型)で設定してください。"));
             }
             
@@ -763,7 +763,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:short型 - セル(C67)の値'-32769'は、整数(short型)で設定してください。"));
             }
             
@@ -771,7 +771,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:int型 - セル(D67)の値'-￥2147483649'は、整数(int型)で設定してください。"));
             }
             
@@ -779,7 +779,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:long型 - セル(E67)の値'-9,223,372,036,854,775,809'は、整数(long型)で設定してください。書式は#,###,##0で設定してください。"));
             }
             
@@ -792,7 +792,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:byte型 - セル(B68)の値'abc'は、整数(byte型)で設定してください。"));
             }
             
@@ -800,7 +800,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("s")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:short型 - セル(C68)の値'abc'は、整数(short型)で設定してください。"));
             
             }
@@ -809,7 +809,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("i")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:int型 - セル(D68)の値'abc'は、整数(int型)で設定してください。"));
             }
             
@@ -817,7 +817,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("l")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:long型 - セル(E68)の値'abc'は、整数(long型)で設定してください。"));
             }
             
@@ -825,7 +825,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("f")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:float型 - セル(F68)の値'abc'は、小数(float型)で設定してください。"));
             }
             
@@ -833,7 +833,7 @@ public class NumberCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("d")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[数値型]:double型 - セル(G68)の値'abc'は、小数(double型)で設定してください。"));
             }
             

@@ -34,7 +34,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 
 
 /**
@@ -61,11 +61,11 @@ public class EnumCellConverterTest {
     /**
      * エラーメッセージのコンバーター
      */
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     @Before
     public void setUp() throws Exception {
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
     }
     
     /**
@@ -119,7 +119,7 @@ public class EnumCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("color")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[列挙型]:Enum型（英字）1 - セル(B8)の値'Blue'は、何れかの値[Red, Green, Yellow]で設定してください。"));
                 
             }
@@ -128,7 +128,7 @@ public class EnumCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("operate")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[列挙型]:Enum型（英字）2 - セル(C8)の値'Remove'は、何れかの値[Refer, Edit, Delete]で設定してください。"));
             
             }
@@ -139,7 +139,7 @@ public class EnumCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("color")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[列挙型]:Enum型（英字）1 - セル(B9)の値'yellow'は、何れかの値[Red, Green, Yellow]で設定してください。"));
                 
             }
@@ -148,7 +148,7 @@ public class EnumCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("operate")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[列挙型]:Enum型（英字）2 - セル(C9)の値'edit'は、何れかの値[Refer, Edit, Delete]で設定してください。"));
             
             }
@@ -159,7 +159,7 @@ public class EnumCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("color")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[列挙型]:Enum型（英字）1 - セル(B10)の値' Yellow  'は、何れかの値[Red, Green, Yellow]で設定してください。"));
                 
             }
@@ -168,7 +168,7 @@ public class EnumCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("operate")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[列挙型]:Enum型（英字）2 - セル(C10)の値' Edit 'は、何れかの値[Refer, Edit, Delete]で設定してください。"));
             
             }
@@ -196,7 +196,7 @@ public class EnumCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("color")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[列挙型]:Enum型（英字） - セル(B17)の値'Blue'は、何れかの値[Red, Green, Yellow]で設定してください。"));
                 
             }
@@ -205,7 +205,7 @@ public class EnumCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("operate")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[列挙型]:Enum型（日本語） - セル(C17)の値'追加'は、何れかの値[参照, 編集, 削除]で設定してください。"));
                 
             }

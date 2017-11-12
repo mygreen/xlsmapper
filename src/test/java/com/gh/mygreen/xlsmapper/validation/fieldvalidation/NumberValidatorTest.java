@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.MaxValidator;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.MinValidator;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.RangeValidator;
@@ -79,7 +79,7 @@ public class NumberValidatorTest {
         /**
          * エラーメッセージのコンバーター
          */
-        private SheetMessageConverter messageConverter;
+        private SheetErrorFormatter errorFormatter;
         
         /**
          * フィールド名の定義
@@ -107,7 +107,7 @@ public class NumberValidatorTest {
         @Before
         public void setUp() {
             
-            this.messageConverter = new SheetMessageConverter();
+            this.errorFormatter = new SheetErrorFormatter();
             
             this.fieldName = "numI";
             
@@ -256,7 +256,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値1 - セル(A5)の値'11'は、'10'より小さい値を設定してください。"));
             
         }
@@ -286,7 +286,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値1 - セル(A5)の値'1,234,567'は、'123,456'以下の値を設定してください。"));
             
         }
@@ -348,7 +348,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値1 - セル(A5)の値'9'は、'10'より大きい値を設定してください。"));
             
             
@@ -379,7 +379,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値1 - セル(A5)の値'123,456'は、'1,234,567'以上の値を設定してください。"));
             
         }
@@ -442,7 +442,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値1 - セル(A5)の値'-1'は、'0'より大きく、'10'より小さい値を設定してください。"));
             
         }
@@ -471,7 +471,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値1 - セル(A5)の値'11'は、'0'より大きく、'10'より小さい値を設定してください。"));
             
         }
@@ -501,7 +501,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値1 - セル(A5)の値'12,345,678'は、'-1,234,567'以上、'1,234,567'以下の値を設定してください。"));
             
         }
@@ -534,7 +534,7 @@ public class NumberValidatorTest {
         /**
          * エラーメッセージのコンバーター
          */
-        private SheetMessageConverter messageConverter;
+        private SheetErrorFormatter errorFormatter;
         
         /**
          * フィールド名の定義
@@ -564,7 +564,7 @@ public class NumberValidatorTest {
         @Before
         public void setUp() {
             
-            this.messageConverter = new SheetMessageConverter();
+            this.errorFormatter = new SheetErrorFormatter();
             
             this.fieldName = "numD";
             
@@ -715,7 +715,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値2 - セル(A6)の値'11.0'は、'10.0'より小さい値を設定してください。"));
             
             
@@ -746,7 +746,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値2 - セル(A6)の値'1,234,567.0'は、'123,456.0'以下の値を設定してください。"));
             
         }
@@ -826,7 +826,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値2 - セル(A6)の値'9.0'は、'10.0'より大きい値を設定してください。"));
             
         }
@@ -856,7 +856,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値2 - セル(A6)の値'123,456.0'は、'1,234,567.0'以上の値を設定してください。"));
             
         }
@@ -936,7 +936,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値2 - セル(A6)の値'-1.0'は、'0.0'より大きく、'10.0'より小さい値を設定してください。"));
             
         }
@@ -965,7 +965,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値2 - セル(A6)の値'11.0'は、'0.0'より大きく、'10.0'より小さい値を設定してください。"));
             
         }
@@ -996,7 +996,7 @@ public class NumberValidatorTest {
             assertThat(fieldError.getVariables(), hasEntry("fieldFormatter", fieldFormatter));
             
             // メッセージ
-            String message = messageConverter.convertMessage(fieldError);
+            String message = errorFormatter.format(fieldError);
             assertThat(message, is("[サンプルシート]:値2 - セル(A6)の値'12,345,678.0'は、'-1,234,567.0'以上、'1,234,567.0'以下の値を設定してください。"));
             
         }

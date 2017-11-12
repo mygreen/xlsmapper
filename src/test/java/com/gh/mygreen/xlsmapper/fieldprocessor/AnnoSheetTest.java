@@ -16,13 +16,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
-import com.gh.mygreen.xlsmapper.MultipleSheetBindingErrors;
 import com.gh.mygreen.xlsmapper.SheetNotFoundException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
+import com.gh.mygreen.xlsmapper.validation.MultipleSheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 
 /**
  * アノテーション{@link XlsSheet}のテスト
@@ -61,11 +61,11 @@ public class AnnoSheetTest {
     /**
      * エラーメッセージのコンバーター
      */
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     @Before
     public void setUp() throws Exception {
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
     }
     
     /**

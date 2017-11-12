@@ -1,11 +1,10 @@
-package com.gh.mygreen.xlsmapper;
+package com.gh.mygreen.xlsmapper.validation;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.gh.mygreen.xlsmapper.util.Utils;
-import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 
 /**

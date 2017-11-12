@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.LengthBetweenValidator;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.LengthExactValidator;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.LengthMaxValidator;
@@ -76,7 +76,7 @@ public class StringValidatorTest {
     /**
      * エラーメッセージのコンバーター
      */
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     /**
      * フィールド名の定義
@@ -96,7 +96,7 @@ public class StringValidatorTest {
     @Before
     public void setUp() {
         
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
         
         this.fieldName = "str";
         
@@ -250,7 +250,7 @@ public class StringValidatorTest {
         assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
         
         // メッセージ
-        String message = messageConverter.convertMessage(fieldError);
+        String message = errorFormatter.format(fieldError);
         assertThat(message, is("[サンプルシート]:名前 - セル(A5)の文字長'4'は、[5, 10]文字の何れかでなければなりません。"));
         
         
@@ -331,7 +331,7 @@ public class StringValidatorTest {
         assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
         
         // メッセージ
-        String message = messageConverter.convertMessage(fieldError);
+        String message = errorFormatter.format(fieldError);
         assertThat(message, is("[サンプルシート]:名前 - セル(A5)の文字長'6'は、5文字以内で値を設定してください。"));
         
         
@@ -412,7 +412,7 @@ public class StringValidatorTest {
         assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
         
         // メッセージ
-        String message = messageConverter.convertMessage(fieldError);
+        String message = errorFormatter.format(fieldError);
         assertThat(message, is("[サンプルシート]:名前 - セル(A5)の文字長'4'は、5文字以上で値を設定してください。"));
         
     }
@@ -493,7 +493,7 @@ public class StringValidatorTest {
         assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
         
         // メッセージ
-        String message = messageConverter.convertMessage(fieldError);
+        String message = errorFormatter.format(fieldError);
         assertThat(message, is("[サンプルシート]:名前 - セル(A5)の文字長'2'は、3～5文字以内で値を入設定してください。"));
         
     }
@@ -523,7 +523,7 @@ public class StringValidatorTest {
         assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
         
         // メッセージ
-        String message = messageConverter.convertMessage(fieldError);
+        String message = errorFormatter.format(fieldError);
         assertThat(message, is("[サンプルシート]:名前 - セル(A5)の文字長'6'は、3～5文字以内で値を入設定してください。"));
     }
     
@@ -603,7 +603,7 @@ public class StringValidatorTest {
         assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
         
         // メッセージ
-        String message = messageConverter.convertMessage(fieldError);
+        String message = errorFormatter.format(fieldError);
         assertThat(message, is("[サンプルシート]:名前 - セル(A5)の値'あいうえ'は、'.+@.+'に一致していません。"));
         
         
@@ -634,7 +634,7 @@ public class StringValidatorTest {
         assertThat(fieldError.getVariables(), not(hasKey("fieldFormatter")));
         
         // メッセージ
-        String message = messageConverter.convertMessage(fieldError);
+        String message = errorFormatter.format(fieldError);
         assertThat(message, is("[サンプルシート]:名前 - セル(A5)の値'あいうえ'は、'メールアドレスの書式'に一致していません。"));
         
     }

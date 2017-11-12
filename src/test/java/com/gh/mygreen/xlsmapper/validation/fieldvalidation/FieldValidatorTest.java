@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import com.gh.mygreen.xlsmapper.validation.DefaultGroup;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.MaxValidator;
 
 /**
@@ -75,7 +75,7 @@ public class FieldValidatorTest {
         /**
          * エラーメッセージのコンバーター
          */
-        private SheetMessageConverter messageConverter;
+        private SheetErrorFormatter errorFormatter;
         
         /**
          * フィールド名の定義
@@ -95,7 +95,7 @@ public class FieldValidatorTest {
         @Before
         public void setUp() {
             
-            this.messageConverter = new SheetMessageConverter();
+            this.errorFormatter = new SheetErrorFormatter();
             
             this.fieldName = "date";
             

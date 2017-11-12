@@ -39,11 +39,11 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.PatternValidator
  */
 public class ObjectValidatorTest {
     
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     @Before
     public void setUp() throws Exception {
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
     }
     
     /**
@@ -206,7 +206,7 @@ public class ObjectValidatorTest {
     private void printErrors(SheetBindingErrors<?> errors) {
         
         for(ObjectError error : errors.getAllErrors()) {
-            String message = messageConverter.convertMessage(error);
+            String message = errorFormatter.format(error);
             System.out.println(message);
         }
         

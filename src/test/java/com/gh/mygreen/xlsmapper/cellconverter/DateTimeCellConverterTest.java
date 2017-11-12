@@ -38,7 +38,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 
 /**
  * 日付、時刻型のタイプのチェック
@@ -63,11 +63,11 @@ public class DateTimeCellConverterTest {
     /**
      * エラーメッセージのコンバーター
      */
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     @Before
     public void setUp() throws Exception {
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
     }
     
     @Test
@@ -133,7 +133,7 @@ public class DateTimeCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("utilDate")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[日時型]:Dateクラス(util) - セル(B10)の値'a01'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
                 
             }
@@ -142,7 +142,7 @@ public class DateTimeCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("calendar")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[日時型]:Calendarクラス - セル(C10)の値'a01'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
             
             }
@@ -151,7 +151,7 @@ public class DateTimeCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("sqlDate")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[日時型]:Dateクラス(sql) - セル(D10)の値'b02'は、'yyyy-MM-dd'の日付形式で設定してください。"));
                 
             }
@@ -160,7 +160,7 @@ public class DateTimeCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("sqlTime")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[日時型]:Timeクラス(sql) - セル(E10)の値'c03'は、'HH:mm:ss'の時刻形式で設定してください。"));
             
             }
@@ -169,7 +169,7 @@ public class DateTimeCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("timestamp")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[日時型]:Timesamp(sql) - セル(F10)の値'd04'は、'yyyy-MM-dd HH:mm:ss.SSS'のタイムスタンプ形式で設定してください。"));
             
             }
@@ -229,7 +229,7 @@ public class DateTimeCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("utilDate")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[日時型]:Dateクラス(util) - セル(B22)の値'2015-13-02 03:45:06'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
                 
             }
@@ -238,7 +238,7 @@ public class DateTimeCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("calendar")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[日時型]:Calendarクラス - セル(C22)の値'2015-13-02 03:45:06'は、'yyyy-MM-dd HH:mm:ss'の日時形式で設定してください。"));
             
             }
@@ -247,7 +247,7 @@ public class DateTimeCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("sqlDate")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[日時型]:Dateクラス(sql) - セル(D22)の値'2015-12-40'は、'yyyy-MM-dd'の日付形式で設定してください。"));
                 
             }
@@ -256,7 +256,7 @@ public class DateTimeCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("sqlTime")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[日時型]:Timeクラス(sql) - セル(E22)の値'12時80分'は、'H時m分'の時刻形式で設定してください。"));
                 
             }

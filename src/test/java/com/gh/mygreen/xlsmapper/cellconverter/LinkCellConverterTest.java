@@ -40,7 +40,7 @@ import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 
 /**
  * リンクの変換テスト。
@@ -70,11 +70,11 @@ public class LinkCellConverterTest {
     /**
      * エラーメッセージのコンバーター
      */
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     @Before
     public void setUp() throws Exception {
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
     }
     
     /**
@@ -158,7 +158,7 @@ public class LinkCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("uri")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[リンク型]:URI - セル(B13)の値'  http://www.google.co.jp/  'は、URI(Uniform Resource Identifier)の形式として不正です。"));
             }
             
@@ -175,7 +175,7 @@ public class LinkCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("uri")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[リンク型]:URI - セル(B15)の値'   'は、URI(Uniform Resource Identifier)の形式として不正です。"));
                 
             }

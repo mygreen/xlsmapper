@@ -34,7 +34,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperate;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
 
 /**
  * {@link BooleanCellConverter}のテスタ
@@ -58,11 +58,11 @@ public class BooleanCellConverterTest {
     /**
      * エラーメッセージのコンバーター
      */
-    private SheetMessageConverter messageConverter;
+    private SheetErrorFormatter errorFormatter;
     
     @Before
     public void setUp() throws Exception {
-        this.messageConverter = new SheetMessageConverter();
+        this.errorFormatter = new SheetErrorFormatter();
     }
     
     /**
@@ -135,7 +135,7 @@ public class BooleanCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b1")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[ブール型]:boolean型 - セル(B11)の値'abc'は、trueの値[true, 1, yes, on, y, t]、またはfalseの値[false, 0, no, off, f, n]の何れかの値で設定してください。"));
             }
             
@@ -143,7 +143,7 @@ public class BooleanCellConverterTest {
                 FieldError fieldError = cellFieldError(errors, cellAddress(record.positions.get("b2")));
                 assertThat(fieldError.isConversionFailure(), is(true));
                 
-                String message = messageConverter.convertMessage(fieldError);
+                String message = errorFormatter.format(fieldError);
                 assertThat(message, is("[ブール型]:Boolean型 - セル(C11)の値' def'は、trueの値[true, 1, yes, on, y, t]、またはfalseの値[false, 0, no, off, f, n]の何れかの値で設定してください。"));
             
             }

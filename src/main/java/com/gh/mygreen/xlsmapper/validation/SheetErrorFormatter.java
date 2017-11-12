@@ -29,7 +29,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  * @author T.TSUCHIE
  *
  */
-public class SheetMessageConverter {
+public class SheetErrorFormatter {
     
     private MessageResolver messageResolver = new ResourceBundleMessageResolver();
     
@@ -37,34 +37,34 @@ public class SheetMessageConverter {
     
     private MessageCodeGenerator messageCodeGenerator = new MessageCodeGenerator();
     
-    public SheetMessageConverter() {
+    public SheetErrorFormatter() {
         
     }
     
     /**
-     * エラーオブジェクトのリストをメッセージに変換する。
+     * エラーオブジェクトのリストをメッセージにフォーマットする。
      * @param errors 変換対象のエラーオブジェクト。
      * @return
      * @throws IllegalArgumentException errors == null.
      */
-    public List<String> convertMessages(final Collection<ObjectError> errors) {
+    public List<String> format(final Collection<ObjectError> errors) {
         ArgUtils.notNull(errors, "errors");
         
         final List<String> messageList = new ArrayList<>();
         for(ObjectError error : errors) {
-            messageList.add(convertMessage(error));
+            messageList.add(format(error));
         }
         
         return messageList;
     }
     
     /**
-     * エラーオブジェクトをメッセージに変換する。
+     * エラーオブジェクトをメッセージにフォーマットする。
      * @param error エラーオブジェクト
      * @return メッセージ
      * @throws IllegalArgumentException {@literal error == null.}
      */
-    public String convertMessage(final ObjectError error) {
+    public String format(final ObjectError error) {
         ArgUtils.notNull(error, "error");
         
         final Map<String, Object> vars = new HashMap<>();
@@ -143,7 +143,7 @@ public class SheetMessageConverter {
      * @return メッセージ
      * @throws RuntimeException メッセージコード 'codes' で指定したメッセージキーが見つからない場合。
      */
-    public String getMessage(final String[] codes, final Optional<String> defaultMessage) {
+    private String getMessage(final String[] codes, final Optional<String> defaultMessage) {
         for(String code : codes) {
             try {
                 final Optional<String> message = messageResolver.getMessage(code);
