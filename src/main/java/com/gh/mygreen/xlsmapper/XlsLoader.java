@@ -331,6 +331,9 @@ public class XlsLoader {
         work.setAnnoReader(annoReader);
         work.setErrors(errors);
         
+        // セルのキャッシュ情報の初期化
+        configuration.getCellFormatter().init(configuration.isCacheCellValueOnLoad());
+        
         final FieldAccessorFactory adpterFactory = new FieldAccessorFactory(annoReader);
         
         // リスナークラスの@PreLoad用メソッドの実行
@@ -453,6 +456,9 @@ public class XlsLoader {
         for(NeedProcess need : work.getNeedPostProcesses()) {
             Utils.invokeNeedProcessMethod(need.getProcess(), need.getMethod(), need.getTarget(), sheet, configuration, work.getErrors());
         }
+        
+        // セルのキャッシュ情報の初期化
+        configuration.getCellFormatter().init(configuration.isCacheCellValueOnLoad());
         
         return errors;
     }

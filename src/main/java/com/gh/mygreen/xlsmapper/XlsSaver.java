@@ -247,6 +247,9 @@ public class XlsSaver {
         work.setAnnoReader(annoReader);
         work.setErrors(errors);
         
+        // セルのキャッシュ情報の初期化
+        configuration.getCellFormatter().init(false);
+        
         final FieldAccessorFactory adpterFactory = new FieldAccessorFactory(annoReader);
         
         // リスナークラスの@PreSave用メソッドの実行

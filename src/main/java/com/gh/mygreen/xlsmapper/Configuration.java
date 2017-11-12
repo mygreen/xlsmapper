@@ -34,7 +34,7 @@ public class Configuration {
     /** 型変換エラーが発生しても処理を続けるかどうか */
     private boolean continueTypeBindFailure = false;
     
-    /** 保存時にセルの結合を行うかどうか */
+    /** 書き込み時にセルの結合を行うかどうか */
     private boolean mergeCellOnSave = false;
     
     /** 書き込み時に名前の定義範囲を修正するかどうか */
@@ -45,6 +45,9 @@ public class Configuration {
     
     /** 書き込み時に式の再計算をするかどうか */
     private boolean formulaRecalcurationOnSave = true;
+    
+    /** 読み込み時にセルの値のキャッシュを行うかどうか */
+    private boolean cacheCellValueOnLoad = true;
     
     /** POIのセルの値のフォーマッター */
     private CellFormatter cellFormatter = new DefaultCellFormatter();
@@ -167,7 +170,7 @@ public class Configuration {
     }
     
     /**
-     * 保存時にセルの結合を行うかどうか
+     * 書き込み時にセルの結合を行うかどうか
      * @return 初期値は、'false'です。
      */
     public boolean isMergeCellOnSave() {
@@ -175,7 +178,7 @@ public class Configuration {
     }
     
     /**
-     * 保存時にセルの結合を行うかどうか設定します。
+     * 書き込み時にセルの結合を行うかどうか設定します。
      * @param mergeCellOnSave 初期値は、'false'です。
      * @return 自身のインスタンス
      */
@@ -245,6 +248,25 @@ public class Configuration {
      */
     public Configuration setFormulaRecalcurationOnSave(boolean formulaRecalcurationOnSave) {
         this.formulaRecalcurationOnSave = formulaRecalcurationOnSave;
+        return this;
+    }
+    
+    /**
+     * 読み込み時にセルの値のキャッシュを行うかどうか設定します。
+     * @since 2.0
+     * @return true 初期値は、'true'です。
+     */
+    public boolean isCacheCellValueOnLoad() {
+        return cacheCellValueOnLoad;
+    }
+    
+    /**
+     * 読み込み時にセルの値のキャッシュを行うかどうか設定します。
+     * @since 2.0
+     * @param cacheCellValueOnLoad trueのときキャッシュを行います。
+     */
+    public Configuration setCacheCellValueOnLoad(boolean cacheCellValueOnLoad) {
+        this.cacheCellValueOnLoad = cacheCellValueOnLoad;
         return this;
     }
     

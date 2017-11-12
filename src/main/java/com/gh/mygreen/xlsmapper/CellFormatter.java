@@ -9,12 +9,20 @@ import org.apache.poi.ss.usermodel.Cell;
  * セルフォーマッターのインタフェース。
  * <p>標準の実装として{@link DefaultCellFormatter}がある。
  * 
- * @version 0.5
+ * @version 2.0
  * @since 0.1
  * @author T.TSUCHIE
  *
  */
 public interface CellFormatter {
+    
+    /**
+     * キャッシュの情報の初期化と設定を行います。
+     * @param cached trueのとき、キャッシュを有効にします。
+     */
+    default public void init(boolean cached) {
+        
+    }
     
     /**
      * セルの値を文字列として取得する
