@@ -16,6 +16,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@XlsFieldProcessor(value={})
 public @interface XlsArrayCells {
     
     /**

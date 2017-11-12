@@ -3,6 +3,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,15 +11,18 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.MultipleSheetBindingErrors;
 import com.gh.mygreen.xlsmapper.SheetNotFoundException;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetMessageConverter;
 
 /**
  * アノテーション{@link XlsSheet}のテスト
@@ -55,6 +59,16 @@ public class AnnoSheetTest {
     private String outFilename = "anno_Sheet_out.xlsx";
     
     /**
+     * エラーメッセージのコンバーター
+     */
+    private SheetMessageConverter messageConverter;
+    
+    @Before
+    public void setUp() throws Exception {
+        this.messageConverter = new SheetMessageConverter();
+    }
+    
+    /**
      * 読み込みのテスト - シート名の指定
      */
     @Test
@@ -74,16 +88,49 @@ public class AnnoSheetTest {
         
     }
     
-    @Test(expected=SheetNotFoundException.class)
+    @Test
     public void test_load_sheet_name_notFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
-            SheetBindingErrors<NamedSheet2> errors = mapper.loadDetail(in, NamedSheet2.class);
             
-            fail();
+            assertThatThrownBy(() ->  mapper.loadDetail(in, NamedSheet2.class))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("シート名'シート名（２）'が見つかりません。");
+            
+        }
+        
+    }
+    
+    @Test
+    public void test_loadMultple_sheet_name_notFound() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            
+            assertThatThrownBy(() ->  mapper.loadMultiple(in, NamedSheet2.class))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("シート名'シート名（２）'が見つかりません。");
+            
+        }
+        
+    }
+    
+    @Test
+    public void test_loadMultple_sheet_name_notFound2() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            
+            assertThatThrownBy(() ->  mapper.loadMultiple(in, new Class[]{NamedSheet2.class}))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("シート名'シート名（２）'が見つかりません。");
             
         }
         
@@ -103,7 +150,47 @@ public class AnnoSheetTest {
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NamedSheet2> errors = mapper.loadDetail(in, NamedSheet2.class);
             
-            assertThat(errors, is(nullValue()));
+            assertThat(errors).isNull();
+            
+        }
+        
+    }
+    
+    /**
+     * シートが見つからなくてもスキップする設定
+     * 
+     */
+    @Test
+    public void testMultple_load_sheet_skip_notFound() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setIgnoreSheetNotFound(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            MultipleSheetBindingErrors<NamedSheet2> errors = mapper.loadMultipleDetail(in, NamedSheet2.class);
+            
+            assertThat(errors.getAll()).isEmpty();
+            
+        }
+        
+    }
+    
+    /**
+     * シートが見つからなくてもスキップする設定
+     * 
+     */
+    @Test
+    public void testMultple_load_sheet_skip_notFound2() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setIgnoreSheetNotFound(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            MultipleSheetBindingErrors<?> errors = mapper.loadMultipleDetail(in, new Class[]{NamedSheet2.class});
+            
+            assertThat(errors.getAll()).isEmpty();
             
         }
         
@@ -126,18 +213,17 @@ public class AnnoSheetTest {
         
     }
     
-    @Test(expected=SheetNotFoundException.class)
+    @Test
     public void test_load_sheet_indexed_nofFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
-            SheetBindingErrors<IndexedSheet2> errors = mapper.loadDetail(in, IndexedSheet2.class);
             
-            IndexedSheet2 sheet = errors.getTarget();
-            
-            fail();
+            assertThatThrownBy(() ->  mapper.loadDetail(in, IndexedSheet2.class))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("シート番号'10'が見つかりません。ワークブックにはシート数が'4'個しかありません。");
             
         }
         
@@ -166,16 +252,17 @@ public class AnnoSheetTest {
     /**
      * 正規表現指定 - シート１つ - シートが見つからない場合
      */
-    @Test(expected=SheetNotFoundException.class)
+    @Test
     public void test_load_sheet_regexp_single_notFound() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
-            SheetBindingErrors<RegexpSheet2> errors = mapper.loadDetail(in, RegexpSheet2.class);
             
-            fail();
+            assertThatThrownBy(() ->  mapper.loadDetail(in, RegexpSheet2.class))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("シート名'チェック条件.+'が見つかりません。");
             
         }
         
@@ -203,18 +290,74 @@ public class AnnoSheetTest {
     /**
      * アノテーションにシートの指定がない場合
      */
-    @Test(expected=AnnotationInvalidException.class)
+    @Test
     public void test_load_sheet_noSetting() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
-            SheetBindingErrors<NoSettingSheet> errors = mapper.loadDetail(in, NoSettingSheet.class);
             
-            NoSettingSheet sheet = errors.getTarget();
+            assertThatThrownBy(() ->  mapper.loadDetail(in, NoSettingSheet.class))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessageContaining("において、アノテーション'@XlsSheet'の何れか属性[name or number or regex]の設定は必須です。");
             
-            fail();
+        }
+        
+    }
+    
+    /**
+     * シート用のアノテーションがない場合
+     */
+    @Test
+    public void test_load_sheet_noGrant() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            
+            assertThatThrownBy(() ->  mapper.load(in, NoGrantSheet.class))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessageContaining("において、アノテーション'@XlsSheet'が見つかりません。");
+            
+        }
+        
+    }
+    
+    /**
+     * シート用のアノテーションがない場合
+     */
+    @Test
+    public void test_loadMultiple_sheet_noGrant() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            
+            assertThatThrownBy(() ->  mapper.loadMultiple(in, NoGrantSheet.class))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessageContaining("において、アノテーション'@XlsSheet'が見つかりません。");
+            
+        }
+        
+    }
+    
+    /**
+     * シート用のアノテーションがない場合
+     */
+    @Test
+    public void test_loadMultiple_sheet_noGrant2() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            
+            assertThatThrownBy(() ->  mapper.loadMultiple(in, new Class[]{NoGrantSheet.class}))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessageContaining("において、アノテーション'@XlsSheet'が見つかりません。");
             
         }
         
@@ -255,7 +398,7 @@ public class AnnoSheetTest {
     /**
      * 書き込みのテスト - シート名の指定：指定したシートが存在しない。
      */
-    @Test(expected=SheetNotFoundException.class)
+    @Test
     public void test_save_sheet_name_nofFound() throws Exception {
         
         // テストデータの作成
@@ -269,8 +412,33 @@ public class AnnoSheetTest {
         try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet);
-            fail();
+            assertThatThrownBy(() -> mapper.save(template, out, outSheet))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("シート名'シート名（２）'が見つかりません。");
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - シート名の指定：指定したシートが存在しない。
+     */
+    @Test
+    public void test_saveMultiple_sheet_name_nofFound() throws Exception {
+        
+        // テストデータの作成
+        final NamedSheet2 outSheet = new NamedSheet2();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            assertThatThrownBy(() -> mapper.saveMultiple(template, out, new Object[]{outSheet}))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("シート名'シート名（２）'が見つかりません。");
         }
         
     }
@@ -294,6 +462,31 @@ public class AnnoSheetTest {
                 OutputStream out = new FileOutputStream(outFile)) {
             
             mapper.save(template, out, outSheet);
+            
+            assertThat(outSheet.sheetName, is(nullValue()));
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - シートが見つからなくてもスキップする設定
+     */
+    @Test
+    public void test_saveMultiple_sheet_skip_notFound() throws Exception {
+        
+        // テストデータの作成
+        final NamedSheet2 outSheet = new NamedSheet2();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true)
+            .setIgnoreSheetNotFound(true);
+        
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            mapper.saveMultiple(template, out, new Object[]{outSheet});
             
             assertThat(outSheet.sheetName, is(nullValue()));
         }
@@ -328,7 +521,7 @@ public class AnnoSheetTest {
     /**
      * 書き込みのテスト - インデックス指定。シートが見つからない場合
      */
-    @Test(expected=SheetNotFoundException.class)
+    @Test
     public void test_save_sheet_indexed_notFound() throws Exception {
         
         // テストデータの作成
@@ -342,9 +535,9 @@ public class AnnoSheetTest {
         try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet);
-            
-            fail();
+            assertThatThrownBy(() -> mapper.save(template, out, outSheet))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("シート番号'10'が見つかりません。ワークブックにはシート数が'4'個しかありません。");
         }
         
     }
@@ -377,7 +570,7 @@ public class AnnoSheetTest {
     /**
      * 書き込みのテスト - 正規表現の指定。シートが見つからない場合
      */
-    @Test(expected=SheetNotFoundException.class)
+    @Test
     public void test_save_sheet_regexp_single_notFound() throws Exception {
         
         // テストデータの作成
@@ -391,9 +584,10 @@ public class AnnoSheetTest {
         try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet);
+            assertThatThrownBy(() -> mapper.save(template, out, outSheet))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("シート名'チェック条件.+'が見つかりません。");
             
-            fail();
         }
         
     }
@@ -401,7 +595,7 @@ public class AnnoSheetTest {
     /**
      * 書き込みのテスト - 正規表現の指定。複数のシートがヒットした場合。
      */
-    @Test(expected=SheetNotFoundException.class)
+    @Test
     public void test_save_sheet_regexp_single_notFound2() throws Exception {
         
         // テストデータの作成
@@ -415,9 +609,9 @@ public class AnnoSheetTest {
         try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet);
-            
-            fail();
+            assertThatThrownBy(() -> mapper.save(template, out, outSheet))
+                .isInstanceOf(SheetNotFoundException.class)
+                .hasMessageContaining("正規表現によるシート名'編集条件.+'に該当するシート[編集条件（1）,編集条件（2）]が複数存在します。保存処理のときにはシートが一意に決まるように設定してください。");
         }
         
     }
@@ -454,7 +648,7 @@ public class AnnoSheetTest {
     /**
      * 書き込みのテスト - アノテーションにシートの指定がない場合
      */
-    @Test(expected=AnnotationInvalidException.class)
+    @Test
     public void test_save_sheet_noSetting() throws Exception {
         
         // テストデータの作成
@@ -468,9 +662,83 @@ public class AnnoSheetTest {
         try(InputStream template = new FileInputStream(templateFile);
                 OutputStream out = new FileOutputStream(outFile)) {
             
-            mapper.save(template, out, outSheet);
+            assertThatThrownBy(() -> mapper.save(template, out, outSheet))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessageContaining("において、アノテーション'@XlsSheet'の何れか属性[name or number or regex]の設定は必須です。");
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - アノテーションにシートの指定がない場合
+     */
+    @Test
+    public void test_saveMultiple_sheet_noSetting() throws Exception {
+        
+        // テストデータの作成
+        final NoSettingSheet outSheet = new NoSettingSheet();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
             
-            fail();
+            assertThatThrownBy(() -> mapper.saveMultiple(template, out, new Object[]{outSheet}))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessageContaining("において、アノテーション'@XlsSheet'の何れか属性[name or number or regex]の設定は必須です。");
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - アノテーション {@literal @XlsSheet}のが付与されていない
+     * @since 2.0
+     */
+    @Test
+    public void test_save_sheet_notGrant() throws Exception {
+        
+        // テストデータの作成
+        final NoGrantSheet outSheet = new NoGrantSheet();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            assertThatThrownBy(() -> mapper.save(template, out, outSheet))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessageContaining("において、アノテーション'@XlsSheet'が見つかりません。");
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - アノテーション {@literal @XlsSheet}のが付与されていない
+     * @since 2.0
+     */
+    @Test
+    public void test_saveMultiple_sheet_notGrant() throws Exception {
+        
+        // テストデータの作成
+        final NoGrantSheet outSheet = new NoGrantSheet();
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+            
+            assertThatThrownBy(() -> mapper.saveMultiple(template, out, new Object[]{outSheet}))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessageContaining("において、アノテーション'@XlsSheet'が見つかりません。");
         }
         
     }
@@ -556,6 +824,17 @@ public class AnnoSheetTest {
         
         @XlsSheetName
         private String sheetName;
+        
+    }
+    
+    /**
+     * シートのアノテーションが設定されていない場合
+     *
+     */
+    private static class NoGrantSheet {
+        @XlsSheetName
+        private String sheetName;
+        
         
     }
     

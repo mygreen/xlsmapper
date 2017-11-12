@@ -33,12 +33,10 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
  */
 public class FieldProcessorRegistry {
     
-    private Map<Class<? extends Annotation>, LoadingFieldProcessor<?>> loadingPocessorMap = new ConcurrentHashMap<>();
-    
-    private Map<Class<? extends Annotation>, SavingFieldProcessor<?>> savingPocessorMap = new ConcurrentHashMap<>();
+    private Map<Class<? extends Annotation>, FieldProcessor<?>> pocessorMap = new ConcurrentHashMap<>();
     
     public FieldProcessorRegistry() {
-        this.loadingPocessorMap = new ConcurrentHashMap<>();
+        this.pocessorMap = new ConcurrentHashMap<>();
         
         init();
     }
@@ -48,8 +46,7 @@ public class FieldProcessorRegistry {
      */
     public void init() {
         
-        loadingPocessorMap.clear();
-        savingPocessorMap.clear();
+        pocessorMap.clear();
         
         //標準のフィールドプロセッサを登録する。
         registerProcessor(XlsSheetName.class, new SheetNameProcessor());
@@ -64,50 +61,30 @@ public class FieldProcessorRegistry {
     }
     
     /**
-     * アノテーションに対する{@link LoadingFieldProcessor}を取得する。
+     * アノテーションに対する{@link FieldProcessor}を取得する。
      * @param annoClass  取得対象のアノテーションのクラスタイプ。
      * @return 見つからない場合はnullを返す。
      * @throws NullPointerException {@literal annoClass}
      */
     @SuppressWarnings("unchecked")
-    public <A extends Annotation> LoadingFieldProcessor<A> getLoadingProcessor(final Class<A> annoClass) {
+    public <A extends Annotation> FieldProcessor<A> getProcessor(final Class<A> annoClass) {
         ArgUtils.notNull(annoClass, "annoClass");
         
-        return (LoadingFieldProcessor<A>) loadingPocessorMap.get(annoClass);
-    }
-    
-    /**
-     * アノテーションに対する{@link SavingFieldProcessor}を取得する。
-     * @param annoClass 取得対象のアノテーションのクラスタイプ。
-     * @return 見つからない場合はnullを返す。
-     * @throws NullPointerException {@literal annoClass}
-     */
-    @SuppressWarnings("unchecked")
-    public <A extends Annotation> SavingFieldProcessor<A> getSavingProcessor(final Class<A> annoClass) {
-        ArgUtils.notNull(annoClass, "annoClass");
-        
-        return (SavingFieldProcessor<A>) savingPocessorMap.get(annoClass);
+        return (FieldProcessor<A>) pocessorMap.get(annoClass);
     }
     
     /**
      * アノテーションに対する{@link FieldProcessor}を登録する。
      * @param annoClass 登録対象のアノテーションのクラスタイプ。
-     * @param processor フィールドプロセッサーのインスタンス。
-     *                  {@link LoadingFieldProcessor}または{@link SavingFieldProcessor} を実装している必要がある。
+     * @param processor フィールドプロセッサーのインスタンス。{@link FieldProcessor}を実装している必要がある。
      * @throws NullPointerException {@literal annoClass == null or processor == null.}
      */
-    @SuppressWarnings("rawtypes")
     public <A extends Annotation> void registerProcessor(final Class<A> annoClass, final FieldProcessor<A> processor) {
         ArgUtils.notNull(annoClass, "annoClass");
         ArgUtils.notNull(processor, "processor");
         
-        if(processor instanceof LoadingFieldProcessor) {
-            loadingPocessorMap.put(annoClass, (LoadingFieldProcessor) processor);
-        }
+        pocessorMap.put(annoClass, processor);
         
-        if(processor instanceof SavingFieldProcessor) {
-            savingPocessorMap.put(annoClass, (SavingFieldProcessor) processor);
-        }
     }
     
 }

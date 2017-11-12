@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsFieldProcessor;
 import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
@@ -25,7 +26,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxy;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxyComparator;
-import com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessor;
 import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
@@ -313,7 +314,7 @@ public class XlsLoader {
      * @param clazz マッピング先のクラスタイプ。
      * @param annoReader 
      * @return シートのマッピング情報
-     * @throws Exception 
+     * @throws XlsMapperException 
      * 
      */
     private <P> SheetBindingErrors<P> loadSheet(final Sheet sheet, final Class<P> clazz, final AnnotationReader annoReader) 
@@ -358,19 +359,35 @@ public class XlsLoader {
         // public メソッドの処理
         for(Method method : clazz.getMethods()) {
             method.setAccessible(true);
-            
             for(Annotation anno : annoReader.getAnnotations(method)) {
-                final LoadingFieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
-                
-                if(processor != null && ClassUtils.isAccessorMethod(method)) {
-                    final FieldAccessor accessor = adpterFactory.create(method);
+                final XlsFieldProcessor annoFieldProcessor = anno.annotationType().getAnnotation(XlsFieldProcessor.class);
+                if(ClassUtils.isAccessorMethod(method) && annoFieldProcessor != null) {
+                    // 登録済みのFieldProcessorの取得
+                    FieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getProcessor(anno.annotationType());
                     
-                    final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
-                    if(!accessorProxies.contains(accessorProxy)) {
-                        accessorProxies.add(accessorProxy);
+                    // アノテーションに指定されているFieldProcessorの場合
+                    if(processor == null && annoFieldProcessor.value().length > 0) {
+                        processor = configuration.createBean(annoFieldProcessor.value()[0]);
+                        
                     }
                     
-                } else if(anno instanceof XlsPostLoad) {
+                    if(processor != null) {
+                        final FieldAccessor accessor = adpterFactory.create(method);
+                        final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
+                        if(!accessorProxies.contains(accessorProxy)) {
+                            accessorProxies.add(accessorProxy);
+                        }
+                        
+                    } else {
+                        // FieldProcessorが見つからない場合
+                        throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.XlsFieldProcessor.notResolve")
+                                .varWithAnno("anno", anno.annotationType())
+                                .format());
+                    }
+                    
+                }
+                
+                if(anno instanceof XlsPostLoad) {
                     work.addNeedPostProcess(new NeedProcess(beanObj, beanObj, method));
                 }
             }
@@ -381,19 +398,37 @@ public class XlsLoader {
         for(Field field : clazz.getDeclaredFields()) {
             
             field.setAccessible(true);
-            final FieldAccessor accessor = adpterFactory.create(field);
-            
             for(Annotation anno : annoReader.getAnnotations(field)) {
-                final LoadingFieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getLoadingProcessor(anno.annotationType());
                 
-                if(processor != null) {
+                final XlsFieldProcessor annoFieldProcessor = anno.annotationType().getAnnotation(XlsFieldProcessor.class);
+                if(annoFieldProcessor != null) {
                     
-                    final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
-                    if(!accessorProxies.contains(accessorProxy)) {
-                        accessorProxies.add(accessorProxy);
+                    // 登録済みのFieldProcessorの取得
+                    FieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getProcessor(anno.annotationType());
+                    
+                    // アノテーションに指定されているFieldProcessorの場合
+                    if(processor == null && annoFieldProcessor.value().length > 0) {
+                        processor = configuration.createBean(annoFieldProcessor.value()[0]);
+                        
+                    }
+                    
+                    if(processor != null) {
+                        final FieldAccessor accessor = adpterFactory.create(field);
+                        final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
+                        if(!accessorProxies.contains(accessorProxy)) {
+                            accessorProxies.add(accessorProxy);
+                        }
+                        
+                    } else {
+                        // FieldProcessorが見つからない場合
+                        throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.XlsFieldProcessor.notResolve")
+                                .varWithAnno("anno", anno.annotationType())
+                                .format());
                     }
                     
                 }
+                
+                
             }
         }
         

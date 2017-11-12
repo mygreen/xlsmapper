@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gh.mygreen.xlsmapper.annotation.XlsFieldProcessor;
 import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
@@ -25,7 +26,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxy;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxyComparator;
-import com.gh.mygreen.xlsmapper.fieldprocessor.SavingFieldProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessor;
 import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
@@ -278,17 +279,36 @@ public class XlsSaver {
             
             for(Annotation anno : annoReader.getAnnotations(method)) {
                 
-                final SavingFieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getSavingProcessor(anno.annotationType());
-                
-                if(processor != null && ClassUtils.isAccessorMethod(method)) {
-                    final FieldAccessor accessor = adpterFactory.create(method);
+                final XlsFieldProcessor annoFieldProcessor = anno.annotationType().getAnnotation(XlsFieldProcessor.class);
+                if(ClassUtils.isAccessorMethod(method) && annoFieldProcessor != null) {
                     
-                    final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
-                    if(!accessorProxies.contains(accessorProxy)) {
-                        accessorProxies.add(accessorProxy);
+                    // 登録済みのFieldProcessorの取得
+                    FieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getProcessor(anno.annotationType());
+                    
+                    // アノテーションに指定されているFieldProcessorの場合
+                    if(processor == null && annoFieldProcessor.value().length > 0) {
+                        processor = configuration.createBean(annoFieldProcessor.value()[0]);
+                        
                     }
                     
-                } else if(anno instanceof XlsPostSave) {
+                    if(processor != null) {
+                        final FieldAccessor accessor = adpterFactory.create(method);
+                        
+                        final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
+                        if(!accessorProxies.contains(accessorProxy)) {
+                            accessorProxies.add(accessorProxy);
+                        }
+                        
+                    } else {
+                        // FieldProcessorが見つからない場合
+                        throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.XlsFieldProcessor.notResolve")
+                                .varWithAnno("anno", anno.annotationType())
+                                .format());
+                    }
+                    
+                }
+                
+                if(anno instanceof XlsPostSave) {
                     work.addNeedPostProcess(new NeedProcess(beanObj, beanObj, method));
                 }
             }
@@ -301,13 +321,30 @@ public class XlsSaver {
             final FieldAccessor accessor = adpterFactory.create(field);
             
             for(Annotation anno : annoReader.getAnnotations(field)) {
-                final SavingFieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getSavingProcessor(anno.annotationType());
                 
-                if(processor != null) {
-                    final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
-                    if(!accessorProxies.contains(accessorProxy)) {
-                        accessorProxies.add(accessorProxy);
+                final XlsFieldProcessor annoFieldProcessor = anno.annotationType().getAnnotation(XlsFieldProcessor.class);
+                if(annoFieldProcessor != null) {
+                    // 登録済みのFieldProcessorの取得
+                    FieldProcessor<?> processor = configuration.getFieldProcessorRegistry().getProcessor(anno.annotationType());
+                    
+                    // アノテーションに指定されているFieldProcessorの場合
+                    if(processor == null && annoFieldProcessor.value().length > 0) {
+                        processor = configuration.createBean(annoFieldProcessor.value()[0]);
                     }
+                    
+                    if(processor != null) {
+                        final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);
+                        if(!accessorProxies.contains(accessorProxy)) {
+                            accessorProxies.add(accessorProxy);
+                        }
+                        
+                    } else {
+                        // FieldProcessorが見つからない場合
+                        throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.XlsFieldProcessor.notResolve")
+                                .varWithAnno("anno", anno.annotationType())
+                                .format());
+                    }
+                    
                 }
             }
             

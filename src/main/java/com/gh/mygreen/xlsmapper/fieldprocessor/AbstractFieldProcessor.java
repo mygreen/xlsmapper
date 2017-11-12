@@ -20,7 +20,7 @@ import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
  * @author T.TSUCHIE
  *
  */
-public abstract class AbstractFieldProcessor<A extends Annotation> implements LoadingFieldProcessor<A>, SavingFieldProcessor<A> {
+public abstract class AbstractFieldProcessor<A extends Annotation> implements FieldProcessor<A> {
     
     /**
      * 該当するタイプのConverterが見つからないときの例外のインスタンスを作成する。

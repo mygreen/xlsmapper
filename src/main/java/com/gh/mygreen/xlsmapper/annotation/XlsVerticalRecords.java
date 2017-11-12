@@ -91,6 +91,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@XlsFieldProcessor(value={})
 public @interface XlsVerticalRecords {
     
     /**

@@ -81,6 +81,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@XlsFieldProcessor(value={})
 public @interface XlsLabelledCell {
     
     /**

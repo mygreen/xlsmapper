@@ -58,7 +58,7 @@ public @interface XlsEnumConverter {
      * public class SampleRecord {
      * 
      *     {@literal @XlsColumn(columnName="権限")}
-     *     {@literal @XlsEnumConverter(selector="localeName")}
+     *     {@literal @XlsEnumConverter(selectorMethodName="localeName")}
      *     private RoleType role;
      * 
      * }
@@ -81,5 +81,5 @@ public @interface XlsEnumConverter {
      * }
      * </code></pre>
      */
-    String selector() default "";
+    String selectorMethodName() default "";
 }

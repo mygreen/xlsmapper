@@ -116,6 +116,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Documented
+@XlsFieldProcessor(value={})
 public @interface XlsIterateTables {
     
     /**

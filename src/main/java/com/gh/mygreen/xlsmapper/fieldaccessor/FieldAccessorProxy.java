@@ -4,13 +4,11 @@ import java.lang.annotation.Annotation;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessor;
-import com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor;
-import com.gh.mygreen.xlsmapper.fieldprocessor.SavingFieldProcessor;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 /**
@@ -75,20 +73,18 @@ public class FieldAccessorProxy {
         return true;
     }
     
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void loadProcess(final Sheet sheet, final Object beanObj, final Configuration config, final LoadingWorkObject work)
             throws XlsMapperException {
         
-        LoadingFieldProcessor p = (LoadingFieldProcessor) processor;
-        p.loadProcess(sheet, beanObj, getAnnotation(), field, config, work);
+        ((FieldProcessor)processor).loadProcess(sheet, beanObj, getAnnotation(), field, config, work);
     }
     
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void saveProcess(final Sheet sheet, final Object beanObj, final Configuration config, final SavingWorkObject work) 
             throws XlsMapperException {
         
-        SavingFieldProcessor p = (SavingFieldProcessor) processor;
-        p.saveProcess(sheet, beanObj, getAnnotation(), field, config, work);
+        ((FieldProcessor)processor).saveProcess(sheet, beanObj, getAnnotation(), field, config, work);
     }
     
     /**

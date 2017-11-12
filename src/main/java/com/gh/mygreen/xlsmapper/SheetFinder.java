@@ -81,6 +81,7 @@ public class SheetFinder {
         }
         
         throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.attr.required.any")
+                .varWithClass("property", beanClass)
                 .varWithAnno("anno", XlsSheet.class)
                 .varWithArrays("attrNames", "name", "number", "regex")
                 .format());
@@ -167,6 +168,7 @@ public class SheetFinder {
         }
         
         throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.attr.required.any")
+                .varWithClass("property", beanObj.getClass())
                 .varWithAnno("anno", XlsSheet.class)
                 .varWithArrays("attrNames", "name", "number", "regex")
                 .format());

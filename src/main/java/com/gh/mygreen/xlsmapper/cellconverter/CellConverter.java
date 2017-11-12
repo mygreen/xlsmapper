@@ -11,7 +11,7 @@ import com.gh.mygreen.xlsmapper.util.CellPosition;
  *
  * @version 2.0
  * @author T.TSUCHIE
- * @param <T> 変換対象のJavaのオブジェクト
+ * @param <T> 変換対象のJavaのオブジェクトのタイプ
  */
 public interface CellConverter<T> {
     

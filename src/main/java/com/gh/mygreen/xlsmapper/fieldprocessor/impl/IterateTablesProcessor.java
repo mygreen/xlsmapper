@@ -212,7 +212,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             final Cell headerCell, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         final LabelledCellProcessor labelledCellProcessor = 
-                (LabelledCellProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsLabelledCell.class);
+                (LabelledCellProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledCell.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)
@@ -258,7 +258,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             final Cell headerCell, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
         
         final LabelledArrayCellsProcessor labelledArrayCellProcessor = 
-                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsLabelledArrayCells.class);
+                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledArrayCells.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)
@@ -305,7 +305,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         }
         
         final HorizontalRecordsProcessor processor = 
-                (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsHorizontalRecords.class);
+                (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsHorizontalRecords.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)
@@ -345,7 +345,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         }
         
         final VerticalRecordsProcessor processor = 
-                (VerticalRecordsProcessor) config.getFieldProcessorRegistry().getLoadingProcessor(XlsVerticalRecords.class);
+                (VerticalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsVerticalRecords.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsVerticalRecords.class)
@@ -372,6 +372,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
@@ -492,7 +493,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         final LabelledCellProcessor labelledCellProcessor = 
-                (LabelledCellProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsLabelledCell.class);
+                (LabelledCellProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledCell.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)
@@ -532,7 +533,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
         
         final LabelledArrayCellsProcessor labelledArrayCellProcessor = 
-                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsLabelledArrayCells.class);
+                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledArrayCells.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)
@@ -580,7 +581,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         }
         
         final HorizontalRecordsProcessor processor = 
-                (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsHorizontalRecords.class);
+                (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsHorizontalRecords.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)
@@ -622,7 +623,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         }
         
         final VerticalRecordsProcessor processor = 
-                (VerticalRecordsProcessor) config.getFieldProcessorRegistry().getSavingProcessor(XlsVerticalRecords.class);
+                (VerticalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsVerticalRecords.class);
         
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsVerticalRecords.class)
