@@ -1318,27 +1318,27 @@ public class NumberCellConverterTest {
 
         @XlsOrder(value=1)
         @XlsHorizontalRecords(tableLabel="プリミティブ型", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<PrimitiveRecord> primitiveRecords;
 
         @XlsOrder(value=2)
         @XlsHorizontalRecords(tableLabel="ラッパークラス", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<WrapperRecord> wrapperRecords;
 
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="その他のクラス", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<OtherRecord> otherRecords;
 
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="初期値、書式指定", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormattedRecord> formattedRecords;
 
         @XlsOrder(value=5)
         @XlsHorizontalRecords(tableLabel="数式指定", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormulaRecord> formulaRecords;
 
         /**

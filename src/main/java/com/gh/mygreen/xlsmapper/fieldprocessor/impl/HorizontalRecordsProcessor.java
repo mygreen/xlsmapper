@@ -883,7 +883,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
          */
         final List<CellRangeAddress> mergedRegionList = new ArrayList<>();
 
-        if(recordOptionAnno.overOpration().equals(OverOperation.Insert)
+        if(recordOptionAnno.overOperation().equals(OverOperation.Insert)
                 || recordOptionAnno.remainedOperation().equals(RemainedOperation.Delete)) {
 
             final int mergedNum = sheet.getNumMergedRegions();
@@ -954,7 +954,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     }
 
                     @Override
-                    public OverOperation overOpration() {
+                    public OverOperation overOperation() {
                         return OverOperation.Break;
                     }
                 });
@@ -1114,17 +1114,17 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
                         // 書き込む行が足りない場合の操作
                         if(emptyFlag) {
-                            if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Break)) {
+                            if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Break)) {
                                 break;
 
-                            } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Copy)) {
+                            } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {
                                 // 1つ上のセルの書式をコピーする。
                                 final Cell fromCell = POIUtils.getCell(sheet, valueCell.getColumnIndex(), valueCell.getRowIndex()-1);
                                 copyCellStyle(fromCell, valueCell);
 
                                 recordOperation.incrementCopyRecord();
 
-                            } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Insert)) {
+                            } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {
                                 // すでに他の列の処理に対して行を追加している場合は行の追加は行わない。
                                 if(!insertRows) {
                                     // 行を下に追加する
@@ -1421,14 +1421,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
                     // 空セルの場合
                     if(emptyFlag) {
-                        if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Break)) {
+                        if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Break)) {
                             break;
 
-                        } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Copy)) {
+                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {
                             final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1);
                             copyCellStyle(fromCell, cell);
 
-                        } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Insert)) {
+                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {
                             // 既に追加ずみなので、セルの書式のコピーのみ行う
                             final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1);
                             copyCellStyle(fromCell, cell);
@@ -1513,14 +1513,14 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
                     // 空セルの場合
                     if(emptyFlag) {
-                        if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Break)) {
+                        if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Break)) {
                             break;
 
-                        } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Copy)) {
+                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {
                             final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1);
                             copyCellStyle(fromCell, cell);
 
-                        } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Insert)) {
+                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {
                             // 既に追加ずみなので、セルの書式のコピーのみ行う
                             final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1);
                             copyCellStyle(fromCell, cell);

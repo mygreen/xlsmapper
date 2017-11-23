@@ -572,7 +572,7 @@ public class AnnoFormulaTest {
         private Map<String, Point> positions;
 
         @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<SampleRecord> records;
 
         // レコードを追加する

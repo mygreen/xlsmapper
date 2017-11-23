@@ -946,7 +946,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     }
 
                     @Override
-                    public OverOperation overOpration() {
+                    public OverOperation overOperation() {
                         return OverOperation.Break;
                     }
                 });
@@ -1109,10 +1109,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                         // 書き込む行が足りない場合の操作
                         if(emptyFlag) {
-                            if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Break)) {
+                            if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Break)) {
                                 break;
 
-                            } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Copy)) {
+                            } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {
                                 // 1つ左のセルの書式をコピーする。
                                 final CellStyle style = POIUtils.getCell(sheet, valueCell.getColumnIndex()-1, valueCell.getRowIndex()).getCellStyle();
                                 valueCell.setCellStyle(style);
@@ -1123,7 +1123,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                                 recordOperation.incrementCopyRecord();
 
-                            } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Insert)) {
+                            } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {
                                 // POIは列の追加をサポートしていないので非対応。
                                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                         .var("property", accessor.getNameWithClass())
@@ -1386,15 +1386,15 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                     // 空セルの場合
                     if(emptyFlag) {
-                        if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Break)) {
+                        if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Break)) {
                             break;
 
-                        } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Copy)) {
+                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {
                             final CellStyle style = POIUtils.getCell(sheet, cell.getColumnIndex()-1, cell.getRowIndex()).getCellStyle();
                             cell.setCellStyle(style);
                             cell.setCellType(CellType.BLANK);
 
-                        } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Insert)) {
+                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {
                             // POIは列の追加をサポートしていないので非対応。
                             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                     .var("property", property.getNameWithClass())
@@ -1481,14 +1481,14 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                     // 空セルの場合
                     if(emptyFlag) {
-                        if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Break)) {
+                        if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Break)) {
                             break;
 
-                        } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Copy)) {
+                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {
                             final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex()-1, cell.getRowIndex());
                             copyCellStyle(fromCell, cell);
 
-                        } else if(recordOperation.getAnnotation().overOpration().equals(OverOperation.Insert)) {
+                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {
                             // POIは列の追加をサポートしていないので非対応。
                             throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.notSupportValue")
                                     .var("property", property.getNameWithClass())

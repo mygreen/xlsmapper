@@ -43,7 +43,7 @@ public @interface XlsRecordOption {
      *
      * @return {@link OverOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。
      */
-    OverOperation overOpration() default OverOperation.Break;
+    OverOperation overOperation() default OverOperation.Break;
 
     /**
      * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。

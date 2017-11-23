@@ -164,7 +164,7 @@ public class SampleTest {
         Date createDate;
 
         @XlsHorizontalRecords(tableLabel="User List")
-        @XlsRecordOption(overOpration=OverOperation.Insert)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         List<UserRecord> users;
 
     }
@@ -269,7 +269,7 @@ public class SampleTest {
     private static class MapColumnsDynamicSheet {
 
         @XlsHorizontalRecords(tableLabel="ユーザ一覧")
-        @XlsRecordOption(overOpration=OverOperation.Insert)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         List<SampleRecord> records;
 
         // XlsMapColumnsのマッピング用のセルを作成する

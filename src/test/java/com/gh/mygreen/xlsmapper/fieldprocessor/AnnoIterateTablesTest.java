@@ -1541,12 +1541,12 @@ public class AnnoIterateTablesTest {
 
             @XlsOrder(value=3)
             @XlsHorizontalRecords(terminal=RecordTerminal.Border, headerLimit=3)
-            @XlsRecordOption(overOpration=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
+            @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
             private List<PersonRecord> persons;
 
             @XlsOrder(value=4)
             @XlsVerticalRecords(terminal=RecordTerminal.Border, right=4)
-            @XlsRecordOption(overOpration=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
+            @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
             private List<AttendRecord> attends;
         }
 
@@ -1607,7 +1607,7 @@ public class AnnoIterateTablesTest {
 
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
+        @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         private List<PersonRecord> persons;
 
         public HorizontalClassTable no(int no) {
@@ -1653,7 +1653,7 @@ public class AnnoIterateTablesTest {
 
         @XlsOrder(value=3)
         @XlsVerticalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
+        @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
         private List<PersonRecord> persons;
 
         public VerticalClassTable no(int no) {
@@ -1767,7 +1767,7 @@ public class AnnoIterateTablesTest {
 
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
+        @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         private List<PersonRecord> persons;
 
         public OptionalClassTable no(int no) {
@@ -1835,12 +1835,12 @@ public class AnnoIterateTablesTest {
 
         @XlsOrder(value=3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3)
-        @XlsRecordOption(overOpration=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
+        @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         private List<PersonRecord> persons;
 
         @XlsOrder(value=4)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4)
-        @XlsRecordOption(overOpration=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
+        @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
         private List<ResultRecord> results;
 
         public ConcatClassTable no(int no) {
@@ -2003,7 +2003,7 @@ public class AnnoIterateTablesTest {
         }
 
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
+        @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         public List<PersonRecord> getPersons() {
             return persons;
         }
@@ -2110,7 +2110,7 @@ public class AnnoIterateTablesTest {
 
             @XlsOrder(value=3)
             @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border)
-            @XlsRecordOption(overOpration=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
+            @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
             private List<RegexRecord> persons;
 
             // 値設定用のメソッド
@@ -2219,7 +2219,7 @@ public class AnnoIterateTablesTest {
 
             @XlsOrder(value=3)
             @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border)
-            @XlsRecordOption(overOpration=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
+            @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
             private List<ArrayCellRecord> persons;
 
             // 値設定用のメソッド

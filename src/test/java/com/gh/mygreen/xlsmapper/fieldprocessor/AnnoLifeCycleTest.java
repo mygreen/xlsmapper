@@ -367,11 +367,11 @@ public class AnnoLifeCycleTest {
         private String name;
 
         @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
+        @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         private List<Record> hRecords;
 
         @XlsVerticalRecords(tableLabel="縦方向", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
+        @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
         private List<Record> vRecords;
 
         public SimpleSheet addHoritonzal(final Record record) {
@@ -629,7 +629,7 @@ public class AnnoLifeCycleTest {
         private String name;
 
         @XlsHorizontalRecords(tableLabel="横方向", terminal=RecordTerminal.Border)
-        @XlsRecordOption(overOpration=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
+        @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         private List<Record> hRecords;
 
         public Table name(final String name) {
