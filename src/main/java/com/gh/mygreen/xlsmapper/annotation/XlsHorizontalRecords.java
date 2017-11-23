@@ -137,7 +137,8 @@ public @interface XlsHorizontalRecords {
     String terminateLabel() default "";
     
     /**
-     * 表の開始位置（見出し行）セルの行番号を指定します。{@link #headerColumn()}属性とセットで指定します。
+     * 表の開始位置（見出し行）セルの行番号を指定します。
+     * {@link #headerColumn()}属性とセットで指定します。
      * 
      * <pre class="highlight"><code class="java">
      * {@literal @XlsSheet(name="Users")}
@@ -150,12 +151,13 @@ public @interface XlsHorizontalRecords {
      * }
      * </code></pre>
      * 
-     * @return 値は0から始まり、指定しない場合は-1を指定します。
+     * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int headerRow() default -1;
     
     /**
-     * 表の開始位置（見出し列）セルの行番号を指定します。{@link #headerRow()}属性とセットで指定します。
+     * 表の開始位置（見出し列）セルの行番号を指定します。
+     * {@link #headerRow()}属性とセットで指定します。
      * 
      * <pre class="highlight"><code class="java">
      * {@literal @XlsSheet(name="Users")}
@@ -168,12 +170,14 @@ public @interface XlsHorizontalRecords {
      * }
      * </code></pre>
      * 
-     * @return 値は0から始まり、指定しない場合は-1を指定します。
+     * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int headerColumn() default -1;
     
     /**
-     * 表の開始位置のセルのアドレスを'A1'などのように指定します。値を指定した場合、指定したアドレスを起点に走査を行います
+     * 表の開始位置のセルのアドレスを指定します。
+     * 値を指定した場合、指定したアドレスを起点に走査を行います
+     * 
      * <p>属性{@link #headerRow()},{@link #headerColumn()}のどちらか一方を指定可能です</p>
      * <p>表の名称がない場合、表の開始位置をインデックスやアドレスで指定します。</p>
      * <ul>
@@ -190,14 +194,14 @@ public @interface XlsHorizontalRecords {
      * }
      * </code></pre>
      * 
-     * @return 
+     * @return 'A1'の形式で指定します。空文字は無視されます。
      */
     String headerAddress() default "";
     
     
     /** 
      * レコードのマッピング先のクラスを指定します。
-     * <p>指定しない場合は、Genericsの定義タイプが自動的に採用されます。</p>
+     * <p>省略した場合、定義されたGenericsタイプから取得します。</p>
      */
     Class<?> recordClass() default Object.class;
     

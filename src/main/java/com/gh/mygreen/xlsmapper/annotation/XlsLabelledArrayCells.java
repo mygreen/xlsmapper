@@ -77,7 +77,7 @@ public @interface XlsLabelledArrayCells {
      *    <p>属性rangeの概要</p>
      * </div>
      * 
-     * @return 値は1から始まり、指定しない場合は1を指定します。
+     * @return 値は1から始まります。指定しない場合は1を指定します。
      */
     int range() default 1;
     
@@ -96,20 +96,24 @@ public @interface XlsLabelledArrayCells {
     /**
      * 見出しとなるセルの行番号を指定します。
      * <p>{@link #labelColumn()}属性とセットで指定します。</p>
-     * @return 値は0から始まり、指定しない場合は-1を指定します。
+     * 
+     * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int labelRow() default -1;
     
     /**
      * 見出しとなるセルの列番号を指定します。
      * <p>{@link #labelRow()}属性とセットで指定します。</p>
-     * @return 値は0から始まり、指定しない場合は1を指定します。
+     * 
+     * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int labelColumn() default -1;
     
     /**
-     * 見出しとなるセルをアドレス形式で指定します。'A1'などのようにシートのアドレスで指定します。
-     * @return 
+     * 見出しとなるセルのアドレスを指定します。
+     * <p>{@link #labelRow()}、{@link #labelColumn()}属性のどちらか一方を指定します。</p>
+     * 
+     * @return 'A1'の形式で指定します。空文字は無視されます。
      */
     String labelAddress() default "";
     
@@ -163,7 +167,7 @@ public @interface XlsLabelledArrayCells {
      * </div>
      * 
      * 
-     * @return 値は0から始まり、指定しない場合は0を指定します。
+     * @return 値は0から始まります。0以下の値は無視されます。
      */
     int skip() default 0;
     
@@ -175,7 +179,7 @@ public @interface XlsLabelledArrayCells {
      *    結合分を自動的に考慮して値をマッピングします。
      * </p>
      * 
-     * @return trueの場合、ラベルが指定されているセルが結合されていることを考慮する。
+     * @return trueの場合、ラベルが指定されているセルが結合されていることを考慮します。
      */
     boolean labelMerged() default false;
 }

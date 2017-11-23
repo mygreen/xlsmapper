@@ -56,4 +56,10 @@ public @interface XlsDefaultValue {
      */
     String value();
     
+    /**
+     * 適用するケースを指定します。
+     * @return 何も指定しない場合は全てのケースに適用されます。
+     */
+    ProcessCase[] cases() default {};
+    
 }

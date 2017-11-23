@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
 import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
 import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.expression.ExpressionEvaluationException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
@@ -19,13 +19,13 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * {@link CellConverter}を作成するための抽象クラス。
- * 
+ *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
 public abstract class AbstractCellConverterFactorySupport<T>  {
-    
+
     /**
      * 引数で指定したCellConverterに対して、トリムなどの共通の設定を行う。
      * @param cellConverter 設定を行うCellConverter
@@ -33,10 +33,10 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
      * @param config システム設定情報
      */
     protected void setupCellConverter(final AbstractCellConverter<T> cellConverter, final FieldAccessor field, final Configuration config) {
-        
+
         final TextFormatter<T> textFormatter = createTextFormatter(field, config);
         cellConverter.setTextFormatter(textFormatter);
-        
+
         // トリムの設定
         final Optional<XlsTrim> trimAnno = field.getAnnotation(XlsTrim.class);
         final boolean trimmed = trimAnno.map(anno -> true).orElse(false);
@@ -47,11 +47,11 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
         final Optional<XlsDefaultValue> defaultValueAnno = field.getAnnotation(XlsDefaultValue.class);
         defaultValueAnno.ifPresent(anno -> {
             String text = Utils.trim(anno.value(), trimmed);
-            
+
             try {
                 T defaultValue = textFormatter.parse(text);
-                cellConverter.setDefaultValue(defaultValue);
-                
+                cellConverter.setDefaultValue(defaultValue, anno.cases());
+
             } catch(TextParseException e) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.XlsDefaultValue.failParse")
                         .var("property", field.getNameWithClass())
@@ -60,20 +60,30 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
                         .format(), e);
             }
         });
-        
+
+        // セルの書式の設定
+        final Optional<XlsCellOption> cellOptionAnno = field.getAnnotation(XlsCellOption.class);
+        cellOptionAnno.ifPresent(anno -> {
+            cellConverter.setShrinktToFit(anno.shrinkToFit());
+            cellConverter.setWrapText(anno.wrapText());
+            cellConverter.setIndent(anno.indent());
+            cellConverter.setHorizontalAlignment(anno.horizontalAlign().poiAlignType());
+            cellConverter.setVerticalAlignment(anno.verticalAlign().poiAlignType());
+        });
+
         // 数式の設定
         final Optional<XlsFormula> formulaAnno = field.getAnnotation(XlsFormula.class);
         formulaAnno.ifPresent(anno -> {
             CellFormulaHandler formulaHandler = createCellFormulaHandler(anno, field, config);
             cellConverter.setFormulaHandler(formulaHandler);
-            
+
         });
-        
+
         // 各個別の設定
         setupCustom(cellConverter, field, config);
-        
+
     }
-    
+
     /**
      * 各個別に、Converterの設定を行う。
      * @param cellConverter
@@ -81,7 +91,7 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
      * @param config
      */
     protected abstract void setupCustom(AbstractCellConverter<T> cellConverter, FieldAccessor field, Configuration config);
-    
+
     /**
      * {@link TextFormatter}のインスタンスを作成する。
      * @param field フィールド情報
@@ -89,7 +99,7 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
      * @return {@link TextFormatter}のインスタンス
      */
     protected abstract TextFormatter<T> createTextFormatter(FieldAccessor field, Configuration config);
-    
+
     /**
      * 数式を処理する{@link CellFormulaHandler}を作成する。
      * @param formulaAnno 数式のアノテーション
@@ -98,13 +108,13 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
      * @return {@link CellFormulaHandler}のインスタンス
      */
     protected CellFormulaHandler createCellFormulaHandler(final XlsFormula formulaAnno, final FieldAccessor field, final Configuration config) {
-        
+
         if(!formulaAnno.value().isEmpty()) {
             final String formulaExpression = formulaAnno.value();
             try {
                 // EL式として正しいか検証する
                 config.getFormulaFormatter().interpolate(formulaExpression, Collections.emptyMap());
-                
+
             } catch(ExpressionEvaluationException e) {
                 throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.invalidEL")
                         .var("property", field.getNameWithClass())
@@ -113,11 +123,11 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
                         .var("attrValue", formulaExpression)
                         .format());
             }
-            
+
             CellFormulaHandler handler = new CellFormulaHandler(formulaExpression);
             handler.setPrimaryFormula(formulaAnno.primary());
             return handler;
-            
+
         } else if(!formulaAnno.methodName().isEmpty()) {
             // 戻り値が文字列の数式を返すメソッドを探す
             final Class<?> targetClass = field.getDeclaringClass();
@@ -129,7 +139,7 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
                     break;
                 }
             }
-            
+
             if(method == null) {
                 throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.notFoundMethod")
                         .var("property", field.getNameWithClass())
@@ -139,12 +149,12 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
                         .varWithClass("definedClass", targetClass)
                         .format());
             }
-            
+
             method.setAccessible(true);
             CellFormulaHandler handler = new CellFormulaHandler(method);
             handler.setPrimaryFormula(formulaAnno.primary());
             return handler;
-            
+
         } else {
             throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create("anno.attr.required.any")
                     .var("property", field.getNameWithClass())
@@ -152,8 +162,8 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
                     .varWithArrays("attrNames", "value", "methodName")
                     .format());
         }
-        
+
     }
-    
-    
+
+
 }

@@ -46,21 +46,26 @@ import java.lang.annotation.Target;
 public @interface XlsCell {
     
     /**
-     * セルの行番号を指定します。0から始まります。
+     * セルの行番号を指定します。
      * {@link #column()}属性とセットで指定します。
+     * 
+     * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int row() default -1;
     
     /**
-     * セルの列番号を指定します。0から始まります。
+     * セルの列番号を指定します。
      * {@link #row()}属性とセットで指定します。
+     * 
+     * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int column() default -1;
     
     /**
-     * セルのアドレスを指定します。'A1'などのようにシートのアドレスで指定します。
-     * <p>{@link #row()}、{@link #column()}属性のどちらか一方を指定します。
-     * @return
+     * セルのアドレスを指定します。
+     * <p>{@link #row()}、{@link #column()}属性のどちらか一方を指定します。</p>
+     * 
+     * @return 'A1'の形式で指定します。空文字は無視されます。
      */
     String address() default "";
 }

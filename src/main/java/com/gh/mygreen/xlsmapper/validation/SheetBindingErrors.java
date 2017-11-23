@@ -584,7 +584,7 @@ public class SheetBindingErrors<P> {
     
     /**
      * グローバルエラーのビルダーを作成します。
-     * @param errorCode エラーコード。先頭の要素が優先されます。
+     * @param errorCodes エラーコード。先頭の要素が優先されます。
      * @return {@link ObjectError}のインスタンスを組み立てるビルダクラス。
      */
     public InternalObjectErrorBuilder createGlobalError(final String[] errorCodes) {

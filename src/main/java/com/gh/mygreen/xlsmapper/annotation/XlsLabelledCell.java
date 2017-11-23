@@ -128,20 +128,24 @@ public @interface XlsLabelledCell {
     /**
      * 見出しとなるセルの行番号を指定します。
      * <p>{@link #labelColumn()}属性とセットで指定します。</p>
-     * @return 値は0から始まり、指定しない場合は-1を指定します。
+     * 
+     * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int labelRow() default -1;
     
     /**
      * 見出しとなるセルの列番号を指定します。
      * <p>{@link #labelRow()}属性とセットで指定します。</p>
-     * @return 値は0から始まり、指定しない場合は1を指定します。
+     * 
+     * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int labelColumn() default -1;
     
     /**
-     * 見出しとなるセルをアドレス形式で指定します。'A1'などのようにシートのアドレスで指定します。
-     * @return 
+     * 見出しとなるセルをアドレス形式で指定します。
+     * <p>{@link #labelRow()}、{@link #labelColumn()}属性のどちらか一方を指定します。</p>
+     * 
+     * @return 'A1'の形式で指定します。空文字は無視されます。
      */
     String labelAddress() default "";
     
@@ -195,7 +199,7 @@ public @interface XlsLabelledCell {
      * </div>
      * 
      * 
-     * @return 値は0から始まり、指定しない場合は0を指定します。
+     * @return 値は0から始まります。0の場合は無視されます。
      */
     int skip() default 0;
     
@@ -208,7 +212,7 @@ public @interface XlsLabelledCell {
      * </p>
      * 
      * @since 2.0
-     * @return trueの場合、ラベルが指定されているセルが結合されていることを考慮する。
+     * @return trueの場合、ラベルが指定されているセルが結合されていることを考慮します。
      */
     boolean labelMerged() default false;
 }

@@ -20,7 +20,7 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 /**
  * {@link XlsLabelledCell}を処理するFieldProcessor。
- * 
+ *
  * @version 2.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
@@ -31,11 +31,11 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno,
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
-        
+
         // マッピング対象のセル情報の取得
         LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);
         Optional<LabelInfo> labelInfo = labelHandler.handle(anno, ProcessType.Load);
-        
+
         if(!labelInfo.isPresent()) {
             /*
              * ラベル用のセルが見つからない場合
@@ -43,15 +43,15 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
              */
             return;
         }
-        
+
         accessor.setPosition(beansObj, labelInfo.get().valueAddress);
         accessor.setLabel(beansObj, labelInfo.get().label);
-        
+
         final CellConverter<?> converter = getCellConverter(accessor, config);
         if(converter instanceof FieldFormatter) {
             work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
         }
-        
+
         try {
             final Object value = converter.toObject(labelInfo.get().valueCell);
             accessor.setValue(beansObj, value);
@@ -62,16 +62,16 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
             }
         }
     }
-    
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledCell anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
-        
+
         // マッピング対象のセル情報の取得
         LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);
         Optional<LabelInfo> labelInfo = labelHandler.handle(anno, ProcessType.Save);
-        
+
         if(!labelInfo.isPresent()) {
             /*
              * ラベル用のセルが見つからない場合
@@ -79,24 +79,24 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
              */
             return;
         }
-        
+
         accessor.setPosition(targetObj, labelInfo.get().valueAddress);
         accessor.setLabel(targetObj, labelInfo.get().label);
-        
+
         final CellConverter converter = getCellConverter(accessor, config);
         if(converter instanceof FieldFormatter) {
             work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
         }
-        
+
         try {
             converter.toCell(accessor.getValue(targetObj), targetObj, sheet, labelInfo.get().valueAddress);
-            
+
         } catch(TypeBindException e) {
             work.addTypeBindError(e, labelInfo.get().valueAddress, accessor.getName(), labelInfo.get().label);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
             }
         }
-        
+
     }
 }
