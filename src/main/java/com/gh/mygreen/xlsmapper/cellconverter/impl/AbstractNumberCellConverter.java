@@ -5,7 +5,6 @@ import java.math.MathContext;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
@@ -14,7 +13,6 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellStyleProxy;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
-import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 
