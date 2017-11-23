@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
 
 /**
  * セルのスタイルを管理するクラス。
@@ -78,6 +79,7 @@ public class CellStyleProxy {
     public void setIndent(final short indent) {
 
         if(cell.getCellStyle().getIndention() == indent) {
+            // 既にインデントが同じ値
             return;
         }
 
@@ -93,6 +95,7 @@ public class CellStyleProxy {
     public void setHorizontalAlignment(final HorizontalAlignment align) {
 
         if(cell.getCellStyle().getAlignmentEnum().equals(align)) {
+            // 既に横位置が同じ値
             return;
         }
 
@@ -107,11 +110,29 @@ public class CellStyleProxy {
     public void setVerticalAlignment(final VerticalAlignment align) {
 
         if(cell.getCellStyle().getVerticalAlignmentEnum().equals(align)) {
+            // 既に縦位置が同じ値
             return;
         }
 
         cloneStyle();
         cell.getCellStyle().setVerticalAlignment(align);
+    }
+
+    /**
+     * 書式を設定する
+     * @param pattern 書式
+     */
+    public void setDataFormat(final String pattern) {
+
+        String currentPattern = POIUtils.getCellFormatPattern(cell);
+        if(currentPattern.equalsIgnoreCase(pattern)) {
+            // 既に書式が同じ場合
+            return;
+        }
+
+        cloneStyle();
+        cell.getCellStyle().setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), pattern));
+
     }
 
 }
