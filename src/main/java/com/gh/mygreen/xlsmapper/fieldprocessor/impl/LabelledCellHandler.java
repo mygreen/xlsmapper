@@ -13,7 +13,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
-import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessType;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
@@ -24,61 +24,61 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * ラベル付きのセルの開始位置を検索するクラス。
- * 
+ *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
 public class LabelledCellHandler {
-    
+
     private final FieldAccessor field;
-    
+
     private final Sheet sheet;
-    
+
     private final Configuration config;
-    
+
     public LabelledCellHandler(final FieldAccessor field, final Sheet sheet, final Configuration config) {
         this.field = field;
         this.sheet = sheet;
         this.config = config;
     }
-    
+
     /**
      * ラベル情報
      *
      */
     public static class LabelInfo {
-        
+
         /**
          * 値のセル - ラベルのセルではない。
          */
         Cell valueCell;
-        
+
         /**
          * 値のセルの位置情報
          */
         CellPosition valueAddress;
-        
+
         /**
          * ラベルセルの値
          */
         String label;
-        
+
     }
-    
+
     /**
      * 汎用的にアノテーションの属性にアクセスするためのクラス。
      *
      */
     private static class AnnotationProxy {
-        
+
         private final Annotation target;
-        
+
         public AnnotationProxy(final Annotation target) {
             ArgUtils.notNull(target, "target");
             this.target = target;
         }
-        
+
         /**
          * 対象となるアノテーションを取得する
          * @return アノテーションのインスタンス。
@@ -86,7 +86,7 @@ public class LabelledCellHandler {
         public Annotation getTarget() {
             return target;
         }
-        
+
         /**
          * アノテーションのクラスタイプを取得する。
          * @return アノテーションのクラスタイプ
@@ -94,7 +94,7 @@ public class LabelledCellHandler {
         public Class<? extends Annotation> annotationType() {
             return target.annotationType();
         }
-        
+
         /**
          * 見出しセルから見て値が設定されているセルの位置・方向を指定します。
          * @return アノテーションの属性「type」の値
@@ -102,7 +102,7 @@ public class LabelledCellHandler {
         public LabelledCellType type() {
             return ClassUtils.getAnnotationAttribute(target, "type", LabelledCellType.class).get();
         }
-        
+
         /**
          * 属性「type」の方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルの値を取得します。
          * @return アノテーションの属性「range」の値
@@ -110,7 +110,7 @@ public class LabelledCellHandler {
         public int range() {
             return ClassUtils.getAnnotationAttribute(target, "range", int.class).orElse(1);
         }
-        
+
         /**
          * ラベルセルから指定したセル数分離れたセルの値をマッピングする際に指定します。
          * @return アノテーションの属性「skip」の値
@@ -118,7 +118,7 @@ public class LabelledCellHandler {
         public int skip() {
             return ClassUtils.getAnnotationAttribute(target, "skip", int.class).orElse(0);
         }
-        
+
         /**
          * 見出しとなるセルの値を指定します。
          * @return アノテーションの属性「label」の値
@@ -126,15 +126,15 @@ public class LabelledCellHandler {
         public String label() {
             return ClassUtils.getAnnotationAttribute(target, "label", String.class).orElse("");
         }
-        
+
         /**
-         * 同じラベルのセルが複数ある場合に領域の見出しを指定します。 
+         * 同じラベルのセルが複数ある場合に領域の見出しを指定します。
          * @return アノテーションの属性「headerLabel」の値
          */
         public String headerLabel() {
             return ClassUtils.getAnnotationAttribute(target, "headerLabel", String.class).orElse("");
         }
-        
+
         /**
          * 見出しとなるセルをアドレス形式で指定します。'A1'などのようにシートのアドレスで指定します。
          * @return アノテーションの属性「labelAddress」の値
@@ -142,7 +142,7 @@ public class LabelledCellHandler {
         public String labelAddress() {
             return ClassUtils.getAnnotationAttribute(target, "labelAddress", String.class).orElse("");
         }
-        
+
         /**
          * 見出しとなるセルの行番号を指定します。
          * @return アノテーションの属性「labelRow」の値
@@ -150,7 +150,7 @@ public class LabelledCellHandler {
         public int labelRow() {
             return ClassUtils.getAnnotationAttribute(target, "labelRow", int.class).orElse(-1);
         }
-        
+
         /**
          * 見出しとなるセルの列番号を指定します。
          * @return アノテーションの属性「labelColumn」の値
@@ -158,7 +158,7 @@ public class LabelledCellHandler {
         public int labelColumn() {
             return ClassUtils.getAnnotationAttribute(target, "labelColumn", int.class).orElse(-1);
         }
-        
+
         /**
          * セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。
          * @return アノテーションの属性「optional」の値
@@ -166,7 +166,7 @@ public class LabelledCellHandler {
         public boolean optional() {
             return ClassUtils.getAnnotationAttribute(target, "optional", boolean.class).orElse(false);
         }
-        
+
         /**
          * ラベルセルが結合している場合を考慮するかどうか指定します。
          * @return アノテーションの属性「labelMerged」の値
@@ -174,22 +174,22 @@ public class LabelledCellHandler {
         public boolean labelMerged() {
             return ClassUtils.getAnnotationAttribute(target, "labelMerged", boolean.class).orElse(false);
         }
-        
+
     }
-    
-    public Optional<LabelInfo> handle(final Annotation anno, final ProcessType processType) {
-        
+
+    public Optional<LabelInfo> handle(final Annotation anno, final ProcessCase processCase) {
+
         final AnnotationProxy annoProxy = new AnnotationProxy(anno);
-        
+
         // ラベルの位置を取得する
         final Optional<CellPosition> labelPosition = getLabelPosition(annoProxy);
         if(!labelPosition.isPresent()) {
             return Optional.empty();
         }
-        
+
         final int column = labelPosition.get().getColumn();
         final int row = labelPosition.get().getRow();
-        
+
         /*
          * 見出しか結合している場合を考慮する場合
          * ・結合サイズ分で補正する。
@@ -204,12 +204,12 @@ public class LabelledCellHandler {
                 mergedColumnSize = mergedRegion.getLastColumn() - mergedRegion.getFirstColumn();
             }
         }
-        
+
         int range = annoProxy.range();
         if(range < 1){
             range = 1;
         }
-        
+
         // 値が設定されているセルを検索する。
         Point targetPosition = new Point();
         Cell targetCell = null;
@@ -219,24 +219,24 @@ public class LabelledCellHandler {
                 targetPosition.x = column - index;
                 targetPosition.y = row;
                 targetCell = POIUtils.getCell(sheet, targetPosition);
-                
+
             } else if(annoProxy.type() == LabelledCellType.Right) {
                 targetPosition.x = column + index + mergedColumnSize;
                 targetPosition.y = row;
                 targetCell = POIUtils.getCell(sheet, targetPosition);
-                
+
             } else if(annoProxy.type() == LabelledCellType.Bottom) {
                 targetPosition.x = column;
                 targetPosition.y = row + index + mergedRowSize;
                 targetCell = POIUtils.getCell(sheet, targetPosition);
-                
+
             }
-            
+
             if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length() > 0){
                 break;
             }
-            
-            if(processType.equals(ProcessType.Save)) {
+
+            if(processCase.equals(ProcessCase.Save)) {
                 /*
                  * 書き込み時は、属性rangeの範囲を考慮しない。
                  * テンプレートファイルの場合、値は空を設定しているため。
@@ -244,15 +244,15 @@ public class LabelledCellHandler {
                 break;
             }
         }
-        
+
         final LabelInfo info = new LabelInfo();
         info.valueCell = targetCell;
         info.valueAddress = CellPosition.of(targetPosition);
         info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());
-        
+
         return Optional.of(info);
     }
-    
+
     /**
      * ラベルの位置を取得する。
      * @param anno アノテーションの情報
@@ -260,7 +260,7 @@ public class LabelledCellHandler {
      *         ただし、見つからない場合、設定により例外をスローする場合がある。
      */
     private Optional<CellPosition> getLabelPosition(final AnnotationProxy anno) {
-        
+
         if(Utils.isNotEmpty(anno.labelAddress())) {
             /*
              * 属性「labelAddress」による直接位置が指定されている場合
@@ -268,7 +268,7 @@ public class LabelledCellHandler {
              */
             try {
                 return Optional.of(CellPosition.of(anno.labelAddress()));
-            
+
             } catch(IllegalArgumentException e) {
                 throw new AnnotationInvalidException(anno.getTarget(), MessageBuilder.create("anno.attr.invalidAddress")
                         .var("property", field.getNameWithClass())
@@ -276,9 +276,9 @@ public class LabelledCellHandler {
                         .var("attrName", "labelAddress")
                         .var("attrValue", anno.labelAddress())
                         .format());
-                
+
             }
-            
+
         } else if(Utils.isNotEmpty(anno.label())) {
             // 属性「label」によるラベルの指定がある場合
             try {
@@ -288,7 +288,7 @@ public class LabelledCellHandler {
                             .startPosition(headerCell.getColumnIndex(), headerCell.getRowIndex() + 1)
                             .findWhenNotFoundException();
                     return Optional.of(CellPosition.of(labelCell));
-                    
+
                 } else {
                     Cell labelCell = CellFinder.query(sheet, anno.label(), config).findWhenNotFoundException();
                     return Optional.of(CellPosition.of(labelCell));
@@ -300,7 +300,7 @@ public class LabelledCellHandler {
                     throw ex;
                 }
             }
-            
+
         } else {
             /*
              * 属性「labelRow」「labelColumn」によるアドレスを直接指定の場合
@@ -315,7 +315,7 @@ public class LabelledCellHandler {
                         .var("min", 0)
                         .format());
             }
-            
+
             if(anno.labelColumn() < 0) {
                 throw new AnnotationInvalidException(anno.getTarget(), MessageBuilder.create("anno.attr.min")
                         .var("property", field.getNameWithClass())
@@ -324,12 +324,12 @@ public class LabelledCellHandler {
                         .var("attrValue", anno.labelColumn())
                         .var("min", 0)
                         .format());
-                
+
             }
-            
+
             return Optional.of(CellPosition.of(anno.labelRow(), anno.labelColumn()));
         }
-        
+
     }
-    
+
 }

@@ -6304,7 +6304,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        static class ClassNameRecordFinder implements RecordFinder {
 
            @Override
-           public CellPosition find(ProcessType type, String[] args, Sheet sheet,
+           public CellPosition find(ProcessCase processCase, String[] args, Sheet sheet,
                    CellPosition address, Configuration config) {
 
                final String className = args[0];

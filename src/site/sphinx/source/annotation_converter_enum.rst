@@ -18,6 +18,8 @@
 * 属性 ``ignoreCase`` の値をtrueにすると、読み込み時に大文字/小文字の区別なく変換します。
 
 .. sourcecode:: java
+    :linenos:
+    :caption: 列挙型の変換規則の指定方法
     
     public class SampleRecord {
         
@@ -38,15 +40,17 @@
 別名でマッピングする場合
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-別名をマッピングする場合、属性 ``valueMethodName`` で列挙型の要素の別名を取得するメソッド名を指定します。
+別名でマッピングする場合、属性 ``aliasMethod`` で列挙型の要素の別名を取得するメソッド名を指定します。
 
 .. sourcecode:: java
-    
+    :linenos:
+    :caption: 列挙型を別名でマッピングする方法
+        
     public class SampleRecord {
         
         // 別名による列挙型のマッピング
         @XlsColumn(columnName="権限")
-        @XlsEnumConverter(valueMethodName="localeName")
+        @XlsEnumConverter(aliasMethod="localeName")
         private RoleType role;
         
     }

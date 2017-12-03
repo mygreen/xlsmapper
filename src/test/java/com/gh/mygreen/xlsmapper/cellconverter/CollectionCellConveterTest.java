@@ -1024,17 +1024,17 @@ public class CollectionCellConveterTest {
         private int no;
 
         @XlsTrim
-        @XlsArrayConverter(separator="\n", ignoreEmptyElement=true, elementConverterClass=DateElementConverter.class)
+        @XlsArrayConverter(separator="\n", ignoreEmptyElement=true, elementConverter=DateElementConverter.class)
         @XlsColumn(columnName="List（Date型）")
         private List<Date> listDate;
 
         @XlsTrim
-        @XlsArrayConverter(separator=";", ignoreEmptyElement=true, elementConverterClass=DateElementConverter.class)
+        @XlsArrayConverter(separator=";", ignoreEmptyElement=true, elementConverter=DateElementConverter.class)
         @XlsColumn(columnName="Array（Date型）")
         private Date[] arrayDate;
 
         @XlsTrim
-        @XlsArrayConverter(separator=",", ignoreEmptyElement=true, elementConverterClass=DateElementConverter.class)
+        @XlsArrayConverter(separator=",", ignoreEmptyElement=true, elementConverter=DateElementConverter.class)
         @XlsColumn(columnName="Set（Date型）")
         private Set<Date> setDate;
 

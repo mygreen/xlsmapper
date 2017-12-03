@@ -7,7 +7,43 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 連続する隣接するセルを配列またはリストにマッピングします。
+ * 連続し隣接するセルをCollection(List, Set)または配列にマッピングします。
+ *
+ *
+ * <h3 class="description">基本的な使い方</h3>
+ *
+ * <p>セルの開始位置をインデックス形式の{@link #column()}と{@link #row()}か、アドレス形式の{@link #address()}のどちらか一方の形式を指定します。
+ *    両方を指定した場合、{@link #address()}の設定値が優先されます。
+ * </p>
+ * <p>属性{@link #direction()}で、連続する隣接するセルの方向を指定します。</p>
+ * <p>属性{@link #size()}で、マッピングするセルの個数を指定します。</p>
+ * <p>配列または、{@link java.util.Collection}({@link java.util.List}/{@link java.util.Set})にマッピングします。</p>
+ * <p>{@link java.util.Collection}型のインタフェースを指定している場合、読み込み時のインスタンスは次のクラスが指定されます。</p>
+ * <ul>
+ *   <li>{@link java.util.List}の場合、{@link java.util.ArrayList}がインスタンスのクラスとなります。
+ *   <li>{@link java.util.Set} の場合、{@link java.util.LinkedHashSet}がインスタンスのクラスとなります。
+ * </ul>
+ *
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *
+ *     // インデックス形式、横方向で指定する場合
+ *     // 属性directionを省略した場合は、ArrayDirection.Horizonを指定したと同じ意味。
+ *     {@literal @XlsArrayCells(column=0, row=0, size=6)}
+ *     private {@literal List<String>} nameKanas1;
+ *
+ *     // アドレス形式、配列にマッピング
+ *     {@literal @XlsArrayCells(address="A1", size=6, direction=ArrayDirection.Vertical)}
+ *     private String[] nameKanas2;
+ *
+ * }
+ * </code></pre>
+ *
+ * <div class="picture">
+ *    <img src="doc-files/ArrayCells.png" alt="">
+ *    <p>基本的な使い方</p>
+ * </div>
  *
  * @since 2.0
  * @author T.TSUCHIE
@@ -18,63 +54,100 @@ import java.lang.annotation.Target;
 @Documented
 @XlsFieldProcessor(value={})
 public @interface XlsArrayCells {
-    
+
     /**
      * 連続するセルの個数を指定します。
-     * 
+     *
      * @return 1以上の値を指定します。
      */
     int size();
-    
+
     /**
-     * 値のセルが結合しているかどうか考慮するかどうか指定します。
-     * 
+     * 値のセルの結合を考慮するかどうか指定します。
      * この値により、属性{@link #size()}の指定方法が変わります。
-     * <p>trueの場合は、結合されているセルを1つのセルとしてマッピングします。</p>
-     * <p>falseの場合は、結合されていても解除した状態と同じマッピング結果となります。
-     *  <br>ただし、書き込む際には、結合を解除されます。
-     * </p>
-     * 
+     * <p>セル結合されている場合は、結合後の個数を指定します。</p>
+     * <ul>
+     *   <li>trueの場合は、結合されているセルを1つのセルとしてマッピングします。</li>
+     *   <li>falseの場合は、結合されていても解除した状態と同じマッピング結果となります。
+     *     <br>ただし、書き込む際には、結合が解除されます。
+     *   </li>
+     * </ul>
+     *
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * public class SampleSheet {
+     *
+     *     // elementMerged=trueは初期値なので、省略可
+     *     {@literal @XlsArrayCells(address="B3", size=3)}
+     *     private {@literal List<String>} words;
+     *
+     * }
+     * </code></pre>
+     *
+     * <div class="picture">
+     *    <img src="doc-files/ArrayCells_elementMerged.png" alt="">
+     *    <p>結合したセルをマッピングする場合</p>
+     * </div>
+     *
+     *
      * @return trueの場合、値のセルが結合されていることを考慮します。
      */
     boolean elementMerged() default true;
-    
+
     /**
-     * 連続する隣接するセルの方向を指定します。
-     * 
+     * 連続し隣接するセルの方向を指定します。
+     *
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * public class SampleSheet {
+     *
+     *     // 縦方向の隣接するセル
+     *     // 属性direction=ArrayDirection.Verticalを指定すると、縦方向にマッピングします。
+     *     {@literal @XlsLabelledArrayCells((address="B3", direction=ArrayDirection.Vertical, size=4)}
+     *     private {@literal List<String>} names;
+     *
+     * }
+     * </code></pre>
+     *
+     * <div class="picture">
+     *    <img src="doc-files/ArrayCells_direction.png" alt="">
+     *    <p>属性directionの概要</p>
+     * </div>
+     *
+     *
      * @return セルの方向を指定します。
      */
     ArrayDirection direction() default ArrayDirection.Horizon;
-    
-    /** 
+
+    /**
      * 配列またはリスト要素の値のクラスを指定します。
      * <p>省略した場合、定義されたGenericsタイプから取得します。</p>
      */
     Class<?> elementClass() default Object.class;
-    
+
     /**
      * セルの行番号を指定します。
      * {@link #column()}属性とセットで指定します。
-     * 
+     *
      * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int row() default -1;
-    
+
     /**
      * セルの列番号を指定します。
      * {@link #row()}属性とセットで指定します。
-     * 
+     *
      * @return 値は0から始まります。-1以下の負の値は無視されます。
-     * 
+     *
      */
     int column() default -1;
-    
+
     /**
      * セルのアドレスを指定します。
      * <p>{@link #row()}、{@link #column()}属性のどちらか一方を指定します。</p>
-     * 
+     *
      * @return 'A1'の形式で指定します。空文字は無視されます。
      */
     String address() default "";
-    
+
 }

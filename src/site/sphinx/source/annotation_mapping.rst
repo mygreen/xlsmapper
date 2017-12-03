@@ -12,15 +12,21 @@
    * - :ref:`@XlsSheet <annotationXlsSheet>`
      - シートをマッピングするために使用します。
 
+   * - :ref:`@XlsSheetName <annotationXlsSheetName>`
+     - シート名をマッピングします。
+
    * - :ref:`@XlsCell <annotationXlsCell>`
      - セルの座標を直接指定してマッピングします。
 
    * - :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`
      - 見出し付きのセルをマッピングします。
 
-   * - :ref:`@XlsSheetName <annotationXlsSheetName>`
-     - シート名をマッピングします。
-
+   * - :ref:`@XlsArrayCells <annotationXlsArrayCells>`
+     - 連続し隣接するセルを配列またはリストにマッピングします。
+     
+   * - :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>`
+     - 見出し付きの連続し隣接するセルを配列またはリストにマッピングします。
+     
    * - :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>`
      - 水平方向に連続する行のレコード持つ表をマッピングします。
 
@@ -48,9 +54,11 @@
 
 .. 以降は、埋め込んで作成する
 .. include::  ./annotation_mapping_sheet.rst
+.. include::  ./annotation_mapping_sheetname.rst
 .. include::  ./annotation_mapping_cell.rst
 .. include::  ./annotation_mapping_labelledcell.rst
-.. include::  ./annotation_mapping_sheetname.rst
+.. include::  ./annotation_mapping_arraycells.rst
+.. include::  ./annotation_mapping_labelledarraycells.rst
 .. include::  ./annotation_mapping_horizontalrecords.rst
 .. include::  ./annotation_mapping_verticalrecords.rst
 .. include::  ./annotation_mapping_column.rst

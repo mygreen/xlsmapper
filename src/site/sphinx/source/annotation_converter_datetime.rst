@@ -1,17 +1,45 @@
 
-.. _annotationXlsDateConverter:
+.. _annotationXlsDateTimeConverter:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``@XlsDateConverter``
+``@XlsDateTimeConverter``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 日時型に対する変換規則を指定する際に利用するアノテーションです。
 
-対応するJavaの型は次の通り。
+対応するJavaのクラスタイプと、アノテーションを付与していないときに適用されるの標準の書式は以下の通りです。
 
-* ``java.util.Date``
-* ``java.sql.Date`` / ``java.sql.Timestamp`` / ``java.sql.Time``
-* ``java.util.Calendar``  `[ver0.5+]`
+.. list-table:: 対応する日時のクラスタイプと標準の書式
+   :widths: 50 50
+   :header-rows: 1
+   
+   * - クラスタイプ
+     - 標準の書式
+     
+   * - ``java.util.Date``
+     - *yyyy-MM-dd HH:mm:ss*
+     
+   * - ``java.util.Calendar``
+     - *yyyy-MM-dd HH:mm:ss*
+     
+   * - ``java.sql.Date``
+     - *yyyy-MM-dd*
+     
+   * - ``java.sql.Time``
+     - *HH:mm:ss*
+     
+   * - ``java.sql.Timestamp``
+     - *yyyy-MM-dd HH:mm:ss.SSS*
+     
+   * - ``java.time.LocalDateTime``
+     - *uuuu-MM-dd HH:mm:ss*
+     
+   * - ``java.time.LocalDate``
+     - *uuuu-MM-dd*
+     
+   * - ``java.time.LocalTime``
+     - *HH:mm:ss*
+     
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,9 +51,9 @@
 
 * 属性 ``javaPattern`` で書式を指定します。 `[ver1.1+]`
   
-  * Javaのクラス ``java.util.SimpleDateFormat`` で解釈可能な書式を指定します。
+  * java.util.Date/java.util.Calendar/java.sql.XXXX系のクラスの場合、 `java.text.SimpleDateFormat <https://docs.oracle.com/javase/jp/8/docs/api/java/text/SimpleDateFormat.html>`_ で解釈可能な書式を設定します。
   
-  * ver1.0以前は、属性patternを使っていましたが、廃止になりました。
+  * java.time.XXX系のクラスの場合、 `java.time.format.DateTimeFormatter <https://docs.oracle.com/javase/jp/8/docs/api/java/time/format/DateTimeFormatter.html>`_ で解釈可能な書式を設定します。
   
 * 属性 ``locale`` でロケールを指定します。
   
@@ -36,16 +64,24 @@
   
   * trueの厳密に解析を行いません。falseの場合厳密に解析を行います。
 
-* 書式に合わない値をパースした場合、例外TypeBindExceptionが発生します。
+* 属性 ``timezone`` でタイムゾーンを指定します。
+  
+  * Asia/Tokyo, GMT, GMT+09:00などの値を指定します。  
+  * ただし、オフセットを持たないクラスタイプ「LocalDateTime, LocalDate, LocalTime」の時は、指定しても意味がありません。
+
+
+* 書式に合わない値をパースした場合、例外 ``TypeBindException`` が発生します。
 
 
 
 .. sourcecode:: java
+    :linenos:
+    :caption: 読み込み時の書式の指定
     
     public class SampleRecord {
         
         @XlsColumn(columnName="有効期限")
-        @XlsDateConverter(javaPattern="yyyy年MM月dd日 HH時mm分ss秒", locale="ja_JP",
+        @XlsDateTimeConverter(javaPattern="yyyy年MM月dd日 HH時mm分ss秒", locale="ja_JP",
                 lenient=true)
         private Date expired;
         
@@ -54,16 +90,10 @@
 
 .. note::
     読み込み時のセルの値が属性javaPatternで指定した書式に一致していなくても、セルのタイプが日付または時刻の場合は、例外の発生なく読み込むことができます。
-    セルの表示形式の分類が文字列の場合は、アノテーション ``@XlsDateConverter(javaPattern="<書式>")`` で指定した書式に従い処理されます。
+    セルの表示形式の分類が文字列の場合は、アノテーション ``@XlsDateTimeConverter(javaPattern="<書式>")`` で指定した書式に従い処理されます。
     
-    ただし、型変換用のアノテーション ``@XlsDateConverter`` を付与しない場合は、Javaの型ごとに次の書式が標準で適用されます。`[ver0.5+]` 
+    ただし、型変換用のアノテーション ``@XlsDateTimeConverter`` を付与しない場合は、Javaの型ごとに上記の書式が標準で適用されます。`[ver0.5+]` 
     
-    * ``java.util.Date`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
-    * ``java.sql.Date`` の場合、デフォルトで `yyyy-MM-dd` の書式が適用されます。
-    * ``java.sql.Time`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
-    * ``java.sql.Timestamp`` の場合、デフォルトで `yyyy-MM-dd HH:mm:ss.SSS` の書式が適用されます。
-    * ``java.util.Calendar`` の場合、デフォルトで、 `yyyy-MM-dd HH:mm:ss` の書式が適用されます。
-
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 書き込み時の書式の指定
@@ -78,11 +108,13 @@
 
 
 .. sourcecode:: java
+    :linenos:
+    :caption: 書き込み時の書式の指定
     
     public class SampleRecord {
         
         @XlsColumn(columnName="有効期限")
-        @XlsDateConverter(excelPattern="[$-411]yyyy\"年\"mm\"月\"dd\"日\" hh\"時\"mm\"分\"ss\"秒\"")
+        @XlsDateTimeConverter(excelPattern="[$-411]yyyy\"年\"mm\"月\"dd\"日\" hh\"時\"mm\"分\"ss\"秒\"")
         private Date expired;
         
     }

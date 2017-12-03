@@ -59,5 +59,6 @@ XlsMapperでは、フィールドとメソッドの両方にアノテーショ�
 .. include::  ./annotation_converter.rst
 .. include::  ./annotation_formula.rst
 .. include::  ./annotation_lifecycle.rst
-
+.. include::  ./annotation_valueconverter.rst
+.. include::  ./annotation_celloption.rst
 

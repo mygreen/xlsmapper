@@ -3,19 +3,40 @@
 
 XlsMapper is Java Library for mapping Excel sheets to POJO.
 
-* Licensee
+# Licensee
 
 Apache License verion 2.0
 
+# Depends
++ Java1.8
++ Apache POI v3.17
++ SpringFramework 3.0+ (optional)
++ BeanValidation 1.0/1.1/2.0 (optional)
+
 # Setup
 
-```xml
-<dependency>
-	<groupId>com.github.mygreen</groupId>
-	<artifactId>xlsmapper</artifactId>
-	<version>1.6</version>
-</dependency>
-```
+1. Add dependency for Super Csv Annotation
+    ```xml
+    <dependency>
+        <groupId>com.github.mygreen</groupId>
+        <artifactId>xlsmapper</artifactId>
+        <version>2.0</version>
+    </dependency>
+    ```
+
+2. Add dependency for Logging library. Example Log4j.
+    ```xml
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.7.1</version>
+    </dependency>
+    <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.14</version>
+    </dependency>
+    ```
 
 # Documentation
 http://mygreen.github.io/xlsmapper/sphinx/howtouse.html
@@ -93,7 +114,7 @@ Here is the template Excel sheet.
 
 
 And the following is the record class. 
-- Append the annotation ```@XlsDateConverter``` for setting Excel format pattern.
+- Append the annotation ```@XlsDateTimeConverter``` for setting Excel format pattern.
 - Append the attribute ```overRecord``` with ```@XlsHorizontalRecords```.
 
 ```java
@@ -101,7 +122,7 @@ And the following is the record class.
 public class UserSheet {
 
     @XlsLabelledCell(label="Date", type=LabelledCellType.Right)
-    @XlsDateConverter(excelPattern="yyyy/m/d")
+    @XlsDateTimeConverter(excelPattern="yyyy/m/d")
     Date createDate;
 
     @XlsHorizontalRecords(tableLabel="User List", overRecord=OverRecordOperate.Insert)

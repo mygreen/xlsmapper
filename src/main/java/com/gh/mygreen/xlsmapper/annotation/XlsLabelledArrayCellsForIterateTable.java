@@ -6,19 +6,19 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
 
 /**
  * {@link XlsLabelledArrayCells}を{@link IterateTablesProcessor}にブリッジするためのアノテーションクラス。
- * 
+ *
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
 public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCells {
-    
+
     private final Class<? extends Annotation> annotationType;
-    
+
     private final int labelRow;
     private final int labelColumn;
     private final String labelAddress;
-    
+
     private final int size;
     private final boolean elementMerged;
     private final ArrayDirection direction;
@@ -28,14 +28,14 @@ public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCel
     private final LabelledCellType type;
     private final int skip;
     private final boolean labelMarged;
-    
-    
+
+
     public XlsLabelledArrayCellsForIterateTable(XlsLabelledArrayCells anno, int labelRow, int labelColumn, String labelAddress) {
         this.annotationType = anno.annotationType();
         this.labelRow = labelRow;
         this.labelColumn = labelColumn;
         this.labelAddress = labelAddress;
-        
+
         this.size = anno.size();
         this.elementMerged = anno.elementMerged();
         this.direction = anno.direction();
@@ -45,82 +45,82 @@ public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCel
         this.type = anno.type();
         this.skip = anno.skip();
         this.labelMarged = anno.labelMerged();
-        
+
     }
-    
+
     @Override
     public Class<? extends Annotation> annotationType() {
         return annotationType;
     }
-    
+
     @Override
     public int size() {
         return size;
     }
-    
+
     @Override
     public boolean elementMerged() {
         return elementMerged;
     }
-    
+
     @Override
     public ArrayDirection direction() {
         return direction;
     }
-    
+
     @Override
     public Class<?> elementClass() {
         return elementClass;
     }
-    
+
     @Override
     public boolean optional() {
         return optional;
     }
-    
+
     @Override
     public int range() {
         return range;
     }
-    
+
     @Override
     public LabelledCellType type() {
         return type;
     }
-    
+
     @Override
     public String label() {
         return "";
     }
-    
+
     @Override
     public int labelRow() {
         return labelRow;
     }
-    
+
     @Override
     public int labelColumn() {
         return labelColumn;
     }
-    
+
     @Override
     public String labelAddress() {
         return labelAddress;
     }
-    
+
     @Override
     public String headerLabel() {
         return "";
     }
-    
+
     @Override
     public int skip() {
         return skip;
     }
-    
+
     @Override
     public boolean labelMerged() {
         return labelMarged;
     }
-    
+
 }

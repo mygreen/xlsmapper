@@ -10,11 +10,11 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
  * アノテーション用のXMLのオブジェクト（{@link XmlInfo}）を組み立てるためのヘルパークラス。
- * 
+ *
  * <pre class="highlight"><code class="java">
  * // static import をすると使いやすくなります。
  * import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
- * 
+ *
  * public void sample() {
  *     XmlInfo xmlInfo = createXml()
  *               .classInfo(createClass(SimpleSheet.class)
@@ -30,9 +30,10 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  *                                       .attribute("label", "名称")
  *                                       .attribute("type", LabelledCellType.Right)
  *                                       .buildAnnotation())
- *                               .annotation(createAnnotation(XlsConverter.class)
- *                                       .attribute("trim", true)
- *                                       .attribute("defaultValue", "－")
+ *                               .annotation(createAnnotation(XlsTrim.class)
+ *                                       .buildAnnotation())
+ *                               .annotation(createAnnotation(XlsDefaultValue.class)
+ *                                       .attribute("value", "ー")
  *                                       .buildAnnotation())
  *                               .buildField())
  *                       .method(createMethod("setRecords") // メソッドに対するアノテーションの定義
@@ -43,16 +44,16 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  *                               .buildMethod())
  *                       .buildClass())
  *               .buildXml();
- *     
+ *
  *     // ファイルへの保存
  *     XmlIO.save(xmlInfo, new File("anno_simple.xml"), "UTF-8");
- *     
+ *
  *     // XmlMapperクラスへ渡す。
  *     SimpleSheet sheet = new XlsMapper().load(
  *             new FileInputStream("example.xls"),
  *             SimpleSheet.class,
  *             xmlInfo.toInputStream();
- *     
+ *
  * }
  * </code></pre>
  * @since 1.1
@@ -60,12 +61,12 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  *
  */
 public class XmlBuilder {
-    
+
     /**
      * JavaオブジェクトをOGNL式に変換するためのクラス。
      */
     private static OgnlValueFormatter valueFormatter = new OgnlValueFormatter();
-    
+
     /**
      * {@link XmlInfo}のビルダクラスの{@link XmlInfo.Builder}インスタンスを作成する。
      * @return
@@ -73,7 +74,7 @@ public class XmlBuilder {
     public static XmlInfo.Builder createXml() {
         return XmlInfo.builder();
     }
-    
+
     /**
      * {@link ClassInfo}のビルダクラスの{@link ClassInfo.Builder}インスタンスを作成する。
      * @param clazz マッピング対象のJavaのクラス情報。
@@ -82,7 +83,7 @@ public class XmlBuilder {
     public static ClassInfo.Builder createClass(final Class<?> clazz) {
         return ClassInfo.builder().name(clazz);
     }
-    
+
     /**
      * {@link MethodInfo}のビルダクラスの{@link MethodInfo.Builder}インスタンスを作成する。
      * @param methodName メソッド名
@@ -91,7 +92,7 @@ public class XmlBuilder {
     public static MethodInfo.Builder createMethod(final String methodName) {
         return MethodInfo.builder().name(methodName);
     }
-    
+
     /**
      * {@link FieldInfo}のビルダクラスの{@link FieldInfo.Builder}インスタンスを作成する。
      * @param fieldName フィールド名
@@ -100,7 +101,7 @@ public class XmlBuilder {
     public static FieldInfo.Builder createField(final String fieldName) {
         return FieldInfo.builder().name(fieldName);
     }
-    
+
     /**
      * {@link AnnotationInfo}のビルダクラスの{@link AnnotationInfo.Builder}インスタンスを作成する。
      * <p>JavaオブジェクトをOGNL式に変換するクラス{@link OgnlValueFormatter}はデフォルトの物が使用される。
@@ -111,7 +112,7 @@ public class XmlBuilder {
     public static AnnotationInfo.Builder createAnnotation(Class<? extends Annotation> clazz) {
         return AnnotationInfo.builder(valueFormatter).name(clazz);
     }
-    
+
     /**
      * JavaオブジェクトをOGNL式に変換するためのクラスを取得する。
      * @return
@@ -119,14 +120,14 @@ public class XmlBuilder {
     public static OgnlValueFormatter getValueFormatter() {
         return valueFormatter;
     }
-    
+
     /**
      * JavaオブジェクトをOGNL式に変換するためのクラスを設定する。
-     * 
+     *
      * @param valueFormatter
      */
     public synchronized static void setValueFormatter(final OgnlValueFormatter valueFormatter) {
         XmlBuilder.valueFormatter = valueFormatter;
     }
-    
+
 }

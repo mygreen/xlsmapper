@@ -106,6 +106,7 @@ public class ArrayCellsHandler {
         public boolean elementMerged() {
             return ClassUtils.getAnnotationAttribute(target, "elementMerged", boolean.class).orElse(true);
         }
+
     }
 
     public List<Object> handleOnLoading(final Annotation anno, final CellPosition initPosition, final CellConverter<?> converter,

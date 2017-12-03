@@ -13,7 +13,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
-import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessType;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellHandler.LabelInfo;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
@@ -34,7 +34,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
 
         // マッピング対象のセル情報の取得
         LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);
-        Optional<LabelInfo> labelInfo = labelHandler.handle(anno, ProcessType.Load);
+        Optional<LabelInfo> labelInfo = labelHandler.handle(anno, ProcessCase.Load);
 
         if(!labelInfo.isPresent()) {
             /*
@@ -70,7 +70,7 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
 
         // マッピング対象のセル情報の取得
         LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);
-        Optional<LabelInfo> labelInfo = labelHandler.handle(anno, ProcessType.Save);
+        Optional<LabelInfo> labelInfo = labelHandler.handle(anno, ProcessCase.Save);
 
         if(!labelInfo.isPresent()) {
             /*

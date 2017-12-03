@@ -25,6 +25,11 @@ public class CellStyleProxy {
      */
     private boolean updated;
 
+    /**
+     * セルを指定してインスタンスを作成する。
+     * @param cell 管理対象のセル
+     * @throws IllegalArgumentException {@literal cell is null.}
+     */
     public CellStyleProxy(final Cell cell) {
         ArgUtils.notNull(cell, "cell");
 
@@ -47,6 +52,13 @@ public class CellStyleProxy {
     }
 
     /**
+     * @return コンストラクタで渡したセルを取得します。
+     */
+    public Cell getCell() {
+        return cell;
+    }
+
+    /**
      * 折り返し設定を有効にする
      */
     public void setWrapText() {
@@ -56,6 +68,7 @@ public class CellStyleProxy {
         }
 
         cloneStyle();
+        cell.getCellStyle().setShrinkToFit(false);
         cell.getCellStyle().setWrapText(true);
     }
 
@@ -69,6 +82,7 @@ public class CellStyleProxy {
         }
 
         cloneStyle();
+        cell.getCellStyle().setWrapText(false);
         cell.getCellStyle().setShrinkToFit(true);
     }
 

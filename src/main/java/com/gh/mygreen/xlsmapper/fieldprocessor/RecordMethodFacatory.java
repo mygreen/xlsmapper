@@ -101,7 +101,7 @@ public class RecordMethodFacatory {
             return;
         }
 
-        final Class<?>[] listenerClasses = listenerAnno.listenerClass();
+        final Class<?>[] listenerClasses = listenerAnno.value();
 
         for(Class<?> listenerClass : listenerClasses) {
 

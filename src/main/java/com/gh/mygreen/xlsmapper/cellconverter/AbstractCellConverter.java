@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -16,8 +15,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.ProcessCase;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
@@ -190,13 +189,13 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
             cellStyle.setWrapText();
         }
 
+        // 横位置
+        horizontalAlignment.ifPresent(align -> cellStyle.setHorizontalAlignment(align));
+
         // インデント
         if(indent >= 0) {
             cellStyle.setIndent(indent);
         }
-
-        // 横位置
-        horizontalAlignment.ifPresent(align -> cellStyle.setHorizontalAlignment(align));
 
         // 縦位置
         verticalAlignment.ifPresent(align -> cellStyle.setVerticalAlignment(align));

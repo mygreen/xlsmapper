@@ -3,13 +3,13 @@ package com.gh.mygreen.xlsmapper.cellconverter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.gh.mygreen.xlsmapper.annotation.ProcessCase;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 
 /**
  * 処理ケースが該当する
@@ -31,7 +31,7 @@ public class OptionalProcessCase<T> {
 
     private OptionalProcessCase(Optional<T> value, Collection<ProcessCase> cases) {
         this.value = value;
-        this.cases = new ConcurrentSkipListSet<>(cases);
+        this.cases = new HashSet<>(cases);
     }
 
     /**

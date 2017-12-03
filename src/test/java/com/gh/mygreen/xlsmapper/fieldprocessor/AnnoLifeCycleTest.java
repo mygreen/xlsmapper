@@ -360,7 +360,7 @@ public class AnnoLifeCycleTest {
     }
 
     @XlsSheet(name="単純な表")
-    @XlsListener(listenerClass=SimpleSheetListener.class)
+    @XlsListener(value=SimpleSheetListener.class)
     private static class SimpleSheet {
 
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
@@ -495,7 +495,7 @@ public class AnnoLifeCycleTest {
     }
 
     @XlsSheet(name="繰り返しの表")
-    @XlsListener(listenerClass=IteratableSheetListener.class)
+    @XlsListener(value=IteratableSheetListener.class)
     private static class IteratableSheet {
 
         private Map<String, Point> positions;
@@ -618,7 +618,7 @@ public class AnnoLifeCycleTest {
 
     }
 
-    @XlsListener(listenerClass=TableListener.class)
+    @XlsListener(value=TableListener.class)
     private static class Table {
 
         private Map<String, Point> positions;
@@ -752,7 +752,7 @@ public class AnnoLifeCycleTest {
 
     }
 
-    @XlsListener(listenerClass=RecordListener.class)
+    @XlsListener(value=RecordListener.class)
     private static class Record {
 
         private Map<String, Point> positions;

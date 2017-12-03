@@ -16,59 +16,71 @@
 
 
 .. list-table:: ExcelとJavaのマッピング可能な型
-   :widths: 30 30 40
+   :widths: 30 70
    :header-rows: 1
    
    * - Excelの型
      - Javaの型
-     - 対応するアノテーション
      
-   * - | -(共通)
-     - | -(共通)
-     - :ref:`@XlsConverter <annotationXlsConverter>`
-     
-   * - | ブール型
+   * - | ブール
        | （TRUE/FALSE）
      - | boolean/Boolean
-     - :ref:`@XlsBooleanConverter <annotationXlsBooleanConverter>`
      
    * - 文字列
      - | String
-       | char/Character(先頭の1文字のみがマッピング対象)
-     - 
+       | 全ての型（ブール/数値/日時/Collection・配列/URL）
    
    * - | 数値
-       | （数値/通貨/会計/パーセンテージ/分数/指数）
+       | （数値/通貨/会計
+       |  /パーセンテージ/分数/指数）
      - | byte/short/int/long/float/double/これらのラッパークラス
        | /java.math.BigDecimal/java.math.BigInteger
-     - :ref:`@XlsNumberConverter <annotationXlsNumberConverter>`
      
    * - | 日時
        | （日付/時刻）
      - | java.util.Date/java.util.Calendar
        | /java.sql.Date/Time/Timestamp
-     - :ref:`@XlsDateConverter <annotationXlsDateConverter>`
-   
-   * - 文字列
-     - | 任意の列挙型
-     - :ref:`@XlsEnumConverter <annotationXlsEnumConverter>`
+       | /java.time.LocalDateTime/LocalDate/LocalTime
      
    * - 文字列
      - | 配列
        | /Collection(java.util.List/java.util.Set)
-     - :ref:`@XlsArrayConverter <annotationXlsArrayConverter>`
      
    * - | ハイパーリンクを設定したセル
      - | java.net.URI
        | /com.gh.mygreen.xlsmapper.cellconvert.CellLink(本ライブラリの独自の型)
-     - 
+
+
+
+.. list-table:: 書式を指定するアノテーション
+   :widths: 30 70
+   :header-rows: 1
+   
+   * - アノテーション
+     - 概要
+   
+   * - :ref:`@XlsBooleanConverter <annotationXlsBooleanConverter>`
+     - ブール型に対する書式を指定します。
+
+   * - :ref:`@XlsNumberConverter <annotationXlsNumberConverter>`
+     - 数値型に対する書式を指定します。
+
+   * - :ref:`@XlsDateTimeConverter <annotationXlsDateTimeConverter>`
+     - 日時型に対する書式を指定します。
+
+   * - :ref:`@XlsEnumConverter <annotationXlsEnumConverter>`
+     - 列挙型に対する書式を指定します。
+
+   * - :ref:`@XlsArrayConverter <annotationXlsArrayConverter>`
+     - Collection型や配列型に対する書式を指定します。
+
 
 .. 以降は、埋め込んで作成する
-.. include::  ./annotation_converter_converter.rst
 .. include::  ./annotation_converter_boolean.rst
 .. include::  ./annotation_converter_number.rst
-.. include::  ./annotation_converter_date.rst
+.. include::  ./annotation_converter_datetime.rst
 .. include::  ./annotation_converter_enum.rst
 .. include::  ./annotation_converter_array.rst
+.. include::  ./annotation_converter_converter.rst
 
 

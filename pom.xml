@@ -11,18 +11,18 @@
 	<description><![CDATA[
 XlsMapper is Java Library for mapping Excel sheets to POJO.
 ]]></description>
-	
+
 	<issueManagement>
 		<system>github</system>
 		<url>https://github.com/mygreen/xlsmapper/issues</url>
 	</issueManagement>
-	
+
 	<scm>
 		<connection>scm:git:ssh://github.com/mygreen/xlsmapper.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/mygreen/xlsmapper.git</developerConnection>
 		<url>https://github.com/mygreen/xlsmapper</url>
 	</scm>
-	
+
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
@@ -36,19 +36,19 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-	
+
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	
+
 	<organization>
 		<name>mygreen</name>
 		<url>http://mygreen.github.io/xlsmapper/</url>
 	</organization>
-	
+
 	<developers>
 		<developer>
 			<id>mygreen</id>
@@ -59,7 +59,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 			</roles>
 		</developer>
 	</developers>
-	
+
 	<properties>
 		<java.version>1.8</java.version>
 		<poi.version>3.17</poi.version>
@@ -67,7 +67,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 	</properties>
 	<build>
 		<extensions>
-			
+
 		</extensions>
 		<resources>
 			<resource>
@@ -140,7 +140,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
  <![CDATA[
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/default.min.css">
 <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
-<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
 <script>
 $(document).ready(function() {
   $('pre.highlight code').each(function(i, block) {
@@ -167,7 +167,7 @@ $(document).ready(function() {
 					<downloadSources>true</downloadSources>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
@@ -210,7 +210,7 @@ $(document).ready(function() {
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 	<repositories>
@@ -241,7 +241,7 @@ $(document).ready(function() {
 			<version>3.6.2</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- Excel -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -258,7 +258,7 @@ $(document).ready(function() {
 			<artifactId>excel-cellformatter</artifactId>
 			<version>0.9.1</version>
 		</dependency>
-		
+
 		<!-- Logger -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -277,20 +277,20 @@ $(document).ready(function() {
 			<version>1.2.14</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- 式言語 -->
 		<dependency>
 			<groupId>ognl</groupId>
 			<artifactId>ognl</artifactId>
 			<version>3.0.8</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-jexl</artifactId>
 			<version>2.1.1</version>
 		</dependency>
-		
+
 		<!-- Bean Validation 1.1 系を利用する -->
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -310,7 +310,7 @@ $(document).ready(function() {
 			<version>3.0.1-b08</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -324,7 +324,7 @@ $(document).ready(function() {
 			<version>3.2.11.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 	<reporting>
 		<plugins>
@@ -348,7 +348,7 @@ $(document).ready(function() {
  <![CDATA[
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/default.min.css">
 <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
-<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
 <script>
 $(document).ready(function() {
   $('pre.highlight code').each(function(i, block) {

@@ -3,13 +3,36 @@
 <!--{% set script_files = script_files + [ "_static/mytheme.js" ] %}-->
 {% set css_files    = css_files    + [ "_static/mycustom.css" ] %}
 
+{%- block extrahead %}
+{{ super() }}
+<!-- my theme custom extrahead beacon -->
+{%- endblock%}
+
+
+{%- block menu %}
+<p class="caption"><span class="caption-text">関連リンク</span></p>
+<ul>
+	<li class="toctree-l1"><a class="reference internal" href="../project-info.html">プロジェクト情報</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">JavaDoc</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../project-reports.html">プロジェクトレポート</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="https://github.com/mygreen/xlsmapper">GitHub</a></li>
+</ul>
+
+{{ super() }}
+<!-- my theme custom extramenu beacon -->
+{%- endblock%}
+
+
 {% block footer %}
 <!-- my theme custom extrahead beacon -->
 <script type="text/javascript" src="_static/jquery.externallink.js" charset="UTF-8"></script>
 <script type="text/javascript">
 	jQuery(function () {
+		// ナビゲーション用のアイコン
+		$('div.wy-menu').externalLink({cssClass : 'externalink-img', iconUrl:'_static/external-link-12.png', startUrl:'../apidocs/'});
+		
 		// コンテンツ用
-		$('body').externalLink({cssClass : 'externalink', iconUrl:'', startUrl:'../apidocs/'});
+		$('div.wy-nav-content').externalLink({cssClass : 'externalink', iconUrl:'', startUrl:'../apidocs/'});
 		
 	});
 </script>

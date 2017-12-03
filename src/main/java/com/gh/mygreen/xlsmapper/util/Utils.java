@@ -19,10 +19,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import com.gh.mygreen.xlsmapper.BeanFactory;
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.annotation.ProcessCase;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.cellconverter.DefaultElementConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.ElementConverter;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 
 

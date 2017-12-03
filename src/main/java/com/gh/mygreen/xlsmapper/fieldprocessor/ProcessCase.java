@@ -1,4 +1,4 @@
-package com.gh.mygreen.xlsmapper.annotation;
+package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 /**
  * Excelファイルをマッピングする時のケースを表現する列挙型です。

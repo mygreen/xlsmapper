@@ -15,10 +15,10 @@ public interface CellConverterFactory<T> {
     
     /**
      * フィールドに対するセル変換クラスを作成する。
-     * @param field フィールド情報
+     * @param accessor フィールド情報
      * @param config システム設定
      * @return セルの変換クラス。
      */
-    CellConverter<T> create(FieldAccessor field, Configuration config);
+    CellConverter<T> create(FieldAccessor accessor, Configuration config);
     
 }

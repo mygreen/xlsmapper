@@ -24,12 +24,12 @@ import java.lang.annotation.Target;
  * public class SampleRecord {
  *
  *     {@literal @XlsColumn(columnName="ID")}
- *     {@literal @XlsDefaultValue("  123   ")} // 初期値のアノテーション {@literal @XlsDefaultValue}もトリム対象となる。
  *     {@literal @XlsTrim}
+ *     {@literal @XlsDefaultValue("  123   ")} // 初期値もトリム対象となる。
  *     private Integer id;
  *
  *     {@literal @XlsColumn(columnName="名前")}
- *     {@literal @XlsTrim} // 空のセルを読み込むと空文字が設定される。
+ *     {@literal @XlsTrim}   // 空のセルを読み込むと空文字が設定される。
  *     private String name;
  *
  * }

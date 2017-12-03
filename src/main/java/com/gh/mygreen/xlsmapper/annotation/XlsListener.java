@@ -23,7 +23,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
  *   <li>処理対象のBeanオブジェクト</li>
  * </ul>
  *
- * <p>クラスにアノテーション{@link XlsListener#listenerClass()} で処理が実装されたクラスを指定します。 </p>
+ * <p>クラスにアノテーション{@link XlsListener#value()} で処理が実装されたクラスを指定します。 </p>
  * <p>インスタンスは、システム設定{@link Configuration#getBeanFactory()}経由で作成されるため、
  *   SpringFrameworkのコンテナからインスタンスを取得することもできます。
  * </p>
@@ -49,7 +49,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
  * }
  *
  * // レコードクラス
- * {@literal @XlsListener(listenerClass=UserRecordListener.class)}
+ * {@literal @XlsListener(UserRecordListener.class)}
  * public class UserRecord {
  *
  *     {@literal @XlsColumn(columnName="ID")}
@@ -85,6 +85,6 @@ public @interface XlsListener {
      * リスナークラスの指定。
      * @return 任意の実装クラスを指定します。
      */
-    Class<?>[] listenerClass();
+    Class<?>[] value();
 
 }

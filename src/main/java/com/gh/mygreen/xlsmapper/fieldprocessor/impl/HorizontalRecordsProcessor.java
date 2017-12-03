@@ -38,7 +38,6 @@ import com.gh.mygreen.xlsmapper.NeedProcess;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.ArrayDirection;
-import com.gh.mygreen.xlsmapper.annotation.ProcessCase;
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
@@ -57,7 +56,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.MergedRecord;
 import com.gh.mygreen.xlsmapper.fieldprocessor.NestMergedSizeException;
-import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessType;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordFinder;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordHeader;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
@@ -205,7 +204,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final Optional<XlsRecordFinder> finderAnno = accessor.getAnnotation(XlsRecordFinder.class);
         if(finderAnno.isPresent()) {
             final RecordFinder finder = config.createBean(finderAnno.get().value());
-            startPosition = finder.find(ProcessType.Load, finderAnno.get().args(), sheet, startPosition, config);
+            startPosition = finder.find(ProcessCase.Load, finderAnno.get().args(), sheet, startPosition, config);
 
         }
 
@@ -900,7 +899,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final Optional<XlsRecordFinder> finderAnno = accessor.getAnnotation(XlsRecordFinder.class);
         if(finderAnno.isPresent()) {
             final RecordFinder finder = config.createBean(finderAnno.get().value());
-            startPosition = finder.find(ProcessType.Save, finderAnno.get().args(), sheet, startPosition, config);
+            startPosition = finder.find(ProcessCase.Save, finderAnno.get().args(), sheet, startPosition, config);
 
         }
 

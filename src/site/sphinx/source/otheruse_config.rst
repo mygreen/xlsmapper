@@ -131,11 +131,6 @@ XlsMapperConfigでは以下の設定を行うことができます。
      - | アノテーション :ref:`@XlsSheet <annotationXlsSheet>` に基づき処理対象のシートを抽出するクラス。
        | **Ver.1.1以上** から利用可能です。
    
-   * - ``itemConverter``
-     - ``ItemConverter``
-     - | アノテーション :ref:`@XlsArrayConverter <annotationXlsArrayConverter>` の属性 ``itemConverter`` で指定する、リストなどの要素を変換するための標準の処理クラスです。
-       | **Ver.1.1以上** から利用可能です。
-
    * - ``formulaFormatter``
      - ``MessageInterpolator``
      - | アノテーション :ref:`@XlsFormula <annotationFormula>` の属性 ``value`` で指定した数式を独自の変数やEL式をフォーマットする際に利用します。

@@ -36,13 +36,15 @@
     
   * Javaのクラス ``java.util.Currency`` で解釈可能なコードを指定します。
 
-* 書式に合わない値をパースした場合、例外TypeBindExceptionが発生します。
+* 書式に合わない値をパースした場合、例外 ``TypeBindException`` が発生します。
 
 .. sourcecode:: java
+    :linenos:
+    :caption: 読み込み時の指定方法
     
     public class SampleRecord {
         
-        @XlsColumn(name="給与")
+        @XlsColumn(columnName="給与")
         @XlsNumberConverter(javaPattern="\u00A4\u00A4 #,##0.0000", locale="ja_JP", currency="USD")
         private double salary;
         
@@ -62,10 +64,12 @@
 
 
 .. sourcecode:: java
+    :linenos:
+    :caption: 書き込み時の指定方法
     
     public class SampleRecord {
         
-        @XlsColumn(name="給与")
+        @XlsColumn(columnName="給与")
         @XlsNumberConverter(javaPattern="[$-411]\"￥\"#,##0.0000")
         private double salary;
         

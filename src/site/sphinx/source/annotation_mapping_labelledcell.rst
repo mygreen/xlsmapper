@@ -24,6 +24,8 @@
 
 
 .. sourcecode:: java
+    :linenos:
+    :caption: 基本的な使い方
     
     @XlsSheet(name="Users")
     public class SampleSheet {
@@ -43,6 +45,9 @@
 
 属性 ``range`` を指定すると、属性typeの方向に向かって指定した **セル数分を検索** し、最初に発見した空白以外のセルの値を取得します。
 
+* 属性 ``range`` と ``skip`` を同時に指定した場合、まず、skip分セルを読み飛ばし、そこからrangeの範囲で空白以外のセルを検索します。
+* 属性 ``range`` は、 **読み込み時のみ有効** です。書き込み時に指定しても無視されます。
+
 .. figure:: ./_static/LabelledCell_range.png
    :align: center
    
@@ -54,7 +59,7 @@
     @XlsSheet(name="Users")
     public class SampleSheet {
         
-        @XlsLabelledCell(label="ラベル", type=LabelledCellType.Right, range=3)
+        @XlsLabelledCell(label="ラベル", type=LabelledCellType.Right, range=4)
         private String title;
         
     }
@@ -67,8 +72,7 @@
 
 属性 ``skip`` を指定すると、属性typeの方向に向かって指定した **セル数分離れた** セルの値をマッピングすることができます。
 
-ラベルセルを結合してる場合、結合しているセル数-1分を指定することでマッピングできます。
-
+* 属性 ``range`` と ``skip`` を同時に指定した場合、まず、skip分セルを読み飛ばし、そこからrangeの範囲で空白以外のセルを検索します。
 
 .. figure:: ./_static/LabelledCell_skip.png
    :align: center
@@ -77,22 +81,69 @@
 
 
 .. sourcecode:: java
+    :linenos:
+    :caption: ラベルセルから離れたセルを指定する(属性skip)
     
     @XlsSheet(name="Users")
     public class SampleSheet {
     
-        @XlsLabelledCell(label="ラベル", type=LabelledCellType.Right, skip=2)
-        private String title;
+        @XlsLabelledCell(label="ラベル1", type=LabelledCellType.Right, skip=2)
+        private String title1;
+        
+        @XlsLabelledCell(label="ラベル2", type=LabelledCellType.Bottom, skip=3)
+        private String title2;
         
     }
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ラベルセルが結合している場合（属性labelMerged）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* 属性 ``labelMerged`` で、見出しのラベルセルが結合を考慮するか指定します。  `[ver.2.0+]`
+
+  * trueのときは、結合されているセルを1つのラベルセルとしてマッピングします。
+  * falseの場合は、結合されていても解除した状態と同じマッピング結果となります。
+  
+  * 初期値はtrueであるため、特に意識はする必要はありません。
+
+* 属性 ``labelMerged`` の値がfalseのとき、ラベルセルが結合されていると、値が設定されているデータセルまでの距離が変わるため、属性 ``skip`` を併用します。
+
+
+.. figure:: ./_static/LabelledCell_labelMerged.png
+   :align: center
+   
+   LabelledCell(labelMerged)
+
+
+.. sourcecode:: java
+    :linenos:
+    :caption: ラベルセルが結合している場合
+    
+    @XlsSheet(name="Users")
+    public class SampleSheet {
+        
+        // labelMerged=trueは初期値なので、省略可
+        @XlsLabelledCell(label="ラベル1", type=LabelledCellType.Right)
+        private String title1;
+        
+        // labelMerged=falseで、ラベルが結合しているときは、skip属性を併用します。
+        @XlsLabelledCell(label="ラベル2", type=LabelledCellType.Right, labelMerged=false, skip=2)
+        private String title2;
+
+    }
+
+
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ラベルセルが重複するセルを指定する方法
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-同じラベルのセルが複数ある場合は、領域の見出しを属性 ``headerLabel`` で指定します。
-属性headerLabelで指定されたセルからlabel属性で指定されたセルを下方向に検索し、最初に見つかったセルをラベルセルとして使用します。
+同じラベルのセルが複数ある場合は、区別するための見出しを属性 ``headerLabel`` で指定します。
+
+属性headerLabelで指定したセルから、label属性で指定したセルを下方向に検索し、最初に見つかった一致するセルをラベルセルとして使用します。
+
 
 .. figure:: ./_static/LabelledCell_headerLabel.png
    :align: center

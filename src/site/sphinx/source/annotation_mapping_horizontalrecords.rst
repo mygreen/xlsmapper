@@ -18,7 +18,7 @@
 
 シート用クラスに、アノテーション ``@XlsHorizontalRecords`` 使って定義し、属性tableLabelで表の名称を指定します。
 
-List型または配列のフィールドに付与します。
+Colelction(List, Set)型または配列のフィールドに付与します。
 List型などの場合、Genericsのタイプとして、マッピング先のBeanクラスを指定します。
 指定しない場合は、アノテーションの属性 ``recordClass`` でクラス型を指定します。
 

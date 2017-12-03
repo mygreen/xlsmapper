@@ -62,7 +62,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
  * </code></pre>
  * 
  * <h3 class="description">リスナークラスに実装する場合</h3>
- * <p>クラスにアノテーション{@link XlsListener#listenerClass()} で処理が実装されたクラスを指定します。 </p>
+ * <p>クラスにアノテーション{@link XlsListener#value()} で処理が実装されたクラスを指定します。 </p>
  * <p>インスタンスは、システム設定{@link Configuration#getBeanFactory()}経由で作成されるため、
  *   SpringFrameworkのコンテナからインスタンスを取得することもできます。
  * </p>

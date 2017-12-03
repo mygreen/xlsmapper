@@ -19,7 +19,7 @@ To ver.1.1
 
 * アノテーション :ref:`@XlsConverter <annotationXlsConverter>` の属性 ``forceWrapText`` を ``wrapText`` に、属性 ``forceShrinkToFit`` を ``shrinkToFit`` 変更します。
 
-* アノテーション :ref:`@XlsNumberConverter <annotationXlsNumberConverter>` 、 :ref:`@XlsDateConverter <annotationXlsDateConverter>` の属性 ``pattern`` を ``javaPattern`` に変更します。さらに、属性 ``excelPattern`` で、書き込み時のExcelの書式を指定します。
+* アノテーション :ref:`@XlsNumberConverter <annotationXlsNumberConverter>` 、 :ref:`@XlsDateConverter <annotationXlsDateTimeConverter>` の属性 ``pattern`` を ``javaPattern`` に変更します。さらに、属性 ``excelPattern`` で、書き込み時のExcelの書式を指定します。
 
 
 * XML読み込み用のクラス ``XmlLoader`` を ``XmlIO`` に変更します。

@@ -60,10 +60,10 @@ public class ListCellConverterFactory extends AbstractCellConverterFactorySuppor
             formatter.setIgnoreEmptyElement(anno.ignoreEmptyElement());
             
             final ElementConverter elementConverter;
-            if(anno.elementConverterClass().equals(DefaultElementConverter.class)) {
+            if(anno.elementConverter().equals(DefaultElementConverter.class)) {
                 elementConverter = new DefaultElementConverter();
             } else {
-                elementConverter = (ElementConverter)config.getBeanFactory().create(anno.elementConverterClass());
+                elementConverter = (ElementConverter)config.getBeanFactory().create(anno.elementConverter());
             }
             formatter.setElementConverter(elementConverter);
         });

@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 /**
- * 書き込み時のセルの折り返し設定などのオプションを指定するためのアノテーションです。
+ * 書き込み時のセルの配置などのを指定するためのアノテーションです。
  *
  * @since 2.0
  * @author T.TSUCHIE
@@ -68,22 +68,55 @@ public @interface XlsCellOption {
     boolean shrinkToFit() default false;
 
     /**
-     * インデント
-     * @return 0以上の値を設定します。-1以下のとき値は無効となります。
+     * インデントを指定します。
+     * <p>インデントが指定可能な横位置(左詰め/右詰め/均等割り付け)のときのみ有効になります。</p>
+     *
+     * <pre class="highlight"><code class="java">
+     * public class SampleRecord {
+     *
+     *     // インデント可能な横位置と一緒にインデントを指定します。
+     *     {@literal @XlsColumn(columnName="名前")}
+     *     {@literal @XlsCellOption(horizontalAlign=HorizontalAlign.Left, indent=2)}
+     *     private String name;
+     *
+     * }
+     * </code></pre>
+     *
+     * @return 0以上の値を設定します。-1以下のとき値は現在の設定を引き継ぎます。
      */
     short indent() default -1;
 
     /**
-     * セルの横位置
+     * セルの横位置を指定します。
      *
-     * @return
+     * <pre class="highlight"><code class="java">
+     * public class SampleRecord {
+     *
+     *     {@literal @XlsColumn(columnName="名前")}
+     *     {@literal @XlsCellOption(horizontalAlign=HorizontalAlign.Center)}
+     *     private String name;
+     *
+     * }
+     * </code></pre>
+     *
+     * @return セルの横位置を表す列挙型 {@link HorizontalAlign}を指定します。
      */
     HorizontalAlign horizontalAlign() default HorizontalAlign.Default;
 
     /**
-     * セルの縦位置
+     * セルの縦位置を指定します。
      *
-     * @return
+     * <pre class="highlight"><code class="java">
+     * public class SampleRecord {
+     *
+     *     {@literal @XlsColumn(columnName="名前")}
+     *     {@literal @XlsCellOption(verticalAlign=VerticalAlign.Top)}
+     *     private String name;
+     *
+     * }
+     * </code></pre>
+     *
+     * @return セルの縦位置を表す列挙型 {@link VerticalAlign}を指定します。
      */
     VerticalAlign verticalAlign() default VerticalAlign.Default;
 

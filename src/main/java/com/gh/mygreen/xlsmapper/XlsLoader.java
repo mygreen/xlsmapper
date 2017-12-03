@@ -17,7 +17,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gh.mygreen.xlsmapper.annotation.ProcessCase;
 import com.gh.mygreen.xlsmapper.annotation.XlsFieldProcessor;
 import com.gh.mygreen.xlsmapper.annotation.XlsListener;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
@@ -28,6 +27,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxy;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxyComparator;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.ClassUtils;
@@ -341,7 +341,7 @@ public class XlsLoader {
         // リスナークラスの@PreLoad用メソッドの実行
         final XlsListener listenerAnno = annoReader.getAnnotation(beanObj.getClass(), XlsListener.class);
         if(listenerAnno != null) {
-            for(Class<?> listenerClass : listenerAnno.listenerClass()) {
+            for(Class<?> listenerClass : listenerAnno.value()) {
                 final Object listenerObj = configuration.createBean(listenerClass);
 
                 for(Method method : listenerObj.getClass().getMethods()) {
@@ -447,7 +447,7 @@ public class XlsLoader {
 
         // リスナークラスの@PostLoadの取得
         if(listenerAnno != null) {
-            for(Class<?> listenerClass : listenerAnno.listenerClass()) {
+            for(Class<?> listenerClass : listenerAnno.value()) {
                 Object listenerObj = configuration.createBean(listenerClass);
                 for(Method method : listenerObj.getClass().getMethods()) {
                     if(annoReader.hasAnnotation(method, XlsPostLoad.class)) {

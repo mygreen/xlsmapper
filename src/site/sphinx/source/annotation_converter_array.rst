@@ -18,7 +18,7 @@ Collection型のインタフェースを指定している場合、読み込み�
 
 
 配列、またはCollection型の要素で指定可能なクラス型は、次の通りです。
-任意のクラス型に対応する場合は、属性 ``itemConverterClass`` で変換処理クラスを指定してください。
+任意のクラス型に対応する場合は、属性 ``elementConverter`` で変換処理クラスを指定してください。
 
 * String型
 * プリミティブ型「boolean/char/byte/short/int/long/float/double」と、そのラッパークラス。
@@ -31,9 +31,9 @@ Collection型のインタフェースを指定している場合、読み込み�
 
   * 区切り文字の初期値は、半角カンマ(,)です。
   
-* 型変換アノテーション ``@XlsConverter(trim=true)`` を付与し、トリム処理を有効にしている設定の場合、区切った項目にもトリム処理が適用されます。 `[ver0.5+]` 
+* トリム用アノテーション ``@XlsTrim`` を付与し、トリム処理を有効にしている設定の場合、区切った項目にもトリム処理が適用されます。 `[ver0.5+]` 
   
-* 属性 ``ignoreEmptyItem`` の値をtrueに設定していると、トリム処理によって項目が空文字となった場合、その項目は無視されます。
+* 属性 ``ignoreEmptyElement`` の値をtrueに設定していると、トリム処理によって項目が空文字となった場合、その項目は無視されます。
 
 
 .. sourcecode:: java
@@ -47,7 +47,7 @@ Collection型のインタフェースを指定している場合、読み込み�
         
         // 要素のトリム処理を指定する
         @XlsColumn(columnName="配列")
-        @XlsConverter(trim=true)    // 区切った配列の要素にもトリムが適用されます。
+        @XlsTrim    // 区切った配列の要素にもトリムが適用されます。
         @XlsArrayConverter(separator=",")
         private int[] array;
         
@@ -58,7 +58,7 @@ Collection型のインタフェースを指定している場合、読み込み�
 空の要素を無視する場合
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性 ``ignoreEmptyItem`` で、区切った項目の値が空文字の場合、無視するか指定します。
+属性 ``ignoreEmptyElement`` で、区切った項目の値が空文字の場合、無視するか指定します。
     
 例えば、区切り文字","のとき、セルの値が ``"a,,b"`` の場合、trueを設定すると ``["a", "b"]`` として読み込みます。
 
@@ -71,7 +71,7 @@ Collection型のインタフェースを指定している場合、読み込み�
         
         // 空の要素を無視する場合
         @XlsColumn(columnName="集合")
-        @XlsArrayConverter(ignoreEmptyItem=true)
+        @XlsArrayConverter(ignoreEmptyElement=true)
         private Set<Integer> set;
         
     }
@@ -81,17 +81,17 @@ Collection型のインタフェースを指定している場合、読み込み�
 要素の値を変換するクラスを指定する
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性 ``itemConverterClass`` で要素の値を変換するクラスを指定することができます。 `[ver1.1+]`
+属性 ``elementConverter`` で要素の値を変換するクラスを指定することができます。 `[ver1.1+]`
 
-変換するクラスは、インタフェース ``com.gh.mygreen.xlsmapper.cellconvert.ItemConverter`` を実装している必要があります。
-標準では、``com.gh.mygreen.xlsmapper.cellconvert.DefaultItemConverter`` が使用され、基本的な型のみサポートしています。
+変換するクラスは、インタフェース ``com.gh.mygreen.xlsmapper.cellconvert.ElementConverter`` を実装している必要があります。
+標準では、``com.gh.mygreen.xlsmapper.cellconvert.DefaultElementConverter`` が使用され、基本的な型のみサポートしています。
 
 インスタンスは、システム設定「beanFactory」経由で作成されるため、:doc:`SpringFrameworkのコンテナからインスタンスを取得 <extension_beanfactory>` することもできます。
 
 .. sourcecode:: java
     
     // 変換用クラス
-    public class CustomItemConverter implements ItemConverter<User> {
+    public class CustomElementConverter implements ElementConverter<User> {
         
         @Override
         public User convertToObject(final String str, final Class<User> targetClass) throws ConversionException {
@@ -108,9 +108,9 @@ Collection型のインタフェースを指定している場合、読み込み�
     // レコード用クラス
     public class SampleRecord {
         
-        // 任意のクラス型の要素の値を変換するConverterを指定します。
+        // 任意のクラス型の要素の値を変換するElementConverterを指定します。
         @XlsColumn(columnName="リスト")
-        @XlsArrayConverter(itemConverterClass=CustomItemConverter.class)
+        @XlsArrayConverter(elementConverter=CustomElementConverter.class)
         private List<User> list;
         
     }

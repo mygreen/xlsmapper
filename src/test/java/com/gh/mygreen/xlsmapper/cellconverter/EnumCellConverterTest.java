@@ -548,7 +548,7 @@ public class EnumCellConverterTest {
 
         @XlsDefaultValue("参照")
         @XlsTrim
-        @XlsEnumConverter(ignoreCase=true, selectorMethodName="localeName")
+        @XlsEnumConverter(ignoreCase=true, aliasMethod="localeName")
         @XlsColumn(columnName="Enum型（日本語）")
         private Operate operate;
 
@@ -600,7 +600,7 @@ public class EnumCellConverterTest {
         @XlsFormula("IF(\\$D{rowNumber}=\"R\",\"Red\",\"\")")
         private Color color;
 
-        @XlsEnumConverter(ignoreCase=true, selectorMethodName="localeName")
+        @XlsEnumConverter(ignoreCase=true, aliasMethod="localeName")
         @XlsColumn(columnName="Enum型（日本語）")
         @XlsFormula("IF(\\$D{rowNumber}=\"R\",\"参照\",\"\")")
         private Operate operate;

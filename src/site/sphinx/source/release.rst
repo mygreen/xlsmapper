@@ -134,7 +134,7 @@ ver.1.1 - 2016-03-08
 
 * `#66 <https://github.com/mygreen/xlsmapper/issues/66>`_ : セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.6に対応しました。
 
-* `#67 <https://github.com/mygreen/xlsmapper/issues/67>`_ : アノテーション :ref:`@XlsNumberConverter <annotationXlsNumberConverter>` 、 :ref:`@XlsDateConverter <annotationXlsDateConverter>` の属性 ``pattern`` を廃止し、
+* `#67 <https://github.com/mygreen/xlsmapper/issues/67>`_ : アノテーション :ref:`@XlsNumberConverter <annotationXlsNumberConverter>` 、 :ref:`@XlsDateConverter <annotationXlsDateTimeConverter>` の属性 ``pattern`` を廃止し、
   読み込み用の書式の属性 ``javaPattern`` と書き込み用の書式の属性 ``excelPattern`` を追加しました。
 
 
