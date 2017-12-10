@@ -19,6 +19,12 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
  * <p>属性{@link #direction()}で、連続する隣接するセルの方向を指定します。</p>
  * <p>属性{@link #size()}で、マッピングするセルの個数を指定します。</p>
  * <p>セルが見つからない場合はエラーとなりますが、属性{@link #optional()}を'true'とすることで無視して処理を続行します。</p>
+ * <p>配列または、{@link java.util.Collection}({@link java.util.List}/{@link java.util.Set})にマッピングします。</p>
+ * <p>{@link java.util.Collection}型のインタフェースを指定している場合、読み込み時のインスタンスは次のクラスが指定されます。</p>
+ * <ul>
+ *   <li>{@link java.util.List}の場合、{@link java.util.ArrayList}がインスタンスのクラスとなります。
+ *   <li>{@link java.util.Set} の場合、{@link java.util.LinkedHashSet}がインスタンスのクラスとなります。
+ * </ul>
  *
  * <pre class="highlight"><code class="java">
  * {@literal @XlsSheet(name="Users")}
@@ -42,6 +48,31 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
  *    <img src="doc-files/LabelledArrayCells.png" alt="">
  *    <p>基本的な使い方</p>
  * </div>
+ *
+ *
+ * <h3 class="description">書き込み時に配列・リストのサイズが不足、または余分である場合</h3>
+ * アノテーション {@link XlsArrayOption} を指定することで、書き込み時のセルの制御を指定することができます。
+ *
+ * <p>属性 {@link XlsArrayOption#overOpration()} で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 {@link #size()} の値が小さく、足りない場合の操作を指定します。
+ * <p>属性 {@link XlsArrayOption#remainedOperation()} で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 {@link #size()} の値が大きく、余っている場合の操作を指定します。
+ *
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *
+ *     {@literal @XlsLabelledArrayCells(label="ふりがな", type=LabelledCellType.Right, size=6)}
+ *     {@literal @XlsArrayOption(overOperation=OverOperation.Error, remainedOperation=RemainedOperation.Clear)}
+ *     private {@literal List<String>} nameKana;
+ *
+ * }
+ * </code></pre>
+ *
+ * <div class="picture">
+ *    <img src="doc-files/LabelledArrayCells_ArrayOption.png" alt="">
+ *    <p>書き込み時の制御を行う場合</p>
+ * </div>
+ *
+ *
  *
  * <h3 class="description">ラベルセルを正規表現、正規化して指定する場合</h3>
  *
@@ -116,7 +147,7 @@ public @interface XlsLabelledArrayCells {
      * public class SampleSheet {
      *
      *     // elementMerged=trueは初期値なので、省略可
-     *     {@literal @@XlsLabelledArrayCells(label="ラベル1", type=LabelledCellType.Right,size=3, elementMerged=true)}
+     *     {@literal @XlsLabelledArrayCells(label="ラベル1", type=LabelledCellType.Right,size=3, elementMerged=true)}
      *     private {@literal List<String>} words;
      *
      * }
@@ -127,7 +158,7 @@ public @interface XlsLabelledArrayCells {
      *    <p>結合したセルをマッピングする場合</p>
      * </div>
      *
-     * @return trueの場合、値のセルが結合されていることを考慮する。
+     * @return trueの場合、値のセルが結合されていることを考慮します。
      */
     boolean elementMerged() default true;
 

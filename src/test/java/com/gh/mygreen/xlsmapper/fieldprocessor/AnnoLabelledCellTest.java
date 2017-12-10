@@ -829,7 +829,7 @@ public class AnnoLabelledCellTest {
     /**
      * ラベルで指定したセルが見つからない場合
      */
-    @XlsSheet(name="LabelledCell(通常)")
+    @XlsSheet(name="通常")
     private static class NotFounceLabelCellSheet {
 
         /**
@@ -844,7 +844,7 @@ public class AnnoLabelledCellTest {
      * アノテーションが不正 - ラベルのアドレスの書式が不正
      *
      */
-    @XlsSheet(name="LabelledCell(通常)")
+    @XlsSheet(name="通常")
     private static class InvalidAnnoSheet1 {
 
         /**
@@ -859,7 +859,7 @@ public class AnnoLabelledCellTest {
      * アノテーションが不正 - ラベルのアドレスの範囲が不正
      *
      */
-    @XlsSheet(name="LabelledCell(通常)")
+    @XlsSheet(name="通常")
     private static class InvalidAnnoSheet2 {
 
         /**

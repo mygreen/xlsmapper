@@ -23,10 +23,10 @@
 
    * - :ref:`@XlsArrayCells <annotationXlsArrayCells>`
      - 連続し隣接するセルを配列またはリストにマッピングします。
-     
+
    * - :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>`
      - 見出し付きの連続し隣接するセルを配列またはリストにマッピングします。
-     
+
    * - :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>`
      - 水平方向に連続する行のレコード持つ表をマッピングします。
 
@@ -38,6 +38,9 @@
 
    * - :ref:`@XlsMapColumns <annotationXlsMapColumns>`
      - レコードの可変長のカラムをマッピングします。
+
+   * - :ref:`@XlsArrayColumns <annotationXlsArrayColumns>`
+     - レコードの隣接するカラムをマッピングします。
 
    * - :ref:`@XlsNestedRecords <annotationXlsNestedRecords>`
      - 入れ子構造のレコードをマッピングします。
@@ -51,6 +54,9 @@
    * - :ref:`@XlsIsEmpty <annotationXlsIsEmpty>`
      - レコードを空と判定するためのメソッドに使用します。
 
+   * - :ref:`@XlsArrayOption <annotationXlsArrayOption>`
+     - 連続し隣接するセルを配列またはリストを書き込む際の制御を行います。
+
 
 .. 以降は、埋め込んで作成する
 .. include::  ./annotation_mapping_sheet.rst
@@ -63,9 +69,10 @@
 .. include::  ./annotation_mapping_verticalrecords.rst
 .. include::  ./annotation_mapping_column.rst
 .. include::  ./annotation_mapping_mapcolumns.rst
+.. include::  ./annotation_mapping_arraycolumns.rst
 .. include::  ./annotation_mapping_nestedrecords.rst
 .. include::  ./annotation_mapping_iteratetables.rst
 .. include::  ./annotation_mapping_hint.rst
 .. include::  ./annotation_mapping_isempty.rst
-
+.. include::  ./annotation_mapping_arrayoption.rst
 

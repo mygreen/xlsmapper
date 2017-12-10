@@ -6,8 +6,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+
 /**
- * {@link XlsArrayCells}や{@link XlsLabelledArrayCells}の書き込み時の配列の操作を指定するためのアノテーションです。
+ * {@link XlsArrayCells}、{@link XlsLabelledArrayCells}、{@link XlsArrayColumns}の書き込み時の配列・リストの操作を指定するためのアノテーションです。
  *
  * @since 2.0
  * @author T.TSUCHIE
@@ -19,14 +21,60 @@ import java.lang.annotation.Target;
 public @interface XlsArrayOption {
 
     /**
-     * 書き込み時にデータの配列のサイズ数に対して、属性size()の値が小さく、足りない場合の操作を指定します。
-     * @return {@link OverOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。
+     * 書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性size()の値が小さく、足りない場合の操作を指定します。
+     *
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * // 書き込むデータ
+     * String[] data = String[]{"や", "ま", "だ", "　", "た", "ろ", "う"};
+     *
+     * // マッピングの定義
+     * public class SampleSheet {
+     *
+     *     // ラベルの右側 + 横方向の隣接するセル
+     *     {@literal @XlsLabelledArrayCells(columnName="ふりがな", type=LabelledCellType.Right, size=6)}
+     *     {@literal @XlsArrayOption(overOperation=OverOperation.Error)}
+     *     private {@literal List<String>} nameRuby;
+     *
+     * }
+     * </code></pre>
+     *
+     * <div class="picture">
+     *    <img src="doc-files/ArrayOption_overOperation.png" alt="">
+     *    <p>属性overOperationの概要</p>
+     * </div>
+     *
+     *
+     * @return {@link OverOperation#Break}の場合、足りないセルがあるとそこで処理を終了します。
      */
     OverOperation overOpration() default OverOperation.Break;
 
     /**
-     * 書き込み時にデータの配列のサイズ数に対して、属性size()の値が大きく、余っている場合の操作を指定します。
-     * @return {@link RemainedOperation#None}の場合、余っているレコードがあっても何もしません。
+     * 書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性size()の値が大きく、余っている場合の操作を指定します。
+     *
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * // 書き込むデータ
+     * String[] data = String[]{"あ", "べ", "　", "あ", "い"};
+     *
+     * // マッピングの定義
+     * public class SampleSheet {
+     *
+     *     // ラベルの右側 + 横方向の隣接するセル
+     *     {@literal @XlsLabelledArrayCells(columnName="ふりがな", type=LabelledCellType.Right, size=6)}
+     *     {@literal @XlsArrayOption(remainedOperation=RemainedOperation.Clear)}
+     *     private {@literal List<String>} nameRuby;
+     *
+     * }
+     * </code></pre>
+     *
+     * <div class="picture">
+     *    <img src="doc-files/ArrayOption_remainedOperation.png" alt="">
+     *    <p>属性remainedOperationの概要</p>
+     * </div>
+
+     *
+     * @return {@link RemainedOperation#None}の場合、余っているセルがあっても何もしません。
      */
     RemainedOperation remainedOperation() default RemainedOperation.None;
 
@@ -40,11 +88,15 @@ public @interface XlsArrayOption {
      */
     public static enum OverOperation {
 
-        /** レコードの書き込みを中断します。 */
+        /**
+         * 隣接するセルへの書き込みを中断します。
+         */
         Break,
 
-        /** エラーとして処理します。 */
-        Error,
+        /**
+         * 書き込み処理の前に、例外 {@link AnnotationInvalidException}をスローします。
+         */
+        Error
         ;
 
     }
@@ -59,11 +111,15 @@ public @interface XlsArrayOption {
      */
     public static enum RemainedOperation {
 
-        /** セルの値をクリアします */
-        Clear,
-
-        /** 何もしません */
+        /**
+         * 隣接するセルへの書き込み、その後、何もしません。
+         */
         None,
+
+        /**
+         * 隣接するセルへの書き込み、その後、余っているセルの値をクリアします。
+         */
+        Clear
         ;
 
     }

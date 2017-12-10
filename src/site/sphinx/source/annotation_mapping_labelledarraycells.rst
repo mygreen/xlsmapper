@@ -262,6 +262,35 @@
     }
 
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+書き込み時に配列・リストのサイズが不足、または余分である場合
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+アノテーション :ref:`@XlsArrayOption <annotationXlsArrayOption>` を指定することで、書き込み時のセルの制御を指定することができます。
+
+* 属性 ``overOperation`` で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 ``size`` の値が小さく、足りない場合の操作を指定します。
+* 属性 ``remainedOperation`` で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 ``size`` の値が大きく、余っている場合の操作を指定します。
+
+.. figure:: ./_static/LabelledArrayCells_ArrayOption.png
+   :align: center
+   
+   LabelledArrayCells(ArrayOption)
+
+
+.. sourcecode:: java
+    :linenos:
+    :caption: 書き込み時の制御を行う場合
+    
+    @XlsSheet(name="Users")
+    public class SampleSheet {
+        
+        @XlsLabelledArrayCells(label="ふりがな", type=LabelledCellType.Right, size=6)
+        @XlsArrayOption(overOperation=OverOperation.Error, remainedOperation=RemainedOperation.Clear)
+        private List<String> nameKana;
+
+    }
+
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ラベルセルを正規表現、正規化して指定する場合
@@ -301,7 +330,7 @@
     public class SampleSheet {
         
         // 正規表現による指定
-        @@XlsLabelledArrayCells(label="/名前.+/", type=LabelledCellType.Right, size=10)
+        @XlsLabelledArrayCells(label="/名前.+/", type=LabelledCellType.Right, size=10)
         private List<String> names;
         
     }

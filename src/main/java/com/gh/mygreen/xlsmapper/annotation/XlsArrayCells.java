@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
 /**
  * 連続し隣接するセルをCollection(List, Set)または配列にマッピングします。
  *
- *
  * <h3 class="description">基本的な使い方</h3>
  *
  * <p>セルの開始位置をインデックス形式の{@link #column()}と{@link #row()}か、アドレス形式の{@link #address()}のどちらか一方の形式を指定します。
@@ -44,6 +43,30 @@ import java.lang.annotation.Target;
  *    <img src="doc-files/ArrayCells.png" alt="">
  *    <p>基本的な使い方</p>
  * </div>
+ *
+ *
+ * <h3 class="description">書き込み時に配列・リストのサイズが不足、または余分である場合</h3>
+ * アノテーション {@link XlsArrayOption} を指定することで、書き込み時のセルの制御を指定することができます。
+ *
+ * <p>属性 {@link XlsArrayOption#overOpration()} で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 {@link #size()} の値が小さく、足りない場合の操作を指定します。
+ * <p>属性 {@link XlsArrayOption#remainedOperation()} で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 {@link #size()} の値が大きく、余っている場合の操作を指定します。
+ *
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *
+ *     {@literal @XlsArrayCells(address="B3", size=6)}
+ *     {@literal @XlsArrayOption(overOperation=OverOperation.Error, remainedOperation=RemainedOperation.Clear)}
+ *     private {@literal List<String>} nameKana;
+ *
+ * }
+ * </code></pre>
+ *
+ * <div class="picture">
+ *    <img src="doc-files/ArrayCells_ArrayOption.png" alt="">
+ *    <p>書き込み時の制御を行う場合</p>
+ * </div>
+ *
  *
  * @since 2.0
  * @author T.TSUCHIE

@@ -7,13 +7,11 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` または :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` において、
-指定されたレコード用クラスのプロパティをカラム名にマッピングします。
+1つのカラムをマッピングします。
 
-属性 ``columnName`` で、見出しとなるセルのラベルを指定します。
+* 属性 ``columnName`` で、見出しとなるセルのラベルを指定します。
 
-フィールドやメソッドに対して付与します。
-
-セルが見つからない場合はエラーとなりますが、属性 ``optional`` を ``true`` とすることで無視して処理を続行します。
+* セルが見つからない場合はエラーとなりますが、属性 ``optional`` を ``true`` とすることで無視して処理を続行します。
 
 .. figure:: ./_static/Column.png
    :align: center

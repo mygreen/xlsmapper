@@ -6,16 +6,13 @@
 ``@XlsMapColumns``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-基本的な使い方
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` もしくは :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` において、
 指定されたレコード用クラスのカラム数が可変の場合に、それらのカラムを ``java.util.Map`` として設定します。
 
-BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。
+* BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。
 
-属性 ``previousColumnName`` で、指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。
+* 属性 ``previousColumnName`` で、指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。
 
 .. figure:: ./_static/MapColumns.png
    :align: center

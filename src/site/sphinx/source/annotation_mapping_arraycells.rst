@@ -119,3 +119,33 @@
     }
 
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+書き込み時に配列・リストのサイズが不足、または余分である場合
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+アノテーション :ref:`@XlsArrayOption <annotationXlsArrayOption>` を指定することで、書き込み時のセルの制御を指定することができます。
+
+* 属性 ``overOperation`` で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 ``size`` の値が小さく、足りない場合の操作を指定します。
+* 属性 ``remainedOperation`` で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 ``size`` の値が大きく、余っている場合の操作を指定します。
+
+.. figure:: ./_static/ArrayColumns_ArrayOption.png
+   :align: center
+   
+   ArrayCells(ArrayOption)
+
+
+.. sourcecode:: java
+    :linenos:
+    :caption: 書き込み時の制御を行う場合
+    
+    @XlsSheet(name="Users")
+    public class SampleSheet {
+        
+        @XlsArrayCells(address="B3", size=6)
+        @ArrayOption(overOperation=OverOperation.Error, remainedOperation=RemainedOperation.Clear)
+        private List<String> nameKana;
+    }
+
+
+
