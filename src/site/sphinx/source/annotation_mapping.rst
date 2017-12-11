@@ -48,8 +48,8 @@
    * - :ref:`@XlsIterateTables <annotationXlsIterateTables>`
      - シート内で繰り返される同一構造の表をマッピングします。
 
-   * - :ref:`@XlsHint <annotationXlsHint>`
-     - フィールドの処理順序などを指定するために使用します。
+   * - :ref:`@XlsOrder <annotationXlsOrder>`
+     - フィールドの処理順序を指定するために使用します。
 
    * - :ref:`@XlsIsEmpty <annotationXlsIsEmpty>`
      - レコードを空と判定するためのメソッドに使用します。
@@ -72,7 +72,7 @@
 .. include::  ./annotation_mapping_arraycolumns.rst
 .. include::  ./annotation_mapping_nestedrecords.rst
 .. include::  ./annotation_mapping_iteratetables.rst
-.. include::  ./annotation_mapping_hint.rst
+.. include::  ./annotation_mapping_order.rst
 .. include::  ./annotation_mapping_isempty.rst
 .. include::  ./annotation_mapping_arrayoption.rst
 

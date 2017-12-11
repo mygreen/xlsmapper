@@ -146,7 +146,7 @@ XMLに定義していないメソッドなどは、Javaのソースコードの�
         @XlsSheetName
         private String sheetName;
         
-        @XlsHint(order=1)
+        @XlsOrder(1)
         @XlsConverter(trim=true, shrinkToFit=true, defaultValue="－")
         @XlsLabelledCell(label="名称", type=LabelledCellType.Right)  // <== 上書きされる
         private String name;
@@ -157,7 +157,7 @@ XMLに定義していないメソッドなどは、Javaのソースコードの�
             return records;
         }
         
-        @XlsHint(order=2)
+        @XlsOrder(2)
         @XlsHorizontalRecords(tableLabel="クラス名", terminal=RecordTerminal.Empty)  // <== 上書きされる
         public void setRecords(List<NormalRecord> records) {
             this.records = records;

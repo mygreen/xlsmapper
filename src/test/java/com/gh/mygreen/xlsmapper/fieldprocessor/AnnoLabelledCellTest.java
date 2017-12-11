@@ -1329,15 +1329,15 @@ public class AnnoLabelledCellTest {
 
         private Map<String, String> labels;
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         @XlsLabelledCell(label="開始日", type=LabelledCellType.Bottom)
         private Date start;
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         @XlsLabelledCell(label="終了日", type=LabelledCellType.Bottom)
         private Date end;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsLabelledCell(label="差", type=LabelledCellType.Bottom)
         @XlsFormula(value="C5-B5")
         private Integer diff;

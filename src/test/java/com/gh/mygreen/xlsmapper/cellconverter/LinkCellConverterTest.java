@@ -491,17 +491,17 @@ public class LinkCellConverterTest {
     @XlsSheet(name="リンク型")
     private static class LinkSheet {
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         @XlsHorizontalRecords(tableLabel="リンク型（アノテーションなし）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<SimpleRecord> simpleRecords;
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         @XlsHorizontalRecords(tableLabel="リンク型（初期値、書式）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormattedRecord> formattedRecords;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsHorizontalRecords(tableLabel="リンク型（数式）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormulaRecord> formulaRecords;

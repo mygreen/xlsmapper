@@ -82,12 +82,12 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
     public class SampleSheet {
     
         // 数式の指定
-        @XlsHint(order=1)
+        @XlsOrder(1)
         @XlsLabelledCell(label="更新日付", type=LabelledCellType.Right)
         @XlsFormula("TODAY()")
         private Date date;
         
-        @XlsHint(order=2)
+        @XlsOrder(2)
         @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)
         private List<SampleRecord> records;
     }
@@ -154,12 +154,12 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
     public class SampleSheet {
     
         // 数式のメソッドの指定
-        @XlsHint(order=1)
+        @XlsOrder(1)
         @XlsLabelledCell(label="更新日付", type=LabelledCellType.Right)
         @XlsFormula(methodName="getDateFormula")
         private Date date;
         
-        @XlsHint(order=2)
+        @XlsOrder(2)
         @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)
         private List<SampleRecord> records;
         
@@ -272,7 +272,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
 数式にセルの座標を含む場合、セルを書き込んだ後に行を追加すると、セルの位置がずれる場合があります。
 これは、内部で使用しているExcelのライブラリ「Apaceh POI」は、行を追加しても数式中の座標は不変であるためです。
 
-このような場合、 アノテーション :ref:`@XlsHint <annotationXlsHint>` を使い、処理順序を指定することで回避することができます。
+このような場合、 アノテーション :ref:`@XlsOrder <annotationXlsOrder>` を使い、処理順序を指定することで回避することができます。
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 EL式中でプロパティを参照する場合
@@ -322,7 +322,7 @@ JavaBeanの定義
         // マッピングした位置情報
         private Map<String, Point> positions;
         
-        @XlsHint(order=2)
+        @XlsOrder(2)
         @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)
         private List<SampleRecord> records;
         

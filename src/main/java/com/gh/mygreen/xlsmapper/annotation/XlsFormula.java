@@ -80,12 +80,12 @@ public @interface XlsFormula {
      * public class SampleSheet {
      *
      *     // 数式の指定
-     *     {@literal @XlsHint(order=1)}
+     *     {@literal @XlsOrder(1)}
      *     {@literal @XlsLabelledCell(label="更新日付", type=LabelledCellType.Right)}
      *     {@literal @XlsFormula("TODAY()")}
      *     private Date date;
      *
-     *     {@literal @XlsHint(order=2)}
+     *     {@literal @XlsOrder(2)}
      *     {@literal @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)}
      *     private {@literal List<SampleRecord>} records;
      * }
@@ -158,12 +158,12 @@ public @interface XlsFormula {
      * public class SampleSheet {
      *
      *     // 数式のメソッドの指定
-     *     {@literal @XlsHint(order=1)}
+     *     {@literal @XlsOrder(1)}
      *     {@literal @XlsLabelledCell(label="更新日付", type=LabelledCellType.Right)}
      *     {@literal @XlsFormula(methodName="getDateFormula")}
      *     private Date date;
      *
-     *     {@literal @XlsHint(order=2)}
+     *     {@literal @XlsOrder(2)}
      *     {@literal @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)}
      *     private {@literal List<SampleRecord>} records;
      *

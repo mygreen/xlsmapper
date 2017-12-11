@@ -3380,23 +3380,23 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
     @XlsSheet(name="開始位置の指定")
     private static class StartedPositionSheet {
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         @XlsVerticalRecords(tableLabel="○×一覧")
         private List<NormalRecord> normalRecords1;
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         @XlsVerticalRecords(headerAddress="C9")
         private List<NormalRecord> normalRecords2;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsVerticalRecords(headerColumn=3, headerRow=13)
         private List<NormalRecord> normalRecords3;
 
-//        @XlsHint(order=4)
-//        @XlsVerticalRecords(tableLabel="◆△一覧", bottom=2, skipEmptyRecord=true)
+        @XlsOrder(4)
+        @XlsVerticalRecords(tableLabel="◆△一覧", right=2)
         private List<NormalRecord> normalRecords4;
 
-        @XlsOrder(value=5)
+        @XlsOrder(5)
         @XlsVerticalRecords(tableLabel="存在しない", optional=true)
         private List<NormalRecord> normalRecords5;
 
@@ -3569,19 +3569,19 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="終了位置の指定")
    private static class EndPositionSheet {
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="終端レコードの指定（Empty）", terminal=RecordTerminal.Empty)
        private List<NormalRecord> normalRecords1;
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="終端レコードの指定（Border）", terminal=RecordTerminal.Border)
        private List<NormalRecord> normalRecords2;
 
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="終端セルの指定", terminal=RecordTerminal.Border, terminateLabel="合計")
        private List<NormalRecord> normalRecords3;
 
-       @XlsOrder(value=4)
+       @XlsOrder(4)
        @XlsVerticalRecords(tableLabel="見出しセルの個数指定", terminal=RecordTerminal.Border, headerLimit=3)
        private List<NormalRecord> normalRecords4;
 
@@ -3688,22 +3688,22 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="見出しの空白")
    private static class HeaderSpaceSheet {
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="見出しに空白なし", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<UserRecord> records1;
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<UserRecord> records2;
 
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="見出しに空白がある", terminal=RecordTerminal.Border, range=2)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<UserRecord> records3;
 
-       @XlsOrder(value=4)
+       @XlsOrder(4)
        @XlsVerticalRecords(tableLabel="開始位置がずれている", terminal=RecordTerminal.Border, range=3)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<UserRecord> records4;
@@ -3816,27 +3816,27 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="カラムの設定")
    private static class ColumnSettingSheet {
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="結合セル", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<MergedRecord> mergedRecords;
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<HeaderMergedRecord> headerMergedRecords;
 
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="オプションのセル（セルがある）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<OptionalRecord> optionalRecords1;
 
-       @XlsOrder(value=4)
+       @XlsOrder(4)
        @XlsVerticalRecords(tableLabel="オプションのセル（セルがない）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<OptionalRecord> optionalRecords2;
 
-       @XlsOrder(value=5)
+       @XlsOrder(5)
        @XlsVerticalRecords(tableLabel="Converterがある", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<ConvertedRecord> convertedRecord;
@@ -4319,7 +4319,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 空のレコードをスキップ（リスト）
         */
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="名簿（リスト）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<EmptySkipRecord> skipList;
@@ -4327,7 +4327,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 空のレコードをスキップ（集合）
         */
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="名簿（集合）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private Set<EmptySkipRecord> skipSet;
@@ -4335,7 +4335,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 配列
         */
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="名簿（配列）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private EmptySkipRecord[] skipArray;
@@ -4443,39 +4443,39 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="余分なレコードの制御")
    private static class RemainedOverSheet {
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="足りないレコード（Break）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Break)
        private List<RemainedOverRecord> overBreakRecrods;
 
-//       @XlsHint(order=2)
-//       @XlsVerticalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
-//               overRecord=OverRecordOperate.Insert)
+//       @XlsOrder(2)
+//       @XlsVerticalRecords(tableLabel="足りないレコード（Insert）", terminal=RecordTerminal.Border)
+//       @XlsRecordOption(overOperation=OverOperation.Insert)
        private List<RemainedOverRecord> overInsertRecrods;
 
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="足りないレコード（Copy）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<RemainedOverRecord> overCopyRecrods;
 
-       @XlsOrder(value=4)
+       @XlsOrder(4)
        @XlsVerticalRecords(tableLabel="余分なレコード（None）", terminal=RecordTerminal.Border)
        @XlsRecordOption(remainedOperation=RemainedOperation.None)
        private List<RemainedOverRecord> remainedNoneRecrods;
 
-       @XlsOrder(value=5)
+       @XlsOrder(5)
        @XlsVerticalRecords(tableLabel="余分なレコード（Clear）", terminal=RecordTerminal.Border)
        @XlsRecordOption(remainedOperation=RemainedOperation.Clear)
        private List<RemainedOverRecord> remainedClearRecrods;
 
-//       @XlsHint(order=6)
-//       @XlsVerticalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
-//               remainedRecord=RemainedRecordOperate.Delete)
+//       @XlsOrder(6)
+//       @XlsVerticalRecords(tableLabel="余分なレコード（Delete）", terminal=RecordTerminal.Border)
+//       @XlsRecordOption(remainedOperation=RemainedOperation.Delete)
        private List<RemainedOverRecord> remainedDeleteRecrods1;
 
-//       @XlsHint(order=7)
-//       @XlsVerticalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border, skipEmptyRecord=true,
-//               remainedRecord=RemainedRecordOperate.Delete)
+//       @XlsOrder(7)
+//       @XlsVerticalRecords(tableLabel="余分なレコード（Delete）（データなし）", terminal=RecordTerminal.Border)
+//       @XlsRecordOption(remainedOperation=RemainedOperation.Delete)
        private List<RemainedOverRecord> remainedDeleteRecrods2;
 
        /**
@@ -4667,7 +4667,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 入力定義が設定されてた表（挿入用）
         */
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="入力規則（レコードの挿入）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<DataValidationRecord> insertValidationRecrods;
@@ -4675,7 +4675,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 名前の定義用の表
         */
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="名前の定義", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<NameDefRecord> nameRecords;
@@ -4683,7 +4683,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 入力定義が設定されてた表（削除用）
         */
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="入力規則（レコードの削除）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Break, remainedOperation=RemainedOperation.Clear)
        private List<DataValidationRecord> deleteValidationRecrods;
@@ -4691,7 +4691,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 入力定義が設定されてた表（削除用）（データなし）
         */
-       @XlsOrder(value=4)
+       @XlsOrder(4)
        @XlsVerticalRecords(tableLabel="入力規則（レコードの削除）（データなし）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Break, remainedOperation=RemainedOperation.Clear)
        private List<DataValidationRecord> nonDeleteValidationRecrods;
@@ -4699,7 +4699,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        /**
         * 入力定義が設定されてた表（コピー用）
         */
-       @XlsOrder(value=5)
+       @XlsOrder(5)
        @XlsVerticalRecords(tableLabel="入力規則（レコードのコピー）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
        private List<DataValidationRecord> copyValidationRecrods;
@@ -4894,7 +4894,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 
        private MethodAnnoMapRecord[] mapRecords;
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="名簿")
        @XlsRecordOption(overOperation=OverOperation.Copy)
        public List<MethodAnnoRecord> getRecords() {
@@ -4905,7 +4905,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
            this.records = records;
        }
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        public MethodAnnoMapRecord[] getMapRecords() {
            return mapRecords;
        }
@@ -5176,19 +5176,19 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="ラベルの位置の指定")
    private static class TableLabelSheet {
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="タイトルが左", tableLabelAbove=false)
        private List<NormalRecord> leftRecords1;
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="タイトルが左（離れている）", tableLabelAbove=false, right=2)
        private List<NormalRecord> leftRecords2;
 
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="タイトルが上", tableLabelAbove=true)
        private List<NormalRecord> aboveRecords1;
 
-       @XlsOrder(value=4)
+       @XlsOrder(4)
        @XlsVerticalRecords(tableLabel="タイトルが上（離れている）", tableLabelAbove=true, bottom=2)
        private List<NormalRecord> aboveRecords2;
 
@@ -5264,17 +5264,17 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="データの開始位置")
    private static class StartedDataPositionSheet {
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="データの開始位置が離れている", terminal=RecordTerminal.Border, headerRight=2)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<DistantRecord> distantRecords;
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="見出しが結合", terminal=RecordTerminal.Border, headerRight=2)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<HeaderMergedRecord> headerMergedRecords1;
 
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="見出しが結合（タイトルが上）", terminal=RecordTerminal.Border, headerRight=2, tableLabelAbove=true)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<HeaderMergedRecord> headerMergedRecords2;
@@ -5589,22 +5589,22 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 
        private Map<String, String> labels;
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="通常の表")
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<LargeRecord> largeRecords1;
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="空のレコードがある表", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
        private List<LargeRecord> largeRecords2;
 
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="見出しが結合している表", terminal=RecordTerminal.Border, headerRight=2)
        @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
        private List<HeaderMergedLargeRecord> largeRecords3;
 
-       @XlsOrder(value=4)
+       @XlsOrder(4)
        @XlsVerticalRecords(tableLabel="1対1のネスト")
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<OneToOneRecord> oneToOneRecords;
@@ -6096,12 +6096,12 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="数式を指定")
    private static class FormulaSheet {
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="成績一覧", headerRight=2, terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<GradeRecord> gradeRecrods;
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="出欠確認", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<EntryRecord> entryRecords;
@@ -6287,12 +6287,12 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="独自の開始位置")
    private static class CustomDataPositionSheet {
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="成績一覧", terminal=RecordTerminal.Border, right=2, terminateLabel="/クラス.+/", tableLabelAbove=true)
        @XlsRecordFinder(value=ClassNameRecordFinder.class, args="クラスA")
        private List<Record> classA;
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="成績一覧", terminal=RecordTerminal.Border, right=2, terminateLabel="/クラス.+/", tableLabelAbove=true)
        @XlsRecordFinder(value=ClassNameRecordFinder.class, args="クラスB")
        private List<Record> classB;
@@ -6420,17 +6420,17 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 
        private Map<String, String> labels;
 
-       @XlsOrder(value=1)
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="配列カラム（文字列）", terminal=RecordTerminal.Border, tableLabelAbove=true)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<NormalRecord> normal;
 
-       @XlsOrder(value=2)
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="配列カラム（結合がある）", terminal=RecordTerminal.Border, tableLabelAbove=true)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<MergedRecord> merged;
 
-       @XlsOrder(value=3)
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="配列カラム（型変換）", terminal=RecordTerminal.Border, tableLabelAbove=true)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<ConvertRecord> converted;

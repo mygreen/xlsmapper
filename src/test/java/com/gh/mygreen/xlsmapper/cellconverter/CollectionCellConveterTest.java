@@ -763,22 +763,22 @@ public class CollectionCellConveterTest {
     @XlsSheet(name="リスト型")
     private static class CollectionSheet {
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         @XlsHorizontalRecords(tableLabel="リスト型（アノテーションなし）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<SimpleRecord> simpleRecords;
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         @XlsHorizontalRecords(tableLabel="リスト型（初期値、書式）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormattedRecord> formattedRecords;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsHorizontalRecords(tableLabel="リスト型（任意の型）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<CustomRecord> customRecords;
 
-        @XlsOrder(value=4)
+        @XlsOrder(4)
         @XlsHorizontalRecords(tableLabel="リスト型（数式）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormulaRecord> formulaRecords;

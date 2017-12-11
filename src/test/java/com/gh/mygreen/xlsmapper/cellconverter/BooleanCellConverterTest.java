@@ -424,17 +424,17 @@ public class BooleanCellConverterTest {
     @XlsSheet(name="ブール型")
     private static class BooleanSheet {
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         @XlsHorizontalRecords(tableLabel="ブール型（アノテーションなし）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<SimpleRecord> simpleRecords;
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         @XlsHorizontalRecords(tableLabel="ブール型（初期値、書式）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormattedRecord> formattedRecords;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsHorizontalRecords(tableLabel="ブール型（数式）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormulaRecord> formulaRecords;

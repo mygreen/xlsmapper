@@ -421,17 +421,17 @@ public class EnumCellConverterTest {
     @XlsSheet(name="列挙型")
     private static class EnumSheet {
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         @XlsHorizontalRecords(tableLabel="列挙型（アノテーションなし）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<SimpleRecord> simpleRecords;
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         @XlsHorizontalRecords(tableLabel="列挙型（初期値、書式）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormattedRecord> formattedRecords;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsHorizontalRecords(tableLabel="列挙型（数式）", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<FormulaRecord> formulaRecords;

@@ -1531,20 +1531,20 @@ public class AnnoIterateTablesTest {
 
         private static class HorizontalAndVerticalClassTable {
 
-            @XlsOrder(value=1)
+            @XlsOrder(1)
             @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
             private int no;
 
-            @XlsOrder(value=2)
+            @XlsOrder(2)
             @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
             private String name;
 
-            @XlsOrder(value=3)
+            @XlsOrder(3)
             @XlsHorizontalRecords(terminal=RecordTerminal.Border, headerLimit=3)
             @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
             private List<PersonRecord> persons;
 
-            @XlsOrder(value=4)
+            @XlsOrder(4)
             @XlsVerticalRecords(terminal=RecordTerminal.Border, right=4)
             @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
             private List<AttendRecord> attends;
@@ -1597,15 +1597,15 @@ public class AnnoIterateTablesTest {
 
         private Map<String, String> labels;
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
         private int no;
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         private List<PersonRecord> persons;
@@ -1643,15 +1643,15 @@ public class AnnoIterateTablesTest {
 
         private Map<String, String> labels;
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
         private int no;
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsVerticalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
         private List<PersonRecord> persons;
@@ -1757,15 +1757,15 @@ public class AnnoIterateTablesTest {
 
         private Map<String, String> labels;
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
         private int no;
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, optional=true)
         private String name;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
         @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         private List<PersonRecord> persons;
@@ -1825,20 +1825,20 @@ public class AnnoIterateTablesTest {
 
         private Map<String, String> labels;
 
-//        @XlsHint(order=1)
+//        @XlsOrder(1)
         @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
         private int no;
 
-//        @XlsHint(order=2)
+//        @XlsOrder(2)
         @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
         private String name;
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border, headerLimit=3)
         @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         private List<PersonRecord> persons;
 
-        @XlsOrder(value=4)
+        @XlsOrder(4)
         @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Empty, range=4)
         @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
         private List<ResultRecord> results;
@@ -1987,12 +1987,12 @@ public class AnnoIterateTablesTest {
             return no;
         }
 
-        @XlsOrder(value=1)
+        @XlsOrder(1)
         public void setNo(int no) {
             this.no = no;
         }
 
-        @XlsOrder(value=2)
+        @XlsOrder(2)
         public String getName() {
             return name;
         }
@@ -2008,7 +2008,7 @@ public class AnnoIterateTablesTest {
             return persons;
         }
 
-        @XlsOrder(value=3)
+        @XlsOrder(3)
         public void setPersons(List<PersonRecord> persons) {
             this.persons = persons;
         }
@@ -2100,15 +2100,15 @@ public class AnnoIterateTablesTest {
 
             private Map<String, String> labels;
 
-            @XlsOrder(value=1)
+            @XlsOrder(1)
             @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
             private int no;
 
-            @XlsOrder(value=2)
+            @XlsOrder(2)
             @XlsLabelledCell(label="/クラス名.*/", type=LabelledCellType.Right)
             private String name;
 
-            @XlsOrder(value=3)
+            @XlsOrder(3)
             @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border)
             @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
             private List<RegexRecord> persons;
@@ -2209,15 +2209,15 @@ public class AnnoIterateTablesTest {
 
             private Map<String, String> labels;
 
-            @XlsOrder(value=1)
+            @XlsOrder(1)
             @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
             private int no;
 
-            @XlsOrder(value=2)
+            @XlsOrder(2)
             @XlsLabelledArrayCells(label="/クラス名.*/", type=LabelledCellType.Right, size=2)
             private String[] name;
 
-            @XlsOrder(value=3)
+            @XlsOrder(3)
             @XlsHorizontalRecords(tableLabel="/クラス情報.*/", terminal=RecordTerminal.Border)
             @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
             private List<ArrayCellRecord> persons;

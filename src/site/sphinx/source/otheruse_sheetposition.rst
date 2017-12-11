@@ -94,7 +94,7 @@
 
 例えば、既に処理して取得したセルの位置情報よりも、上方の表で後から行を削除、追加したとき、取得済みのセルの位置情報が不正になります。
 
-このような場合、アノテーション ``@XlsHint`` をプロパティに付与して、処理順序を一定に保ちます。
+このような場合、アノテーション ``@XlsOrder`` をプロパティに付与して、処理順序を一定に保ちます。
 
 
 .. sourcecode:: java
@@ -107,11 +107,11 @@
         @XlsHorizontalRecords(tableLabel="履歴", terminal=RecordTerminal.Border,
            overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete // データによって行の追加、削除する設定
         )
-        @XlsHint(order=1) // プロパティの処理順序を指定します。
+        @XlsOrder(1) // プロパティの処理順序を指定します。
         private List<EmployeeHistory> histories;
         
         @XlsLabelledCell(label="名前")
-        @XlsHint(order=2) // プロパティの処理順序を指定します。
+        @XlsOrder(2) // プロパティの処理順序を指定します。
         private String name;
         
     }
