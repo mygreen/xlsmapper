@@ -22,9 +22,9 @@
 
   * カラムの定義はレコードに記述されているため、親子に同じレコードのクラス定義があると、無限に再帰処理してしまうため、それを防ぐための制約になります。
 
-* 属性 ``@XlsHorizotanlRecords#terminalLabel`` や ``@XlsHorizotanlRecords#ignoreEmptyRecord`` などの終端や空のレコードの判定は、入れ子になったレコードごとに判定されます。
+* 属性 ``@XlsHorizotanlRecords#terminalLabel`` の終端の判定は、入れ子になったレコードごとに判定されます。
 
-* 読み込みの際、アノテーション :ref:`@XlsIsEmpty <annotationXlsIsEmpty>` で、空のレコードを読み飛ばした結果、レコード数が0件となった場合は、要素数0個リストや配列が設定されます。
+* 読み込みの際、アノテーション :ref:`@XlsIgnoable <annotationXlsIgnoable>` で、空のレコードを読み飛ばした結果、レコード数が0件となった場合は、要素数0個リストや配列が設定されます。
 
 .. figure:: ./_static/NestedRecords_oneToMany.png
    :align: center

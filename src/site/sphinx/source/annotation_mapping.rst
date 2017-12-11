@@ -51,8 +51,8 @@
    * - :ref:`@XlsOrder <annotationXlsOrder>`
      - フィールドの処理順序を指定するために使用します。
 
-   * - :ref:`@XlsIsEmpty <annotationXlsIsEmpty>`
-     - レコードを空と判定するためのメソッドに使用します。
+   * - :ref:`@XlsIgnoable <annotationXlsIgnoable>`
+     - レコードを読み飛ばすことが可能か判定するためのメソッドに使用します。
 
    * - :ref:`@XlsArrayOption <annotationXlsArrayOption>`
      - 連続し隣接するセルを配列またはリストを書き込む際の制御を行います。
@@ -73,6 +73,6 @@
 .. include::  ./annotation_mapping_nestedrecords.rst
 .. include::  ./annotation_mapping_iteratetables.rst
 .. include::  ./annotation_mapping_order.rst
-.. include::  ./annotation_mapping_isempty.rst
+.. include::  ./annotation_mapping_ignorable.rst
 .. include::  ./annotation_mapping_arrayoption.rst
 

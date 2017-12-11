@@ -1,8 +1,8 @@
 
-.. _annotationXlsIsEmpty:
+.. _annotationXlsIgnoable:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``@XlsIsEmpty``
+``@XlsIgnoable``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -12,8 +12,7 @@
 アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、:ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` を使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
 レコードが空と判定するためのメソッドに付与します。
 
-* このアノテーションを使用する場合は、:ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` の属性「ignoreEmptyRecord=true」を設定する必要があります。
-* ``@XlsIsEmpty`` を付与したメソッドは、publicかつ引数なしの戻り値がboolean型の書式にする必要があります。
+* ``@XlsIgnoable`` を付与したメソッドは、publicかつ引数なしの戻り値がboolean型の書式にする必要があります。
 * :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` でも同様に使用できます。
 
 また、この機能は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。
@@ -24,7 +23,7 @@
     @XlsSheet(name="シート名")
     public class UnitUser {
     
-        @XlsHorizontalRecords(tableLabel="ユーザ一覧", ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧")
         private List<User> users;
         
     }
@@ -42,7 +41,7 @@
         private String address;
         
         // レコードが空と判定するためのメソッド
-        @XlsIsEmpty
+        @XlsIgnoable
         public boolean isEmpty() {
           
           if(name != null || !name.isEmpty()) {
@@ -74,7 +73,7 @@ IsEmptyBuilderを使った記述の簡単化
     @XlsSheet(name="シート名")
     public class UnitUser {
     
-        @XlsHorizontalRecords(tableLabel="ユーザ一覧", ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧")
         private List<User> users;
         
     }
@@ -98,7 +97,7 @@ IsEmptyBuilderを使った記述の簡単化
         private String address;
         
         // レコードが空と判定するためのメソッド
-        @XlsIsEmpty
+        @XlsIgnoable
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
             

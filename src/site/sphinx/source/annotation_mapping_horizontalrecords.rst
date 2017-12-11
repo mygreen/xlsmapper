@@ -207,9 +207,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 空のレコードを読み飛ばす条件の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性 ``ignoreEmptyRecord`` で、読み込み時に空のレコードを読み飛ばすことができます。
-
-レコード用のクラスには、レコードを空と判定するためのメソッド用意し、アノテーション :ref:`@XlsIsEmpty <annotationXlsIsEmpty>` を付与します。
+レコード用のクラスには、レコードを宇読み飛ばすかどうか判定するためのメソッド用意し、アノテーション :ref:`@XlsIgnoable <annotationXlsIgnoable>` を付与します。
 
 また、この属性は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。
 
@@ -220,8 +218,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
     @XlsSheet(name="シート名")
     public class SampleSheet {
         
-        @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border,
-                ignoreEmptyRecord=true)
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border)
         private List<UserRecord> users;
     }
     
@@ -232,7 +229,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
         private String name;
         
         // レコードが空と判定するためのメソッド
-        @XlsIsEmpty
+        @XlsIgnoable
         public boolean isEmpty() {
             
             if(name != null || !name.isEmpty()) {
