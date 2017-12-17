@@ -597,7 +597,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 }
             }
 
-            property.setValue(record, map);
+            if(foundPreviousColumn) {
+                property.setValue(record, map);
+            }
         }
     }
 

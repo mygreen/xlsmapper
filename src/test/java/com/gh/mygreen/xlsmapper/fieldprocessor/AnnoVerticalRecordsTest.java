@@ -1,11 +1,10 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 
 import java.awt.Point;
 import java.io.File;
@@ -60,6 +59,7 @@ import com.gh.mygreen.xlsmapper.util.IsEmptyConfig;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 
 /**
  * {@link VerticalRecordsProcessor}のテスタ
@@ -373,6 +373,13 @@ public class AnnoVerticalRecordsTest {
                 }
             }
 
+            if(sheet.mapRecords4 != null) {
+                assertThat(sheet.mapRecords4, hasSize(2));
+                for(MapOptionalRecord record : sheet.mapRecords4) {
+                    assertRecord(record, errors, false);
+                }
+            }
+
         }
     }
 
@@ -389,6 +396,157 @@ public class AnnoVerticalRecordsTest {
             SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
 
             fail();
+        }
+    }
+
+    /**
+     * マップカラムの設定テスト - 属性previousColumnで指定したセルが見つからない
+     */
+    @Test
+    public void test_load_vr_mapColumnSetting_notFound_previousColumn() throws Exception {
+
+        XlsMapper mapper = new XlsMapper();
+
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        // optional=false - 例外が発生
+        {
+            XmlInfo xmlInfo = createXml()
+                    .classInfo(createClass(MapOptionalRecord.class)
+                            .field(createField("dateAttended")
+                                    .annotation(createAnnotation(XlsMapColumns.class)
+                                            .attribute("previousColumnName", "氏名A")  // 存在しない
+                                            .attribute("nextColumnName", "備考")
+                                            .attribute("optional", false)
+                                            .buildAnnotation())
+                                    .buildField())
+                            .buildClass())
+                    .buildXml();
+
+            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+
+            try(InputStream in = new FileInputStream(inputFile)) {
+                SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
+
+                MapColumnSettingSheet sheet = errors.getTarget();
+                fail();
+
+            } catch(Throwable e) {
+                assertThat(e).isInstanceOf(CellNotFoundException.class)
+                    .hasMessage("シート'マップカラムの設定'において、ラベル'氏名A'を持つセルが見つかりません。");
+
+            }
+
+        }
+
+        // optional=true - 例外を無視
+        {
+            XmlInfo xmlInfo = createXml()
+                    .classInfo(createClass(MapOptionalRecord.class)
+                            .field(createField("dateAttended")
+                                    .annotation(createAnnotation(XlsMapColumns.class)
+                                            .attribute("previousColumnName", "氏名A")  // 存在しない
+                                            .attribute("nextColumnName", "備考")
+                                            .attribute("optional", true)
+                                            .buildAnnotation())
+                                    .buildField())
+                            .buildClass())
+                    .buildXml();
+
+            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+
+            try(InputStream in = new FileInputStream(inputFile)) {
+                SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
+
+                MapColumnSettingSheet sheet = errors.getTarget();
+
+                assertThat(sheet.mapRecords4).hasSize(2);
+                for(MapOptionalRecord record : sheet.mapRecords4) {
+                    assertThat(record.dateAttended).isNull();
+                }
+
+            } catch(Throwable e) {
+                e.printStackTrace();
+                fail();
+            }
+
+        }
+    }
+
+    /**
+     * マップカラムの設定テスト - 属性nextColumnで指定したセルが見つからない
+     */
+    @Test
+    public void test_load_vr_mapColumnSetting_notFound_nextColumn() throws Exception {
+
+        XlsMapper mapper = new XlsMapper();
+
+        // optional=false - 例外が発生
+        {
+            XmlInfo xmlInfo = createXml()
+                    .classInfo(createClass(MapOptionalRecord.class)
+                            .field(createField("dateAttended")
+                                    .annotation(createAnnotation(XlsMapColumns.class)
+                                            .attribute("previousColumnName", "氏名")
+                                            .attribute("nextColumnName", "備考B")  // 存在しない
+                                            .attribute("optional", false)
+                                            .buildAnnotation())
+                                    .buildField())
+                            .buildClass())
+                    .buildXml();
+
+            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+
+            mapper.getConiguration().setContinueTypeBindFailure(true);
+
+            try(InputStream in = new FileInputStream(inputFile)) {
+                SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
+
+                MapColumnSettingSheet sheet = errors.getTarget();
+                fail();
+
+            } catch(Throwable e) {
+                assertThat(e).isInstanceOf(CellNotFoundException.class)
+                    .hasMessage("シート'マップカラムの設定'において、ラベル'備考B'を持つセルが見つかりません。");
+
+            }
+
+        }
+
+        // optional=true - 例外を無視
+        {
+            XmlInfo xmlInfo = createXml()
+                    .classInfo(createClass(MapOptionalRecord.class)
+                            .field(createField("dateAttended")
+                                    .annotation(createAnnotation(XlsMapColumns.class)
+                                            .attribute("previousColumnName", "氏名")
+                                            .attribute("nextColumnName", "備考B")  // 存在しない
+                                            .attribute("optional", true)
+                                            .buildAnnotation())
+                                    .buildField())
+                            .buildClass())
+                    .buildXml();
+
+            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+
+            mapper.getConiguration().setContinueTypeBindFailure(true);
+
+            try(InputStream in = new FileInputStream(inputFile)) {
+                SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
+
+                MapColumnSettingSheet sheet = errors.getTarget();
+
+                assertThat(sheet.mapRecords4).hasSize(2);
+                for(MapOptionalRecord record : sheet.mapRecords4) {
+                    assertThat(record.dateAttended).isNotNull()
+                        .hasSize(4);    // 備考カラムもマッピングしているため
+                }
+
+            } catch(Throwable e) {
+                e.printStackTrace();
+                fail();
+            }
+
         }
     }
 
@@ -910,6 +1068,28 @@ public class AnnoVerticalRecordsTest {
     }
 
     private void assertRecord(final MapEndRecord record, final SheetBindingErrors<?> errors, boolean hasCell) {
+
+        if(record.no == 1) {
+
+            assertThat(record.name, is("山田太郎"));
+            assertThat(record.dateAttended.get("4月1日"), is("出席"));
+            assertThat(record.dateAttended.get("4月2日"), is("出席"));
+            assertThat(record.dateAttended.get("4月3日"), is(nullValue()));
+            assertThat(record.dateAttended, not(hasKey("備考")));
+            assertThat(record.comment, is("とりあえず出席します。"));
+
+        } else if(record.no == 2) {
+            assertThat(record.name, is("鈴木次郎"));
+            assertThat(record.dateAttended.get("4月1日"), is("欠席"));
+            assertThat(record.dateAttended.get("4月2日"), is("-"));
+            assertThat(record.dateAttended.get("4月3日"), is("出席"));
+            assertThat(record.dateAttended, not(hasKey("備考")));
+            assertThat(record.comment, is(nullValue()));
+        }
+
+    }
+
+    private void assertRecord(final MapOptionalRecord record, final SheetBindingErrors<?> errors, boolean hasCell) {
 
         if(record.no == 1) {
 
@@ -1779,6 +1959,15 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
                 .name("鈴木次郎")
                 .addDateAttended("4月1日", "欠席").addDateAttended("4月2日", "-").addDateAttended("4月3日", "出席"));
 
+        // マップカラム（optionalの確認）
+        outSheet.add(new MapOptionalRecord()
+                .name("山田太郎")
+                .addDateAttended("4月1日", "出席").addDateAttended("4月2日", "出席").comment("とりあえず出席します。"));
+
+        outSheet.add(new MapOptionalRecord()
+                .name("鈴木次郎")
+                .addDateAttended("4月1日", "欠席").addDateAttended("4月2日", "-").addDateAttended("4月3日", "出席"));
+
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
@@ -1823,7 +2012,248 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 
             }
 
+            if(sheet.mapRecords4 != null) {
+                assertThat(sheet.mapRecords4, hasSize(outSheet.mapRecords4.size()));
+
+                for(int i=0; i < sheet.mapRecords4.size(); i++) {
+                    assertRecord(sheet.mapRecords4.get(i), outSheet.mapRecords4.get(i), errors);
+                }
+
+            }
+
         }
+    }
+
+    /**
+     * 書き込みテスト - マップカラムの設定テスト - 属性previousColumnで指定したセルが見つからない
+     */
+    @Test
+    public void test_save_vr_mapColumnSetting_notFound_previousColumn() throws Exception {
+
+        // テストデータの作成
+        final MapColumnSettingSheet outSheet = new MapColumnSettingSheet();
+
+        // マップカラム（optionalの確認）
+        outSheet.add(new MapOptionalRecord()
+                .name("山田太郎")
+                .addDateAttended("4月1日", "出席").addDateAttended("4月2日", "出席").comment("とりあえず出席します。"));
+
+        outSheet.add(new MapOptionalRecord()
+                .name("鈴木次郎")
+                .addDateAttended("4月1日", "欠席").addDateAttended("4月2日", "-").addDateAttended("4月3日", "出席"));
+
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        // optional=false - 例外が発生
+        {
+            XmlInfo xmlInfo = createXml()
+                    .classInfo(createClass(MapOptionalRecord.class)
+                            .field(createField("dateAttended")
+                                    .annotation(createAnnotation(XlsMapColumns.class)
+                                            .attribute("previousColumnName", "氏名A")  // 存在しない
+                                            .attribute("nextColumnName", "備考")
+                                            .attribute("optional", false)
+                                            .buildAnnotation())
+                                    .buildField())
+                            .buildClass())
+                    .buildXml();
+
+            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+
+            mapper.getConiguration().setContinueTypeBindFailure(true);
+
+            File outFile = new File(OUT_DIR, outFilename);
+            try(InputStream template = new FileInputStream(templateFile);
+                    OutputStream out = new FileOutputStream(outFile)) {
+
+                mapper.save(template, out, outSheet);
+
+            } catch(Throwable e) {
+                assertThat(e).isInstanceOf(CellNotFoundException.class)
+                    .hasMessage("シート'マップカラムの設定'において、ラベル'氏名A'を持つセルが見つかりません。");
+
+            }
+
+        }
+
+        // optional=true - 例外を無視
+        {
+            XmlInfo xmlInfo = createXml()
+                    .classInfo(createClass(MapOptionalRecord.class)
+                            .field(createField("dateAttended")
+                                    .annotation(createAnnotation(XlsMapColumns.class)
+                                            .attribute("previousColumnName", "氏名A")  // 存在しない
+                                            .attribute("nextColumnName", "備考")
+                                            .attribute("optional", true)
+                                            .buildAnnotation())
+                                    .buildField())
+                            .buildClass())
+                    .buildXml();
+
+            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+
+            mapper.getConiguration().setContinueTypeBindFailure(true);
+
+            File outFile = new File(OUT_DIR, outFilename);
+            try(InputStream template = new FileInputStream(templateFile);
+                    OutputStream out = new FileOutputStream(outFile)) {
+
+                mapper.save(template, out, outSheet);
+
+            } catch(Throwable e) {
+                e.printStackTrace();
+                fail();
+
+            }
+
+            // 書き込んだファイルを読み込み値の検証を行う。
+            try(InputStream in = new FileInputStream(outFile)) {
+                SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
+
+                MapColumnSettingSheet sheet = errors.getTarget();
+
+                if(sheet.mapRecords4 != null) {
+                    assertThat(sheet.mapRecords4, hasSize(outSheet.mapRecords4.size()));
+
+                    for(int i=0; i < sheet.mapRecords4.size(); i++) {
+
+                        MapOptionalRecord outRecord = sheet.mapRecords4.get(i);
+
+                        // 位置情報のキーとして含んでいないかどうか
+                        assertThat(outRecord.positions).doesNotContainKey("dateAttended[4月1日]")
+                            .doesNotContainKey("dateAttended[4月2日]").doesNotContainKey("dateAttended[4月3日]");
+
+                        // 読み込み時は値はnull
+                        MapOptionalRecord inputRecord = sheet.mapRecords4.get(i);
+                        assertThat(inputRecord.dateAttended).isNull();
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+    }
+
+    /**
+     * 書き込みテスト - マップカラムの設定テスト - 属性nextColumnNameで指定したセルが見つからない
+     */
+    @Test
+    public void test_save_vr_mapColumnSetting_notFound_nextColumn() throws Exception {
+
+        // テストデータの作成
+        final MapColumnSettingSheet outSheet = new MapColumnSettingSheet();
+
+        // マップカラム（optionalの確認）
+        outSheet.add(new MapOptionalRecord()
+                .name("山田太郎")
+                .addDateAttended("4月1日", "出席").addDateAttended("4月2日", "出席").comment("とりあえず出席します。"));
+
+        outSheet.add(new MapOptionalRecord()
+                .name("鈴木次郎")
+                .addDateAttended("4月1日", "欠席").addDateAttended("4月2日", "-").addDateAttended("4月3日", "出席"));
+
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        // optional=false - 例外が発生
+        {
+            XmlInfo xmlInfo = createXml()
+                    .classInfo(createClass(MapOptionalRecord.class)
+                            .field(createField("dateAttended")
+                                    .annotation(createAnnotation(XlsMapColumns.class)
+                                            .attribute("previousColumnName", "氏名")
+                                            .attribute("nextColumnName", "備考B")  // 存在しない
+                                            .attribute("optional", false)
+                                            .buildAnnotation())
+                                    .buildField())
+                            .buildClass())
+                    .buildXml();
+
+            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+
+            mapper.getConiguration().setContinueTypeBindFailure(true);
+
+            File outFile = new File(OUT_DIR, outFilename);
+            try(InputStream template = new FileInputStream(templateFile);
+                    OutputStream out = new FileOutputStream(outFile)) {
+
+                mapper.save(template, out, outSheet);
+
+            } catch(Throwable e) {
+                assertThat(e).isInstanceOf(CellNotFoundException.class)
+                    .hasMessage("シート'マップカラムの設定'において、ラベル'備考B'を持つセルが見つかりません。");
+
+            }
+
+        }
+
+        // optional=true - 例外を無視
+        {
+            XmlInfo xmlInfo = createXml()
+                    .classInfo(createClass(MapOptionalRecord.class)
+                            .field(createField("dateAttended")
+                                    .annotation(createAnnotation(XlsMapColumns.class)
+                                            .attribute("previousColumnName", "氏名")
+                                            .attribute("nextColumnName", "備考B")  // 存在しない
+                                            .attribute("optional", true)
+                                            .buildAnnotation())
+                                    .buildField())
+                            .buildClass())
+                    .buildXml();
+
+            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+
+            mapper.getConiguration().setContinueTypeBindFailure(true);
+
+            File outFile = new File(OUT_DIR, outFilename);
+            try(InputStream template = new FileInputStream(templateFile);
+                    OutputStream out = new FileOutputStream(outFile)) {
+
+                mapper.save(template, out, outSheet);
+
+            } catch(Throwable e) {
+                e.printStackTrace();
+                fail();
+
+            }
+
+            // 書き込んだファイルを読み込み値の検証を行う。
+            try(InputStream in = new FileInputStream(outFile)) {
+                SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
+
+                MapColumnSettingSheet sheet = errors.getTarget();
+
+                if(sheet.mapRecords4 != null) {
+                    assertThat(sheet.mapRecords4, hasSize(outSheet.mapRecords4.size()));
+
+                    for(int i=0; i < sheet.mapRecords4.size(); i++) {
+
+                        MapOptionalRecord outRecord = sheet.mapRecords4.get(i);
+
+                        // 位置情報のキーとして含んでいるかどうか
+                        assertThat(outRecord.positions).containsKey("dateAttended[4月1日]")
+                            .containsKey("dateAttended[4月2日]").containsKey("dateAttended[4月3日]");
+
+                        // 読み込み時は値は、備考まで読み込むためサイズ=4
+                        MapOptionalRecord inputRecord = sheet.mapRecords4.get(i);
+                        assertThat(inputRecord.dateAttended).isNotNull().hasSize(4);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
     }
 
     /**
@@ -2992,6 +3422,41 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @param outRecord
      * @param errors
      */
+    private void assertRecord(final MapOptionalRecord inRecord, final MapOptionalRecord outRecord, final SheetBindingErrors<?> errors) {
+
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+
+        if(inRecord.no == 1) {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.name, is(trim(outRecord.name)));
+
+            Map<String, String> expected = new LinkedHashMap<>();
+            expected.put("4月1日", "出席");
+            expected.put("4月2日", "出席");
+            expected.put("4月3日", null);
+
+            assertThat(inRecord.dateAttended, is(expected));
+            assertThat(inRecord.dateAttended, not(hasKey("備考")));
+
+            assertThat(inRecord.comment, is(outRecord.comment));
+
+        } else {
+            assertThat(inRecord.no, is(outRecord.no));
+            assertThat(inRecord.name, is(trim(outRecord.name)));
+            assertThat(inRecord.dateAttended, is(outRecord.dateAttended));
+
+            assertThat(inRecord.dateAttended, not(hasKey("備考")));
+            assertThat(inRecord.comment, is(outRecord.comment));
+        }
+    }
+
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
     private void assertRecord(final EmptySkipRecord inRecord, final EmptySkipRecord outRecord, final SheetBindingErrors<?> errors) {
 
         System.out.printf("%s - assertRecord::%s no=%d\n",
@@ -4107,17 +4572,25 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
    @XlsSheet(name="マップカラムの設定")
    private static class MapColumnSettingSheet {
 
+       @XlsOrder(1)
        @XlsVerticalRecords(tableLabel="マップカラム（文字列）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<MapRecord> mapRecords1;
 
+       @XlsOrder(2)
        @XlsVerticalRecords(tableLabel="マップカラム（Converterあり）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<MapConvertedRecord> mapRecords2;
 
+       @XlsOrder(3)
        @XlsVerticalRecords(tableLabel="マップカラム（終了条件がある）", terminal=RecordTerminal.Border)
        @XlsRecordOption(overOperation=OverOperation.Copy)
        private List<MapEndRecord> mapRecords3;
+
+       @XlsOrder(4)
+       @XlsVerticalRecords(tableLabel="マップカラム（optionalの確認）", terminal=RecordTerminal.Border)
+       @XlsRecordOption(overOperation=OverOperation.Copy)
+       private List<MapOptionalRecord> mapRecords4;
 
        /**
         * noを自動的に付与する。
@@ -4163,6 +4636,22 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 
            this.mapRecords3.add(record);
            record.no(mapRecords3.size());
+
+           return this;
+       }
+
+       /**
+        * noを自動的に付与する。
+        * @param record
+        * @return 自身のインスタンス
+        */
+       public MapColumnSettingSheet add(MapOptionalRecord record) {
+           if(mapRecords4 == null) {
+               this.mapRecords4 = new ArrayList<>();
+           }
+
+           this.mapRecords4.add(record);
+           record.no(mapRecords4.size());
 
            return this;
        }
@@ -4305,6 +4794,58 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
        }
 
        public MapEndRecord comment(String comment) {
+           this.comment = comment;
+           return this;
+       }
+   }
+
+   /**
+    * マップのセル（optionalの指定がある）
+    */
+   private static class MapOptionalRecord {
+
+       private Map<String, Point> positions;
+
+       private Map<String, String> labels;
+
+       @XlsColumn(columnName="No.")
+       private int no;
+
+       @XlsColumn(columnName="氏名")
+       private String name;
+
+       @XlsMapColumns(previousColumnName="氏名", nextColumnName="備考", optional=true)
+       private Map<String, String> dateAttended;
+
+       @XlsColumn(columnName="備考")
+       private String comment;
+
+       public MapOptionalRecord no(int no) {
+           this.no = no;
+           return this;
+       }
+
+       public MapOptionalRecord name(String name) {
+           this.name = name;
+           return this;
+       }
+
+       public MapOptionalRecord dateAttended(Map<String, String> dateAttended) {
+           this.dateAttended = dateAttended;
+           return this;
+       }
+
+       public MapOptionalRecord addDateAttended(final String key, final String value) {
+           if(dateAttended == null) {
+               this.dateAttended = new LinkedHashMap<>();
+           }
+
+           this.dateAttended.put(key, value);
+
+           return this;
+       }
+
+       public MapOptionalRecord comment(String comment) {
            this.comment = comment;
            return this;
        }

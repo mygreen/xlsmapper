@@ -36,7 +36,7 @@ import com.gh.mygreen.xlsmapper.util.POIUtils;
  * @author T.TSUCHIE
  *
  */
-public class AnnonCellOptionTest {
+public class AnnoCellOptionTest {
 
     /**
      * テスト結果ファイルの出力ディレクトリ

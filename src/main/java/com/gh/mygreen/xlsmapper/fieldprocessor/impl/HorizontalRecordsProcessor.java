@@ -588,7 +588,9 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                 }
             }
 
-            property.setValue(record, map);
+            if(foundPreviousColumn) {
+                property.setValue(record, map);
+            }
         }
     }
 

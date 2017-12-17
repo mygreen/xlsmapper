@@ -18,6 +18,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
  * <h3 class="description">基本的な使い方</h3>
  * <p>属性{@link #previousColumnName()}で指定された次のカラム以降、カラム名をキーとした{@link java.util.Map}が生成され、Beanにセットされます。</p>
  * <p>マップのキーは必ず{@link String}型に設定してください。</p>
+ * <p>セルが見つからない場合はエラーとなりますが、属性{@link #optional()}を'true'とすることで無視して処理を続行します。</p>
  *
  * <pre class="highlight"><code class="java">
  * public class SampleRecord {
@@ -168,13 +169,14 @@ public @interface XlsMapColumns {
 
     /**
      * この属性で指定した次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。
+     * <p>セルが見つからない場合はエラーとなりますが、属性{@link #optional()}を'true'とすることで無視して処理を続行します。</p>
      * <p>システム設定により、正規表現による指定や正規化（改行、空白、タブの削除）による比較の対象となります。</p>
-     * @return
      */
     String previousColumnName();
 
     /**
      * この属性で指定した前のカラムまでが処理対象となり、マッピングの終了条件を指定することができます。
+     * <p>セルが見つからない場合はエラーとなりますが、属性{@link #optional()}を'true'とすることで無視して処理を続行します。</p>
      * <p>システム設定により、正規表現による指定や正規化（改行、空白、タブの削除）による比較の対象となります。</p>
      *
      * <pre class="highlight"><code class="java">
@@ -201,7 +203,6 @@ public @interface XlsMapColumns {
      * </div>
      *
      * @since 1.2
-     * @return
      */
     String nextColumnName() default "";
 
