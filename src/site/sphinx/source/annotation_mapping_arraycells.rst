@@ -143,7 +143,7 @@
     public class SampleSheet {
         
         @XlsArrayCells(address="B3", size=6)
-        @ArrayOption(overOperation=OverOperation.Error, remainedOperation=RemainedOperation.Clear)
+        @XlsArrayOption(overOperation=OverOperation.Error, remainedOperation=RemainedOperation.Clear)
         private List<String> nameKana;
     }
 

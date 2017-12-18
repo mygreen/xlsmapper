@@ -57,6 +57,10 @@
    * - :ref:`@XlsArrayOption <annotationXlsArrayOption>`
      - 連続し隣接するセルを配列またはリストを書き込む際の制御を行います。
 
+   * - :ref:`@XlsRecordOption <annotationXlsRecordOption>`
+     - レコードを書き込む際の制御を行います。
+
+
 
 .. 以降は、埋め込んで作成する
 .. include::  ./annotation_mapping_sheet.rst
@@ -75,4 +79,5 @@
 .. include::  ./annotation_mapping_order.rst
 .. include::  ./annotation_mapping_ignorable.rst
 .. include::  ./annotation_mapping_arrayoption.rst
+.. include::  ./annotation_mapping_recordoption.rst
 

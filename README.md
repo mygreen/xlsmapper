@@ -115,7 +115,7 @@ Here is the template Excel sheet.
 
 And the following is the record class. 
 - Append the annotation ```@XlsDateTimeConverter``` for setting Excel format pattern.
-- Append the attribute ```overRecord``` with ```@XlsHorizontalRecords```.
+- Append the annotation ```@XlsRecordOption``` and attribute ```overOperation``` .
 
 ```java
 @XlsSheet(name="List")
@@ -125,7 +125,8 @@ public class UserSheet {
     @XlsDateTimeConverter(excelPattern="yyyy/m/d")
     Date createDate;
 
-    @XlsHorizontalRecords(tableLabel="User List", overRecord=OverRecordOperate.Insert)
+    @XlsHorizontalRecords(tableLabel="User List")
+    @XlsRecordOption(overOperation=OverOperation.Insert)
     List<UserRecord> users;
 
 }

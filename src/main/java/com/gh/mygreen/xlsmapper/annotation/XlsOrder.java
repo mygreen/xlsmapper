@@ -33,7 +33,8 @@ import java.lang.annotation.Target;
  *     private {@literal Map<String, Point>} positions;
  *
  *     {@literal @XlsOrder(1)}
- *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)}
+ *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border)}
+ *     {@literal @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)}
  *     private {@literal List<UserRecord>} records;
  *
  *     // 属性valueは省略が可能

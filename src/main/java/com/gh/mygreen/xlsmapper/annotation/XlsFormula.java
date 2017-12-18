@@ -86,7 +86,8 @@ public @interface XlsFormula {
      *     private Date date;
      *
      *     {@literal @XlsOrder(2)}
-     *     {@literal @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)}
+     *     {@literal @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border)}
+     *     {@literal @XlsRecordOption(overOperation=OverOperation.Insert}
      *     private {@literal List<SampleRecord>} records;
      * }
      *
@@ -164,7 +165,8 @@ public @interface XlsFormula {
      *     private Date date;
      *
      *     {@literal @XlsOrder(2)}
-     *     {@literal @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)}
+     *     {@literal @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border)}
+     *     {@literal @XlsRecordOption(overOperation=OverOperation.Insert}
      *     private {@literal List<SampleRecord>} records;
      *
      *     // 数式を組み立てるメソッド

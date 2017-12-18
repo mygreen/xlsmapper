@@ -88,7 +88,8 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
         private Date date;
         
         @XlsOrder(2)
-        @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)
+        @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<SampleRecord> records;
     }
     
@@ -160,7 +161,8 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
         private Date date;
         
         @XlsOrder(2)
-        @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)
+        @XlsHorizontalRecords(tableLabel="レコード", terminal=RecordTerminal.Border)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<SampleRecord> records;
         
         // 数式を組み立てるメソッド
@@ -323,7 +325,8 @@ JavaBeanの定義
         private Map<String, Point> positions;
         
         @XlsOrder(2)
-        @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border, overRecord=OverRecordOperate.Insert)
+        @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border)
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         private List<SampleRecord> records;
         
         // レコードを追加する

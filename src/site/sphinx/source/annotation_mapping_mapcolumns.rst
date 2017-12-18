@@ -11,8 +11,8 @@
 指定されたレコード用クラスのカラム数が可変の場合に、それらのカラムを ``java.util.Map`` として設定します。
 
 * BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。
-
 * 属性 ``previousColumnName`` で、指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。
+* 属性 ``optional`` で、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。 `[ver2.0+]`
 
 .. figure:: ./_static/MapColumns.png
    :align: center
@@ -40,6 +40,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 属性 ``nextColumnName`` で、指定した前のカラムまでが処理対象となり、マッピングの終了条件を指定することができます。 `[ver1.2+]`
+
+* 属性 ``optional`` で、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。 `[ver2.0+]`
+
 
 .. figure:: ./_static/MapColumns_nextColumnName.png
    :align: center
@@ -217,7 +220,8 @@
     @XlsSheet(name="List")
     public class SampleSheet {
         
-        @XlsHorizontalRecords(tableLabel="ユーザ一覧", overRecord=OverRecordOperate.Insert)
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧")
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         List<SampleRecord> records;
         
         // XlsMapColumnsのマッピング用のセルを作成する

@@ -72,7 +72,7 @@ public @interface XlsArrayOption {
      *    <img src="doc-files/ArrayOption_remainedOperation.png" alt="">
      *    <p>属性remainedOperationの概要</p>
      * </div>
-
+     *
      *
      * @return {@link RemainedOperation#None}の場合、余っているセルがあっても何もしません。
      */

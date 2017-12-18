@@ -104,14 +104,13 @@
         // セルの位置情報
         public Map<String, Point> positions;
         
-        @XlsHorizontalRecords(tableLabel="履歴", terminal=RecordTerminal.Border,
-           overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete // データによって行の追加、削除する設定
-        )
         @XlsOrder(1) // プロパティの処理順序を指定します。
+        @XlsHorizontalRecords(tableLabel="履歴", terminal=RecordTerminal.Border)
+        @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete) // データによって行の追加、削除する設定
         private List<EmployeeHistory> histories;
         
-        @XlsLabelledCell(label="名前")
         @XlsOrder(2) // プロパティの処理順序を指定します。
+        @XlsLabelledCell(label="名前")
         private String name;
         
     }

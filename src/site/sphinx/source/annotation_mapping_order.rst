@@ -29,8 +29,8 @@
         private Map<String, Point> positions;
         
         @XlsOrder(order=1)
-        @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border,
-                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Delete)
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border)
+        @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
         private List<UserRecord> records;
         
         // 属性valueは省略が可能

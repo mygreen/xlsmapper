@@ -143,16 +143,37 @@
     }
 
 
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 書き込み時にレコードが不足、余分である場合の操作の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性overRecord、remainedRecordで、書き込み時のレコードの操作を指定することができますが、 ``@XlsVerticalRecords`` 場合は **一部の設定が使用できません** 。
+アノテーション :ref:`@XlsRecordOption <annotationXlsRecordOption>` を指定することで、書き込み時のレコードの制御を指定することができます。
 
-* ``@XlsVerticalRecords`` の場合、属性 ``overRecord`` では、列の挿入を行う ``OverRecordOperate.Insert`` は使用できません。
-* ``@XlsVerticalRecords`` の場合、属性 ``remaindRecord`` では、列の削除を行う ``RemainedRecordOperate.Delete`` は使用できません。
+* 属性 ``overOperation`` で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が足りないときの操作を指定します。
+ 
+  * ただし、 ``@XlsVerticalRecords`` の場合、列の挿入を行う ``OverOperation#Insert`` は使用できません。
 
-これらの操作をサポートしていない理由は、Apache POIが、一括で列の挿入、削除をサポートしていないためです。
+* 属性 ``remainedOperation`` で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が余っているときの操作を指定します。
+
+  * ただし、 ``@XlsVerticalRecords`` の場合、列の削除を行う ``RemainedOperation#Delete`` は使用できません。
+
+
+.. figure:: ./_static/VerticalRecord_RecordOption.png
+   :align: center
+   
+   VerticalRecords(RecordOption)
+
+.. sourcecode:: java
+    :linenos:
+    :caption: 書き込み時の制御を行う場合
+    
+    @XlsSheet(name="Users")
+    public class SheetObject {
+        
+        @XlsVerticalRecords(tableLabel="天気情報")
+        @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
+        private List<WeatherRecord> records;
+        
+    }
 
 

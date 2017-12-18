@@ -19,26 +19,30 @@ import java.lang.annotation.Target;
 public @interface XlsRecordOption {
 
     /**
-     * 書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
-     * <p>値は、列挙型{@link OverOperation}で指定し、行の挿入や、上部のセルをコピーするなど指定ができます。
-     *    <br>デフォルトでは何もしません。
-     * </p>
+     * 書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が足りない場合の操作を指定します。
      * <p>ただし、{@link XlsVerticalRecords}の場合、{@link OverOperation#Insert}は対応していません。</p>
+     *
      * <pre class="highlight"><code class="java">
-     * // シート用クラス
      * {@literal @XlsSheet(name="Users")}
+     * // 書き込むデータ
+     * {@literal List<UserRecord> data = new ArrayList<>()};
+     * data.add(new UserRecord(1, "山田　太郎"));
+     * data.add(new UserRecord(2, "山田　花子"));
+     * data.add(new UserRecord(3, "鈴木　一郎"));
+     *
+     * // マッピングの定義
      * public class SampleSheet {
      *
      *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
-     *     {@literal @XlsRecordOption(overOpration=OverOperation.Insert)}
+     *     {@literal @XlsRecordOption(overOperation=OverOperation.Insert)}
      *     private {@literal List<UserRecord>} records;
      *
      * }
      * </code></pre>
      *
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_overRecord.png" alt="">
-     *    <p>表の書き込み時の不足するレコードの操作の指定</p>
+     *    <img src="doc-files/RecordOption_overOperation.png" alt="">
+     *    <p>属性overOperationの概要</p>
      * </div>
      *
      * @return {@link OverOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。
@@ -46,27 +50,30 @@ public @interface XlsRecordOption {
     OverOperation overOperation() default OverOperation.Break;
 
     /**
-     * 書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
-     * <p>値は、列挙型{@link RemainedOperation}で指定し、行の値のクリアや、行の削除を指定することができます。
-     *   <br>デフォルトでは何もしません。
-     * </p>
+     * 書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が余っている場合の操作を指定します。
+     *
      * <p>ただし、{@link XlsVerticalRecords}の場合、{@link RemainedOperation#Delete}は対応していません。</p>
      *
      * <pre class="highlight"><code class="java">
-     * // シート用クラス
      * {@literal @XlsSheet(name="Users")}
+     * // 書き込むデータ
+     * {@literal List<UserRecord> data = new ArrayList<>()};
+     * data.add(new UserRecord(1, "山田　太郎"));
+     * data.add(new UserRecord(2, "山田　花子"));
+     *
+     * // マッピングの定義
      * public class SampleSheet {
      *
      *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
-     *     {@literal @XlsRecordOption(remainedOperation=RemainedOperation.Clear)}
+     *     {@literal XlsRecordOption(remainedOperation=RemainedOperation.Clear)}
      *     private {@literal List<UserRecord>} records;
      *
      * }
      * </code></pre>
      *
      * <div class="picture">
-     *    <img src="doc-files/HorizontalRecord_remainedRecord.png" alt="">
-     *    <p>表の書き込み時の余分なレコードの操作の指定</p>
+     *    <img src="doc-files/RecordOption_remainedOperation.png" alt="">
+     *    <p>属性remainedOperationの概要</p>
      * </div>
      *
      * @return {@link RemainedOperation#None}の場合、余っているレコードがあっても何もしません。

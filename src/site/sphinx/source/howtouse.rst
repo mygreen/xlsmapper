@@ -179,11 +179,11 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
 
   * 属性 ``excelPattern`` でExcelのセルの書式を設定します。
 
-* 表「User List」のレコードを追加する操作を指定するために、アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` の属性 ``overRecord`` を指定します。
+* 表「User List」のレコードを追加する操作を指定するために、アノテーション :ref:`@XlsRecordOption <annotationXlsRecordOption>` を付与し、その属性 ``overOperation`` を指定します。
   
   * テンプレート上は、レコードが1行分しかないですが、実際に書き込むレコード数が2つ以上の場合、足りなくなるため、その際のシートの操作方法を指定します。
   
-  * 今回の ``OverRecordOperate.Insert`` は、行の挿入を行います。
+  * 今回の ``OverOperation#Insert`` は、行の挿入を行います。
 
 
 .. sourcecode:: java
@@ -196,7 +196,8 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
         @XlsDateTimeConverter(excelPattern="yyyy/m/d")
         Date createDate;
         
-        @XlsHorizontalRecords(tableLabel="User List", overRecord=OverRecordOperate.Insert)
+        @XlsHorizontalRecords(tableLabel="User List")
+        @XlsRecordOption(overOperation=OverOperation.Insert)
         List<UserRecord> users;
         
     }

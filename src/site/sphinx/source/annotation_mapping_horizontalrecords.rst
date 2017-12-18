@@ -335,33 +335,28 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 書き込み時にレコードが不足、余分である場合の操作の指定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-属性 ``overRecord`` 、 ``remainedRecord`` で、書き込み時のレコードの操作を指定することができます。
- 
-* 属性 ``overRecored`` で、書き込み時にデータのレコード数に対してシートのレコードが足りない場合の操作を指定します。
-    
-  * ``OverRecordOperate.Insert`` を指定すると行を挿入してレコードを書き込みます。その際に、上部のセルのスタイルなどをコピーします。
-  * ``OverRecordOperate.Copy`` を指定すると上部のセルを下部にコピーして値を設定します。
-  * ``OverRecordOperate.Break`` を指定すると、レコードの書き込みをその時点で止めます。
-    
-* 属性 ``remainedRecord`` で、書き込み時にデータのレコード数に対してシートのレコードが余っている際の操作を指定します。
-    
-  * ``RemainedRecordOperate.Clear`` は、セルの値をクリアします。
-  * ``RemainedRecordOperate.Delete`` は、行を削除します。
-  * ``RemainedRecordOperate.Noneは`` は、何もしません。
+アノテーション :ref:`@XlsRecordOption <annotationXlsRecordOption>` を指定することで、書き込み時のレコードの制御を指定することができます。
+
+* 属性 ``overOperation`` で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が足りないときの操作を指定します。
+* 属性 ``remainedOperation`` で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が余っているときの操作を指定します。
 
 
-.. figure:: ./_static/HorizontalRecord_overRecord.png
+.. figure:: ./_static/HorizontalRecord_RecordOption.png
    :align: center
    
-   HorizontalRecords(overRecord/remainedRecord)
+   HorizontalRecords(RecordOption)
 
 .. sourcecode:: java
+    :linenos:
+    :caption: 書き込み時の制御を行う場合
     
     @XlsSheet(name="Users")
     public class SheetObject {
-        @XlsHorizontalRecords(tableLabel="ユーザ一覧",
-                overRecord=OverRecordOperate.Insert, remainedRecord=RemainedRecordOperate.Clear)
+        
+        @XlsHorizontalRecords(tableLabel="ユーザ一覧")
+        @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Clear)
         private List<UserRecord> records;
+        
     }
 
 
