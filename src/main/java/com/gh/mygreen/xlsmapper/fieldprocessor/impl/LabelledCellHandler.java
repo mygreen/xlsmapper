@@ -136,14 +136,6 @@ public class LabelledCellHandler {
         }
 
         /**
-         * 見出しとなるセルをアドレス形式で指定します。'A1'などのようにシートのアドレスで指定します。
-         * @return アノテーションの属性「labelAddress」の値
-         */
-        public String labelAddress() {
-            return ClassUtils.getAnnotationAttribute(target, "labelAddress", String.class).orElse("");
-        }
-
-        /**
          * 見出しとなるセルの行番号を指定します。
          * @return アノテーションの属性「labelRow」の値
          */
@@ -261,25 +253,7 @@ public class LabelledCellHandler {
      */
     private Optional<CellPosition> getLabelPosition(final AnnotationProxy anno) {
 
-        if(Utils.isNotEmpty(anno.labelAddress())) {
-            /*
-             * 属性「labelAddress」による直接位置が指定されている場合
-             * これは、アノテーション @XlsIterateTables の中で指定しているときに設定される。
-             */
-            try {
-                return Optional.of(CellPosition.of(anno.labelAddress()));
-
-            } catch(IllegalArgumentException e) {
-                throw new AnnotationInvalidException(anno.getTarget(), MessageBuilder.create("anno.attr.invalidAddress")
-                        .var("property", field.getNameWithClass())
-                        .varWithAnno("anno", anno.annotationType())
-                        .var("attrName", "labelAddress")
-                        .var("attrValue", anno.labelAddress())
-                        .format());
-
-            }
-
-        } else if(Utils.isNotEmpty(anno.label())) {
+        if(Utils.isNotEmpty(anno.label())) {
             // 属性「label」によるラベルの指定がある場合
             try {
                 if(Utils.isNotEmpty(anno.headerLabel())){

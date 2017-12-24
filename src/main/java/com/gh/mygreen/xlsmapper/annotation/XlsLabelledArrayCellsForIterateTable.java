@@ -17,7 +17,6 @@ public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCel
 
     private final int labelRow;
     private final int labelColumn;
-    private final String labelAddress;
 
     private final int size;
     private final boolean elementMerged;
@@ -30,11 +29,10 @@ public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCel
     private final boolean labelMarged;
 
 
-    public XlsLabelledArrayCellsForIterateTable(XlsLabelledArrayCells anno, int labelRow, int labelColumn, String labelAddress) {
+    public XlsLabelledArrayCellsForIterateTable(XlsLabelledArrayCells anno, int labelRow, int labelColumn) {
         this.annotationType = anno.annotationType();
         this.labelRow = labelRow;
         this.labelColumn = labelColumn;
-        this.labelAddress = labelAddress;
 
         this.size = anno.size();
         this.elementMerged = anno.elementMerged();
@@ -101,11 +99,6 @@ public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCel
     @Override
     public int labelColumn() {
         return labelColumn;
-    }
-
-    @Override
-    public String labelAddress() {
-        return labelAddress;
     }
 
     @Override

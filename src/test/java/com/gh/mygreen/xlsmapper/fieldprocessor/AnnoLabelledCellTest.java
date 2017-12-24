@@ -92,9 +92,6 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.headerSkip, is(toUtilDate(toTimestamp("2015-04-02 00:00:00.000"))));
             assertThat(sheet.headerRange, is(toUtilDate(toTimestamp("2015-06-13 00:00:00.000"))));
 
-            assertThat(sheet.address1,is("右側の値です。"));
-            assertThat(sheet.address2,is("下側の値です。"));
-
             assertThat(sheet.blank, is(nullValue()));
 
             assertThat(sheet.mergedCell, is("結合先の値です。"));
@@ -137,24 +134,6 @@ public class AnnoLabelledCellTest {
             fail();
 
         }
-    }
-
-    /**
-     * 読み込みのテスト - 不正なアノテーション - 見出しセルのアドレスの書式が不正
-     */
-    @Test(expected=AnnotationInvalidException.class)
-    public void test_load_labelled_cell_invalid_annotation1() throws Exception {
-
-        XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
-
-        try(InputStream in = new FileInputStream(inputFile)) {
-            mapper.load(in, InvalidAnnoSheet1.class);
-
-            fail();
-
-        }
-
     }
 
     /**
@@ -202,7 +181,6 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.headerSkip, is(toUtilDate(toTimestamp("2015-04-02 00:00:00.000"))));
             assertThat(sheet.headerRange, is(toUtilDate(toTimestamp("2015-06-13 00:00:00.000"))));
 
-            assertThat(sheet.address1,is("右側の値です。"));
             assertThat(sheet.address2,is("下側の値です。"));
 
             assertThat(sheet.blank, is(nullValue()));
@@ -338,7 +316,6 @@ public class AnnoLabelledCellTest {
             .header(toUtilDate(toTimestamp("2015-06-07 08:09:10.000")))
             .headerSkip(toUtilDate(toTimestamp("2012-03-04 05:06:07.000")))
             .headerRange(toUtilDate(toTimestamp("2011-02-03 04:05:06.000")))
-            .address1("アドレス指定です。\n右側。")
             .address2("アドレス指定です。\n左側。")
             .mergedCell("結合先の値です。")
             .labelMergedLeft("左側")
@@ -377,9 +354,6 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.headerSkip, is(outSheet.headerSkip));
             assertThat(sheet.headerRange, is(outSheet.headerRange));
 
-            assertThat(sheet.address1, is(outSheet.address1));
-            assertThat(sheet.address2, is(outSheet.address2));
-
             assertThat(sheet.blank, is(outSheet.blank));
 
             assertThat(sheet.mergedCell, is(outSheet.mergedCell));
@@ -411,7 +385,6 @@ public class AnnoLabelledCellTest {
             .header(toUtilDate(toTimestamp("2015-06-07 08:09:10.000")))
             .headerSkip(toUtilDate(toTimestamp("2012-03-04 05:06:07.000")))
             .headerRange(toUtilDate(toTimestamp("2011-02-03 04:05:06.000")))
-            .address1("アドレス指定です。\n右側。")
             .address2("アドレス指定です。\n左側。")
             ;
 
@@ -441,7 +414,6 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.headerPosition, is(outSheet.headerPosition));
             assertThat(sheet.headerSkipPosition, is(outSheet.headerSkipPosition));
             assertThat(sheet.headerRangePosition, is(outSheet.headerRangePosition));
-            assertThat(sheet.address1Position, is(outSheet.address1Position));
             assertThat(sheet.address2Position, is(outSheet.address2Position));
             assertThat(sheet.blankPosition, is(outSheet.blankPosition));
 
@@ -455,7 +427,6 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.headerLabel, is(outSheet.headerLabel));
             assertThat(sheet.headerSkipLabel, is(outSheet.headerSkipLabel));
             assertThat(sheet.headerRangeLabel, is(outSheet.headerRangeLabel));
-            assertThat(sheet.address1, is(outSheet.address1));
             assertThat(sheet.address2, is(outSheet.address2));
 
             // 値
@@ -470,7 +441,6 @@ public class AnnoLabelledCellTest {
             assertThat(sheet.headerSkip, is(outSheet.headerSkip));
             assertThat(sheet.headerRange, is(outSheet.headerRange));
 
-            assertThat(sheet.address1, is(outSheet.address1));
             assertThat(sheet.address2, is(outSheet.address2));
 
             assertThat(sheet.blank, is(outSheet.blank));
@@ -709,12 +679,6 @@ public class AnnoLabelledCellTest {
         private Date headerRange;
 
         /**
-         * アドレス指定 - labelAddress
-         */
-        @XlsLabelledCell(labelAddress="B26", type=LabelledCellType.Right)
-        private String address1;
-
-        /**
          * アドレス指定 - labelColumn, labelRow
          */
         @XlsLabelledCell(labelColumn=1, labelRow=25, type=LabelledCellType.Bottom)
@@ -790,11 +754,6 @@ public class AnnoLabelledCellTest {
             return this;
         }
 
-        public NormalSheet address1(String address1) {
-            this.address1 = address1;
-            return this;
-        }
-
         public NormalSheet address2(String address2) {
             this.address2 = address2;
             return this;
@@ -841,20 +800,6 @@ public class AnnoLabelledCellTest {
     }
 
     /**
-     * アノテーションが不正 - ラベルのアドレスの書式が不正
-     *
-     */
-    @XlsSheet(name="通常")
-    private static class InvalidAnnoSheet1 {
-
-        /**
-         * アドレス指定 - labelAddress
-         */
-        @XlsLabelledCell(labelAddress="aaa", type=LabelledCellType.Right)
-        private String address1;
-
-    }
-
     /**
      * アノテーションが不正 - ラベルのアドレスの範囲が不正
      *
@@ -917,11 +862,6 @@ public class AnnoLabelledCellTest {
          * ヘッダーラベル指定 - range指定
          */
         private Date headerRange;
-
-        /**
-         * アドレス指定 - labelAddress
-         */
-        private String address1;
 
         /**
          * アドレス指定 - labelColumn, labelRow
@@ -1005,15 +945,6 @@ public class AnnoLabelledCellTest {
             this.headerRange = headerRange;
         }
 
-        @XlsLabelledCell(labelAddress="B26", type=LabelledCellType.Right)
-        public String getAddress1() {
-            return address1;
-        }
-
-        public void setAddress1(String address1) {
-            this.address1 = address1;
-        }
-
         @XlsLabelledCell(labelColumn=1, labelRow=25, type=LabelledCellType.Bottom)
         public String getAddress2() {
             return address2;
@@ -1088,10 +1019,6 @@ public class AnnoLabelledCellTest {
             this.headerRangePosition = headerRangePosition;
         }
 
-        public void setAddress1Position(Point address1Position) {
-            this.address1Position = address1Position;
-        }
-
         public void setAddress2Position(Point address2Position) {
             this.address2Position = address2Position;
         }
@@ -1116,8 +1043,6 @@ public class AnnoLabelledCellTest {
         private String headerSkipLabel;
 
         private String headerRangeLabel;
-
-        private String address1Label;
 
         private String address2Label;
 
@@ -1153,10 +1078,6 @@ public class AnnoLabelledCellTest {
 
         public void setHeaderRangeLabel(String headerRangeLabel) {
             this.headerRangeLabel = headerRangeLabel;
-        }
-
-        public void setAddress1Label(String address1Label) {
-            this.address1Label = address1Label;
         }
 
         public void setAddress2Label(String address2Label) {
@@ -1207,11 +1128,6 @@ public class AnnoLabelledCellTest {
 
         public MethodAnnoSheet headerRange(Date headerRange) {
             this.headerRange = headerRange;
-            return this;
-        }
-
-        public MethodAnnoSheet address1(String address1) {
-            this.address1 = address1;
             return this;
         }
 

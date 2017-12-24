@@ -222,6 +222,7 @@ public @interface XlsLabelledArrayCells {
     /**
      * 見出しとなるセルの行番号を指定します。
      * <p>{@link #labelColumn()}属性とセットで指定します。</p>
+     * <p>この属性は、{@link XlsIterateTables}の中で指定したときに、処理内部で使用されるため、通常は設定しません。</p>
      *
      * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
@@ -230,18 +231,11 @@ public @interface XlsLabelledArrayCells {
     /**
      * 見出しとなるセルの列番号を指定します。
      * <p>{@link #labelRow()}属性とセットで指定します。</p>
+     * <p>この属性は、{@link XlsIterateTables}の中で指定したときに、処理内部で使用されるため、通常は設定しません。</p>
      *
      * @return 値は0から始まります。-1以下の負の値は無視されます。
      */
     int labelColumn() default -1;
-
-    /**
-     * 見出しとなるセルのアドレスを指定します。
-     * <p>{@link #labelRow()}、{@link #labelColumn()}属性のどちらか一方を指定します。</p>
-     *
-     * @return 'A1'の形式で指定します。空文字は無視されます。
-     */
-    String labelAddress() default "";
 
     /**
      * 同じラベルのセルが複数ある場合は、区別するため見出しを属性{@link #headerLabel()} で指定します。

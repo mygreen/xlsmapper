@@ -244,8 +244,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             }
 
             final XlsLabelledCell labelledCell = new XlsLabelledCellForIterateTable(
-                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
-                    POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
+                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());
 
             labelledCellProcessor.loadProcess(sheet, tableObj, labelledCell, property, config, work);
         }
@@ -290,8 +289,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             }
 
             final XlsLabelledArrayCells wrapAnno = new XlsLabelledArrayCellsForIterateTable(
-                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
-                    POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
+                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());
 
             labelledArrayCellProcessor.loadProcess(sheet, tableObj, wrapAnno, property, config, work);
         }
@@ -530,8 +528,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             }
 
             final XlsLabelledCell labelledCell = new XlsLabelledCellForIterateTable(
-                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
-                    POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
+                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());
 
             labelledCellProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);
         }
@@ -570,8 +567,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             }
 
             final XlsLabelledArrayCells labelledCell = new XlsLabelledArrayCellsForIterateTable(
-                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex(),
-                    POIUtils.formatCellAddress(titleCell.getRowIndex(), titleCell.getColumnIndex()));
+                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());
 
             labelledArrayCellProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);
         }
