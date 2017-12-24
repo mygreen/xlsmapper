@@ -52,7 +52,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.MergedRecord;
-import com.gh.mygreen.xlsmapper.fieldprocessor.NestMergedSizeException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.NestedRecordMergedSizeException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordFinder;
 import com.gh.mygreen.xlsmapper.fieldprocessor.RecordHeader;
@@ -381,7 +381,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 // check over merged cell.
                 String message = String.format("Over merged size. In sheet '%s' with columnIndex=%d, over the columnIndex=%s.",
                         sheet.getSheetName(), hColumn + skipSize, maxColumn);
-                throw new NestMergedSizeException(sheet.getSheetName(), skipSize, message);
+                throw new NestedRecordMergedSizeException(sheet.getSheetName(), skipSize, message);
             }
 
 

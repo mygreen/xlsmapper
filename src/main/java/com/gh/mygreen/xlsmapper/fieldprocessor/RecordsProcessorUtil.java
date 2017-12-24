@@ -156,10 +156,10 @@ public class RecordsProcessorUtil {
      * @param sheet
      * @param records
      * @return 結合したセルのサイズを返す。
-     * @throws NestMergedSizeException
+     * @throws NestedRecordMergedSizeException
      */
     public static int checkNestedMergedSizeRecords(final Sheet sheet, final List<MergedRecord> records) 
-            throws NestMergedSizeException {
+            throws NestedRecordMergedSizeException {
         
         int mergedSize = -1;
         
@@ -178,7 +178,7 @@ public class RecordsProcessorUtil {
                         .var("actualMergeSize", record.getMergedSize())
                         .var("expectedMergeSize", mergedSize)
                         .format();
-                throw new NestMergedSizeException(sheet.getSheetName(), record.getMergedSize(), message);
+                throw new NestedRecordMergedSizeException(sheet.getSheetName(), record.getMergedSize(), message);
             }
         }
         
