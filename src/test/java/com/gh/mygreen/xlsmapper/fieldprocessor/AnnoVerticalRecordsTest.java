@@ -6842,19 +6842,19 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         * クラス用の見出しのレコードを探すクラス。
         *
         */
-       static class ClassNameRecordFinder implements RecordFinder {
+       class ClassNameRecordFinder implements RecordFinder {
 
            @Override
            public CellPosition find(ProcessCase processCase, String[] args, Sheet sheet,
-                   CellPosition address, Configuration config) {
+                   CellPosition initAddress, Object beanObj, Configuration config) {
 
                final String className = args[0];
                Cell classNameCell = CellFinder.query(sheet, className, config)
-                       .startPosition(address)
+                       .startPosition(initAddress)
                        .findWhenNotFoundException();
 
                // 見出し用のセルから1つ右がデータレコードの開始位置
-               return CellPosition.of(address.getRow(), classNameCell.getColumnIndex()+1);
+               return CellPosition.of(initAddress.getRow(), classNameCell.getColumnIndex()+1);
            }
 
        }

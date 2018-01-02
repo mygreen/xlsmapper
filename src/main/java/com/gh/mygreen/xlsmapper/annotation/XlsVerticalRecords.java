@@ -72,6 +72,49 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.RemainedOperation;
  *    <p>書き込み時の制御を行う場合</p>
  * </div>
  *
+ * <h3 class="description">任意の位置からレコードが開始するかを指定する場合</h3>
+ *
+ * <p>データレコードの途中で中見出しがあり、分割されているような表の場合、アノテーション{@link XlsRecordFinder} で、
+ *   レコードの開始位置を決める処理を指定することができます。
+ * </p>
+ * <p>属性{@link XlsRecordFinder#value()} で、レコードの開始位置を検索する実装クラスを指定します。</p>
+ * <p>属性{@link XlsRecordFinder#args()} で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。</p>
+ *
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Weather")}
+ * // マッピングの定義
+ * public class SampleSheet {
+ *
+ *     {@literal @XlsOrder(1)}
+ *     {@literal @XlsVerticalRecords(tableLabel="天気情報", tableLabelAbove=true, terminal=RecordTerminal.Border, terminateLabel="/{0-9}月{0-9}[1-2]日/")}
+ *     {@literal @XlsRecordFinder(value=DateRecordFinder.class, args="2月1日")}
+ *     private {@literal List<WeatherRecord>} date1;
+ *
+ *     {@literal @XlsOrder(2)}
+ *     {@literal @XlsVerticalRecords(tableLabel="天気情報", tableLabelAbove=true, terminal=RecordTerminal.Border, terminateLabel="/{0-9}月{0-9}[1-2]日/")}
+ *     {@literal @XlsRecordFinder(value=DateRecordFinder.class, args="2月1日")}
+ *     private {@literal List<WeatherRecord>} date2;
+ * }
+ *
+ * // 日にち用の見出しのレコードを探すクラス
+ * public class DateRecordFinder implements RecordFinder {
+ *
+ *     {@literal @Override}
+ *     public CellPosition find(ProcessCase processCase, String[] args, Sheet sheet,
+ *             CellPosition initAddress, Object beanObj, Configuration config) {
+ *
+ *         // 実装は省略
+ *     }
+ *
+ * }
+ * </code></pre>
+ *
+ * <div class="picture">
+ *    <img src="doc-files/VerticalRecord_RecordFinder.png" alt="">
+ *    <p>任意の位置のレコードをマッピングする場合</p>
+ * </div>
+ *
+ *
  *
  * <h3 class="description">表の名称を正規表現、正規化して指定する場合</h3>
  *
@@ -236,7 +279,7 @@ public @interface XlsVerticalRecords {
      *
      * <div class="picture">
      *    <img src="doc-files/VerticalRecord_right.png" alt="">
-     *    <p>表の名称から離れている際の開始位置の指定</p>
+     *    <p>表の名称から右方向に離れている際の開始位置の指定</p>
      * </div>
      *
      *
@@ -246,10 +289,24 @@ public @interface XlsVerticalRecords {
     int right() default 1;
 
     /**
-     * 属性{@link #tableLabelAbove()}がtrueのときである、表のタイトルが上部にあるときのみ有効になります。
+     * 属性{@link #tableLabelAbove()}がtrueのとき、表のタイトルが上部にあるときのみ有効になります。
      * <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性{@link #bottom()}で表の開始位置がどれだけ離れているか指定します。
      *  <br>下方向の行数を指定します。
      * </p>
+     *
+     * <pre class="highlight"><code class="java">
+     * {@literal @XlsSheet(name="Users")}
+     * public class SampleSheet {
+     *
+     *     {@literal @XlsHorizontalRecords(tableLabel="天気情報", tableLabelAbove=true, bottom=3)}
+     *     private {@literal List<WeatherRecord>} records;
+     * }
+     * </code></pre>
+     *
+     * <div class="picture">
+     *    <img src="doc-files/VerticalRecord_bottom.png" alt="">
+     *    <p>表の名称から下方向に離れている際の開始位置の指定</p>
+     * </div>
      *
      * @since 2.0
      * @return 値は1から始まります。

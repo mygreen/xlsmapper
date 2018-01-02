@@ -80,4 +80,5 @@
 .. include::  ./annotation_mapping_ignorable.rst
 .. include::  ./annotation_mapping_arrayoption.rst
 .. include::  ./annotation_mapping_recordoption.rst
+.. include::  ./annotation_mapping_recordfinder.rst
 

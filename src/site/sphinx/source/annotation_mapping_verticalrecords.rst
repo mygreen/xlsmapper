@@ -66,14 +66,12 @@
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-表の名称から開始位置が離れた場所にある場合
+表の名称から開始位置が離れた場所にある場合(right)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-表の名称が定義してあるセルの直後に表がなく離れている場合、属性 ``right`` で表の開始位置がどれだけ離れているか指定します。 `[ver1.0]+`
+表の名称が定義してあるセルの直後に表がなく離れている場合、属性 ``right`` で表の開始位置が **右方向** にどれだけ離れているか指定します。 `[ver1.0]+`
 
 アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` の属性 ``bottom`` と同じような意味になります。
-
-さらに、属性 ``tableLabelAbove=true`` と組み合わせると、下方向にどれだけ離れているかの意味になります。
 
 .. figure:: ./_static/VerticalRecord_right.png
    :align: center
@@ -87,6 +85,30 @@
     public class SampleSheet {
     
         @XlsVerticalRecords(tableLabel="天気情報", right=3)
+        private List<WeatherRecord> records;
+    }
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+表の名称から開始位置が離れた場所にある場合(bottom)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+属性 ``tableLabelAbove`` の値が ``true`` のときのみ有効になります。
+表の名称がセルの直後に表がなく離れている場合、属性 ``bottom`` で表の開始位置が **下方向** にどれだけ離れているか指定します。 `[ver2.0]+`
+
+アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` の属性 ``bottom`` と同じような意味になります。
+
+.. figure:: ./_static/VerticalRecord_bottom.png
+   :align: center
+   
+   VerticalRecords（bottom）
+
+
+.. sourcecode:: java
+    
+    @XlsSheet(name="Users")
+    public class SampleSheet {
+    
+        @XlsVerticalRecords(tableLabel="天気情報", tableLabelAbove=true, bottom=3)
         private List<WeatherRecord> records;
     }
 
@@ -168,11 +190,60 @@
     :caption: 書き込み時の制御を行う場合
     
     @XlsSheet(name="Users")
-    public class SheetObject {
+    public class SampleSheet {
         
         @XlsVerticalRecords(tableLabel="天気情報")
         @XlsRecordOption(overOperation=OverOperation.Copy, remainedOperation=RemainedOperation.Clear)
         private List<WeatherRecord> records;
+        
+    }
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+任意の位置からレコードが開始するかを指定する場合
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+データレコードの途中で中見出しがあり、分割されているような表の場合、アノテーション :ref:`@XlsRecordFinder <annotationXlsRecordFinder>` で、レコードの開始位置を決める処理を指定することができます。 `[ver2.0+]`
+
+* 属性 ``value`` で、レコードの開始位置を検索する実装クラスを指定します。
+* 属性 ``args`` で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。
+
+
+.. figure:: ./_static/VerticalRecord_RecordFinder.png
+   :align: center
+   
+   VerticalRecords(RecordFinder)
+
+
+.. sourcecode:: java
+    :linenos:
+    :caption: 任意の位置のレコードをマッピングする場合
+    
+    // マッピングの定義
+    @XlsSheet(name="Weather")
+    public class SampleSheet {
+        
+        @XlsOrder(1)
+        @XlsVerticalRecords(tableLabel="天気情報", tableLabelAbove=true, terminal=RecordTerminal.Border, terminateLabel="/{0-9}月{0-9}[1-2]日/")
+        @XlsRecordFinder(value=DateRecordFinder.class, args="2月1日")
+        private List<WeatherRecord> date1;
+        
+        @XlsOrder(2)
+        @XlsVerticalRecords(tableLabel="天気情報", tableLabelAbove=true, terminal=RecordTerminal.Border, terminateLabel="/{0-9}月{0-9}[1-2]日/")
+        @XlsRecordFinder(value=DateRecordFinder.class, args="2月1日")
+        private List<WeatherRecord> date2;
+        
+    }
+    
+    // 日にち用の見出しのレコードを探すクラス
+    public class DateRecordFinder implements RecordFinder {
+    
+        @Override
+        public CellPosition find(ProcessCase processCase, String[] args, Sheet sheet,
+                CellPosition initAddress, Object beanObj, Configuration config) {
+            
+            // 実装は省略
+        }
         
     }
 

@@ -351,11 +351,59 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
     :caption: 書き込み時の制御を行う場合
     
     @XlsSheet(name="Users")
-    public class SheetObject {
+    public class SampleSheet {
         
         @XlsHorizontalRecords(tableLabel="ユーザ一覧")
         @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Clear)
         private List<UserRecord> records;
+        
+    }
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+任意の位置からレコードが開始するかを指定する場合
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+データレコードの途中で中見出しがあり、分割されているような表の場合、アノテーション :ref:`@XlsRecordFinder <annotationXlsRecordFinder>` で、レコードの開始位置を決める処理を指定することができます。 `[ver2.0+]`
+
+* 属性 ``value`` で、レコードの開始位置を検索する実装クラスを指定します。
+* 属性 ``args`` で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。
+
+
+.. figure:: ./_static/HorizontalRecord_RecordFinder.png
+   :align: center
+   
+   HorizontalRecords(RecordFinder)
+
+
+.. sourcecode:: java
+    :linenos:
+    :caption: 任意の位置のレコードをマッピングする場合
+    
+    // マッピングの定義
+    @XlsSheet(name="Users")
+    public class SampleSheet {
+        
+        @XlsOrder(1)
+        @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border, terminateLabel="/クラス.+/")
+        @XlsRecordFinder(value=ClassNameRecordFinder.class, args="クラスA")
+        private List<Record> classA;
+        
+        @XlsOrder(2)
+        @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border, terminateLabel="/クラス.+/")
+        @XlsRecordFinder(value=ClassNameRecordFinder.class, args="クラスB")
+        private List<Record> classB;
+        
+    }
+    
+    // クラス用の見出しのレコードを探すクラス
+    public class ClassNameRecordFinder implements RecordFinder {
+    
+        @Override
+        public CellPosition find(ProcessCase processCase, String[] args, Sheet sheet,
+                CellPosition initAddress, Object beanObj, Configuration config) {
+            
+            // 実装は省略
+        }
         
     }
 

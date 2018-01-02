@@ -60,8 +60,51 @@ import com.gh.mygreen.xlsmapper.Configuration;
  * </code></pre>
  *
  * <div class="picture">
- *    <img src="doc-files/HorizontalRecord_RecordOption" alt="">
+ *    <img src="doc-files/HorizontalRecord_RecordOption.png" alt="">
  *    <p>書き込み時の制御を行う場合</p>
+ * </div>
+ *
+ *
+ * <h3 class="description">任意の位置からレコードが開始するかを指定する場合</h3>
+ *
+ * <p>データレコードの途中で中見出しがあり、分割されているような表の場合、アノテーション{@link XlsRecordFinder} で、
+ *   レコードの開始位置を決める処理を指定することができます。
+ * </p>
+ * <p>属性{@link XlsRecordFinder#value()} で、レコードの開始位置を検索する実装クラスを指定します。</p>
+ * <p>属性{@link XlsRecordFinder#args()} で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。</p>
+ *
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * // マッピングの定義
+ * public class SampleSheet {
+ *
+ *     {@literal @XlsOrder(1)}
+ *     {@literal @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border, terminateLabel="/クラス.+/")}
+ *     {@literal @XlsRecordFinder(value=ClassNameRecordFinder.class, args="クラスA")}
+ *     private {@literal List<UserRecord>} classA;
+ *
+ *     {@literal @XlsOrder(2)}
+ *     {@literal @XlsHorizontalRecords(tableLabel="成績一覧", bottom=2, terminal=RecordTerminal.Border, terminateLabel="/クラス.+/")}
+ *     {@literal @XlsRecordFinder(value=ClassNameRecordFinder.class, args="クラスB")}
+ *     private {@literal List<UserRecord>} classB;
+ * }
+ *
+ * // クラス用の見出しのレコードを探すクラス
+ * public class ClassNameRecordFinder implements RecordFinder {
+ *
+ *     {@literal @Override}
+ *     public CellPosition find(ProcessCase processCase, String[] args, Sheet sheet,
+ *             CellPosition initAddress, Object beanObj, Configuration config) {
+ *
+ *         // 実装は省略
+ *     }
+ *
+ * }
+ * </code></pre>
+ *
+ * <div class="picture">
+ *    <img src="doc-files/HorizontalRecord_RecordFinder.png" alt="">
+ *    <p>任意の位置のレコードをマッピングする場合</p>
  * </div>
  *
  *

@@ -204,7 +204,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final Optional<XlsRecordFinder> finderAnno = accessor.getAnnotation(XlsRecordFinder.class);
         if(finderAnno.isPresent()) {
             final RecordFinder finder = config.createBean(finderAnno.get().value());
-            startPosition = finder.find(ProcessCase.Load, finderAnno.get().args(), sheet, startPosition, config);
+            startPosition = finder.find(ProcessCase.Load, finderAnno.get().args(), sheet, startPosition, beansObj, config);
 
         }
 
@@ -901,7 +901,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final Optional<XlsRecordFinder> finderAnno = accessor.getAnnotation(XlsRecordFinder.class);
         if(finderAnno.isPresent()) {
             final RecordFinder finder = config.createBean(finderAnno.get().value());
-            startPosition = finder.find(ProcessCase.Save, finderAnno.get().args(), sheet, startPosition, config);
+            startPosition = finder.find(ProcessCase.Save, finderAnno.get().args(), sheet, startPosition, beansObj, config);
 
         }
 
