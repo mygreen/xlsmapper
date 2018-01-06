@@ -35,7 +35,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.util.CellFinder;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * マニュアルなどに明記するためのサンプル
@@ -402,7 +402,7 @@ public class SampleTest {
     @Test
     public void test_overide_sheetName() throws Exception {
 
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(OverrideSheetName.class)
                         .override(true)   // アノテーションを差分だけ反映する設定を有効にします。
                         .annotation(createAnnotation(XlsSheet.class)

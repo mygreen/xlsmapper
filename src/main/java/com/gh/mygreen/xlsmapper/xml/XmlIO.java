@@ -18,7 +18,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * XMLの読み込み、書き込みなどを行うユーティリティクラス。
@@ -31,19 +31,19 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
 public class XmlIO {
     
     /**
-     * XMLを読み込み、{@link XmlInfo}として取得する。
+     * XMLを読み込み、{@link AnnotationMappingInfo}として取得する。
      * @param in
      * @return
      * @throws XmlOperateException XMLの読み込みに失敗した場合。
      * @throws IllegalArgumentException in is null.
      */
-    public static XmlInfo load(final InputStream in) throws XmlOperateException {
+    public static AnnotationMappingInfo load(final InputStream in) throws XmlOperateException {
         ArgUtils.notNull(in, "in");
         
-        final XmlInfo xmlInfo;
+        final AnnotationMappingInfo xmlInfo;
         
         try {
-            xmlInfo = JAXB.unmarshal(in, XmlInfo.class);
+            xmlInfo = JAXB.unmarshal(in, AnnotationMappingInfo.class);
         } catch (DataBindingException e) {
             throw new XmlOperateException("fail load xml with JAXB.", e);
         }
@@ -52,20 +52,20 @@ public class XmlIO {
     }
     
     /**
-     * XMLを読み込み、{@link XmlInfo}として取得する。
+     * XMLを読み込み、{@link AnnotationMappingInfo}として取得する。
      * @since 0.5
      * @param reader
      * @return
      * @throws XmlOperateException XMLの読み込みに失敗した場合。
      * @throws IllegalArgumentException in is null.
      */
-    public static XmlInfo load(final Reader reader) throws XmlOperateException {
+    public static AnnotationMappingInfo load(final Reader reader) throws XmlOperateException {
         ArgUtils.notNull(reader, "reader");
         
-        final XmlInfo xmlInfo;
+        final AnnotationMappingInfo xmlInfo;
         
         try {
-            xmlInfo = JAXB.unmarshal(reader, XmlInfo.class);
+            xmlInfo = JAXB.unmarshal(reader, AnnotationMappingInfo.class);
         } catch (DataBindingException e) {
             throw new XmlOperateException("fail load xml with JAXB.", e);
         }
@@ -74,18 +74,18 @@ public class XmlIO {
     }
     
     /**
-     * XMLファイルを読み込み、{@link XmlInfo}として取得する。
+     * XMLファイルを読み込み、{@link AnnotationMappingInfo}として取得する。
      * @param file 読み込むファイル
      * @param encoding 読み込むファイルの文字コード
      * @return 
      * @throws XmlOperateException XMLの読み込みに失敗した場合。
      * @throws IllegalArgumentException file is null or encoding is empty.
      */
-    public static XmlInfo load(final File file, final String encoding) throws XmlOperateException {
+    public static AnnotationMappingInfo load(final File file, final String encoding) throws XmlOperateException {
         ArgUtils.notNull(file, "file");
         ArgUtils.notEmpty(encoding, "encoding");
         
-        final XmlInfo xmlInfo;
+        final AnnotationMappingInfo xmlInfo;
         
         try(Reader reader = new InputStreamReader(new FileInputStream(file), encoding)) {
             xmlInfo = load(reader);
@@ -106,7 +106,7 @@ public class XmlIO {
      * @throws IllegalArgumentException xmlInfo is null.
      * @throws IllegalArgumentException writer is null.
      */
-    public static void save(final XmlInfo xmlInfo, final OutputStream out) throws XmlOperateException {
+    public static void save(final AnnotationMappingInfo xmlInfo, final OutputStream out) throws XmlOperateException {
         ArgUtils.notNull(xmlInfo, "xmlInfo");
         ArgUtils.notNull(out, "out");
         
@@ -128,7 +128,7 @@ public class XmlIO {
      * @throws IllegalArgumentException xmlInfo is null.
      * @throws IllegalArgumentException writer is null.
      */
-    public static void save(final XmlInfo xmlInfo, final Writer writer) throws XmlOperateException {
+    public static void save(final AnnotationMappingInfo xmlInfo, final Writer writer) throws XmlOperateException {
         ArgUtils.notNull(xmlInfo, "xmlInfo");
         ArgUtils.notNull(writer, "writer");
         
@@ -151,7 +151,7 @@ public class XmlIO {
      * @throws IllegalArgumentException xmlInfo is null.
      * @throws IllegalArgumentException file is null or encoding is empty.
      */
-    public static void save(final XmlInfo xmlInfo, final File file, final String encoding) throws XmlOperateException {
+    public static void save(final AnnotationMappingInfo xmlInfo, final File file, final String encoding) throws XmlOperateException {
         ArgUtils.notNull(xmlInfo, "xmlInfo");
         ArgUtils.notNull(file, "file");
         ArgUtils.notEmpty(encoding, "encoding");

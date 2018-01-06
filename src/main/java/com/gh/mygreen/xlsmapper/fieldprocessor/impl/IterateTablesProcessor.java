@@ -145,6 +145,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             // process single label.
             loadSingleLabelledCell(sheet, tableObj, currentCell, config, work);
 
+            // process array labels.
             loadSingleLabelledArrayCell(sheet, tableObj, currentCell, config, work);
 
             // process horizontal table.
@@ -467,6 +468,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             // process single label.
             saveSingleLabelledCell(sheet, tableObj, currentCell, config, work);
 
+            // process array labels.
             saveSingleLabelledArrayCell(sheet, tableObj, currentCell, config, work);
 
             // process horizontal table.

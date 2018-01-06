@@ -33,7 +33,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
  * 
  */
 @XmlRootElement(name="annotations")
-public class XmlInfo implements Serializable {
+public class AnnotationMappingInfo implements Serializable {
     
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -49,11 +49,11 @@ public class XmlInfo implements Serializable {
         return new Builder();
     }
     
-    public XmlInfo() {
+    public AnnotationMappingInfo() {
         
     }
     
-    private XmlInfo(final Builder builder) {
+    private AnnotationMappingInfo(final Builder builder) {
         setClassInfos(builder.classInfos);
     }
     
@@ -199,7 +199,7 @@ public class XmlInfo implements Serializable {
     }
     
     /**
-     * {@link XmlInfo}を組み立てるためのクラス。
+     * {@link AnnotationMappingInfo}を組み立てるためのクラス。
      *
      */
     public static final class Builder {
@@ -211,11 +211,11 @@ public class XmlInfo implements Serializable {
         }
         
         /**
-         * 組み立てた{@link XmlInfo}のインスタンスを返す。
-         * @return {@link XmlInfo}オブジェクト。
+         * 組み立てた{@link AnnotationMappingInfo}のインスタンスを返す。
+         * @return {@link AnnotationMappingInfo}オブジェクト。
          */
-        public XmlInfo buildXml() {
-            return new XmlInfo(this);
+        public AnnotationMappingInfo buildXml() {
+            return new AnnotationMappingInfo(this);
         }
         
         /**

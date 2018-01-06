@@ -35,7 +35,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.impl.ArrayCellsProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * {@link ArrayCellsProcessor}のテスタ。
@@ -124,7 +124,7 @@ public class AnnoArrayCellsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false);
 
         // アノテーションの変更 - タイプが不正
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
                                 .annotation(createAnnotation(XlsArrayCells.class)
@@ -156,7 +156,7 @@ public class AnnoArrayCellsTest {
 
         {
             // アノテーションの変更 - addressが不正
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(InvalidAnnoSheet.class)
                             .field(createField("field1")
                                     .annotation(createAnnotation(XlsArrayCells.class)
@@ -178,7 +178,7 @@ public class AnnoArrayCellsTest {
 
         {
             // アノテーションの変更 - rowが不正
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(InvalidAnnoSheet.class)
                             .field(createField("field1")
                                     .annotation(createAnnotation(XlsArrayCells.class)
@@ -202,7 +202,7 @@ public class AnnoArrayCellsTest {
 
         {
             // アノテーションの変更 - columnが不正
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(InvalidAnnoSheet.class)
                             .field(createField("field1")
                                     .annotation(createAnnotation(XlsArrayCells.class)
@@ -236,7 +236,7 @@ public class AnnoArrayCellsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false);
 
         // アノテーションの変更 - sizeが不正
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
                                 .annotation(createAnnotation(XlsArrayCells.class)
@@ -462,7 +462,7 @@ public class AnnoArrayCellsTest {
         outSheet.field2 = "あいう";
 
         // アノテーションの変更 - タイプが不正
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
                                 .annotation(createAnnotation(XlsArrayCells.class)
@@ -500,7 +500,7 @@ public class AnnoArrayCellsTest {
         outSheet.field1 = Arrays.asList("あ", "い", "う");
 
         // アノテーションの変更 - sizeが不正
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
                                 .annotation(createAnnotation(XlsArrayCells.class)

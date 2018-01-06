@@ -58,28 +58,19 @@ XMLファイルによるマッピング
 
 
 外部XMLファイルを使う場合、ハードコードされたアノテーションを外部XMLファイルの内容でオーバーライドすることが可能です。
-読み込み時は以下のようにExcelファイルとXMLファイルの両方を ``XMLBeans#load(..)`` メソッドに渡します。
+XML情報は ``AnnotationMappingInfo`` として読み込み、 ``Configuration#setAnnotationMapping(..)`` メソッドに渡します。
 
 .. sourcecode:: java
     
-    SheetObject sheet = new XlsMapper().load(
-        new FileInputStream("example.xls"),
-        SheetObject.class,
-        new FileInputStream("example.xml"));
-
-
-なお、``AnnotationReader`` クラスを使用することで、XlsMapperのダイナミック・アノテーション機能を別のプログラムでも利用することが可能です。
-
-.. sourcecode:: java
+    // XMLファイルに定義したマッピング情報の読み込み
+    AnnotationMappingInfo annotaionMapping = XmlIO.load(new File("example.xml"), "UTF-8");
     
-    // XMLファイルの読み込み
-    XMLInfo xmlInfo = XmlIO.load(new File("example.xml"), "UTF-8");
+    // システム情報に設定
+    XlsMapper xlsMapper = new XlsMapper();
+    xlsMapper.getConfiguration.setAnnotationMapping(annotaionMapping);
     
-    // AnnotationReaderのインスタンスを作成
-    AnnotationReader reader = new AnnotationReader(xmlInfo);
-    
-    // SheetObjectクラスに付与されたSheetアノテーションを取得
-    Sheet sheet = reader.getAnnotation(SheetObject.class, Sheet.class);
+    // マッピング
+    SheetObject sheet = xlsMapper.load(new FileInputStream("example.xls"), SheetObject.class);
 
 
 ClassやMethod、Fieldオブジェクトから直接アノテーションを取得する代わりに ``AnnotationReader`` を使えば、
@@ -147,7 +138,7 @@ XMLに定義していないメソッドなどは、Javaのソースコードの�
         private String sheetName;
         
         @XlsOrder(1)
-        @XlsConverter(trim=true, shrinkToFit=true, defaultValue="－")
+        @XlsTrim
         @XlsLabelledCell(label="名称", type=LabelledCellType.Right)  // <== 上書きされる
         private String name;
         
@@ -181,7 +172,7 @@ XMLを動的に組み立てるには、 各XMLのオブジェクトのビルダ�
 さらに、ヘルパクラスである ``com.gh.mygreen.xlsmapper.xml.XmlBuilder`` を利用すると、より直感的に作成することができます。
 
 * XmlBuilderを、**static import** するとより使い安くなります。
-* XmlInfoオブジェクトは、``com.gh.mygreen.xlsmapper.xml.XmlIO#save(...)`` メソッドでファイルに保存します。
+* AnnotationMappingInfoオブジェクトは、``com.gh.mygreen.xlsmapper.xml.XmlIO#save(...)`` メソッドでファイルに保存します。
   
   * 作成した XmlInfoオブジェクトは、JAXBのアノテーションが付与されているため、 **JAXBの機能を使ってXMLに変換** することもできます。
   
@@ -205,7 +196,7 @@ XMLを動的に組み立てるには、 各XMLのオブジェクトのビルダ�
     
     public void sample() {
         
-        XmlInfo xmlInfo = createXml()         // ルートオブジェクトのXmlInfo(<annotations>タグ)を組み立てるビルダクラスを作成します。
+        AnnotationMappingInfo annotationMapping = createXml()         // ルートオブジェクトのXmlInfo(<annotations>タグ)を組み立てるビルダクラスを作成します。
                 .classInfo(createClass(SimpleSheet.class)      // クラス「SimpleSheet」に対するXML情報の組み立てを開始します。
                         .annotation(createAnnotation(XlsSheet.class)  // クラスのアノテーション「@XlsSheet」情報の組み立てを開始します。
                                 .attribute("name", "単純なシート")  // アノテーションの属性「name」を設定します。自動的にOGNL形式に変換されます。
@@ -219,9 +210,10 @@ XMLを動的に組み立てるには、 各XMLのオブジェクトのビルダ�
                                         .attribute("label", "名称")
                                         .attributeWithNative("type", "@com.gh.mygreen.xlsmapper.annotation.LabelledCellType@Right") // 直接OGNL式で設定することもできます。
                                         .buildAnnotation())
-                                .annotation(createAnnotation(XlsConverter.class)
-                                        .attribute("trim", true)
-                                        .attribute("defaultValue", "－")
+                                .annotation(createAnnotation(XlsTrim.class)
+                                        .buildAnnotation())
+                                .annotation(createAnnotation(XlsDefaultValue.class)
+                                        .attribute("value", "－")
                                         .buildAnnotation())
                                 .buildField())
                         .method(createMethod("setRecords")  // メソッド「setRecords」情報の組み立てを開始します。
@@ -234,7 +226,7 @@ XMLを動的に組み立てるには、 各XMLのオブジェクトのビルダ�
                 .buildXml();  // 組み立てたXML情報のオブジェクトを取得します。
         
         // XMLをファイルに保存します。
-        XmlIO.save(xmlInfo, new File("anno_simple.xml"), "UTF-8");
+        XmlIO.save(annotationMapping, new File("anno_simple.xml"), "UTF-8");
         
     }
     
@@ -257,9 +249,9 @@ XMLを動的に組み立てるには、 各XMLのオブジェクトのビルダ�
                     <attribute name="label">"名称"</attribute>
                     <attribute name="type">@com.gh.mygreen.xlsmapper.annotation.LabelledCellType@Right</attribute>
                 </annotation>
-                <annotation name="com.gh.mygreen.xlsmapper.annotation.converter.XlsConverter">
-                    <attribute name="trim">true</attribute>
-                    <attribute name="defaultValue">"－"</attribute>
+                <annotation name="com.gh.mygreen.xlsmapper.annotation.XlsTrim" />
+                <annotation name="com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue">
+                    <attribute name="value">"－"</attribute>
                 </annotation>
             </field>
             <method name="setRecords" override="false">
@@ -273,9 +265,8 @@ XMLを動的に組み立てるには、 各XMLのオブジェクトのビルダ�
 
 
 
-XmlMapper#load()/save()に渡す形式である ``java.io.InputStream`` に、 ``XmlInfo#toInputStream()`` メソッドで直接取得することもできます。
-
-この機能を利用することにより、シート名を設定するアノテーション ``@XlsSheet(name="<シート名>")`` の値を動的に書き換えることが容易にできるようになります。
+XMLに変換しないで、直接AnnotationMappingInfoをシステム設定クラスConfigurationに渡すことで、
+シート名を設定するアノテーション ``@XlsSheet(name="<シート名>")`` の値を動的に書き換えることが容易にできるようになります。
 
 .. sourcecode:: java
     
@@ -284,21 +275,19 @@ XmlMapper#load()/save()に渡す形式である ``java.io.InputStream`` に、 `
     
     public void sample() {
         
-        InputStream xmlIn = createXml()
+        AnnotationMappingInfo annotationMapping = createXml()
                 .classInfo(createClass(SimpleSheet.class)
                         .override(true)   // アノテーションを差分だけ反映する設定を有効にします。
                         .annotation(createAnnotation(XlsSheet.class)
                                 .attribute("name", "サンプル")
                                 .buildAnnotation())
                         .buildClass())
-                .buildXml()
-                .toInputStream(); // XMLに変換後、さらにInputStreamに変換して取得します。。
+                .buildXml();
         
-        // XmlMapperクラスに直接渡せます。
-        SimpleSheet sheet = new XlsMapper().load(
-            new FileInputStream("example.xls"),
-            SimpleSheet.class,
-            xmlIn);
+        // システム設定のConfirgurationに直接渡すこともできます。
+        XlsMapper xlsMapper = new XlsMapper();
+        xlsMapper.getConfiguration.setAnnotationMapping(annotaionMapping);
+    
     }
 
 

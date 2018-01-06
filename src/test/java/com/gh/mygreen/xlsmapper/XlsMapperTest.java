@@ -31,7 +31,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * {@link XlsMapper}のテスタ。
@@ -131,7 +131,7 @@ public class XlsMapperTest {
     @Test
     public void testLoad_customProcessorAnno_withField() throws Exception {
         
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(CustomAnnoSheet.class)
                         .field(createField("customProcessor")
                                 .annotation(createAnnotation(CustomProcessorAnno.class)
@@ -160,7 +160,7 @@ public class XlsMapperTest {
     @Test
     public void testLoad_customProcessorAnno_withField_noProcessor() throws Exception {
         
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(CustomAnnoSheet.class)
                         .field(createField("customProcessor")
                                 .annotation(createAnnotation(CustomProcessorAnno2.class)
@@ -190,7 +190,7 @@ public class XlsMapperTest {
     @Test
     public void testLoad_customProcessorAnno_withSetter() throws Exception {
         
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(CustomAnnoSheet.class)
                         .method(createMethod("setCustomProcessor")
                                 .annotation(createAnnotation(CustomProcessorAnno.class)
@@ -219,7 +219,7 @@ public class XlsMapperTest {
     @Test
     public void testLoad_customProcessorAnno_withSetter_noProcessor() throws Exception {
         
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(CustomAnnoSheet.class)
                         .method(createMethod("setCustomProcessor")
                                 .annotation(createAnnotation(CustomProcessorAnno2.class)
@@ -292,7 +292,7 @@ public class XlsMapperTest {
         CustomAnnoSheet outSheet = new CustomAnnoSheet();
         outSheet.setCustomProcessor("カスタムプロセッサー（書き込み）");
         
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(CustomAnnoSheet.class)
                         .field(createField("customProcessor")
                                 .annotation(createAnnotation(CustomProcessorAnno.class)
@@ -332,7 +332,7 @@ public class XlsMapperTest {
         CustomAnnoSheet outSheet = new CustomAnnoSheet();
         outSheet.setCustomProcessor("カスタムプロセッサー（書き込み）");
         
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(CustomAnnoSheet.class)
                         .field(createField("customProcessor")
                                 .annotation(createAnnotation(CustomProcessorAnno2.class)
@@ -365,7 +365,7 @@ public class XlsMapperTest {
         CustomAnnoSheet outSheet = new CustomAnnoSheet();
         outSheet.setCustomProcessor("カスタムプロセッサー（書き込み）");
         
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(CustomAnnoSheet.class)
                         .method(createMethod("getCustomProcessor")
                                 .annotation(createAnnotation(CustomProcessorAnno.class)
@@ -405,7 +405,7 @@ public class XlsMapperTest {
         CustomAnnoSheet outSheet = new CustomAnnoSheet();
         outSheet.setCustomProcessor("カスタムプロセッサー（書き込み）");
         
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(CustomAnnoSheet.class)
                         .method(createMethod("getCustomProcessor")
                                 .annotation(createAnnotation(CustomProcessorAnno2.class)

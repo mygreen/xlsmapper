@@ -1,43 +1,43 @@
 --------------------------------------------------------
-XlsMapperConfigによる動作のカスタマイズ
+Configurationによる動作のカスタマイズ
 --------------------------------------------------------
 
 
-読み込み時及び書き込み時の動作をXlsMapperConfigクラスでカスタマイズすることができます。
+読み込み時及び書き込み時の動作をConfigurationクラスでカスタマイズすることができます。
 
 .. sourcecode:: java
     
-    // 設定用のオブジェクトXlsMapperConfigの作成
-    XlsMapperConfig config = new XlsMapperConfig();
+    // 設定用のオブジェクトConfigurationの作成
+    Configuration config = new Configuration();
     
     // シートが見つからない場合にエラーにしない。
     config.setIgnoreSheetNotFound(true);
     
-    // XlsMapperConfigクラスをXlsMapperに渡す。
+    // ConfigurationクラスをXlsMapperに渡す。
     XlsMapper xlsMapper = new XlsMapper();
-    xlsMapper.setConfig(config);
+    xlsMapper.setConfiguration(config);
     
     // 設定を変更したXlsMapperでシートの読み込み
     SheetObject sheet = xlsMapper.load(
         new FileInputStream("example.xls"), SheetObject.class);
 
 
-XlsMapperConfigは、XlsMapperクラスのインスタンスを作成時にも持っているため、次のような変更もできます。
+Configurationは、XlsMapperクラスのインスタンスを作成時にも持っているため、次のような変更もできます。
 
 .. sourcecode:: java
     
     XlsMapper xlsMapper = new XlsMapper();
     
     // XlsMapperクラスから直接XlsMapperConfigのインスタンスを取得し変更する。
-    xlsMapper.getConfig().setIgnoreSheetNotFound(true);
+    xlsMapper.getConfiguration().setIgnoreSheetNotFound(true);
     
     // 設定を変更したXlsMapperでシートの読み込み
     SheetObject sheet = xlsMapper.load(
         new FileInputStream("example.xls"), SheetObject.class);
 
-XlsMapperConfigでは以下の設定を行うことができます。
+Configurationでは以下の設定を行うことができます。
 
-.. list-table:: XlsMapperConfigで設定可能な項目
+.. list-table:: Configurationで設定可能な項目
    :widths: 20 30 50
    :header-rows: 1
    
@@ -122,7 +122,7 @@ XlsMapperConfigでは以下の設定を行うことができます。
      - | セルの値をJavaオブジェクトに変換するクラスを管理します。
    
    * - ``beanFactory``
-     - ``FactoryCallback``
+     - ``BeanFactory``
      - | 読み込み時などのJavaBeansオブジェクトのインスタンスを作成すためのコールバック用クラス。
        | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用することができます。
        

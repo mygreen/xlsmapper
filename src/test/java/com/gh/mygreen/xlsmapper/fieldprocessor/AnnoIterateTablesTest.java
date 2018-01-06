@@ -3,6 +3,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.awt.Point;
 import java.io.File;
@@ -152,21 +153,16 @@ public class AnnoIterateTablesTest {
      * 横＋縦方向の表のテスト
      * ※v2.0の段階では、対応していない
      */
-    @Test(expected=AnnotationInvalidException.class)
+    @Test
     public void test_load_it_horizontal_vertical() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
-            try {
-                mapper.load(in, HorizontalAndVerticalSheet.class);
-
-                fail();
-            } catch(AnnotationInvalidException e) {
-//                e.printStackTrace();
-                throw e;
-            }
+            assertThatThrownBy(() -> mapper.load(in, HorizontalAndVerticalSheet.class))
+                .isInstanceOf(AnnotationInvalidException.class)
+                .hasMessage("アノテーション'@XlsIterateTables'を設定しているクラス'com.gh.mygreen.xlsmapper.fieldprocessor.AnnoIterateTablesTest$HorizontalAndVerticalSheet$HorizontalAndVerticalClassTable'において、アノテーション'@XlsHorizontalRecords'と'@XlsVerticalRecords'の両方が設定されています。どちらか一方を設定してください。");
         }
     }
 

@@ -17,7 +17,7 @@ Excelのシートを独自の基準で走査して、Javaクラスにマッピ�
         // シートの読み込み時の処理
         @Override
         public void loadProcess(final Sheet sheet, final Object beansObj, final SampleAnno anno, final FieldAdaptor adaptor,
-                final XlsMapperConfig config, final LoadingWorkObject work) throws XlsMapperException {
+                final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
             
             //TODO: 実装する
         }
@@ -25,7 +25,7 @@ Excelのシートを独自の基準で走査して、Javaクラスにマッピ�
         // シートの書き込み時の処理
         @Override
         public void saveProcess(final Sheet sheet, final Object targetObj, final SampleAnno anno, final FieldAdaptor adaptor,
-                final XlsMapperConfig config, final SavingWorkObject work) throws XlsMapperException {
+                final Configuration config, final SavingWorkObject work) throws XlsMapperException {
             
             //TODO: 実装する
             
@@ -41,11 +41,11 @@ Excelのシートを独自の基準で走査して、Javaクラスにマッピ�
 .. sourcecode:: java
     
     // 独自のFieldProcessorの登録
-    XlsMapperConfig config = new XlsMapperConfig();
+    Configuration config = new Configuration();
     config.getFieldProcessorRegistry().registerProcessor(SampleAnno.class, new SampleFieldProcessor());
     
     XlsMapper mapper = new XlsMapper();
-    mapper.setConfig(config);
+    mapper.setConfiguration(config);
     
 
 

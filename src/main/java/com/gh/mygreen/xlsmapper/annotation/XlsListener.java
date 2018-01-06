@@ -64,7 +64,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
  * public static class UserRecordListener {
  *
  *     {@literal @XlsPostLoad}
- *     public void onPostLoad(UserRecord targetObj, Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
+ *     public void onPostLoad(UserRecord targetObj, Sheet sheet, Configuration config, SheetBindingErrors errors) {
  *         // 読み込み後に実行される処理
  *         // 入力値チェックなどを行う
  *     }

@@ -44,7 +44,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * アノテーション{@link XlsFormula}のテスタ。
@@ -87,7 +87,7 @@ public class AnnoFormulaTest {
         final FormulaSheet outSheet = new FormulaSheet();
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(FormulaSheet.class)
                         .field(createField("c1")
                                 .override(true)
@@ -140,7 +140,7 @@ public class AnnoFormulaTest {
         final FormulaSheet outSheet = new FormulaSheet();
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(FormulaSheet.class)
                         .field(createField("c1")
                                 .override(true)
@@ -195,7 +195,7 @@ public class AnnoFormulaTest {
         outSheet.c1(12.345d);
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(FormulaSheet.class)
                         .field(createField("c1")
                                 .override(true)
@@ -252,7 +252,7 @@ public class AnnoFormulaTest {
         outSheet.c1(12.345d);
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(FormulaSheet.class)
                         .field(createField("c1")
                                 .override(true)
@@ -305,7 +305,7 @@ public class AnnoFormulaTest {
         final FormulaSheet outSheet = new FormulaSheet();
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(FormulaSheet.class)
                         .field(createField("c1")
                                 .override(true)
@@ -357,7 +357,7 @@ public class AnnoFormulaTest {
         final FormulaSheet outSheet = new FormulaSheet();
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(FormulaSheet.class)
                         .field(createField("c1")
                                 .override(true)
@@ -394,7 +394,7 @@ public class AnnoFormulaTest {
         final FormulaSheet outSheet = new FormulaSheet();
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(FormulaSheet.class)
                         .field(createField("c1")
                                 .override(true)
@@ -432,7 +432,7 @@ public class AnnoFormulaTest {
         final FormulaSheet outSheet = new FormulaSheet();
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(FormulaSheet.class)
                         .field(createField("c1")
                                 .override(true)
@@ -470,7 +470,7 @@ public class AnnoFormulaTest {
         final FormulaSheet outSheet = new FormulaSheet();
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(FormulaSheet.class)
                         .field(createField("c1")
                                 .override(true)

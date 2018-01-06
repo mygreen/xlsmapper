@@ -32,7 +32,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.ClassInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.FieldInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.MethodInfo;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * {@link XmlBuilder}のテスタ
@@ -60,7 +60,7 @@ public class XmlBuilderTest {
     @Test
     public void test_simple() throws Exception {
 
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(SimpleSheet.class)
                         .annotation(createAnnotation(XlsSheet.class)
                                 .attribute("name", "単純なシート")
@@ -73,6 +73,8 @@ public class XmlBuilderTest {
                                 .annotation(createAnnotation(XlsLabelledCell.class)
                                         .attribute("label", "名称")
                                         .attribute("type", LabelledCellType.Right)
+                                        .buildAnnotation())
+                                .annotation(createAnnotation(XlsTrim.class)
                                         .buildAnnotation())
                                 .annotation(createAnnotation(XlsDefaultValue.class)
                                         .attribute("value", "－")
@@ -108,6 +110,9 @@ public class XmlBuilderTest {
         assertThat(labeldCellAnno.label(), is("名称"));
         assertThat(labeldCellAnno.type(), is(LabelledCellType.Right));
 
+        XlsTrim trimAnno = select(nameAnnos, XlsTrim.class);
+        assertThat(trimAnno, is(not(nullValue())));
+
         XlsDefaultValue defaultValueAnno = select(nameAnnos, XlsDefaultValue.class);
         assertThat(defaultValueAnno.value(), is("－"));
 
@@ -139,7 +144,7 @@ public class XmlBuilderTest {
     @Test
     public void test_override() throws Exception {
 
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(OrverrideSheet.class)
                         .override(true)
                         .annotation(createAnnotation(XlsSheet.class)
@@ -238,7 +243,7 @@ public class XmlBuilderTest {
     @Test
     public void test_xml_io() throws Exception {
 
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(SimpleSheet.class)
                         .annotation(createAnnotation(XlsSheet.class)
                                 .attribute("name", "単純なシート")
@@ -270,7 +275,7 @@ public class XmlBuilderTest {
         File file = new File(OUT_DIR, "anno_test.xml");
         XmlIO.save(xmlInfo, file, "Windows-31j");
 
-        XmlInfo readInfo = XmlIO.load(file, "Windows-31j");
+        AnnotationMappingInfo readInfo = XmlIO.load(file, "Windows-31j");
         assertThat(readInfo, is(not(nullValue())));
 
     }
@@ -281,7 +286,7 @@ public class XmlBuilderTest {
     @Test
     public void test_XmlInfo_class_duplicate() {
 
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(SimpleSheet.class)
                         .field(createField("field1").buildField())
                         .buildClass())

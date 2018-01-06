@@ -6,17 +6,17 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.ClassInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.FieldInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.MethodInfo;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
- * アノテーション用のXMLのオブジェクト（{@link XmlInfo}）を組み立てるためのヘルパークラス。
+ * アノテーション用のXMLのオブジェクト（{@link AnnotationMappingInfo}）を組み立てるためのヘルパークラス。
  *
  * <pre class="highlight"><code class="java">
  * // static import をすると使いやすくなります。
  * import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
  *
  * public void sample() {
- *     XmlInfo xmlInfo = createXml()
+ *     AnnotationMappingInfo annotationMapping = createXml()
  *               .classInfo(createClass(SimpleSheet.class)
  *                       .annotation(createAnnotationBuilder(XlsSheet.class) // クラスに対するアノテーションの定義
  *                               .attribute("name", "単純なシート")
@@ -46,13 +46,11 @@ import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
  *               .buildXml();
  *
  *     // ファイルへの保存
- *     XmlIO.save(xmlInfo, new File("anno_simple.xml"), "UTF-8");
+ *     XmlIO.save(annotationMapping, new File("anno_simple.xml"), "UTF-8");
  *
- *     // XmlMapperクラスへ渡す。
- *     SimpleSheet sheet = new XlsMapper().load(
- *             new FileInputStream("example.xls"),
- *             SimpleSheet.class,
- *             xmlInfo.toInputStream();
+ *     // システム設定へ渡す。
+ *     XlsMapper xlsMapper = new XlsMapper();
+ *     xlsMapper.getConfiguration.setAnnotationMapping(annotaionMapping);
  *
  * }
  * </code></pre>
@@ -68,11 +66,11 @@ public class XmlBuilder {
     private static OgnlValueFormatter valueFormatter = new OgnlValueFormatter();
 
     /**
-     * {@link XmlInfo}のビルダクラスの{@link XmlInfo.Builder}インスタンスを作成する。
+     * {@link AnnotationMappingInfo}のビルダクラスの{@link AnnotationMappingInfo.Builder}インスタンスを作成する。
      * @return
      */
-    public static XmlInfo.Builder createXml() {
-        return XmlInfo.builder();
+    public static AnnotationMappingInfo.Builder createXml() {
+        return AnnotationMappingInfo.builder();
     }
 
     /**

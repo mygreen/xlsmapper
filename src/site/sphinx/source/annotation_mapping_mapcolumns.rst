@@ -173,7 +173,7 @@
     
     // システム設定
     XlsMapper xlsMapper = new XlsMapper();
-    xlsMapper.getConfig()
+    xlsMapper.getConfiguration()
             .setRegexLabelText(true)        // ラベルを正規表現で指定可能にする機能を有効にする。
             .setNormalizeLabelText(true);   // ラベルを正規化して比較する機能を有効にする。
     
@@ -226,7 +226,7 @@
         
         // XlsMapColumnsのマッピング用のセルを作成する
         @XlsPreSave
-        public void onPreSave(final Sheet sheet, final XlsMapperConfig config) {
+        public void onPreSave(final Sheet sheet, final Configuration config) {
             
             try {
                 final Workbook workbook = sheet.getWorkbook();

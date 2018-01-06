@@ -143,7 +143,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
   * セルのオブジェクト ``org.apache.poi.ss.usermodel.Cell`` 。
   * シートのオブジェクト ``org.apache.poi.ss.usermodel.Sheet`` 。
   * セルの座標 ``java.awt.Point`` 。0から始まります。
-  * システム設定 ``com.gh.mygreen.xlsmapper.XlsMapperConfig`` 。
+  * システム設定 ``com.gh.mygreen.xlsmapper.Configuration`` 。
   
 * 戻り値は、String型。
   
@@ -246,7 +246,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
 実装方式は、 :ref:`入力値検証時のメッセージのフォーマットの方式 <validationCutomEL>` と同じです。 
 
 
-設定を変更したい場合は、 ``XlsMapperConfig#formulaFormatter()`` の値を変更します。
+設定を変更したい場合は、 ``Configuration#formulaFormatter()`` の値を変更します。
 
 .. sourcecode:: java
     

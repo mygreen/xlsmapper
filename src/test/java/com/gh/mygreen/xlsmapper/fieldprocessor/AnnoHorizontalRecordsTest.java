@@ -62,7 +62,7 @@ import com.gh.mygreen.xlsmapper.util.IsEmptyComparator;
 import com.gh.mygreen.xlsmapper.util.IsEmptyConfig;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 import com.github.mygreen.cellformatter.lang.Utils;
 
 /**
@@ -437,7 +437,7 @@ public class AnnoHorizontalRecordsTest {
 
         // optional=false - 例外が発生
         {
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(MapOptionalRecord.class)
                             .field(createField("dateAttended")
                                     .annotation(createAnnotation(XlsMapColumns.class)
@@ -467,7 +467,7 @@ public class AnnoHorizontalRecordsTest {
 
         // optional=true - 例外を無視
         {
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(MapOptionalRecord.class)
                             .field(createField("dateAttended")
                                     .annotation(createAnnotation(XlsMapColumns.class)
@@ -509,7 +509,7 @@ public class AnnoHorizontalRecordsTest {
 
         // optional=false - 例外が発生
         {
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(MapOptionalRecord.class)
                             .field(createField("dateAttended")
                                     .annotation(createAnnotation(XlsMapColumns.class)
@@ -541,7 +541,7 @@ public class AnnoHorizontalRecordsTest {
 
         // optional=true - 例外を無視
         {
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(MapOptionalRecord.class)
                             .field(createField("dateAttended")
                                     .annotation(createAnnotation(XlsMapColumns.class)
@@ -2165,7 +2165,7 @@ public class AnnoHorizontalRecordsTest {
 
         // optional=false - 例外が発生
         {
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(MapOptionalRecord.class)
                             .field(createField("dateAttended")
                                     .annotation(createAnnotation(XlsMapColumns.class)
@@ -2197,7 +2197,7 @@ public class AnnoHorizontalRecordsTest {
 
         // optional=true - 例外を無視
         {
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(MapOptionalRecord.class)
                             .field(createField("dateAttended")
                                     .annotation(createAnnotation(XlsMapColumns.class)
@@ -2281,7 +2281,7 @@ public class AnnoHorizontalRecordsTest {
 
         // optional=false - 例外が発生
         {
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(MapOptionalRecord.class)
                             .field(createField("dateAttended")
                                     .annotation(createAnnotation(XlsMapColumns.class)
@@ -2313,7 +2313,7 @@ public class AnnoHorizontalRecordsTest {
 
         // optional=true - 例外を無視
         {
-            XmlInfo xmlInfo = createXml()
+            AnnotationMappingInfo xmlInfo = createXml()
                     .classInfo(createClass(MapOptionalRecord.class)
                             .field(createField("dateAttended")
                                     .annotation(createAnnotation(XlsMapColumns.class)

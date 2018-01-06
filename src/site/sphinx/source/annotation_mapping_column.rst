@@ -70,7 +70,7 @@
 .. note::
     
     書き込みに時では、属性mergedの値が true であっても、上部または左側のセルと値が同じでも結合は基本的に行いません。
-    ただし、システム設定 ``XlsMapperConfig`` の項目「mergeCellOnSave」の値をtrueにすると結合されます。
+    ただし、システム設定 ``Configuration`` の項目「mergeCellOnSave」の値をtrueにすると結合されます。
 
 
 
@@ -141,7 +141,7 @@
     
     // システム設定
     XlsMapper xlsMapper = new XlsMapper();
-    xlsMapper.getConfig()
+    xlsMapper.getConfiguration()
             .setRegexLabelText(true)        // ラベルを正規表現で指定可能にする機能を有効にする。
             .setNormalizeLabelText(true);   // ラベルを正規化して比較する機能を有効にする。
     

@@ -46,7 +46,7 @@
    * - ``org.apache.poi.ss.usermodel.Sheet``
      - | 処理対象のSheetオブジェクト。
    
-   * - ``com.gh.mygreen.xlsmapper.XlsMapperConfig``
+   * - ``com.gh.mygreen.xlsmapper.Configuration``
      - | :doc:`XlsMapperの設定オブジェクト <otheruse_config>` 。
    
    * - ``com.gh.mygreen.xlsmapper.validation.SheetBindingErrors``
@@ -103,7 +103,7 @@ JavaBeanクラスに実装する場合
         private String name;
         
         @XlsPostLoad
-        public void onPostLoad(Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
+        public void onPostLoad(Sheet sheet, Configuration config, SheetBindingErrors errors) {
             // 読み込み後に実行される処理
             // 入力値チェックなどを行う
         }
@@ -159,7 +159,7 @@ JavaBeanクラスに実装する場合
     public static class UserRecordListener {
         
         @XlsPostLoad
-        public void onPostLoad(UserRecord targetObj, Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
+        public void onPostLoad(UserRecord targetObj, Sheet sheet, Configuration config, SheetBindingErrors errors) {
             // 読み込み後に実行される処理
             // 入力値チェックなどを行う
         }

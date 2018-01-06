@@ -31,7 +31,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledArrayCellsProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 
 /**
@@ -250,7 +250,7 @@ public class AnnoLabelledArrayCellsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false);
 
         // アノテーションの変更 - タイプが不正
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
                                 .annotation(createAnnotation(XlsLabelledArrayCells.class)
@@ -282,7 +282,7 @@ public class AnnoLabelledArrayCellsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false);
 
         // アノテーションの変更 - タイプが不正
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
                                 .annotation(createAnnotation(XlsLabelledArrayCells.class)
@@ -317,7 +317,7 @@ public class AnnoLabelledArrayCellsTest {
         mapper.getConiguration().setContinueTypeBindFailure(false);
 
         // アノテーションの変更 - タイプが不正
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
                                 .annotation(createAnnotation(XlsLabelledArrayCells.class)
@@ -672,7 +672,7 @@ public class AnnoLabelledArrayCellsTest {
         outSheet.field2 = "あいう";
 
         // アノテーションの変更 - タイプが不正
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field2")
                                 .annotation(createAnnotation(XlsLabelledArrayCells.class)
@@ -711,7 +711,7 @@ public class AnnoLabelledArrayCellsTest {
         outSheet.field1 = Arrays.asList("あ", "い", "う");
 
         // アノテーションの変更 - タイプが不正
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(InvalidAnnoSheet.class)
                         .field(createField("field1")
                                 .annotation(createAnnotation(XlsLabelledArrayCells.class)

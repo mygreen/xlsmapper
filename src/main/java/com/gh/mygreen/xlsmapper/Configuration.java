@@ -10,7 +10,7 @@ import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegistry;
 import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 
 /**
@@ -66,7 +66,7 @@ public class Configuration {
     private MessageInterpolator formulaFormatter = new MessageInterpolator();
     
     /** Beanに対するアノテーションのマッピング情報 */
-    private XmlInfo annotationMapping = null;
+    private AnnotationMappingInfo annotationMapping = null;
     
     public Configuration() {
         
@@ -392,7 +392,7 @@ public class Configuration {
      * @since 2.0
      * @return 設定されていない場合は、空を返す。
      */
-    public Optional<XmlInfo> getAnnotationMapping() {
+    public Optional<AnnotationMappingInfo> getAnnotationMapping() {
         return Optional.ofNullable(annotationMapping);
     }
     
@@ -401,7 +401,7 @@ public class Configuration {
      * @since 2.0
      * @param annotationMapping アノテーションの設定情報
      */
-    public void setAnnotationMapping(XmlInfo annotationMapping) {
+    public void setAnnotationMapping(AnnotationMappingInfo annotationMapping) {
         this.annotationMapping = annotationMapping;
     }
     

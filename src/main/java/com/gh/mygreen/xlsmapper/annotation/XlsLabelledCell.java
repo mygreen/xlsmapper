@@ -58,7 +58,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
  * <pre class="highlight"><code class="java">
  * // システム設定
  * XlsMapper xlsMapper = new XlsMapper();
- * xlsMapper.getConfig()
+ * xlsMapper.getConfiguration()
  *         .setRegexLabelText(true)        // ラベルを正規表現で指定可能にする機能を有効にする。
  *         .setNormalizeLabelText(true);   // ラベルを正規化して比較する機能を有効にする。
  *

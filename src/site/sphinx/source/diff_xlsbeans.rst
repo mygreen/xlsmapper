@@ -59,5 +59,5 @@ XLSBeansとの違いを以下に示します。
  
 * 独自実装のProcessorを、プロパティファイル ``xlsbeans.properties`` で設定できる機能を削除しました。
 
-  * 代わりに、システム設定用の ``XlsMapperConfig#getConverterRegistry()#registerProcessor(...)`` から登録できます。
+  * 代わりに、システム設定用の ``Configuration#getConverterRegistry()#registerProcessor(...)`` から登録できます。
 

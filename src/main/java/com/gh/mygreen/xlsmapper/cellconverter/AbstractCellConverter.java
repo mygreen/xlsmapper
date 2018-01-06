@@ -43,7 +43,7 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
     /**
      * システム設定
      */
-    protected final Configuration config;
+    protected final Configuration configuration;
 
     /**
      * 値をトリムするかどうか
@@ -92,14 +92,14 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
 
     public AbstractCellConverter(final FieldAccessor field, final Configuration config) {
         this.field = field;
-        this.config = config;
+        this.configuration = config;
     }
 
     @Override
     public T toObject(final Cell cell) throws XlsMapperException {
 
         final ProcessCase processCase = ProcessCase.Load;
-        final String formattedValue = Utils.trim(config.getCellFormatter().format(cell), trimmed);
+        final String formattedValue = Utils.trim(configuration.getCellFormatter().format(cell), trimmed);
 
         // デフォルト値の設定
         if(isEmptyCell(formattedValue, cell) && defaultValue.isPresent(processCase)) {
@@ -213,8 +213,8 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
 
         // 数式の設定
         formulaHandler.ifPresent(handler -> {
-            if(isEmptyValue(cellValue, config) || handler.isPrimaryFormula()) {
-                handler.handleFormula(field, config, cell, targetBean);
+            if(isEmptyValue(cellValue, configuration) || handler.isPrimaryFormula()) {
+                handler.handleFormula(field, configuration, cell, targetBean);
             }
         });
 
@@ -276,8 +276,8 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
      * システム情報を取得します。
      * @return システム情報
      */
-    public Configuration getConfig() {
-        return config;
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
     @Override

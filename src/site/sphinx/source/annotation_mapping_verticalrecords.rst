@@ -138,12 +138,12 @@
         
         // 見出しが横に結合され、データのレコードの開始位置が離れている場合
         @XlsVerticalRecords(tableLabel="天気情報", headerRight=2)
-        private List<SampleRecord> records;
+        private List<WeatherRecord> records;
     
     }
     
     // レコード用クラス
-    public class SampleRecord {
+    public class WeatherRecord {
         
         @XlsColumn(columnName="時間")
         private String time;

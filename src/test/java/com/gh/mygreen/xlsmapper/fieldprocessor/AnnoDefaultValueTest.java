@@ -30,7 +30,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * アノテーション{@link XlsDefaultValue}のテスタ。
@@ -102,7 +102,7 @@ public class AnnoDefaultValueTest {
     public void test_load_invalidFormat() throws Exception {
 
         // アノテーションの組み立て
-        XmlInfo xmlInfo = createXml()
+        AnnotationMappingInfo xmlInfo = createXml()
                 .classInfo(createClass(NormalValueSheet.class)
                         .field(createField("blankWithDefaultFormat")
                                 .override(true)

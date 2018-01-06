@@ -10,7 +10,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.ClassInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.FieldInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.MethodInfo;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 
 /**
@@ -28,7 +28,7 @@ public class AnnotationReader {
      * XMLで定義した情報。
      * nullでもよい。
      */
-    private final XmlInfo xmlInfo;
+    private final AnnotationMappingInfo xmlInfo;
     
     /**
      * アノテーションを動的に組み立てるクラス。
@@ -39,7 +39,7 @@ public class AnnotationReader {
      * XMLで定義した情報を指定するコンストラクタ。
      * @param xmlInfo XMLで定義したアノテーションの情報。{@link XmlIO}で読み込んで取得した値。指定しない場合はnull。
      */
-    public AnnotationReader(final XmlInfo xmlInfo) {
+    public AnnotationReader(final AnnotationMappingInfo xmlInfo) {
         this.xmlInfo = xmlInfo;
     }
     

@@ -22,93 +22,93 @@ import com.gh.mygreen.xlsmapper.Configuration;
  *   <li>シートのエラー情報を格納するオブジェクト {@link com.gh.mygreen.xlsmapper.validation.SheetBindingErrors}</li>
  *   <li>処理対象のBeanオブジェクト</li>
  * </ul>
- * 
+ *
  * <h3 class="description">JavaBeanクラスに実装する場合</h3>
- * 
+ *
  * <p>シート用クラス、レコード用クラスのどちらにも定義できます。
  *   <br>実行順は、親であるシートクラスの処理が先に処理されます。
  * </p>
- * 
+ *
  * <pre class="highlight"><code class="java">
  * // シートクラス
  * {@literal @XlsSheet(name="Users")}
  * public class SampleSheet {
- * 
+ *
  *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
  *     private {@literal List<UserRecord>} records;
- *     
+ *
  *     {@literal @XlsPreLoad}
  *     public void onPreLoad() {
  *         // 読み込み前に実行される処理
  *     }
  * }
- * 
+ *
  * // レコードクラス
  * public class UserRecord {
- *     
+ *
  *     {@literal @XlsColumn(columnName="ID")}
  *     private int id;
- *     
+ *
  *     {@literal @XlsColumn(columnName="名前")}
  *     private String name;
- *     
+ *
  *     {@literal @XlsPreLoad}
- *     public void onPreLoad(Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
+ *     public void onPreLoad(Sheet sheet, Configuration config, SheetBindingErrors errors) {
  *         // 読み込み前に実行される処理
  *     }
- *     
+ *
  * }
  * </code></pre>
- * 
+ *
  * <h3 class="description">リスナークラスに実装する場合</h3>
  * <p>クラスにアノテーション{@link XlsListener#value()} で処理が実装されたクラスを指定します。 </p>
  * <p>インスタンスは、システム設定{@link Configuration#getBeanFactory()}経由で作成されるため、
  *   SpringFrameworkのコンテナからインスタンスを取得することもできます。
  * </p>
- * 
- * 
+ *
+ *
  * <pre class="highlight"><code class="java">
  * // シートクラス
  * {@literal @XlsSheet(name="Users")}
  * {@literal @XlsListener(listenerClass=SampleSheetListener.class)}
  * public class SampleSheet {
- * 
+ *
  *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
  *     private {@literal List<UserRecord>} records;
  * }
- * 
+ *
  * // SampleSheetクラスのリスナー
  * public static class SampleSheetListener {
- * 
+ *
  *     {@literal @XlsPreLoad}
  *     public void onPreLoad(SampleSheet targetObj) {
  *         // 読み込み前に実行される処理
  *     }
  * }
- * 
+ *
  * // レコードクラス
  * {@literal @XlsListener(listenerClass=UserRecordListener.class)}
  * public class UserRecord {
- *     
+ *
  *     {@literal @XlsColumn(columnName="ID")}
  *     private int id;
- *     
+ *
  *     {@literal @XlsColumn(columnName="名前")}
  *     private String name;
- *     
+ *
  * }
- * 
+ *
  * // UserRecordクラスのリスナー
  * public static class UserRecordListener {
- * 
+ *
  *     {@literal @XlsPreLoad}
- *     public void onPreLoad(UserRecord targetObj, Sheet sheet, XlsMapperConfig config, SheetBindingErrors errors) {
+ *     public void onPreLoad(UserRecord targetObj, Sheet sheet, Configuration config, SheetBindingErrors errors) {
  *         // 読み込み前に実行される処理
  *     }
- * } 
+ * }
  * </code></pre>
- * 
- * 
+ *
+ *
  * @author T.TSUCHIE
  *
  */

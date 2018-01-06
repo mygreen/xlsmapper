@@ -11,19 +11,19 @@ POIは、数値と日時型はファイル内部では同じdouble型で保持�
 
 セルの値を取得する処理を独自の実装に切り替えることができます。
 
-* セルの実装を切り替えるには、インタフェース ``com.gh.mygreen.xlsmapper.CellFormatter`` を実装したものを、XlsMapperConfigに渡します。
+* セルの実装を切り替えるには、インタフェース ``com.gh.mygreen.xlsmapper.CellFormatter`` を実装したものを、Configuration に渡します。
 
 * 標準では、``com.gh.mygreen.xlsmapper.DefaultCellFormatter`` が設定されています。
 
 .. sourcecode:: java
     
-    XlsMapperConfig config = new XlsMapperConfig();
+    Configuration config = new Configuration();
     
     // 独自の処理系に変更する。
     config.setCellFormatter(new CustomCellFormatter());
     
     XlsMapper mapper = new XlsMapper();
-    mapper.setConfig(config);
+    mapper.setConfiguration(config);
     
 
 

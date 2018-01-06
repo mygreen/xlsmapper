@@ -29,7 +29,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.ClassInfo;
-import com.gh.mygreen.xlsmapper.xml.bind.XmlInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * {@link XmlIO}、{@link AnnotationReader}のテスタ
@@ -44,7 +44,7 @@ public class AnnotationReaderTest {
     @Test
     public void test_loadXml_success1() throws Exception {
 
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
+        AnnotationMappingInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
         assertThat(xmlInfo, is(not(nullValue())));
         assertThat(xmlInfo.getClassInfos(), hasSize(2));
     }
@@ -55,7 +55,7 @@ public class AnnotationReaderTest {
     @Test
     public void test_loadXml_success2() throws Exception {
 
-        XmlInfo xmlInfo = XmlIO.load(AnnotationReaderTest.class.getResourceAsStream("anno_resource.xml"));
+        AnnotationMappingInfo xmlInfo = XmlIO.load(AnnotationReaderTest.class.getResourceAsStream("anno_resource.xml"));
         assertThat(xmlInfo, is(not(nullValue())));
         assertThat(xmlInfo.getClassInfos(), hasSize(2));
     }
@@ -66,7 +66,7 @@ public class AnnotationReaderTest {
     @Test(expected=XmlOperateException.class)
     public void test_loadXml_error_notFile() throws Exception {
 
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test_notExist.xml"), "UTF-8");
+        AnnotationMappingInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test_notExist.xml"), "UTF-8");
         fail();
     }
 
@@ -76,7 +76,7 @@ public class AnnotationReaderTest {
     @Test(expected=XmlOperateException.class)
     public void test_loadXml_error_wrongFile() throws Exception {
 
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test_wrong.xml"), "UTF-8");
+        AnnotationMappingInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test_wrong.xml"), "UTF-8");
         fail();
     }
 
@@ -87,7 +87,7 @@ public class AnnotationReaderTest {
     @Test
     public void test_readAnnotation_simple() throws Exception {
 
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
+        AnnotationMappingInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
         AnnotationReader reader = new AnnotationReader(xmlInfo);
 
         // クラス定義の読み込み
@@ -137,7 +137,7 @@ public class AnnotationReaderTest {
     @Test
     public void test_readAnnotation_override() throws Exception {
 
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
+        AnnotationMappingInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
         AnnotationReader reader = new AnnotationReader(xmlInfo);
 
         // クラス定義の読み込み
@@ -181,7 +181,7 @@ public class AnnotationReaderTest {
     @Test
     public void test_readAnnotation_override2() throws Exception {
 
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_override.xml"), "UTF-8");
+        AnnotationMappingInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_override.xml"), "UTF-8");
         AnnotationReader reader = new AnnotationReader(xmlInfo);
 
         // クラス定義の読み込み
@@ -235,7 +235,7 @@ public class AnnotationReaderTest {
     @Test
     public void test_readAnnotation_ovverride_dynamicXml() throws Exception {
 
-        XmlInfo xmlInfo = new XmlInfo();
+        AnnotationMappingInfo xmlInfo = new AnnotationMappingInfo();
 
         // クラス情報の組み立て
         ClassInfo classInfo = new ClassInfo();
@@ -266,7 +266,7 @@ public class AnnotationReaderTest {
     @Test
     public void test_readAnnotation_not_exists() throws Exception {
 
-        XmlInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
+        AnnotationMappingInfo xmlInfo = XmlIO.load(new File("src/test/data/xml/anno_test.xml"), "UTF-8");
         AnnotationReader reader = new AnnotationReader(xmlInfo);
         // クラス定義の読み込み
         Annotation[] classAnnos = reader.getAnnotations(SimpleSheet.class);
