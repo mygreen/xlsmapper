@@ -14,8 +14,8 @@ import java.util.TimeZone;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
@@ -31,10 +31,10 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  *
  */
 public abstract class AbstractTemporalCellConverterFactory<T extends TemporalAccessor & Comparable<? super T>> 
-        extends AbstractCellConverterFactorySupport<T> implements CellConverterFactory<T> {
+        extends CellConverterFactorySupport<T> implements CellConverterFactory<T> {
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<T> cellConverter, final FieldAccessor field, final Configuration config) {
+    protected void setupCustom(final BaseCellConverter<T> cellConverter, final FieldAccessor field, final Configuration config) {
         
         ArgUtils.instanceOf(cellConverter, AbstractTemporalCellConverter.class, "cellConverter");
         

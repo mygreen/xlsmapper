@@ -9,8 +9,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -25,7 +25,7 @@ import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
  * @author T.TSUCHIE
  *
  */
-public class ArrayCellConverterFactory extends AbstractCellConverterFactorySupport<Object[]>
+public class ArrayCellConverterFactory extends CellConverterFactorySupport<Object[]>
         implements CellConverterFactory<Object[]>{
     
     private ListCellConverterFactory listCellConverterFactory = new ListCellConverterFactory();
@@ -40,7 +40,7 @@ public class ArrayCellConverterFactory extends AbstractCellConverterFactorySuppo
     }
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<Object[]> cellConverter, final FieldAccessor field,
+    protected void setupCustom(final BaseCellConverter<Object[]> cellConverter, final FieldAccessor field,
             final Configuration config) {
         // 何もしない
     }
@@ -67,7 +67,7 @@ public class ArrayCellConverterFactory extends AbstractCellConverterFactorySuppo
         };
     }
     
-    public class ArrayCellConverter extends AbstractCellConverter<Object[]> {
+    public class ArrayCellConverter extends BaseCellConverter<Object[]> {
         
         private ArrayCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
@@ -78,7 +78,7 @@ public class ArrayCellConverterFactory extends AbstractCellConverterFactorySuppo
             try {
                 return this.textFormatter.parse(formattedValue);
             } catch(TextParseException e) {
-                throw newTypeBindExceptionWithParse(e, evaluatedCell, formattedValue);
+                throw newTypeBindExceptionOnParse(e, evaluatedCell, formattedValue);
             }
         }
         

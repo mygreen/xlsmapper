@@ -15,8 +15,8 @@ import java.util.Optional;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
@@ -31,11 +31,11 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  * @author T.TSUCHIE
  *
  */
-public abstract class AbstractNumberCellConverterFactory<T extends Number> extends AbstractCellConverterFactorySupport<T> 
+public abstract class AbstractNumberCellConverterFactory<T extends Number> extends CellConverterFactorySupport<T> 
             implements CellConverterFactory<T> {
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<T> cellConverter, final FieldAccessor field, final Configuration config) {
+    protected void setupCustom(final BaseCellConverter<T> cellConverter, final FieldAccessor field, final Configuration config) {
         
         ArgUtils.instanceOf(cellConverter, AbstractNumberCellConverter.class, "cellConverter");
         

@@ -7,8 +7,8 @@ import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsEnumConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -25,7 +25,7 @@ import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
  *
  */
 @SuppressWarnings("rawtypes")
-public class EnumCellConverterFactory extends AbstractCellConverterFactorySupport<Enum>
+public class EnumCellConverterFactory extends CellConverterFactorySupport<Enum>
         implements CellConverterFactory<Enum> {
 
     @Override
@@ -38,7 +38,7 @@ public class EnumCellConverterFactory extends AbstractCellConverterFactorySuppor
     }
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<Enum> cellConverter, final FieldAccessor field, final Configuration config) {
+    protected void setupCustom(final BaseCellConverter<Enum> cellConverter, final FieldAccessor field, final Configuration config) {
         // 何もしない
         
     }
@@ -56,7 +56,7 @@ public class EnumCellConverterFactory extends AbstractCellConverterFactorySuppor
         
     }
     
-    public class EnumCellConverter extends AbstractCellConverter<Enum> {
+    public class EnumCellConverter extends BaseCellConverter<Enum> {
         
         private EnumCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
@@ -71,7 +71,7 @@ public class EnumCellConverterFactory extends AbstractCellConverterFactorySuppor
             try {
                 return this.textFormatter.parse(formattedValue);
             } catch(TextParseException e) {
-                throw newTypeBindExceptionWithParse(e, evaluatedCell, formattedValue)
+                throw newTypeBindExceptionOnParse(e, evaluatedCell, formattedValue)
                     .addAllMessageVars(e.getErrorVariables());
             }
         }

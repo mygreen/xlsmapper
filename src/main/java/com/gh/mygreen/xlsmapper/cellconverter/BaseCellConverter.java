@@ -33,7 +33,7 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
  * @author T.TSUCHIE
  *
  */
-public abstract class AbstractCellConverter<T> implements CellConverter<T>, FieldFormatter<T> {
+public abstract class BaseCellConverter<T> implements CellConverter<T>, FieldFormatter<T> {
 
     /**
      * フィールド情報
@@ -90,7 +90,7 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
      */
     protected TextFormatter<T> textFormatter;
 
-    public AbstractCellConverter(final FieldAccessor field, final Configuration config) {
+    public BaseCellConverter(final FieldAccessor field, final Configuration config) {
         this.field = field;
         this.configuration = config;
     }
@@ -124,21 +124,21 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
     /**
      * セルをJavaのオブジェクト型に変換します。
      * @param evaluatedCell 数式を評価済みのセル
-     * @param formattedValue フォーマット済みのセルの値。トリミングなど定期用済み。
+     * @param formattedValue フォーマット済みのセルの値。トリミングなど適用済み。
      * @return 変換した値を返す。
      * @throws TypeBindException 変換に失敗した場合
      */
     protected abstract T parseCell(Cell evaluatedCell, String formattedValue) throws TypeBindException;
 
     /**
-     * セルの値をJavaオブジェクトに型変換するとに失敗したときの例外{@link TypeBindException}をスローします。
+     * セルの値をパースしJavaオブジェクトに型変換するとこに失敗したときの例外{@link TypeBindException}を作成します。
      * @since 2.0
      * @param error 例外情報
-     * @param cell 例外が発生したセル
-     * @param cellValue マッピングに失敗した値
+     * @param cell パースに失敗したセル
+     * @param cellValue パースに失敗した値
      * @return マッピングに失敗したときの例外のインスタンス
      */
-    public TypeBindException newTypeBindExceptionWithParse(final Exception error,  final Cell cell, final Object cellValue) {
+    public TypeBindException newTypeBindExceptionOnParse(final Exception error,  final Cell cell, final Object cellValue) {
 
         final String message = MessageBuilder.create("cell.typeBind.failParse")
                 .var("property", field.getNameWithClass())
@@ -151,6 +151,28 @@ public abstract class AbstractCellConverter<T> implements CellConverter<T>, Fiel
         if(error instanceof TextParseException) {
             bindException.addAllMessageVars(((TextParseException)error).getErrorVariables());
         }
+
+        return bindException;
+
+    }
+
+    /**
+     * セルの値をパースしセルの値をJavaオブジェクトに型変換するとに失敗したときの例外{@link TypeBindException}を作成します。
+     * @since 2.0
+     * @param cell パースに失敗したセル
+     * @param cellValue パースに失敗した値
+     * @return マッピングに失敗したときの例外のインスタンス
+     */
+    public TypeBindException newTypeBindExceptionOnParse(final Cell cell, final Object cellValue) {
+
+        final String message = MessageBuilder.create("cell.typeBind.failParse")
+                .var("property", field.getNameWithClass())
+                .var("cellAddress", POIUtils.formatCellAddress(cell))
+                .var("cellValue", cellValue.toString())
+                .varWithClass("type", field.getType())
+                .format();
+
+        final TypeBindException bindException = new TypeBindException(message, field.getType(), cellValue);
 
         return bindException;
 

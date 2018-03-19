@@ -14,10 +14,10 @@
      - 概要
    
    * - :ref:`@XlsTrim <annotationXlsTrim>`
-     - ブール型に対する書式を指定します。
+     - トリミングを行いたい場合に指定します。
 
    * - :ref:`@XlsDefaultValue <annotationXlsDefaultValue>`
-     - 数値型に対する書式を指定します。
+     - 初期値を設定したい場合に指定します。
 
 
 .. 以降は、埋め込んで作成する

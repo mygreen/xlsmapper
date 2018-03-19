@@ -1,5 +1,6 @@
 ## sphinx
 /build
+source/_build
 
 ## for tmporary file.
 *~

@@ -7,8 +7,8 @@ import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -24,7 +24,7 @@ import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
  * @author T.TSUCHIE
  *
  */
-public class BooleanCellConverterFactory extends AbstractCellConverterFactorySupport<Boolean>
+public class BooleanCellConverterFactory extends CellConverterFactorySupport<Boolean>
         implements CellConverterFactory<Boolean> {
     
     @Override
@@ -37,7 +37,7 @@ public class BooleanCellConverterFactory extends AbstractCellConverterFactorySup
     }
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<Boolean> cellConverter, final FieldAccessor field,
+    protected void setupCustom(final BaseCellConverter<Boolean> cellConverter, final FieldAccessor field,
             final Configuration config) {
         // 何もしない
         
@@ -54,7 +54,7 @@ public class BooleanCellConverterFactory extends AbstractCellConverterFactorySup
         
     }
     
-    public class BooleanCellConverter extends AbstractCellConverter<Boolean> {
+    public class BooleanCellConverter extends BaseCellConverter<Boolean> {
         
         private BooleanCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
@@ -70,7 +70,7 @@ public class BooleanCellConverterFactory extends AbstractCellConverterFactorySup
                 try {
                     return this.textFormatter.parse(formattedValue);
                 } catch(TextParseException e) {
-                    throw newTypeBindExceptionWithParse(e, evaluatedCell, formattedValue);
+                    throw newTypeBindExceptionOnParse(e, evaluatedCell, formattedValue);
                 }
                 
             }

@@ -11,8 +11,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -29,7 +29,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  *
  */
 @SuppressWarnings("rawtypes")
-public class SetCellConverterFactory extends AbstractCellConverterFactorySupport<Set>
+public class SetCellConverterFactory extends CellConverterFactorySupport<Set>
         implements CellConverterFactory<Set>{
     
     private ListCellConverterFactory listCellConverterFactory = new ListCellConverterFactory();
@@ -44,7 +44,7 @@ public class SetCellConverterFactory extends AbstractCellConverterFactorySupport
     }
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<Set> cellConverter, final FieldAccessor field,
+    protected void setupCustom(final BaseCellConverter<Set> cellConverter, final FieldAccessor field,
             final Configuration config) {
         // 何もしない
     }
@@ -72,7 +72,7 @@ public class SetCellConverterFactory extends AbstractCellConverterFactorySupport
         };
     }
     
-    public class SetCellConverter extends AbstractCellConverter<Set> {
+    public class SetCellConverter extends BaseCellConverter<Set> {
         
         private SetCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
@@ -87,7 +87,7 @@ public class SetCellConverterFactory extends AbstractCellConverterFactorySupport
             try {
                 return this.textFormatter.parse(formattedValue);
             } catch(TextParseException e) {
-                throw newTypeBindExceptionWithParse(e, evaluatedCell, formattedValue);
+                throw newTypeBindExceptionOnParse(e, evaluatedCell, formattedValue);
             }
         }
         

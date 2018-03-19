@@ -12,8 +12,8 @@ import org.apache.poi.ss.usermodel.Hyperlink;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -30,7 +30,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  * @author T.TSUCHIE
  *
  */
-public class URICellConverterFactory extends AbstractCellConverterFactorySupport<URI>
+public class URICellConverterFactory extends CellConverterFactorySupport<URI>
         implements CellConverterFactory<URI>{
     
     @Override
@@ -43,7 +43,7 @@ public class URICellConverterFactory extends AbstractCellConverterFactorySupport
     }
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<URI> cellConverter, final FieldAccessor field,
+    protected void setupCustom(final BaseCellConverter<URI> cellConverter, final FieldAccessor field,
             Configuration config) {
         // 何もしない
     }
@@ -68,7 +68,7 @@ public class URICellConverterFactory extends AbstractCellConverterFactorySupport
         };
     }
     
-    public class URICellConverter extends AbstractCellConverter<URI> {
+    public class URICellConverter extends BaseCellConverter<URI> {
         
         private URICellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);
@@ -86,7 +86,7 @@ public class URICellConverterFactory extends AbstractCellConverterFactorySupport
                 try {
                     return new URI(address);
                 } catch (URISyntaxException e) {
-                    throw newTypeBindExceptionWithParse(e, evaluatedCell, address);
+                    throw newTypeBindExceptionOnParse(e, evaluatedCell, address);
                 }
                 
             } else if(!formattedValue.isEmpty()) {
@@ -95,7 +95,7 @@ public class URICellConverterFactory extends AbstractCellConverterFactorySupport
                     return this.textFormatter.parse(formattedValue);
                     
                 } catch(TextParseException e) {
-                    throw newTypeBindExceptionWithParse(e, evaluatedCell, formattedValue);
+                    throw newTypeBindExceptionOnParse(e, evaluatedCell, formattedValue);
                 }
             }
             

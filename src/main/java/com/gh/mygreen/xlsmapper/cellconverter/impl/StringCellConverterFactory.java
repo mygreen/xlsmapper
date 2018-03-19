@@ -7,8 +7,8 @@ import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -23,7 +23,7 @@ import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
  * @author T.TSUCHIE
  *
  */
-public class StringCellConverterFactory extends AbstractCellConverterFactorySupport<String>
+public class StringCellConverterFactory extends CellConverterFactorySupport<String>
         implements CellConverterFactory<String> {
     
     @Override
@@ -37,7 +37,7 @@ public class StringCellConverterFactory extends AbstractCellConverterFactorySupp
     }
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<String> cellConverter, final FieldAccessor field, final Configuration config) {
+    protected void setupCustom(final BaseCellConverter<String> cellConverter, final FieldAccessor field, final Configuration config) {
         // 何もしない
     }
     
@@ -64,7 +64,7 @@ public class StringCellConverterFactory extends AbstractCellConverterFactorySupp
         };
     }
     
-    public class StringCellConverter extends AbstractCellConverter<String> {
+    public class StringCellConverter extends BaseCellConverter<String> {
         
         private StringCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);

@@ -10,8 +10,8 @@ import org.apache.poi.ss.usermodel.Hyperlink;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.CellLink;
@@ -29,7 +29,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  * @author T.TSUCHIE
  *
  */
-public class CellLinkCellConverterFactory extends AbstractCellConverterFactorySupport<CellLink>
+public class CellLinkCellConverterFactory extends CellConverterFactorySupport<CellLink>
         implements CellConverterFactory<CellLink>{
     
     @Override
@@ -42,7 +42,7 @@ public class CellLinkCellConverterFactory extends AbstractCellConverterFactorySu
     }
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<CellLink> cellConverter, final FieldAccessor field,
+    protected void setupCustom(final BaseCellConverter<CellLink> cellConverter, final FieldAccessor field,
             Configuration config) {
         // 何もしない
     }
@@ -64,7 +64,7 @@ public class CellLinkCellConverterFactory extends AbstractCellConverterFactorySu
         };
     }
     
-    public class CellLinkCellConverter extends AbstractCellConverter<CellLink> {
+    public class CellLinkCellConverter extends BaseCellConverter<CellLink> {
         
         private CellLinkCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);

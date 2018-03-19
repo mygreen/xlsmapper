@@ -24,7 +24,7 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  * @author T.TSUCHIE
  *
  */
-public abstract class AbstractCellConverterFactorySupport<T>  {
+public abstract class CellConverterFactorySupport<T>  {
 
     /**
      * 引数で指定したCellConverterに対して、トリムなどの共通の設定を行う。
@@ -32,7 +32,7 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
      * @param field フィールド情報
      * @param config システム設定情報
      */
-    protected void setupCellConverter(final AbstractCellConverter<T> cellConverter, final FieldAccessor field, final Configuration config) {
+    protected void setupCellConverter(final BaseCellConverter<T> cellConverter, final FieldAccessor field, final Configuration config) {
 
         final TextFormatter<T> textFormatter = createTextFormatter(field, config);
         cellConverter.setTextFormatter(textFormatter);
@@ -40,9 +40,9 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
         // トリムの設定
         final Optional<XlsTrim> trimAnno = field.getAnnotation(XlsTrim.class);
         final boolean trimmed = trimAnno.map(anno -> true).orElse(false);
-        
+
         cellConverter.setTrimmed(trimmed);
-        
+
         // 初期値の設定
         final Optional<XlsDefaultValue> defaultValueAnno = field.getAnnotation(XlsDefaultValue.class);
         defaultValueAnno.ifPresent(anno -> {
@@ -86,11 +86,11 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
 
     /**
      * 各個別に、Converterの設定を行う。
-     * @param cellConverter
-     * @param field
-     * @param config
+     * @param cellConverter 組み立てるCellConverterのインスタンス
+     * @param field フィールド情報
+     * @param config システム情報
      */
-    protected abstract void setupCustom(AbstractCellConverter<T> cellConverter, FieldAccessor field, Configuration config);
+    protected abstract void setupCustom(BaseCellConverter<T> cellConverter, FieldAccessor field, Configuration config);
 
     /**
      * {@link TextFormatter}のインスタンスを作成する。
@@ -164,6 +164,5 @@ public abstract class AbstractCellConverterFactorySupport<T>  {
         }
 
     }
-
 
 }

@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.apache.poi.ss.usermodel.Cell;
 
 import com.gh.mygreen.xlsmapper.Configuration;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -23,7 +23,7 @@ import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
  * @author T.TSUCHIE
  *
  */
-public class CalendarCellConverterFactory extends AbstractCellConverterFactorySupport<Calendar>
+public class CalendarCellConverterFactory extends CellConverterFactorySupport<Calendar>
         implements CellConverterFactory<Calendar> {
     
     private DateCellConverterFactory dateCellConverterFactory = new DateCellConverterFactory();
@@ -40,7 +40,7 @@ public class CalendarCellConverterFactory extends AbstractCellConverterFactorySu
     }
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<Calendar> cellConverter, final FieldAccessor field, final Configuration config) {
+    protected void setupCustom(final BaseCellConverter<Calendar> cellConverter, final FieldAccessor field, final Configuration config) {
         
         // 何もなし
         
@@ -71,7 +71,7 @@ public class CalendarCellConverterFactory extends AbstractCellConverterFactorySu
         };
     }
     
-    public class CalendarCellConverter extends AbstractCellConverter<Calendar> {
+    public class CalendarCellConverter extends BaseCellConverter<Calendar> {
         
         private final  DateCellConverterFactory.DateCellConverter dateCellConverter;
         

@@ -6,8 +6,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -22,7 +22,7 @@ import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
  * @author T.TSUCHIE
  *
  */
-public class CharacterCellConverterFactory extends AbstractCellConverterFactorySupport<Character>
+public class CharacterCellConverterFactory extends CellConverterFactorySupport<Character>
         implements CellConverterFactory<Character> {
     
     private static final char DEFAULT_VALUE = '\u0000';;
@@ -37,7 +37,7 @@ public class CharacterCellConverterFactory extends AbstractCellConverterFactoryS
     }
     
     @Override
-    protected void setupCustom(final AbstractCellConverter<Character> cellConverter, final FieldAccessor field, final Configuration config) {
+    protected void setupCustom(final BaseCellConverter<Character> cellConverter, final FieldAccessor field, final Configuration config) {
         // 何もしない
         
     }
@@ -72,7 +72,7 @@ public class CharacterCellConverterFactory extends AbstractCellConverterFactoryS
         };
     }
     
-    public class CharacterCellConverter extends AbstractCellConverter<Character> {
+    public class CharacterCellConverter extends BaseCellConverter<Character> {
         
         private CharacterCellConverter(final FieldAccessor field, final Configuration config) {
             super(field, config);

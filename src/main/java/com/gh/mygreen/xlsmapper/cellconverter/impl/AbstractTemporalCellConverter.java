@@ -8,7 +8,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
-import com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellStyleProxy;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -24,7 +24,7 @@ import com.gh.mygreen.xlsmapper.util.POIUtils;
  * @author T.TSUCHIE
  *
  */
-public abstract class AbstractTemporalCellConverter<T extends TemporalAccessor & Comparable<? super T>> extends AbstractCellConverter<T> {
+public abstract class AbstractTemporalCellConverter<T extends TemporalAccessor & Comparable<? super T>> extends BaseCellConverter<T> {
 
     /**
      * 書き込み時のExcelのセルの書式
@@ -47,7 +47,7 @@ public abstract class AbstractTemporalCellConverter<T extends TemporalAccessor &
                 return textFormatter.parse(formattedValue);
 
             } catch(TextParseException e) {
-                throw newTypeBindExceptionWithParse(e, evaluatedCell, formattedValue);
+                throw newTypeBindExceptionOnParse(e, evaluatedCell, formattedValue);
             }
 
         }
