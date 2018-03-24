@@ -30,7 +30,7 @@
   * ただし、``@XlsMapColumns`` に対するフィールドは、``Map<String, Point>`` 型にする必要があります。キーには見出しが入ります。
  
 .. sourcecode:: java
-    
+    :linenos:
     
     public class SampleRecord {
         
@@ -98,6 +98,7 @@
 
 
 .. sourcecode:: java
+    :linenos:
     
     @XlsSheet(name="情報")
     public Employee {

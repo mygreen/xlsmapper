@@ -1,23 +1,20 @@
 
-.. _annotationXlsIgnoable:
+.. _annotationXlsIgnorable:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``@XlsIgnoable``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-基本的な使い方
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
+``@XlsIgnorable``
+--------------------------------
 
 アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、:ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` を使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
 レコードが空と判定するためのメソッドに付与します。
 
-* ``@XlsIgnoable`` を付与したメソッドは、publicかつ引数なしの戻り値がboolean型の書式にする必要があります。
+* ``@XlsIgnorable`` を付与したメソッドは、publicかつ引数なしの戻り値がboolean型の書式にする必要があります。
 * :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` でも同様に使用できます。
 
 また、この機能は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。
 
 .. sourcecode:: java
+    :linenos:
     
     // ルートのオブジェクト
     @XlsSheet(name="シート名")
@@ -41,7 +38,7 @@
         private String address;
         
         // レコードが空と判定するためのメソッド
-        @XlsIgnoable
+        @XlsIgnorable
         public boolean isEmpty() {
           
           if(name != null || !name.isEmpty()) {
@@ -57,9 +54,9 @@
     }
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 IsEmptyBuilderを使った記述の簡単化
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``IsEmptyBuilder`` (ver.0.5から追加)を利用することで、より簡潔に記述することも可能です。
 
@@ -68,6 +65,7 @@ IsEmptyBuilderを使った記述の簡単化
 * さらに、 ``IsEmptyBuilder#compare(IsEmptyComparator)`` を利用することで独自の判定をすることができます。その際に、Lambda式を利用すると簡潔に記載できます。
 
 .. sourcecode:: java
+    :linenos:
     
     // ルートのオブジェクト
     @XlsSheet(name="シート名")
@@ -97,7 +95,7 @@ IsEmptyBuilderを使った記述の簡単化
         private String address;
         
         // レコードが空と判定するためのメソッド
-        @XlsIgnoable
+        @XlsIgnorable
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels");
             

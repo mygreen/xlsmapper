@@ -1,9 +1,9 @@
 
 .. _annotationXlsOrder:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------
 ``@XlsOrder``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------
 
 書き込み時に、``@XlsHoriontalRecords`` を使用して行の挿入や削除を行う設定を行っている場合、
 フィールドの処理順序によって、``Map<String, Point> positions`` フィールドで座標がずれる場合があります。
@@ -18,9 +18,10 @@
 .. figure:: ./_static/Hint.png
    :align: center
    
-   Hint
+   Order
 
 .. sourcecode:: java
+    :linenos:
     
     @XlsSheet(name="Users")
     public class SampleSheet {

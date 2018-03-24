@@ -1,6 +1,6 @@
---------------------------------------------------------
-XMLファイルによるマッピング
---------------------------------------------------------
+====================================================
+XMLによるマッピング方法
+====================================================
 
 
 アノテーションだけではなく、外部XMLファイルでマッピングを行うことも可能です。
@@ -10,6 +10,8 @@ XMLファイルによるマッピング
 以下にクラスに対してアノテーションを付与するXMLファイルの例を示します。
 
 .. sourcecode:: xml
+    :linenos:
+    :caption: クラスに対するアノテーションのXMLでの定義方法
     
     <?xml version="1.0" encoding="utf-8"?>
     <annotations>
@@ -24,6 +26,8 @@ XMLファイルによるマッピング
 アノテーションの属性値の指定にはOGNL式を使用します。メソッドにアノテーションを付与する場合は次のようになります。
 
 .. sourcecode:: xml
+    :linenos:
+    :caption: メソッドに対するアノテーションのXMLでの定義方法
     
     <?xml version="1.0" encoding="utf-8"?>
     <annotations>
@@ -44,6 +48,8 @@ XMLファイルによるマッピング
 フィールドにアノテーションを付与することも可能です。
 
 .. sourcecode:: xml
+    :linenos:
+    :caption: フィールドに対するアノテーションのXMLでの定義方法
     
     <?xml version="1.0" encoding="utf-8"?>
     <annotations>
@@ -61,6 +67,8 @@ XMLファイルによるマッピング
 XML情報は ``AnnotationMappingInfo`` として読み込み、 ``Configuration#setAnnotationMapping(..)`` メソッドに渡します。
 
 .. sourcecode:: java
+    :linenos:
+    :caption: XMLによるマッピングの指定方法
     
     // XMLファイルに定義したマッピング情報の読み込み
     AnnotationMappingInfo annotaionMapping = XmlIO.load(new File("example.xml"), "UTF-8");
@@ -78,9 +86,9 @@ XMLで宣言されたアノテーションと、クラスに埋め込まれて�
 ``AnnotationReader`` にはこの他にもメソッド、フィールドに付与されたアノテーションを取得するためのメソッドも用意されています。
 
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------------
 アノテーションをXMLで上書きする場合
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------------
 
 XMLに定義していないメソッドなどは、Javaのソースコードの定義が有効になります。
 しかし、XMLにメソッドを定義すると、そのメソッドに対してはXMLの定義が優先されます。
@@ -97,6 +105,7 @@ XMLに定義していないメソッドなどは、Javaのソースコードの�
 
 
 .. sourcecode:: xml
+    :linenos:
     
     <?xml version="1.0" encoding="UTF-8"?>
     <annotations>
@@ -130,6 +139,7 @@ XMLに定義していないメソッドなどは、Javaのソースコードの�
 
 
 .. sourcecode:: java
+    :linenos:
     
     @XlsSheet(name="テスト")  // <== 上書きされる
     private static class SheetObject {
@@ -158,9 +168,9 @@ XMLに定義していないメソッドなどは、Javaのソースコードの�
 
 .. _xml-build:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------------
 XMLを動的に組み立てる場合
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------------
 
 アノテーション用のXMLを記述する際に、クラス名やアノテーション名は、FQCN（完全修飾クラス名）で記述する必要があり、間違えることがあります。
 
@@ -190,6 +200,7 @@ XMLを動的に組み立てるには、 各XMLのオブジェクトのビルダ�
 
 
 .. sourcecode:: java
+    :linenos:
     
     // XmlBuilder.createXXX() メソッドを簡単に呼ぶために、static import します。
     import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
@@ -234,6 +245,7 @@ XMLを動的に組み立てるには、 各XMLのオブジェクトのビルダ�
 組み立てたXMLは、下記のようになります。
 
 .. sourcecode:: xml
+    :linenos:
     
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <annotations>
@@ -269,6 +281,7 @@ XMLに変換しないで、直接AnnotationMappingInfoをシステム設定ク�
 シート名を設定するアノテーション ``@XlsSheet(name="<シート名>")`` の値を動的に書き換えることが容易にできるようになります。
 
 .. sourcecode:: java
+    :linenos:
     
     // XmlBuilder.createXXX() メソッドを簡単に呼ぶために、static import します。
     import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;

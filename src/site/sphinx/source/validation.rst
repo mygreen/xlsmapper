@@ -1,13 +1,13 @@
 ======================================
-読み込んだ値の入力値検証
+値の検証方法
 ======================================
 
 --------------------------------------------------------
-入力値検証の基本
+検証の基本
 --------------------------------------------------------
 
 
- XlsMapperの入力値検証は、SpringFrameworkのValidation機構に似た方法をとります。
+ XlsMapperの検証は、SpringFrameworkのValidation機構に似た方法をとります。
  
 * エラー情報は、 ``SheetBindingErrors`` クラスに格納します。
 
@@ -15,17 +15,18 @@
 
 * セルの値をJavaオブジェクトに変換の失敗情報は、読み込み時に自動的に作成されます。
 
-  * 1つのセルの型変換に失敗しても処理を続行するよう、 :doc:`システム設定Configuration <otheruse_config>` のプロパティ ``continueTypeBindFailure`` を'true'に設定します。
+  * 1つのセルの型変換に失敗しても処理を続行するよう、 :doc:`システム設定 <configuration>` のプロパティ ``continueTypeBindFailure`` を 'true' に設定します。
 
 * 別途用意したBeanに対するValidatorにより、値を検証します。
 
   * 通常は、抽象クラス ``AbstractObjectValidator`` を継承して作成します。
   * ``@XlsHorizontalRecords`` のようにネストしたBeanの場合、リストの要素のBeanのValidatorを別途用意します。
 
-* エラーがある場合、 ``SheetMessageConverter`` を使用して、エラーオブジェクトを文字列に変換します。
+* エラーがある場合、 ``SheetErrorFormatter`` を使用して、エラーオブジェクトを文字列に変換します。
 
 
 .. sourcecode:: java
+    :linenos:
     
     XlsMapper xlsMapper = new XlsMapper();
     
@@ -44,11 +45,12 @@
     
     // 値の検証結果を文字列に変換します。
     if(errors.hasErrors()) {
-        SheetMessageConverter messageConverter = new SheetMessageConverter();
+        SheetErrorFormatter errorFormatter = new SheetErrorFormatter();
         for(ObjectError error : errors.getAllErrors()) {
-            String message = messageConverter.convertMessage(error);
+            String message = errorFormatter.format(error);
         }
     }
+
 
 --------------------------------------------------------
 独自の入力値検証
@@ -70,6 +72,7 @@ Validatorは、 ``AbstractObjectValidator`` を継承して作成します。
     
 
 .. sourcecode:: java
+    :linenos:
     
     public class EmployerValidator extends AbstractObjectValidator<Employer>{
         
@@ -136,6 +139,7 @@ Validatorは、 ``AbstractObjectValidator`` を継承して作成します。
  
 
 .. sourcecode:: java
+    :linenos:
     
     public class EmployerHistoryValidator extends AbstractObjectValidator<EmployerHistory>{
         
@@ -182,6 +186,7 @@ Validatorは、 ``AbstractObjectValidator`` を継承して作成します。
   
 
 .. sourcecode:: properties
+    :linenos:
     
     ## メッセージの定義
     ## SheetValidationMessages.properties
@@ -313,6 +318,7 @@ EL式の他、MVEL、JEXLが利用できます。
 MVEL、JEXL(ver.1.5+)を利用する場合、別途、ライブラリが必要になります。
 
 .. sourcecode:: java
+    :linenos:
     
     SheetMessageConverter messageConverter = new SheetMessageConverter();
     
@@ -327,6 +333,7 @@ MVEL、JEXL(ver.1.5+)を利用する場合、別途、ライブラリが必要�
    
 
 .. sourcecode:: xml
+    :linenos:
     
     <!-- ====================== 各式言語のライブラリ ===============-->
     <!-- EL式を利用する場合 -->
@@ -385,6 +392,7 @@ Bean Validationを使用した入力値検証
 
 
 .. sourcecode:: java
+    :linenos:
     
     // シートの読み込み
     SheetBindingErrors errors = new SheetBindingErrors(Employer.class);
@@ -403,6 +411,7 @@ Bean Validationを使用した入力値検証
     }
 
 .. sourcecode:: xml
+    :linenos:
     
     <!-- ====================== Bean Validationのライブラリ ===============-->
     <!-- Bean Validation 1.1 系を利用する -->
@@ -431,15 +440,16 @@ XlsMapperのクラス ``com.gh.mygreen.xlsmapper.validation.beanvalidation.Messa
 上記の「メッセージファイルのブリッジ用クラス」を渡すことができます。
 
 .. sourcecode:: java
+    :linenos:
     
     // BeanValidationのValidatorの定義
     ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
     Validator validator = validatorFactory.usingContext()
             .messageInterpolator(new MessageResolverInterpolator(new ResourceBundleMessageResolver()))
             .getValidator();
-   
-   // BeanValidationのValidatorを渡す
-   SheetBeanValidator sheetValidator = new SheetBeanValidator(validator);
+    
+    // BeanValidationのValidatorを渡す
+    SheetBeanValidator sheetValidator = new SheetBeanValidator(validator);
    
 
 
@@ -450,6 +460,7 @@ EL式の処理系をXlsMapperのクラス ``com.gh.mygreen.xlsmapper.validation.
 XslMapperの ``ExpressionLanguageELImpl`` は、EL3.0のライブラリが読み込まれている場合、3.x系の処理に切り替えます。
 
 .. sourcecode:: java
+    :linenos:
     
     // BeanValidatorの式言語の実装を独自のものにする。
     ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();

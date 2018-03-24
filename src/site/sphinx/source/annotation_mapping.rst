@@ -1,8 +1,15 @@
---------------------------------------
-マッピング用のアノテーション
---------------------------------------
+======================================
+表・セルのマッピング方法
+======================================
 
-.. list-table:: マッピング用のアノテーション
+表やセルをマッピングするためには様々なアノテーションが用意されています。
+
+様々な表に対応するため、マッピング方法を指定するためのアノテーションと補助的に詳細なオプションを指定するためのアノテーションがあります。
+
+もし、独自の構造の表をマッピングするならば、「 :doc:`独自の表・セルのマッピング方法 <extension_fieldprocessor>` 」を参照してください。
+
+
+.. list-table:: 基本的なマッピング用のアノテーション
    :widths: 30 70
    :header-rows: 1
    
@@ -10,7 +17,7 @@
      - 概要
      
    * - :ref:`@XlsSheet <annotationXlsSheet>`
-     - シートをマッピングするために使用します。
+     - シートをマッピングするためにクラスに付与し使用します。
 
    * - :ref:`@XlsSheetName <annotationXlsSheetName>`
      - シート名をマッピングします。
@@ -28,7 +35,7 @@
      - 見出し付きの連続し隣接するセルを配列またはリストにマッピングします。
 
    * - :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>`
-     - 水平方向に連続する行のレコード持つ表をマッピングします。
+     - 水平方向に連続する行のレコードを持つ表をマッピングします。
 
    * - :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>`
      - 垂直方向に連続する列のレコードを持つ表をマッピングします。
@@ -48,10 +55,18 @@
    * - :ref:`@XlsIterateTables <annotationXlsIterateTables>`
      - シート内で繰り返される同一構造の表をマッピングします。
 
+
+.. list-table:: 補助的なマッピング用のアノテーション
+   :widths: 30 70
+   :header-rows: 1
+   
+   * - アノテーション
+     - 概要
+     
    * - :ref:`@XlsOrder <annotationXlsOrder>`
      - フィールドの処理順序を指定するために使用します。
 
-   * - :ref:`@XlsIgnoable <annotationXlsIgnoable>`
+   * - :ref:`@XlsIgnorable <annotationXlsIgnorable>`
      - レコードを読み飛ばすことが可能か判定するためのメソッドに使用します。
 
    * - :ref:`@XlsArrayOption <annotationXlsArrayOption>`
@@ -59,7 +74,6 @@
 
    * - :ref:`@XlsRecordOption <annotationXlsRecordOption>`
      - レコードを書き込む際の制御を行います。
-
 
 
 .. 以降は、埋め込んで作成する

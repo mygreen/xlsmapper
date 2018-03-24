@@ -1,16 +1,16 @@
---------------------------------------------------------
-FieldProcessorの拡張
---------------------------------------------------------
+=========================================================
+独自の表・セルのマッピング方法
+=========================================================
 
 Excelのシートを独自の基準で走査して、Javaクラスにマッピングする、 FieldProcessor を実装することができます。
 
-* 読み込み時用のインタフェース ``com.gh.mygreen.xlsmapper.fieldprocessor.LoadingFieldProcessor`` と、書き込み時のインタフェース ``com.gh.mygreen.xlsmapper.fieldprocessor.SavingFieldProcessor`` が分かれており、必要なものを実装します。
-
-  * 読み込みと書き込み処理を同時に実装する際には、抽象クラス「com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor」を継承すると便利です。
-  * 実装のサンプルは、パッケージ ``com.gh.mygreen.xlsmapper.fieldprocessor.processor`` 以下に格納されているクラスを参照してください。。
-
+* 読み込み時用と書き込み時用のメソッドがあり、それぞれ実装します。
+* 抽象クラス「com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor」を継承すると便利です。
+* 実装のサンプルは、パッケージ ``com.gh.mygreen.xlsmapper.fieldprocessor.impl`` 以下に格納されているクラスを参照してください。。
 
 .. sourcecode:: java
+    :linenos:
+    :caption: FieldProcessorの作成
     
     public class CellProcessor extends AbstractFieldProcessor<SampleAnno> {
     
@@ -39,6 +39,8 @@ Excelのシートを独自の基準で走査して、Javaクラスにマッピ�
 
 
 .. sourcecode:: java
+    :linenos:
+    :caption: FieldProcessorの登録
     
     // 独自のFieldProcessorの登録
     Configuration config = new Configuration();

@@ -1,6 +1,8 @@
---------------------------------------
-型変換用のアノテーション
---------------------------------------
+========================================================
+セルの書式の指定方法
+========================================================
+
+セルの書式を指定してマッピングする方法を説明します。
 
 * 読み込み時は、Excelの型とJavaの型が一致する場合、そのままマッピングします。
 
@@ -13,6 +15,10 @@
   * テンプレートファイルのセルの型とJavaの型が一致すれば、そのまま書き込みます。
     一致しない場合は、付与されたアノテーションに従って書式などを設定します。
   * 各型の変換用アノテーションを付与しない場合は、アノテーションの初期値の設定を元に変換されます。
+
+* 本ライブラリで対応していないクラスタイプの場合は、変換処理を実装すれば対応できます。
+
+  * 詳細は、 :doc:`独自のクラスタイプの対応方法 <annotation_converter_custom>` を参照してください。
 
 
 .. list-table:: ExcelとJavaのマッピング可能な型
@@ -74,6 +80,9 @@
    * - :ref:`@XlsArrayConverter <annotationXlsArrayConverter>`
      - Collection型や配列型に対する書式を指定します。
 
+   * - :ref:`@XlsCellOption <annotationXlsCellOption>`
+     - 書き込み時のセルの配置位置やインデントなどの書式を指定します。
+
 
 .. 以降は、埋め込んで作成する
 .. include::  ./annotation_converter_boolean.rst
@@ -81,6 +90,7 @@
 .. include::  ./annotation_converter_datetime.rst
 .. include::  ./annotation_converter_enum.rst
 .. include::  ./annotation_converter_array.rst
-.. include::  ./annotation_converter_converter.rst
+.. include::  ./annotation_converter_celloption.rst
+.. include::  ./annotation_converter_custom.rst
 
 

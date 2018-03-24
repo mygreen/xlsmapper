@@ -2,9 +2,9 @@
 
 .. _annotationXlsRecordFinder:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------
 ``@XlsRecordFinder``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------
 
 アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、 :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>`  において、データレコードの開始位置が既存のアノテーションの属性だと表現できない場合に、任意の実装方法を指定するようにします。 `[ver.2.0+]`
 

@@ -1,9 +1,9 @@
 
 .. _annotationXlsIterateTables:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------
 ``@XlsIterateTables``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------
 
 同一の構造の表がシート内で繰り返し出現する場合に使用し、Collection(List、Set)または配列にマッピングします。
 次のアノテーションを組み合わせて構成します。
@@ -16,9 +16,10 @@
 * 見出し付きの1つのセルをマッピングするアノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` 。
 * 見出し付きの連続し隣接する複数のセルをマッピングするアノテーション :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>` `[ver.2.0+]`。
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 基本的な使い方
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 属性 ``tableLabel`` で繰り返し部分の表の名称を指定します。
 
@@ -32,8 +33,9 @@
 
 
 .. sourcecode:: java
+    :linenos:
+    :caption: シート用クラスの定義
     
-    // シート用クラス
     @XlsSheet(name="シート名")
     public class SampleSheet {
     
@@ -48,8 +50,9 @@
 ``@XlsIterateTables`` の属性 tableLabelとbottomの値を引き継ぐため、指定しなくても問題ないためです。
 
 .. sourcecode:: java
+    :linenos:
+    :caption: テーブル用クラスの定義
     
-    // テーブル用クラス
     public class SampleTable {
         
         @XlsLabelledCell(label="部門名", type=LabelledCellType.Right)
@@ -63,8 +66,9 @@
 繰り返し部分に対応するJavaBeanで :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を使用した場合、通常の場合と同じく :ref:`@XlsColumn <annotationXlsColumn>` や :ref:`@XlsMapColumns <annotationXlsMapColumns>` で列とのマッピングを行います。
 
 .. sourcecode:: java
+    :linenos:
+    :caption: レコード用クラスの定義
     
-    // レコード用クラス
     public class SampleRecord {
         
         @XlsColumn(columnName="ID")
@@ -87,9 +91,9 @@
     * 実装クラスを指定した場合、そのインスタンスが設定されます。
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 縦方向の表を組み合わせてマッピングする場合
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 縦方向の表をマッピングするアノテーション :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` も使用することができます。
 
@@ -104,6 +108,7 @@
 
 
 .. sourcecode:: java
+    :linenos:
     
     // シート用クラス
     @XlsSheet(name="観測データ")
@@ -134,9 +139,9 @@
     }
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 表の名称を正規表現、正規化して指定する場合
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 シートの構造は同じだが、ラベルのセルが微妙に異なる場合、ラベルセルを正規表現による指定が可能です。
 また、空白や改行を除去してラベルセルを比較するように設定することも可能です。 `[ver1.1+]`
@@ -157,6 +162,7 @@
 これらの指定が可能な属性は、``tableLabel`` です。
 
 .. sourcecode:: java
+    :linenos:
     
     // システム設定
     XlsMapper xlsMapper = new XlsMapper();

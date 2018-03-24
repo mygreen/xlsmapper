@@ -1,11 +1,12 @@
---------------------------------------------------------
-Configurationによる動作のカスタマイズ
---------------------------------------------------------
+====================================================
+システム設定
+====================================================
 
 
 読み込み時及び書き込み時の動作をConfigurationクラスでカスタマイズすることができます。
 
 .. sourcecode:: java
+    :linenos:
     
     // 設定用のオブジェクトConfigurationの作成
     Configuration config = new Configuration();
@@ -25,6 +26,7 @@ Configurationによる動作のカスタマイズ
 Configurationは、XlsMapperクラスのインスタンスを作成時にも持っているため、次のような変更もできます。
 
 .. sourcecode:: java
+    :linenos:
     
     XlsMapper xlsMapper = new XlsMapper();
     
