@@ -89,7 +89,7 @@ XMLによる設定方法を説明します。
         <context:component-scan base-package="sample.spring" />
         
         <!-- SpringBeanFactoryの登録 -->
-        <bean id="springBeanFactory" class="com.gh.mygreen.xlsmapper.spring.SpringBeanFactory" />
+        <bean id="springBeanFactory" class="com.gh.mygreen.xlsmapper.SpringBeanFactory" />
         
     </beans>
 
@@ -106,14 +106,14 @@ JavaConfigによる設定を使用する場合は、Spring Frameworkのバージ
 
 .. sourcecode:: java
     :linenos:
-    
+    :caption: JavaConfigの設定
     
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.ComponentScan;
     import org.springframework.context.annotation.Configuration;
     import org.springframework.context.annotation.Description;
     
-    import com.gh.mygreen.xlsmapper.spring.SpringBeanFactory;
+    import com.gh.mygreen.xlsmapper.SpringBeanFactory;
     
     // Javaによるコンテナの定義
     @Configuration
