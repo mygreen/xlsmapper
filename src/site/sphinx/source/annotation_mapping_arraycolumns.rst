@@ -118,6 +118,62 @@
     }
 
 
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+位置情報／見出し情報を取得する際の注意事項
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+マッピング対象のセルのアドレスを取得する際に、フィールド ``Map<String, Point> positions`` を定義しておけば、自動的にアドレスがマッピングされます。
+
+通常は、キーにはプロパティ名が記述（フィールドの場合はフィールド名）が入ります。
+
+アノテーション ``@XlsArrayColumns`` でマッピングしたセルのキーは、インデックス付きの ``<プロパティ名>[<インデックス>]`` 形式になります。
+インデックスは、0から始まります。
+
+
+同様に、マッピング対象の見出しを取得する、フィールド ``Map<String, String> labels`` へのアクセスも、キーは、 ``<プロパティ名>[<インデックス>]`` の形式になります。
+ただし、見出し情報の場合は、全ての要素が同じ値になるため、従来通りの ``<プロパティ名>`` でも取得できます。
+
+
+.. figure:: ./_static/ArrayColumns_positions.png
+   :align: center
+   
+   ArrayColumns(positions/labels)
+
+
+.. sourcecode:: java
+    :linenos:
+    
+    public class SampleRecord {
+        
+        // 位置情報
+        private Map<String, Point> positions;
+        
+        // 見出し情報
+        private Map<String, String> labels;
+        
+        @XlsColumn(columnName="ID")
+        private int id;
+        
+        @XlsColumn(columnName="名前")
+        private String name;
+        
+        @XlsArrayColumns(columnName="ふりがな", size=6)
+        private List<String> nameRuby;
+    }
+    
+    // 位置情報・見出し情報へのアクセス
+    SampleRecord record = /* レコードのインスタンスの取得 */;
+    
+    Point position = record.positions.get("nameRuby[2]");
+    
+    String label = recrod.labeles.get("nameRuby[2]");
+    
+    // 見出し情報の場合、従来通りのインデックスなしでも取得できる
+    String label = recrod.labeles.get("nameRuby");
+    
+
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 見出しを正規表現、正規化して指定する場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

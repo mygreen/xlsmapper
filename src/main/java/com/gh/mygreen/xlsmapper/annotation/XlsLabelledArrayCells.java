@@ -72,7 +72,48 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
  *    <p>書き込み時の制御を行う場合</p>
  * </div>
  *
+ * <h3 class="description">位置情報／見出し情報を取得する際の注意事項</h3>
+ * <p>マッピング対象のセルのアドレスを取得する際に、フィールド{@literal Map<String, Point> positions}を定義しておけば、
+ *    自動的にアドレスがマッピングされます。
+ *    <br>通常は、キーにはプロパティ名が記述（フィールドの場合はフィールド名）が入ります。
+ *    <br>アノテーション{@link XlsLabelledArrayCells}でマッピングしたセルのキーは、{@literal <プロパティ名>[<インデックス>]}の形式になります。
+ * </p>
+ * <p>同様に、マッピング対象の見出しを取得する、フィールド{@literal Map<String, String> labels}へのアクセスも、
+ *    キーは{@literal <プロパティ名>[<インデックス>]}の形式になります。
+ *    <br>ただし、見出し情報の場合は、全ての要素が同じ値になるため、従来通りの {@literal <プロパティ名>} でも取得できます。
+ * </p>
  *
+ * <pre class="highlight"><code class="java">
+ * public class SampleRecord {
+ *
+ *     // 位置情報
+ *     private {@literal Map<String, Point>} positions;
+ *
+ *     // 見出し情報
+ *     private {@literal Map<String, String>} labels;
+ *
+ *     {@literal @XlsLabelledArrayCells(label="ふりがな", type=LabelledCellType.Right, size=6)}
+ *     private {@literal List<String>} nameKana;
+ *
+ * }
+ *
+ *
+ * // 位置情報・見出し情報へのアクセス
+ * SampleRecord record = ...;
+ *
+ * Point position = record.positions.get("nameKana[2]");
+ *
+ * String label = recrod.labeles.get("nameKana[2]");
+ *
+ * // 見出し情報の場合、従来通りのインデックスなしでも取得できる
+ * String label = recrod.labeles.get("nameKana");
+ * </code></pre>
+ *
+ *
+ * <div class="picture">
+ *    <img src="doc-files/LabelledArrayCells_positions.png" alt="">
+ *    <p>位置情報・見出し情報の取得</p>
+ * </div>
  *
  * <h3 class="description">ラベルセルを正規表現、正規化して指定する場合</h3>
  *

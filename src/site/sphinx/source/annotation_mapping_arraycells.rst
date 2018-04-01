@@ -145,3 +145,48 @@
 
 
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+位置情報／見出し情報を取得する際の注意事項
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+マッピング対象のセルのアドレスを取得する際に、フィールド ``Map<String, Point> positions`` を定義しておけば、自動的にアドレスがマッピングされます。
+
+通常は、キーにはプロパティ名が記述（フィールドの場合はフィールド名）が入ります。
+
+アノテーション ``@XlsArrayCells`` でマッピングしたセルのキーは、 ``<プロパティ名>[<インデックス>]`` の形式になります。
+インデックスは、0から始まります。
+
+
+マッピング対象の見出しを取得する、フィールド ``Map<String, String> labels`` は、見出しはないため取得することはできません。
+
+.. figure:: ./_static/ArrayCells_positions.png
+   :align: center
+   
+   XlsArrayCells(positions/labels)
+
+
+.. sourcecode:: java
+    :linenos:
+    
+    public class SampleRecord {
+        
+        // 位置情報
+        private Map<String, Point> positions;
+        
+        // 見出し情報
+        private Map<String, String> labels;
+        
+        @XlsArrayCells(address="B3", size=6)
+        private List<String> nameKana;
+    }
+    
+    // 位置情報・見出し情報へのアクセス
+    SampleRecord record = /* レコードのインスタンスの取得 */;
+    
+    Point position = record.positions.get("nameKana[2]");
+    
+    // 見出しは存在しないので、nullが返される
+    String label = recrod.labeles.get("nameKana[2]");
+    
+
+

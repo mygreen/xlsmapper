@@ -630,6 +630,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
                 final List<Object> result = arrayHandler.handleOnLoading(arrayAnno, initPosition, converter, work, ArrayDirection.Horizon);
 
+                if(result != null) {
+                    // インデックスが付いていないラベルの設定
+                    property.setLabel(record, headerInfo.getLabel());
+                }
+
                 final Class<?> propertyType = property.getType();
                 if(Collection.class.isAssignableFrom(propertyType)) {
                     if(result != null) {
@@ -1556,6 +1561,12 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
                 final Class<?> propertyType = property.getType();
                 final Object result = property.getValue(record);
+
+                if(result != null) {
+                    // インデックスが付いていないラベルの設定
+                    property.setLabel(record, headerInfo.getLabel());
+                }
+
                 if(Collection.class.isAssignableFrom(propertyType)) {
 
                     final Collection<Object> value = (result == null ? new ArrayList<Object>() : (Collection<Object>) result);

@@ -109,6 +109,11 @@ public class LabelledArrayCellsProcessor extends AbstractFieldProcessor<XlsLabel
 
         List<Object> result = arrayHandler.handleOnLoading(anno, initPosition, converter, work, anno.direction());
 
+        if(result != null) {
+            // インデックスが付いていないラベルの設定
+            accessor.setLabel(beansObj, labelInfo.get().label);
+        }
+
         return result;
 
     }
@@ -197,6 +202,11 @@ public class LabelledArrayCellsProcessor extends AbstractFieldProcessor<XlsLabel
 
         ArrayCellsHandler arrayHandler = new ArrayCellsHandler(accessor, beansObj, elementClass, sheet, config);
         arrayHandler.setLabel(labelInfo.get().label);
+
+        if(result != null || !result.isEmpty()) {
+            // インデックスが付いていないラベルの設定
+            accessor.setLabel(beansObj, labelInfo.get().label);
+        }
 
         arrayHandler.handleOnSaving(result, anno, initPosition, converter, work, anno.direction());
 

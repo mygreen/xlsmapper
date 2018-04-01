@@ -79,28 +79,16 @@ Configurationでは以下の設定を行うことができます。
    * - ``correctNameRangeOnSave``
      - ``boolean``
      - | 書き込み時に名前の定義範囲を修正するかどうか。
+       | アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、:ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` でレコードの追加を行った箇所に名前の定義があるときに考慮します。
        | 初期値は'false'です。
        | **Ver.0.3以上** から利用可能です。
    
    * - ``correctCellDataValidationOnSave``
      - ``boolean``
      - | 書き込み時に名前のセルの入力規則を修正するかどうか。
+       | アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、:ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` でレコードの追加を行った箇所に入力規則が設定されているときに考慮します。
        | 初期値は'false'です。
        | **Ver.0.3以上** から利用可能です。
-   
-   * - ``correctCellCommentOnSave``
-     - ``boolean``
-     - | コメント付きのシートに対して列を追加し保存する際にPOIの不良（ `Bug 56017 <https://bz.apache.org/bugzilla/show_bug.cgi?id=56017>`_ ）のため例外が発生する事象を回避するために設定します。
-       | 例外は、バージョンPOI-3.10～3.11で発生します。バージョンPOI-3.12で修正されています。
-       | 初期値は'false'です。
-       | **Ver.0.4以上** から利用可能です。
-   
-   * - ``correctMergedCellOnSave``
-     - ``boolean``
-     - | ``@XlsHorizontalRecords`` で行の追加や削除を行ったレコードよりも下方にある結合したセルが解除される事象を回避するために設定します。
-       | POI-3.15( `Bug 59740 <https://bz.apache.org/bugzilla/show_bug.cgi?id=59740>`_ )により、``Sheet#shiftRows(...)`` の仕様が変更になった。
-       | 初期値は使用するPOIのバージョンによってかわり、POI-3.15以上の場合は'true'で、POI-3.14以前緒場合は'false'です。
-       | **Ver.1.6以上** から利用可能です。
    
    * - ``formulaRecalcurationOnSave``
      - ``boolean``
@@ -109,6 +97,12 @@ Configurationでは以下の設定を行うことができます。
        | ただし、大量で複雑な数式が記述されていると、パフォーマンスが落ちるため 'false' 設定すると無効にすることもできます。
        | 初期値は'true'です。
        | **Ver.1.5以上** から利用可能です。
+   
+   * - ``cacheCellValueOnLoad``
+     - ``boolean``
+     - | 読み込み時にセルの値をキャッシュして処理速度の向上を行うかどうか。書き込み時に名前のセルの入力規則を修正するかどうか。
+       | 初期値は'true'です。
+       | **Ver.2.0以上** から利用可能です。
    
    * - ``cellFormatter``
      - ``CellFormatter``
@@ -137,5 +131,11 @@ Configurationでは以下の設定を行うことができます。
      - ``MessageInterpolator``
      - | アノテーション :ref:`@XlsFormula <annotationFormula>` の属性 ``value`` で指定した数式を独自の変数やEL式をフォーマットする際に利用します。
        | **Ver.1.5以上** から利用可能です。
+
+   * - ``annotationMapping``
+     - ``AnnotationMappingInfo``
+     - | XMLなどによるアノテーションのマッピング情報を設定します。
+       | 詳細は、:doc:`xmlmapping` のを参照してください。
+       | **Ver.2.0以上** から利用可能です。
 
 

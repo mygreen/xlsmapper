@@ -100,6 +100,7 @@ public class AnnoLabelledArrayCellsTest {
 
                 String label = "右側＋水平";
                 assertThat(sheet.labels)
+                    .containsEntry("rightHorizon", label)
                     .containsEntry("rightHorizon[0]", label)
                     .containsEntry("rightHorizon[1]", label)
                     .containsEntry("rightHorizon[2]", label)
@@ -124,6 +125,7 @@ public class AnnoLabelledArrayCellsTest {
 
                 String label = "下側＋水平";
                 assertThat(sheet.labels)
+                    .containsEntry("bottomHorizon", label)
                     .containsEntry("bottomHorizon[0]", label)
                     .containsEntry("bottomHorizon[1]", label)
                     .containsEntry("bottomHorizon[2]", label)
@@ -146,6 +148,7 @@ public class AnnoLabelledArrayCellsTest {
 
                 String label = "右側＋垂直";
                 assertThat(sheet.labels)
+                    .containsEntry("rightVertical", label)
                     .containsEntry("rightVertical[0]", label)
                     .containsEntry("rightVertical[1]", label)
                     .containsEntry("rightVertical[2]", label)
@@ -167,6 +170,7 @@ public class AnnoLabelledArrayCellsTest {
 
                 String label = "左側＋垂直";
                 assertThat(sheet.labels)
+                    .containsEntry("leftVertical", label)
                     .containsEntry("leftVertical[0]", label)
                     .containsEntry("leftVertical[1]", label)
                     .containsEntry("leftVertical[2]", label)
@@ -188,6 +192,7 @@ public class AnnoLabelledArrayCellsTest {
 
                 String label = "下側＋垂直";
                 assertThat(sheet.labels)
+                    .containsEntry("bottomVertical", label)
                     .containsEntry("bottomVertical[0]", label)
                     .containsEntry("bottomVertical[1]", label)
                     .containsEntry("bottomVertical[2]", label)
@@ -210,6 +215,7 @@ public class AnnoLabelledArrayCellsTest {
 
                 String label = "ラベル名";
                 assertThat(sheet.labels)
+                    .containsEntry("headerHorizon", label)
                     .containsEntry("headerHorizon[0]", label)
                     .containsEntry("headerHorizon[1]", label)
                     .containsEntry("headerHorizon[2]", label)
@@ -232,6 +238,7 @@ public class AnnoLabelledArrayCellsTest {
 
                 String label = "ラベル名";
                 assertThat(sheet.labels)
+                    .containsEntry("headerVertical", label)
                     .containsEntry("headerVertical[0]", label)
                     .containsEntry("headerVertical[1]", label)
                     .containsEntry("headerVertical[2]", label)

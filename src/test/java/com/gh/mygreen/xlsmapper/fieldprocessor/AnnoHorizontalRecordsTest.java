@@ -1522,6 +1522,7 @@ public class AnnoHorizontalRecordsTest {
 
         String label = "電話番号";
         assertThat(record.labels)
+            .containsEntry("telNumber", label)
             .containsEntry("telNumber[0]", label)
             .containsEntry("telNumber[1]", label)
             .containsEntry("telNumber[2]", label)
@@ -1543,6 +1544,7 @@ public class AnnoHorizontalRecordsTest {
 
         String label = "連絡先";
         assertThat(record.labels)
+            .containsEntry("contacted", label)
             .containsEntry("contacted[0]", label)
             .containsEntry("contacted[1]", label)
             .containsEntry("contacted[2]", label)
@@ -1564,6 +1566,7 @@ public class AnnoHorizontalRecordsTest {
 
         String label = "候補日";
         assertThat(record.labels)
+            .containsEntry("dates", label)
             .containsEntry("dates[0]", label)
             .containsEntry("dates[1]", label)
             .containsEntry("dates[2]", label)
@@ -4171,6 +4174,14 @@ public class AnnoHorizontalRecordsTest {
         assertThat(inRecord.name, is(trim(outRecord.name)));
         assertThat(inRecord.telNumber, is(outRecord.telNumber));
 
+        String label = "電話番号";
+        assertThat(outRecord.labels)
+            .containsEntry("telNumber", label)
+            .containsEntry("telNumber[0]", label)
+            .containsEntry("telNumber[1]", label)
+            .containsEntry("telNumber[2]", label)
+            ;
+
     }
 
     /**
@@ -4189,6 +4200,14 @@ public class AnnoHorizontalRecordsTest {
         assertThat(inRecord.name, is(trim(outRecord.name)));
         assertThat(inRecord.contacted, is(outRecord.contacted));
 
+        String label = "連絡先";
+        assertThat(outRecord.labels)
+            .containsEntry("contacted", label)
+            .containsEntry("contacted[0]", label)
+            .containsEntry("contacted[1]", label)
+            .containsEntry("contacted[2]", label)
+            ;
+
     }
 
     /**
@@ -4206,6 +4225,14 @@ public class AnnoHorizontalRecordsTest {
         assertThat(inRecord.no, is(outRecord.no));
         assertThat(inRecord.name, is(trim(outRecord.name)));
         assertThat(inRecord.dates, is(outRecord.dates));
+
+        String label = "候補日";
+        assertThat(outRecord.labels)
+            .containsEntry("dates", label)
+            .containsEntry("dates[0]", label)
+            .containsEntry("dates[1]", label)
+            .containsEntry("dates[2]", label)
+            ;
 
     }
 
