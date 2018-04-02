@@ -98,7 +98,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
     public class SampleRecord {
         
         // マッピングした位置情報
-        private Map<String, Point> positions;
+        private Map<String, CellPosition> positions;
         
         @XlsColumn(columnName="名前")
         private String name;
@@ -116,15 +116,15 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
         
         // プロパティ「kokugo」の列番号を返す。
         public String getKokugoColNum() {
-            Point point = positions.get("kokugo");
-            return point.y + 1;
+            CellPosition position = positions.get("kokugo");
+            return position.addRow(1);
         
         }
         
         // プロパティ「sansu」の列番号を返す。
         public String getSansuColNum() {
-            Point point = positions.get("sansu");
-            return point.y + 1;
+            CellPosition position = positions.get("sansu");
+            return position.addRow(1);
         }
 
     }
@@ -145,7 +145,11 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
 
   * セルのオブジェクト ``org.apache.poi.ss.usermodel.Cell`` 。
   * シートのオブジェクト ``org.apache.poi.ss.usermodel.Sheet`` 。
-  * セルの座標 ``java.awt.Point`` 。0から始まります。
+  * セルの座標 ``com.gh.mygreen.xlsmapper.util.CellAddress`` 。
+  
+    * 0から始まります。
+    * 同じ座標を示すクラスとして、 ``java.awt.Point`` 、``org.apache.poi.ss.util.CellAddress`` が使用可能です。
+  
   * システム設定 ``com.gh.mygreen.xlsmapper.Configuration`` 。
   
 * 戻り値は、String型。
@@ -178,7 +182,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
     public class SampleRecord {
         
         // マッピングした位置情報
-        private Map<String, Point> positions;
+        private Map<String, CellPosition> positions;
         
         @XlsColumn(columnName="名前")
         private String name;
@@ -195,9 +199,9 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
         private int sum;
         
         // 数式を組み立てるメソッド
-        private String getSumFormula(Point point) {
+        private String getSumFormula(CellPosition position) {
             
-            int rowNumber = point.y + 1;
+            int rowNumber = position.addRow(1);
             String colKokugo = CellReference.convertNumToColString(positions.get("kokugo").y);
             String colSansu = CellReference.convertNumToColString(positions.get("sansu").y);
             
@@ -223,7 +227,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
     public class SampleRecord {
         
         // マッピングした位置情報
-        private Map<String, Point> positions;
+        private Map<String, CellAddress> positions;
         
         @XlsColumn(columnName="名前")
         private String name;
@@ -362,7 +366,7 @@ JavaBeanの定義
     public class SampleRecord {
         
         // マッピングした位置情報
-        private Map<String, Point> positions;
+        private Map<String, CellPosition> positions;
         
         // 親のBean情報
         private SampleSheet parent;

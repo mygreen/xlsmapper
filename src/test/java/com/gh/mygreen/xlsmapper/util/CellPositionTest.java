@@ -12,7 +12,7 @@ import org.junit.Test;
  * @author T.TSUCHIE
  *
  */
-public class CellAddressTest {
+public class CellPositionTest {
     
     @Test
     public void testOfString() {

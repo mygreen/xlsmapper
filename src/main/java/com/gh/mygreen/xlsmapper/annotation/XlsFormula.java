@@ -94,7 +94,7 @@ public @interface XlsFormula {
      * public class SampleRecord {
      *
      *     // マッピングした位置情報
-     *     private {@literal Map<String, Point>} positions;
+     *     private {@literal Map<String, CellPosition>} positions;
      *
      *     {@literal @XlsColumn(columnName="名前")}
      *     private String name;
@@ -112,15 +112,15 @@ public @interface XlsFormula {
      *
      *     // プロパティ「kokugo」の列番号を返す。
      *     public String getKokugoColNum() {
-     *         Point point = positions.get("kokugo");
-     *         return point.y + 1;
+     *         CellPosition position = positions.get("kokugo");
+     *         return position.addRow(1);
      *
      *     }
      *
      *     // プロパティ「sansu」の列番号を返す。
      *     public String getSansuColNum() {
-     *         Point point = positions.get("sansu");
-     *         return point.y + 1;
+     *         CellPosition position = positions.get("sansu");
+     *         return position.addRow(1);
      *     }
      *
      * }
@@ -178,7 +178,7 @@ public @interface XlsFormula {
      * public class SampleRecord {
      *
      *     // マッピングした位置情報
-     *     private {@literal Map<String, Point>} positions;
+     *     private {@literal Map<String, CellPosition>} positions;
      *
      *     {@literal @XlsColumn(columnName="名前")}
      *     private String name;
@@ -195,9 +195,9 @@ public @interface XlsFormula {
      *     private int sum;
      *
      *     // 数式を組み立てるメソッド
-     *     private String getSumFormula(Point point) {
+     *     private String getSumFormula(CellPosition position) {
      *
-     *         int rowNumber = point.y + 1;
+     *         int rowNumber = CellPosition.addRow(1);
      *         String colKokugo = CellReference.convertNumToColString(positions.get("kokugo").y);
      *         String colSansu = CellReference.convertNumToColString(positions.get("sansu").y);
      *
@@ -222,7 +222,7 @@ public @interface XlsFormula {
      * public class SampleRecord {
      *
      *     // マッピングした位置情報
-     *     private {@literal Map<String, Point>} positions;
+     *     private {@literal Map<String, CellPosition>} positions;
      *
      *     {@literal @XlsColumn(columnName="名前")}
      *     private String name;

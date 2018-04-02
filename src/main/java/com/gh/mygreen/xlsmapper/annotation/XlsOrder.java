@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * </p>
  * <p>そのため、書き込み時に、アノテーション{@link XlsHorizontalRecords}などでマッピングし、
  *    行の追加、削除を伴う操作が行われるときには、アノテーションで指定したセルの位置がずれ正しく処理できない場合があります。
- *    <br>また、フィールド{@literal Map<String, Point> positions}などで保持するセルの位置情報もずれます。
+ *    <br>また、フィールド{@literal Map<String, CellPosition> positions}などで保持するセルの位置情報もずれます。
  * </p>
  *
  * <p>このような時は、アノテーション{@link XlsOrder}を付与し、処理順序は属性{@link #value()}で指定します。
@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  * public class SampleSheet {
  *
  *     // セルの位置情報
- *     private {@literal Map<String, Point>} positions;
+ *     private {@literal Map<String, CellPosition>} positions;
  *
  *     {@literal @XlsOrder(1)}
  *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧", terminal=RecordTerminal.Border)}

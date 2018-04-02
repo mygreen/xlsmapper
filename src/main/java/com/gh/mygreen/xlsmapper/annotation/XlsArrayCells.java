@@ -68,7 +68,7 @@ import java.lang.annotation.Target;
  * </div>
  *
  * <h3 class="description">位置情報／見出し情報を取得する際の注意事項</h3>
- * <p>マッピング対象のセルのアドレスを取得する際に、フィールド{@literal Map<String, Point> positions}を定義しておけば、
+ * <p>マッピング対象のセルのアドレスを取得する際に、フィールド{@literal Map<String, CellPosition> positions}を定義しておけば、
  *    自動的にアドレスがマッピングされます。
  *    <br>通常は、キーにはプロパティ名が記述（フィールドの場合はフィールド名）が入ります。
  *    <br>アノテーション{@link XlsArrayCells}でマッピングしたセルのキーは、{@literal <プロパティ名>[<インデックス>]}の形式になります。
@@ -81,7 +81,7 @@ import java.lang.annotation.Target;
  * public class SampleRecord {
  *
  *     // 位置情報
- *     private {@literal Map<String, Point>} positions;
+ *     private {@literal Map<String, CellPosition>} positions;
  *
  *     // 見出し情報
  *     private {@literal Map<String, String>} labels;
@@ -95,7 +95,7 @@ import java.lang.annotation.Target;
  * // 位置情報・見出し情報へのアクセス
  * SampleRecord record = ...;
  *
- * Point position = record.positions.get("nameKana[2]");
+ * CellPosition position = record.positions.get("nameKana[2]");
  *
  * String label = recrod.labeles.get("nameKana[2]");
  * </code></pre>

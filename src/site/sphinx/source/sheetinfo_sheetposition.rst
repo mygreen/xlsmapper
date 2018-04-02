@@ -4,10 +4,10 @@
 
 読み込み時、書き込み時にマッピングしたセルのアドレス取得することができます。
 
-取得方法は複数ありますが、``Map<String, Point> positions`` フィールドを用いるのが記述量が少なく簡単だと思います。
+取得方法は複数ありますが、``Map<String, CellPosition> positions`` フィールドを用いるのが記述量が少なく簡単だと思います。
  
  
-1. `Map\<String, Point\> positions` というフィールドを定義しておくとプロパティ名をキーにセルの位置がセットされるようになっています。
+1. `Map\<String, CellPosition\> positions` というフィールドを定義しておくとプロパティ名をキーにセルの位置がセットされるようになっています。
  
   * アノテーション ``@XlsMapColumns`` のセルの位置情報のキーは、 ``<プロパティ名>[<セルの見出し>]`` としてセットされます。
  
@@ -19,25 +19,32 @@
     
     * int x, int y
      
-    * java.awt.Point
+    * com.gh.mygreen.xlsmapper.util.CellPosition
      
   * ただし、``@XlsMapColumns`` に対するsetterメソッドは、第一引数にセルの見出しが必要になります。
     
     * String key, int x, int y
     
-    * String key, java.awt.Point
+    * String key, com.gh.mygreen.xlsmapper.util.CellPosition
      
-3. アノテーションを付与した *\<フィールド名\>Position* という ``java.awt.Point`` 型のフィールドを用意しておくと、セルの位置が渡されます。
+3. アノテーションを付与した *\<フィールド名\>Position* という ``com.gh.mygreen.xlsmapper.util.CellPosition`` 型のフィールドを用意しておくと、セルの位置が渡されます。
  
-  * ただし、``@XlsMapColumns`` に対するフィールドは、``Map<String, Point>`` 型にする必要があります。キーには見出しが入ります。
- 
+  * ただし、``@XlsMapColumns`` に対するフィールドは、``Map<String, CellPosition>`` 型にする必要があります。キーには見出しが入ります。
+
+4. ``com.gh.mygreen.xlsmapper.util.CellPosition`` クラスの代わりに、以下のクラスでも代替できます。
+
+  * ``java.awt.Point``
+  
+  * ``org.apache.poi.ss.util.CellAddress``
+
+
 .. sourcecode:: java
     :linenos:
     
     public class SampleRecord {
         
         // 汎用的な位置情報
-        public Map<String, Point> positions;
+        public Map<String, CellPosition> positions;
         
         
         @XlsColumns(label="名前")
@@ -48,7 +55,7 @@
         
         // プロパティごとに個別に位置情報を定義するメソッド（Pointクラス）
         // フィールド positionsが定義あれば必要ありません。
-        public void setNamePosition(Point position) {
+        public void setNamePosition(CellPosition position) {
             //...
         }
         
@@ -63,12 +70,12 @@
         private Map<String, String> attendedMap;
         
         // プロパティごとに個別に位置情報を定義するフィールド
-        private Map<String, Point> attendedMapPosition;
+        private Map<String, CellPosition> attendedMapPosition;
         
         // プロパティごとに個別に位置情報を定義するメソッド1
         // @XlsMapColumnsの場合keyは、セルの見出しの値
         // フィールド positionsが定義あれば必要ありません。
-        public void setAttendedMapPosition(String key, Point position) {
+        public void setAttendedMapPosition(String key, CellPosition position) {
             //...
         }
         
@@ -84,7 +91,7 @@
 
 .. note::
    
-   フィールド ``Map<String, Point> positions`` と対応するsetterメソッドやフィールドをそれぞれ定義していた場合、
+   フィールド ``Map<String, CellPosition> positions`` と対応するsetterメソッドやフィールドをそれぞれ定義していた場合、
    優先度 *positions > setterメソッド > フィールド* に従い設定されます。
 
 
