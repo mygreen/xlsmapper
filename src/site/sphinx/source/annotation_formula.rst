@@ -269,7 +269,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
     
     // 数式をフォーマットするEL式の実装を変更する
     XlsMapper mapper = new XlsMapper();
-    mapper.getConig().getFormulaFormatter().setExpressionLanguage(formulaEL);
+    mapper.getConiguration().getFormulaFormatter().setExpressionLanguage(formulaEL);
 
 
 
@@ -484,7 +484,7 @@ JavaBeanの定義
     
     // ファイルへの書き込み
     XlsMapper mapper = new XlsMapper();
-    mapper.getConig().setContinueTypeBindFailure(true);
+    mapper.getConiguration().setContinueTypeBindFailure(true);
     
     File outFile = new File("seiseki.xlsx");
     try(InputStream template = new FileInputStream("template.xlsx");

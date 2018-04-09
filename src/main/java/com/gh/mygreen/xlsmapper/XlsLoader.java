@@ -325,7 +325,7 @@ public class XlsLoader {
         // 値の読み込み対象のJavaBeanオブジェクトの作成
         final P beanObj = configuration.createBean(clazz);
 
-        final SheetBindingErrors<P> errors = new SheetBindingErrors<P>(beanObj);
+        final SheetBindingErrors<P> errors =  configuration.getBindingErrorsFactory().create(beanObj);
         errors.setSheetName(sheet.getSheetName());
         errors.setSheetIndex(sheet.getWorkbook().getSheetIndex(sheet));
 

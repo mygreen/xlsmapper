@@ -241,7 +241,7 @@ public class XlsSaver {
 
         final Class<?> clazz = beanObj.getClass();
 
-        final SheetBindingErrors<P> errors = new SheetBindingErrors<P>(beanObj);
+        final SheetBindingErrors<P> errors =  configuration.getBindingErrorsFactory().create(beanObj);
         errors.setSheetName(sheet.getSheetName());
         errors.setSheetIndex(sheet.getWorkbook().getSheetIndex(sheet));
 

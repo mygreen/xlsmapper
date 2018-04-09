@@ -31,7 +31,7 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.MaxValidator;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl.PatternValidator;
 
 /**
- * {@link AbstractObjectValidator}のテスタ
+ * {@link ObjectValidatorSupport}のテスタ
  * 
  * @since 0.5
  * @author T.TSUCHIE
@@ -279,7 +279,7 @@ public class ObjectValidatorTest {
      * {@link SampleSheet}のValidator.
      *
      */
-    private static class SampleSheetValidator extends AbstractObjectValidator<SampleSheet> {
+    private static class SampleSheetValidator extends ObjectValidatorSupport<SampleSheet> {
         
         private PersonRecordVaidator personRecordValidator;
         
@@ -309,7 +309,7 @@ public class ObjectValidatorTest {
      * {@link PersonRecordRecord}のValidator.
      *
      */
-    private static class PersonRecordVaidator extends AbstractObjectValidator<PersonRecord> {
+    private static class PersonRecordVaidator extends ObjectValidatorSupport<PersonRecord> {
         
         @Override
         public void validate(final PersonRecord targetObj, final SheetBindingErrors<?> errors, final Class<?>... groups) {

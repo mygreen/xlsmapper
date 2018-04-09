@@ -42,7 +42,7 @@ public abstract class AbstractFieldValidator<T> implements FieldValidator<T> {
         
         onValidate(cellField);
         
-        return !cellField.hasError();
+        return !cellField.hasErrors();
         
         
     }

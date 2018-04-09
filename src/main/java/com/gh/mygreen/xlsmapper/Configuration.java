@@ -10,75 +10,80 @@ import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegistry;
 import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 
 /**
  * マッピングする際の設定などを保持するクラス。
- * 
+ *
  * @version 2.0
  * @author T.TSUCHIE
  *
  */
 public class Configuration {
-    
+
     /** シートが見つからなくても無視するかどうか */
     private boolean ignoreSheetNotFound = false;
-    
+
     /** ラベルを正規化するかどうか */
     private boolean normalizeLabelText = false;
-    
+
     /** ラベルを正規表現でマッピングするかどうか */
     private boolean regexLabelText = false;
-    
+
     /** 型変換エラーが発生しても処理を続けるかどうか */
     private boolean continueTypeBindFailure = false;
-    
+
     /** 書き込み時にセルの結合を行うかどうか */
     private boolean mergeCellOnSave = false;
-    
+
     /** 書き込み時に名前の定義範囲を修正するかどうか */
     private boolean correctNameRangeOnSave = false;
-    
+
     /** 書き込み時にセルの入力規則を修正するかどうか */
     private boolean correctCellDataValidationOnSave = false;
-    
+
     /** 書き込み時に式の再計算をするかどうか */
     private boolean formulaRecalcurationOnSave = true;
-    
+
     /** 読み込み時にセルの値のキャッシュを行うかどうか */
     private boolean cacheCellValueOnLoad = true;
-    
+
     /** POIのセルの値のフォーマッター */
     private CellFormatter cellFormatter = new DefaultCellFormatter();
-    
+
     private FieldProcessorRegistry fieldProcessorRegistry = new FieldProcessorRegistry();
-    
+
     private CellConverterRegistry converterRegistry = new CellConverterRegistry();
-    
+
     /** 読み込み時のBeanのインスタンスの作成クラス */
     private BeanFactory<Class<?>, Object> beanFactory = new DefaultBeanFactory();
-    
+
+
+    /** {@link SheetBindingErrors}のインスタンス作成クラス */
+    private SheetBindingErrorsFactory bindingErrorsFactory = new SheetBindingErrorsFactory();
+
     /** 処理対象のシートを取得するクラス */
     private SheetFinder sheetFinder = new SheetFinder();
-    
+
     /** 数式をフォーマットするクラス */
     private MessageInterpolator formulaFormatter = new MessageInterpolator();
-    
+
     /** Beanに対するアノテーションのマッピング情報 */
     private AnnotationMappingInfo annotationMapping = null;
-    
+
     public Configuration() {
-        
+
         // 数式をフォーマットする際のEL関数を登録する。
         ExpressionLanguageJEXLImpl formulaEL = new ExpressionLanguageJEXLImpl();
-        Map<String, Object> funcs = new HashMap<>(); 
+        Map<String, Object> funcs = new HashMap<>();
         funcs.put("x", CustomFunctions.class);
         formulaEL.getJexlEngine().setFunctions(funcs);
-        
+
         formulaFormatter.setExpressionLanguage(formulaEL);
     }
-    
+
     /**
      * 指定したクラスタイプのインスタンスを作成する
      * @param clazz
@@ -88,7 +93,7 @@ public class Configuration {
     public <P> P createBean(final Class<P> clazz) {
         return (P) beanFactory.create(clazz);
     }
-    
+
     /**
      * シートが見つからなくても無視するかどうか。
      * @return 初期値は、'false'です。
@@ -96,7 +101,7 @@ public class Configuration {
     public boolean isIgnoreSheetNotFound() {
         return ignoreSheetNotFound;
     }
-    
+
     /**
      * シートが見つからなくても無視するかどうか設定します。
      * @param ignoreSheetNotFound 初期値は、'false'です。
@@ -106,7 +111,7 @@ public class Configuration {
         this.ignoreSheetNotFound = ignoreSheetNotFound;
         return this;
     }
-    
+
     /**
      * ラベルの文字列を空白などを正規化してマッピングするかどうか。
      * <p>正規化は、改行コード（{@literal \n},{@literal \r}）の除去、タブ（{@literal \t})、空白（全角、半角）の除去を行います。</p>
@@ -116,7 +121,7 @@ public class Configuration {
     public boolean isNormalizeLabelText() {
         return normalizeLabelText;
     }
-    
+
     /**
      * ラベルの文字列を空白などを正規化してマッピングするかどうか設定します。
      * <p>正規化は、改行コード（{@literal \n},{@literal \r}）の除去、タブ（{@literal \t})、空白（全角、半角）の除去を行います。</p>
@@ -128,7 +133,7 @@ public class Configuration {
         this.normalizeLabelText = normalizeLabelText;
         return this;
     }
-    
+
     /**
      * ラベルを正規表現でマッピングするかどうか。
      * <p>ラベルに{@literal /正規表現/}と記述しておくと正規表現でマッピングできる。</p>
@@ -138,7 +143,7 @@ public class Configuration {
     public boolean isRegexLabelText() {
         return regexLabelText;
     }
-    
+
     /**
      * ラベルを正規表現でマッピングするかどうか設置します。
      * <p>ラベルに{@literal /正規表現/}と記述しておくと正規表現でマッピングできる。</p>
@@ -150,7 +155,7 @@ public class Configuration {
         this.regexLabelText = regexLabelText;
         return this;
     }
-    
+
     /**
      * 型変換エラーが発生しても処理を続けるかどうか。
      * @return 初期値は、'false'です。
@@ -158,7 +163,7 @@ public class Configuration {
     public boolean isContinueTypeBindFailure() {
         return continueTypeBindFailure;
     }
-    
+
     /**
      * 型変換エラーが発生しても処理を続けるかどうか。
      * @param continueTypeBindFailure 初期値は、'false'です。
@@ -168,7 +173,7 @@ public class Configuration {
         this.continueTypeBindFailure = continueTypeBindFailure;
         return this;
     }
-    
+
     /**
      * 書き込み時にセルの結合を行うかどうか
      * @return 初期値は、'false'です。
@@ -176,7 +181,7 @@ public class Configuration {
     public boolean isMergeCellOnSave() {
         return mergeCellOnSave;
     }
-    
+
     /**
      * 書き込み時にセルの結合を行うかどうか設定します。
      * @param mergeCellOnSave 初期値は、'false'です。
@@ -186,7 +191,7 @@ public class Configuration {
         this.mergeCellOnSave = mergeCellOnSave;
         return this;
     }
-    
+
     /**
      * 書き込み時に名前の定義範囲を修正するかどうか
      * @since 0.3
@@ -195,7 +200,7 @@ public class Configuration {
     public boolean isCorrectNameRangeOnSave() {
         return correctNameRangeOnSave;
     }
-    
+
     /**
      * 書き込み時に名前の定義範囲を修正するかどうか設定します。
      * @since 0.3
@@ -206,7 +211,7 @@ public class Configuration {
         this.correctNameRangeOnSave = correctNameRangeOnSave;
         return this;
     }
-    
+
     /**
      * 書き込み時にセルの入力規則を修正するかどうか。
      * @since 0.3
@@ -215,7 +220,7 @@ public class Configuration {
     public boolean isCorrectCellDataValidationOnSave() {
         return correctCellDataValidationOnSave;
     }
-    
+
     /**
      * 書き込み時にセルの入力規則を修正するかどうか。
      * <p>trueの場合（修正する場合）、POI-3.11以上が必要になります。
@@ -226,7 +231,7 @@ public class Configuration {
         this.correctCellDataValidationOnSave = correctCellDataValidationOnSave;
         return this;
     }
-    
+
      /**
      * 書き込み時に式の再計算をするか設定します。
      * <p>数式を含むシートを出力したファイルを開いた場合、一般的には数式が開いたときに再計算されます。
@@ -237,7 +242,7 @@ public class Configuration {
     public boolean isFormulaRecalcurationOnSave() {
         return formulaRecalcurationOnSave;
     }
-    
+
     /**
      * 書き込み時に式の再計算をするか設定します。
      * <p>数式を含むシートを出力したファイルを開いた場合、一般的には数式が開いたときに再計算されます。
@@ -250,7 +255,7 @@ public class Configuration {
         this.formulaRecalcurationOnSave = formulaRecalcurationOnSave;
         return this;
     }
-    
+
     /**
      * 読み込み時にセルの値のキャッシュを行うかどうか設定します。
      * @since 2.0
@@ -259,7 +264,7 @@ public class Configuration {
     public boolean isCacheCellValueOnLoad() {
         return cacheCellValueOnLoad;
     }
-    
+
     /**
      * 読み込み時にセルの値のキャッシュを行うかどうか設定します。
      * @since 2.0
@@ -269,7 +274,7 @@ public class Configuration {
         this.cacheCellValueOnLoad = cacheCellValueOnLoad;
         return this;
     }
-    
+
     /**
      * POIのセルのフォーマッターを取得します。
      * @return セルのフォーマッタ。
@@ -277,7 +282,7 @@ public class Configuration {
     public CellFormatter getCellFormatter() {
         return cellFormatter;
     }
-    
+
     /**
      * POIのセルのフォーマッターを指定します。
      * @param cellFormatter セルのフォーマッタ
@@ -287,7 +292,7 @@ public class Configuration {
         this.cellFormatter = cellFormatter;
         return this;
     }
-    
+
     /**
      * セルの値の型変換の管理クラスを取得します。
      * @return
@@ -295,7 +300,7 @@ public class Configuration {
     public CellConverterRegistry getConverterRegistry() {
         return converterRegistry;
     }
-    
+
     /**
      * セルの値の型変換の管理クラスを設定します。
      * @param converterRegistry
@@ -305,7 +310,7 @@ public class Configuration {
         this.converterRegistry = converterRegistry;
         return this;
     }
-    
+
     /**
      * アノテーションを処理するプロセッサの管理クラスを取得します。
      * @return
@@ -313,7 +318,7 @@ public class Configuration {
     public FieldProcessorRegistry getFieldProcessorRegistry() {
         return fieldProcessorRegistry;
     }
-    
+
     /**
      * アノテーションを処理するプロセッサの管理クラスを設定します。
      * @return 自身のインスタンス
@@ -322,7 +327,7 @@ public class Configuration {
         this.fieldProcessorRegistry = fieldProcessorRegistry;
         return this;
     }
-    
+
     /**
      * Beanを生成するためのFactoryクラスを設定します。
      * @return
@@ -331,7 +336,7 @@ public class Configuration {
         this.beanFactory = beanFactory;
         return this;
     }
-    
+
     /**
      * Beanを生成するためのFactoryクラスを取得します。
      * @since 1.0
@@ -340,7 +345,25 @@ public class Configuration {
     public BeanFactory<Class<?>, Object> getBeanFactory() {
         return beanFactory;
     }
-    
+
+    /**
+     * {@link SheetBindingErrors}を生成するためのFactoryクラスを取得します。
+     * @since 2.0
+     * @return
+     */
+    public SheetBindingErrorsFactory getBindingErrorsFactory() {
+        return bindingErrorsFactory;
+    }
+
+    /**
+     * {@link SheetBindingErrors}を生成するためのFactoryクラスを設定します。
+     * @since 2.0
+     * @param bindingErrorsFactory
+     */
+    public void setBindingErrorsFactory(SheetBindingErrorsFactory bindingErrorsFactory) {
+        this.bindingErrorsFactory = bindingErrorsFactory;
+    }
+
     /**
      * 処理対象のシートを取得するためのクラスを取得します。
      * <p>アノテーション{@link XlsSheet} を処理します。
@@ -350,7 +373,7 @@ public class Configuration {
     public SheetFinder getSheetFinder() {
         return sheetFinder;
     }
-    
+
     /**
      * 処理対象のシートを取得するためのクラスを設定します。
      * <p>アノテーション{@link XlsSheet} を処理します。
@@ -362,22 +385,22 @@ public class Configuration {
         this.sheetFinder = sheetFinder;
         return this;
     }
-    
+
     /**
      * 数式をフォーマットするためのクラスを取得します。
      * <p>出力するセルの数式を設定する際に、独自の変数やEL式を指定したときにフォーマットする際に利用します。
-     * 
+     *
      * @since 1.5
      * @return 数式をフォーマットするクラス。
      */
     public MessageInterpolator getFormulaFormatter() {
         return formulaFormatter;
     }
-    
+
     /**
      * 数式をフォーマットするためのクラスを取得します。
      * <p>出力するセルの数式を設定する際に、独自の変数やEL式を指定したときにフォーマットする際に利用します。
-     * 
+     *
      * @since 1.5
      * @param formulaFormatter 数式をフォーマットするクラス。
      * @return 自身のインスタンス
@@ -386,7 +409,7 @@ public class Configuration {
         this.formulaFormatter = formulaFormatter;
         return this;
     }
-    
+
     /**
      * アノテーションのマッピング情報を取得する。
      * @since 2.0
@@ -395,7 +418,7 @@ public class Configuration {
     public Optional<AnnotationMappingInfo> getAnnotationMapping() {
         return Optional.ofNullable(annotationMapping);
     }
-    
+
     /**
      * アノテーションのマッピング情報を設定します。
      * @since 2.0
@@ -404,5 +427,5 @@ public class Configuration {
     public void setAnnotationMapping(AnnotationMappingInfo annotationMapping) {
         this.annotationMapping = annotationMapping;
     }
-    
+
 }
