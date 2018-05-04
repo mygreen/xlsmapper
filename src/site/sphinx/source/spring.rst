@@ -140,6 +140,7 @@ SpringBeanとしての定義
 ライフサイクル・コールバック用のアノテーションを付与したメソッド内でインジェクションしたクラスなどを呼び出したりします。
 
 .. sourcecode:: java
+    :linenos:
 
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     @Component
@@ -164,6 +165,7 @@ SpringBeanとしての定義
 作成したSpringBeanFactoryをConfigurationに設定して、シートを読み込みます。
 
 .. sourcecode:: java
+    :linenos:
     
     // 自作したSpringBeanFactory
     @Autorired

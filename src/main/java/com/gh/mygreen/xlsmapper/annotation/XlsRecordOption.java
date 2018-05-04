@@ -65,7 +65,7 @@ public @interface XlsRecordOption {
      * public class SampleSheet {
      *
      *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
-     *     {@literal XlsRecordOption(remainedOperation=RemainedOperation.Clear)}
+     *     {@literal @XlsRecordOption(remainedOperation=RemainedOperation.Clear)}
      *     private {@literal List<UserRecord>} records;
      *
      * }
