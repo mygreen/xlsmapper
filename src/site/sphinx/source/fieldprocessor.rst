@@ -12,7 +12,7 @@ Excelのシートを独自の基準で走査して、Javaクラスにマッピ�
     :linenos:
     :caption: FieldProcessorの作成
     
-    public class CellProcessor extends AbstractFieldProcessor<SampleAnno> {
+    public class SampleFieldProcessor extends AbstractFieldProcessor<SampleAnno> {
     
         // シートの読み込み時の処理
         @Override
@@ -50,4 +50,19 @@ Excelのシートを独自の基準で走査して、Javaクラスにマッピ�
     mapper.setConfiguration(config);
     
 
+
+また、アノテーションを作成するう際に、メタアノテーション ``@XlsFieldProcessor`` でFieldProcessorを指定することもできます。 `[ver2.0+]` 
+
+.. sourcecode:: java
+    :linenos:
+    :caption: メタアノテーションを使ったFieldProcessorの指定
+    
+    // 独自のマッピング用のアノテーションの作成
+    @Target({ElementType.METHOD, ElementType.FIELD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @XlsFieldProcessor(SampleFieldProcessor.class)  // 対応するFieldProcessorの指定
+    public @interface XlsSampleAnno {
+        // ・・・属性の定義
+    }
 
