@@ -122,6 +122,12 @@ Configurationでは以下の設定を行うことができます。
      - | 読み込み時などのJavaBeansオブジェクトのインスタンスを作成すためのコールバック用クラス。
        | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用することができます。
        
+   * - ``bindingErrorsFactory``
+     - ``SheetBindingErrorsFactory``
+     - | マッピング時のエラー情報 ``SheetBindingErrors`` のインスタンスを作成すためのコールバック用クラス。
+       | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用することができます。
+       | **Ver.2.0以上** から利用可能です。
+       
    * - ``sheetFinder``
      - ``SheetFinder``
      - | アノテーション :ref:`@XlsSheet <annotationXlsSheet>` に基づき処理対象のシートを抽出するクラス。

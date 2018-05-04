@@ -53,13 +53,14 @@ public class Configuration {
     /** POIのセルの値のフォーマッター */
     private CellFormatter cellFormatter = new DefaultCellFormatter();
 
+    /** アノテーションを処理するプロセッサの管理クラス */
     private FieldProcessorRegistry fieldProcessorRegistry = new FieldProcessorRegistry();
 
+    /** セルの値の型変換の管理クラス */
     private CellConverterRegistry converterRegistry = new CellConverterRegistry();
 
     /** 読み込み時のBeanのインスタンスの作成クラス */
     private BeanFactory<Class<?>, Object> beanFactory = new DefaultBeanFactory();
-
 
     /** {@link SheetBindingErrors}のインスタンス作成クラス */
     private SheetBindingErrorsFactory bindingErrorsFactory = new SheetBindingErrorsFactory();
