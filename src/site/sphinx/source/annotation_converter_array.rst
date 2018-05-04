@@ -38,6 +38,7 @@ Collection型のインタフェースを指定している場合、読み込み�
 
 
 .. sourcecode:: java
+    :linenos:
     
     public class SampleRecord {
         
@@ -67,6 +68,7 @@ Collection型のインタフェースを指定している場合、読み込み�
 
 
 .. sourcecode:: java
+    :linenos:
     
     public class SampleRecord {
         
@@ -90,6 +92,7 @@ Collection型のインタフェースを指定している場合、読み込み�
 インスタンスは、システム設定「beanFactory」経由で作成されるため、:doc:`SpringFrameworkのコンテナからインスタンスを取得 <extension_beanfactory>` することもできます。
 
 .. sourcecode:: java
+    :linenos:
     
     // 変換用クラス
     public class CustomElementConverter implements ElementConverter<User> {

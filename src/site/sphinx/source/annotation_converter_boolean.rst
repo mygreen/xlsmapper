@@ -27,6 +27,7 @@ Excelのセルの種類が「ブール型」以外の場合に、Javaの「boole
 
 
 .. sourcecode:: java
+    :linenos:
     
     public class SampleRecord {
         
@@ -61,6 +62,7 @@ Excelのセルの種類が「ブール型」以外の場合に、Javaの「boole
     
 
 .. sourcecode:: java
+    :linenos:
     
     public class SampleRecord {
         
@@ -86,6 +88,7 @@ Excelのセルの種類が「ブール型」以外の場合に、Javaの「boole
 * 属性 ``failToFalse`` をtrueに設定することで、変換できない場合に強制的に値をfalseとして読み込み、例外を発生しなくできます。
 
 .. sourcecode:: java
+    :linenos:
     
     public class SampleRecord {
         
