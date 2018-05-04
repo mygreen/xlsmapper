@@ -16,7 +16,7 @@
 
 * 親子関係は、結合しているかで表現します。
 
-  * 結合している個数が不一致の場合は、例外 ``NestMergedSizeException`` がスローされます。
+  * 結合している個数が不一致の場合は、例外 ``NestedRecordMergedSizeException`` がスローされます。
 
 * 親に指定しているJavaBeanクラスは、子や孫には指定することができません。
 

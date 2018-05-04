@@ -89,7 +89,7 @@ Collection型のインタフェースを指定している場合、読み込み�
 変換するクラスは、インタフェース ``com.gh.mygreen.xlsmapper.cellconvert.ElementConverter`` を実装している必要があります。
 標準では、``com.gh.mygreen.xlsmapper.cellconvert.DefaultElementConverter`` が使用され、基本的な型のみサポートしています。
 
-インスタンスは、システム設定「beanFactory」経由で作成されるため、:doc:`SpringFrameworkのコンテナからインスタンスを取得 <extension_beanfactory>` することもできます。
+インスタンスは、システム設定「beanFactory」経由で作成されるため、:doc:`SpringFrameworkのコンテナからインスタンスを取得 <spring>` することもできます。
 
 .. sourcecode:: java
     :linenos:

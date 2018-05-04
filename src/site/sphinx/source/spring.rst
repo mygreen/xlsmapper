@@ -20,10 +20,10 @@ Spring Framework のコンテナで管理可能、DI可能な部分は、次の�
      - ``TextFormatter`` の実装クラスがSpringBeanとして管理可能です。
 
    * - :doc:`独自のクラスタイプの対応方法 <annotation_converter_custom>`
-     - ``ConversionProcessorFactory`` の実装クラスがSpringBeanとして管理可能です。
+     - ``CellConverterFactory`` の実装クラスがSpringBeanとして管理可能です。
 
    * - :doc:`独自の表・セルのマッピング方法 <fieldprocessor>`
-     - ``ConstraintProcessorFactory`` の実装クラスがSpringBeanとして管理可能です。
+     - ``FieldProcessor`` の実装クラスがSpringBeanとして管理可能です。
 
    * - :ref:`独自のリスナーの実装機能 <annotationXlsListener>`
      - リスナクラスがSpringBeanとして管理可能です。

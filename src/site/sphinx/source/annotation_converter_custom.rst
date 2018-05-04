@@ -54,7 +54,7 @@ Excelのセルの値をJavaの任意のクラスにマッピングするには�
 
 * インタフェース ``com.gh.mygreen.xlsmapper.cellconvert.CellConverter`` を実装します。
 
-  * 実際には、ユーティリティメソッドがそろっている、``com.gh.mygreen.xlsmapper.cellconverter.AbstractCellConverter`` を継承して実装します。
+  * 実際には、ユーティリティメソッドがそろっている、``com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter`` を継承して実装します。
   * 読み込み時、書き込み時のそれぞれのメソッドを実装します。
     
     * 文字列に対するマッピングの場合は、``TextFormatter`` の ``parse/format`` メソッドに委譲します。
@@ -66,7 +66,7 @@ Excelのセルの値をJavaの任意のクラスにマッピングするには�
     :linenos:
     :caption: CellConverterの実装
     
-    public class CustomCellConverter extends AbstractCellConverter<CustomType> {
+    public class CustomCellConverter extends BaseCellConverter<CustomType> {
         
         public CustomCellConverter(FieldAccessor field, Configuration config) {
             super(field, config);
