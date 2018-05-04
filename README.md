@@ -15,7 +15,7 @@ Apache License verion 2.0
 
 # Setup
 
-1. Add dependency for Super Csv Annotation
+1. Add dependency for XlsMapper
     ```xml
     <dependency>
         <groupId>com.github.mygreen</groupId>
@@ -38,8 +38,30 @@ Apache License verion 2.0
     </dependency>
     ```
 
+# Build
+
+1. Setup Java SE 8 (1.8.0_121+)
+2. Setup Maven
+3. Setup Sphinx (building for manual)
+    a. install Python
+    b. install sphinx and theme for read the docs, janome
+    ```console
+    # pip install sphinx
+    # pip install sphinx_rtd_theme --upgrade
+    # pip install janome
+    ```
+4. Build with Maven
+    ```console
+    # mven site -Dgpg.skip=true
+    ```
+
 # Documentation
-http://mygreen.github.io/xlsmapper/sphinx/howtouse.html
+- Project infomation
+  - http://mygreen.github.io/xlsmapper/index.html
+- Manual
+  - http://mygreen.github.io/xlsmapper/sphinx/index.html
+- Javadoc
+  - http://mygreen.github.io/xlsmapper/apidocs/index.html
 
 # Getting Started
 For example, here is one Excel sheet.
