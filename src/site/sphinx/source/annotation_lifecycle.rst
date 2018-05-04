@@ -118,7 +118,7 @@ JavaBeanクラスに実装する場合
 リスナークラスに実装する場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-クラスにアノテーション ``@XlsListener`` を付与し、属性 ``listenerClass`` で処理が実装されたクラスを指定します。 `[ver1.3+]`
+クラスにアノテーション ``@XlsListener`` を付与し、属性 ``value`` で処理が実装されたクラスを指定します。 `[ver1.0+]`
 
 指定したリスナークラスのインスタンスは、システム設定「beanFactory」経由で作成されるため、:doc:`SpringFrameworkのコンテナからインスタンスを取得 <extension_beanfactory>` することもできます。
 
@@ -127,7 +127,7 @@ JavaBeanクラスに実装する場合
     
     // シートクラス
     @XlsSheet(name="Users")
-    @XlsListener(listenerClass=SampleSheetListener.class)
+    @XlsListener(SampleSheetListener.class)
     public class SampleSheet {
     
         @XlsHorizontalRecords(tableLabel="ユーザ一覧")
@@ -146,7 +146,7 @@ JavaBeanクラスに実装する場合
     }
     
     // レコードクラス
-    @XlsListener(listenerClass=UserRecordListener.class)
+    @XlsListener(UserRecordListener.class)
     public class UserRecord {
         
         @XlsColumn(columnName="ID")

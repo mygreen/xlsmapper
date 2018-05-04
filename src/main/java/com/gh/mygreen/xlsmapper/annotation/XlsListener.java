@@ -32,7 +32,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
  * <pre class="highlight"><code class="java">
  * // シートクラス
  * {@literal @XlsSheet(name="Users")}
- * {@literal @XlsListener(listenerClass=SampleSheetListener.class)}
+ * {@literal @XlsListener(SampleSheetListener.class)}
  * public class SampleSheet {
  *
  *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}

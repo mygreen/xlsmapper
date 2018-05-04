@@ -71,7 +71,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
  * <pre class="highlight"><code class="java">
  * // シートクラス
  * {@literal @XlsSheet(name="Users")}
- * {@literal @XlsListener(listenerClass=SampleSheetListener.class)}
+ * {@literal @XlsListener(SampleSheetListener.class)}
  * public class SampleSheet {
  *
  *     {@literal @XlsHorizontalRecords(tableLabel="ユーザ一覧")}
@@ -88,7 +88,7 @@ import com.gh.mygreen.xlsmapper.Configuration;
  * }
  *
  * // レコードクラス
- * {@literal @XlsListener(listenerClass=UserRecordListener.class)}
+ * {@literal @XlsListener(UserRecordListener.class)}
  * public class UserRecord {
  *
  *     {@literal @XlsColumn(columnName="ID")}
