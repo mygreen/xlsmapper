@@ -1,27 +1,28 @@
 package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.github.mygreen.cellformatter.lang.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 /**
  * フィールドの値を検証するための抽象クラス。
- * <p>基本的に、{@link FieldValidator}を実装する際には、このクラスを継承して作成します。</p>
+ * <p>基本的に、{@link ArrayFieldValidator}を実装する際には、このクラスを継承して作成します。</p>
  *
- * @version 2.0
+ * @since 2.0
  * @author T.TSUCHIE
- * @param <T> チェック対象のフィールドのタイプ
  *
+ * @param <E> チェック対象のフィールドの配列や{@link Collection}の要素のクラスタイプ
  */
-public abstract class AbstractFieldValidator<T> extends GroupValidatorSupport implements FieldValidator<T> {
+public abstract class AbstractArrayFieldValidator<E> extends GroupValidatorSupport implements ArrayFieldValidator<E> {
 
     @Override
-    public boolean validate(final CellField<T> cellField, final List<Class<?>> validationGroups) {
+    public boolean validate(final ArrayCellField<E> cellField, final List<Class<?>> validationGroups) {
 
-        // 必須チェックは、CellFieldで行っているため、値が空の場合は無視する。
+        // 必須チェックは、ArrayCellFieldで行っているため、値が空の場合は無視する。
         if(cellField.isInputEmpty() && !validateOnEmptyValue()) {
             return true;
         }
@@ -43,7 +44,7 @@ public abstract class AbstractFieldValidator<T> extends GroupValidatorSupport im
      * @param groups バリデーション時のヒント。
      * @return 自身のインスタンス。
      */
-    public AbstractFieldValidator<T> addGroup(final Class<?>... groups) {
+    public AbstractArrayFieldValidator<E> addGroup(final Class<?>... groups) {
 
         super.addGroup(groups);
         return this;
@@ -53,13 +54,13 @@ public abstract class AbstractFieldValidator<T> extends GroupValidatorSupport im
      * 値の検証を行います。
      * @param cellField フィールド情報
      */
-    protected abstract void onValidate(CellField<T> cellField);
+    protected abstract void onValidate(ArrayCellField<E> cellField);
 
     /**
      * エラーメッセージ中の変数を取得します。
      * @return エラーメッセージ中の変数。
      */
-    protected Map<String, Object> getMessageVariables(final CellField<T> cellField) {
+    protected Map<String, Object> getMessageVariables(final ArrayCellField<E> cellField) {
 
         final Map<String, Object> variables = new HashMap<>();
         variables.put("validatedValue", cellField.getValue());
@@ -72,10 +73,10 @@ public abstract class AbstractFieldValidator<T> extends GroupValidatorSupport im
     /**
      * エラー情報を追加します。
      * <p>エラーメッセージのキーは、{@link #getMessageKey()}の値を使用するため、必ず空以外の値を返す必要があります。</p>
-     * <p>エラーメッセージ中の変数は、{@link #getMessageVariables(CellField)}の値を使用します。</p>
+     * <p>エラーメッセージ中の変数は、{@link #getMessageVariables(ArrayCellField)}の値を使用します。</p>
      * @param cellField フィールド情報
      */
-    public void error(final CellField<T> cellField) {
+    public void error(final ArrayCellField<E> cellField) {
         ArgUtils.notNull(cellField, "cellField");
         error(cellField, getMessageKey(), getMessageVariables(cellField));
     }
@@ -86,19 +87,19 @@ public abstract class AbstractFieldValidator<T> extends GroupValidatorSupport im
      * @param cellField フィールド情報
      * @param messageVariables メッセージ中の変数
      */
-    public void error(final CellField<T> cellField, final Map<String, Object> messageVariables) {
+    public void error(final ArrayCellField<E> cellField, final Map<String, Object> messageVariables) {
         error(cellField, getMessageKey(), messageVariables);
     }
 
     /**
      * メッセージキーを指定して、エラー情報を追加します。
-     * <p>エラーメッセージ中の変数は、{@link #getMessageVariables(CellField)}の値を使用します。</p>
+     * <p>エラーメッセージ中の変数は、{@link #getMessageVariables(ArrayCellField)}の値を使用します。</p>
      * @param cellField フィールド情報
      * @param messageKey メッセージキー
      * @throws IllegalArgumentException {@literal cellField == null or messageKey == null}
      * @throws IllegalArgumentException {@literal messageKey.length() == 0}
      */
-    public void error(final CellField<T> cellField, final String messageKey) {
+    public void error(final ArrayCellField<E> cellField, final String messageKey) {
         error(cellField, messageKey, getMessageVariables(cellField));
     }
 
@@ -110,7 +111,7 @@ public abstract class AbstractFieldValidator<T> extends GroupValidatorSupport im
      * @throws IllegalArgumentException {@literal cellField == null or messageKey == null or messageVariables == null}
      * @throws IllegalArgumentException {@literal messageKey.length() == 0}
      */
-    public void error(final CellField<T> cellField, final String messageKey, final Map<String, Object> messageVariables) {
+    public void error(final ArrayCellField<E> cellField, final String messageKey, final Map<String, Object> messageVariables) {
         ArgUtils.notEmpty(messageKey, "messageKey");
         ArgUtils.notNull(cellField, "cellField");
         ArgUtils.notNull(messageVariables, "messageVariables");
@@ -118,5 +119,4 @@ public abstract class AbstractFieldValidator<T> extends GroupValidatorSupport im
         cellField.rejectValue(messageKey, messageVariables);
 
     }
-
 }

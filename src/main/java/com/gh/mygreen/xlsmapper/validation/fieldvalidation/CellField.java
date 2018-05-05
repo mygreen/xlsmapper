@@ -79,7 +79,7 @@ public class CellField<T> {
     private Class<T> fieldType;
 
     /**
-     *
+     * 指定されたフィールドの名称に対応するオブジェクトを構築します。
      * @param fieldName フィールドの名称。現在のBeanに対するフィールドの相対パスを指定します。
      * @param errors エラー情報
      */
@@ -145,6 +145,24 @@ public class CellField<T> {
         ArgUtils.notNull(validator, "validator");
         this.validators.add(validator);
 
+        return this;
+    }
+
+    /**
+     * 複数の{@link FieldValidator} を追加する。
+     * @param validators 複数のvalidatorのインスタンス。
+     * @return 自身のインスタンス。
+     * @throws NullPointerException validator is null.
+     */
+    public CellField<T> add(final List<FieldValidator<T>> validators) {
+
+        if(validators.isEmpty()) {
+            return this;
+        }
+
+        for(FieldValidator<T> validator : validators) {
+            add(validator);
+        }
         return this;
     }
 
@@ -276,6 +294,22 @@ public class CellField<T> {
     }
 
     /**
+     * エラー情報を取得する。
+     * @return エラー情報
+     */
+    public SheetBindingErrors<?> getBindingErrors() {
+        return errors;
+    }
+
+    /**
+     * フィールドの名称を取得する
+     * @return フィールドの名称
+     */
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    /**
      * フィールドの値を取得する。
      * @return フィールドの値。
      */
@@ -289,6 +323,14 @@ public class CellField<T> {
      */
     public Class<T> getType() {
         return fieldType;
+    }
+
+    /**
+     * フィールドのJavaBean上のパスを取得する。
+     * @return フィールドのJavaBean上のパス
+     */
+    public String getFieldPath() {
+        return fieldPath;
     }
 
     /**

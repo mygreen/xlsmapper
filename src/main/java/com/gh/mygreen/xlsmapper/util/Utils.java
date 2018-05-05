@@ -681,7 +681,7 @@ public class Utils {
      * @param object 変換対象の配列
      * @param componentType 配列の要素のタイプ
      * @return 配列がnullの場合は、空のリストに変換します。
-     * @throws IllegalArgumentException {@literal arrayが配列出ない場合。componentTypeがサポートしていないプリミティブ型の場合。}
+     * @throws IllegalArgumentException {@literal arrayが配列でない場合。componentTypeがサポートしていないプリミティブ型の場合。}
      */
     public static List<Object> asList(final Object object, final Class<?> componentType) {
         ArgUtils.notNull(componentType, "componentType");
@@ -787,6 +787,59 @@ public class Utils {
         }
 
         return array;
+    }
+
+    /**
+     * 配列のサイズを取得します。
+     * プリミティブ型の配列をを考慮して処理します。
+     * @param object 取得対象の配列
+     * @param componentType 配列の要素のタイプ
+     * @return 配列がnullの場合は、0を返します。
+     * @throws IllegalArgumentException {@literal arrayが配列でない場合。componentTypeがサポートしていないプリミティブ型の場合。}
+     */
+    public static int getArraySize(final Object object, final Class<?> componentType) {
+
+        ArgUtils.notNull(componentType, "componentType");
+
+        if(object == null) {
+            return 0;
+        }
+
+        if(!object.getClass().isArray()) {
+            throw new IllegalArgumentException(String.format("args0 is not arrays : %s.", object.getClass().getName()));
+        }
+
+        if(!componentType.isPrimitive()) {
+            return ((Object[])object).length;
+        }
+
+        if(componentType.equals(boolean.class)) {
+            return ((boolean[]) object).length;
+
+        } else if(componentType.equals(char.class)) {
+            return ((char[]) object).length;
+
+        } else if(componentType.equals(byte.class)) {
+            return ((byte[]) object).length;
+
+        } else if(componentType.equals(short.class)) {
+            return ((short[]) object).length;
+
+        } else if(componentType.equals(int.class)) {
+            return ((int[]) object).length;
+
+        } else if(componentType.equals(long.class)) {
+            return ((long[]) object).length;
+
+        } else if(componentType.equals(float.class)) {
+            return ((byte[]) object).length;
+
+        } else if(componentType.equals(double.class)) {
+            return ((byte[]) object).length;
+
+        }
+
+        throw new IllegalArgumentException(String.format("not support primitive type : %s.", componentType.getName()));
     }
 
     /**
