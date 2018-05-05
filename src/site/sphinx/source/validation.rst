@@ -107,6 +107,7 @@ Validatorは、 ``ObjectValidatorSupport`` を継承して作成します。
                 }
             }
             
+            // レコードの要素の値の検証
             for(int i=0; i < targetObj.getHistory().size(); i++) {
                 // ネストしたBeanの検証の実行
                 // パスをネストする。リストの場合はインデックスを指定する。
@@ -176,6 +177,14 @@ Validatorは、 ``ObjectValidatorSupport`` を継承して作成します。
             
         }
     }
+
+
+.. note::
+    
+    アノテーション @XlsLabelledArray や @XlsArrayColumns などを使ってフィールドが配列やリストへにマッピングした値を検証する場合、 
+    ``ArrayCellField`` を使用します。 `[ver.2.0+]`
+    
+    使用方法は、CellFieldと変わりません。
 
 
 --------------------------------------------------------
