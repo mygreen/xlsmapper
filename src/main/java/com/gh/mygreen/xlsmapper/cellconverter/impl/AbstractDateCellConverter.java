@@ -12,6 +12,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellStyleProxy;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
+import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * 日時型のConverterの抽象クラス。
@@ -25,8 +26,15 @@ public abstract class AbstractDateCellConverter<T extends Date> extends BaseCell
 
     /**
      * 書き込み時のExcelのセルの書式
+     * <p>セルに書式が設定されていないときのデフォルトの書式
      */
-    private String excelPattern;
+    private String defaultExcelPattern;
+
+    /**
+     * アノテーションで書き込み時の指定されてたセルの書式
+     * <p>指定されない場合がある
+     */
+    private Optional<String> settingExcelPattern = Optional.empty();
 
     public AbstractDateCellConverter(FieldAccessor field, Configuration config) {
         super(field, config);
@@ -57,7 +65,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends BaseCell
 
         // 書式を設定する
         final CellStyleProxy cellStyle = new CellStyleProxy(cell);
-        cellStyle.setDataFormat(excelPattern);
+        cellStyle.setDataFormat(settingExcelPattern.orElse(null), defaultExcelPattern, getConfiguration().getCellFormatter());
 
         if(cellValue.isPresent()) {
             cell.setCellValue(cellValue.get());
@@ -76,11 +84,24 @@ public abstract class AbstractDateCellConverter<T extends Date> extends BaseCell
     protected abstract T convertTypeValue(Date date);
 
     /**
-     * Excelの書式を設定する
-     * @param excelPattern Excelの書式
+     * デフォルトのExcelの書式を設定する
+     * @param excelPattern デフォルトのExcelの書式
      */
-    public void setExcelPattern(String excelPattern) {
-        this.excelPattern = excelPattern;
+    public void setDefaultExcelPattern(String defaultExcelPattern) {
+        this.defaultExcelPattern = defaultExcelPattern;
+    }
+
+    /**
+     * アノテーションで指定されたExcelの書式を設定する。
+     * @param settingExcelPattern アノテーションで指定されたExcelの書式。空の場合もある。
+     */
+    public void setSettingExcelPattern(String settingExcelPattern) {
+
+        if(Utils.isEmpty(settingExcelPattern)) {
+            this.settingExcelPattern = Optional.empty();
+        } else {
+            this.settingExcelPattern = Optional.of(settingExcelPattern);
+        }
     }
 
 

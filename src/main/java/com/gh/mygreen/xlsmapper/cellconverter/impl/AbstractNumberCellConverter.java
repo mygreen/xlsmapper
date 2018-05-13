@@ -91,7 +91,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Base
         final CellStyleProxy cellStyle = new CellStyleProxy(cell);
 
         excelPattern.ifPresent(pattern -> {
-            cellStyle.setDataFormat(pattern);
+            cellStyle.setDataFormat(pattern, getConfiguration().getCellFormatter());
         });
 
         if(cellValue.isPresent()) {

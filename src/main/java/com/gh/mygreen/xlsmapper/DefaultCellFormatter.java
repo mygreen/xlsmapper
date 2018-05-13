@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.poi.ss.usermodel.Cell;
 
+import com.github.mygreen.cellformatter.FormatterResolver;
+import com.github.mygreen.cellformatter.POICell;
 import com.github.mygreen.cellformatter.POICellFormatter;
 
 
@@ -19,42 +21,42 @@ import com.github.mygreen.cellformatter.POICellFormatter;
  *
  */
 public class DefaultCellFormatter implements CellFormatter {
-    
+
     /**
      * 値をキャッシュするかどうか
      */
     private boolean cached;
-    
+
     /**
      * 値のキャッシュ
      */
     private Map<String, String> cacheData = new ConcurrentHashMap<>();
-    
+
     private POICellFormatter poiCellFormatter = new POICellFormatter();
-    
+
     @Override
     public void init(boolean cached) {
         setCached(cached);
         clearCacheData();
     }
-    
+
     @Override
     public String format(final Cell cell) {
         return format(cell, Locale.getDefault());
     }
-    
+
     @Override
     public String format(final Cell cell, final Locale locale) {
-        
+
         if(isCached()) {
             final String cachedKey = createKey(cell, locale);
             return cacheData.computeIfAbsent(cachedKey, key -> poiCellFormatter.formatAsString(cell, locale));
-            
+
         } else {
             return poiCellFormatter.formatAsString(cell, locale);
         }
     }
-    
+
     /**
      * キャッシュのキーを作成する。
      * @param cell
@@ -62,19 +64,19 @@ public class DefaultCellFormatter implements CellFormatter {
      * @return
      */
     private String createKey(final Cell cell, final Locale locale) {
-        
+
         if(cell == null) {
             return "empty_cell_value";
         }
-        
+
         StringBuilder sb = new StringBuilder();
         sb.append(":sheet=").append(cell.getSheet().getSheetName());
         sb.append(":address=").append(cell.getAddress().formatAsString());
         sb.append(":locale=").append(locale.toString());
-        
+
         return sb.toString();
     }
-    
+
     /**
      * POICellFormatterを取得する
      * @return
@@ -82,7 +84,7 @@ public class DefaultCellFormatter implements CellFormatter {
     public POICellFormatter getPoiCellFormatter() {
         return poiCellFormatter;
     }
-    
+
     /**
      * POICellFormatterを設定する。
      * @param poiCellFormatter
@@ -98,7 +100,7 @@ public class DefaultCellFormatter implements CellFormatter {
     public boolean isCached() {
         return cached;
     }
-    
+
     /**
      * 値をキャッシュするかどうか設定します。
      * @param cached trueのときキャッシュする。
@@ -106,12 +108,38 @@ public class DefaultCellFormatter implements CellFormatter {
     public void setCached(boolean cached) {
         this.cached = cached;
     }
-    
+
     /**
      * キャッシュをクリアします。
      */
     public void clearCacheData() {
         this.cacheData.clear();
     }
-    
+
+    @Override
+    public String getPattern(final Cell cell) {
+        return getPattern(cell, Locale.getDefault());
+    }
+
+    @Override
+    public String getPattern(final Cell cell, final Locale locale) {
+
+        final POICell poiCell = new POICell(cell);
+        final FormatterResolver formatterResolver = poiCellFormatter.getFormatterResolver();
+
+        final short formatIndex = poiCell.getFormatIndex();
+        final String formatPattern = poiCell.getFormatPattern();
+
+        if(formatterResolver.canResolve(formatIndex)) {
+            return formatterResolver.getFormatter(formatIndex).getPattern(locale);
+
+        } else if(formatterResolver.canResolve(formatPattern)) {
+            return formatterResolver.getFormatter(formatPattern).getPattern(locale);
+
+        } else {
+            return formatPattern;
+
+        }
+    }
+
 }

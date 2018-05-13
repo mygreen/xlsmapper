@@ -47,25 +47,24 @@ import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.CellFormatter;
 import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
-import com.github.mygreen.cellformatter.POICell;
 
 /**
  * Apache POIとJExcel APIの差を埋めるユーティリティクラス。
- * 
+ *
  * @version 2.0
  * @author T.TSUCHIE
  *
  */
 public class POIUtils {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(POIUtils.class);
-    
+
     /** 標準のセルフォーマッター */
     private static CellFormatter defaultCellFormatter = new DefaultCellFormatter();
-    
+
     /**
      * シートの種類を判定する。
-     * 
+     *
      * @since 2.0
      * @param sheet 判定対象のオブジェクト
      * @return シートの種類。不明な場合はnullを返す。
@@ -73,17 +72,17 @@ public class POIUtils {
      */
     public static SpreadsheetVersion getVersion(final Sheet sheet) {
         ArgUtils.notNull(sheet, "sheet");
-        
+
         if(sheet instanceof HSSFSheet) {
             return SpreadsheetVersion.EXCEL97;
-            
+
         } else if(sheet instanceof XSSFSheet) {
             return SpreadsheetVersion.EXCEL2007;
         }
-        
+
         return null;
     }
-    
+
     /**
      * シートの最大列数を取得する。
      * <p>{@literal jxl.Sheet.getColumns()}</p>
@@ -93,7 +92,7 @@ public class POIUtils {
      */
     public static int getColumns(final Sheet sheet) {
         ArgUtils.notNull(sheet, "sheet");
-        
+
         int minRowIndex = sheet.getFirstRowNum();
         int maxRowIndex = sheet.getLastRowNum();
         int maxColumnsIndex = 0;
@@ -102,19 +101,19 @@ public class POIUtils {
             if(row == null) {
                 continue;
             }
-            
+
             final int column = row.getLastCellNum();
             if(column > maxColumnsIndex) {
                 maxColumnsIndex = column;
             }
         }
-        
+
         return maxColumnsIndex;
     }
-    
+
     /**
      * シートの最大行数を取得する
-     * 
+     *
      * <p>{@literal jxl.Sheet.getRows()}</p>
      * @param sheet シートオブジェクト
      * @return 最大行数
@@ -124,7 +123,7 @@ public class POIUtils {
         ArgUtils.notNull(sheet, "sheet");
         return sheet.getLastRowNum() + 1;
     }
-    
+
     /**
      * シートから任意アドレスのセルを取得する。
      * @since 0.5
@@ -138,7 +137,7 @@ public class POIUtils {
         ArgUtils.notNull(address, "address");
         return getCell(sheet, address.x, address.y);
     }
-    
+
     /**
      * シートから任意アドレスのセルを取得する。
      * @since 1.4
@@ -152,10 +151,10 @@ public class POIUtils {
         ArgUtils.notNull(address, "address");
         return getCell(sheet, address.getColumn(), address.getRow());
     }
-    
+
     /**
      * シートから任意アドレスのセルを取得する。
-     * 
+     *
      * <p>{@literal jxl.Sheet.getCell(int column, int row)}</p>
      * @param sheet シートオブジェクト
      * @param column 列番号（0から始まる）
@@ -165,20 +164,20 @@ public class POIUtils {
      */
     public static Cell getCell(final Sheet sheet, final int column, final int row) {
         ArgUtils.notNull(sheet, "sheet");
-        
+
         Row rows = sheet.getRow(row);
         if(rows == null) {
             rows = sheet.createRow(row);
         }
-        
+
         Cell cell = rows.getCell(column);
         if(cell == null) {
             cell = rows.createCell(column, CellType.BLANK);
         }
-        
+
         return cell;
     }
-    
+
     /**
      * 任意の行のセルを全て取得する。
      * <p> {@literal jxl.Seet.getRow(int row)}</p>
@@ -190,7 +189,7 @@ public class POIUtils {
      */
     public static Cell[] getRow(final Sheet sheet, final int row) {
         ArgUtils.notNull(sheet, "sheet");
-        
+
         Row rows = sheet.getRow(row);
         if(rows == null) {
             rows = sheet.createRow(row);
@@ -204,10 +203,10 @@ public class POIUtils {
             }
             cells[i] = cell;
         }
-        
+
         return cells;
     }
-    
+
     /**
      * 任意の列のセルを全て取得する。
      * <p> {@literal jxl.Seet.getColumn(int col)}</p>
@@ -219,43 +218,43 @@ public class POIUtils {
      */
     public static Cell[] getColumn(final Sheet sheet, final int col) {
         ArgUtils.notNull(sheet, "sheet");
-        
+
         int maxRow = getRows(sheet);
         Cell[] cells = new Cell[maxRow];
         for(int i=0; i < maxRow; i++) {
             Row rows = sheet.getRow(i);
             if(rows == null) {
                 rows = sheet.createRow(i);
-                
+
             }
-            
+
             Cell cell = rows.getCell(col);
             if(cell == null) {
                 cell = rows.createCell(col, CellType.BLANK);
             }
-            
+
             cells[i] = cell;
         }
-        
+
         return cells;
     }
-    
+
     /**
      * フォーマッターを指定してセルの値を取得する
-     * 
+     *
      * @param cell
-     * @param cellFormatter 
+     * @param cellFormatter
      * @return フォーマットした文字列
      * @throws IllegalArgumentException {@literal cell or cellFormatter is null.}
      */
     public static String getCellContents(final Cell cell, final CellFormatter cellFormatter) {
         ArgUtils.notNull(cell, "cell");
         ArgUtils.notNull(cellFormatter, "cellFormatter");
-        
+
         return cellFormatter.format(cell);
-        
+
     }
-    
+
     /**
      * 指定してセルの値が空かどうか判定する。
      * <p>ブランクセルなどの判定は優先的に行う。</p>
@@ -265,22 +264,22 @@ public class POIUtils {
     public static boolean isEmptyCellContents(final Cell cell) {
         return isEmptyCellContents(cell, defaultCellFormatter);
     }
-    
+
     /**
      * フォーマッターを指定してセルの値が空かどうか判定する。
      * <p>ブランクセルなどの判定は優先的に行う。</p>
      * @param cell セル
-     * @param cellFormatter
+     * @param cellFormatter セルのフォーマッタ
      * @throws IllegalArgumentException {@literal  sheet == null or cellFormatter == null.}
      * @return
      */
     public static boolean isEmptyCellContents(final Cell cell, final CellFormatter cellFormatter) {
         ArgUtils.notNull(cell, "cell");
         ArgUtils.notNull(cellFormatter, "cellFormatter");
-        
+
         return getCellContents(cell, cellFormatter).isEmpty();
     }
-    
+
     /**
      * 指定した書式のインデックス番号を取得する。シートに存在しない場合は、新しく作成する。
      * @param sheet シート
@@ -292,33 +291,34 @@ public class POIUtils {
     public static short getDataFormatIndex(final Sheet sheet, final String pattern) {
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(pattern, "pattern");
-        
+
         return sheet.getWorkbook().getCreationHelper().createDataFormat().getFormat(pattern);
-        
+
     }
-    
+
     /**
      * セルに設定されている書式を取得する。
      * @since 1.1
      * @param cell セルのインスタンス。
+     * @param cellFormatter セルのフォーマッタ
      * @return 書式が設定されていない場合は、空文字を返す。
      *         cellがnullの場合も空文字を返す。
      *         標準の書式の場合も空文字を返す。
      */
-    public static String getCellFormatPattern(final Cell cell) {
+    public static String getCellFormatPattern(final Cell cell, final CellFormatter cellFormatter) {
         if(cell == null) {
             return "";
         }
-        
-        POICell poiCell = new POICell(cell);
-        if(poiCell.getFormatIndex() == 0) {
+
+        String pattern = cellFormatter.getPattern(cell);
+        if(pattern.equalsIgnoreCase("general")) {
             return "";
-        } else {
-            return poiCell.getFormatPattern();
         }
-        
+
+        return pattern;
+
     }
-    
+
     /**
      * 指定した範囲のセルを結合する。
      * @param sheet
@@ -331,25 +331,25 @@ public class POIUtils {
      */
     public static CellRangeAddress mergeCells(final Sheet sheet, int startCol, int startRow, int endCol, int endRow) {
         ArgUtils.notNull(sheet, "sheet");
-        
+
         // 結合先のセルの値を空に設定する
         for(int r=startRow; r <= endRow; r++) {
             for(int c=startCol; c <= endCol; c++) {
-                
+
                 if(r == startRow && c == startCol) {
                     continue;
                 }
-                
+
                 Cell cell = getCell(sheet, c, r);
                 cell.setCellType(CellType.BLANK);
             }
         }
-        
+
         final CellRangeAddress range = new CellRangeAddress(startRow, endRow, startCol, endCol);
         sheet.addMergedRegion(range);
         return range;
     }
-    
+
     /**
      * 指定したセルのアドレスの結合情報を取得する。
      * @since 0.5
@@ -360,7 +360,7 @@ public class POIUtils {
      */
     public static CellRangeAddress getMergedRegion(final Sheet sheet, final int rowIdx, final int colIdx) {
         ArgUtils.notNull(sheet, "sheet");
-        
+
         final int num = sheet.getNumMergedRegions();
         for(int i=0; i < num; i ++) {
             final CellRangeAddress range = sheet.getMergedRegion(i);
@@ -368,10 +368,10 @@ public class POIUtils {
                 return range;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * 指定した範囲の結合を解除する。
      * @param sheet
@@ -381,9 +381,9 @@ public class POIUtils {
     public static boolean removeMergedRange(final Sheet sheet, final CellRangeAddress mergedRange) {
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notNull(mergedRange, "mergedRange");
-        
+
         final String mergedAddress = mergedRange.formatAsString(sheet.getSheetName(), true);
-        
+
         final int num = sheet.getNumMergedRegions();
         for(int i=0; i < num; i ++) {
             final CellRangeAddress range = sheet.getMergedRegion(i);
@@ -393,13 +393,13 @@ public class POIUtils {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * 領域の列サイズ（横セル数）を計算します。
-     * 
+     *
      * @since 2.0
      * @param region 領域
      * @return 列サイズ（横セル数）。引数がnullの時は、0を返します。
@@ -410,10 +410,10 @@ public class POIUtils {
         }
         return region.getLastColumn() - region.getFirstColumn() + 1;
     }
-    
+
     /**
      * 領域の行サイズ（行セル数）を計算します。
-     * 
+     *
      * @since 2.0
      * @param region 領域
      * @return 行サイズ（行セル数）。引数がnullの時は、0を返します。
@@ -424,7 +424,7 @@ public class POIUtils {
         }
         return region.getLastRow() - region.getFirstRow() + 1;
     }
-    
+
     /**
      * 指定した行の下に行を1行追加する
      * @param sheet
@@ -432,21 +432,21 @@ public class POIUtils {
      * @return 追加した行を返す。
      */
     public static Row insertRow(final Sheet sheet, final int rowIndex) {
-        
+
         ArgUtils.notNull(sheet, "cell");
         ArgUtils.notMin(rowIndex, 0, "rowIndex");
-        
+
         // 最終行を取得する
         int lastRow = sheet.getLastRowNum();
         if(lastRow < rowIndex) {
             // データが定義されている範囲害の場合は、行を新たに作成して返す。
             return sheet.createRow(rowIndex);
         }
-        
+
         sheet.shiftRows(rowIndex, lastRow+1, 1);
         return sheet.createRow(rowIndex);
     }
-    
+
     /**
      * 指定した行を削除する。
      * <p>削除した行は上に詰める。
@@ -456,30 +456,30 @@ public class POIUtils {
      * @return 削除した行
      */
     public static Row removeRow(final Sheet sheet, final int rowIndex) {
-        
+
         ArgUtils.notNull(sheet, "cell");
         ArgUtils.notMin(rowIndex, 0, "rowIndex");
-        
+
         final Row row = sheet.getRow(rowIndex);
         if(row == null) {
             // 削除対象の行にデータが何もない場合
             return row;
         }
-        
+
         sheet.removeRow(row);
-        
+
         // 上に1つ行をずらす
         int lastRow = sheet.getLastRowNum();
         if(rowIndex +1 > lastRow) {
             return row;
         }
-        
+
         sheet.shiftRows(rowIndex+1, lastRow, -1);
-        
+
         return row;
     }
-    
-    
+
+
     /**
      * 座標をExcelのアドレス形式'A1'などに変換する
      * @param rowIndex 行インデックス
@@ -489,7 +489,7 @@ public class POIUtils {
     public static String formatCellAddress(final int rowIndex, final int colIndex) {
         return CellReference.convertNumToColString(colIndex) + String.valueOf(rowIndex+1);
     }
-    
+
     /**
      * 座標をExcelのアドレス形式'A1'になどに変換する。
      * @param cellAddress セルの位置情報
@@ -500,7 +500,7 @@ public class POIUtils {
         ArgUtils.notNull(cellAddress, "cellAddress");
         return formatCellAddress(cellAddress.y, cellAddress.x);
     }
-    
+
     /**
      * セルのアドレス'A1'を取得する。
      * @param cell セル情報
@@ -510,7 +510,7 @@ public class POIUtils {
         ArgUtils.notNull(cell, "cell");
         return CellReference.convertNumToColString(cell.getColumnIndex()) + String.valueOf(cell.getRowIndex()+1);
     }
-    
+
     /**
      * リンクのアドレスを判定する。
      * @param linkAddress リンクのアドレス（URL）
@@ -518,35 +518,35 @@ public class POIUtils {
      * @throws IllegalArgumentException linkAddress が空文字の場合。
      */
     public static HyperlinkType judgeLinkType(final String linkAddress) {
-        
+
         ArgUtils.notEmpty(linkAddress, "linkAddress");
-        
+
         if(linkAddress.matches(".*![\\p{Alnum}]+")) {
             // !A1のアドレスを含むかどうか
             return HyperlinkType.DOCUMENT;
-            
+
         } else if(linkAddress.matches("[\\p{Alpha}]+[0-9]+")) {
             // A1の通常のアドレスの形式
             return HyperlinkType.DOCUMENT;
-            
+
         } else if(linkAddress.matches(".+@.+")) {
             // @を含むかどうか
             return HyperlinkType.EMAIL;
-            
+
         } else if(linkAddress.matches("[\\p{Alpha}]+://.+")) {
             // プロトコル付きかどうか
             return HyperlinkType.URL;
-            
+
         } else if(linkAddress.matches(".+\\.[\\p{Alnum}]+")) {
             // 拡張子付きかどうか
             return HyperlinkType.FILE;
-            
+
         } else {
             return HyperlinkType.NONE;
         }
-        
+
     }
-    
+
     /**
      * 入力規則の範囲を更新する。
      * @since 0.5
@@ -557,102 +557,102 @@ public class POIUtils {
      */
     public static boolean updateDataValidationRegion(final Sheet sheet,
             final CellRangeAddressList oldRegion, final CellRangeAddressList newRegion) {
-        
+
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notNull(oldRegion, "oldRegion");
         ArgUtils.notNull(newRegion, "newRegion");
-        
+
         if(sheet instanceof XSSFSheet) {
-            
+
             final List<String> oldSqref = convertSqref(oldRegion);
-            
+
             try {
                 final XSSFSheet xssfSheet = (XSSFSheet) sheet;
                 Field fWorksheet = XSSFSheet.class.getDeclaredField("worksheet");
                 fWorksheet.setAccessible(true);
                 CTWorksheet worksheet = (CTWorksheet) fWorksheet.get(xssfSheet);
-                
+
                 CTDataValidations dataValidations = worksheet.getDataValidations();
                 if(dataValidations == null) {
                     return false;
                 }
-                
+
                 for(int i=0; i < dataValidations.getCount(); i++) {
                     CTDataValidation dv = dataValidations.getDataValidationArray(i);
-                    
+
                     // 規則の範囲を比較し、同じならば範囲を書き換える。
                     @SuppressWarnings("unchecked")
                     List<String> sqref = new ArrayList<>(dv.getSqref());
                     if(equalsSqref(sqref, oldSqref)) {
                         List<String> newSqref = convertSqref(newRegion);
                         dv.setSqref(newSqref);
-                        
+
                         // 設定し直す
                         dataValidations.setDataValidationArray(i, dv);
                         return true;
                     }
-                    
+
                 }
-                
+
                 return false;
-                
+
             } catch(Exception e) {
                 throw new RuntimeException("fail update DataValidation's Regsion.", e);
             }
-            
+
         } else if(sheet instanceof HSSFSheet) {
-            
+
             final HSSFSheet hssfSheet = (HSSFSheet) sheet;
             try {
                 Field fWorksheet = HSSFSheet.class.getDeclaredField("_sheet");
                 fWorksheet.setAccessible(true);
                 InternalSheet worksheet = (InternalSheet) fWorksheet.get(hssfSheet);
-                
+
                 DataValidityTable dvt = worksheet.getOrCreateDataValidityTable();
-                
+
                 // シート内の入力規則のデータを検索して、一致するものがあれば書き換える。
                 final AtomicBoolean updated = new AtomicBoolean(false);
                 RecordVisitor visitor = new RecordVisitor() {
-                    
+
                     @Override
                     public void visitRecord(final Record r) {
                         if (!(r instanceof DVRecord)) {
                             return;
                         }
-                        
+
                         final DVRecord dvRecord = (DVRecord) r;
                         final CellRangeAddressList region = dvRecord.getCellRangeAddress();
                         if(equalsRegion(region, oldRegion)) {
-                            
+
                             // 一旦既存の範囲を削除する。
                             while(region.countRanges() != 0) {
                                 region.remove(0);
                             }
-                            
+
                             // 新しい範囲を追加する。
                             for(CellRangeAddress newRange : newRegion.getCellRangeAddresses()) {
                                 region.addCellRangeAddress(newRange);
                             }
-                            
+
                             updated.set(true);
                             return;
                         }
                     }
                 };
-                
+
                 dvt.visitContainedRecords(visitor);
-                
+
                 return updated.get();
-                
+
             } catch(Exception e) {
                 throw new RuntimeException("fail update DataValidation's Regsion.", e);
             }
         } else {
             throw new UnsupportedOperationException("not supported update dava validation's region for type " + sheet.getClass().getName());
         }
-        
+
     }
-    
+
     /**
      * CellRangeAddressを文字列形式のリストに変換する。
      * @since 0.5
@@ -660,16 +660,16 @@ public class POIUtils {
      * @return
      */
     private static List<String> convertSqref(final CellRangeAddressList region) {
-        
+
         List<String> sqref = new ArrayList<>();
         for(CellRangeAddress range : region.getCellRangeAddresses()) {
             sqref.add(range.formatAsString());
         }
-        
+
         return sqref;
-        
+
     }
-    
+
     /**
      * 文字列形式のセルの範囲が同じかどうか比較する。
      * @since 0.5
@@ -678,25 +678,25 @@ public class POIUtils {
      * @return
      */
     public static boolean equalsSqref(final List<String> sqref1, final List<String> sqref2) {
-        
+
         if(sqref1.size() != sqref2.size()) {
             return false;
         }
-        
+
         Collections.sort(sqref1);
         Collections.sort(sqref2);
-        
+
         final int size = sqref1.size();
         for(int i=0; i < size; i++) {
             if(!sqref1.get(i).equals(sqref2.get(i))) {
                 return false;
             }
         }
-        
+
         return true;
-        
+
     }
-    
+
     /**
      * 文字列形式のセルの範囲が同じかどうか比較する。
      * @since 0.5
@@ -705,11 +705,11 @@ public class POIUtils {
      * @return
      */
     public static boolean equalsRegion(final CellRangeAddressList region1, final CellRangeAddressList region2) {
-        
+
         return equalsSqref(convertSqref(region1), convertSqref(region2));
-        
+
     }
-    
+
     /**
      * テンプレートの入力規則の制約「リスト」を追加する。
      * <p>POI-3.7以上が必要。
@@ -720,16 +720,16 @@ public class POIUtils {
      */
     public static void setupExplicitListConstaint(final Sheet sheet, final Collection<String> constraints,
             final Point startPosition, final Point endPosition) {
-        
+
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(constraints, "constraints");
         ArgUtils.notNull(startPosition, "startPosition");
         ArgUtils.notNull(endPosition, "endPosition");
-        
+
         setupExplicitListConstaint(sheet, constraints.toArray(new String[constraints.size()]),
                 startPosition, endPosition);
     }
-        
+
     /**
      * テンプレートの入力規則の制約「リスト」を追加する。
      * <p>POI-3.7以上が必要。
@@ -740,18 +740,18 @@ public class POIUtils {
      */
     public static void setupExplicitListConstaint(final Sheet sheet, final String[] constraints,
             final Point startPosition, final Point endPosition) {
-        
+
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(constraints, "constraints");
         ArgUtils.notNull(startPosition, "startPosition");
         ArgUtils.notNull(endPosition, "endPosition");
-        
+
         final DataValidationHelper helper = sheet.getDataValidationHelper();
         final DataValidationConstraint constraint = helper.createExplicitListConstraint(constraints);
         setupConstaint(sheet, constraint, startPosition, endPosition);
-        
+
     }
-    
+
     /**
      * テンプレートの入力規則の制約「リスト」を式形式で追加する。
      * <p>POI-3.7以上が必要。
@@ -762,17 +762,17 @@ public class POIUtils {
      */
     public static void setupFormulaListConstaint(final Sheet sheet, final String listFormula,
             final Point startPosition, final Point endPosition) {
-        
+
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(listFormula, "listFormula");
         ArgUtils.notNull(startPosition, "startPosition");
         ArgUtils.notNull(endPosition, "endPosition");
-        
+
         final DataValidationHelper helper = sheet.getDataValidationHelper();
         final DataValidationConstraint constraint = helper.createFormulaListConstraint("=" + listFormula);
         setupConstaint(sheet, constraint, startPosition, endPosition);
     }
-    
+
     /**
      * 指定した範囲のセルに制約を追加する。
      * <p>POI-3.7以上が必要。
@@ -783,14 +783,14 @@ public class POIUtils {
      */
     public static void setupConstaint(final Sheet sheet, final DataValidationConstraint constraint,
             final Point startPosition, final Point endPosition) {
-        
+
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notNull(constraint, "constraint");
         ArgUtils.notNull(startPosition, "startPosition");
         ArgUtils.notNull(endPosition, "endPosition");
-        
+
         final DataValidationHelper helper = sheet.getDataValidationHelper();
-        
+
         final CellRangeAddressList region = new CellRangeAddressList(
                 startPosition.y, endPosition.y,
                 startPosition.x, endPosition.x
@@ -798,7 +798,7 @@ public class POIUtils {
         final DataValidation dataValidation = helper.createValidation(constraint, region);
         sheet.addValidationData(dataValidation);
     }
-    
+
     /**
      * 指定した範囲の名前を登録する。
      * <p>POI-3.7以上が必要。
@@ -811,27 +811,27 @@ public class POIUtils {
      */
     public static Name defineName(final Sheet sheet, final String name,
             final Point startPosition, final Point endPosition) {
-        
+
         ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notEmpty(name, "name");
         ArgUtils.notNull(startPosition, "startPosition");
         ArgUtils.notNull(endPosition, "endPosition");
-        
+
         final Workbook workbook = sheet.getWorkbook();
         Name nameObj = workbook.getName(name);
         if(nameObj == null) {
             nameObj = workbook.createName();
             nameObj.setNameName(name);
         }
-        
+
         final AreaReference areaRef = buildNameArea(sheet.getSheetName(), startPosition, endPosition,
                 sheet.getWorkbook().getSpreadsheetVersion());
         nameObj.setRefersToFormula(areaRef.formatAsString());
-        
+
         return nameObj;
-        
+
     }
-    
+
     /**
      * 名前の範囲の形式を組み立てる。
      * <code>シート名!$A$1:$A:$5</code>
@@ -843,17 +843,17 @@ public class POIUtils {
      */
     public static AreaReference buildNameArea(final String sheetName,
             final Point startPosition, final Point endPosition, SpreadsheetVersion sheetVersion) {
-        
+
         ArgUtils.notEmpty(sheetName, "sheetName");
         ArgUtils.notNull(startPosition, "startPosition");
         ArgUtils.notNull(endPosition, "endPosition");
-        
+
         final CellReference firstRefs = new CellReference(sheetName, startPosition.y, startPosition.x, true, true);
         final CellReference lastRefs = new CellReference(sheetName, endPosition.y, endPosition.x, true, true);
-        
+
         return new AreaReference(firstRefs, lastRefs, sheetVersion);
     }
-    
+
     /**
      * セルの範囲が重複（交錯）しているかどうか判定する。
      * <p>このメソッドは、POI-3.14で追加されたメソッド{@literal Sheet#intersects(...)}と後方互換性を保つためのもの。</p>
@@ -868,7 +868,7 @@ public class POIUtils {
                 other.getFirstRow() <= my.getLastRow() &&
                 other.getFirstColumn() <= my.getLastColumn();
     }
-    
+
     /**
      * 日時の開始日が1904年かどうか。
      * 通常は、1900年始まり。
@@ -876,15 +876,15 @@ public class POIUtils {
      * @return trueの場合は、1904年始まり。falseの場合は、1900年始まり。
      */
     public static boolean isDateStart1904(final Workbook workbook) {
-        
+
         if(workbook instanceof HSSFWorkbook) {
             try {
                 Method method = HSSFWorkbook.class.getDeclaredMethod("getWorkbook");
                 method.setAccessible(true);
-                
+
                 InternalWorkbook iw = (InternalWorkbook) method.invoke(workbook);
                 return iw.isUsing1904DateWindowing();
-                
+
             } catch(NoSuchMethodException | SecurityException e) {
                 logger.warn("fail access method HSSFWorkbook.getWorkbook.", e);
                 return false;
@@ -892,15 +892,15 @@ public class POIUtils {
                 logger.warn("fail invoke method HSSFWorkbook.getWorkbook.", e);
                 return false;
             }
-            
+
         } else if(workbook instanceof XSSFWorkbook) {
             try {
                 Method method = XSSFWorkbook.class.getDeclaredMethod("isDate1904");
                 method.setAccessible(true);
-                
+
                 boolean value = (boolean) method.invoke(workbook);
                 return value;
-                
+
             } catch(NoSuchMethodException | SecurityException e) {
                 logger.warn("fail access method XSSFWorkbook.isDate1904.", e);
                 return false;
@@ -908,50 +908,33 @@ public class POIUtils {
                 logger.warn("fail invoke method XSSFWorkbook.isDate1904.", e);
                 return false;
             }
-            
+
         } else {
             logger.warn("unknown workbook type.", workbook.getClass().getName());
         }
-        
+
         return false;
     }
-    
-    /**
-     * セルの書式のパターンを新たに設定する。
-     * <p>書式以外のスタイルはそのままコピーする。</p>
-     * <p>既に定義済みのパターンの場合は、それを利用する。</p>
-     * 
-     * @since 2.0
-     * @param cell 変更対象のセル
-     * @param formatPattern 書式のパターン
-     */
-    public static void setupCellFormat(final Cell cell, final String formatPattern) {
-        
-        CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
-        style.cloneStyleFrom(cell.getCellStyle());
-        style.setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), formatPattern));
-        cell.setCellStyle(style);
-    }
-    
+
     /**
      * 結合を考慮してセルの罫線（上部）を取得する。
-     * 
+     *
      * @param cell セル
      * @return {@literal BorderStyle}
      * @throws IllegalArgumentException {@literal cell is null.}
      */
     public static BorderStyle getBorderTop(final Cell cell) {
-        
+
         ArgUtils.notNull(cell, "cell");
-        
+
         final Sheet sheet = cell.getSheet();
         CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
-        
+
         final Cell target;
         if(mergedRegion == null) {
             // 結合されていない場合
             target = cell;
-            
+
         } else {
             if(mergedRegion.getFirstRow() == cell.getRowIndex()) {
                 // 引数のCellが上部のセルの場合
@@ -959,37 +942,37 @@ public class POIUtils {
             } else {
                 target = getCell(sheet, cell.getColumnIndex(), mergedRegion.getFirstRow());
             }
-            
+
         }
-        
+
         final CellStyle style = target.getCellStyle();
         if(style == null) {
             return BorderStyle.NONE;
         } else {
             return style.getBorderTopEnum();
         }
-        
+
     }
-    
+
     /**
      * 結合を考慮してセルの罫線（下部）を取得する。
-     * 
+     *
      * @param cell セル
      * @return {@literal BorderStyle}
      * @throws IllegalArgumentException {@literal cell is null.}
      */
     public static BorderStyle getBorderBottom(final Cell cell) {
-        
+
         ArgUtils.notNull(cell, "cell");
-        
+
         final Sheet sheet = cell.getSheet();
         CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
-        
+
         final Cell target;
         if(mergedRegion == null) {
             // 結合されていない場合
             target = cell;
-            
+
         } else {
             if(mergedRegion.getLastRow() == cell.getRowIndex()) {
                 // 引数のCellが下部のセルの場合
@@ -997,37 +980,37 @@ public class POIUtils {
             } else {
                 target = getCell(sheet, cell.getColumnIndex(), mergedRegion.getLastRow());
             }
-            
+
         }
-        
+
         final CellStyle style = target.getCellStyle();
         if(style == null) {
             return BorderStyle.NONE;
         } else {
             return style.getBorderBottomEnum();
         }
-        
+
     }
-    
+
     /**
      * 結合を考慮してセルの罫線（左部）を取得する。
-     * 
+     *
      * @param cell セル
      * @return {@literal BorderStyle}
      * @throws IllegalArgumentException {@literal cell is null.}
      */
     public static BorderStyle getBorderRight(final Cell cell) {
-        
+
         ArgUtils.notNull(cell, "cell");
-        
+
         final Sheet sheet = cell.getSheet();
         CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
-        
+
         final Cell target;
         if(mergedRegion == null) {
             // 結合されていない場合
             target = cell;
-            
+
         } else {
             if(mergedRegion.getLastColumn() == cell.getColumnIndex()) {
                 // 引数のCellが右部のセルの場合
@@ -1035,37 +1018,37 @@ public class POIUtils {
             } else {
                 target = getCell(sheet, mergedRegion.getLastColumn(), cell.getRowIndex());
             }
-            
+
         }
-        
+
         final CellStyle style = target.getCellStyle();
         if(style == null) {
             return BorderStyle.NONE;
         } else {
             return style.getBorderRightEnum();
         }
-        
+
     }
-    
+
     /**
      * 結合を考慮してセルの罫線（右部）を取得する。
-     * 
+     *
      * @param cell セル
      * @return {@literal BorderStyle}
      * @throws IllegalArgumentException {@literal cell is null.}
      */
     public static BorderStyle getBorderLeft(final Cell cell) {
-        
+
         ArgUtils.notNull(cell, "cell");
-        
+
         final Sheet sheet = cell.getSheet();
         CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
-        
+
         final Cell target;
         if(mergedRegion == null) {
             // 結合されていない場合
             target = cell;
-            
+
         } else {
             if(mergedRegion.getFirstColumn() == cell.getColumnIndex()) {
                 // 引数のCellが左部のセルの場合
@@ -1073,18 +1056,18 @@ public class POIUtils {
             } else {
                 target = getCell(sheet, mergedRegion.getFirstColumn(), cell.getRowIndex());
             }
-            
+
         }
-        
+
         final CellStyle style = target.getCellStyle();
         if(style == null) {
             return BorderStyle.NONE;
         } else {
             return style.getBorderLeftEnum();
         }
-        
+
     }
-    
+
     /**
      * ハイパーリンクを取得する。
      * <p>結合されているセルの場合にも対応。
@@ -1093,30 +1076,30 @@ public class POIUtils {
      * @throws IllegalArgumentException {@literal cell is null.}
      */
     public static Hyperlink getHyperlink(final Cell cell) {
-        
+
         ArgUtils.notNull(cell, "cell");
-        
+
         Hyperlink link = cell.getHyperlink();
         if(link != null) {
             return link;
         }
-        
+
         final Sheet sheet = cell.getSheet();
         CellRangeAddress mergedRange = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
         if(mergedRange == null) {
             return null;
         }
-        
+
         for(Hyperlink item : sheet.getHyperlinkList()) {
             if(item.getFirstRow() == mergedRange.getFirstRow()
                     && item.getFirstColumn() == mergedRange.getFirstColumn()) {
                 return item;
             }
-            
+
         }
-        
+
         return null;
-        
+
     }
-    
+
 }

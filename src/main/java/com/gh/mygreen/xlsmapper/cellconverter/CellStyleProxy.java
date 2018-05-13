@@ -5,8 +5,10 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
+import com.gh.mygreen.xlsmapper.CellFormatter;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * セルのスタイルを管理するクラス。
@@ -136,9 +138,9 @@ public class CellStyleProxy {
      * 書式を設定する
      * @param pattern 書式
      */
-    public void setDataFormat(final String pattern) {
+    public void setDataFormat(final String pattern, final CellFormatter cellFormatter) {
 
-        String currentPattern = POIUtils.getCellFormatPattern(cell);
+        String currentPattern = POIUtils.getCellFormatPattern(cell, cellFormatter);
         if(currentPattern.equalsIgnoreCase(pattern)) {
             // 既に書式が同じ場合
             return;
@@ -146,6 +148,32 @@ public class CellStyleProxy {
 
         cloneStyle();
         cell.getCellStyle().setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), pattern));
+
+    }
+
+    /**
+     * 書式を設定する。
+     * <p>設定使用とする書式がない場合は、セルの書式を優先する。
+     *  <br>ただし、セルの書式も内場合は、デフォルトの書式を設定する。
+     * </p>
+     *
+     * @param settingPattern 設定しようとする書式(空の場合がある)
+     * @param defaultPattern デフォルトの書式
+     */
+    public void setDataFormat(final String settingPattern, final String defaultPattern,
+            final CellFormatter cellFormatter) {
+
+        String currentPattern = POIUtils.getCellFormatPattern(cell, cellFormatter);
+
+        if(Utils.isNotEmpty(settingPattern)) {
+            // アノテーションで書式が指定されている場合、更新する
+            setDataFormat(settingPattern, cellFormatter);
+
+        } else if(currentPattern.isEmpty() || currentPattern.equalsIgnoreCase("general")) {
+            // セルの書式が設定されていない場合、デフォルトの値で更新する
+            setDataFormat(defaultPattern, cellFormatter);
+
+        }
 
     }
 
