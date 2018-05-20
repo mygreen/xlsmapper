@@ -12,6 +12,7 @@ import com.gh.mygreen.xlsmapper.cellconverter.CellStyleProxy;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
@@ -68,7 +69,8 @@ public abstract class AbstractDateCellConverter<T extends Date> extends BaseCell
         cellStyle.setDataFormat(settingExcelPattern.orElse(null), defaultExcelPattern, getConfiguration().getCellFormatter());
 
         if(cellValue.isPresent()) {
-            cell.setCellValue(cellValue.get());
+            boolean isStartDate1904 = POIUtils.isDateStart1904(cell.getSheet().getWorkbook());
+            POIUtils.setCellValueAsDate(cell, cellValue.get(), isStartDate1904);
 
         } else {
             cell.setCellType(CellType.BLANK);

@@ -7,7 +7,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.poi.common.usermodel.HyperlinkType;
@@ -47,6 +49,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.CellFormatter;
 import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
+import com.github.mygreen.cellformatter.lang.ExcelDateUtils;
 
 /**
  * Apache POIとJExcel APIの差を埋めるユーティリティクラス。
@@ -1099,6 +1102,47 @@ public class POIUtils {
         }
 
         return null;
+
+    }
+
+    /**
+     * {@literal 1900-01-01 00:00:00.000}の時間（単位はミリ秒）。
+     * <p>Excelは設定により、1900年始まりか1904年始まりか指定できるため、その基準値として利用する。
+     */
+    public static final long MILLISECONDS_19000101_END = ExcelDateUtils.parseDate("1900-01-01 23:59:54.999").getTime();
+
+    /**
+     * セルに日時を設定する。
+     * <p>1900年1月0日となる経過時間指定の場合は、POIのバグにより設定できあいため、数値として設定する。</p>
+     *
+     * @param cell 設定するセル
+     * @param date セルに設定する日時
+     * @param dateStart1904 1904年始まりの設定のシートかどうか
+     */
+    public static void setCellValueAsDate(Cell cell, Date date, boolean dateStart1904) {
+
+        ArgUtils.notNull(cell, "cell");
+        ArgUtils.notNull(date, "date");
+
+        if(dateStart1904) {
+            // 1904年始まりの場合は、そのまま設定する
+            cell.setCellValue(date);
+
+        } else {
+
+            long timemills = date.getTime();
+            if(timemills <= MILLISECONDS_19000101_END) {
+                // 1900年1月0日の場合は、数値に変換してから設定する
+                // タイムゾーンを除去する
+                Date strip = new Date(date.getTime() + TimeZone.getDefault().getRawOffset());
+                double num = ExcelDateUtils.convertExcelNumber(strip, dateStart1904);
+                cell.setCellValue(num);
+
+            } else {
+                cell.setCellValue(date);
+            }
+
+        }
 
     }
 

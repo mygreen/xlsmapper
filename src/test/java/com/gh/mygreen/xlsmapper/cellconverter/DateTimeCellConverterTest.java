@@ -117,6 +117,7 @@ public class DateTimeCellConverterTest {
             assertThat(record.calendar, is(toCalendar(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlTime, is(toSqlTime(toTimestamp("2015-01-02 03:45:06.000"))));
+            assertThat(record.sqlTime, is(toSqlTime(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.timestamp, is(toTimestamp("2015-01-02 03:45:06.000")));
 
         } else if(record.no == 3) {
@@ -124,7 +125,7 @@ public class DateTimeCellConverterTest {
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.calendar, is(toCalendar(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2015-01-02 00:00:00.000"))));
-            assertThat(record.sqlTime, is(toSqlTime(toTimestamp("1970-01-01 03:45:06.000"))));
+            assertThat(record.sqlTime, is(toSqlTime(toTimestamp("1899-12-31 03:45:06.000"))));
             assertThat(record.timestamp, is(toTimestamp("2015-01-02 03:45:06.000")));
 
         } else if(record.no == 4) {
@@ -211,7 +212,7 @@ public class DateTimeCellConverterTest {
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2000-12-31 03:41:12"))));
             assertThat(record.calendar, is(toCalendar(toTimestamp("2000-12-31 03:41:12"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2000-12-31 00:00:00.000"))));
-            assertThat(record.sqlTime, is(toSqlDate(toTimestamp("1970-01-01 00:00:00.000"))));
+            assertThat(record.sqlTime, is(toSqlDate(toTimestamp("1899-12-31 00:00:00.000"))));
             assertThat(record.timestamp, is(toTimestamp("1999-12-31 10:12:00.000")));
 
         } else if(record.no == 2) {
@@ -219,7 +220,7 @@ public class DateTimeCellConverterTest {
             assertThat(record.utilDate, is(toUtilDate(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.calendar, is(toCalendar(toTimestamp("2015-01-02 03:45:06.000"))));
             assertThat(record.sqlDate, is(toSqlDate(toTimestamp("2015-12-31 00:00:00.000"))));
-            assertThat(record.sqlTime, is(toSqlTime(toTimestamp("1970-01-01 12:03:00.000"))));
+            assertThat(record.sqlTime, is(toSqlTime(toTimestamp("1899-12-31 12:03:00.000"))));
             assertThat(record.timestamp, is(toTimestamp("2015-01-02 03:45:00.000")));
 
         } else if(record.no == 3) {
@@ -310,7 +311,7 @@ public class DateTimeCellConverterTest {
             .utilDate(toUtilDate(toTimestamp("2015-01-02 03:45:06.000")))
             .calendar(toCalendar(toTimestamp("2015-01-02 03:45:06.000")))
             .sqlDate(toSqlDate(toTimestamp("2015-01-02 03:45:06.000")))
-            .sqlTime(toSqlTime(toTimestamp("2015-01-02 03:45:06.000")))
+            .sqlTime(toSqlTime(toTimestamp("1899-12-31 03:45:06.000")))
             .timestamp(toTimestamp("2015-01-02 03:45:06.000"))
             .comment("日時"));
 
@@ -322,7 +323,7 @@ public class DateTimeCellConverterTest {
                 .utilDate(toUtilDate(toTimestamp("2015-01-02 03:45:06.000")))
                 .calendar(toCalendar(toTimestamp("2015-01-02 03:45:06.000")))
                 .sqlDate(toSqlDate(toTimestamp("2015-01-02 03:45:06.000")))
-                .sqlTime(toSqlTime(toTimestamp("2015-01-02 03:45:06.000")))
+                .sqlTime(toSqlTime(toTimestamp("1899-12-31 03:45:06.000")))
                 .timestamp(toTimestamp("2015-01-02 03:45:06.000"))
                 .comment("日時"));
 
@@ -411,7 +412,7 @@ public class DateTimeCellConverterTest {
             assertThat(inRecord.utilDate, is(toUtilDate(toTimestamp("2000-12-31 03:41:12.000"))));
             assertThat(inRecord.calendar, is(toCalendar(toTimestamp("2000-12-31 03:41:12.000"))));
             assertThat(inRecord.sqlDate, is(toSqlDate(toTimestamp("2000-12-31 00:00:00.000"))));
-            assertThat(inRecord.sqlTime, is(toSqlTime(toTimestamp("1970-01-01 00:00:00.000"))));
+            assertThat(inRecord.sqlTime, is(toSqlTime(toTimestamp("1899-12-31 00:00:00.000"))));
             assertThat(inRecord.timestamp, is(toTimestamp("1999-12-31 10:12:00.000")));
             assertThat(inRecord.comment, is(outRecord.comment));
 

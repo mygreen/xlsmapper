@@ -61,8 +61,7 @@ public abstract class AbstractDateCellConverterFactory<T extends Date> extends C
             @Override
             public T parse(final String text) {
                 try {
-                    Date date = formatter.parse(text);
-                    return convertTypeValue(date);
+                    return parseString(formatter, text);
 
                 } catch(ParseException e) {
                     final Map<String, Object> vars = new HashMap<>();
@@ -79,6 +78,18 @@ public abstract class AbstractDateCellConverterFactory<T extends Date> extends C
             }
         };
 
+    }
+
+    /**
+     * 文字列をパースして対応するオブジェクトに変換する
+     * @param formatter フォーマッタ
+     * @param text パース対象の文字列
+     * @return パースした結果
+     * @throws ParseException
+     */
+    protected T parseString(final DateFormat formatter, final String text) throws ParseException {
+        Date date = formatter.parse(text);
+        return convertTypeValue(date);
     }
 
     /**

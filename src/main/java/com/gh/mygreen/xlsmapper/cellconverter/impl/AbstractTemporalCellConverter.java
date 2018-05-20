@@ -73,7 +73,7 @@ public abstract class AbstractTemporalCellConverter<T extends TemporalAccessor &
         if(cellValue.isPresent()) {
             boolean isStartDate1904 = POIUtils.isDateStart1904(cell.getSheet().getWorkbook());
             Date date = convertToDate(cellValue.get(), isStartDate1904);
-            cell.setCellValue(date);
+            POIUtils.setCellValueAsDate(cell, date, isStartDate1904);
 
         } else {
             cell.setCellType(CellType.BLANK);
