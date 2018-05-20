@@ -876,4 +876,73 @@ public class Utils {
         return array.clone();
     }
 
+    /**
+     * 読み込み処理のケースか判定する。
+     * <p>ケースが指定されていないときは、該当すると判定する。</p>
+     * @since 2.0
+     * @param cases 判定対象のケース
+     * @return trueのとき、読み込み対象と判定する。
+     */
+    public static boolean isLoadCase(final ProcessCase[] cases) {
+
+        if(cases == null || cases.length == 0) {
+            return true;
+        }
+
+        for(ProcessCase pc : cases) {
+            if(pc == ProcessCase.Load) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    /**
+     * 書き込み処理のケースか判定する。
+     * <p>ケースが指定されていないときは、該当すると判定する。</p>
+     * @since 2.0
+     * @param cases 判定対象のケース
+     * @return trueのとき、書き込み対象と判定する。
+     */
+    public static boolean isSaveCase(final ProcessCase[] cases) {
+
+        if(cases == null || cases.length == 0) {
+            return true;
+        }
+
+        for(ProcessCase pc : cases) {
+            if(pc == ProcessCase.Save) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    /**
+     * 現在の処理ケースが該当するか判定する。
+     * <p>ケースが指定されていないときは、該当すると判定する。</p>
+     * @param currentCase 現在の処理ケース
+     * @param cases 判定対象のケース
+     * @return trueのとき判定対象。
+     * @throws IllegalArgumentException {@code currentCase is null.}
+     */
+    public static boolean isProcessCase(final ProcessCase currentCase, ProcessCase[] cases) {
+
+        ArgUtils.notNull(currentCase, "currentCase");
+
+        if(currentCase == ProcessCase.Load) {
+            return isLoadCase(cases);
+        } else if(currentCase == ProcessCase.Save) {
+            return isSaveCase(cases);
+        } else {
+            throw new IllegalArgumentException("currentCase is not support:" + currentCase);
+        }
+
+    }
+
+
 }

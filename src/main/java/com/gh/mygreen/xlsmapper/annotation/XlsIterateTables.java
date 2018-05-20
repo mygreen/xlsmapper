@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 
 /**
  * 同一の構造の表がシート内で繰り返し出現する場合に使用し、Collection(List、Set)または配列にマッピングします。
@@ -198,4 +199,11 @@ public @interface XlsIterateTables {
      * @return
      */
     boolean optional() default false;
+
+    /**
+     * 適用するケースを指定します。
+     * @since 2.0
+     * @return 何も指定しない場合は全てのケースに適用されます。
+     */
+    ProcessCase[] cases() default {};
 }

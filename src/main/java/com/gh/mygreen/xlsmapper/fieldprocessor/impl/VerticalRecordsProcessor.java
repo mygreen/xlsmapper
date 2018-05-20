@@ -84,6 +84,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
+        if(!Utils.isLoadCase(anno.cases())) {
+            return;
+        }
+
         final Class<?> clazz = accessor.getType();
         if(Collection.class.isAssignableFrom(clazz)) {
 
@@ -235,7 +239,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
         // 各種レコードのコールバック用メソッドを抽出する
         final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
-                .create(recordClass);
+                .create(recordClass, ProcessCase.Load);
 
         // レコードの見出しに対するカラム情報のキャッシュ
         final Map<String, List<FieldAccessor>> propertiesCache = new HashMap<>();
@@ -352,6 +356,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));
                     } else {
                         mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(valueCell)), 1));
+                    }
+
+                    if(!Utils.isLoadCase(column.cases())) {
+                        continue;
                     }
 
                     // set for value
@@ -546,6 +554,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         for(FieldAccessor property : properties) {
             final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();
 
+            if(!Utils.isLoadCase(mapAnno.cases())) {
+                continue;
+            }
+
             Class<?> valueClass = mapAnno.valueClass();
             if(valueClass == Object.class) {
                 valueClass = property.getComponentType();
@@ -621,6 +633,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                 final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();
 
+                if(!Utils.isLoadCase(arrayAnno.cases())) {
+                    continue;
+                }
                 Class<?> elementClass = arrayAnno.elementClass();
                 if(elementClass == Object.class) {
                     elementClass = property.getComponentType();
@@ -694,6 +709,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         for(FieldAccessor property : nestedProperties) {
 
             final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+
+            if(!Utils.isLoadCase(nestedAnno.cases())) {
+                continue;
+            }
+
             final Class<?> clazz = property.getType();
             if(Collection.class.isAssignableFrom(clazz)) {
                 // mapping by one-to-many
@@ -789,6 +809,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     @Override
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
             final FieldAccessor accessor, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+        if(!Utils.isSaveCase(anno.cases())) {
+            return;
+        }
 
         final Class<?> clazz = accessor.getType();
         final Object result = accessor.getValue(beansObj);
@@ -991,7 +1015,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
         // 各種レコードのコールバック用メソッドを抽出する
         final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
-                .create(recordClass);
+                .create(recordClass, ProcessCase.Save);
 
         // レコードの見出しに対するカラム情報のキャッシュ
         final Map<String, List<FieldAccessor>> propertiesCache = new HashMap<>();
@@ -1143,6 +1167,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                         valueCellPositions.add(CellPosition.of(valueCell));
 
+                        recordOperation.setupCellPositoin(valueCell);
+
+                        if(!Utils.isSaveCase(column.cases())) {
+                            continue;
+                        }
                         // set for cell value
                         property.setPosition(record, CellPosition.of(valueCell));
                         property.setLabel(record, headerInfo.getLabel());
@@ -1160,8 +1189,6 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                                 throw e;
                             }
                         }
-
-                        recordOperation.setupCellPositoin(valueCell);
 
                         // セルをマージする
                         if(column.merged() && (r > 0) && config.isMergeCellOnSave()) {
@@ -1414,6 +1441,12 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                     valueCellPositions.add(CellPosition.of(cell));
 
+                    recordOperation.setupCellPositoin(cell);
+
+                    if(!Utils.isSaveCase(mapAnno.cases())) {
+                        continue;
+                    }
+
                     // セルの値を出力する
                     property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
                     property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
@@ -1427,8 +1460,6 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                             throw e;
                         }
                     }
-
-                    recordOperation.setupCellPositoin(cell);
                 }
 
             }
@@ -1521,6 +1552,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     }
 
                     recordOperation.setupCellPositoin(cell);
+                }
+
+                if(!Utils.isSaveCase(arrayAnno.cases())) {
+                    continue;
                 }
 
                 // get converter (component class)
@@ -1617,6 +1652,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         for(FieldAccessor property : nestedProperties) {
 
             final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+
+            if(!Utils.isSaveCase(nestedAnno.cases())) {
+                continue;
+            }
+
             final Class<?> clazz = property.getType();
             if(Collection.class.isAssignableFrom(clazz)) {
                 // mapping by one-to-many

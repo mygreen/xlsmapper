@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+
 
 /**
  * 空のレコードなどの無駄なレコードをマッピングしないよう、無視する条件を判定するメソッドに付与します。
@@ -92,4 +94,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface XlsIgnorable {
+
+    /**
+     * 適用するケースを指定します。
+     * @since 2.0
+     * @return 何も指定しない場合は全てのケースに適用されます。
+     */
+    ProcessCase[] cases() default {};
 }

@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+
 /**
  * 連続し隣接するセルをCollection(List, Set)または配列にマッピングします。
  *
@@ -211,5 +213,11 @@ public @interface XlsArrayCells {
      * @return 'A1'の形式で指定します。空文字は無視されます。
      */
     String address() default "";
+
+    /**
+     * 適用するケースを指定します。
+     * @return 何も指定しない場合は全てのケースに適用されます。
+     */
+    ProcessCase[] cases() default {};
 
 }

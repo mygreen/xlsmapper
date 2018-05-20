@@ -22,31 +22,35 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 /**
  * アノテーション {@link XlsCell} を処理するクラスです。
- * 
+ *
  * @version 2.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  */
 public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
-    
+
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsCell anno, final FieldAccessor accessor,
             final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
-        
+
+        if(!Utils.isLoadCase(anno.cases())) {
+            return;
+        }
+
         final CellPosition cellAddress = getCellPosition(accessor, anno);
         accessor.setPosition(beansObj, cellAddress);
-        
+
         final Cell xlsCell = POIUtils.getCell(sheet, cellAddress);
-        
+
         final CellConverter<?> converter = getCellConverter(accessor, config);
         if(converter instanceof FieldFormatter) {
             work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
         }
-        
+
         try {
             final Object value = converter.toObject(xlsCell);
             accessor.setValue(beansObj, value);
-            
+
         } catch(TypeBindException e) {
             work.addTypeBindError(e, cellAddress, accessor.getName(), null);
             if(!config.isContinueTypeBindFailure()) {
@@ -54,7 +58,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
             }
         }
     }
-    
+
     /**
      * アノテーションから、セルのアドレスを取得する。
      * @param accessor フィールド情報
@@ -63,7 +67,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
      * @throws AnnotationInvalidException アドレスの設定値が不正な場合
      */
     private CellPosition getCellPosition(final FieldAccessor accessor, final XlsCell anno) throws AnnotationInvalidException {
-        
+
         if(Utils.isNotEmpty(anno.address())) {
             try {
                 return CellPosition.of(anno.address());
@@ -75,7 +79,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
                         .var("attrValue", anno.address())
                         .format());
             }
-        
+
         } else {
             if(anno.row() < 0) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
@@ -86,7 +90,7 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
                         .var("min", 0)
                         .format());
             }
-            
+
             if(anno.column() < 0) {
                 throw new AnnotationInvalidException(anno, MessageBuilder.create("anno.attr.min")
                         .var("property", accessor.getNameWithClass())
@@ -95,37 +99,41 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
                         .var("attrValue", anno.column())
                         .var("min", 0)
                         .format());
-                
+
             }
-            
+
             return CellPosition.of(anno.row(), anno.column());
         }
-        
+
     }
-    
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsCell anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
-        
+
+        if(!Utils.isSaveCase(anno.cases())) {
+            return;
+        }
+
         final CellPosition cellAddress = getCellPosition(accessor, anno);
         accessor.setPosition(targetObj, cellAddress);
-        
+
         final CellConverter converter = getCellConverter(accessor, config);
         if(converter instanceof FieldFormatter) {
             work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
         }
-        
+
         try {
             converter.toCell(accessor.getValue(targetObj), targetObj, sheet, cellAddress);
-            
+
         } catch(TypeBindException e) {
             work.addTypeBindError(e, cellAddress, accessor.getName(), null);
             if(!config.isContinueTypeBindFailure()) {
                 throw e;
-            }  
+            }
         }
-        
+
     }
 
 }

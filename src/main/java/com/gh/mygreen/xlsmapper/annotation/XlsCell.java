@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+
 /**
  * セルの列と行を指定して、セルの値をマッピングします。
  * <p>インデックス形式の{@link #column()}と{@link #row()}か、アドレス形式の{@link #address()}のどちらか一方の形式を指定します。
@@ -68,4 +70,11 @@ public @interface XlsCell {
      * @return 'A1'の形式で指定します。空文字は無視されます。
      */
     String address() default "";
+
+    /**
+     * 適用するケースを指定します。
+     * @since 2.0
+     * @return 何も指定しない場合は全てのケースに適用されます。
+     */
+    ProcessCase[] cases() default {};
 }

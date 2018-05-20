@@ -2,9 +2,12 @@ package com.gh.mygreen.xlsmapper.annotation;
 
 import java.lang.annotation.Annotation;
 
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+
 /**
  * {@link XlsIterateTables}内の{@link XlsLabelledCell}をブリッジするクラス。
  *
+ * @version 2.0
  * @author Mitsuyoshi Hasegawa
  */
 public class XlsLabelledCellForIterateTable implements XlsLabelledCell {
@@ -19,6 +22,7 @@ public class XlsLabelledCellForIterateTable implements XlsLabelledCell {
     private String _headerLabel = null;
     private int _skip = 0;
     private boolean _labelMerged = false;
+    private ProcessCase[] _cases = {};
 
     public XlsLabelledCellForIterateTable(XlsLabelledCell labelledCell, int labelRow, int labelColumn) {
         this._label = "";
@@ -31,6 +35,7 @@ public class XlsLabelledCellForIterateTable implements XlsLabelledCell {
         this._headerLabel = labelledCell.headerLabel();
         this._skip = labelledCell.skip();
         this._labelMerged = labelledCell.labelMerged();
+        this._cases = labelledCell.cases();
     }
 
     @Override
@@ -81,5 +86,10 @@ public class XlsLabelledCellForIterateTable implements XlsLabelledCell {
     @Override
     public boolean labelMerged() {
         return this._labelMerged;
+    }
+
+    @Override
+    public ProcessCase[] cases() {
+        return this._cases;
     }
 }

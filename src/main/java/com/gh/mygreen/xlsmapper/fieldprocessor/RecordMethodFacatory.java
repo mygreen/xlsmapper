@@ -11,6 +11,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
 import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 /**
@@ -44,16 +45,17 @@ public class RecordMethodFacatory {
      * レコードクラスを元に、{@link RecordMethodCache}のインスタンスを組み立てる。
      *
      * @param recordClass レコードクラス
+     * @param processCase 現在の処理ケース
      * @return {@link RecordMethodCache}のインスタンス
      * @throws IllegalArgumentException {@literal recordClass == null}
      */
-    public RecordMethodCache create(final Class<?> recordClass) {
+    public RecordMethodCache create(final Class<?> recordClass, final ProcessCase processCase) {
 
         ArgUtils.notNull(recordClass, "recordClass");
 
         final RecordMethodCache recordMethod = new RecordMethodCache();
 
-        setupIgnoreableMethod(recordMethod, recordClass);
+        setupIgnoreableMethod(recordMethod, recordClass, processCase);
         setupListenerCallbackMethods(recordMethod, recordClass);
         setupRecordCallbackMethods(recordMethod, recordClass);
 
@@ -64,13 +66,20 @@ public class RecordMethodFacatory {
      * レコードの値を無視すると判定するためのメソッドの抽出
      * @param recordMethod メソッドの格納先
      * @param recordClass レコードクラス
+     * @param processCase 現在の処理ケース
      */
-    private void setupIgnoreableMethod(final RecordMethodCache recordMethod, final Class<?> recordClass) {
+    private void setupIgnoreableMethod(final RecordMethodCache recordMethod,
+            final Class<?> recordClass, final ProcessCase processCase) {
 
         for(Method method : recordClass.getMethods()) {
             method.setAccessible(true);
 
-            if(!annoReader.hasAnnotation(method, XlsIgnorable.class)) {
+            XlsIgnorable ignoreAnno = annoReader.getAnnotation(method, XlsIgnorable.class);
+            if(ignoreAnno == null) {
+                continue;
+            }
+
+            if(!Utils.isProcessCase(processCase, ignoreAnno.cases())) {
                 continue;
             }
 

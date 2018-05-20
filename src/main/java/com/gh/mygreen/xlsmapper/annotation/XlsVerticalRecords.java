@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperation;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.RemainedOperation;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 
 /**
  * 垂直方向に連続する列をCollection(List, Set)または配列にマッピングする際に指定します。
@@ -154,7 +155,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.RemainedOperation;
  * }
  * </code></pre>
  *
- * @version 1.1
+ * @version 2.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  */
@@ -371,5 +372,12 @@ public @interface XlsVerticalRecords {
      * @return 値は1から始まります。
      */
     int headerRight() default 1;
+
+    /**
+     * 適用するケースを指定します。
+     * @since 2.0
+     * @return 何も指定しない場合は全てのケースに適用されます。
+     */
+    ProcessCase[] cases() default {};
 
 }

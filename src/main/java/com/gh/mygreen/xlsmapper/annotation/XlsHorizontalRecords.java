@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 
 /**
  * 水平方向に連続する行をCollection(List, Set)または配列にマッピングする際に指定します。
@@ -433,5 +434,12 @@ public @interface XlsHorizontalRecords {
      * @return 値は1から始まります。
      */
     int headerBottom() default 1;
+
+    /**
+     * 適用するケースを指定します。
+     * @since 2.0
+     * @return 何も指定しない場合は全てのケースに適用されます。
+     */
+    ProcessCase[] cases() default {};
 
 }

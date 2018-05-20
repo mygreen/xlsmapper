@@ -55,6 +55,10 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno,
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
+        if(!Utils.isLoadCase(anno.cases())) {
+            return;
+        }
+
         final Class<?> clazz = accessor.getType();
 
         if(Collection.class.isAssignableFrom(clazz)) {
@@ -113,7 +117,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 
         // 各種レコードのコールバック用メソッドを抽出する
         final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
-                .create(tableClass);
+                .create(tableClass, ProcessCase.Load);
 
         final String label = iterateTablesAnno.tableLabel();
 
@@ -381,6 +385,10 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
+        if(!Utils.isSaveCase(anno.cases())) {
+            return;
+        }
+
         final Object result = accessor.getValue(beansObj);
         final Class<?> clazz = accessor.getType();
 
@@ -428,7 +436,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 
         // 各種レコードのコールバック用メソッドを抽出する
         final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
-                .create(tableClass);
+                .create(tableClass, ProcessCase.Save);
 
         for(int i=0; i < resultTableList.size(); i++) {
 

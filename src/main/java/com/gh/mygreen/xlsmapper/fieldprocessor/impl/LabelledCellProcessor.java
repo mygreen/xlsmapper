@@ -15,6 +15,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellHandler.LabelInfo;
+import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 
@@ -31,6 +32,10 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     @Override
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno,
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+        if(!Utils.isLoadCase(anno.cases())) {
+            return;
+        }
 
         // マッピング対象のセル情報の取得
         LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);
@@ -67,6 +72,10 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
     @Override
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledCell anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+        if(!Utils.isSaveCase(anno.cases())) {
+            return;
+        }
 
         // マッピング対象のセル情報の取得
         LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);

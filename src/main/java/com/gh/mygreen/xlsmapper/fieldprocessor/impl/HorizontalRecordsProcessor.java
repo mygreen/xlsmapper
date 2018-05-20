@@ -89,6 +89,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsHorizontalRecords anno, final FieldAccessor accessor,
             final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
+        if(!Utils.isLoadCase(anno.cases())) {
+            return;
+        }
+
         final Class<?> clazz = accessor.getType();
         if(Collection.class.isAssignableFrom(clazz)) {
 
@@ -238,7 +242,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
         // 各種レコードのコールバック用メソッドを抽出する
         final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
-                .create(recordClass);
+                .create(recordClass, ProcessCase.Load);
 
         final int startHeaderIndex = getStartHeaderIndexForLoading(headers, recordClass, work.getAnnoReader(), config);
 
@@ -350,6 +354,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));
                     } else {
                         mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(valueCell)), 1));
+                    }
+
+                    if(!Utils.isLoadCase(column.cases())) {
+                        continue;
                     }
 
                     // set for value
@@ -537,6 +545,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         for(FieldAccessor property : mapProperties) {
             final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();
 
+            if(!Utils.isLoadCase(mapAnno.cases())) {
+                continue;
+            }
+
             Class<?> valueClass = mapAnno.valueClass();
             if(valueClass == Object.class) {
                 valueClass = property.getComponentType();
@@ -612,6 +624,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
                 final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();
 
+                if(!Utils.isLoadCase(arrayAnno.cases())) {
+                    continue;
+                }
+
                 Class<?> elementClass = arrayAnno.elementClass();
                 if(elementClass == Object.class) {
                     elementClass = property.getComponentType();
@@ -686,6 +702,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         for(FieldAccessor property : nestedProperties) {
 
             final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+
+            if(!Utils.isLoadCase(nestedAnno.cases())) {
+                continue;
+            }
+
             final Class<?> clazz = property.getType();
             if(Collection.class.isAssignableFrom(clazz)) {
 
@@ -783,6 +804,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
     @Override
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsHorizontalRecords anno,
             final FieldAccessor accessor, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+        if(!Utils.isSaveCase(anno.cases())) {
+            return;
+        }
 
         final Class<?> clazz = accessor.getType();
         final Object result = accessor.getValue(beansObj);
@@ -1000,7 +1025,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
         // 各種レコードのコールバック用メソッドを抽出する
         final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)
-                .create(recordClass);
+                .create(recordClass, ProcessCase.Save);
 
         // レコードの見出しに対するカラム情報のキャッシュ
         final Map<String, List<FieldAccessor>> propertiesCache = new HashMap<>();
@@ -1156,6 +1181,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         }
 
                         valueCellPositions.add(CellPosition.of(valueCell));
+                        recordOperation.setupCellPositoin(valueCell);
+
+                        if(!Utils.isSaveCase(column.cases())) {
+                            continue;
+                        }
 
                         // set for cell value
                         property.setPosition(record, CellPosition.of(valueCell));
@@ -1174,8 +1204,6 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                                 throw e;
                             }
                         }
-
-                        recordOperation.setupCellPositoin(valueCell);
 
                         // セルをマージする
                         if(column.merged() && (r > 0) && config.isMergeCellOnSave()) {
@@ -1443,6 +1471,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     }
 
                     valueCellPositions.add(CellPosition.of(cell));
+                    recordOperation.setupCellPositoin(cell);
+
+                    if(!Utils.isSaveCase(mapAnno.cases())) {
+                        continue;
+                    }
 
                     // セルの値を出力する
                     property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
@@ -1459,8 +1492,6 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                             throw e;
                         }
                     }
-
-                    recordOperation.setupCellPositoin(cell);
                 }
 
             }
@@ -1548,6 +1579,10 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     }
 
                     recordOperation.setupCellPositoin(cell);
+                }
+
+                if(!Utils.isSaveCase(arrayAnno.cases())) {
+                    continue;
                 }
 
                 // get converter (component class)
@@ -1648,6 +1683,11 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         for(FieldAccessor property : nestedProperties) {
 
             final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+
+            if(!Utils.isSaveCase(nestedAnno.cases())) {
+                continue;
+            }
+
             final Class<?> clazz = property.getType();
             if(Collection.class.isAssignableFrom(clazz)) {
                 // mapping by one-to-many

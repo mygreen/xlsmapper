@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 
 /**
  * アノテーション{@link XlsHorizontalRecords}や{@link XlsVerticalRecords}で指定されたレコード用のクラスにおいて、
@@ -219,4 +220,11 @@ public @interface XlsMapColumns {
      * @return trueの場合、該当するカラム（セル）が見つからないときは無視して処理を続行します。
      */
     boolean optional() default false;
+
+    /**
+     * 適用するケースを指定します。
+     * @since 2.0
+     * @return 何も指定しない場合は全てのケースに適用されます。
+     */
+    ProcessCase[] cases() default {};
 }

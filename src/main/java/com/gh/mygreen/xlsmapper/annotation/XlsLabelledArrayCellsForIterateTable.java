@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.annotation;
 
 import java.lang.annotation.Annotation;
 
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
 
 /**
@@ -27,6 +28,7 @@ public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCel
     private final LabelledCellType type;
     private final int skip;
     private final boolean labelMarged;
+    private final ProcessCase[] cases;
 
 
     public XlsLabelledArrayCellsForIterateTable(XlsLabelledArrayCells anno, int labelRow, int labelColumn) {
@@ -43,6 +45,7 @@ public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCel
         this.type = anno.type();
         this.skip = anno.skip();
         this.labelMarged = anno.labelMerged();
+        this.cases = anno.cases();
 
     }
 
@@ -114,6 +117,11 @@ public class XlsLabelledArrayCellsForIterateTable implements XlsLabelledArrayCel
     @Override
     public boolean labelMerged() {
         return labelMarged;
+    }
+
+    @Override
+    public ProcessCase[] cases() {
+       return cases;
     }
 
 }

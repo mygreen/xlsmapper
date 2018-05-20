@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 
 /**
  * セルの見出し用のラベルセルを指定し、左右もしくは下側に連続し隣接するセルをCollection(List, Set)または配列にマッピングします。
@@ -398,4 +399,11 @@ public @interface XlsLabelledArrayCells {
      * @return trueの場合、ラベルがセルが結合されていることを考慮します。
      */
     boolean labelMerged() default true;
+
+    /**
+     * 適用するケースを指定します。
+     * @since 2.0
+     * @return 何も指定しない場合は全てのケースに適用されます。
+     */
+    ProcessCase[] cases() default {};
 }

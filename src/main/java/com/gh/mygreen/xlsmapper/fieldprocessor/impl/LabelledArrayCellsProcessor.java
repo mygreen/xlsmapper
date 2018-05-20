@@ -39,6 +39,10 @@ public class LabelledArrayCellsProcessor extends AbstractFieldProcessor<XlsLabel
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work)
             throws XlsMapperException {
 
+        if(!Utils.isLoadCase(anno.cases())) {
+            return;
+        }
+
         final Class<?> clazz = accessor.getType();
         if(Collection.class.isAssignableFrom(clazz)) {
 
@@ -143,6 +147,10 @@ public class LabelledArrayCellsProcessor extends AbstractFieldProcessor<XlsLabel
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCells anno,
             final FieldAccessor accessor, final Configuration config, final SavingWorkObject work)
             throws XlsMapperException {
+
+        if(!Utils.isSaveCase(anno.cases())) {
+            return;
+        }
 
         final Class<?> clazz = accessor.getType();
         final Object result = accessor.getValue(beansObj);
