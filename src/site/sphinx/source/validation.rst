@@ -423,7 +423,7 @@ XslMapperの ``ExpressionLanguageELImpl`` は、EL3.0のライブラリが読み
     
     // BeanValidatorの式言語の実装を独自のものにする。
     ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-    Validator beanValidator = validatorFactory.usingContext()
+    Validator validator = validatorFactory.usingContext()
             .messageInterpolator(new MessageInterpolatorAdapter(
                     // メッセージリソースの取得方法を切り替える
                     new ResourceBundleMessageResolver(ResourceBundle.getBundle("message.OtherElMessages")),
