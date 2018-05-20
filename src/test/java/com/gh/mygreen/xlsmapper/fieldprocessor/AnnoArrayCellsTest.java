@@ -70,7 +70,7 @@ public class AnnoArrayCellsTest {
     /**
      * 出力用のファイル名の定義
      */
-    private String outFilename = "anno_ArrayCell_out.xlsx.xlsx";
+    private String outFilename = "anno_ArrayCell_out.xlsx";
 
     /**
      * 読み込みのテスト - 通常のデータ

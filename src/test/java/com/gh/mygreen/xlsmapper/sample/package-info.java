@@ -1,5 +1,6 @@
 /**
  * サンプルのシート
+ *
  * @since 2.0
  * @author T.TSUCHIE
  *
