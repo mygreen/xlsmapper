@@ -64,7 +64,78 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 		<java.version>1.8</java.version>
 		<poi.version>3.17</poi.version>
 		<slf4j.version>1.7.1</slf4j.version>
+		<jacoco.include.package>com.gh.mygreen.xlsmapper.*</jacoco.include.package>
 	</properties>
+
+	<!-- ビルド環境によって、sphinxのスクリプトを切り替える -->
+	<profiles>
+		<profile>
+			<id>platform-windows</id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.6.0</version>
+						<executions>
+							<execution>
+								<id>sphinx-doc</id>
+								<phase>site</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>make_sphinx_html.bat</executable>
+									<arguments>
+										<argument>${project.version}</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>platform-linux</id>
+			<activation>
+				<os>
+					<family>!windows</family>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.6.0</version>
+						<executions>
+							<execution>
+								<id>sphinx-doc</id>
+								<phase>site</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>make_sphinx_html.sh</executable>
+									<arguments>
+										<argument>${project.version}</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+
 	<build>
 		<extensions>
 
@@ -138,9 +209,9 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 					<docfilessubdirs>true</docfilessubdirs>
  					<header>${project.name} ${project.version}
  <![CDATA[
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/default.min.css">
-<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
-<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script>
 $(document).ready(function() {
   $('pre.highlight code').each(function(i, block) {
@@ -176,6 +247,7 @@ $(document).ready(function() {
 					<outputEncoding>UTF-8</outputEncoding>
 				</configuration>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -192,6 +264,34 @@ $(document).ready(function() {
 							<arguments>
 								<argument>${project.version}</argument>
 							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>${jacocoArgs}</argLine>
+				</configuration>
+			</plugin>
+			<plugin>
+		        <groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.8</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<propertyName>jacocoArgs</propertyName>
+							<includes>
+								<include>${jacoco.include.package}</include>
+							</includes>
 						</configuration>
 					</execution>
 				</executions>
@@ -308,15 +408,15 @@ $(document).ready(function() {
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
-			<version>3.0.1-b08</version>
+			<version>3.0.1-b10</version>
 			<scope>provided</scope>
 		</dependency>
 		 -->
 		<!-- Bean Validation 2.0系を利用する -->
-	<dependency>
+		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
-			<version>2.0.0.Final</version>
+			<version>2.0.1.Final</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -328,7 +428,7 @@ $(document).ready(function() {
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
-			<version>3.0.1-b08</version>
+			<version>3.0.1-b10</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -367,9 +467,9 @@ $(document).ready(function() {
 					<docfilessubdirs>true</docfilessubdirs>
 					<header>${project.name} ${project.version}
  <![CDATA[
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/default.min.css">
-<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
-<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script>
 $(document).ready(function() {
   $('pre.highlight code').each(function(i, block) {
@@ -387,10 +487,12 @@ $(document).ready(function() {
 				<artifactId>maven-jxr-plugin</artifactId>
 				<version>2.5</version>
 				<configuration>
+					<aggregate>true</aggregate>
 					<inputEncoding>UTF-8</inputEncoding>
 					<outputEncoding>UTF-8</outputEncoding>
 				</configuration>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
@@ -402,6 +504,16 @@ $(document).ready(function() {
 					</formats>
 				</configuration>
 			</plugin>
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
+
 		</plugins>
 	</reporting>
 </project>
