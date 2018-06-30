@@ -21,6 +21,16 @@ td div.line-block {
 div.wy-menu p.caption {
 	background-color: #AAAAAA;
 	margin-top: 10px;
+	font-size: 105%;
+	padding: 0 1.018em;
+	color: #232722;
+}
+
+/**
+ * 狭いときのナビゲーション
+ */
+.wy-nav-top {
+	background-color: #00807B;
 }
 
 /**
