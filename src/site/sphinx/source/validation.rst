@@ -363,10 +363,10 @@ Bean Validationを使用した入力値検証
     }
 
 .. sourcecode:: xml
+    :caption:  Bean Validation 1.1 の依存ライブラリ
     :linenos:
     
     <!-- ====================== Bean Validationのライブラリ ===============-->
-    <!-- Bean Validation 1.1 系を利用する -->
     <dependency>
         <groupId>javax.validation</groupId>
         <artifactId>validation-api</artifactId>
@@ -382,9 +382,34 @@ Bean Validationを使用した入力値検証
     <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>javax.el</artifactId>
-        <version>3.0.1-b08</version>
+        <version>3.0.1-b10</version>
         <scope>provided</scope>
     </dependency>
+
+.. sourcecode:: xml
+    :caption:  Bean Validation 2.0 の依存ライブラリ
+    :linenos:
+    
+    <!-- ====================== Bean Validationのライブラリ ===============-->
+    <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>2.0.1.Final</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+    <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>6.0.10.Final</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.el</artifactId>
+        <version>3.0.1-b10</version>
+        <scope>provided</scope>
+    </dependency>
+
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
