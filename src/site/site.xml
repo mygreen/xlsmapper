@@ -20,10 +20,18 @@
 		</footer>
 		<menu name="ドキュメント">
 			<item name="基本的な使い方" href="sphinx/howtouse.html" />
-			<item name="アノテーションの使用方法" href="sphinx/annotation.html" />
-			<item name="その他の機能" href="sphinx/otheruse.html" />
-			<item name="読み込んだ値の入力値検証" href="sphinx/validation.html" />
-			<item name="拡張方法" href="sphinx/extension.html" />
+			<item name="注意事項" href="sphinx/attention.html" />
+			<item name="表・セルのマッピング方法" href="sphinx/annotation_mapping.html" />
+			<item name="セルの書式の指定方法" href="sphinx/annotation_converter.html" />
+			<item name="セルの値の変換方法" href="sphinx/annotation_valueconverter.html" />
+			<item name="数式の指定方法" href="sphinx/annotation_formula.html" />
+			<item name="ライフサイクルイベントの管理" href="sphinx/annotation_lifecycle.html" />
+			<item name="シート情報の取得" href="sphinx/sheetinfo.html" />
+			<item name="XMLによるマッピング方法" href="sphinx/xmlmapping.html" />
+			<item name="値の検証方法" href="sphinx/validation.html" />
+			<item name="独自の表・セルのマッピング方法" href="sphinx/fieldprocessor.html" />
+			<item name="SpringFrameworkとの連携" href="sphinx/spring.html" />
+			<item name="システム設定" href="sphinx/configuration.html" />
 			<item name="XLSBeansとの違い" href="sphinx/diff_xlsbeans.html" />
 			<item name="マイグレーション" href="sphinx/migration.html" />
 			<item name="リリースノート" href="sphinx/release.html" />
