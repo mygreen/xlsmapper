@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapLabelSetterFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldaccessor</a> &gt; <span class="el_source">MapLabelSetterFactory.java</span></div><h1>MapLabelSetterFactory.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldaccessor;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * {@link MapLabelSetter}のインスタンスを作成する
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L24">public class MapLabelSetterFactory {</span>
+    
+<span class="fc" id="L26">    private static final Logger log = LoggerFactory.getLogger(MapLabelSetterFactory.class);</span>
+    
+    /**
+     * フィールドの位置情報を設定するためのアクセッサを作成します。
+     * @param beanClass フィールドが定義されているクラス情報
+     * @param fieldName フィールドの名称
+     * @return ラベル情報のsetterが存在しない場合は空を返す。
+     * @throws IllegalArgumentException {@literal beanClass == null or fieldName == null}
+     * @throws IllegalArgumentException {@literal fieldName.isEmpty() = true}
+     */
+    public Optional&lt;MapLabelSetter&gt; create(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+<span class="fc" id="L38">        ArgUtils.notNull(beanClass, &quot;beanClass&quot;);</span>
+<span class="fc" id="L39">        ArgUtils.notEmpty(fieldName, &quot;fieldName&quot;);</span>
+        
+        // フィールド Map labelsの場合
+<span class="fc" id="L42">        Optional&lt;MapLabelSetter&gt; mapLabelSetter = createMapField(beanClass, fieldName);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if(mapLabelSetter.isPresent()) {</span>
+<span class="fc" id="L44">            return mapLabelSetter;</span>
+        }
+        
+        // setter メソッドの場合
+<span class="fc" id="L48">        mapLabelSetter = createMethod(beanClass, fieldName);</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if(mapLabelSetter.isPresent()) {</span>
+<span class="fc" id="L50">            return mapLabelSetter;</span>
+        }
+        
+        // フィールド + labelの場合
+<span class="fc" id="L54">        mapLabelSetter = createField(beanClass, fieldName);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if(mapLabelSetter.isPresent()) {</span>
+<span class="fc" id="L56">            return mapLabelSetter;</span>
+        }
+        
+        
+<span class="fc" id="L60">        return Optional.empty();</span>
+    }
+    
+    private String createMapKey(final String fieldName, final String key) {
+<span class="fc" id="L64">        return String.format(&quot;%s[%s]&quot;, fieldName, key);</span>
+    }
+    
+    /**
+     * {@link Map}フィールドにラベル情報が格納されている場合。
+     * &lt;p&gt;キーはフィールド名。&lt;/p&gt;
+     * 
+     * @param beanClass フィールドが定義してあるクラスのインスタンス
+     * @param fieldName フィールド名
+     * @return ラベル情報の設定用クラス
+     */
+    private Optional&lt;MapLabelSetter&gt; createMapField(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+        final Field labelsField;
+        try {
+<span class="fc" id="L79">            labelsField = beanClass.getDeclaredField(&quot;labels&quot;);</span>
+<span class="fc" id="L80">            labelsField.setAccessible(true);</span>
+            
+<span class="fc" id="L82">        } catch (NoSuchFieldException | SecurityException e) {</span>
+            // フィールドが見つからない場合は、何もしない。
+<span class="fc" id="L84">            return Optional.empty();</span>
+<span class="fc" id="L85">        }</span>
+        
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if(!Map.class.isAssignableFrom(labelsField.getType())) {</span>
+<span class="fc" id="L88">            return Optional.empty();</span>
+        }
+        
+<span class="fc" id="L91">        final ParameterizedType type = (ParameterizedType) labelsField.getGenericType();</span>
+<span class="fc" id="L92">        final Class&lt;?&gt; keyType = (Class&lt;?&gt;) type.getActualTypeArguments()[0];</span>
+<span class="fc" id="L93">        final Class&lt;?&gt; valueType = (Class&lt;?&gt;) type.getActualTypeArguments()[1];</span>
+        
+<span class="pc bpc" id="L95" title="1 of 4 branches missed.">        if(keyType.equals(String.class) &amp;&amp; valueType.equals(String.class)) {</span>
+<span class="fc" id="L96">            return Optional.of(new MapLabelSetter() {</span>
+                
+                @SuppressWarnings(&quot;unchecked&quot;)
+                @Override
+                public void set(final Object beanObj, final String label, final String key) {
+<span class="fc" id="L101">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L102">                    ArgUtils.notEmpty(label, &quot;label&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L105">                        Map&lt;String, String&gt; labelsMapObj = (Map&lt;String, String&gt;) labelsField.get(beanObj);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">                        if(labelsMapObj == null) {</span>
+<span class="fc" id="L107">                            labelsMapObj = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L108">                            labelsField.set(beanObj, labelsMapObj);</span>
+                        }
+                        
+<span class="fc" id="L111">                        final String mapKey = createMapKey(fieldName, key);</span>
+                        
+<span class="fc" id="L113">                        labelsMapObj.put(mapKey, label);</span>
+                        
+<span class="nc" id="L115">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L116">                        throw new RuntimeException(&quot;fail access labels field.&quot;, e);</span>
+<span class="fc" id="L117">                    }</span>
+<span class="fc" id="L118">                }</span>
+            });
+            
+        } else {
+            // タイプが一致しない場合
+<span class="fc" id="L123">            log.warn(&quot;not match generics type of labels. key type:{}, value type:{}.&quot;, keyType.getName(), valueType.getName());</span>
+<span class="fc" id="L124">            return Optional.empty();</span>
+        }
+        
+    }
+    
+    /**
+     * setterメソッドによるラベル情報を格納する場合。
+     * &lt;p&gt;{@code set + &lt;フィールド名&gt; + Labels}のメソッド名&lt;/p&gt;
+     * 
+     * @param beanClass フィールドが定義してあるクラスのインスタンス
+     * @param fieldName フィールド名
+     * @return ラベル情報の設定用クラス
+     */
+    private Optional&lt;MapLabelSetter&gt; createMethod(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+<span class="fc" id="L139">        final String labelMethodName = &quot;set&quot; + Utils.capitalize(fieldName) + &quot;Label&quot;;</span>
+        
+        try {
+<span class="fc" id="L142">            final Method method = beanClass.getDeclaredMethod(labelMethodName, String.class, String.class);</span>
+<span class="fc" id="L143">            method.setAccessible(true);</span>
+            
+<span class="fc" id="L145">            return Optional.of(new MapLabelSetter() {</span>
+                
+                
+                @Override
+                public void set(final Object beanObj, final String label, final String key) {
+<span class="fc" id="L150">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L151">                    ArgUtils.notEmpty(label, &quot;label&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L154">                        method.invoke(beanObj, key, label);</span>
+                        
+<span class="nc" id="L156">                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L157">                        throw new RuntimeException(&quot;fail access label field.&quot;, e);</span>
+<span class="fc" id="L158">                    }</span>
+                    
+<span class="fc" id="L160">                }</span>
+            });
+            
+<span class="fc" id="L163">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            
+        }
+        
+<span class="fc" id="L167">        return Optional.empty();</span>
+        
+    }
+    
+    /**
+     * フィールドによるラベル情報を格納する場合。
+     * &lt;p&gt;{@code &lt;フィールド名&gt; + Label}のメソッド名&lt;/p&gt;
+     * 
+     * @param beanClass フィールドが定義してあるクラスのインスタンス
+     * @param fieldName フィールド名
+     * @return ラベル情報の設定用クラス
+     */
+    private Optional&lt;MapLabelSetter&gt; createField(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+<span class="fc" id="L181">        final String labelFieldName = fieldName + &quot;Label&quot;;</span>
+        
+        final Field labelField;
+        try {
+<span class="fc" id="L185">            labelField = beanClass.getDeclaredField(labelFieldName);</span>
+<span class="fc" id="L186">            labelField.setAccessible(true);</span>
+            
+<span class="fc" id="L188">        } catch (NoSuchFieldException | SecurityException e) {</span>
+<span class="fc" id="L189">            return Optional.empty();</span>
+<span class="fc" id="L190">        }</span>
+        
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">        if(!Map.class.isAssignableFrom(labelField.getType())) {</span>
+<span class="nc" id="L193">            return Optional.empty();</span>
+        }
+        
+<span class="fc" id="L196">        final ParameterizedType type = (ParameterizedType) labelField.getGenericType();</span>
+<span class="fc" id="L197">        final Class&lt;?&gt; keyType = (Class&lt;?&gt;) type.getActualTypeArguments()[0];</span>
+<span class="fc" id="L198">        final Class&lt;?&gt; valueType = (Class&lt;?&gt;) type.getActualTypeArguments()[1];</span>
+        
+<span class="pc bpc" id="L200" title="1 of 4 branches missed.">        if(keyType.equals(String.class) &amp;&amp; valueType.equals(String.class)) {</span>
+            
+<span class="fc" id="L202">            return Optional.of(new MapLabelSetter() {</span>
+                
+                @SuppressWarnings(&quot;unchecked&quot;)
+                @Override
+                public void set(final Object beanObj, final String label, final String key) {
+<span class="fc" id="L207">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L208">                    ArgUtils.notEmpty(label, &quot;label&quot;);</span>
+                    
+                   try {
+<span class="fc" id="L211">                       Map&lt;String, String&gt; labelMapObj = (Map&lt;String, String&gt;) labelField.get(beanObj);</span>
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">                       if(labelMapObj == null) {</span>
+<span class="fc" id="L213">                           labelMapObj = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L214">                           labelField.set(beanObj, labelMapObj);</span>
+                       }
+                       
+                       
+<span class="fc" id="L218">                       labelMapObj.put(key, label);</span>
+                       
+<span class="nc" id="L220">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L221">                        throw new RuntimeException(&quot;fail access label field.&quot;, e);</span>
+<span class="fc" id="L222">                    }</span>
+<span class="fc" id="L223">                }</span>
+            });
+            
+        }
+        
+<span class="fc" id="L228">        return Optional.empty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

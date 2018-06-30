@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PropertyValueNavigator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.util</a> &gt; <span class="el_source">PropertyValueNavigator.java</span></div><h1>PropertyValueNavigator.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.util;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.gh.mygreen.xlsmapper.util.PropertyPath.Token;
+
+
+/**
+ * プロパティにアクセスするためのクラス。
+ * &lt;p&gt;プロパティは式言語の形式に似た形式をとることが可能で、フィールドにもアクセスできます。&lt;/p&gt;
+ *
+ * &lt;h3 class=&quot;description&quot;&gt;基本的な使い方&lt;/h3&gt;
+ *
+ * &lt;pre class=&quot;highlight&quot;&gt;&lt;code class=&quot;java&quot;&gt;
+ * // Beanのインスタンスの生成
+ * Person taregetObj = ...;
+ *
+ * // 名前を指定してプロパティにアクセスする場合
+ * String name = PropertyValueNavigator.getProperty(targetObj, &quot;name&quot;);
+ *
+ * // ネストしたプロパティにアクセスする場合、ピリオド（.)で繋げます。
+ * String code = PropertyValueNavigator.getProperty(targetObj, &quot;county.code&quot;);
+ *
+ * // リストまたは配列にアクセスする場合、括弧[インデックス番号]でインデックスを指定します。
+ * String title = PropertyValueNavigator.getProperty(targetObj, &quot;books[0].title&quot;);
+ *
+ * // マップにアクセスする場合、括弧[キー]でキーを指定します。
+ * String motherName = PropertyValueNavigator.getProperty(targetObj, &quot;family[mother].name&quot;);
+ * &lt;/code&gt;&lt;/pre&gt;
+ *
+ * &lt;h3 class=&quot;description&quot;&gt;オプションの指定&lt;/h3&gt;
+ * &lt;p&gt;オプションを指定する場合は、PropertyNavigatorのインスタンスを生成し、設定します。
+ *
+ * &lt;pre class=&quot;highlight&quot;&gt;&lt;code class=&quot;java&quot;&gt;
+ * PropertyValueNavigator navigator = new PropertyValueNavigator();
+ *
+ * // 非公開のプロパティにアクセス可能かどうか
+ * navigator.setAllowPrivate(true);
+ *
+ * // 値がnullの場合に例外をスローしないでその時点で処理を終了するかどうか。
+ * navigator.setIgnoreNull(true);
+ *
+ * // 配列/Collection/Mapにアクセスする際に指定したキーの要素が存在しない場合に処理を終了するかどうか。
+ * navigator.setIgnoreNotFoundKey(true);
+ *
+ * // プロパティの解析結果をキャッシュするかどうか。途中の解析結果をキャッシュして、処理を高速化します。
+ * navigator.setCacheWithPath(true);
+ * &lt;/code&gt;&lt;/pre&gt;
+ *
+ * @since 1.0
+ * @author T.TSUCHIE
+ *
+ */
+public class PropertyValueNavigator {
+
+    /**
+     * 非公開のプロパティにアクセス可能かどうか。
+     */
+    private boolean allowPrivate;
+
+    /**
+     * 値がnullの場合に例外をスローしないでその時点で処理を終了するかどうか。
+     */
+    private boolean ignoreNull;
+
+    /**
+     * 配列/Collection/Mapにアクセスする際に指定したキーの要素が存在しない場合に処理を終了するかどうか。
+     */
+    private boolean ignoreNotFoundKey;
+
+    /**
+     * プロパティの解析結果をキャッシュするかどうか。
+     */
+    private boolean cacheWithPath;
+
+    /**
+     * プロパティの式を解析して、トークンに分解するクラス。
+     */
+<span class="fc" id="L85">    private final PropertyPathTokenizer tokenizer = new PropertyPathTokenizer();</span>
+
+    /**
+     * プロパティの解析結果をキャッシュデータ
+     */
+<span class="fc" id="L90">    private final Map&lt;String, PropertyPath&gt; cacheData = new ConcurrentHashMap&lt;&gt;();</span>
+
+    /**
+     * プロパティの値を取得する。
+     * &lt;p&gt;オプションはデフォルト値で処理する。&lt;/p&gt;
+     * @param obj 取得元となるオブジェクト。
+     * @param property プロパティ名。
+     * @return
+     * @throws IllegalArgumentException peropety is null or empty.
+     * @throws PropertyAccessException 存在しないプロパティを指定した場合など。
+     * @throws NullPointerException アクセスしようとしたプロパティがnullの場合。
+     * @throws IndexOutOfBoundsException リスト、配列にアクセスする際に存在しないインデックスにアクセスした場合。
+     * @throws IllegalStateException マップにアクセスする際に存在しないキーにアクセスした場合。
+     */
+    public static Object get(final Object obj, final String property) {
+<span class="nc" id="L105">        return new PropertyValueNavigator().getProperty(obj, property);</span>
+    }
+
+    /**
+     * デフォルトコンストラクタ
+     */
+<span class="fc" id="L111">    public PropertyValueNavigator() {</span>
+
+<span class="fc" id="L113">    }</span>
+
+    /**
+     * プロパティの値を取得する。
+     *
+     * @param obj 取得元となるオブジェクト。
+     * @param property プロパティの式。
+     * @return プロパティの値。
+     * @throws IllegalArgumentException peropety is null or empty.
+     * @throws PropertyAccessException 存在しないプロパティを指定した場合など。
+     * @throws NullPointerException アクセスしようとしたプロパティがnullの場合。
+     *         ただし、オプション ignoreNull = falseのとき。
+     * @throws IndexOutOfBoundsException リスト、配列にアクセスする際に存在しないインデックスにアクセスした場合。
+     *         ただし、オプションignoreNotFoundKey = falseのとき。
+     * @throws IllegalStateException マップにアクセスする際に存在しないキーにアクセスした場合。
+     *         ただし、オプションignoreNotFoundKey = falseのとき。
+     */
+    public Object getProperty(final Object obj, final String property) {
+
+<span class="fc" id="L132">        ArgUtils.notEmpty(property, &quot;property&quot;);</span>
+
+<span class="fc" id="L134">        final PropertyPath path = parseProperty(property);</span>
+<span class="fc" id="L135">        Object targetObj = obj;</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        for(Token token : path.getPathAsToken()) {</span>
+
+<span class="fc" id="L138">            targetObj = accessProperty(targetObj, token);</span>
+<span class="fc bfc" id="L139" title="All 4 branches covered.">            if(targetObj == null &amp;&amp; ignoreNull) {</span>
+<span class="fc" id="L140">                return null;</span>
+            }
+
+<span class="fc" id="L143">        }</span>
+<span class="fc" id="L144">        return targetObj;</span>
+
+    }
+
+    private PropertyPath parseProperty(final String property) {
+
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        if(isCacheWithPath()) {</span>
+<span class="fc" id="L151">            return cacheData.computeIfAbsent(property, k -&gt; tokenizer.parse(property));</span>
+        } else {
+<span class="fc" id="L153">            return tokenizer.parse(property);</span>
+        }
+
+    }
+
+    /**
+     * 今までのキャッシュデータをクリアする。
+     */
+    public void clearCache() {
+<span class="fc" id="L162">        this.cacheData.clear();</span>
+<span class="fc" id="L163">    }</span>
+
+    private Object accessProperty(final Object targetObj, final Token token) {
+
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if(token instanceof Token.Separator) {</span>
+<span class="fc" id="L168">            return accessPropertyBySeparator(targetObj, (Token.Separator)token);</span>
+
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        } else if(token instanceof Token.Name) {</span>
+<span class="fc" id="L171">            return accessPropertyByName(targetObj, (Token.Name)token);</span>
+
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        } else if(token instanceof Token.Key) {</span>
+<span class="fc" id="L174">            return accessPropertyByKey(targetObj, (Token.Key)token);</span>
+        }
+
+<span class="nc" id="L177">        throw new IllegalStateException(&quot;not support token type : &quot; + token.getValue());</span>
+
+    }
+
+    private Object accessPropertyBySeparator(final Object targetObj, final Token.Separator token) {
+
+<span class="fc" id="L183">        return targetObj;</span>
+
+    }
+
+    private Object accessPropertyByName(final Object targetObj, final Token.Name token) {
+
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        if(targetObj == null) {</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">            if(ignoreNull) {</span>
+<span class="fc" id="L191">                return null;</span>
+            } else {
+<span class="fc" id="L193">                throw new NullPointerException(&quot;access object is null. property name = &quot; + token.getValue());</span>
+            }
+
+        }
+
+<span class="fc" id="L198">        final Class&lt;?&gt; targetClass = targetObj.getClass();</span>
+
+        // メソッドアクセス
+<span class="fc" id="L201">        final String getterMethodName = &quot;get&quot; + Utils.capitalize(token.getValue());</span>
+        try {
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">            Method getterMethod = allowPrivate ?</span>
+<span class="pc" id="L204">                    targetClass.getDeclaredMethod(getterMethodName) : targetClass.getMethod(getterMethodName);</span>
+<span class="fc" id="L205">            getterMethod.setAccessible(true);</span>
+
+<span class="fc" id="L207">            return getterMethod.invoke(targetObj);</span>
+
+<span class="fc" id="L209">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            // not found method
+
+<span class="nc" id="L212">        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+            // 値の取得に失敗
+<span class="nc" id="L214">            throw new PropertyAccessException(&quot;fail access method property : &quot; + token.getValue(), e);</span>
+<span class="fc" id="L215">        }</span>
+
+        // boolean用メソッドアクセス
+<span class="fc" id="L218">        final String booleanMethodName = &quot;is&quot; + Utils.capitalize(token.getValue());</span>
+        try {
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">            Method getterMethod = allowPrivate ?</span>
+<span class="pc" id="L221">                    targetClass.getDeclaredMethod(booleanMethodName) : targetClass.getMethod(booleanMethodName);;</span>
+<span class="fc" id="L222">            getterMethod.setAccessible(true);</span>
+
+<span class="fc" id="L224">            return getterMethod.invoke(targetObj);</span>
+
+<span class="fc" id="L226">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            // not found method
+
+<span class="nc" id="L229">        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+            // 値の取得に失敗
+<span class="nc" id="L231">            throw new PropertyAccessException(&quot;fail access boolean method property : &quot; + token.getValue(), e);</span>
+<span class="fc" id="L232">        }</span>
+
+        // フィールドアクセス
+<span class="fc" id="L235">        final String fieldName = token.getValue();</span>
+        try {
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">            Field field = allowPrivate ?</span>
+<span class="pc" id="L238">                    targetClass.getDeclaredField(fieldName) : targetClass.getField(fieldName);</span>
+<span class="fc" id="L239">            field.setAccessible(true);</span>
+
+<span class="fc" id="L241">            return field.get(targetObj);</span>
+
+<span class="fc" id="L243">        } catch (NoSuchFieldException | SecurityException e) {</span>
+            // not found field
+
+<span class="nc" id="L246">        } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+            // 値の取得に失敗
+<span class="nc" id="L248">            throw new PropertyAccessException(&quot;fail access field property : &quot; + token.getValue(), e);</span>
+<span class="fc" id="L249">        }</span>
+
+<span class="fc" id="L251">        throw new PropertyAccessException(&quot;not found property : &quot; + token.getValue());</span>
+
+    }
+
+    private Object accessPropertyByKey(final Object targetObj, final Token.Key token) {
+
+<span class="fc bfc" id="L257" title="All 2 branches covered.">        if(targetObj == null) {</span>
+<span class="pc bpc" id="L258" title="1 of 2 branches missed.">            if(ignoreNull) {</span>
+<span class="nc" id="L259">                return null;</span>
+            } else {
+<span class="fc" id="L261">                throw new NullPointerException(&quot;access object is null. property key = &quot; + token.getValue());</span>
+            }
+
+        }
+
+<span class="fc" id="L266">        final Class&lt;?&gt; targetClass = targetObj.getClass();</span>
+
+<span class="fc bfc" id="L268" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(targetClass)) {</span>
+            final int index;
+            try {
+<span class="fc" id="L271">                index = Integer.parseInt(token.getKey().trim());</span>
+<span class="fc" id="L272">            } catch (NumberFormatException e) {</span>
+<span class="fc" id="L273">                throw new PropertyAccessException(&quot;wrong key value :&quot; + token.getValue());</span>
+<span class="fc" id="L274">            }</span>
+
+<span class="fc" id="L276">            final List&lt;?&gt; list = Utils.convertCollectionToList((Collection&lt;?&gt;) targetObj);</span>
+<span class="fc bfc" id="L277" title="All 6 branches covered.">            if((index &lt; 0 || index &gt;= list.size()) &amp;&amp; ignoreNotFoundKey) {</span>
+<span class="fc" id="L278">                return null;</span>
+            }
+
+<span class="fc" id="L281">            return list.get(index);</span>
+
+<span class="fc bfc" id="L283" title="All 2 branches covered.">        } else if (targetClass.isArray()) {</span>
+            final int index;
+            try {
+<span class="fc" id="L286">                index = Integer.parseInt(token.getKey().trim());</span>
+<span class="fc" id="L287">            } catch (NumberFormatException e) {</span>
+<span class="fc" id="L288">                throw new PropertyAccessException(&quot;wrong key value :&quot; + token.getValue());</span>
+<span class="fc" id="L289">            }</span>
+
+
+<span class="fc" id="L292">            final List&lt;?&gt; list = Utils.asList(targetObj, targetClass.getComponentType());</span>
+<span class="fc bfc" id="L293" title="All 6 branches covered.">            if((index &lt; 0 || index &gt;= list.size()) &amp;&amp; ignoreNotFoundKey) {</span>
+<span class="fc" id="L294">                return null;</span>
+            }
+
+<span class="fc" id="L297">            return list.get(index);</span>
+
+<span class="pc bpc" id="L299" title="1 of 2 branches missed.">        } else if(Map.class.isAssignableFrom(targetClass)) {</span>
+
+<span class="fc" id="L301">            String strKey = token.getKey();</span>
+<span class="fc" id="L302">            Map&lt;?, ?&gt; map = (Map&lt;?, ?&gt;) targetObj;</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">            for(Map.Entry&lt;?, ?&gt; entry : map.entrySet()) {</span>
+<span class="fc bfc" id="L304" title="All 2 branches covered.">                if(entry.getKey().toString().equals(strKey)) {</span>
+<span class="fc" id="L305">                    return entry.getValue();</span>
+                }
+<span class="fc" id="L307">            }</span>
+
+            // 存在するキーがない場合
+<span class="fc bfc" id="L310" title="All 2 branches covered.">            if(ignoreNotFoundKey) {</span>
+<span class="fc" id="L311">                return null;</span>
+            }
+
+<span class="fc" id="L314">            throw new IllegalStateException(&quot;not found map key : &quot; + strKey);</span>
+
+        }
+
+<span class="nc" id="L318">        throw new PropertyAccessException(&quot;not support key access : &quot; + targetClass.getName());</span>
+
+    }
+
+    /**
+     * 実行時オプション - 非公開のプロパティにアクセス可能かどうか。
+     * @return true: アクセスを許可する。false: デフォルト値。
+     */
+    public boolean isAllowPrivate() {
+<span class="nc" id="L327">        return allowPrivate;</span>
+    }
+
+    /**
+     * 実行時オプション - 非公開のプロパティにアクセス可能かどうか。
+     * @param allowPrivate true: アクセスを許可する。
+     */
+    public void setAllowPrivate(boolean allowPrivate) {
+<span class="fc" id="L335">        this.allowPrivate = allowPrivate;</span>
+<span class="fc" id="L336">    }</span>
+
+    /**
+     * 実行時オプション - 値がnullの場合に例外をスローしないでその時点で処理を終了するかどうか。
+     * @return true: その時点で処理を終了する。false: デフォルト値。
+     */
+    public boolean isIgnoreNull() {
+<span class="nc" id="L343">        return ignoreNull;</span>
+    }
+
+    /**
+     * 実行時オプション - 値がnullの場合に例外をスローしないでその時点で処理を終了するかどうか。
+     * @param ignoreNull true: その時点で処理を終了する。
+     */
+    public void setIgnoreNull(boolean ignoreNull) {
+<span class="fc" id="L351">        this.ignoreNull = ignoreNull;</span>
+<span class="fc" id="L352">    }</span>
+
+    /**
+     * 実行時オプション - 配列/Collection/Mapにアクセスする際に指定したキーの要素が存在しない場合に処理を終了するかどうか。
+     * @return true:その時点で処理を終了する。false: デフォルト値。
+     */
+    public boolean isIgnoreNotFoundKey() {
+<span class="nc" id="L359">        return ignoreNotFoundKey;</span>
+    }
+
+    /**
+     * 実行時オプション - 配列/Collection/Mapにアクセスする際に指定したキーの要素が存在しない場合に処理を終了するかどうか。
+     * @param ignoreNotFoundKey true:その時点で処理を終了する。
+     */
+    public void setIgnoreNotFoundKey(boolean ignoreNotFoundKey) {
+<span class="fc" id="L367">        this.ignoreNotFoundKey = ignoreNotFoundKey;</span>
+<span class="fc" id="L368">    }</span>
+
+    /**
+     * プロパティの解析結果をキャッシュするかどうか。
+     * @return true: キャッシュする。false: デフォルト値。
+     */
+    public boolean isCacheWithPath() {
+<span class="fc" id="L375">        return cacheWithPath;</span>
+    }
+
+    /**
+     * プロパティの解析結果をキャッシュするかどうか。
+     * @param cacheWithPath true: キャッシュする。
+     */
+    public void setCacheWithPath(boolean cacheWithPath) {
+<span class="fc" id="L383">        this.cacheWithPath = cacheWithPath;</span>
+<span class="fc" id="L384">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

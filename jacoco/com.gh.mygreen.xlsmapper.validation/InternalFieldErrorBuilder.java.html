@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InternalFieldErrorBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation</a> &gt; <span class="el_source">InternalFieldErrorBuilder.java</span></div><h1>InternalFieldErrorBuilder.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation;
+
+import java.util.Map;
+import java.util.Optional;
+
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+
+/**
+ * {@link SheetBindingErrors}経由で呼び出される{@link FieldError}のビルダクラス。
+ * &lt;p&gt;{@link #buildAndAddError()}でチェインでより使い安くする。&lt;/p&gt;
+ * 
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class InternalFieldErrorBuilder extends FieldErrorBuilder {
+    
+    private final SheetBindingErrors&lt;?&gt; errors;
+    
+    /**
+     * ビルダのインスタンスを作成します
+     * @param errors エラー情報
+     * @param objectName オブジェクト名
+     * @param field フィールド名。ネストしている場合は、親のパスを付与した形式（e.g. person.name）で指定します。
+     * @param codes メッセージコード。複数指定可能で、先頭にあるものほど優先度が高い。
+     */
+    public InternalFieldErrorBuilder(final SheetBindingErrors&lt;?&gt; errors, final String objectName, final String field, final String[] codes) {
+<span class="fc" id="L28">        super(objectName, field, codes);</span>
+<span class="fc" id="L29">        this.errors = errors;</span>
+<span class="fc" id="L30">    }</span>
+    
+    @Override
+    public InternalFieldErrorBuilder rejectedValue(final Object rejectedValue) {
+<span class="fc" id="L34">        super.rejectedValue(rejectedValue);</span>
+<span class="fc" id="L35">        return this;</span>
+    }
+    
+    @Override
+    public InternalFieldErrorBuilder conversionFailure(final boolean conversionFailure) {
+<span class="fc" id="L40">        super.conversionFailure(conversionFailure);</span>
+<span class="fc" id="L41">        return this;</span>
+    }
+    
+    @Override
+    public InternalFieldErrorBuilder variables(final Map&lt;String, Object&gt; variables) {
+<span class="fc" id="L46">        super.variables(variables);</span>
+<span class="fc" id="L47">        return this;</span>
+    }
+    
+    @Override
+    public InternalFieldErrorBuilder variables(final String key, final Object value) {
+<span class="fc" id="L52">        super.variables(key, value);</span>
+<span class="fc" id="L53">        return this;</span>
+    }
+    
+    @Override
+    public InternalFieldErrorBuilder defaultMessage(final String defaultMessage) {
+<span class="fc" id="L58">        super.defaultMessage(defaultMessage);</span>
+<span class="fc" id="L59">        return this;</span>
+    }
+    
+    @Override
+    public InternalFieldErrorBuilder sheetName(final String sheetName) {
+<span class="fc" id="L64">        super.sheetName(sheetName);</span>
+<span class="fc" id="L65">        return this;</span>
+    }
+    
+    @Override
+    public InternalFieldErrorBuilder label(final String label) {
+<span class="fc" id="L70">        super.label(label);</span>
+<span class="fc" id="L71">        return this;</span>
+    }
+    
+    @Override
+    public InternalFieldErrorBuilder label(final Optional&lt;String&gt; label) {
+<span class="fc" id="L76">        super.label(label);</span>
+<span class="fc" id="L77">        return this;</span>
+    }
+    
+    @Override
+    public InternalFieldErrorBuilder address(final CellPosition address) {
+<span class="fc" id="L82">        super.address(address);</span>
+<span class="fc" id="L83">        return this;</span>
+    }
+    
+    @Override
+    public InternalFieldErrorBuilder address(final Optional&lt;CellPosition&gt; address) {
+<span class="fc" id="L88">        super.address(address);</span>
+<span class="fc" id="L89">        return this;</span>
+    }
+    
+    /**
+     * {@link FieldError}のインスタンスを組み立て、{@link SheetBindingErrors}にエラーとして追加します。
+     * @return {@link SheetBindingErrors}のインスタンス
+     */
+    public SheetBindingErrors&lt;?&gt; buildAndAddError() {
+        
+<span class="fc" id="L98">        final FieldError error = super.build();</span>
+        
+<span class="fc" id="L100">        errors.addError(error);</span>
+        
+<span class="fc" id="L102">        return errors;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

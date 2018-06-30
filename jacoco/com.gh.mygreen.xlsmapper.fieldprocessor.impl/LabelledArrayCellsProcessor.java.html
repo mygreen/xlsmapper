@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LabelledArrayCellsProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor.impl</a> &gt; <span class="el_source">LabelledArrayCellsProcessor.java</span></div><h1>LabelledArrayCellsProcessor.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.poi.ss.usermodel.Sheet;
+
+import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.LoadingWorkObject;
+import com.gh.mygreen.xlsmapper.SavingWorkObject;
+import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.ArrayDirection;
+import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellHandler.LabelInfo;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * {@link XlsLabelledArrayCells}を処理するプロセッサ。
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L35">public class LabelledArrayCellsProcessor extends AbstractFieldProcessor&lt;XlsLabelledArrayCells&gt; {</span>
+
+    @Override
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCells anno,
+            final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work)
+            throws XlsMapperException {
+
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
+<span class="nc" id="L43">            return;</span>
+        }
+
+<span class="fc" id="L46">        final Class&lt;?&gt; clazz = accessor.getType();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(clazz)) {</span>
+
+<span class="fc" id="L49">            Class&lt;?&gt; elementClass = anno.elementClass();</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">            if(elementClass == Object.class) {</span>
+<span class="fc" id="L51">                elementClass = accessor.getComponentType();</span>
+            }
+
+<span class="fc" id="L54">            List&lt;?&gt; value = loadValues(sheet, beansObj, anno, accessor, elementClass, config, work);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">            if(value != null) {</span>
+                @SuppressWarnings({&quot;unchecked&quot;, &quot;rawtypes&quot;})
+<span class="fc" id="L57">                Collection&lt;?&gt; collection = Utils.convertListToCollection(value, (Class&lt;Collection&gt;)clazz, config.getBeanFactory());</span>
+<span class="fc" id="L58">                accessor.setValue(beansObj, collection);</span>
+            }
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        } else if(clazz.isArray()) {</span>
+
+<span class="fc" id="L63">            Class&lt;?&gt; elementClass = anno.elementClass();</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">            if(elementClass == Object.class) {</span>
+<span class="fc" id="L65">                elementClass = accessor.getComponentType();</span>
+            }
+
+<span class="fc" id="L68">            final List&lt;?&gt; value = loadValues(sheet, beansObj, anno, accessor, elementClass, config, work);</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">            if(value != null) {</span>
+<span class="fc" id="L70">                final Object array = Array.newInstance(elementClass, value.size());</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">                for(int i=0; i &lt; value.size(); i++) {</span>
+<span class="fc" id="L72">                    Array.set(array, i, value.get(i));</span>
+                }
+
+<span class="fc" id="L75">                accessor.setValue(beansObj, array);</span>
+            }
+
+<span class="fc" id="L78">        } else {</span>
+<span class="fc" id="L79">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
+<span class="fc" id="L80">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="fc" id="L81">                    .varWithAnno(&quot;anno&quot;, XlsLabelledArrayCells.class)</span>
+<span class="fc" id="L82">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
+<span class="fc" id="L83">                    .var(&quot;expectedType&quot;, &quot;Collection(List/Set) or Array&quot;)</span>
+<span class="fc" id="L84">                    .format());</span>
+
+        }
+
+<span class="fc" id="L88">    }</span>
+
+    private List&lt;Object&gt; loadValues(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCells anno,
+            final FieldAccessor accessor, final Class&lt;?&gt; elementClass, final Configuration config,
+            final LoadingWorkObject work) {
+
+        // マッピング対象のセル情報の取得
+<span class="fc" id="L95">        LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);</span>
+<span class="fc" id="L96">        Optional&lt;LabelInfo&gt; labelInfo = labelHandler.handle(anno, ProcessCase.Load);</span>
+
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if(!labelInfo.isPresent()) {</span>
+            /*
+             * ラベル用のセルが見つからない場合
+             * optional=falseの場合は、例外がスローされここには到達しない。
+             */
+<span class="fc" id="L103">            return null;</span>
+        }
+
+<span class="fc" id="L106">        final CellPosition initPosition = labelInfo.get().valueAddress;</span>
+<span class="fc" id="L107">        final CellConverter&lt;?&gt; converter = getCellConverter(elementClass, accessor, config);</span>
+
+<span class="fc" id="L109">        validateAnnotation(accessor, anno);</span>
+
+<span class="fc" id="L111">        ArrayCellsHandler arrayHandler = new ArrayCellsHandler(accessor, beansObj, elementClass, sheet, config);</span>
+<span class="fc" id="L112">        arrayHandler.setLabel(labelInfo.get().label);</span>
+
+<span class="fc" id="L114">        List&lt;Object&gt; result = arrayHandler.handleOnLoading(anno, initPosition, converter, work, anno.direction());</span>
+
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if(result != null) {</span>
+            // インデックスが付いていないラベルの設定
+<span class="fc" id="L118">            accessor.setLabel(beansObj, labelInfo.get().label);</span>
+        }
+
+<span class="fc" id="L121">        return result;</span>
+
+    }
+
+    /**
+     * アノテーションの設定値のチェック
+     *
+     * @param accessor フィールド情報
+     * @param anno チェック対象のアノテーション
+     */
+    private void validateAnnotation(final FieldAccessor accessor, final XlsLabelledArrayCells anno) {
+
+        // 左側のとき、水平方向の配列はサポートしない
+<span class="fc bfc" id="L134" title="All 4 branches covered.">        if(anno.type().equals(LabelledCellType.Left) &amp;&amp; anno.direction().equals(ArrayDirection.Horizon)) {</span>
+<span class="fc" id="L135">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.XlsLabelledArrayCell.notSupportTypeAndDirection&quot;)</span>
+<span class="fc" id="L136">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="fc" id="L137">                    .varWithAnno(&quot;anno&quot;, XlsLabelledArrayCells.class)</span>
+<span class="fc" id="L138">                    .varWithEnum(&quot;typeValue&quot;, anno.type())</span>
+<span class="fc" id="L139">                    .varWithEnum(&quot;directionValue&quot;, anno.direction())</span>
+<span class="fc" id="L140">                    .format());</span>
+        }
+
+<span class="fc" id="L143">    }</span>
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    @Override
+    public void saveProcess(final Sheet sheet, final Object beansObj, final XlsLabelledArrayCells anno,
+            final FieldAccessor accessor, final Configuration config, final SavingWorkObject work)
+            throws XlsMapperException {
+
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        if(!Utils.isSaveCase(anno.cases())) {</span>
+<span class="nc" id="L152">            return;</span>
+        }
+
+<span class="fc" id="L155">        final Class&lt;?&gt; clazz = accessor.getType();</span>
+<span class="fc" id="L156">        final Object result = accessor.getValue(beansObj);</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(clazz)) {</span>
+
+<span class="fc" id="L159">            Class&lt;?&gt; elementClass = anno.elementClass();</span>
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">            if(elementClass == Object.class) {</span>
+<span class="fc" id="L161">                elementClass = accessor.getComponentType();</span>
+            }
+
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">            final Collection&lt;Object&gt; value = (result == null ? new ArrayList&lt;Object&gt;() : (Collection&lt;Object&gt;) result);</span>
+<span class="fc" id="L165">            final List&lt;Object&gt; list = Utils.convertCollectionToList(value);</span>
+<span class="fc" id="L166">            saveRecords(sheet, anno, accessor, elementClass, beansObj, list, config, work);</span>
+
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        } else if(clazz.isArray()) {</span>
+
+<span class="fc" id="L170">            Class&lt;?&gt; elementClass = anno.elementClass();</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">            if(elementClass == Object.class) {</span>
+<span class="fc" id="L172">                elementClass = accessor.getComponentType();</span>
+            }
+
+<span class="fc" id="L175">            final List&lt;Object&gt; list = Utils.asList(result, elementClass);</span>
+<span class="fc" id="L176">            saveRecords(sheet, anno, accessor, elementClass, beansObj, list, config, work);</span>
+
+<span class="fc" id="L178">        } else {</span>
+<span class="fc" id="L179">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
+<span class="fc" id="L180">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="fc" id="L181">                    .varWithAnno(&quot;anno&quot;, XlsLabelledArrayCells.class)</span>
+<span class="fc" id="L182">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
+<span class="fc" id="L183">                    .var(&quot;expectedType&quot;, &quot;Collection(List/Set) or Array&quot;)</span>
+<span class="fc" id="L184">                    .format());</span>
+        }
+
+<span class="fc" id="L187">    }</span>
+
+    @SuppressWarnings(&quot;rawtypes&quot;)
+    private void saveRecords(final Sheet sheet, final XlsLabelledArrayCells anno, final FieldAccessor accessor,
+            final Class&lt;?&gt; elementClass, final Object beansObj, final List&lt;Object&gt; result, final Configuration config,
+            final SavingWorkObject work) throws XlsMapperException {
+
+        // マッピング対象のセル情報の取得
+<span class="fc" id="L195">        LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);</span>
+<span class="fc" id="L196">        Optional&lt;LabelInfo&gt; labelInfo = labelHandler.handle(anno, ProcessCase.Save);</span>
+
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        if(!labelInfo.isPresent()) {</span>
+            /*
+             * ラベル用のセルが見つからない場合
+             * optional=falseの場合は、例外がスローされここには到達しない。
+             */
+<span class="fc" id="L203">            return;</span>
+        }
+
+<span class="fc" id="L206">        final CellPosition initPosition = labelInfo.get().valueAddress;</span>
+<span class="fc" id="L207">        final CellConverter converter = getCellConverter(elementClass, accessor, config);</span>
+
+<span class="fc" id="L209">        validateAnnotation(accessor, anno);</span>
+
+<span class="fc" id="L211">        ArrayCellsHandler arrayHandler = new ArrayCellsHandler(accessor, beansObj, elementClass, sheet, config);</span>
+<span class="fc" id="L212">        arrayHandler.setLabel(labelInfo.get().label);</span>
+
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">        if(result != null) {</span>
+            // インデックスが付いていないラベルの設定
+<span class="fc" id="L216">            accessor.setLabel(beansObj, labelInfo.get().label);</span>
+        }
+
+<span class="fc" id="L219">        arrayHandler.handleOnSaving(result, anno, initPosition, converter, work, anno.direction());</span>
+
+<span class="fc" id="L221">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

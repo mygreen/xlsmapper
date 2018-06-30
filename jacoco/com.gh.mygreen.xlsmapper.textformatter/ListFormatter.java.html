@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListFormatter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.textformatter</a> &gt; <span class="el_source">ListFormatter.java</span></div><h1>ListFormatter.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.textformatter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
+import com.gh.mygreen.xlsmapper.cellconverter.DefaultElementConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.ElementConverter;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * リストの形式に変換するフォーマッタ。
+ *
+ * @version 2.0
+ * @author T.TSUCHIE
+ *
+ */
+@SuppressWarnings(&quot;rawtypes&quot;)
+public class ListFormatter implements TextFormatter&lt;List&gt; {
+    
+    /**
+     * 要素のクラスタイプ
+     */
+    private final Class&lt;?&gt; elementType;
+    
+    /**
+     * 要素の区切り
+     */
+<span class="fc" id="L32">    private String separator = &quot;,&quot;;</span>
+    
+    /**
+     * フォーマットする際に空の要素は無視するかどうか
+     */
+<span class="fc" id="L37">    private boolean ignoreEmptyElement = false;</span>
+    
+    /**
+     * トリムして処理をするかどうか
+     */
+<span class="fc" id="L42">    private boolean trimmed = false;</span>
+    
+    /**
+     * 要素の変換クラス
+     */
+<span class="fc" id="L47">    private ElementConverter elementConverter = new DefaultElementConverter();</span>
+    
+<span class="fc" id="L49">    public ListFormatter(final Class&lt;?&gt; elementType) {</span>
+<span class="fc" id="L50">        this.elementType = elementType;</span>
+<span class="fc" id="L51">    }</span>
+    
+    @SuppressWarnings(&quot;unchecked&quot;)
+    @Override
+    public List parse(final String text) throws TextParseException {
+        
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if(Utils.isEmpty(text)) {</span>
+<span class="fc" id="L58">            return Collections.emptyList();</span>
+        }
+        
+<span class="fc" id="L61">        final String[] split = text.split(separator);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if(split.length == 0) {</span>
+<span class="fc" id="L63">            return Collections.emptyList();</span>
+        }
+        
+<span class="fc" id="L66">        final List list = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for(String element : split) {</span>
+<span class="fc" id="L68">            String strVal = Utils.trim(element, trimmed);</span>
+<span class="fc bfc" id="L69" title="All 4 branches covered.">            if(ignoreEmptyElement &amp;&amp; Utils.isEmpty(strVal)) {</span>
+<span class="fc" id="L70">                continue;</span>
+            }
+            
+            try {
+<span class="fc" id="L74">                list.add(elementConverter.convertToObject(strVal, elementType));</span>
+                
+<span class="fc" id="L76">            } catch(ConversionException e) {</span>
+<span class="fc" id="L77">                final Map&lt;String, Object&gt; vars = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L78">                vars.put(&quot;separator&quot;, separator);</span>
+<span class="fc" id="L79">                vars.put(&quot;ignoreEmptyElement&quot;, ignoreEmptyElement);</span>
+<span class="fc" id="L80">                vars.put(&quot;trimmed&quot;, trimmed);</span>
+<span class="fc" id="L81">                vars.put(&quot;elementClass&quot;, elementType.getName());</span>
+                
+<span class="fc" id="L83">                throw new TextParseException(text, List.class, e, vars);</span>
+<span class="fc" id="L84">            }</span>
+        }
+        
+<span class="fc" id="L87">        return list;</span>
+    }
+    
+    @Override
+    public String format(final List value) {
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if(value == null) {</span>
+<span class="nc" id="L93">            return &quot;&quot;;</span>
+        }
+<span class="fc" id="L95">        return Utils.join(value, separator, ignoreEmptyElement, trimmed, elementConverter);</span>
+    }
+    
+    /**
+     * 要素の区切り文字を設定します。
+     * @param separator 区切り文字
+     */
+    public void setSeparator(String separator) {
+<span class="fc" id="L103">        this.separator = separator;</span>
+<span class="fc" id="L104">    }</span>
+    
+    /**
+     * フォーマットする際に空の要素は無視するかどうか設定します。
+     * @param ignoreEmptyElement 空の要素は無視するかどうか
+     */
+    public void setIgnoreEmptyElement(boolean ignoreEmptyElement) {
+<span class="fc" id="L111">        this.ignoreEmptyElement = ignoreEmptyElement;</span>
+<span class="fc" id="L112">    }</span>
+    
+    /**
+     * トリムして処理をするかどうか設定します。
+     * @param trimmed トリムして処理をするかどうか
+     */
+    public void setTrimmed(boolean trimmed) {
+<span class="fc" id="L119">        this.trimmed = trimmed;</span>
+<span class="fc" id="L120">    }</span>
+    
+    /**
+     * 要素の変換処理方法を設定します。
+     * @param elementConverter 要素の変換処理方法
+     */
+    public void setElementConverter(ElementConverter elementConverter) {
+<span class="fc" id="L127">        this.elementConverter = elementConverter;</span>
+<span class="fc" id="L128">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

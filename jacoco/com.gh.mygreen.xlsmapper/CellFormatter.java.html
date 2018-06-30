@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CellFormatter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper</a> &gt; <span class="el_source">CellFormatter.java</span></div><h1>CellFormatter.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper;
+
+import java.util.Locale;
+
+import org.apache.poi.ss.usermodel.Cell;
+
+
+/**
+ * セルフォーマッターのインタフェース。
+ * &lt;p&gt;標準の実装として{@link DefaultCellFormatter}がある。
+ *
+ * @version 2.0
+ * @since 0.1
+ * @author T.TSUCHIE
+ *
+ */
+public interface CellFormatter {
+
+    /**
+     * キャッシュの情報の初期化と設定を行います。
+     * @param cached trueのとき、キャッシュを有効にします。
+     */
+    default public void init(boolean cached) {
+
+<span class="nc" id="L25">    }</span>
+
+    /**
+     * セルの値を文字列として取得する
+     * @param cell 取得対象のセル
+     * @return フォーマットした文字列
+     */
+    public String format(Cell cell);
+
+    /**
+     * ロケールを指定してセルの値を文字列として取得する。
+     * @since 0.4
+     * @param cell 取得対象のセル
+     * @param locale ロケr－宇
+     * @return フォーマットした文字列
+     */
+    public String format(Cell cell, Locale locale);
+
+    /**
+     * セルの書式を取得する。
+     * @since 2.0
+     * @param cell
+     * @return 書式を持たない場合は、空文字を返す。
+     */
+    public String getPattern(Cell cell);
+
+    /**
+     * セルの書式を取得する。
+     * @since 2.0
+     * @param cell
+     * @return 書式を持たない場合は、空文字を返す。
+     */
+    public String getPattern(Cell cell, Locale locale);
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

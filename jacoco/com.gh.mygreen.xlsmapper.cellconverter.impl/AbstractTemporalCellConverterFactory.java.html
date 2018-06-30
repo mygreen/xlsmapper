@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractTemporalCellConverterFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.cellconverter.impl</a> &gt; <span class="el_source">AbstractTemporalCellConverterFactory.java</span></div><h1>AbstractTemporalCellConverterFactory.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.cellconverter.impl;
+
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.time.temporal.TemporalAccessor;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TimeZone;
+
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.annotation.XlsDateTimeConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
+import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * {@link TemporalAccessor}の子クラスに対する{@link CellConverterFactory}のベースクラス。
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L33">public abstract class AbstractTemporalCellConverterFactory&lt;T extends TemporalAccessor &amp; Comparable&lt;? super T&gt;&gt;</span>
+        extends CellConverterFactorySupport&lt;T&gt; implements CellConverterFactory&lt;T&gt; {
+
+    @Override
+    protected void setupCustom(final BaseCellConverter&lt;T&gt; cellConverter, final FieldAccessor field, final Configuration config) {
+
+<span class="fc" id="L39">        ArgUtils.instanceOf(cellConverter, AbstractTemporalCellConverter.class, &quot;cellConverter&quot;);</span>
+
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if(cellConverter instanceof AbstractTemporalCellConverter) {</span>
+
+<span class="fc" id="L43">            final AbstractTemporalCellConverter&lt;T&gt; temporalCellConverter = (AbstractTemporalCellConverter&lt;T&gt;)cellConverter;</span>
+
+            // 書き込み時のセルの書式を設定する
+<span class="fc" id="L46">            Optional&lt;XlsDateTimeConverter&gt; converterAnno = field.getAnnotation(XlsDateTimeConverter.class);</span>
+
+<span class="fc" id="L48">            temporalCellConverter.setDefaultExcelPattern(getDefaultExcelPattern());</span>
+<span class="fc" id="L49">            converterAnno.ifPresent(ca -&gt; temporalCellConverter.setSettingExcelPattern(ca.excelPattern()));</span>
+
+        }
+
+<span class="fc" id="L53">    }</span>
+
+    @Override
+    protected TextFormatter&lt;T&gt; createTextFormatter(final FieldAccessor field, final Configuration config) {
+
+<span class="fc" id="L58">        final Optional&lt;XlsDateTimeConverter&gt; converterAnno = field.getAnnotation(XlsDateTimeConverter.class);</span>
+<span class="fc" id="L59">        DateTimeFormatter formatter = createFormatter(converterAnno);</span>
+
+<span class="fc" id="L61">        return new TextFormatter&lt;T&gt;() {</span>
+
+            @Override
+            public T parse(final String text) {
+                try {
+<span class="fc" id="L66">                    return parseTemporal(text, formatter);</span>
+
+<span class="fc" id="L68">                } catch(DateTimeParseException e) {</span>
+<span class="fc" id="L69">                    final Map&lt;String, Object&gt; vars = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L70">                    vars.put(&quot;javaPattern&quot;, getJavaPattern(converterAnno));</span>
+<span class="fc" id="L71">                    vars.put(&quot;excelPattern&quot;, getExcelPattern(converterAnno));</span>
+
+<span class="fc" id="L73">                    throw new TextParseException(text, field.getType(), e, vars);</span>
+                }
+            }
+
+            @Override
+            public String format(final T value) {
+<span class="nc" id="L79">                return formatter.format(value);</span>
+            }
+        };
+
+    }
+
+    /**
+     * アノテーションを元にフォーマッタを作成する。
+     * @param converterAnno 変換用のアノテーション。
+     * @return フォーマッタ
+     */
+    protected DateTimeFormatter createFormatter(final Optional&lt;XlsDateTimeConverter&gt; converterAnno) {
+
+<span class="fc" id="L92">        final boolean lenient = converterAnno.map(a -&gt; a.lenient()).orElse(false);</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">        final ResolverStyle style = lenient ? ResolverStyle.LENIENT : ResolverStyle.STRICT;</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if(!converterAnno.isPresent()) {</span>
+<span class="fc" id="L95">            return DateTimeFormatter.ofPattern(getDefaultJavaPattern())</span>
+<span class="fc" id="L96">                    .withResolverStyle(style);</span>
+        }
+
+<span class="fc" id="L99">        String pattern = converterAnno.get().javaPattern();</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        if(pattern.isEmpty()) {</span>
+<span class="fc" id="L101">            pattern = getDefaultJavaPattern();</span>
+        }
+
+<span class="fc" id="L104">        final Locale locale = Utils.getLocale(converterAnno.get().locale());</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">        final ZoneId zone = converterAnno.get().timezone().isEmpty() ? ZoneId.systemDefault()</span>
+<span class="pc" id="L106">                : TimeZone.getTimeZone(converterAnno.get().timezone()).toZoneId();</span>
+
+<span class="fc" id="L108">        return DateTimeFormatter.ofPattern(pattern, locale)</span>
+<span class="fc" id="L109">                .withResolverStyle(style)</span>
+<span class="fc" id="L110">                .withZone(zone);</span>
+
+    }
+
+    private String getJavaPattern(final Optional&lt;XlsDateTimeConverter&gt; converterAnno) {
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        if(!converterAnno.isPresent()) {</span>
+<span class="fc" id="L116">            return getDefaultJavaPattern();</span>
+        }
+
+<span class="fc" id="L119">        String pattern = converterAnno.get().javaPattern();</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if(pattern.isEmpty()) {</span>
+<span class="nc" id="L121">            pattern = getDefaultJavaPattern();</span>
+        }
+
+<span class="fc" id="L124">        return pattern;</span>
+    }
+
+    private String getExcelPattern(final Optional&lt;XlsDateTimeConverter&gt; converterAnno) {
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if(!converterAnno.isPresent()) {</span>
+<span class="fc" id="L129">            return getDefaultExcelPattern();</span>
+        }
+
+<span class="fc" id="L132">        String pattern = converterAnno.get().excelPattern();</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if(pattern.isEmpty()) {</span>
+<span class="fc" id="L134">            pattern = getDefaultExcelPattern();</span>
+        }
+
+<span class="fc" id="L137">        return pattern;</span>
+    }
+
+    /**
+     * 文字列を解析してJavaオブジェクトに変換します。
+     * @param str 解析対象の文字列
+     * @param formatter フォーマッタ
+     * @return パースした結果
+     * @throws DateTimeParseException パースに失敗した場合
+     */
+    protected abstract T parseTemporal(String str, DateTimeFormatter formatter) throws DateTimeParseException;
+
+    /**
+     * その型における標準のJavaの書式を返す。
+     * @return {@link SimpleDateFormat}で処理可能な形式。
+     */
+    protected abstract String getDefaultJavaPattern();
+
+    /**
+     * その型における標準のExcelの書式を返す。
+     * @return Excelの書式
+     */
+    protected abstract String getDefaultExcelPattern();
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

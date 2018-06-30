@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnotationInvalidException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper</a> &gt; <span class="el_source">AnnotationInvalidException.java</span></div><h1>AnnotationInvalidException.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper;
+
+import java.lang.annotation.Annotation;
+
+
+/**
+ * 使い方やパラメータが間違っているアノテーション付与された場合にスローする例外。
+ *
+ * @version 1.4
+ * @author T.TSUCHIE
+ *
+ */
+public class AnnotationInvalidException extends XlsMapperException {
+
+    /** serialVersionUID */
+    private static final long serialVersionUID = 1L;
+    
+    private Annotation targetAnnotation;
+    
+    public AnnotationInvalidException(final String message) {
+<span class="fc" id="L21">        super(message);</span>
+<span class="fc" id="L22">    }</span>
+    
+    public AnnotationInvalidException(final Annotation targetAnnotation, final String message) {
+<span class="fc" id="L25">        super(message);</span>
+<span class="fc" id="L26">        this.targetAnnotation = targetAnnotation;</span>
+<span class="fc" id="L27">    }</span>
+    
+    public AnnotationInvalidException(final Annotation targetAnnotation, final String message, final Exception exception) {
+<span class="fc" id="L30">        super(message, exception);</span>
+<span class="fc" id="L31">        this.targetAnnotation = targetAnnotation;</span>
+<span class="fc" id="L32">    }</span>
+    
+    /**
+     * エラーの元となったアノテーションを取得する。
+     * @return 必要なアノテーションが付与されていない時など、nullを返すときもあります。
+     */
+    public Annotation getTargetAnnotation() {
+<span class="nc" id="L39">        return targetAnnotation;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

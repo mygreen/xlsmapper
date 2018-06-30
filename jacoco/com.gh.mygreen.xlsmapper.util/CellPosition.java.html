@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CellPosition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.util</a> &gt; <span class="el_source">CellPosition.java</span></div><h1>CellPosition.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.util;
+
+import java.awt.Point;
+import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.CellAddress;
+import org.apache.poi.ss.util.CellReference;
+
+/**
+ * 単一のセルのアドレスを表現するクラス。
+ * &lt;p&gt;{@link java.awt.Point}だと、行、列の表現がわかりづらくmutableなので、、その代わりに使用する。
+ * &lt;p&gt;{@link CellReference}との違いは、セルのアドレスの絶対一致を表現するためのもの。
+ * &lt;p&gt;POIに同じ用途のクラス{@link CellAddress}が存在するが、
+ *    こちらは{@link Serializable}や{@link Cloneable}が実装されておらず、使い勝手が悪い。&lt;/p&gt;
+ *
+ * @since 1.4
+ * @author T.TSUCHIE
+ *
+ */
+public class CellPosition implements Serializable, Comparable&lt;CellPosition&gt;, Cloneable {
+
+    /** serialVersionUID */
+    private static final long serialVersionUID = 8579701754512731611L;
+
+    /**
+     * シート上の先頭の位置を表現するための定数。
+     */
+<span class="fc" id="L31">    public static final CellPosition A1 = new CellPosition(0, 0);</span>
+
+    private final int row;
+
+    private final int column;
+
+    private final String toStringText;
+
+    /**
+     * CellAddressのインスタンスを作成する。
+     *
+     * @param row 行番号 (0から始まる)
+     * @param column 列番号 (0から始まる)
+     * @throws IllegalArgumentException {@literal row &lt; 0 || column &lt; 0}
+     */
+<span class="fc" id="L46">    private CellPosition(int row, int column) {</span>
+<span class="fc" id="L47">        ArgUtils.notMin(row, 0, &quot;row&quot;);</span>
+<span class="fc" id="L48">        ArgUtils.notMin(column, 0, &quot;column&quot;);</span>
+<span class="fc" id="L49">        this.row = row;</span>
+<span class="fc" id="L50">        this.column = column;</span>
+<span class="fc" id="L51">        this.toStringText = CellReference.convertNumToColString(column) + (row + 1);</span>
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * CellAddressのインスタンスを作成する。
+     *
+     * @param row 行番号 (0から始まる)
+     * @param column 列番号 (0から始まる)
+     * @return {@link CellPosition}のインスタンス
+     * @throws IllegalArgumentException {@literal row &lt; 0 || column &lt; 0}
+     */
+    public static CellPosition of(int row, int column) {
+<span class="fc" id="L63">        ArgUtils.notMin(row, 0, &quot;row&quot;);</span>
+<span class="fc" id="L64">        ArgUtils.notMin(column, 0, &quot;column&quot;);</span>
+
+<span class="fc" id="L66">        return new CellPosition(row, column);</span>
+    }
+
+    /**
+     * CellAddressのインスタンスを作成する。
+     * @param cell セルのインスタンス。
+     * @return {@link CellPosition}のインスタンス
+     * @throws IllegalArgumentException {@literal cell == null.}
+     */
+    public static CellPosition of(final Cell cell) {
+<span class="fc" id="L76">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+
+<span class="fc" id="L78">        return of(cell.getRowIndex(), cell.getColumnIndex());</span>
+    }
+
+    /**
+     * CellAddressのインスタンスを作成する。
+     * @param reference セルの参照形式。
+     * @return {@link CellPosition}のインスタンス
+     * @throws IllegalArgumentException {@literal reference == null.}
+     */
+    public static CellPosition of(final CellReference reference) {
+<span class="fc" id="L88">        ArgUtils.notNull(reference, &quot;reference&quot;);</span>
+
+<span class="fc" id="L90">        return of(reference.getRow(), reference.getCol());</span>
+    }
+
+    /**
+     * CellAddressのインスタンスを作成する。
+     * @param address セルのアドレス
+     * @return {@link CellPosition}のインスタンス
+     * @throws IllegalArgumentException {@literal address == null.}
+     */
+    public static CellPosition of(final CellAddress address) {
+<span class="fc" id="L100">        ArgUtils.notNull(address, &quot;address&quot;);</span>
+
+<span class="fc" id="L102">        return of(address.getRow(), address.getColumn());</span>
+    }
+
+    /**
+     * CellAddressのインスタンスを作成する。
+     * @param address 'A1'の形式のセルのアドレス
+     * @return {@link CellPosition}のインスタンス
+     * @throws IllegalArgumentException {@literal address == null || address.length() == 0 || アドレスの書式として不正}
+     */
+    public static CellPosition of(final String address) {
+<span class="fc" id="L112">        ArgUtils.notEmpty(address, &quot;address&quot;);</span>
+
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        if(!matchedCellAddress(address)) {</span>
+<span class="fc" id="L115">            throw new IllegalArgumentException(address + &quot; is wrong cell address pattern.&quot;);</span>
+        }
+
+<span class="fc" id="L118">        return of(new CellReference(address));</span>
+    }
+
+<span class="fc" id="L121">    private static final Pattern PATTERN_CELL_ADREESS = Pattern.compile(&quot;^([a-zA-Z]+)([0-9]+)$&quot;);</span>
+
+    private static boolean matchedCellAddress(final String address) {
+<span class="fc" id="L124">        final Matcher matcher = PATTERN_CELL_ADREESS.matcher(address);</span>
+<span class="fc" id="L125">        return matcher.matches();</span>
+    }
+
+    /**
+     * CellAddressのインスタンスを作成する。
+     * @param point セルの座標
+     * @return {@link CellPosition}のインスタンス
+     * @throws IllegalArgumentException {@literal point == null.}
+     */
+    public static CellPosition of(final Point point) {
+<span class="fc" id="L135">        ArgUtils.notNull(point, &quot;point&quot;);</span>
+<span class="fc" id="L136">        return of(point.y, point.x);</span>
+    }
+
+    @Override
+    public int compareTo(final CellPosition other) {
+<span class="nc" id="L141">        ArgUtils.notNull(other, &quot;other&quot;);</span>
+
+<span class="nc" id="L143">        int r = this.row - other.row;</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        if (r != 0) {</span>
+<span class="nc" id="L145">            return r;</span>
+        }
+
+<span class="nc" id="L148">        int c = this.column - other.column;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (c != 0) {</span>
+<span class="nc" id="L150">            return c;</span>
+        }
+
+<span class="nc" id="L153">        return 0;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L158">        final int prime = 31;</span>
+<span class="nc" id="L159">        int result = 1;</span>
+<span class="nc" id="L160">        result = prime * result + column;</span>
+<span class="nc" id="L161">        result = prime * result + row;</span>
+<span class="nc" id="L162">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if(this == obj) {</span>
+<span class="fc" id="L168">            return true;</span>
+        }
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        if(obj == null) {</span>
+<span class="nc" id="L171">            return false;</span>
+        }
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if(!(obj instanceof CellPosition)) {</span>
+<span class="nc" id="L174">            return false;</span>
+        }
+<span class="fc" id="L176">        CellPosition other = (CellPosition) obj;</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">        if(column != other.column) {</span>
+<span class="nc" id="L178">            return false;</span>
+        }
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">        if(row != other.row) {</span>
+<span class="nc" id="L181">            return false;</span>
+        }
+<span class="fc" id="L183">        return true;</span>
+    }
+
+    @Override
+    public CellPosition clone() {
+<span class="nc" id="L188">        return new CellPosition(row, column);</span>
+    }
+
+    /**
+     * 行番号を取得する。
+     * @return 行番号 (0から始まる)
+     */
+    public int getRow() {
+<span class="fc" id="L196">        return row;</span>
+    }
+
+    /**
+     * 列番号を取得する。
+     * @return 列番号 (0から始まる)
+     */
+    public int getColumn() {
+<span class="fc" id="L204">        return column;</span>
+    }
+
+    /**
+     * {@link Point}の形式に変換します。
+     * @return {@link Point}のインスタンス。
+     *          x座標が列番号（column index）、y座標が行番号(row index)なります。
+     */
+    public Point toPoint() {
+<span class="fc" id="L213">        return new Point(column, row);</span>
+    }
+
+    /**
+     * POIの{@link CellAddress}の形式に変換します。
+     * @return {@link CellAddress}のインスタンス。
+     */
+    public CellAddress toCellAddress() {
+<span class="fc" id="L221">        return new CellAddress(row, column);</span>
+    }
+
+    /**
+     * セルのアドレスを取得する。
+     * @return 'A1'の形式で、セルノアドレスを文字列として表現する。
+     */
+    public String formatAsString() {
+<span class="fc" id="L229">        return toStringText;</span>
+    }
+
+    /**
+     * 行番号に指定した値を加算する。
+     * @param value 加算する値
+     * @return 加算したインスタンス
+     */
+    public CellPosition addRow(int value) {
+<span class="nc" id="L238">        return new CellPosition(row + value, column);</span>
+    }
+
+    /**
+     * 列番号に指定した値を加算する。
+     * @param value 加算する値
+     * @return 加算したインスタンス
+     */
+    public CellPosition addColumn(int value) {
+<span class="nc" id="L247">        return new CellPosition(row, column + value);</span>
+    }
+
+    /**
+     * {@link #formatAsString()}の値を返します。
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L255">        return formatAsString();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

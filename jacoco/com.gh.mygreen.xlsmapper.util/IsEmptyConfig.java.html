@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsEmptyConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.util</a> &gt; <span class="el_source">IsEmptyConfig.java</span></div><h1>IsEmptyConfig.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.util;
+
+
+
+/**
+ * {@link IsEmptyBuilder}の設定を組み立てるクラス。
+ * 
+ * @since 1.0
+ * @author T.TSUCHIE
+ *
+ */
+public class IsEmptyConfig {
+    
+    /**
+     * 数値の場合、0を空として扱うか。
+     */
+    private boolean zeroAsEmpty;
+    
+    /**
+     * 配列の場合、値も対象とするかどうか。
+     */
+    private boolean testArrayElement;
+    
+    /**
+     * Collectionの場合、値も対象とするかどうか。
+     */
+    private boolean testCollectionElement;
+    
+    /**
+     * Mapの場合、値も対象とするかどうか。
+     */
+    private boolean testMapValue;
+    
+    /**
+     * ransientが付与されたフィールドも対象とするかどうか。
+     */
+    private boolean testTransient;
+    
+    /**
+     * インスタンスを作成する。
+     * @return
+     */
+    public static IsEmptyConfig create() {
+<span class="fc" id="L44">        return new IsEmptyConfig();</span>
+    }
+    
+    /**
+     * コンストラクタ
+     */
+<span class="fc" id="L50">    public IsEmptyConfig() {</span>
+        
+<span class="fc" id="L52">        this.zeroAsEmpty = true;</span>
+<span class="fc" id="L53">        this.testArrayElement = true;</span>
+<span class="fc" id="L54">        this.testCollectionElement = true;</span>
+<span class="fc" id="L55">        this.testMapValue = true;</span>
+<span class="fc" id="L56">        this.testTransient = false;</span>
+<span class="fc" id="L57">    }</span>
+    
+    /**
+     * 数値の0を空として扱うかどうか。
+     * @return true:0を空として扱う。初期値はtrueです。
+     */
+    public boolean isZeroAsEmpty() {
+<span class="fc" id="L64">        return zeroAsEmpty;</span>
+    }
+    
+    /**
+     * 数値の0を空として扱うかどうか設定します。
+     * @param zeroAsEmpty 数値の0を空として扱うかどうか。
+     * @return 自身のインスタンス
+     */
+    public IsEmptyConfig withZeroAsEmpty(boolean zeroAsEmpty) {
+<span class="fc" id="L73">        this.zeroAsEmpty = zeroAsEmpty;</span>
+<span class="fc" id="L74">        return this;</span>
+        
+    }
+    
+    /**
+     * 配列の値も検証対象とするかどうか。
+     * @return true:配列の値も検証対象とする。初期値はtrueです。
+     */
+    public boolean isTestArrayElement() {
+<span class="fc" id="L83">        return testArrayElement;</span>
+    }
+    
+    /**
+     * 配列の値も検証対象とするかどうかを設定します設定します。
+     * @param testArrayElement 配列の値も検証対象とするかどうか
+     * @return 自身のインスタンス
+     */
+    public IsEmptyConfig withTestArrayElement(boolean testArrayElement) {
+<span class="fc" id="L92">        this.testArrayElement = testArrayElement;</span>
+<span class="fc" id="L93">        return this;</span>
+    }
+    
+    /**
+     * Collectionの値も検証対象とするかどうか。
+     * @return true:Collectionの値も検証対象とする。初期値はtrueです。
+     */
+    public boolean isTestCollectionElement() {
+<span class="fc" id="L101">        return testCollectionElement;</span>
+    }
+    
+    /**
+     * Collectionの値も検証対象とするかどうかを設定します設定します。
+     * @param testCollectionElement Collectionの値も検証対象とするかどうか
+     * @return 自身のインスタンス
+     */
+    public IsEmptyConfig withTestCollectionElement(boolean testCollectionElement) {
+<span class="fc" id="L110">        this.testCollectionElement = testCollectionElement;</span>
+<span class="fc" id="L111">        return this;</span>
+    }
+    
+    /**
+     * Mapの値も検証対象とするかどうか。
+     * @return true:Mapの値も検証対象とする。初期値はtrueです。
+     */
+    public boolean isTestMapValue() {
+<span class="fc" id="L119">        return testMapValue;</span>
+    }
+    
+    /**
+     * Mapの値も検証対象とするかどうかを設定します設定します。
+     * @param testMapValue Mapの値も検証対象とするかどうか
+     * @return 自身のインスタンス
+     */
+    public IsEmptyConfig withTestMapValue(boolean testMapValue) {
+<span class="fc" id="L128">        this.testMapValue = testMapValue;</span>
+<span class="fc" id="L129">        return this;</span>
+    }
+    
+    /**
+     * transientが付与されたフィールドも対象とするかどうか。
+     * @return true:場合テスト対象となります。初期値はfalseです。
+     */
+    public boolean isTestTransient() {
+<span class="fc" id="L137">        return testTransient;</span>
+    }
+    
+    /**
+     * transientが付与されたフィールドも対象とするかどうか設定します。
+     * @param testTransient transientが付与されたフィールドも対象とするかどうか。
+     * @return 自身のインスタンス
+     */
+    public IsEmptyConfig withTestTransient(boolean testTransient) {
+<span class="fc" id="L146">        this.testTransient = testTransient;</span>
+<span class="fc" id="L147">        return this;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

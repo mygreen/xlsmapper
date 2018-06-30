@@ -15,7 +15,7 @@
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> org.junit.Test;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.cellconvert.DefaultCellConverter;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ognl.Ognl;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ognl.OgnlContext;
@@ -405,10 +405,10 @@
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>         
 <a class="jxr_linenumber" name="L398" href="#L398">398</a>         OgnlValueFormatter formatter = <strong class="jxr_keyword">new</strong> OgnlValueFormatter();
 <a class="jxr_linenumber" name="L399" href="#L399">399</a>         
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>         Class&lt;?&gt;[] obj = <strong class="jxr_keyword">new</strong> Class[]{String.<strong class="jxr_keyword">class</strong>, DefaultCellConverter.<strong class="jxr_keyword">class</strong>};
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>         Class&lt;?&gt;[] obj = <strong class="jxr_keyword">new</strong> Class[]{String.<strong class="jxr_keyword">class</strong>, CellConverter.<strong class="jxr_keyword">class</strong>};
 <a class="jxr_linenumber" name="L401" href="#L401">401</a>         
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>         String exp = formatter.format(obj);
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>         assertThat(exp, is(<span class="jxr_string">"new java.lang.Class[] {@java.lang.String@class, @com.gh.mygreen.xlsmapper.cellconvert.DefaultCellConverter@class}"</span>));
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>         assertThat(exp, is(<span class="jxr_string">"new java.lang.Class[] {@java.lang.String@class, @com.gh.mygreen.xlsmapper.cellconverter.CellConverter@class}"</span>));
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>         
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>         Class&lt;?&gt;[] result = (Class&lt;?&gt;[])evalOgnl(exp);
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>         assertThat(result, is(instanceOf(Class[].<strong class="jxr_keyword">class</strong>)));
@@ -429,6 +429,6 @@
 <a class="jxr_linenumber" name="L421" href="#L421">421</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2017 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2018 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

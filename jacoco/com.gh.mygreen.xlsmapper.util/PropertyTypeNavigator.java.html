@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PropertyTypeNavigator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.util</a> &gt; <span class="el_source">PropertyTypeNavigator.java</span></div><h1>PropertyTypeNavigator.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.util;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.gh.mygreen.xlsmapper.util.PropertyPath.Token;
+
+/**
+ * クラス定義からプロパティのクラスタイプを取得する。
+ * &lt;p&gt;プロパティは式言語の形式に似た形式をとることが可能で、フィールドにもアクセスできます。&lt;/p&gt;
+ * 
+ * 
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class PropertyTypeNavigator {
+    
+    /**
+     * 非公開のプロパティにアクセス可能かどうか。
+     */
+    private boolean allowPrivate;
+    
+    /**
+     * クラスタイプの解析ができない場合に処理を終了するかどうか。
+     */
+    private boolean ignoreNotResolveType;
+    
+    /**
+     * プロパティの解析結果をキャッシュするかどうか。
+     */
+    private boolean cacheWithPath;
+    
+    /**
+     * プロパティの式を解析して、トークンに分解するクラス。
+     */
+<span class="fc" id="L43">    private final PropertyPathTokenizer tokenizer = new PropertyPathTokenizer();</span>
+    
+    /**
+     * プロパティの解析結果をキャッシュデータ
+     */
+<span class="fc" id="L48">    private final Map&lt;String, PropertyPath&gt; cacheData = new ConcurrentHashMap&lt;&gt;();</span>
+    
+     /**
+     * プロパティの値を取得する。
+     * &lt;p&gt;オプションはデフォルト値で処理する。&lt;/p&gt;
+     * @param rootClass 取得元となるクラス
+     * @param property プロパティの式。
+     * @return プロパティのクラスタイプ。
+     * @throws IllegalArgumentException peropety is null or empty.
+     * @throws PropertyAccessException 存在しないプロパティを指定した場合など。
+     * @throws IllegalStateException リストやマップにアクセスする際にGenericsタイプが設定されておらずクラスタイプが取得できない場合。
+     *         ただし、オプションignoreNotResolveType = falseのとき。
+     */
+    public static Object get(final Class&lt;?&gt; rootClass, final String property) {
+<span class="nc" id="L62">        return new PropertyTypeNavigator().getPropertyType(rootClass, property);</span>
+    }
+    
+    /**
+     * デフォルトコンストラクタ
+     */
+<span class="fc" id="L68">    public PropertyTypeNavigator() {</span>
+        
+<span class="fc" id="L70">    }</span>
+    
+    /**
+     * プロパティの値を取得する。
+     * 
+     * @param rootClass 取得元となるクラス
+     * @param property プロパティの式。
+     * @return プロパティのクラスタイプ。
+     * @throws IllegalArgumentException peropety is null or empty.
+     * @throws PropertyAccessException 存在しないプロパティを指定した場合など。
+     * @throws IllegalStateException リストやマップにアクセスする際にGenericsタイプが設定されておらずクラスタイプが取得できない場合。
+     *         ただし、オプションignoreNotResolveType = falseのとき。
+     */
+    public Class&lt;?&gt; getPropertyType(final Class&lt;?&gt; rootClass, final String property) {
+        
+<span class="fc" id="L85">        ArgUtils.notEmpty(property, &quot;property&quot;);</span>
+        
+<span class="fc" id="L87">        final PropertyPath path = parseProperty(property);</span>
+<span class="fc" id="L88">        final LinkedList&lt;Object&gt; stack = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L89">        Class&lt;?&gt; targetClass = rootClass;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for(Token token : path.getPathAsToken()) {</span>
+            
+<span class="fc" id="L92">            targetClass = accessProperty(targetClass, token, stack);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">            if(targetClass == null) {</span>
+<span class="fc" id="L94">                return null;</span>
+            }
+<span class="fc" id="L96">        }</span>
+        
+<span class="fc" id="L98">        return targetClass;</span>
+        
+    }
+    
+    /**
+     * プロパティの式をパースして、{@link PropertyPath} オブジェクトに変換する。
+     * @param property プロパティアクセス用の式
+     * @return 式を解析した結果 {@link PropertyPath}
+     */
+    private PropertyPath parseProperty(final String property) {
+        
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if(isCacheWithPath()) {</span>
+<span class="fc" id="L110">            return cacheData.computeIfAbsent(property, k -&gt; tokenizer.parse(k));</span>
+        } else {
+<span class="fc" id="L112">            return tokenizer.parse(property);</span>
+        }
+        
+    }
+    
+    private Class&lt;?&gt; accessProperty(final Class&lt;?&gt; targetClass, final Token token, final LinkedList&lt;Object&gt; stack) {
+        
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if(token instanceof Token.Separator) {</span>
+<span class="fc" id="L120">            return accessPropertyBySeparator(targetClass, (Token.Separator)token, stack);</span>
+            
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        } else if(token instanceof Token.Name) {</span>
+<span class="fc" id="L123">            return accessPropertyByName(targetClass, (Token.Name)token, stack);</span>
+            
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        } else if(token instanceof Token.Key) {</span>
+<span class="fc" id="L126">            return accessPropertyByKey(targetClass, (Token.Key)token, stack);</span>
+        }
+        
+<span class="nc" id="L129">        throw new IllegalStateException(&quot;not support token type : &quot; + token.getValue());</span>
+        
+    }
+    
+    private Class&lt;?&gt; accessPropertyBySeparator(final Class&lt;?&gt; targetClass, final Token.Separator token, final LinkedList&lt;Object&gt; stack) {
+        
+<span class="fc" id="L135">        return targetClass;</span>
+        
+    }
+    
+    private Class&lt;?&gt; accessPropertyByName(final Class&lt;?&gt; targetClass, final Token.Name token, final LinkedList&lt;Object&gt; stack) {
+        
+        // メソッドアクセス
+<span class="fc" id="L142">        final String getterMethodName = &quot;get&quot; + Utils.capitalize(token.getValue());</span>
+        try {
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">            Method getterMethod = allowPrivate ? </span>
+<span class="pc" id="L145">                    targetClass.getDeclaredMethod(getterMethodName) : targetClass.getMethod(getterMethodName);</span>
+<span class="fc" id="L146">            getterMethod.setAccessible(true);</span>
+            
+            // Collectionなどの場合、メソッド情報をスタックに積んでおく
+<span class="fc" id="L149">            stack.push(getterMethod);</span>
+            
+<span class="fc" id="L151">            return getterMethod.getReturnType();</span>
+            
+<span class="fc" id="L153">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            // not found method
+            
+        }
+        
+        // boolean用メソッドアクセス
+<span class="fc" id="L159">        final String booleanMethodName = &quot;is&quot; + Utils.capitalize(token.getValue());</span>
+        try {
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">            Method getterMethod = allowPrivate ? </span>
+<span class="pc" id="L162">                    targetClass.getDeclaredMethod(booleanMethodName) : targetClass.getMethod(booleanMethodName);;</span>
+<span class="fc" id="L163">            getterMethod.setAccessible(true);</span>
+            
+<span class="fc" id="L165">            return getterMethod.getReturnType();</span>
+            
+<span class="fc" id="L167">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            // not found method
+            
+        }
+        
+        // フィールドアクセス
+<span class="fc" id="L173">        final String fieldName = token.getValue();</span>
+        try {
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            Field field = allowPrivate ? </span>
+<span class="fc" id="L176">                    targetClass.getDeclaredField(fieldName) : targetClass.getField(fieldName);</span>
+<span class="fc" id="L177">            field.setAccessible(true);</span>
+            
+            // Collectionなどの場合、メソッド情報をスタックに積んでおく
+<span class="fc" id="L180">            stack.push(field);</span>
+            
+<span class="fc" id="L182">            return field.getType();</span>
+            
+<span class="fc" id="L184">        } catch (NoSuchFieldException | SecurityException e) {</span>
+            // not found field
+            
+        }
+        
+<span class="fc" id="L189">        throw new PropertyAccessException(&quot;not found property : &quot; + token.getValue());</span>
+        
+    }
+    
+    private Class&lt;?&gt; accessPropertyByKey(final Class&lt;?&gt; targetClass, final Token.Key token, final LinkedList&lt;Object&gt; stack) {
+        
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">        final Object parent = stack.isEmpty() ? null : stack.pollFirst();</span>
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">        if(parent == null) {</span>
+<span class="nc" id="L197">            return null;</span>
+        }
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(targetClass)) {</span>
+            
+<span class="fc" id="L201">            Type argType = null;</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">            if(parent instanceof Method) {</span>
+                // getterメソッドのからGenericsのタイプを取得する
+<span class="fc" id="L204">                Type type = ((Method)parent).getGenericReturnType();</span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">                if(!ParameterizedType.class.isAssignableFrom(type.getClass())) {</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">                    if(ignoreNotResolveType) {</span>
+<span class="nc" id="L207">                        return null;</span>
+                    } else {
+<span class="nc" id="L209">                        throw new IllegalStateException(&quot;not resolve generics type with property : &quot; + token.getValue());</span>
+                    }
+                }
+<span class="fc" id="L212">                argType = ((ParameterizedType)type).getActualTypeArguments()[0];</span>
+                
+<span class="fc bfc" id="L214" title="All 2 branches covered.">            } else if(parent instanceof Field) {</span>
+<span class="fc" id="L215">                Type type = ((Field)parent).getGenericType();</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">                if(!ParameterizedType.class.isAssignableFrom(type.getClass())) {</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">                    if(ignoreNotResolveType) {</span>
+<span class="fc" id="L218">                        return null;</span>
+                    } else {
+<span class="fc" id="L220">                        throw new IllegalStateException(&quot;not resolve generics type with property : &quot; + token.getValue());</span>
+                    }
+                }
+                
+<span class="fc" id="L224">                argType = ((ParameterizedType)type).getActualTypeArguments()[0];</span>
+                
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">            } else if(parent instanceof ParameterizedType) {</span>
+<span class="fc" id="L227">                ParameterizedType type = (ParameterizedType) parent;</span>
+<span class="fc" id="L228">                argType = type.getActualTypeArguments()[0];</span>
+                
+<span class="fc" id="L230">            } else {</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">                if(ignoreNotResolveType) {</span>
+<span class="nc" id="L232">                    return null;</span>
+                } else {
+<span class="nc" id="L234">                    throw new IllegalStateException(&quot;not resolve generics type with property : &quot; + token.getValue());</span>
+                }
+            }
+            
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">            if(argType == null) {</span>
+<span class="nc" id="L239">                return null;</span>
+            }
+            
+<span class="fc bfc" id="L242" title="All 2 branches covered.">            if(argType instanceof Class) {</span>
+<span class="fc" id="L243">                return (Class&lt;?&gt;)argType;</span>
+                
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">            } else if(argType instanceof ParameterizedType) {</span>
+<span class="fc" id="L246">                ParameterizedType paramType = ((ParameterizedType)argType);</span>
+<span class="fc" id="L247">                stack.push(paramType);</span>
+<span class="fc" id="L248">                return (Class&lt;?&gt;)paramType.getRawType();</span>
+            }
+            
+<span class="pc bfc" id="L251" title="All 2 branches covered.">        } else if (targetClass.isArray()) {</span>
+            
+<span class="fc" id="L253">            return targetClass.getComponentType();</span>
+            
+<span class="pc bpc" id="L255" title="1 of 2 branches missed.">        } else if(Map.class.isAssignableFrom(targetClass)) {</span>
+            
+<span class="fc" id="L257">            Type argType = null;</span>
+<span class="pc bpc" id="L258" title="1 of 2 branches missed.">            if(parent instanceof Method) {</span>
+                // getterメソッドのからGenericsのタイプを取得する
+<span class="nc" id="L260">                Type type = ((Method)parent).getGenericReturnType();</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">                if(!ParameterizedType.class.isAssignableFrom(type.getClass())) {</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">                    if(ignoreNotResolveType) {</span>
+<span class="nc" id="L263">                        return null;</span>
+                    } else {
+<span class="nc" id="L265">                        throw new IllegalStateException(&quot;not resolve generics type with property : &quot; + token.getValue());</span>
+                    }
+                }
+<span class="nc" id="L268">                argType = ((ParameterizedType)type).getActualTypeArguments()[1];</span>
+                
+<span class="pc bfc" id="L270" title="All 2 branches covered.">            } else if(parent instanceof Field) {</span>
+<span class="fc" id="L271">                Type type = ((Field)parent).getGenericType();</span>
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">                if(!ParameterizedType.class.isAssignableFrom(type.getClass())) {</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">                    if(ignoreNotResolveType) {</span>
+<span class="nc" id="L274">                        return null;</span>
+                    } else {
+<span class="nc" id="L276">                        throw new IllegalStateException(&quot;not resolve generics type with property : &quot; + token.getValue());</span>
+                    }
+                }
+<span class="fc" id="L279">                argType = ((ParameterizedType)type).getActualTypeArguments()[1];</span>
+                
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">            } else if(parent instanceof ParameterizedType) {</span>
+<span class="fc" id="L282">                ParameterizedType type = (ParameterizedType) parent;</span>
+<span class="fc" id="L283">                argType = type.getActualTypeArguments()[1];</span>
+                
+<span class="fc" id="L285">            } else {</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">                if(ignoreNotResolveType) {</span>
+<span class="nc" id="L287">                    return null;</span>
+                } else {
+<span class="nc" id="L289">                    throw new IllegalStateException(&quot;not resolve generics type with property : &quot; + token.getValue());</span>
+                }
+            }
+            
+<span class="pc bpc" id="L293" title="1 of 2 branches missed.">            if(argType == null) {</span>
+<span class="nc" id="L294">                return null;</span>
+            }
+            
+<span class="fc bfc" id="L297" title="All 2 branches covered.">            if(argType instanceof Class) {</span>
+<span class="fc" id="L298">                return (Class&lt;?&gt;)argType;</span>
+                
+<span class="pc bpc" id="L300" title="1 of 2 branches missed.">            } else if(argType instanceof ParameterizedType) {</span>
+<span class="fc" id="L301">                ParameterizedType paramType = ((ParameterizedType)argType);</span>
+<span class="fc" id="L302">                stack.push(paramType);</span>
+<span class="fc" id="L303">                return (Class&lt;?&gt;)paramType.getRawType();</span>
+            }
+            
+        }
+        
+<span class="nc" id="L308">        throw new PropertyAccessException(&quot;not support key access : &quot; + targetClass.getName());</span>
+        
+    }
+    
+    /**
+     * 今までのキャッシュデータをクリアする。
+     */
+    public void clearCache() {
+<span class="nc" id="L316">        this.cacheData.clear();</span>
+<span class="nc" id="L317">    }</span>
+    
+    /**
+     * 実行時オプション - 非公開のプロパティにアクセス可能かどうか。
+     * @return true: アクセスを許可する。false: デフォルト値。
+     */
+    public boolean isAllowPrivate() {
+<span class="nc" id="L324">        return allowPrivate;</span>
+    }
+    
+    /**
+     * 実行時オプション - 非公開のプロパティにアクセス可能かどうか。
+     * @param allowPrivate true: アクセスを許可する。
+     */
+    public void setAllowPrivate(boolean allowPrivate) {
+<span class="fc" id="L332">        this.allowPrivate = allowPrivate;</span>
+<span class="fc" id="L333">    }</span>
+    
+    /**
+     * クラスタイプの解析ができない場合に処理を終了するかどうか。
+     * &lt;p&gt;ListなどでGenericsタイプが指定されていでクラスタイプが取得できないときに、nullを返すかどうか指定します。&lt;/p&gt;
+     * @return true:その時点で処理を終了する。
+     */
+    public boolean isIgnoreNotResolveType() {
+<span class="nc" id="L341">        return ignoreNotResolveType;</span>
+    }
+    
+    /**
+     * クラスタイプの解析ができない場合に処理を終了するかどうか。
+     * &lt;p&gt;ListなどでGenericsタイプが指定されていでクラスタイプが取得できないときに、nullを返すかどうか指定します。&lt;/p&gt;
+     * @param ignoreNotResolveType true:その時点で処理を終了する。
+     */
+    public void setIgnoreNotResolveType(boolean ignoreNotResolveType) {
+<span class="fc" id="L350">        this.ignoreNotResolveType = ignoreNotResolveType;</span>
+<span class="fc" id="L351">    }</span>
+    
+    
+    /**
+     * プロパティの解析結果をキャッシュするかどうか。
+     * @return true: キャッシュする。false: デフォルト値。
+     */
+    public boolean isCacheWithPath() {
+<span class="fc" id="L359">        return cacheWithPath;</span>
+    }
+    
+    /**
+     * プロパティの解析結果をキャッシュするかどうか。
+     * @param cacheWithPath true: キャッシュする。
+     */
+    public void setCacheWithPath(boolean cacheWithPath) {
+<span class="fc" id="L367">        this.cacheWithPath = cacheWithPath;</span>
+<span class="fc" id="L368">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

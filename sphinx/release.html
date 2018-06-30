@@ -1,207 +1,572 @@
 
 
-<!doctype html>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ja" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ja" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>16. リリースノート &mdash; XlsMapper 2.0 ドキュメント</title>
+  
 
+  
+  
+  
+  
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+
+  
+  
     
-    <title>8. リリースノート &#8212; XlsMapper 1.6 ドキュメント</title>
-    
-    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/mycustom.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/translations.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="_static/mytheme.js"></script>
-    <script type="text/javascript" src="_static/bizstyle.js"></script>
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/mycustom.css" type="text/css" />
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
-    <link rel="top" title="XlsMapper 1.6 ドキュメント" href="index.html" />
-    <link rel="prev" title="7. マイグレーション" href="migration.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
-    <![endif]-->
-  </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>ナビゲーション</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="総合索引"
-             accesskey="I">索引</a></li>
-        <li class="right" >
-          <a href="migration.html" title="7. マイグレーション"
-             accesskey="P">前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.6 ドキュメント</a> &#187;</li> 
-      </ul>
-    </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div id="toc" class="sidebarRow">
-<h3><a href="../index.html">関連リンク</a></h3>
+    <link rel="prev" title="15. マイグレーション" href="migration.html" />
+ 
+<!-- my theme custom extrahead beacon -->
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> XlsMapper
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+<p class="caption"><span class="caption-text">関連リンク</span></p>
 <ul>
-	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">JavaDoc</a></li>
-	<li class="toctree-l1"><a class="reference internal" href="https://github.com/mygreen/xlsmapper">GitHub</a></li>
 	<li class="toctree-l1"><a class="reference internal" href="../project-info.html">プロジェクト情報</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="../apidocs/index.html">JavaDoc</a></li>
 	<li class="toctree-l1"><a class="reference internal" href="../project-reports.html">プロジェクトレポート</a></li>
+	<li class="toctree-l1"><a class="reference internal" href="https://github.com/mygreen/xlsmapper">GitHub</a></li>
 </ul>
 
-<h3><a href="index.html">目次</a></h3>
+
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">目次</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="howtouse.html">1. 基本的な使い方</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="howtouse.html#id2">1.1. ダウンロード</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.2. 前提条件</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id4">1.3. マッピングの基本</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id7">1.4. 読み込み方</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.5. 書き込み方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#dependencyenv">1.2. 前提条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetload">1.3. マッピングの基本</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="howtouse.html#id5">1.3.1. 読み込み方の基本</a></li>
+<li class="toctree-l3"><a class="reference internal" href="howtouse.html#id6">1.3.2. 書き込み方の基本</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="annotation.html">2. アノテーションの使用方法</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id2">2.2. アノテーションの定義位置</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id3">2.3. マッピング用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id33">2.4. 型変換用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id54">2.5. 数式指定用のアノテーション</a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation.html#id61">2.6. ライフサイクル・コールバック用のアノテーション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#id7">1.4. 読み込み方</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="howtouse.html#id8">1.4.1. 単一のシートを読み込む場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="howtouse.html#id9">1.4.2. 複数のシートを読み込む場合</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="otheruse.html">3. その他の機能</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xlsmapperconfig">3.1. XlsMapperConfigによる動作のカスタマイズ</a></li>
-<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id2">3.2. シート上の位置情報の取得</a></li>
-<li class="toctree-l2"><a class="reference internal" href="otheruse.html#id4">3.3. シート上の見出しの取得</a></li>
-<li class="toctree-l2"><a class="reference internal" href="otheruse.html#xml">3.4. XMLファイルによるマッピング</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#howtousesheetsave">1.5. 書き込み方</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="howtouse.html#id11">1.5.1. 単一のシートの書き込む場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="howtouse.html#id12">1.5.2. 複数のシートを書き込む場合</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="validation.html">4. 読み込んだ値の入力値検証</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="validation.html#id2">4.1. 入力値検証の基本</a></li>
-<li class="toctree-l2"><a class="reference internal" href="validation.html#id3">4.2. 独自の入力値検証</a></li>
-<li class="toctree-l2"><a class="reference internal" href="validation.html#id4">4.3. フィールド（プロパティ）の入力値検証</a></li>
-<li class="toctree-l2"><a class="reference internal" href="validation.html#id5">4.4. メッセージファイルの定義</a></li>
-<li class="toctree-l2"><a class="reference internal" href="validation.html#id6">4.5. メッセージファイルの読み込み方法の変更</a></li>
-<li class="toctree-l2"><a class="reference internal" href="validation.html#el">4.6. EL式のカスタマイズ</a></li>
-<li class="toctree-l2"><a class="reference internal" href="validation.html#bean-validation">4.7. Bean Validationを使用した入力値検証</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="extension.html">5. 拡張方法</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#fieldprocessor">5.1. FieldProcessorの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#cellconverter">5.2. CellConverterの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#cellformatter">5.3. CellFormatterの拡張</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension.html#beanfactory">5.4. BeanFactoryの拡張</a></li>
+<li class="toctree-l1"><a class="reference internal" href="attention.html">2. 注意事項</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="attention.html#exceljava">2.1. ExcelとJava間で数値をマッピングする際の注意事項</a></li>
+<li class="toctree-l2"><a class="reference internal" href="attention.html#id2">2.2. アノテーションの定義位置</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="diff_xlsbeans.html">6. XLSBeansとの違い</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id1">6.1. 改善機能</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id2">6.2. 追加機能</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id3">6.3. 削除機能</a></li>
+<li class="toctree-l1"><a class="reference internal" href="annotation_mapping.html">3. 表・セルのマッピング方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlssheet">3.1. <code class="docutils literal notranslate"><span class="pre">&#64;XlsSheet</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id2">3.1.1. シート名を正規表現で指定する場合</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="migration.html">7. マイグレーション</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-1">7.1. To ver.1.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-2">7.2. To ver.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlssheetname">3.2. <code class="docutils literal notranslate"><span class="pre">&#64;XlsSheetName</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id3">3.2.1. メソッドにアノテーションを付与する場合</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">8. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-6-2017-01-02">8.1. ver.1.6 - 2017-01-02</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-5-2-2016-10-30">8.2. ver.1.5.2 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-5-1-2016-10-30">8.3. ver.1.5.1 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-5-0-2016-08-30">8.4. ver.1.5.0 - 2016-08-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-4-2016-07-02">8.5. ver.1.4.4 - 2016-07-02</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-3-2016-05-28">8.6. ver.1.4.3 - 2016-05-28</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-2-2016-05-07">8.7. ver.1.4.2 - 2016-05-07</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-1-2016-04-29">8.8. ver.1.4.1 - 2016-04-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-2016-03-21">8.9. ver.1.4 - 2016-03-21</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-3-2016-03-13">8.10. ver.1.3 - 2016-03-13</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-2-1-2016-03-12">8.11. ver.1.2.1 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-2-2016-03-12">8.12. ver.1.2 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-1-2016-03-08">8.13. ver.1.1 - 2016-03-08</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-0a-2015-09-23">8.14. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-1-0-2015-07-19">8.15. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-5-2015-06-29">8.16. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-4-2015-04-05">8.17. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-3-2015-01-11">8.18. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-3-2015-01-01">8.19. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2-2014-12-01">8.20. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-1-2014-11-25">8.21. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2014-11-24">8.22. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-0-1-2014-10-30">8.23. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlscell">3.3. <code class="docutils literal notranslate"><span class="pre">&#64;XlsCell</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlslabelledcell">3.4. <code class="docutils literal notranslate"><span class="pre">&#64;XlsLabelledCell</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#range">3.4.1. ラベルセルから離れたセルを指定する方法（属性range）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#skip">3.4.2. ラベルセルから離れたセルを指定する方法（属性skip）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#labelmerged">3.4.3. ラベルセルが結合している場合（属性labelMerged）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id4">3.4.4. ラベルセルが重複するセルを指定する方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id5">3.4.5. ラベルセルを正規表現、正規化して指定する場合</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsarraycells">3.5. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayCells</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id6">3.5.1. 縦方向に隣接したセルをマッピングする場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id7">3.5.2. 結合したセルをマッピングする場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id8">3.5.3. 書き込み時に配列・リストのサイズが不足、または余分である場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id9">3.5.4. 位置情報／見出し情報を取得する際の注意事項</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlslabelledarraycells">3.6. <code class="docutils literal notranslate"><span class="pre">&#64;XlsLabelledArrayCells</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id10">3.6.1. 縦方向に隣接したセルをマッピングする場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id11">3.6.2. ラベルセルから離れたセルを指定する方法（属性range）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id12">3.6.3. ラベルセルから離れたセルを指定する方法（属性skip）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id13">3.6.4. 重複するラベルを指定する場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id14">3.6.5. ラベルセルが結合している場合（属性labelMerged）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#elementmerged">3.6.6. 結合したセルをマッピングする場合（属性elementMerged）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id15">3.6.7. 書き込み時に配列・リストのサイズが不足、または余分である場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id16">3.6.8. 位置情報／見出し情報を取得する際の注意事項</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id17">3.6.9. ラベルセルを正規表現、正規化して指定する場合</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlshorizontalrecords">3.7. <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id18">3.7.1. 表の開始位置の指定（表の名称がない場合）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id19">3.7.2. 表の名称から開始位置が離れた場所にある場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id20">3.7.3. 表の見出しが縦に結合されデータレコードの開始位置が離れた場所にある場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#terminal">3.7.4. 表の終端の指定（属性terminal）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id21">3.7.5. 空のレコードを読み飛ばす条件の指定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#terminatelabel">3.7.6. 表の終端の指定（属性terminateLabel）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#headerlimit">3.7.7. 表の見出しの走査の終了条件の指定(headerLimit)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id22">3.7.8. 表の見出しに空白がある場合(range)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id23">3.7.9. 書き込み時にレコードが不足、余分である場合の操作の指定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id24">3.7.10. 任意の位置からレコードが開始するかを指定する場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id25">3.7.11. 表の名称を正規表現、正規化して指定する場合</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsverticalrecords">3.8. <code class="docutils literal notranslate"><span class="pre">&#64;XlsVerticalRecords</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id26">3.8.1. 表の名称位置の指定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#right">3.8.2. 表の名称から開始位置が離れた場所にある場合(right)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#bottom">3.8.3. 表の名称から開始位置が離れた場所にある場合(bottom)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id27">3.8.4. 表の見出しが横に結合されデータレコードの開始位置が離れた場所にある場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id28">3.8.5. 書き込み時にレコードが不足、余分である場合の操作の指定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id29">3.8.6. 任意の位置からレコードが開始するかを指定する場合</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlscolumn">3.9. <code class="docutils literal notranslate"><span class="pre">&#64;XlsColumn</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id30">3.9.1. データの列が結合されている場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#annotationxlscolumnheadermerged">3.9.2. 見出し行が結合されている場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id32">3.9.3. 見出しを正規表現、正規化して指定する場合</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsmapcolumns">3.10. <code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumns</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id33">3.10.1. 終了条件のセルを指定する場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id34">3.10.2. 型変換する場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id35">3.10.3. 位置情報／見出し情報を取得する際の注意事項</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id36">3.10.4. 見出しを正規表現、正規化して指定する場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id37">3.10.5. 書き込み前に動的にテンプレートファイルを書き換える</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsarraycolumns">3.11. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayColumns</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id38">3.11.1. 結合したセルをマッピングする場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id39">3.11.2. 書き込み時に配列・リストのサイズが不足、または余分である場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id40">3.11.3. 位置情報／見出し情報を取得する際の注意事項</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id41">3.11.4. 見出しを正規表現、正規化して指定する場合</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsnestedrecords">3.12. <code class="docutils literal notranslate"><span class="pre">&#64;XlsNestedRecords</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id42">3.12.1. 一対多の関係</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id43">3.12.2. 一対一の関係</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsiteratetables">3.13. <code class="docutils literal notranslate"><span class="pre">&#64;XlsIterateTables</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id44">3.13.1. 基本的な使い方</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id45">3.13.2. 縦方向の表を組み合わせてマッピングする場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id46">3.13.3. 表の名称を正規表現、正規化して指定する場合</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsorder">3.14. <code class="docutils literal notranslate"><span class="pre">&#64;XlsOrder</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsignorable">3.15. <code class="docutils literal notranslate"><span class="pre">&#64;XlsIgnorable</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#isemptybuilder">3.15.1. IsEmptyBuilderを使った記述の簡単化</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsarrayoption">3.16. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayOption</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#overoperation">3.16.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#remainedoperation">3.16.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsrecordoption">3.17. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordOption</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id47">3.17.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id48">3.17.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsrecordfinder">3.18. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordFinder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotation_converter.html">4. セルの書式の指定方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotation_converter.html#xlsbooleanconverter">4.1. <code class="docutils literal notranslate"><span class="pre">&#64;XlsBooleanConverter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id2">4.1.1. 読み込み時の値の指定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id3">4.1.2. 書き込み時の値の指定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id4">4.1.3. 変換に失敗した際の処理</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_converter.html#xlsnumberconverter">4.2. <code class="docutils literal notranslate"><span class="pre">&#64;XlsNumberConverter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id5">4.2.1. 読み込み時の書式の指定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id6">4.2.2. 書き込み時の書式の指定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id8">4.2.3. 有効桁数の指定</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_converter.html#xlsdatetimeconverter">4.3. <code class="docutils literal notranslate"><span class="pre">&#64;XlsDateTimeConverter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id9">4.3.1. 読み込み時の書式の指定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id10">4.3.2. 書き込み時の書式の指定</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_converter.html#xlsenumconverter">4.4. <code class="docutils literal notranslate"><span class="pre">&#64;XlsEnumConverter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id12">4.4.1. 基本的な使い方</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id13">4.4.2. 別名でマッピングする場合</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_converter.html#xlsarrayconverter">4.5. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayConverter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id14">4.5.1. 基本的な使い方</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id15">4.5.2. 空の要素を無視する場合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id16">4.5.3. 要素の値を変換するクラスを指定する</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_converter.html#xlscelloption">4.6. <code class="docutils literal notranslate"><span class="pre">&#64;XlsCellOption</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_converter.html#id17">4.7. 独自のクラスタイプの対応方法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#cellconverter">4.7.1. CellConverterの実装クラスの作成</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#cellconverterfactory">4.7.2. CellConverterFactoryの実装クラスの作成</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_converter.html#id18">4.7.3. 作成したCellConverterの使用方法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="annotation_converter.html#xlsconverter">4.7.3.1. <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter</span></code> を使用する方法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="annotation_converter.html#cellconverterregistry">4.7.3.2. CellConverterRegistry を使用する方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotation_valueconverter.html">5. セルの値の変換方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotation_valueconverter.html#xlstrim">5.1. <code class="docutils literal notranslate"><span class="pre">&#64;XlsTrim</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_valueconverter.html#xlsdefaultvalue">5.2. <code class="docutils literal notranslate"><span class="pre">&#64;XlsDefaultValue</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotation_formula.html">6. 数式の指定方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotation_formula.html#xlsformula">6.1. <code class="docutils literal notranslate"><span class="pre">&#64;XlsFormula</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_formula.html#value">6.1.1. 数式を直接指定する場合（属性value）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_formula.html#methodname">6.1.2. 数式を組み立てるメソッドを指定する場合（属性methodName）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_formula.html#primary">6.1.3. 数式を優先する場合（属性primary）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_formula.html#id2">6.1.4. 式言語処理のカスタマイズ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_formula.html#id3">6.1.5. 数式を設定する際のポイント</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="annotation_formula.html#id4">6.1.5.1. 処理順序を一定にすることによる数式中の座標のずれを防ぐ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="annotation_formula.html#el">6.1.5.2. EL式中でプロパティを参照する場合</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_formula.html#id5">6.1.6. 複雑な表を作成する</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="annotation_formula.html#javabean">6.1.6.1. JavaBeanの定義</a></li>
+<li class="toctree-l4"><a class="reference internal" href="annotation_formula.html#id6">6.1.6.2. データの作成とファイルの出力</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="annotation_lifecycle.html">7. ライフサイクルイベントの管理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annotation_lifecycle.html#javabean">7.1. JavaBeanクラスに実装する場合</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_lifecycle.html#annotationxlslistener">7.2. リスナークラスに実装する場合</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sheetinfo.html">8. シート情報の取得</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sheetinfo.html#id2">8.1. シート上の位置情報の取得</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sheetinfo.html#id3">8.1.1. 書き込み時の位置情報取得の注意点</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sheetinfo.html#id4">8.2. シート上の見出しの取得</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="xmlmapping.html">9. XMLによるマッピング方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="xmlmapping.html#id1">9.1. アノテーションをXMLで上書きする場合</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xmlmapping.html#xml-build">9.2. XMLを動的に組み立てる場合</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="validation.html">10. 値の検証方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id2">10.1. 検証の基本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id3">10.2. 独自の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id4">10.3. フィールド（プロパティ）の入力値検証</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id5">10.4. メッセージファイルの定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#id6">10.5. メッセージファイルの読み込み方法の変更</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html#bean-validation">10.6. Bean Validationを使用した入力値検証</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="validation.html#id7">10.6.1. Bean Validationのカスタマイズ</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fieldprocessor.html">11. 独自の表・セルのマッピング方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spring.html">12. SpringFrameworkとの連携</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spring.html#id1">12.1. ライブラリの追加</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spring.html#xml">12.2. XMLによるコンテナの設定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spring.html#javaconfig">12.3. JavaConfigによるコンテナの設定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spring.html#springbean">12.4. SpringBeanとしての定義</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">13. システム設定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diff_xlsbeans.html">14. XLSBeansとの違い</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id1">14.1. 改善機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id2">14.2. 追加機能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff_xlsbeans.html#id3">14.3. 削除機能</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">15. マイグレーション</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-2-0">15.1. To ver.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-1">15.2. To ver.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-2">15.3. To ver.1.2</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">16. リリースノート</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ver-2-0-2018-06-30">16.1. ver.2.0 - 2018-06-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-6-2017-01-02">16.2. ver.1.6 - 2017-01-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-5-2-2016-10-30">16.3. ver.1.5.2 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-5-1-2016-10-30">16.4. ver.1.5.1 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-5-0-2016-08-30">16.5. ver.1.5.0 - 2016-08-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-4-2016-07-02">16.6. ver.1.4.4 - 2016-07-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-3-2016-05-28">16.7. ver.1.4.3 - 2016-05-28</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-2-2016-05-07">16.8. ver.1.4.2 - 2016-05-07</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-1-2016-04-29">16.9. ver.1.4.1 - 2016-04-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-4-2016-03-21">16.10. ver.1.4 - 2016-03-21</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-3-2016-03-13">16.11. ver.1.3 - 2016-03-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-2-1-2016-03-12">16.12. ver.1.2.1 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-2-2016-03-12">16.13. ver.1.2 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-1-2016-03-08">16.14. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-0a-2015-09-23">16.15. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-1-0-2015-07-19">16.16. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-5-2015-06-29">16.17. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-4-2015-04-05">16.18. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-3-2015-01-11">16.19. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-3-2015-01-01">16.20. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2-2014-12-01">16.21. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-1-2014-11-25">16.22. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-2-2014-11-24">16.23. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-0-1-2014-10-30">16.24. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
 
-
-</div>
-  <h4>前のトピックへ</h4>
-  <p class="topless"><a href="migration.html"
-                        title="前の章へ">7. マイグレーション</a></p>
-  <div role="note" aria-label="source link">
-    <h3>このページ</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/release.txt"
-            rel="nofollow">ソースコードを表示</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>クイック検索</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="検索" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+            
+          
+<!-- my theme custom extramenu beacon -->
         </div>
       </div>
+    </nav>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">XlsMapper</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>16. リリースノート</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/release.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="id1">
-<h1>8. リリースノート<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<div class="section" id="ver-1-6-2017-01-02">
-<h2>8.1. ver.1.6 - 2017-01-02<a class="headerlink" href="#ver-1-6-2017-01-02" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h1>16. リリースノート<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="ver-2-0-2018-06-30">
+<span id="realease-2-0"></span><h2>16.1. ver.2.0 - 2018-06-30<a class="headerlink" href="#ver-2-0-2018-06-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/88">#88</a> POI-3.15で、クラス <code class="docutils literal"><span class="pre">CellCommentStore</span></code> コンパイルエラーが発生する事象を修正しました。</li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/89">#89</a> JSP-EL 2.x使用時に、例外 <code class="docutils literal"><span class="pre">NoClassDefFoundError</span></code> が発生する事象を修正しました。</li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/90">#90</a> テスタにおいて、テスト結果ファイルを書き込む場所を <code class="docutils literal"><span class="pre">src/test/out</span></code> から <code class="docutils literal"><span class="pre">target/test_out</span></code> に変更しました。</li>
+<li><a class="reference internal" href="howtouse.html#dependencyenv"><span class="std std-ref">前提条件</span></a> を変更しました。<ul>
+<li>Java8以上に変更しました。Java7は非対応になります。</li>
+<li>POI-3.17 に変更しました。POI-3.16以前は非対応となります。</li>
+<li>BeanValidation 2.0に対応しました。</li>
+</ul>
+</li>
+<li>セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.10に対応しました。</li>
+<li>マッピング可能な日時型として、以下を追加しまいた。<ul>
+<li><code class="docutils literal notranslate"><span class="pre">java.time.LocalDate</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">java.time.LocalTime</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">java.time.LocalDateTime</span></code></li>
+</ul>
+</li>
+<li>隣接するセルをマッピング可能なアノテーションを追加しました。<ul>
+<li><a class="reference internal" href="annotation_mapping_arraycells.html#annotationxlsarraycells"><span class="std std-ref">&#64;XlsArrayCells</span></a> - 連続し隣接するセルを配列またはリストにマッピングします。</li>
+<li><a class="reference internal" href="annotation_mapping_labelledarraycells.html#annotationxlslabelledarraycells"><span class="std std-ref">&#64;XlsLabelledArrayCells</span></a> - 見出し付きの連続し隣接するセルを配列またはリストにマッピングします。</li>
+<li><a class="reference internal" href="annotation_mapping_arraycolumns.html#annotationxlsarraycolumns"><span class="std std-ref">&#64;XlsArrayColumns</span></a> - レコードの隣接するカラムをマッピングします。</li>
+<li><a class="reference internal" href="annotation_mapping_arrayoption.html#annotationxlsarrayoption"><span class="std std-ref">&#64;XlsArrayOption</span></a> - 上記のアノテーションの書き込み時の設定を補助します。</li>
+</ul>
+</li>
+<li>既存のアノテーションから機能を分離し、新たに以下の補助的なアノテーションを追加しました。<ul>
+<li>値をトリムするアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を機能分離し、 <a class="reference internal" href="annotation_valueconverter_trim.html#annotationxlstrim"><span class="std std-ref">&#64;XlsTrim</span></a> を追加しました。</li>
+<li>初期値を指摘するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(defaultValue=&quot;初期値&quot;)</span></code> を機能分離し、 <a class="reference internal" href="annotation_valueconverter_defaultvalue.html#annotationxlsdefaultvalue"><span class="std std-ref">&#64;XlsDefaultValue</span></a> を追加しました。</li>
+<li>セルの書き込み時の制御設定を行うアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(wrapText=true,</span> <span class="pre">shrinkToFit=false)</span></code> を機能分離し、<cite>&#64;XlsCellOption &lt;annotationXlsCellOption&gt;</cite> を追加しました。<ul>
+<li>さらに、 <code class="docutils literal notranslate"><span class="pre">&#64;XlsCellOption</span></code> において、属性 <code class="docutils literal notranslate"><span class="pre">horizontalAlign</span></code> 、 <code class="docutils literal notranslate"><span class="pre">verticalAlign</span></code> にて、セルの横方向、縦方向の位置を指定できます。</li>
+</ul>
+</li>
+<li>レコードの書き込み時のオプションを指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords(overRecord=...,</span> <span class="pre">remainedRecord=...)</span></code> を機能分離し、 <a class="reference internal" href="annotation_mapping_recordoption.html#annotationxlsrecordoption"><span class="std std-ref">&#64;XlsRecordOption</span></a> を追加しました。<ul>
+<li>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsVerticalRecords(overRecord=...,</span> <span class="pre">remainedRecord=...)</span></code> も同様に機能分離しました。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords/XlsVerticalRecords</span></code> でレコードをマッピングする際に、データ開始位置をプログラマティックに指定できるアノテーション <a class="reference internal" href="annotation_mapping_recordfinder.html#annotationxlsrecordfinder"><span class="std std-ref">&#64;XlsRecordFinder</span></a> を追加しました。</li>
+<li>レコードをマッピングする際に、そのレコードを除外するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsIsEmpty</span></code> の名称を <a class="reference internal" href="annotation_mapping_ignorable.html#annotationxlsignorable"><span class="std std-ref">&#64;XlsIgnorable</span></a> に変更しました。<ul>
+<li>さらに、レコードを除外する条件として、 <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(ignoreEmptyRecord=true)</span></code> を指定しなくても除外するようにしました。属性 <code class="docutils literal notranslate"><span class="pre">ignoreEmptyRecord</span></code> は削除しました。</li>
+</ul>
+</li>
+<li>日時型のマッピング時の書式を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsDateConverter</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">&#64;XlsDateTimeConverter</span></code> に変更しました。</li>
+<li>列挙型のマッピング時の書式を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsEnumConverter</span></code> において、属性 <code class="docutils literal notranslate"><span class="pre">valueMethodName</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">aliasName</span></code> に変更しました。</li>
+<li>配列／リスト型にマッピング時の書式を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayConverter</span></code> において、属性の名称を以下に変更しました。<ul>
+<li>属性の名称を <code class="docutils literal notranslate"><span class="pre">itemConverterClass</span></code> → <code class="docutils literal notranslate"><span class="pre">elementConverterClass</span></code> に変更しました。</li>
+<li>属性の名称を <code class="docutils literal notranslate"><span class="pre">ignoreEmptyItem</span></code> → <code class="docutils literal notranslate"><span class="pre">ignoreEmptyElement</span></code> に変更しました。</li>
+<li>属性の名称を <code class="docutils literal notranslate"><span class="pre">itemClass</span></code> → <code class="docutils literal notranslate"><span class="pre">elementClass</span></code> に変更しました。</li>
+<li>要素をパース/フォーマットするクラス <code class="docutils literal notranslate"><span class="pre">ItemConverter</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">ElementConverter</span></code> に変更しました。
+デフォルト実装クラスの名称も <code class="docutils literal notranslate"><span class="pre">DefaultItemConverter</span></code> → <code class="docutils literal notranslate"><span class="pre">DefaultElementConverter</span></code> に変更しました。</li>
+</ul>
+</li>
+<li>マッピングの順番を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHint(order=1)</span></code> の名称を <a class="reference internal" href="annotation_mapping_order.html#annotationxlsorder"><span class="std std-ref">&#64;XlsOrder</span></a> に変更しました。</li>
+<li>見出し付きセルをマッピングするアノテーション <a class="reference internal" href="annotation_mapping_labelledcell.html#annotationxlslabelledcell"><span class="std std-ref">&#64;XlsLabelledCell</span></a> において、見出し用のセルが結合されているかを考慮する属性 <code class="docutils literal notranslate"><span class="pre">labelMarged</span></code> を追加しました。<ul>
+<li>従来は、結合されていても考慮されていないため、属性 <code class="docutils literal notranslate"><span class="pre">skip</span></code> で結合セル分を読み飛ばしていましたが、属性 <code class="docutils literal notranslate"><span class="pre">labelMarged</span></code> の初期値は true となるため、動作が変わってきます。</li>
+</ul>
+</li>
+<li>縦方向のレコードをマッピングするアノテーション <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords</span></a> において、表の開始位置を指定する 属性 <code class="docutils literal notranslate"><span class="pre">bottom</span></code> を追加しました。</li>
+<li>繰り返す表をマッピングするアノテーション <a class="reference internal" href="annotation_mapping_iteratetables.html#annotationxlsiteratetables"><span class="std std-ref">&#64;XlsIterateTables</span></a> において、以下の変更を行いました。<ul>
+<li>マッピング可能なクラスタイプとして <code class="docutils literal notranslate"><span class="pre">java.util.Collection/java.util.Set</span></code> 型に対応しました。</li>
+<li>縦方向のレコードをマッピングするアノテーション <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords</span></a> に対応しました。</li>
+<li>開始位置を指定する属性 <code class="docutils literal notranslate"><span class="pre">address</span></code> を削除しました。</li>
+</ul>
+</li>
+<li><a class="reference internal" href="configuration.html"><span class="doc">システム設定のプロパティ</span></a> を指定するクラス <code class="docutils literal notranslate"><span class="pre">XlsConfig</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">Configuration</span></code> に変更しました。さらに、以下の項目を追加しました。<ul>
+<li><code class="docutils literal notranslate"><span class="pre">cacheCellValueOnLoad</span></code> - 読み込み時にセルの値をキャッシュして処理速度の向上を行うかどうか指定します。</li>
+<li><code class="docutils literal notranslate"><span class="pre">SheetBindingErrorsFactory</span></code> - マッピング時のエラー情報 <code class="docutils literal notranslate"><span class="pre">SheetBindingErrors</span></code> のインスタンスを作成すためのコールバック用クラスを指定します。</li>
+<li><code class="docutils literal notranslate"><span class="pre">annotationMapping</span></code> - XMLなどによるアノテーションのマッピング情報を設定します。</li>
+</ul>
+</li>
+<li>XMLによるマッピングの指定方法を、システム設定のプロパティで設定するよう変更しました。詳細は、<a class="reference internal" href="xmlmapping.html"><span class="doc">XMLによるマッピング方法</span></a> を参照してください。</li>
+<li>値の検証を行うインタフェース <code class="docutils literal notranslate"><span class="pre">ObjectValidator</span></code> 、 <code class="docutils literal notranslate"><span class="pre">FieldValidtor</span></code> において、BeanValidationのグループに相当する機能を追加し、指定できるようにしました。</li>
+<li>値の検証の結果作成されるエラーオブジェクトをメッセージに変換するクラス <code class="docutils literal notranslate"><span class="pre">SheetMessageConverter</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">SheetErrorFormatter</span></code> に変更しました。</li>
+<li>独自のクラスタイプにマッピングする方法が変更になりました。詳細は、 <a class="reference internal" href="annotation_converter_custom.html"><span class="doc">独自のクラスタイプの対応方法</span></a> を参照してください。</li>
+<li>独自の表をマッピングする方法の指定方法として、アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsFieldProcessor</span></code> による方法を追加しました。詳細は、 <a class="reference internal" href="fieldprocessor.html"><span class="doc">独自の表・セルのマッピング方法</span></a> を参照してください。</li>
+<li>表・セルをマッピングする各種アノテーションに、属性 <code class="docutils literal notranslate"><span class="pre">cases</span></code> を追加し、読み込み時／書き込み時と任意の処理で適用すること指定できるようにしました。</li>
+<li>リスナーを指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsListener</span></code> において、リスナークラスを複数指定できるようにしました。<ul>
+<li>さらに、属性 <code class="docutils literal notranslate"><span class="pre">listenerClass</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">value</span></code> に変更し、属性名の指定を省略できるようにしました。</li>
+</ul>
+</li>
+<li>パッケージ構成を以下のように変更しました。<ul>
+<li><code class="docutils literal notranslate"><span class="pre">com.gh.mygreen.xlsmapper.fieldprocessor.processor</span></code> → <code class="docutils literal notranslate"><span class="pre">com.gh.mygreen.xlsmapper.processor.impl</span></code> に変更しました。</li>
+<li><code class="docutils literal notranslate"><span class="pre">com.gh.mygreen.xlsmapper.cellconverter.converter</span> <span class="pre">→</span> <span class="pre">``com.gh.mygreen.xlsmapper.converter.impl</span></code> に変更しました。</li>
+<li><code class="docutils literal notranslate"><span class="pre">com.gh.mygreen.xlsmapper.validation.fieldvalidation</span></code> を <code class="docutils literal notranslate"><span class="pre">com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl</span></code> に分割しました。</li>
+<li>UtilやNavigator、IsEmptyBuilder クラスなどを、 <code class="docutils literal notranslate"><span class="pre">com.gh.mygreen.xlsmapper.util</span></code> パッケージに移動しました。</li>
+</ul>
+</li>
+<li>セルのアドレスを表現するクラス <code class="docutils literal notranslate"><span class="pre">CellPosition</span></code> を追加しました。<ul>
+<li>このクラスは、 <code class="docutils literal notranslate"><span class="pre">java.io.Serializable</span></code> / <code class="docutils literal notranslate"><span class="pre">Comparable/Cloneable</span></code> を実装しており、扱いやすくなっています。</li>
+<li>さらに、各クラス <code class="docutils literal notranslate"><span class="pre">java.awt.Point/org.apache.poi.ss.util.CellAddress</span></code> に変換可能です。</li>
+</ul>
+</li>
+<li>本ライブラリのルートの例外クラス <code class="docutils literal notranslate"><span class="pre">XlsMapperException</span></code> を 非検査例外RuntimeExceptionに変更しました。</li>
+<li>フィールド情報を管理するクラス <code class="docutils literal notranslate"><span class="pre">FieldAdapter</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">FieldAccessor</span></code> に変更しました。パッケージも <code class="docutils literal notranslate"><span class="pre">com.gh.mygreen.xlsmapper.fieldaccessor</span></code> に移動しました。</li>
+<li>複数のシートをマッピングした結果を格納するクラス <code class="docutils literal notranslate"><span class="pre">SheetBingingErrorsContainer</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">MultipleSheetBindingErrors</span></code> に変更しました。</li>
+<li>実行時に出力されるメッセージを日本語化しました。</li>
+<li>メッセージ定義のプロパティファイル <code class="docutils literal notranslate"><span class="pre">SheetValidationMessages.properties</span></code> の文字コードをUTF-8に変更し、asciiコードへの変換を不要にしました。</li>
+</ul>
+</div>
+<div class="section" id="ver-1-6-2017-01-02">
+<h2>16.2. ver.1.6 - 2017-01-02<a class="headerlink" href="#ver-1-6-2017-01-02" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/88">#88</a> POI-3.15で、クラス <code class="docutils literal notranslate"><span class="pre">CellCommentStore</span></code> コンパイルエラーが発生する事象を修正しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/89">#89</a> JSP-EL 2.x使用時に、例外 <code class="docutils literal notranslate"><span class="pre">NoClassDefFoundError</span></code> が発生する事象を修正しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/90">#90</a> テスタにおいて、テスト結果ファイルを書き込む場所を <code class="docutils literal notranslate"><span class="pre">src/test/out</span></code> から <code class="docutils literal notranslate"><span class="pre">target/test_out</span></code> に変更しました。</li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/91">#91</a> セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.9.1に対応しました。</li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/92">#92</a> POI-3.14以降で、ネストする表を出力するときに例外が発生する事象を修正しました。</li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/93">#93</a> 不正な数式を書き込んだときのテスタを修正しました。<ul>
 <li>POI-3.14以降で、POIで使用できない関数を設定したときにエラーが発生しなくなったため、数式を他のケースに変更しました。</li>
 </ul>
 </li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/94">#94</a> POI-3.15で、<code class="docutils literal"><span class="pre">&#64;XlsHorizotnalRecords</span></code> において、レコードの挿入や削除を行ったレコードより下方にある結合したセルが解除される事象を修正しました。</li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/95">#95</a> <code class="docutils literal"><span class="pre">&#64;XlsHorizotnalRecords</span></code> において、レコードの削除を行う設定のとき、空のレコードを書き込むとデータ行が全て削除される事象を改善し、必ず、1レコードは残るように修正しました。</li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/96">#96</a> POI-3.15 で、<code class="docutils literal"><span class="pre">CellLink</span></code> や <code class="docutils literal"><span class="pre">java.net.URL</span></code> 型において、<code class="docutils literal"><span class="pre">A1</span></code> 形式のセルに対するリンクを書き込んだ場合、例外が発生する事象を修正しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/94">#94</a> POI-3.15で、<code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizotnalRecords</span></code> において、レコードの挿入や削除を行ったレコードより下方にある結合したセルが解除される事象を修正しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/95">#95</a> <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizotnalRecords</span></code> において、レコードの削除を行う設定のとき、空のレコードを書き込むとデータ行が全て削除される事象を改善し、必ず、1レコードは残るように修正しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/96">#96</a> POI-3.15 で、<code class="docutils literal notranslate"><span class="pre">CellLink</span></code> や <code class="docutils literal notranslate"><span class="pre">java.net.URL</span></code> 型において、<code class="docutils literal notranslate"><span class="pre">A1</span></code> 形式のセルに対するリンクを書き込んだ場合、例外が発生する事象を修正しました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-5-2-2016-10-30">
-<h2>8.2. ver.1.5.2 - 2016-10-30<a class="headerlink" href="#ver-1-5-2-2016-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.3. ver.1.5.2 - 2016-10-30<a class="headerlink" href="#ver-1-5-2-2016-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/87">#87</a> <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> で書き込む際に、表の直後に文字がある場合、挿入操作をすると、直後の文字が消えてしまう事象を修正しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/87">#87</a> <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code> で書き込む際に、表の直後に文字がある場合、挿入操作をすると、直後の文字が消えてしまう事象を修正しました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-5-1-2016-10-30">
-<h2>8.3. ver.1.5.1 - 2016-10-30<a class="headerlink" href="#ver-1-5-1-2016-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.4. ver.1.5.1 - 2016-10-30<a class="headerlink" href="#ver-1-5-1-2016-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/85">#85</a> <code class="docutils literal"><span class="pre">PatternValidator</span></code> のエラーメッセージ中に使用する変数 <cite>patternName</cite> としてパターン名を指定できるように引数を追加しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/85">#85</a> <code class="docutils literal notranslate"><span class="pre">PatternValidator</span></code> のエラーメッセージ中に使用する変数 <cite>patternName</cite> としてパターン名を指定できるように引数を追加しました。</li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/86">#86</a> 入力値検証時のエラーメッセージのキーのパターンを追加しました。<ul>
 <li><cite>&lt;エラーコード&gt;.&lt;オブジェクト名&gt;.&lt;パス&gt;.&lt;フィールド名&gt;</cite> の形式を追加しました。</li>
 </ul>
@@ -209,10 +574,10 @@
 </ul>
 </div>
 <div class="section" id="ver-1-5-0-2016-08-30">
-<h2>8.4. ver.1.5.0 - 2016-08-30<a class="headerlink" href="#ver-1-5-0-2016-08-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.5. ver.1.5.0 - 2016-08-30<a class="headerlink" href="#ver-1-5-0-2016-08-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/83">#83</a> 出力する際の数式を定義するアノテーション <a class="reference internal" href="annotation_formula.html#annotationformula"><span class="std std-ref">&#64;XlsFormula</span></a> を追加しました。<ul>
-<li>式の制御、処理を行う <a class="reference internal" href="otheruse_config.html"><span class="doc">システム設定のプロパティ</span></a> として、<code class="docutils literal"><span class="pre">formulaRecalcurationOnSave</span></code> 、<code class="docutils literal"><span class="pre">formulaFormatter</span></code> を追加しました。</li>
+<li>式の制御、処理を行う <a class="reference internal" href="configuration.html"><span class="doc">システム設定のプロパティ</span></a> として、<code class="docutils literal notranslate"><span class="pre">formulaRecalcurationOnSave</span></code> 、<code class="docutils literal notranslate"><span class="pre">formulaFormatter</span></code> を追加しました。</li>
 <li>EL式の実装である <a class="reference external" href="http://commons.apache.org/proper/commons-jexl/">JEXL</a> を依存ライブラリに追加しました。</li>
 <li>EL2.xをスタンドアローンで呼び出せるライブラリ <a class="reference external" href="https://github.com/mygreen/standalone-el/">standalone-el</a> の最新版ver.0.2に対応しました。</li>
 </ul>
@@ -221,81 +586,81 @@
 </ul>
 </div>
 <div class="section" id="ver-1-4-4-2016-07-02">
-<h2>8.5. ver.1.4.4 - 2016-07-02<a class="headerlink" href="#ver-1-4-4-2016-07-02" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.6. ver.1.4.4 - 2016-07-02<a class="headerlink" href="#ver-1-4-4-2016-07-02" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li>セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.8.3に対応しました。</li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/82">#82</a> : <a class="reference internal" href="otheruse_xmlmapping.html"><span class="doc">XMLファイルによるマッピング</span></a> で、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsSheet</span></code> に対して適用されない事象を修正しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/82">#82</a> : <a class="reference internal" href="xmlmapping.html"><span class="doc">XMLファイルによるマッピング</span></a> で、アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsSheet</span></code> に対して適用されない事象を修正しました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-4-3-2016-05-28">
-<h2>8.6. ver.1.4.3 - 2016-05-28<a class="headerlink" href="#ver-1-4-3-2016-05-28" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.7. ver.1.4.3 - 2016-05-28<a class="headerlink" href="#ver-1-4-3-2016-05-28" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li>セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.8.2に対応しました。</li>
 <li>Javadocやドキュメントの誤字や表現を修正しました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-4-2-2016-05-07">
-<h2>8.7. ver.1.4.2 - 2016-05-07<a class="headerlink" href="#ver-1-4-2-2016-05-07" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.8. ver.1.4.2 - 2016-05-07<a class="headerlink" href="#ver-1-4-2-2016-05-07" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li>バイナリに関係のないCoverturaのリンクが張られおり、実行時エラーとなったためビルドし直しました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-4-1-2016-04-29">
-<h2>8.8. ver.1.4.1 - 2016-04-29<a class="headerlink" href="#ver-1-4-1-2016-04-29" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.9. ver.1.4.1 - 2016-04-29<a class="headerlink" href="#ver-1-4-1-2016-04-29" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/80">#80</a> : Java8の場合に、<a class="reference internal" href="otheruse_xmlmapping.html"><span class="doc">XMLファイルによるマッピング</span></a> で失敗する事象を修正しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/80">#80</a> : Java8の場合に、<a class="reference internal" href="xmlmapping.html"><span class="doc">XMLファイルによるマッピング</span></a> で失敗する事象を修正しました。</li>
 <li>セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.8に対応しました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-4-2016-03-21">
-<h2>8.9. ver.1.4 - 2016-03-21<a class="headerlink" href="#ver-1-4-2016-03-21" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.10. ver.1.4 - 2016-03-21<a class="headerlink" href="#ver-1-4-2016-03-21" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/79">#79</a> : <a class="reference internal" href="annotation_mapping_nestedrecords.html#annotationxlsnestedrecords"><span class="std std-ref">&#64;XlsNestedRecords</span></a> による、入れ子構造の表をマッピングする機能を追加しました。</li>
 <li>セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.7に対応しました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-3-2016-03-13">
-<h2>8.10. ver.1.3 - 2016-03-13<a class="headerlink" href="#ver-1-3-2016-03-13" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.11. ver.1.3 - 2016-03-13<a class="headerlink" href="#ver-1-3-2016-03-13" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/77">#77</a> : <a class="reference internal" href="annotation_lifecycle.html#annotationxlslistener"><span class="std std-ref">&#64;XlsListener</span></a> による、ライフサイクル・コールバック処理をリスナクラスに別途実装する機能を追加しました。</li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/78">#78</a> : 複数のアノテーションが設定されている場合、1つしか処理されない事象を改善しました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-2-1-2016-03-12">
-<h2>8.11. ver.1.2.1 - 2016-03-12<a class="headerlink" href="#ver-1-2-1-2016-03-12" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.12. ver.1.2.1 - 2016-03-12<a class="headerlink" href="#ver-1-2-1-2016-03-12" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/65">#65</a> : 例外時のメッセージのスペルミス、値の設定間違いを修正しました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-2-2016-03-12">
-<h2>8.12. ver.1.2 - 2016-03-12<a class="headerlink" href="#ver-1-2-2016-03-12" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.13. ver.1.2 - 2016-03-12<a class="headerlink" href="#ver-1-2-2016-03-12" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="otheruse_config.html"><span class="doc">システムプロパティ</span></a> <code class="docutils literal"><span class="pre">skipTypeBindFailure</span></code> の名称を <code class="docutils literal"><span class="pre">continueTypeBindFailure</span></code> に変更し、意味と名称が一致するようにしました。</li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/71">#71</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsColumn</span></code> などを付与したフィールドが、<code class="docutils literal"><span class="pre">java.util.LinkedList</span></code> などの具象クラスの場合をサポートしました。</li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/76">#76</a> : アノテーション <a class="reference internal" href="annotation_mapping_mapcolumns.html#annotationxlsmapcolumns"><span class="std std-ref">&#64;XlsMapColumns</span></a> に属性 <code class="docutils literal"><span class="pre">nextColumnName</span></code> を追加、マッピングの終了条件のセルを指定できるようにしました。</li>
+<li><a class="reference internal" href="configuration.html"><span class="doc">システムプロパティ</span></a> <code class="docutils literal notranslate"><span class="pre">skipTypeBindFailure</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">continueTypeBindFailure</span></code> に変更し、意味と名称が一致するようにしました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/71">#71</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsColumn</span></code> などを付与したフィールドが、<code class="docutils literal notranslate"><span class="pre">java.util.LinkedList</span></code> などの具象クラスの場合をサポートしました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/76">#76</a> : アノテーション <a class="reference internal" href="annotation_mapping_mapcolumns.html#annotationxlsmapcolumns"><span class="std std-ref">&#64;XlsMapColumns</span></a> に属性 <code class="docutils literal notranslate"><span class="pre">nextColumnName</span></code> を追加、マッピングの終了条件のセルを指定できるようにしました。</li>
 </ul>
 </div>
 <div class="section" id="ver-1-1-2016-03-08">
-<h2>8.13. ver.1.1 - 2016-03-08<a class="headerlink" href="#ver-1-1-2016-03-08" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.14. ver.1.1 - 2016-03-08<a class="headerlink" href="#ver-1-1-2016-03-08" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/3">#3</a> : <a class="reference internal" href="annotation_converter_array.html#annotationxlsarrayconverter"><span class="std std-ref">&#64;XlsArrayConverter</span></a> に属性 <code class="docutils literal"><span class="pre">itemConverterClass</span></code> を追加し、任意のクラス型を変換できるようにしました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/3">#3</a> : <a class="reference internal" href="annotation_converter_array.html#annotationxlsarrayconverter"><span class="std std-ref">&#64;XlsArrayConverter</span></a> に属性 <code class="docutils literal notranslate"><span class="pre">itemConverterClass</span></code> を追加し、任意のクラス型を変換できるようにしました。</li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/66">#66</a> : セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.6に対応しました。</li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/67">#67</a> : アノテーション <a class="reference internal" href="annotation_converter_number.html#annotationxlsnumberconverter"><span class="std std-ref">&#64;XlsNumberConverter</span></a> 、 <a class="reference internal" href="annotation_converter_date.html#annotationxlsdateconverter"><span class="std std-ref">&#64;XlsDateConverter</span></a> の属性 <code class="docutils literal"><span class="pre">pattern</span></code> を廃止し、
-読み込み用の書式の属性 <code class="docutils literal"><span class="pre">javaPattern</span></code> と書き込み用の書式の属性 <code class="docutils literal"><span class="pre">excelPattern</span></code> を追加しました。</li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/70">#70</a> : アノテーションのXMLによるマッピング機能の機能追加として、<a class="reference internal" href="otheruse_xmlmapping.html#xml-build"><span class="std std-ref">XMLをJavaオブジェクトで組み立てる機能</span></a> を追加しました。
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/67">#67</a> : アノテーション <a class="reference internal" href="annotation_converter_number.html#annotationxlsnumberconverter"><span class="std std-ref">&#64;XlsNumberConverter</span></a> 、 <a class="reference internal" href="annotation_converter_datetime.html#annotationxlsdatetimeconverter"><span class="std std-ref">&#64;XlsDateConverter</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">pattern</span></code> を廃止し、
+読み込み用の書式の属性 <code class="docutils literal notranslate"><span class="pre">javaPattern</span></code> と書き込み用の書式の属性 <code class="docutils literal notranslate"><span class="pre">excelPattern</span></code> を追加しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/70">#70</a> : アノテーションのXMLによるマッピング機能の機能追加として、<a class="reference internal" href="xmlmapping.html#xml-build"><span class="std std-ref">XMLをJavaオブジェクトで組み立てる機能</span></a> を追加しました。
 それに伴い、次の修正も行いました。<ul>
-<li>XML読み込み用のクラス <code class="docutils literal"><span class="pre">XmlLoader</span></code> の名称を <code class="docutils literal"><span class="pre">XmlIO</span></code> に変更し、XMLの書き込み用メソッドを追加しました。</li>
-<li>例外クラス <code class="docutils literal"><span class="pre">XmlLoadException</span></code> の名称を <code class="docutils literal"><span class="pre">XmlOperateException</span></code> に変更しました。</li>
-<li>読み込み時/書き込み時の処理対象となるシートの抽出処理を、 <code class="docutils literal"><span class="pre">SheetFinder</span></code> クラスに分離しました。
-<a class="reference internal" href="otheruse_config.html"><span class="doc">XlsMapperConfigのプロパティ「sheetFinder」</span></a> でカスタマイズすることができます。</li>
+<li>XML読み込み用のクラス <code class="docutils literal notranslate"><span class="pre">XmlLoader</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">XmlIO</span></code> に変更し、XMLの書き込み用メソッドを追加しました。</li>
+<li>例外クラス <code class="docutils literal notranslate"><span class="pre">XmlLoadException</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">XmlOperateException</span></code> に変更しました。</li>
+<li>読み込み時/書き込み時の処理対象となるシートの抽出処理を、 <code class="docutils literal notranslate"><span class="pre">SheetFinder</span></code> クラスに分離しました。
+<a class="reference internal" href="configuration.html"><span class="doc">XlsMapperConfigのプロパティ「sheetFinder」</span></a> でカスタマイズすることができます。</li>
 </ul>
 </li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/72">#72</a> : ラベルや見出しを正規表現で指定、正規化してマッピングする機能を追加しました。<ul>
-<li><a class="reference internal" href="otheruse_config.html"><span class="doc">システム設定のプロパティ</span></a> として、 <code class="docutils literal"><span class="pre">regexLabelText</span></code> , <code class="docutils literal"><span class="pre">normalizeLabelText</span></code> を追加。</li>
-<li><a class="reference internal" href="annotation_mapping_labelledcell.html#annotationxlslabelledcell"><span class="std std-ref">&#64;XlsLabelledCell</span></a> の属性 <code class="docutils literal"><span class="pre">label</span></code> , <code class="docutils literal"><span class="pre">headerLabel</span></code> で有効になります。</li>
-<li><a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizonalRecords</span></a> の属性 <code class="docutils literal"><span class="pre">tableLabel</span></code> , <code class="docutils literal"><span class="pre">terminateLabel</span></code> で有効になります。</li>
-<li><a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords</span></a> の属性 <code class="docutils literal"><span class="pre">tableLabel</span></code> , <code class="docutils literal"><span class="pre">terminateLabel</span></code> で有効になります。</li>
-<li><a class="reference internal" href="annotation_mapping_iteratetables.html#annotationxlsiteratetables"><span class="std std-ref">&#64;XlsIterateTables</span></a> の属性 <code class="docutils literal"><span class="pre">tableLabel</span></code> で有効になります。</li>
+<li><a class="reference internal" href="configuration.html"><span class="doc">システム設定のプロパティ</span></a> として、 <code class="docutils literal notranslate"><span class="pre">regexLabelText</span></code> , <code class="docutils literal notranslate"><span class="pre">normalizeLabelText</span></code> を追加。</li>
+<li><a class="reference internal" href="annotation_mapping_labelledcell.html#annotationxlslabelledcell"><span class="std std-ref">&#64;XlsLabelledCell</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">label</span></code> , <code class="docutils literal notranslate"><span class="pre">headerLabel</span></code> で有効になります。</li>
+<li><a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizonalRecords</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">tableLabel</span></code> , <code class="docutils literal notranslate"><span class="pre">terminateLabel</span></code> で有効になります。</li>
+<li><a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">tableLabel</span></code> , <code class="docutils literal notranslate"><span class="pre">terminateLabel</span></code> で有効になります。</li>
+<li><a class="reference internal" href="annotation_mapping_iteratetables.html#annotationxlsiteratetables"><span class="std std-ref">&#64;XlsIterateTables</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">tableLabel</span></code> で有効になります。</li>
 </ul>
 </li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/73">#73</a> : 見出し結合されている場合の属性を追加しました。<ul>
@@ -303,16 +668,16 @@
 <li><a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords(headerRight)</span></a> を追加しました。</li>
 </ul>
 </li>
-<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/74">#74</a> : 型変換用のアノテーションのパッケージ <code class="docutils literal"><span class="pre">～.xlsmapper.annotation.converter</span></code> を <code class="docutils literal"><span class="pre">～.xlsmapper.annotation</span></code> に移動しました。</li>
+<li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/74">#74</a> : 型変換用のアノテーションのパッケージ <code class="docutils literal notranslate"><span class="pre">～.xlsmapper.annotation.converter</span></code> を <code class="docutils literal notranslate"><span class="pre">～.xlsmapper.annotation</span></code> に移動しました。</li>
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/75">#75</a> : 一部のアノテーションの属性名を変更しました。<ul>
-<li>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizonalRecords</span></a> と <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords</span></a> の属性 <code class="docutils literal"><span class="pre">skipEmptyRecord</span></code> を <code class="docutils literal"><span class="pre">ignoreEmptyErecord</span></code> に変更しました。</li>
-<li>アノテーション <a class="reference internal" href="annotation_converter_converter.html#annotationxlsconverter"><span class="std std-ref">&#64;XlsConverter</span></a> の属性 <code class="docutils literal"><span class="pre">forceWrapText</span></code> を <code class="docutils literal"><span class="pre">wrapText</span></code> に、属性 <code class="docutils literal"><span class="pre">forceShrinkToFit</span></code> を <code class="docutils literal"><span class="pre">shrinkToFit</span></code> 変更しました。</li>
+<li>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizonalRecords</span></a> と <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">skipEmptyRecord</span></code> を <code class="docutils literal notranslate"><span class="pre">ignoreEmptyErecord</span></code> に変更しました。</li>
+<li>アノテーション <a class="reference internal" href="annotation_converter_custom.html#annotationxlsconverter"><span class="std std-ref">&#64;XlsConverter</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">forceWrapText</span></code> を <code class="docutils literal notranslate"><span class="pre">wrapText</span></code> に、属性 <code class="docutils literal notranslate"><span class="pre">forceShrinkToFit</span></code> を <code class="docutils literal notranslate"><span class="pre">shrinkToFit</span></code> 変更しました。</li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="ver-1-0a-2015-09-23">
-<h2>8.14. ver.1.0a - 2015-09-23<a class="headerlink" href="#ver-1-0a-2015-09-23" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.15. ver.1.0a - 2015-09-23<a class="headerlink" href="#ver-1-0a-2015-09-23" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/63">#63</a> : 実行すると必要のないCoverturaのクラスのエラーが発生する事象を修正しました。</p>
@@ -325,67 +690,67 @@
 </ul>
 </div>
 <div class="section" id="ver-1-0-2015-07-19">
-<h2>8.15. ver.1.0 - 2015-07-19<a class="headerlink" href="#ver-1-0-2015-07-19" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.16. ver.1.0 - 2015-07-19<a class="headerlink" href="#ver-1-0-2015-07-19" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/14">#14</a> : メッセージ中で利用可能な式言語を EL2.0/3.0、MVELの2つにしました。</p>
 <blockquote>
 <div><ul class="simple">
-<li>入力値検証で利用する <code class="docutils literal"><span class="pre">CellField</span></code> クラスでプロパティを指定する際に、独自の実装PropertyNavigationに切り替えました。
+<li>入力値検証で利用する <code class="docutils literal notranslate"><span class="pre">CellField</span></code> クラスでプロパティを指定する際に、独自の実装PropertyNavigationに切り替えました。
 それに伴い、非公開のフィールドへのアクセスも可能になりました。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/28">#28</a> : クラス <code class="docutils literal"><span class="pre">java.util.Calendar</span></code> に対するCellConveterを追加しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/28">#28</a> : クラス <code class="docutils literal notranslate"><span class="pre">java.util.Calendar</span></code> に対するCellConveterを追加しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/35">#35</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> の付与可能なクラスタイプとして、<code class="docutils literal"><span class="pre">java.util.Set</span></code> を追加しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/35">#35</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code> の付与可能なクラスタイプとして、<code class="docutils literal notranslate"><span class="pre">java.util.Set</span></code> を追加しました。</p>
 <blockquote>
 <div><ul class="simple">
 <li>実装クラスを指定した場合は、その読み込み時には、インスタンスが設定されます。</li>
-<li>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> も同様に修正しました。</li>
+<li>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsVerticalRecords</span></code> も同様に修正しました。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/37">#37</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> でマッピングする際に、表のタイトル（ラベル）が上にある場合に対応しまいた。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/37">#37</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsVerticalRecords</span></code> でマッピングする際に、表のタイトル（ラベル）が上にある場合に対応しまいた。</p>
 <blockquote>
 <div><ul class="simple">
-<li>属性 <code class="docutils literal"><span class="pre">tableLabelAbove=true</span></code> を付与すると、表のタイトルの位置が上にあると前提として処理を行います。</li>
-<li>さらに、表のタイトルから見出しがどれだけ離れているか指定する属性 <code class="docutils literal"><span class="pre">right</span></code> を追加しました。 <code class="docutils literal"><span class="pre">XlsHorizontalRecords</span></code> の属性 <code class="docutils literal"><span class="pre">bottom</span></code> に対応するものです。</li>
+<li>属性 <code class="docutils literal notranslate"><span class="pre">tableLabelAbove=true</span></code> を付与すると、表のタイトルの位置が上にあると前提として処理を行います。</li>
+<li>さらに、表のタイトルから見出しがどれだけ離れているか指定する属性 <code class="docutils literal notranslate"><span class="pre">right</span></code> を追加しました。 <code class="docutils literal notranslate"><span class="pre">XlsHorizontalRecords</span></code> の属性 <code class="docutils literal notranslate"><span class="pre">bottom</span></code> に対応するものです。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/50">#50</a> : クラス <code class="docutils literal"><span class="pre">IsEmptyBuilder</span></code> にて、検証対象のタイプがMap, Collection, 配列の場合、要素をチェックするように機能追加しました。要素の値が全てnullまたは空と判定できた場合は、そのオブジェクトの値が空と判定します。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/50">#50</a> : クラス <code class="docutils literal notranslate"><span class="pre">IsEmptyBuilder</span></code> にて、検証対象のタイプがMap, Collection, 配列の場合、要素をチェックするように機能追加しました。要素の値が全てnullまたは空と判定できた場合は、そのオブジェクトの値が空と判定します。</p>
 <blockquote>
 <div><ul class="simple">
-<li>設定用クラス <code class="docutils literal"><span class="pre">IsEmptyConfig</span></code> で、要素をチェックするかなどを変更することができます。</li>
+<li>設定用クラス <code class="docutils literal notranslate"><span class="pre">IsEmptyConfig</span></code> で、要素をチェックするかなどを変更することができます。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/53">#53</a> : フィールドの入力値検証を行うためのFieldValidatorの実装である、「MaxValidator/MinValidator/RangeValidator」において、メッセージ表示用に値をフォーマットを <code class="docutils literal"><span class="pre">FieldFormatter</span></code> で行うように機能追加しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/53">#53</a> : フィールドの入力値検証を行うためのFieldValidatorの実装である、「MaxValidator/MinValidator/RangeValidator」において、メッセージ表示用に値をフォーマットを <code class="docutils literal notranslate"><span class="pre">FieldFormatter</span></code> で行うように機能追加しました。</p>
 <blockquote>
 <div><ul class="simple">
-<li>標準では、<code class="docutils literal"><span class="pre">DefaultFieldFormatter</span></code> が設定されていますが、独自の実装に切り替えることができます。</li>
+<li>標準では、<code class="docutils literal notranslate"><span class="pre">DefaultFieldFormatter</span></code> が設定されていますが、独自の実装に切り替えることができます。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/56">#56</a> : AnnotationReaderで読み込むXMLに属性 <code class="docutils literal"><span class="pre">override=true</span></code> を定義すると、JavaクラスとXMLファイルでそｚれぞれに定義しているアノテーションの差分を考慮するよう機能追加しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/56">#56</a> : AnnotationReaderで読み込むXMLに属性 <code class="docutils literal notranslate"><span class="pre">override=true</span></code> を定義すると、JavaクラスとXMLファイルでそｚれぞれに定義しているアノテーションの差分を考慮するよう機能追加しました。</p>
 </li>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/58">#58</a> : ドキュメント <a class="reference external" href="http://mygreen.github.io/xlsmapper/sphinx/extension.html">拡張方法</a> を記載しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/59">#59</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords/XlsSheetName</span></code> の書き込み時の処理に、読み込み用のアノテーションを取得していたため、getterメソッドにアノテーションを付与していても反映されない事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/59">#59</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsVerticalRecords/XlsSheetName</span></code> の書き込み時の処理に、読み込み用のアノテーションを取得していたため、getterメソッドにアノテーションを付与していても反映されない事象を修正しました。</p>
 <blockquote>
 <div><ul class="simple">
-<li>各種CellConverterの処理時に、アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter</span></code> を付与していた場合も同様の事象を修正しました。</li>
+<li>各種CellConverterの処理時に、アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter</span></code> を付与していた場合も同様の事象を修正しました。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/60">#60</a> : 入力値検証時にメッセージを処する際にエスケープ文字( <code class="docutils literal"><span class="pre">\</span></code> ) が正しく処理されない事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/60">#60</a> : 入力値検証時にメッセージを処する際にエスケープ文字( <code class="docutils literal notranslate"><span class="pre">\</span></code> ) が正しく処理されない事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/61">#61</a> : インタフェース <code class="docutils literal"><span class="pre">CellConverter</span></code> 中の書き込み用のメソッドの使用を整理しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/61">#61</a> : インタフェース <code class="docutils literal notranslate"><span class="pre">CellConverter</span></code> 中の書き込み用のメソッドの使用を整理しました。</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">&#64;XlsMapColums</span></code> を付与したフィールドの値を処理するためのメソッド <code class="docutils literal"><span class="pre">toCellWithMap(...)</span></code> を <code class="docutils literal"><span class="pre">toCell()</span></code> に統合しました。</li>
-<li><code class="docutils literal"><span class="pre">toCell(...)</span></code> メソッドの第二引数として渡していた処理対象のオブジェクトを、Beanクラスではなく、書き込み対象の値を渡すように変更しました。</li>
+<li><code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColums</span></code> を付与したフィールドの値を処理するためのメソッド <code class="docutils literal notranslate"><span class="pre">toCellWithMap(...)</span></code> を <code class="docutils literal notranslate"><span class="pre">toCell()</span></code> に統合しました。</li>
+<li><code class="docutils literal notranslate"><span class="pre">toCell(...)</span></code> メソッドの第二引数として渡していた処理対象のオブジェクトを、Beanクラスではなく、書き込み対象の値を渡すように変更しました。</li>
 <li>CellConverterRegistry, FieldProcessorRegistryで使用していないメソッドを削除しました。</li>
 </ul>
 </div></blockquote>
@@ -393,7 +758,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-5-2015-06-29">
-<h2>8.16. ver.0.5 - 2015-06-29<a class="headerlink" href="#ver-0-5-2015-06-29" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.17. ver.0.5 - 2015-06-29<a class="headerlink" href="#ver-0-5-2015-06-29" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/21">#21</a> : セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> の最新版ver.0.4に対応しました。</p>
@@ -404,33 +769,33 @@
 </li>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/24">#24</a> : 読み込み時に、Javaクラスの表現可能な値よりも大きい数値をマッピングする際に、オーバーフローではなく、エラーとするよう動作を改善しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/25">#25</a> : 日時型をマッピングする際に、日時の型変換用アノテーション <code class="docutils literal"><span class="pre">&#64;XlsDateConverter</span></code> で書式を指定しないとエラーが発生する事象を改善しました。アノテーションを指定しない場合、Javaの各タイプごとにデフォルトの書式が設定されます。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/25">#25</a> : 日時型をマッピングする際に、日時の型変換用アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsDateConverter</span></code> で書式を指定しないとエラーが発生する事象を改善しました。アノテーションを指定しない場合、Javaの各タイプごとにデフォルトの書式が設定されます。</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
-<li><code class="docutils literal"><span class="pre">java.sql.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd</cite> の書式が適用されます。</li>
-<li><code class="docutils literal"><span class="pre">java.sql.Time</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
-<li><code class="docutils literal"><span class="pre">java.sql.Timestamp</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss.SSS</cite> の書式が適用されます。</li>
+<li><code class="docutils literal notranslate"><span class="pre">java.util.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
+<li><code class="docutils literal notranslate"><span class="pre">java.sql.Date</span></code> の場合、デフォルトで <cite>yyyy-MM-dd</cite> の書式が適用されます。</li>
+<li><code class="docutils literal notranslate"><span class="pre">java.sql.Time</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss</cite> の書式が適用されます。</li>
+<li><code class="docutils literal notranslate"><span class="pre">java.sql.Timestamp</span></code> の場合、デフォルトで <cite>yyyy-MM-dd HH:mm:ss.SSS</cite> の書式が適用されます。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/26">#26</a> : 空セル（ブランクセル）をString型に読み込む時、型変換世のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を付与してトリムを有効としている場合、空文字を設定するように改善しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/26">#26</a> : 空セル（ブランクセル）をString型に読み込む時、型変換世のアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を付与してトリムを有効としている場合、空文字を設定するように改善しました。</p>
 <blockquote>
 <div><ul class="simple">
 <li>トリムが無効な場合は、nullが設定されます。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/27">#27</a> : 空の項目を無視するリスト型の型変換用アノテーション <code class="docutils literal"><span class="pre">&#64;XlsArrayConverter(ignoreEmptyItem=true)</span></code> と、トリムを有効にするアノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を組み合わせた場合、トリム処理が無視される事象を改善しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/27">#27</a> : 空の項目を無視するリスト型の型変換用アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayConverter(ignoreEmptyItem=true)</span></code> と、トリムを有効にするアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を組み合わせた場合、トリム処理が無視される事象を改善しました。</p>
 <blockquote>
 <div><ul class="simple">
 <li>トリム処理により空の項目となり、空の項目を無視する設定をしている場合、その項目は読み込み、書き込みの対象外となります。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/28">#28</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsLabelledCell(label=&quot;XXXX&quot;,</span> <span class="pre">optional=true)</span></code> と設定し、指定したラベルのセルが見つからない場合に、NullPointerExceptionが発生する事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/28">#28</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsLabelledCell(label=&quot;XXXX&quot;,</span> <span class="pre">optional=true)</span></code> と設定し、指定したラベルのセルが見つからない場合に、NullPointerExceptionが発生する事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/31">#31</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsLabelledCell</span></code> の属性 range、skip、headerLabelを指定した場合の処理を改善しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/31">#31</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsLabelledCell</span></code> の属性 range、skip、headerLabelを指定した場合の処理を改善しました。</p>
 <blockquote>
 <div><ul class="simple">
 <li>属性headerLabelを指定した場合、Excelのシート上のheaderLabelで指定したセルを取得した後、labelで指定したセルを検索する際に、検索の開始位置が常に0行目から検索し直してしまい、違うセルがヒットしてしまう事象を修正しました。</li>
@@ -438,23 +803,23 @@
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/32">#32</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsLabelledCell</span></code> でセルの値を読み込む時に、<code class="docutils literal"><span class="pre">Map&lt;String,</span> <span class="pre">Position&gt;</span> <span class="pre">positions</span></code> フィールドにてを定義していても、セルのアドレスが正しく取得できない事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/32">#32</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsLabelledCell</span></code> でセルの値を読み込む時に、<code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">Position&gt;</span> <span class="pre">positions</span></code> フィールドにてを定義していても、セルのアドレスが正しく取得できない事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/33">#33</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsSheet(number=2)</span></code> で読み込み／書き込みするシートをシート番号で指定している場合、例外 <code class="docutils literal"><span class="pre">SheetNotFoundException</span></code> がスローされる事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/33">#33</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsSheet(number=2)</span></code> で読み込み／書き込みするシートをシート番号で指定している場合、例外 <code class="docutils literal notranslate"><span class="pre">SheetNotFoundException</span></code> がスローされる事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/34">#34</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> レコードをマッピングする場合、見出しセルを結合していると正しく、セルの値が取得できない事象を修正しました。<code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> も同様に修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/34">#34</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code> レコードをマッピングする場合、見出しセルを結合していると正しく、セルの値が取得できない事象を修正しました。<code class="docutils literal notranslate"><span class="pre">&#64;XlsVerticalRecords</span></code> も同様に修正しました。</p>
 </li>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/38">#38</a> : 数値型をマッピングする場合、Excelの仕様に合わせて有効桁数を指定するように機能追加しました。</p>
 <blockquote>
 <div><ul class="simple">
-<li>有効桁数は、数値の型変換用アノテーション <code class="docutils literal"><span class="pre">&#64;XlsNumberConverter(precision=15)</span></code> で変更可能です。</li>
+<li>有効桁数は、数値の型変換用アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsNumberConverter(precision=15)</span></code> で変更可能です。</li>
 <li>デフォルトでは、有効桁数はExcelの仕様と同じ15桁です。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/39">#39</a> : 型変換用アノテーション <code class="docutils literal"><span class="pre">&#64;XlsConverter(defaultValue=&quot;aaaa&quot;)</span></code> デフォルト値を指定しているが、その値自体が不正な場合、ConverterExceptionをスローしているが、その子クラスのTypeBindExceptionをスローするように修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/39">#39</a> : 型変換用アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(defaultValue=&quot;aaaa&quot;)</span></code> デフォルト値を指定しているが、その値自体が不正な場合、ConverterExceptionをスローしているが、その子クラスのTypeBindExceptionをスローするように修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/40">#40</a> : char型を書き込む時に初期値&#8217;u000&#8217;を設定し書き込むとExcel上で文字化けする事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/40">#40</a> : char型を書き込む時に初期値'u000'を設定し書き込むとExcel上で文字化けする事象を修正しました。</p>
 <blockquote>
 <div><ul class="simple">
 <li>char型を書き込む時に、’u000’は、空白と判断して、空セルとして書き込むよう修正。</li>
@@ -462,37 +827,37 @@
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/41">#41</a> : Javaクラス <code class="docutils literal"><span class="pre">java.util.Set</span></code> を書き込む場合、値をnullとしていると、NullPointerExceptionが発生する事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/41">#41</a> : Javaクラス <code class="docutils literal notranslate"><span class="pre">java.util.Set</span></code> を書き込む場合、値をnullとしていると、NullPointerExceptionが発生する事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/42">#42</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> で属性headerAddressを指定していても反映されない事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/42">#42</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsVerticalRecords</span></code> で属性headerAddressを指定していても反映されない事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/44">#44</a> : アノテーション <code class="docutils literal"><span class="pre">XlsSheet(regexp=&quot;Sheet.+&quot;)</span></code> 正規表現にてシート名を指定し、書き込む際の改善をしました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/44">#44</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">XlsSheet(regexp=&quot;Sheet.+&quot;)</span></code> 正規表現にてシート名を指定し、書き込む際の改善をしました。</p>
 <blockquote>
 <div><ul class="simple">
 <li>正規表現で指定しても、一致するシートが1つの場合は、エラーとしないで、そのシートに書き込む。</li>
-<li>アノテーション <code class="docutils literal"><span class="pre">&#64;XlsSheetName</span></code> を付与しているフィールドを指定し、その値に一致しなくても、正規表現に一致するシートが1つ一致すれば、そのシートに書き込む。</li>
+<li>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsSheetName</span></code> を付与しているフィールドを指定し、その値に一致しなくても、正規表現に一致するシートが1つ一致すれば、そのシートに書き込む。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/45">#45</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords(terminal=RecordTerminal.Empty)</span></code> を設定している場合、レコードを設定していても、書き込まれない事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/45">#45</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords(terminal=RecordTerminal.Empty)</span></code> を設定している場合、レコードを設定していても、書き込まれない事象を修正しました。</p>
 <blockquote>
 <div><ul class="simple">
 <li>読み込み時には表の終端を判定する際に、セルの値が空であることに意味があるが、書き込む際にはテンプレート用のセルは空を設定しているため、処理が終了してしまう。そのため、書き込む時に、terminalの値がRecordTerminal.Emptyのとき強制的にRecordTerminal.Borderに補正して処理する。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/46">#46</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHoritonralRecords</span></code> で書き込む場合、レコードのフィールドにアノテーション <cite>&#64;XlsColumn(merged=true)</cite> を付与し、同じ値のセルを結合する設定をしていると、Excelファイルが壊れる事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/46">#46</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHoritonralRecords</span></code> で書き込む場合、レコードのフィールドにアノテーション <cite>&#64;XlsColumn(merged=true)</cite> を付与し、同じ値のセルを結合する設定をしていると、Excelファイルが壊れる事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/47">#47</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与しているフィールド型が配列型の場合、書き込むときにレコードが出力されない事象を修正しました。
-同様に、<code class="docutils literal"><span class="pre">&#64;XlsVertiacalRecords</span></code>、<code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> の処理も修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/47">#47</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与しているフィールド型が配列型の場合、書き込むときにレコードが出力されない事象を修正しました。
+同様に、<code class="docutils literal notranslate"><span class="pre">&#64;XlsVertiacalRecords</span></code>、<code class="docutils literal notranslate"><span class="pre">&#64;XlsIterateTables</span></code> の処理も修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/48">#48</a> : アノテ－ション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords(remainedRecord=RemainedRecordOperate.Delete)</span></code> を付与し、書き込む先に余分な行を削除するときに、1回多く削除してしまう事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/48">#48</a> : アノテ－ション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords(remainedRecord=RemainedRecordOperate.Delete)</span></code> を付与し、書き込む先に余分な行を削除するときに、1回多く削除してしまう事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/49">#49</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与し、書き込む際にレコードが追加、削除されるときに、Excelの入力規則の範囲修正が正しくできない事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/49">#49</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与し、書き込む際にレコードが追加、削除されるときに、Excelの入力規則の範囲修正が正しくできない事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/51">#51</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsIterateTables</span></code> を付与し、連結した表を書き込む時に、はみ出したセルがあると、属性orverRecordOperateの処理が実行されない事象を修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/51">#51</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsIterateTables</span></code> を付与し、連結した表を書き込む時に、はみ出したセルがあると、属性orverRecordOperateの処理が実行されない事象を修正しました。</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/52">#52</a> : アノテーション <code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与したクラスに、ライフサイクルコールバック用のアノテーション <code class="docutils literal"><span class="pre">&#64;XlsPostSave</span></code> を付与したメソッドが実行されない事象を修正しました。 <code class="docutils literal"><span class="pre">&#64;XlsVerticalRecords</span></code> の場合も同様に修正しました。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/52">#52</a> : アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code> を付与したクラスに、ライフサイクルコールバック用のアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsPostSave</span></code> を付与したメソッドが実行されない事象を修正しました。 <code class="docutils literal notranslate"><span class="pre">&#64;XlsVerticalRecords</span></code> の場合も同様に修正しました。</p>
 </li>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/54">#54</a> : メッセージ中などの式言語の処理としてEL2.Xを利用する場合、実装を外部ライブラリ <a class="reference external" href="https://github.com/mygreen/standalone-el/">standalone-el</a> に変更しました。</p>
 </li>
@@ -503,20 +868,20 @@
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first">アノテーション <code class="docutils literal"><span class="pre">&#64;XlsIsEmpty</span></code> を付与してレコードが空かどうか判定するメソッドの実装を容易にするためのクラス <code class="docutils literal"><span class="pre">IsEmptyBuilder</span></code> を追加しました。</p>
+<li><p class="first">アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsIsEmpty</span></code> を付与してレコードが空かどうか判定するメソッドの実装を容易にするためのクラス <code class="docutils literal notranslate"><span class="pre">IsEmptyBuilder</span></code> を追加しました。</p>
 </li>
 <li><p class="first">XMLファイルによるマッピング機能において、XMLのパースをJAXPから、JAXBへ変更しました。</p>
 </li>
 </ul>
 </div>
 <div class="section" id="ver-0-4-2015-04-05">
-<h2>8.17. ver.0.4 - 2015-04-05<a class="headerlink" href="#ver-0-4-2015-04-05" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.18. ver.0.4 - 2015-04-05<a class="headerlink" href="#ver-0-4-2015-04-05" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/15">#15</a> : セルの値を取得する方法を別ライブラリ <a class="reference external" href="http://mygreen.github.io/excel-cellformatter/">excel-cellformatter</a> を利用するよう変更。</p>
 <blockquote>
 <div><ul class="simple">
-<li>XlsConfigのプロパティ <code class="docutils literal"><span class="pre">POICellFormatter</span></code> のクラス名を <code class="docutils literal"><span class="pre">CellFormatter</span></code> に変更。</li>
+<li>XlsConfigのプロパティ <code class="docutils literal notranslate"><span class="pre">POICellFormatter</span></code> のクラス名を <code class="docutils literal notranslate"><span class="pre">CellFormatter</span></code> に変更。</li>
 <li>この対策により、<a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/19">#19</a> も改善される</li>
 </ul>
 </div></blockquote>
@@ -534,7 +899,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-3-2015-01-11">
-<h2>8.18. ver.0.3 - 2015-01-11<a class="headerlink" href="#ver-0-3-2015-01-11" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.19. ver.0.3 - 2015-01-11<a class="headerlink" href="#ver-0-3-2015-01-11" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul>
 <li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/4">#4</a> : 書き込み時にレコードの追加・削除を行った際に入力規則と名前の定義を自動的に修正する機能を追加。</p>
@@ -545,7 +910,7 @@
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/13">#13</a>: 読み込み時のエラーメッセージの改善。型変換時エラー時にセルの値&#8217;validatedValue&#8217;を追加。</p>
+<li><p class="first"><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/13">#13</a>: 読み込み時のエラーメッセージの改善。型変換時エラー時にセルの値'validatedValue'を追加。</p>
 <blockquote>
 <div><ul class="simple">
 <li>さらに、CellFieldを使用した値の検証のエラーメッセージの候補に、クラスタイプを指定できるよう改善。</li>
@@ -555,7 +920,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-3-2015-01-01">
-<h2>8.19. ver.0.2.3 - 2015-01-01<a class="headerlink" href="#ver-0-2-3-2015-01-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.20. ver.0.2.3 - 2015-01-01<a class="headerlink" href="#ver-0-2-3-2015-01-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の機能を追加または改善</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/7">#7</a> : Excel関数が設定されているセルを読み込んだときに例外が発生する事象を修正。</li>
@@ -567,7 +932,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-2-2014-12-01">
-<h2>8.20. ver.0.2.2 - 2014-12-01<a class="headerlink" href="#ver-0-2-2-2014-12-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.21. ver.0.2.2 - 2014-12-01<a class="headerlink" href="#ver-0-2-2-2014-12-01" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の不良を修正。</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/5">#5</a>  : 書き込み時に、リストのトリムが有効にならない。</li>
@@ -575,7 +940,7 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-1-2014-11-25">
-<h2>8.21. ver.0.2.1 - 2014-11-25<a class="headerlink" href="#ver-0-2-1-2014-11-25" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.22. ver.0.2.1 - 2014-11-25<a class="headerlink" href="#ver-0-2-1-2014-11-25" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>下記の不良を修正。</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/mygreen/xlsmapper/issues/1">#1</a> - &#64;XlsHorizontalRecordsに、Set型を使用すると例外が発生する。</li>
@@ -583,17 +948,17 @@
 </ul>
 </div>
 <div class="section" id="ver-0-2-2014-11-24">
-<h2>8.22. ver.0.2 - 2014-11-24<a class="headerlink" href="#ver-0-2-2014-11-24" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.23. ver.0.2 - 2014-11-24<a class="headerlink" href="#ver-0-2-2014-11-24" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul>
-<li><p class="first">アノテーション <code class="docutils literal"><span class="pre">&#64;XlsIsEmpty</span></code> を追加しました。</p>
+<li><p class="first">アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsIsEmpty</span></code> を追加しました。</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">&#64;XlsHorizontalRecords</span></code> 、<code class="docutils literal"><span class="pre">&#64;XlsVertialRecords</span></code> の属性skipEmptyRecordで&#8217;true&#8217;を指定した場合、レコードが空の場合、そのレコードの読み込みをスキップします。</li>
+<li><code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code> 、<code class="docutils literal notranslate"><span class="pre">&#64;XlsVertialRecords</span></code> の属性skipEmptyRecordで'true'を指定した場合、レコードが空の場合、そのレコードの読み込みをスキップします。</li>
 <li>アノテーション &#64;XlsIsEmptyは、引数なしで、戻り値がtrueのメソッドに付与する必要がります。</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">MessageInterpolator</span></code> を改善し、メッセージ中に定義した変数をメッセージコードとして処理する機能を追加しました。</p>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">MessageInterpolator</span></code> を改善し、メッセージ中に定義した変数をメッセージコードとして処理する機能を追加しました。</p>
 <blockquote>
 <div><ul class="simple">
 <li>メッセージをフォーマットする際に、引数で渡した変数用オブジェクトに存在しない変数名がメッセージに存在する場合、MessageResolverから値を取得します。</li>
@@ -602,42 +967,91 @@
 </li>
 <li><p class="first">SheetBindingErrors中のフィールドエラーにアクセスするメソッドにおいて、現在の位置を考慮するように改善しました。</p>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">&#64;XlsHorzontalRecords(remainedRecord=RemainedRecordOperate.Clear)</span></code> を指定指示に書き込んだ場合、書き込むレコードの件数が0件の場合、出力したシートがヘッダーのスタイルになる現象を修正しました。</p>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">&#64;XlsHorzontalRecords(remainedRecord=RemainedRecordOperate.Clear)</span></code> を指定指示に書き込んだ場合、書き込むレコードの件数が0件の場合、出力したシートがヘッダーのスタイルになる現象を修正しました。</p>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">&#64;XlsHorzontalRecords(remainedRecord=RemainedRecordOperate.Delete)</span></code> を指定指示に書き込んだ場合、書き込むレコードの件数が0件の場合、見出し行を除く行が全て削除される現象を改善しまいた。1件のみ残すよう修正しました。</p>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">&#64;XlsHorzontalRecords(remainedRecord=RemainedRecordOperate.Delete)</span></code> を指定指示に書き込んだ場合、書き込むレコードの件数が0件の場合、見出し行を除く行が全て削除される現象を改善しまいた。1件のみ残すよう修正しました。</p>
 </li>
 </ul>
 </div>
 <div class="section" id="ver-0-1-2014-10-30">
-<h2>8.23. ver.0.1 - 2014-10-30<a class="headerlink" href="#ver-0-1-2014-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<h2>16.24. ver.0.1 - 2014-10-30<a class="headerlink" href="#ver-0-1-2014-10-30" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>初期リリース。</p>
 </div>
 </div>
 
 
+           </div>
+           
           </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="migration.html" class="btn btn-neutral" title="15. マイグレーション" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2018, T.TSUCHIE.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>ナビゲーション</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="総合索引"
-             >索引</a></li>
-        <li class="right" >
-          <a href="migration.html" title="7. マイグレーション"
-             >前へ</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">XlsMapper 1.6 ドキュメント</a> &#187;</li> 
-      </ul>
-    </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0',
+            LANGUAGE:'ja',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="_static/mytheme.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
 <!-- my theme custom extrahead beacon -->
 <script type="text/javascript" src="_static/jquery.externallink.js" charset="UTF-8"></script>
 <script type="text/javascript">
 	jQuery(function () {
+		// ナビゲーション用のアイコン
+		$('div.wy-menu').externalLink({cssClass : 'externalink-img', iconUrl:'_static/external-link-12.png', startUrl:'../apidocs/'});
+		
 		// コンテンツ用
-		$('body').externalLink({cssClass : 'externalink', iconUrl:'', startUrl:'../apidocs/'});
+		$('div.wy-nav-content').externalLink({cssClass : 'externalink', iconUrl:'', startUrl:'../apidocs/'});
 		
 	});
 </script>
@@ -653,11 +1067,8 @@
   
 </script>
 
+ 
 
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2015-2017, T.TSUCHIE.
-      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9 で生成しました。
-    </div>
 
-  </body>
+</body>
 </html>

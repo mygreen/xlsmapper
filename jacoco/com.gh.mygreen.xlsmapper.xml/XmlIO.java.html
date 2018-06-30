@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XmlIO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.xml</a> &gt; <span class="el_source">XmlIO.java</span></div><h1>XmlIO.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.xml;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+
+import javax.xml.bind.DataBindingException;
+import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
+
+/**
+ * XMLの読み込み、書き込みなどを行うユーティリティクラス。
+ * 
+ * @version 1.1
+ * @since 0.5
+ * @author T.TSUCHIE
+ *
+ */
+<span class="nc" id="L31">public class XmlIO {</span>
+    
+    /**
+     * XMLを読み込み、{@link AnnotationMappingInfo}として取得する。
+     * @param in
+     * @return
+     * @throws XmlOperateException XMLの読み込みに失敗した場合。
+     * @throws IllegalArgumentException in is null.
+     */
+    public static AnnotationMappingInfo load(final InputStream in) throws XmlOperateException {
+<span class="fc" id="L41">        ArgUtils.notNull(in, &quot;in&quot;);</span>
+        
+        final AnnotationMappingInfo xmlInfo;
+        
+        try {
+<span class="fc" id="L46">            xmlInfo = JAXB.unmarshal(in, AnnotationMappingInfo.class);</span>
+<span class="nc" id="L47">        } catch (DataBindingException e) {</span>
+<span class="nc" id="L48">            throw new XmlOperateException(&quot;fail load xml with JAXB.&quot;, e);</span>
+<span class="fc" id="L49">        }</span>
+        
+<span class="fc" id="L51">        return xmlInfo;</span>
+    }
+    
+    /**
+     * XMLを読み込み、{@link AnnotationMappingInfo}として取得する。
+     * @since 0.5
+     * @param reader
+     * @return
+     * @throws XmlOperateException XMLの読み込みに失敗した場合。
+     * @throws IllegalArgumentException in is null.
+     */
+    public static AnnotationMappingInfo load(final Reader reader) throws XmlOperateException {
+<span class="fc" id="L63">        ArgUtils.notNull(reader, &quot;reader&quot;);</span>
+        
+        final AnnotationMappingInfo xmlInfo;
+        
+        try {
+<span class="fc" id="L68">            xmlInfo = JAXB.unmarshal(reader, AnnotationMappingInfo.class);</span>
+<span class="nc" id="L69">        } catch (DataBindingException e) {</span>
+<span class="nc" id="L70">            throw new XmlOperateException(&quot;fail load xml with JAXB.&quot;, e);</span>
+<span class="fc" id="L71">        }</span>
+        
+<span class="fc" id="L73">        return xmlInfo;</span>
+    }
+    
+    /**
+     * XMLファイルを読み込み、{@link AnnotationMappingInfo}として取得する。
+     * @param file 読み込むファイル
+     * @param encoding 読み込むファイルの文字コード
+     * @return 
+     * @throws XmlOperateException XMLの読み込みに失敗した場合。
+     * @throws IllegalArgumentException file is null or encoding is empty.
+     */
+    public static AnnotationMappingInfo load(final File file, final String encoding) throws XmlOperateException {
+<span class="fc" id="L85">        ArgUtils.notNull(file, &quot;file&quot;);</span>
+<span class="fc" id="L86">        ArgUtils.notEmpty(encoding, &quot;encoding&quot;);</span>
+        
+        final AnnotationMappingInfo xmlInfo;
+        
+<span class="pc" id="L90">        try(Reader reader = new InputStreamReader(new FileInputStream(file), encoding)) {</span>
+<span class="fc" id="L91">            xmlInfo = load(reader);</span>
+            
+<span class="pc bpc" id="L93" title="6 of 8 branches missed.">        } catch (IOException e) {</span>
+<span class="fc" id="L94">            throw new XmlOperateException(String.format(&quot;fail load xml file '%s'.&quot;, file.getPath()), e);</span>
+<span class="fc" id="L95">        }</span>
+        
+<span class="fc" id="L97">        return xmlInfo;</span>
+    }
+    
+    /**
+     * XMLをファイルに保存する。
+     * @since 1.1
+     * @param xmlInfo XML情報。
+     * @param out
+     * @throws XmlOperateException XMLの書き込みに失敗した場合。
+     * @throws IllegalArgumentException xmlInfo is null.
+     * @throws IllegalArgumentException writer is null.
+     */
+    public static void save(final AnnotationMappingInfo xmlInfo, final OutputStream out) throws XmlOperateException {
+<span class="nc" id="L110">        ArgUtils.notNull(xmlInfo, &quot;xmlInfo&quot;);</span>
+<span class="nc" id="L111">        ArgUtils.notNull(out, &quot;out&quot;);</span>
+        
+        try {
+<span class="nc" id="L114">            JAXB.marshal(xmlInfo, out);</span>
+            
+<span class="nc" id="L116">        } catch (DataBindingException e) {</span>
+<span class="nc" id="L117">            throw new XmlOperateException(&quot;fail save xml with JAXB.&quot;, e);</span>
+<span class="nc" id="L118">        }</span>
+        
+<span class="nc" id="L120">    }</span>
+    
+    /**
+     * XMLをファイルに保存する。
+     * @since 1.1
+     * @param xmlInfo XML情報。
+     * @param writer
+     * @throws XmlOperateException XMLの書き込みに失敗した場合。
+     * @throws IllegalArgumentException xmlInfo is null.
+     * @throws IllegalArgumentException writer is null.
+     */
+    public static void save(final AnnotationMappingInfo xmlInfo, final Writer writer) throws XmlOperateException {
+<span class="nc" id="L132">        ArgUtils.notNull(xmlInfo, &quot;xmlInfo&quot;);</span>
+<span class="nc" id="L133">        ArgUtils.notNull(writer, &quot;writer&quot;);</span>
+        
+        try {
+<span class="nc" id="L136">            JAXB.marshal(xmlInfo, writer);</span>
+            
+<span class="nc" id="L138">        } catch (DataBindingException e) {</span>
+<span class="nc" id="L139">            throw new XmlOperateException(&quot;fail save xml with JAXB.&quot;, e);</span>
+<span class="nc" id="L140">        }</span>
+        
+<span class="nc" id="L142">    }</span>
+    
+    /**
+     * XMLをファイルに保存する。
+     * @since 1.1
+     * @param xmlInfo XML情報。
+     * @param file 書き込み先
+     * @param encoding ファイルの文字コード。
+     * @throws XmlOperateException XMLの書き込みに失敗した場合。
+     * @throws IllegalArgumentException xmlInfo is null.
+     * @throws IllegalArgumentException file is null or encoding is empty.
+     */
+    public static void save(final AnnotationMappingInfo xmlInfo, final File file, final String encoding) throws XmlOperateException {
+<span class="fc" id="L155">        ArgUtils.notNull(xmlInfo, &quot;xmlInfo&quot;);</span>
+<span class="fc" id="L156">        ArgUtils.notNull(file, &quot;file&quot;);</span>
+<span class="fc" id="L157">        ArgUtils.notEmpty(encoding, &quot;encoding&quot;);</span>
+        
+        final Marshaller marshaller;
+        try {
+<span class="fc" id="L161">            JAXBContext context = JAXBContext.newInstance(xmlInfo.getClass());</span>
+<span class="fc" id="L162">            marshaller = context.createMarshaller();</span>
+<span class="fc" id="L163">            marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);</span>
+<span class="fc" id="L164">            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);</span>
+            
+<span class="nc" id="L166">        } catch (JAXBException e) {</span>
+<span class="nc" id="L167">            throw new XmlOperateException(&quot;fail setting JAXB context.&quot;, e);</span>
+<span class="fc" id="L168">        }</span>
+        
+<span class="fc" id="L170">        File dir = file.getParentFile();</span>
+<span class="pc bpc" id="L171" title="2 of 4 branches missed.">        if(dir != null &amp;&amp; !dir.exists()) {</span>
+<span class="nc" id="L172">            dir.mkdirs();</span>
+        }
+        
+<span class="pc" id="L175">        try(Writer writer = new OutputStreamWriter(new FileOutputStream(file), encoding)) {</span>
+            
+<span class="fc" id="L177">            marshaller.marshal(xmlInfo, writer);</span>
+            
+<span class="pc bpc" id="L179" title="6 of 8 branches missed.">        } catch(JAXBException | IOException e) {</span>
+<span class="nc" id="L180">            throw new XmlOperateException(String.format(&quot;fail save xml file '%s'.&quot;, file.getPath()), e);</span>
+<span class="fc" id="L181">        }</span>
+        
+<span class="fc" id="L183">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

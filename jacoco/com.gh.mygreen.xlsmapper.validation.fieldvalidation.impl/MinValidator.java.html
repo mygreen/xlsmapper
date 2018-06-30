@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MinValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl</a> &gt; <span class="el_source">MinValidator.java</span></div><h1>MinValidator.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl;
+
+import java.util.Map;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.AbstractFieldValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.CellField;
+
+/**
+ * 値が指定した値以上かどうかの最小値のチェックする。
+ * &lt;p&gt;メッセージキーは、「cellFieldError.min」。&lt;/p&gt;
+ * &lt;p&gt;メッセージ中で利用可能な変数は次の通り。&lt;/p&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;「validatedValue」：検証対象の値のオブジェクト。&lt;/li&gt;
+ *   &lt;li&gt;「min」：下限値となる最小値。&lt;/li&gt;
+ *   &lt;li&gt;「inclusive」：値を比較する際に指定した値を含むかどうか。&lt;/li&gt;
+ * &lt;/ul&gt;
+ * 
+ * 
+ * @version 1.0
+ * @author T.TSUCHIE
+ *
+ */
+public class MinValidator&lt;T extends Comparable&lt;T&gt;&gt; extends AbstractFieldValidator&lt;T&gt; {
+    
+    private final T min;
+    
+    private final boolean inclusive;
+    
+    /**
+     * 最小値を指定するコンストラクタ
+     * 
+     * @param min 上限値となる最小値
+     * @throws IllegalArgumentException {@literal min == null}
+     */
+    public MinValidator(final T min) {
+<span class="fc" id="L37">        this(min, true);</span>
+<span class="fc" id="L38">    }</span>
+    
+    /**
+     * 最小値を指定するコンストラクタ
+     * 
+     * @param min 上限値となる最小値
+     * @param inclusive 値を比較する際に指定した値を含むかどうかを指定します。
+     * @throws IllegalArgumentException {@literal min == null}
+     */
+<span class="fc" id="L47">    public MinValidator(final T min, final boolean inclusive) {</span>
+<span class="fc" id="L48">        ArgUtils.notNull(min, &quot;min&quot;);</span>
+<span class="fc" id="L49">        this.min = min;</span>
+<span class="fc" id="L50">        this.inclusive = inclusive;</span>
+<span class="fc" id="L51">    }</span>
+    
+    @Override
+    public MinValidator&lt;T&gt; addGroup(final Class&lt;?&gt;... group) {
+<span class="fc" id="L55">        return (MinValidator&lt;T&gt;)super.addGroup(group);</span>
+    }
+    
+    @Override
+    protected String getMessageKey() {
+<span class="fc" id="L60">        return &quot;cellFieldError.min&quot;;</span>
+    }
+    
+    @Override
+    protected Map&lt;String, Object&gt; getMessageVariables(final CellField&lt;T&gt; cellField) {
+        
+<span class="fc" id="L66">        final Map&lt;String, Object&gt; vars = super.getMessageVariables(cellField);</span>
+<span class="fc" id="L67">        vars.put(&quot;min&quot;, getMin());</span>
+<span class="fc" id="L68">        vars.put(&quot;inclusive&quot;, isInclusive());</span>
+<span class="fc" id="L69">        return vars;</span>
+    }
+    
+    @Override
+    protected void onValidate(final CellField&lt;T&gt; cellField) {
+        
+<span class="fc" id="L75">        final int compared = cellField.getValue().compareTo(min);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if(compared &gt; 0) {</span>
+<span class="fc" id="L77">            return;</span>
+            
+<span class="fc bfc" id="L79" title="All 4 branches covered.">        } else if(inclusive &amp;&amp; compared == 0) {</span>
+<span class="fc" id="L80">            return;</span>
+        }
+        
+<span class="fc" id="L83">        error(cellField);</span>
+<span class="fc" id="L84">    }</span>
+    
+    /**
+     * 上限値となる最小値を取得します。
+     * @return 最小値。
+     */
+    public T getMin() {
+<span class="fc" id="L91">        return min;</span>
+    }
+    
+    /**
+     * 値を比較する際に指定した値を含むかどうかを取得します。
+     * @return 値を比較する際に指定した値を含むかどうか
+     */
+    public boolean isInclusive() {
+<span class="fc" id="L99">        return inclusive;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

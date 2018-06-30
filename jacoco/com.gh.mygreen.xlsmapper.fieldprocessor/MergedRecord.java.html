@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MergedRecord.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor</a> &gt; <span class="el_source">MergedRecord.java</span></div><h1>MergedRecord.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor;
+
+import org.apache.poi.ss.util.CellRangeAddress;
+
+/**
+ * ネストしたレコードを処理するために、親のレコードの結合情報を保持しておくためのクラス。
+ * 
+ * @since 1.4
+ * @author T.TSUCHIE
+ *
+ */
+public class MergedRecord {
+    
+    /**
+     * 該当する見出し情報
+     */
+    private final RecordHeader headerRecord;
+    
+    /**
+     * 結合された領域の情報
+     */
+    private final CellRangeAddress mergedRange;
+    
+    /**
+     * 結合されたサイズ
+     */
+    private final int mergedSize;
+    
+<span class="fc" id="L29">    public MergedRecord(final RecordHeader headerRecord, final CellRangeAddress mergedRange, int mergedSize) {</span>
+<span class="fc" id="L30">        this.headerRecord = headerRecord;</span>
+<span class="fc" id="L31">        this.mergedRange = mergedRange;</span>
+<span class="fc" id="L32">        this.mergedSize = mergedSize;</span>
+<span class="fc" id="L33">    }</span>
+    
+    /**
+     * 該当する見出しの情報を取得する。
+     * @return
+     */
+    public RecordHeader getHeaderRecord() {
+<span class="nc" id="L40">        return headerRecord;</span>
+    }
+    
+    /**
+     * 結合情報を取得する。
+     * @return
+     */
+    public CellRangeAddress getMergedRange() {
+<span class="nc" id="L48">        return mergedRange;</span>
+    }
+    
+    /**
+     * 結合された行の幅を取得する。
+     * @return
+     */
+    public int getRowSpan() {
+<span class="nc" id="L56">        return mergedRange.getLastRow() - mergedRange.getFirstRow() + 1;</span>
+    }
+    
+    /**
+     * 結合された列の幅を取得する。
+     * @return
+     */
+    public int getColSpan() {
+<span class="nc" id="L64">        return mergedRange.getLastColumn() - mergedRange.getFirstColumn() + 1;</span>
+    }
+    
+    /**
+     * 結合されたサイズを取得する。
+     * &lt;p&gt;Horizontalの場合は縦幅、Verticalの場合は横幅が設定される。
+     * @return
+     */
+    public int getMergedSize() {
+<span class="fc" id="L73">        return mergedSize;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

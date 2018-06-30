@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CellStyleProxy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.cellconverter</a> &gt; <span class="el_source">CellStyleProxy.java</span></div><h1>CellStyleProxy.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.cellconverter;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+
+import com.gh.mygreen.xlsmapper.CellFormatter;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * セルのスタイルを管理するクラス。
+ * &lt;p&gt;既存のものを異なる設定をするならば、新しくする。&lt;/p&gt;
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class CellStyleProxy {
+
+    private final Cell cell;
+
+    /**
+     * 既にスタイルを新しくしたかどうか。
+     */
+    private boolean updated;
+
+    /**
+     * セルを指定してインスタンスを作成する。
+     * @param cell 管理対象のセル
+     * @throws IllegalArgumentException {@literal cell is null.}
+     */
+<span class="fc" id="L35">    public CellStyleProxy(final Cell cell) {</span>
+<span class="fc" id="L36">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+
+<span class="fc" id="L38">        this.cell = cell;</span>
+<span class="fc" id="L39">        this.updated = false;</span>
+<span class="fc" id="L40">    }</span>
+
+    private void cloneStyle() {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if(updated) {</span>
+            // 既に更新済みの場合
+<span class="fc" id="L45">            return;</span>
+        }
+
+<span class="fc" id="L48">        CellStyle style = cell.getSheet().getWorkbook().createCellStyle();</span>
+<span class="fc" id="L49">        style.cloneStyleFrom(cell.getCellStyle());</span>
+<span class="fc" id="L50">        cell.setCellStyle(style);</span>
+
+        // 更新フラグをtrueにする
+<span class="fc" id="L53">        this.updated = true;</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * @return コンストラクタで渡したセルを取得します。
+     */
+    public Cell getCell() {
+<span class="nc" id="L60">        return cell;</span>
+    }
+
+    /**
+     * 折り返し設定を有効にする
+     */
+    public void setWrapText() {
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if(cell.getCellStyle().getWrapText()) {</span>
+            // 既に有効な場合
+<span class="nc" id="L69">            return;</span>
+        }
+
+<span class="fc" id="L72">        cloneStyle();</span>
+<span class="fc" id="L73">        cell.getCellStyle().setShrinkToFit(false);</span>
+<span class="fc" id="L74">        cell.getCellStyle().setWrapText(true);</span>
+<span class="fc" id="L75">    }</span>
+
+    /**
+     * 縮小して表示を有効にする
+     */
+    public void setShrinkToFit() {
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if(cell.getCellStyle().getShrinkToFit()) {</span>
+            // 既に有効な場合
+<span class="nc" id="L83">            return;</span>
+        }
+
+<span class="fc" id="L86">        cloneStyle();</span>
+<span class="fc" id="L87">        cell.getCellStyle().setWrapText(false);</span>
+<span class="fc" id="L88">        cell.getCellStyle().setShrinkToFit(true);</span>
+<span class="fc" id="L89">    }</span>
+
+    /**
+     * インデントを設定する
+     * @param indent インデントの値
+     */
+    public void setIndent(final short indent) {
+
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if(cell.getCellStyle().getIndention() == indent) {</span>
+            // 既にインデントが同じ値
+<span class="fc" id="L99">            return;</span>
+        }
+
+<span class="fc" id="L102">        cloneStyle();</span>
+<span class="fc" id="L103">        cell.getCellStyle().setIndention(indent);</span>
+
+<span class="fc" id="L105">    }</span>
+
+    /**
+     * 横位置を設定する
+     * @param align 横位置
+     */
+    public void setHorizontalAlignment(final HorizontalAlignment align) {
+
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if(cell.getCellStyle().getAlignmentEnum().equals(align)) {</span>
+            // 既に横位置が同じ値
+<span class="fc" id="L115">            return;</span>
+        }
+
+<span class="fc" id="L118">        cloneStyle();</span>
+<span class="fc" id="L119">        cell.getCellStyle().setAlignment(align);</span>
+<span class="fc" id="L120">    }</span>
+
+    /**
+     * 縦位置を設定する
+     * @param align 縦位置
+     */
+    public void setVerticalAlignment(final VerticalAlignment align) {
+
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if(cell.getCellStyle().getVerticalAlignmentEnum().equals(align)) {</span>
+            // 既に縦位置が同じ値
+<span class="fc" id="L130">            return;</span>
+        }
+
+<span class="fc" id="L133">        cloneStyle();</span>
+<span class="fc" id="L134">        cell.getCellStyle().setVerticalAlignment(align);</span>
+<span class="fc" id="L135">    }</span>
+
+    /**
+     * 書式を設定する
+     * @param pattern 書式
+     */
+    public void setDataFormat(final String pattern, final CellFormatter cellFormatter) {
+
+<span class="fc" id="L143">        String currentPattern = POIUtils.getCellFormatPattern(cell, cellFormatter);</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        if(currentPattern.equalsIgnoreCase(pattern)) {</span>
+            // 既に書式が同じ場合
+<span class="fc" id="L146">            return;</span>
+        }
+
+<span class="fc" id="L149">        cloneStyle();</span>
+<span class="fc" id="L150">        cell.getCellStyle().setDataFormat(POIUtils.getDataFormatIndex(cell.getSheet(), pattern));</span>
+
+<span class="fc" id="L152">    }</span>
+
+    /**
+     * 書式を設定する。
+     * &lt;p&gt;設定使用とする書式がない場合は、セルの書式を優先する。
+     *  &lt;br&gt;ただし、セルの書式も内場合は、デフォルトの書式を設定する。
+     * &lt;/p&gt;
+     *
+     * @param settingPattern 設定しようとする書式(空の場合がある)
+     * @param defaultPattern デフォルトの書式
+     */
+    public void setDataFormat(final String settingPattern, final String defaultPattern,
+            final CellFormatter cellFormatter) {
+
+<span class="fc" id="L166">        String currentPattern = POIUtils.getCellFormatPattern(cell, cellFormatter);</span>
+
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        if(Utils.isNotEmpty(settingPattern)) {</span>
+            // アノテーションで書式が指定されている場合、更新する
+<span class="fc" id="L170">            setDataFormat(settingPattern, cellFormatter);</span>
+
+<span class="pc bpc" id="L172" title="1 of 4 branches missed.">        } else if(currentPattern.isEmpty() || currentPattern.equalsIgnoreCase(&quot;general&quot;)) {</span>
+            // セルの書式が設定されていない場合、デフォルトの値で更新する
+<span class="fc" id="L174">            setDataFormat(defaultPattern, cellFormatter);</span>
+
+        }
+
+<span class="fc" id="L178">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

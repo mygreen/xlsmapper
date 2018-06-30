@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LabelledCellProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor.impl</a> &gt; <span class="el_source">LabelledCellProcessor.java</span></div><h1>LabelledCellProcessor.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
+
+import java.util.Optional;
+
+import org.apache.poi.ss.usermodel.Sheet;
+
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.LoadingWorkObject;
+import com.gh.mygreen.xlsmapper.SavingWorkObject;
+import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellHandler.LabelInfo;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
+
+
+/**
+ * {@link XlsLabelledCell}を処理するFieldProcessor。
+ *
+ * @version 2.0
+ * @author Naoki Takezoe
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L30">public class LabelledCellProcessor extends AbstractFieldProcessor&lt;XlsLabelledCell&gt; {</span>
+
+    @Override
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledCell anno,
+            final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
+<span class="nc" id="L37">            return;</span>
+        }
+
+        // マッピング対象のセル情報の取得
+<span class="fc" id="L41">        LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);</span>
+<span class="fc" id="L42">        Optional&lt;LabelInfo&gt; labelInfo = labelHandler.handle(anno, ProcessCase.Load);</span>
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if(!labelInfo.isPresent()) {</span>
+            /*
+             * ラベル用のセルが見つからない場合
+             * optional=falseの場合は、例外がスローされここには到達しない。
+             */
+<span class="fc" id="L49">            return;</span>
+        }
+
+<span class="fc" id="L52">        accessor.setPosition(beansObj, labelInfo.get().valueAddress);</span>
+<span class="fc" id="L53">        accessor.setLabel(beansObj, labelInfo.get().label);</span>
+
+<span class="fc" id="L55">        final CellConverter&lt;?&gt; converter = getCellConverter(accessor, config);</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        if(converter instanceof FieldFormatter) {</span>
+<span class="fc" id="L57">            work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter&lt;?&gt;)converter, true);</span>
+        }
+
+        try {
+<span class="fc" id="L61">            final Object value = converter.toObject(labelInfo.get().valueCell);</span>
+<span class="fc" id="L62">            accessor.setValue(beansObj, value);</span>
+<span class="fc" id="L63">        } catch(TypeBindException e) {</span>
+<span class="fc" id="L64">            work.addTypeBindError(e, labelInfo.get().valueAddress, accessor.getName(), labelInfo.get().label);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            if(!config.isContinueTypeBindFailure()) {</span>
+<span class="fc" id="L66">                throw e;</span>
+            }
+<span class="fc" id="L68">        }</span>
+<span class="fc" id="L69">    }</span>
+
+    @SuppressWarnings({&quot;rawtypes&quot;, &quot;unchecked&quot;})
+    @Override
+    public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledCell anno, final FieldAccessor accessor,
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if(!Utils.isSaveCase(anno.cases())) {</span>
+<span class="fc" id="L77">            return;</span>
+        }
+
+        // マッピング対象のセル情報の取得
+<span class="fc" id="L81">        LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);</span>
+<span class="fc" id="L82">        Optional&lt;LabelInfo&gt; labelInfo = labelHandler.handle(anno, ProcessCase.Save);</span>
+
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if(!labelInfo.isPresent()) {</span>
+            /*
+             * ラベル用のセルが見つからない場合
+             * optional=falseの場合は、例外がスローされここには到達しない。
+             */
+<span class="fc" id="L89">            return;</span>
+        }
+
+<span class="fc" id="L92">        accessor.setPosition(targetObj, labelInfo.get().valueAddress);</span>
+<span class="fc" id="L93">        accessor.setLabel(targetObj, labelInfo.get().label);</span>
+
+<span class="fc" id="L95">        final CellConverter converter = getCellConverter(accessor, config);</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">        if(converter instanceof FieldFormatter) {</span>
+<span class="fc" id="L97">            work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter&lt;?&gt;)converter, true);</span>
+        }
+
+        try {
+<span class="fc" id="L101">            converter.toCell(accessor.getValue(targetObj), targetObj, sheet, labelInfo.get().valueAddress);</span>
+
+<span class="nc" id="L103">        } catch(TypeBindException e) {</span>
+<span class="nc" id="L104">            work.addTypeBindError(e, labelInfo.get().valueAddress, accessor.getName(), labelInfo.get().label);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">            if(!config.isContinueTypeBindFailure()) {</span>
+<span class="nc" id="L106">                throw e;</span>
+            }
+<span class="fc" id="L108">        }</span>
+
+<span class="fc" id="L110">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

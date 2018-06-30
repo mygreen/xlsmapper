@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MultipleSheetBindingErrors.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation</a> &gt; <span class="el_source">MultipleSheetBindingErrors.java</span></div><h1>MultipleSheetBindingErrors.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+
+/**
+ * 複数のシートを読み込む場合に、{@link SheetBindingErrors}を格納するクラス。
+ * 
+ * @version 2.0
+ * @param &lt;P&gt;
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L18">public class MultipleSheetBindingErrors&lt;P&gt; {</span>
+    
+<span class="fc" id="L20">    private final List&lt;SheetBindingErrors&lt;P&gt;&gt; list = new ArrayList&lt;&gt;();</span>
+    
+    /**
+     * マッピング結果を追加する。
+     * @param bindingErrors 1シート分のマッピング結果
+     */
+    public void addBindingErrors(final SheetBindingErrors&lt;P&gt; bindingErrors) {
+<span class="fc" id="L27">        list.add(bindingErrors);</span>
+<span class="fc" id="L28">    }</span>
+    
+    /**
+     * 全てのマッピング情報を取得する。
+     * @return
+     */
+    public List&lt;SheetBindingErrors&lt;P&gt;&gt; getAll() {
+<span class="fc" id="L35">        return list;</span>
+    }
+    
+    /**
+     * シート番号を指定して、マッピング情報を取得する。
+     * @param sheetIndex シート番号(0から始まる)
+     * @return 存在しない場合は空を返す。
+     */
+    public Optional&lt;SheetBindingErrors&lt;P&gt;&gt; getBySheetIndex(final int sheetIndex) {
+<span class="nc" id="L44">        return list.stream()</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">                .filter(b -&gt; b.getSheetIndex() == sheetIndex)</span>
+<span class="nc" id="L46">                .findFirst();</span>
+    }
+    
+    /**
+     * シート名を指定して、マッピング情報を取得する。
+     * @param sheetName シート名
+     * @return 存在しない場合は空を返す。
+     */
+    public Optional&lt;SheetBindingErrors&lt;P&gt;&gt; getBySheetName(final String sheetName) {
+<span class="nc" id="L55">        return list.stream()</span>
+<span class="nc" id="L56">                .filter(b -&gt; Utils.equals(b.getSheetName(), sheetName))</span>
+<span class="nc" id="L57">                .findFirst();</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

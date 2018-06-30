@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RangeValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl</a> &gt; <span class="el_source">RangeValidator.java</span></div><h1>RangeValidator.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl;
+
+import java.util.Map;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.AbstractFieldValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.CellField;
+
+
+/**
+ * 値が指定した範囲内かどうかチェックする。
+ * &lt;p&gt;メッセージキーは、「cellFieldError.range」。&lt;/p&gt;
+ * &lt;p&gt;メッセージ中で利用可能な変数は次の通り。&lt;/p&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;「validatedValue」：検証対象の値のオブジェクト。&lt;/li&gt;
+ *   &lt;li&gt;「min」：下限値となる最小値。&lt;/li&gt;
+ *   &lt;li&gt;「max」：上限値となる最大値。&lt;/li&gt;
+ *   &lt;li&gt;「inclusive」：値を比較する際に指定した値を含むかどうか。&lt;/li&gt;
+ * &lt;/ul&gt;
+ * 
+ * @version 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class RangeValidator&lt;T extends Comparable&lt;T&gt;&gt; extends AbstractFieldValidator&lt;T&gt; {
+    
+    private final T min;
+    
+    private final T max;
+    
+    private final boolean inclusive;
+    
+    /**
+     * コンストラクタ
+     * 
+     * @since 1.0
+     * @param min 下限値となる最小値
+     * @param max 上限値となる最大値
+     * @throws IllegalArgumentException {@literal min == null or max == null}
+     * @throws IllegalArgumentException {@literal min &gt; max}
+     */
+    public RangeValidator(final T min, final T max) {
+<span class="fc" id="L43">        this(min, max, true);</span>
+<span class="fc" id="L44">    }</span>
+    
+    /**
+     * コンストラクタ
+     * 
+     * @since 1.0
+     * @param min 下限値となる最小値
+     * @param max 上限値となる最大値
+     * @param inclusive 値を比較する際に指定した値を含むかどうかを指定します。
+     * @throws IllegalArgumentException {@literal min == null or max == null}
+     * @throws IllegalArgumentException {@literal min &gt; max}
+     */
+<span class="fc" id="L56">    public RangeValidator(final T min, final T max, final boolean inclusive) {</span>
+<span class="fc" id="L57">        ArgUtils.notNull(min, &quot;min&quot;);</span>
+<span class="fc" id="L58">        ArgUtils.notNull(max, &quot;max&quot;);</span>
+<span class="fc" id="L59">        ArgUtils.notMax(min, max, &quot;min&quot;);</span>
+        
+<span class="fc" id="L61">        this.min = min;</span>
+<span class="fc" id="L62">        this.max = max;</span>
+<span class="fc" id="L63">        this.inclusive = inclusive;</span>
+<span class="fc" id="L64">    }</span>
+    
+    @Override
+    public RangeValidator&lt;T&gt; addGroup(final Class&lt;?&gt;... group) {
+<span class="fc" id="L68">        return (RangeValidator&lt;T&gt;)super.addGroup(group);</span>
+    }
+    
+    @Override
+    public String getMessageKey() {
+<span class="fc" id="L73">        return &quot;cellFieldError.range&quot;;</span>
+    }
+    
+    @Override
+    protected Map&lt;String, Object&gt; getMessageVariables(final CellField&lt;T&gt; cellField) {
+<span class="fc" id="L78">        final Map&lt;String, Object&gt; vars = super.getMessageVariables(cellField);</span>
+<span class="fc" id="L79">        vars.put(&quot;min&quot;, getMin());</span>
+<span class="fc" id="L80">        vars.put(&quot;max&quot;, getMax());</span>
+<span class="fc" id="L81">        vars.put(&quot;inclusive&quot;, isInclusive());</span>
+<span class="fc" id="L82">        return vars;</span>
+    }
+    
+    @Override
+    protected void onValidate(final CellField&lt;T&gt; cellField) {
+<span class="fc" id="L87">        final T value = cellField.getValue();</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if(validate(value)) {</span>
+<span class="fc" id="L89">            return;</span>
+        }
+        
+<span class="fc" id="L92">        error(cellField);</span>
+<span class="fc" id="L93">    }</span>
+    
+    private boolean validate(final T value) {
+<span class="fc" id="L96">        final int comparedMin = value.compareTo(min);</span>
+<span class="fc" id="L97">        final int comparedMax = value.compareTo(max);</span>
+        
+<span class="pc bpc" id="L99" title="1 of 4 branches missed.">        if(comparedMin &gt; 0 &amp;&amp; comparedMax &lt; 0) {</span>
+<span class="nc" id="L100">            return true;</span>
+        }
+        
+<span class="fc bfc" id="L103" title="All 6 branches covered.">        if(inclusive &amp;&amp; (comparedMin == 0 || comparedMax == 0)) {</span>
+<span class="fc" id="L104">            return true;</span>
+        }
+        
+<span class="fc" id="L107">        return false;</span>
+        
+    }
+    
+    /**
+     * Validatorの下限値となる最小値を取得する。
+     * @return 最小値。
+     */
+    public T getMin() {
+<span class="fc" id="L116">        return min;</span>
+    }
+    
+    /**
+     * Validatorの上限値となる最大値を取得する。
+     * @return 最大値。
+     */
+    public T getMax() {
+<span class="fc" id="L124">        return max;</span>
+    }
+    
+    /**
+     * 値を比較する際に指定した値を含むかどうかを取得します。
+     * @return 値を比較する際に指定した値を含むかどうか
+     */
+    public boolean isInclusive() {
+<span class="fc" id="L132">        return inclusive;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

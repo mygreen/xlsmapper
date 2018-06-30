@@ -1,0 +1,2027 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HorizontalRecordsProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor.impl</a> &gt; <span class="el_source">HorizontalRecordsProcessor.java</span></div><h1>HorizontalRecordsProcessor.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.AreaReference;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.LoadingWorkObject;
+import com.gh.mygreen.xlsmapper.NeedProcess;
+import com.gh.mygreen.xlsmapper.SavingWorkObject;
+import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.ArrayDirection;
+import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
+import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
+import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
+import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
+import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
+import com.gh.mygreen.xlsmapper.annotation.XlsNestedRecords;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordFinder;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperation;
+import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.RemainedOperation;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.MergedRecord;
+import com.gh.mygreen.xlsmapper.fieldprocessor.NestedRecordMergedSizeException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordFinder;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordHeader;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodCache;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordMethodFacatory;
+import com.gh.mygreen.xlsmapper.fieldprocessor.RecordsProcessorUtil;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
+import com.gh.mygreen.xlsmapper.util.CellFinder;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+import com.gh.mygreen.xlsmapper.util.FieldAccessorUtils;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
+import com.gh.mygreen.xlsmapper.xml.AnnotationReadException;
+import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
+
+
+/**
+ * アノテーション{@link XlsHorizontalRecords}を処理するクラス。
+ *
+ * @version 2.0
+ * @author Naoki Takezoe
+ * @author T.TSUCHIE
+ *
+ */
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">public class HorizontalRecordsProcessor extends AbstractFieldProcessor&lt;XlsHorizontalRecords&gt; {</span>
+
+<span class="fc" id="L86">    private static Logger logger = LoggerFactory.getLogger(HorizontalRecordsProcessor.class);</span>
+
+    @Override
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsHorizontalRecords anno, final FieldAccessor accessor,
+            final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
+<span class="nc" id="L93">            return;</span>
+        }
+
+<span class="fc" id="L96">        final Class&lt;?&gt; clazz = accessor.getType();</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(clazz)) {</span>
+
+<span class="fc" id="L99">            Class&lt;?&gt; recordClass = anno.recordClass();</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">            if(recordClass == Object.class) {</span>
+<span class="fc" id="L101">                recordClass = accessor.getComponentType();</span>
+            }
+
+<span class="fc" id="L104">            List&lt;?&gt; value = loadRecords(sheet, beansObj, anno, accessor, recordClass, config, work);</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">            if(value != null) {</span>
+                @SuppressWarnings({&quot;unchecked&quot;, &quot;rawtypes&quot;})
+<span class="fc" id="L107">                Collection&lt;?&gt; collection = Utils.convertListToCollection(value, (Class&lt;Collection&gt;)clazz, config.getBeanFactory());</span>
+<span class="fc" id="L108">                accessor.setValue(beansObj, collection);</span>
+            }
+
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">        } else if(clazz.isArray()) {</span>
+
+<span class="fc" id="L113">            Class&lt;?&gt; recordClass = anno.recordClass();</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">            if(recordClass == Object.class) {</span>
+<span class="fc" id="L115">                recordClass = accessor.getComponentType();</span>
+            }
+
+<span class="fc" id="L118">            final List&lt;?&gt; value = loadRecords(sheet, beansObj, anno, accessor, recordClass, config, work);</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">            if(value != null) {</span>
+<span class="fc" id="L120">                final Object array = Array.newInstance(recordClass, value.size());</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">                for(int i=0; i &lt; value.size(); i++) {</span>
+<span class="fc" id="L122">                    Array.set(array, i, value.get(i));</span>
+                }
+
+<span class="fc" id="L125">                accessor.setValue(beansObj, array);</span>
+            }
+
+<span class="fc" id="L128">        } else {</span>
+<span class="nc" id="L129">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
+<span class="nc" id="L130">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="nc" id="L131">                    .varWithAnno(&quot;anno&quot;, XlsHorizontalRecords.class)</span>
+<span class="nc" id="L132">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
+<span class="nc" id="L133">                    .var(&quot;expectedType&quot;, &quot;Collection(List/Set) or Array&quot;)</span>
+<span class="nc" id="L134">                    .format());</span>
+
+        }
+
+<span class="fc" id="L138">    }</span>
+
+    private List&lt;?&gt; loadRecords(final Sheet sheet, final Object beansObj, final XlsHorizontalRecords anno, final FieldAccessor accessor,
+            final Class&lt;?&gt; recordClass, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+<span class="fc" id="L143">        RecordsProcessorUtil.checkLoadingNestedRecordClass(recordClass, accessor, work.getAnnoReader());</span>
+
+        // get table starting position
+<span class="fc" id="L146">        final Optional&lt;CellPosition&gt; initPosition = getHeaderPosition(sheet, anno, accessor, config);</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        if(!initPosition.isPresent()) {</span>
+<span class="fc" id="L148">            return null;</span>
+        }
+
+        // ラベルの設定
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        if(Utils.isNotEmpty(anno.tableLabel())) {</span>
+<span class="fc" id="L153">            final Optional&lt;Cell&gt; tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();</span>
+<span class="fc" id="L154">            tableLabelCell.ifPresent(c -&gt; {</span>
+<span class="fc" id="L155">                final String label = POIUtils.getCellContents(c, config.getCellFormatter());</span>
+<span class="fc" id="L156">                accessor.setLabel(beansObj, label);</span>
+<span class="fc" id="L157">            });</span>
+
+        }
+
+<span class="fc" id="L161">        final int initColumn = initPosition.get().getColumn();</span>
+<span class="fc" id="L162">        final int initRow = initPosition.get().getRow();</span>
+
+<span class="fc" id="L164">        int hColumn = initColumn;</span>
+<span class="fc" id="L165">        int hRow = initRow;</span>
+
+        // get header columns.
+<span class="fc" id="L168">        final List&lt;RecordHeader&gt; headers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L169">        int rangeCount = 1;</span>
+        while(true) {
+            try {
+<span class="fc" id="L172">                Cell cell = POIUtils.getCell(sheet, hColumn, hRow);</span>
+
+<span class="fc bfc" id="L174" title="All 4 branches covered.">                while(POIUtils.isEmptyCellContents(cell, config.getCellFormatter()) &amp;&amp; rangeCount &lt; anno.range()) {</span>
+<span class="fc" id="L175">                    cell = POIUtils.getCell(sheet, hColumn + rangeCount, hRow);</span>
+<span class="fc" id="L176">                    rangeCount++;</span>
+                }
+
+<span class="fc" id="L179">                final String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">                if(Utils.isEmpty(cellValue)){</span>
+<span class="fc" id="L181">                    break;</span>
+                }
+
+<span class="fc" id="L184">                headers.add(new RecordHeader(cellValue, cell.getColumnIndex() - initColumn));</span>
+<span class="fc" id="L185">                hColumn = hColumn + rangeCount;</span>
+<span class="fc" id="L186">                rangeCount = 1;</span>
+
+                // 結合しているセルの場合は、はじめのセルだけ取得して、後は結合分スキップする。
+<span class="fc" id="L189">                CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">                if(mergedRange != null) {</span>
+<span class="fc" id="L191">                    hColumn = hColumn + (mergedRange.getLastColumn() - mergedRange.getFirstColumn());</span>
+                }
+
+<span class="nc" id="L194">            } catch(ArrayIndexOutOfBoundsException ex) {</span>
+<span class="nc" id="L195">                break;</span>
+<span class="fc" id="L196">            }</span>
+
+<span class="fc bfc" id="L198" title="All 4 branches covered.">            if(anno.headerLimit() &gt; 0 &amp;&amp; headers.size() &gt;= anno.headerLimit()){</span>
+<span class="fc" id="L199">                break;</span>
+            }
+        }
+
+        // データ行の開始位置の調整
+<span class="fc" id="L204">        hRow += anno.headerBottom();</span>
+<span class="fc" id="L205">        CellPosition startPosition = CellPosition.of(hRow, initColumn);</span>
+
+        // 独自の開始位置を指定する場合
+<span class="fc" id="L208">        final Optional&lt;XlsRecordFinder&gt; finderAnno = accessor.getAnnotation(XlsRecordFinder.class);</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">        if(finderAnno.isPresent()) {</span>
+<span class="fc" id="L210">            final RecordFinder finder = config.createBean(finderAnno.get().value());</span>
+<span class="fc" id="L211">            startPosition = finder.find(ProcessCase.Load, finderAnno.get().args(), sheet, startPosition, beansObj, config);</span>
+
+        }
+
+<span class="fc" id="L215">        return loadRecords(sheet, headers, anno, startPosition, 0, accessor, recordClass, config, work);</span>
+
+    }
+
+    private List&lt;?&gt; loadRecords(final Sheet sheet, final List&lt;RecordHeader&gt; headers,
+            final XlsHorizontalRecords anno,
+            final CellPosition initPosition, final int parentMergedSize,
+            final FieldAccessor accessor, final Class&lt;?&gt; recordClass,
+            final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+<span class="fc" id="L225">        final List&lt;Object&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L227">        final int initColumn = initPosition.getColumn();</span>
+<span class="fc" id="L228">        final int initRow = initPosition.getRow();</span>
+
+<span class="fc" id="L230">        final int maxRow = initRow + parentMergedSize;</span>
+<span class="fc" id="L231">        int hRow = initRow;</span>
+
+        // Check for columns
+<span class="fc" id="L234">        RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader(), config);</span>
+<span class="fc" id="L235">        RecordsProcessorUtil.checkMapColumns(sheet, recordClass, headers, work.getAnnoReader(), config);</span>
+<span class="fc" id="L236">        RecordsProcessorUtil.checkArrayColumns(sheet, recordClass, headers, work.getAnnoReader(), config);</span>
+
+<span class="fc" id="L238">        RecordTerminal terminal = anno.terminal();</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        if(terminal == null){</span>
+<span class="nc" id="L240">            terminal = RecordTerminal.Empty;</span>
+        }
+
+        // 各種レコードのコールバック用メソッドを抽出する
+<span class="fc" id="L244">        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)</span>
+<span class="fc" id="L245">                .create(recordClass, ProcessCase.Load);</span>
+
+<span class="fc" id="L247">        final int startHeaderIndex = getStartHeaderIndexForLoading(headers, recordClass, work.getAnnoReader(), config);</span>
+
+        // レコードの見出しに対するカラム情報のキャッシュ
+<span class="fc" id="L250">        final Map&lt;String, List&lt;FieldAccessor&gt;&gt; propertiesCache = new HashMap&lt;&gt;();</span>
+
+        // カラムに対するConverterのキャッシュ
+<span class="fc" id="L253">        final Map&lt;String, CellConverter&lt;?&gt;&gt; converterCache = new HashMap&lt;&gt;();</span>
+
+        // get records
+<span class="fc bfc" id="L256" title="All 2 branches covered.">        while(hRow &lt; POIUtils.getRows(sheet)){</span>
+
+<span class="fc bfc" id="L258" title="All 4 branches covered.">            if(parentMergedSize &gt; 0 &amp;&amp; hRow &gt;= maxRow) {</span>
+                // ネストしている処理のとき、最大の処理レコード数をチェックする。
+<span class="fc" id="L260">                break;</span>
+            }
+
+<span class="fc" id="L263">            boolean emptyFlag = true;</span>
+            // recordは、マッピング先のオブジェクトのインスタンス。
+<span class="fc" id="L265">            final Object record = config.createBean(recordClass);</span>
+
+            // パスの位置の変更
+<span class="fc" id="L268">            work.getErrors().pushNestedPath(accessor.getName(), result.size());</span>
+
+            // execute PreProcess listener
+<span class="fc" id="L271">            methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
+<span class="fc" id="L272">                listenerClass.getPreLoadMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L273">                    Utils.invokeNeedProcessMethod(listenerClass.getObject(), method, record, sheet, config, work.getErrors(), ProcessCase.Load);</span>
+<span class="fc" id="L274">                });</span>
+<span class="fc" id="L275">            });</span>
+
+            // execute PreProcess method
+<span class="fc" id="L278">            methodCache.getPreLoadMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L279">                Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors(), ProcessCase.Load);</span>
+<span class="fc" id="L280">            });</span>
+
+<span class="fc" id="L282">            final List&lt;MergedRecord&gt; mergedRecords = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L284">            loadMapColumns(sheet, headers, mergedRecords, CellPosition.of(hRow, initColumn), recordClass, record, config, work);</span>
+
+<span class="fc" id="L286">            loadArrayColumns(sheet, headers, mergedRecords, CellPosition.of(hRow, initColumn), recordClass, record, config, work);</span>
+
+<span class="pc bpc" id="L288" title="1 of 4 branches missed.">            for(int i=0; i &lt; headers.size() &amp;&amp; hRow &lt; POIUtils.getRows(sheet); i++){</span>
+<span class="fc" id="L289">                final RecordHeader headerInfo = headers.get(i);</span>
+<span class="fc" id="L290">                int hColumn = initColumn + headerInfo.getInterval();</span>
+<span class="fc" id="L291">                final Cell cell = POIUtils.getCell(sheet, hColumn, hRow);</span>
+
+                // find end of the table
+<span class="fc bfc" id="L294" title="All 2 branches covered.">                if(!POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){</span>
+<span class="fc" id="L295">                    emptyFlag = false;</span>
+                }
+
+<span class="fc bfc" id="L298" title="All 4 branches covered.">                if(terminal == RecordTerminal.Border &amp;&amp; i == startHeaderIndex){</span>
+<span class="fc bfc" id="L299" title="All 2 branches covered.">                    if(!POIUtils.getBorderLeft(cell).equals(BorderStyle.NONE)){</span>
+<span class="fc" id="L300">                        emptyFlag = false;</span>
+                    } else {
+<span class="fc" id="L302">                        emptyFlag = true;</span>
+<span class="fc" id="L303">                        break;</span>
+                    }
+                }
+
+<span class="fc bfc" id="L307" title="All 2 branches covered.">                if(!anno.terminateLabel().equals(&quot;&quot;)){</span>
+<span class="fc bfc" id="L308" title="All 2 branches covered.">                    if(Utils.matches(POIUtils.getCellContents(cell, config.getCellFormatter()), anno.terminateLabel(), config)){</span>
+<span class="fc" id="L309">                        emptyFlag = true;</span>
+<span class="fc" id="L310">                        break;</span>
+                    }
+                }
+
+                // mapping from Excel columns to Object properties.
+<span class="fc" id="L315">                final List&lt;FieldAccessor&gt; propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -&gt; {</span>
+<span class="fc" id="L316">                    return FieldAccessorUtils.getColumnPropertiesByName(</span>
+<span class="fc" id="L317">                            record.getClass(), work.getAnnoReader(), config, key)</span>
+<span class="fc" id="L318">                            .stream()</span>
+<span class="fc" id="L319">                            .filter(p -&gt; p.isReadable())</span>
+<span class="fc" id="L320">                            .collect(Collectors.toList());</span>
+                });
+
+<span class="fc bfc" id="L323" title="All 2 branches covered.">                for(FieldAccessor property : propeties) {</span>
+<span class="fc" id="L324">                    Cell valueCell = cell;</span>
+<span class="fc" id="L325">                    final XlsColumn column = property.getAnnotation(XlsColumn.class).get();</span>
+<span class="fc bfc" id="L326" title="All 2 branches covered.">                    if(column.headerMerged() &gt; 0) {</span>
+<span class="fc" id="L327">                        hColumn = hColumn + column.headerMerged();</span>
+<span class="fc" id="L328">                        valueCell = POIUtils.getCell(sheet, hColumn, hRow);</span>
+                    }
+
+                    // for merged cell
+<span class="fc bfc" id="L332" title="All 2 branches covered.">                    if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())) {</span>
+<span class="fc bfc" id="L333" title="All 4 branches covered.">                        if(column.merged() &amp;&amp; POIUtils.getBorderTop(valueCell).equals(BorderStyle.NONE)) {</span>
+<span class="pc bpc" id="L334" title="1 of 2 branches missed.">                            for(int k=hRow-1; k &gt; initRow; k--){</span>
+<span class="fc" id="L335">                                Cell tmpCell = POIUtils.getCell(sheet, hColumn, k);</span>
+<span class="pc bpc" id="L336" title="1 of 2 branches missed.">                                if(!POIUtils.getBorderBottom(tmpCell).equals(BorderStyle.NONE)){</span>
+<span class="fc" id="L337">                                    break;</span>
+                                }
+<span class="nc bnc" id="L339" title="All 2 branches missed.">                                if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){</span>
+<span class="nc" id="L340">                                    valueCell = tmpCell;</span>
+<span class="nc" id="L341">                                    break;</span>
+                                }
+                            }
+                        }
+                    }
+
+<span class="fc bfc" id="L347" title="All 2 branches covered.">                    if(column.headerMerged() &gt; 0){</span>
+<span class="fc" id="L348">                        hColumn = hColumn - column.headerMerged();</span>
+                    }
+
+<span class="fc" id="L351">                    CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, valueCell.getRowIndex(), valueCell.getColumnIndex());</span>
+<span class="fc bfc" id="L352" title="All 2 branches covered.">                    if(mergedRange != null) {</span>
+<span class="fc" id="L353">                        int mergedSize =  mergedRange.getLastRow() - mergedRange.getFirstRow() + 1;</span>
+<span class="fc" id="L354">                        mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));</span>
+<span class="fc" id="L355">                    } else {</span>
+<span class="fc" id="L356">                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(valueCell)), 1));</span>
+                    }
+
+<span class="pc bpc" id="L359" title="1 of 2 branches missed.">                    if(!Utils.isLoadCase(column.cases())) {</span>
+<span class="nc" id="L360">                        continue;</span>
+                    }
+
+                    // set for value
+<span class="fc" id="L364">                    property.setPosition(record, CellPosition.of(valueCell));</span>
+<span class="fc" id="L365">                    property.setLabel(record, headerInfo.getLabel());</span>
+
+<span class="fc" id="L367">                    final CellConverter&lt;?&gt; converter = converterCache.computeIfAbsent(property.getName(), key -&gt; getCellConverter(property, config));</span>
+<span class="pc bpc" id="L368" title="1 of 2 branches missed.">                    if(converter instanceof FieldFormatter) {</span>
+<span class="fc" id="L369">                        work.getErrors().registerFieldFormatter(property.getName(), property.getType(), (FieldFormatter&lt;?&gt;)converter, true);</span>
+                    }
+
+                    try {
+<span class="fc" id="L373">                        final Object value = converter.toObject(valueCell);</span>
+<span class="fc" id="L374">                        property.setValue(record, value);</span>
+<span class="fc" id="L375">                    } catch(TypeBindException e) {</span>
+<span class="fc" id="L376">                        work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getLabel());</span>
+<span class="fc bfc" id="L377" title="All 2 branches covered.">                        if(!config.isContinueTypeBindFailure()) {</span>
+<span class="fc" id="L378">                            throw e;</span>
+                        }
+<span class="fc" id="L380">                    }</span>
+<span class="fc" id="L381">                }</span>
+
+            }
+
+            // execute nested record
+<span class="fc" id="L386">            final int skipSize = loadNestedRecords(sheet, headers, mergedRecords, anno, CellPosition.of(hRow, initColumn), record, config, work);</span>
+<span class="pc bpc" id="L387" title="1 of 6 branches missed.">            if(parentMergedSize &gt; 0 &amp;&amp; skipSize &gt; 0 &amp;&amp; (hRow + skipSize) &gt; maxRow) {</span>
+                // check over merged cell.
+<span class="nc" id="L389">                String message = String.format(&quot;Over merged size. In sheet '%s' with rowIndex=%d, over the rowIndex=%s.&quot;,</span>
+<span class="nc" id="L390">                        sheet.getSheetName(), hRow + skipSize, maxRow);</span>
+<span class="nc" id="L391">                throw new NestedRecordMergedSizeException(sheet.getSheetName(), skipSize, message);</span>
+            }
+
+<span class="fc bfc" id="L394" title="All 2 branches covered.">            if(emptyFlag){</span>
+                // パスの位置の変更
+<span class="fc" id="L396">                work.getErrors().popNestedPath();</span>
+<span class="fc" id="L397">                break;</span>
+            }
+
+<span class="fc bfc" id="L400" title="All 2 branches covered.">            if(isAvailabledRecord(methodCache.getIgnoreableMethod(), record)) {</span>
+                // 有効なレコードのみ、処理を行う
+<span class="fc" id="L402">                result.add(record);</span>
+
+                // set PostProcess listener
+<span class="fc" id="L405">                methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
+<span class="fc" id="L406">                    listenerClass.getPostLoadMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L407">                        work.addNeedPostProcess(new NeedProcess(record, listenerClass.getObject(), method));</span>
+<span class="fc" id="L408">                    });</span>
+<span class="fc" id="L409">                });</span>
+
+                // set PostProcess method
+<span class="fc" id="L412">                methodCache.getPostLoadMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L413">                    work.addNeedPostProcess(new NeedProcess(record, record, method));</span>
+<span class="fc" id="L414">                });</span>
+
+            }
+
+            // パスの位置の変更
+<span class="fc" id="L419">            work.getErrors().popNestedPath();</span>
+
+<span class="fc bfc" id="L421" title="All 2 branches covered.">            if(skipSize &gt; 0) {</span>
+<span class="fc" id="L422">                hRow += skipSize;</span>
+            } else {
+<span class="fc" id="L424">                hRow++;</span>
+            }
+<span class="fc" id="L426">        }</span>
+
+<span class="fc" id="L428">        return result;</span>
+    }
+
+    /**
+     * 表の開始位置（見出し）の位置情報を取得する。
+     *
+     * @param sheet
+     * @param anno
+     * @param accessor
+     * @param config
+     * @return 表の開始位置。指定したラベルが見つからない場合、設定によりnullを返す。
+     * @throws AnnotationInvalidException アノテーションの値が不正で、表の開始位置が位置が見つからない場合。
+     * @throws CellNotFoundException 指定したラベルが見つからない場合。
+     */
+    private Optional&lt;CellPosition&gt; getHeaderPosition(final Sheet sheet, final XlsHorizontalRecords anno,
+            final FieldAccessor accessor, final Configuration config) throws AnnotationInvalidException, CellNotFoundException {
+
+<span class="fc bfc" id="L445" title="All 2 branches covered.">        if(Utils.isNotEmpty(anno.headerAddress())) {</span>
+            try {
+<span class="fc" id="L447">                return Optional.of(CellPosition.of(anno.headerAddress()));</span>
+<span class="fc" id="L448">            } catch(IllegalArgumentException e) {</span>
+<span class="fc" id="L449">                throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.attr.invalidAddress&quot;)</span>
+<span class="fc" id="L450">                        .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="fc" id="L451">                        .varWithAnno(&quot;anno&quot;, XlsHorizontalRecords.class)</span>
+<span class="fc" id="L452">                        .var(&quot;attrName&quot;, &quot;headerAddress&quot;)</span>
+<span class="fc" id="L453">                        .var(&quot;attrValue&quot;, anno.headerAddress())</span>
+<span class="fc" id="L454">                        .format());</span>
+
+            }
+
+<span class="fc bfc" id="L458" title="All 2 branches covered.">        } else if(Utils.isNotEmpty(anno.tableLabel())) {</span>
+            try {
+<span class="fc" id="L460">                final Cell labelCell = CellFinder.query(sheet, anno.tableLabel(), config).findWhenNotFoundException();</span>
+<span class="fc" id="L461">                int initColumn = labelCell.getColumnIndex();</span>
+<span class="fc" id="L462">                int initRow = labelCell.getRowIndex() + anno.bottom();</span>
+
+<span class="fc" id="L464">                return Optional.of(CellPosition.of(initRow, initColumn));</span>
+
+<span class="fc" id="L466">            } catch(CellNotFoundException ex) {</span>
+<span class="fc bfc" id="L467" title="All 2 branches covered.">                if(anno.optional()) {</span>
+<span class="fc" id="L468">                    return Optional.empty();</span>
+                } else {
+<span class="fc" id="L470">                    throw ex;</span>
+                }
+            }
+
+        } else {
+            // column, rowのアドレスを直接指定の場合
+<span class="fc bfc" id="L476" title="All 2 branches covered.">            if(anno.headerRow() &lt; 0) {</span>
+<span class="fc" id="L477">                throw  new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
+<span class="fc" id="L478">                        .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="fc" id="L479">                        .varWithAnno(&quot;anno&quot;, XlsHorizontalRecords.class)</span>
+<span class="fc" id="L480">                        .var(&quot;attrName&quot;, &quot;headerRow&quot;)</span>
+<span class="fc" id="L481">                        .var(&quot;attrValue&quot;, anno.headerRow())</span>
+<span class="fc" id="L482">                        .var(&quot;min&quot;, 0)</span>
+<span class="fc" id="L483">                        .format());</span>
+            }
+
+<span class="pc bpc" id="L486" title="1 of 2 branches missed.">            if(anno.headerColumn() &lt; 0) {</span>
+<span class="nc" id="L487">                throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
+<span class="nc" id="L488">                        .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="nc" id="L489">                        .varWithAnno(&quot;anno&quot;, XlsHorizontalRecords.class)</span>
+<span class="nc" id="L490">                        .var(&quot;attrName&quot;, &quot;column&quot;)</span>
+<span class="nc" id="L491">                        .var(&quot;attrValue&quot;, anno.headerColumn())</span>
+<span class="nc" id="L492">                        .var(&quot;min&quot;, 0)</span>
+<span class="nc" id="L493">                        .format());</span>
+
+            }
+
+<span class="fc" id="L497">            return Optional.of(CellPosition.of(anno.headerRow(), anno.headerColumn()));</span>
+        }
+
+    }
+
+    /**
+     * 表の見出しから、レコードのJavaクラスの定義にあるカラムの定義で初めて見つかるリストのインデックスを取得する。
+     * &lt;p&gt;カラムの定義とは、アノテーション「@XlsColumn」が付与されたもの。
+     * @param headers 表の見出し情報。
+     * @param recordClass アノテーション「@XlsColumn」が定義されたフィールドを持つレコード用のクラス。
+     * @param annoReader {@link AnnotationReader}
+     * @param config システム設定
+     * @return 引数「headers」の該当する要素のインデックス番号。不明な場合は0を返す。
+     */
+    private int getStartHeaderIndexForLoading(final List&lt;RecordHeader&gt; headers, Class&lt;?&gt; recordClass,
+            final AnnotationReader annoReader, final Configuration config) {
+
+        // レコードクラスが不明の場合、0を返す。
+<span class="pc bpc" id="L515" title="2 of 4 branches missed.">        if((recordClass == null || recordClass.equals(Object.class))) {</span>
+<span class="nc" id="L516">            return 0;</span>
+        }
+
+<span class="pc bpc" id="L519" title="1 of 2 branches missed.">        for(int i=0; i &lt; headers.size(); i++) {</span>
+<span class="fc" id="L520">            RecordHeader headerInfo = headers.get(i);</span>
+<span class="fc" id="L521">            final List&lt;FieldAccessor&gt; propeties = FieldAccessorUtils.getColumnPropertiesByName(</span>
+<span class="fc" id="L522">                    recordClass, annoReader, config, headerInfo.getLabel())</span>
+<span class="fc" id="L523">                    .stream()</span>
+<span class="fc" id="L524">                    .filter(p -&gt; p.isReadable())</span>
+<span class="fc" id="L525">                    .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L527" title="All 2 branches covered.">            if(!propeties.isEmpty()) {</span>
+<span class="fc" id="L528">                return i;</span>
+            }
+        }
+
+<span class="nc" id="L532">        return 0;</span>
+
+    }
+
+    private void loadMapColumns(final Sheet sheet, final List&lt;RecordHeader&gt; headers, final List&lt;MergedRecord&gt; mergedRecords,
+            final CellPosition beginPosition, final Class&lt;?&gt; recordClass, final Object record, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+<span class="fc" id="L539">        final List&lt;FieldAccessor&gt; mapProperties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L540">                recordClass, work.getAnnoReader(), XlsMapColumns.class)</span>
+<span class="fc" id="L541">                .stream()</span>
+<span class="fc" id="L542">                .filter(f -&gt; f.isReadable())</span>
+<span class="fc" id="L543">                .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L545" title="All 2 branches covered.">        for(FieldAccessor property : mapProperties) {</span>
+<span class="fc" id="L546">            final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();</span>
+
+<span class="pc bpc" id="L548" title="1 of 2 branches missed.">            if(!Utils.isLoadCase(mapAnno.cases())) {</span>
+<span class="nc" id="L549">                continue;</span>
+            }
+
+<span class="fc" id="L552">            Class&lt;?&gt; valueClass = mapAnno.valueClass();</span>
+<span class="pc bpc" id="L553" title="1 of 2 branches missed.">            if(valueClass == Object.class) {</span>
+<span class="fc" id="L554">                valueClass = property.getComponentType();</span>
+            }
+
+            // get converter (map key class)
+<span class="fc" id="L558">            final CellConverter&lt;?&gt; converter = getCellConverter(valueClass, property, config);</span>
+<span class="pc bpc" id="L559" title="1 of 2 branches missed.">            if(converter instanceof FieldFormatter) {</span>
+<span class="fc" id="L560">                work.getErrors().registerFieldFormatter(property.getName(), valueClass, (FieldFormatter&lt;?&gt;)converter, true);</span>
+            }
+
+<span class="fc" id="L563">            boolean foundPreviousColumn = false;</span>
+<span class="fc" id="L564">            final Map&lt;String, Object&gt; map = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L565" title="All 2 branches covered.">            for(RecordHeader headerInfo : headers) {</span>
+<span class="fc" id="L566">                int hColumn = beginPosition.getColumn() + headerInfo.getInterval();</span>
+<span class="fc bfc" id="L567" title="All 2 branches covered.">                if(Utils.matches(headerInfo.getLabel(), mapAnno.previousColumnName(), config)){</span>
+<span class="fc" id="L568">                    foundPreviousColumn = true;</span>
+<span class="fc" id="L569">                    hColumn++;</span>
+<span class="fc" id="L570">                    continue;</span>
+                }
+
+<span class="fc bfc" id="L573" title="All 4 branches covered.">                if(Utils.isNotEmpty(mapAnno.nextColumnName()) &amp;&amp; Utils.matches(headerInfo.getLabel(), mapAnno.nextColumnName(), config)) {</span>
+<span class="fc" id="L574">                    break;</span>
+                }
+
+<span class="fc bfc" id="L577" title="All 2 branches covered.">                if(foundPreviousColumn){</span>
+<span class="fc" id="L578">                    final Cell cell = POIUtils.getCell(sheet, hColumn, beginPosition.getRow());</span>
+<span class="fc" id="L579">                    property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());</span>
+<span class="fc" id="L580">                    property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());</span>
+
+<span class="fc" id="L582">                    CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());</span>
+<span class="pc bpc" id="L583" title="1 of 2 branches missed.">                    if(mergedRange != null) {</span>
+<span class="nc" id="L584">                        int mergedSize =  mergedRange.getLastRow() - mergedRange.getFirstRow() + 1;</span>
+<span class="nc" id="L585">                        mergedRecords.add(new MergedRecord(headerInfo, mergedRange, mergedSize));</span>
+<span class="nc" id="L586">                    } else {</span>
+<span class="fc" id="L587">                        mergedRecords.add(new MergedRecord(headerInfo, CellRangeAddress.valueOf(POIUtils.formatCellAddress(cell)), 1));</span>
+                    }
+
+                    try {
+<span class="fc" id="L591">                        final Object value = converter.toObject(cell);</span>
+<span class="fc" id="L592">                        map.put(headerInfo.getLabel(), value);</span>
+<span class="fc" id="L593">                    } catch(TypeBindException e) {</span>
+<span class="fc" id="L594">                        e.setBindClass(valueClass);  // マップの項目のタイプに変更</span>
+<span class="fc" id="L595">                        work.addTypeBindError(e, cell, String.format(&quot;%s[%s]&quot;, property.getName(), headerInfo.getLabel()), headerInfo.getLabel());</span>
+<span class="fc bfc" id="L596" title="All 2 branches covered.">                        if(!config.isContinueTypeBindFailure()) {</span>
+<span class="fc" id="L597">                            throw e;</span>
+                        }
+<span class="fc" id="L599">                    }</span>
+                }
+<span class="fc" id="L601">            }</span>
+
+<span class="fc bfc" id="L603" title="All 2 branches covered.">            if(foundPreviousColumn) {</span>
+<span class="fc" id="L604">                property.setValue(record, map);</span>
+            }
+<span class="fc" id="L606">        }</span>
+<span class="fc" id="L607">    }</span>
+
+    private void loadArrayColumns(final Sheet sheet, final List&lt;RecordHeader&gt; headers, final List&lt;MergedRecord&gt; mergedRecords,
+            final CellPosition beginPosition, final Class&lt;?&gt; recordClass, final Object record, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+<span class="fc bfc" id="L612" title="All 2 branches covered.">        for(RecordHeader headerInfo : headers) {</span>
+<span class="fc" id="L613">            int hColumn = beginPosition.getColumn() + headerInfo.getInterval();</span>
+
+            // アノテーション「@XlsArrayColumns」の属性「columnName」と一致するプロパティを取得する。
+<span class="fc" id="L616">            final List&lt;FieldAccessor&gt; arrayProperties = FieldAccessorUtils.getArrayColumnsPropertiesByName(</span>
+<span class="fc" id="L617">                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel());</span>
+
+<span class="fc bfc" id="L619" title="All 2 branches covered.">            if(arrayProperties.isEmpty()) {</span>
+<span class="fc" id="L620">                continue;</span>
+            }
+
+<span class="fc bfc" id="L623" title="All 2 branches covered.">            for(FieldAccessor property : arrayProperties) {</span>
+
+<span class="fc" id="L625">                final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();</span>
+
+<span class="pc bpc" id="L627" title="1 of 2 branches missed.">                if(!Utils.isLoadCase(arrayAnno.cases())) {</span>
+<span class="nc" id="L628">                    continue;</span>
+                }
+
+<span class="fc" id="L631">                Class&lt;?&gt; elementClass = arrayAnno.elementClass();</span>
+<span class="pc bpc" id="L632" title="1 of 2 branches missed.">                if(elementClass == Object.class) {</span>
+<span class="fc" id="L633">                    elementClass = property.getComponentType();</span>
+                }
+
+                // get converter (component class)
+<span class="fc" id="L637">                final CellConverter&lt;?&gt; converter = getCellConverter(elementClass, property, config);</span>
+<span class="pc bpc" id="L638" title="1 of 2 branches missed.">                if(converter instanceof FieldFormatter) {</span>
+<span class="fc" id="L639">                    work.getErrors().registerFieldFormatter(property.getName(), elementClass, (FieldFormatter&lt;?&gt;)converter, true);</span>
+                }
+
+<span class="fc" id="L642">                final CellPosition initPosition = CellPosition.of(beginPosition.getRow(), hColumn);</span>
+
+<span class="fc" id="L644">                ArrayCellsHandler arrayHandler = new ArrayCellsHandler(property, record, elementClass, sheet, config);</span>
+<span class="fc" id="L645">                arrayHandler.setLabel(headerInfo.getLabel());</span>
+
+<span class="fc" id="L647">                final List&lt;Object&gt; result = arrayHandler.handleOnLoading(arrayAnno, initPosition, converter, work, ArrayDirection.Horizon);</span>
+
+<span class="pc bpc" id="L649" title="1 of 2 branches missed.">                if(result != null) {</span>
+                    // インデックスが付いていないラベルの設定
+<span class="fc" id="L651">                    property.setLabel(record, headerInfo.getLabel());</span>
+                }
+
+<span class="fc" id="L654">                final Class&lt;?&gt; propertyType = property.getType();</span>
+<span class="pc bpc" id="L655" title="1 of 2 branches missed.">                if(Collection.class.isAssignableFrom(propertyType)) {</span>
+<span class="pc bpc" id="L656" title="1 of 2 branches missed.">                    if(result != null) {</span>
+                        @SuppressWarnings({&quot;unchecked&quot;, &quot;rawtypes&quot;})
+<span class="fc" id="L658">                        Collection&lt;?&gt; collection = Utils.convertListToCollection(result, (Class&lt;Collection&gt;)propertyType, config.getBeanFactory());</span>
+<span class="fc" id="L659">                        property.setValue(record, collection);</span>
+<span class="fc" id="L660">                    }</span>
+
+<span class="nc bnc" id="L662" title="All 2 branches missed.">                } else if(propertyType.isArray()) {</span>
+
+<span class="nc bnc" id="L664" title="All 2 branches missed.">                    if(result != null) {</span>
+<span class="nc" id="L665">                        final Object array = Array.newInstance(elementClass, result.size());</span>
+<span class="nc bnc" id="L666" title="All 2 branches missed.">                        for(int i=0; i &lt; result.size(); i++) {</span>
+<span class="nc" id="L667">                            Array.set(array, i, result.get(i));</span>
+                        }
+<span class="nc" id="L669">                        property.setValue(record, array);</span>
+<span class="nc" id="L670">                    }</span>
+
+                } else {
+<span class="nc" id="L673">                    throw new AnnotationInvalidException(arrayAnno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
+<span class="nc" id="L674">                            .var(&quot;property&quot;, property.getNameWithClass())</span>
+<span class="nc" id="L675">                            .varWithAnno(&quot;anno&quot;, XlsArrayColumns.class)</span>
+<span class="nc" id="L676">                            .varWithClass(&quot;actualType&quot;, propertyType)</span>
+<span class="nc" id="L677">                            .var(&quot;expectedType&quot;, &quot;Collection(List/Set) or Array&quot;)</span>
+<span class="nc" id="L678">                            .format());</span>
+                }
+<span class="fc" id="L680">            }</span>
+<span class="fc" id="L681">        }</span>
+
+<span class="fc" id="L683">    }</span>
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private int loadNestedRecords(final Sheet sheet, final List&lt;RecordHeader&gt; headers, final List&lt;MergedRecord&gt; mergedRecords,
+            final XlsHorizontalRecords anno,
+            final CellPosition beginPosition,
+            final Object record,
+            final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+        // 読み飛ばす、レコード数。
+        // 基本的に結合している個数による。
+<span class="fc" id="L694">        int skipSize = 0;</span>
+
+<span class="fc" id="L696">        final List&lt;FieldAccessor&gt; nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L697">                record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)</span>
+<span class="fc" id="L698">                .stream()</span>
+<span class="fc" id="L699">                .filter(f -&gt; f.isReadable())</span>
+<span class="fc" id="L700">                .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L702" title="All 2 branches covered.">        for(FieldAccessor property : nestedProperties) {</span>
+
+<span class="fc" id="L704">            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();</span>
+
+<span class="pc bpc" id="L706" title="1 of 2 branches missed.">            if(!Utils.isLoadCase(nestedAnno.cases())) {</span>
+<span class="nc" id="L707">                continue;</span>
+            }
+
+<span class="fc" id="L710">            final Class&lt;?&gt; clazz = property.getType();</span>
+<span class="fc bfc" id="L711" title="All 2 branches covered.">            if(Collection.class.isAssignableFrom(clazz)) {</span>
+
+                // mapping by one-to-many
+
+<span class="fc" id="L715">                int mergedSize = RecordsProcessorUtil.checkNestedMergedSizeRecords(sheet, mergedRecords);</span>
+<span class="fc bfc" id="L716" title="All 2 branches covered.">                if(skipSize &lt; mergedSize) {</span>
+<span class="fc" id="L717">                    skipSize = mergedSize;</span>
+                }
+
+<span class="fc" id="L720">                Class&lt;?&gt; recordClass = nestedAnno.recordClass();</span>
+<span class="pc bpc" id="L721" title="1 of 2 branches missed.">                if(recordClass == Object.class) {</span>
+<span class="fc" id="L722">                    recordClass = property.getComponentType();</span>
+                }
+
+<span class="fc" id="L725">                List&lt;?&gt; value = loadRecords(sheet, headers, anno, beginPosition, mergedSize, property, recordClass, config, work);</span>
+<span class="pc bpc" id="L726" title="1 of 2 branches missed.">                if(value != null) {</span>
+<span class="fc" id="L727">                    Collection&lt;?&gt; collection = Utils.convertListToCollection(value, (Class&lt;Collection&gt;)clazz, config.getBeanFactory());</span>
+<span class="fc" id="L728">                    property.setValue(record, collection);</span>
+                }
+
+<span class="fc bfc" id="L731" title="All 2 branches covered.">            } else if(clazz.isArray()) {</span>
+
+                // mapping by one-to-many
+
+<span class="fc" id="L735">                int mergedSize = RecordsProcessorUtil.checkNestedMergedSizeRecords(sheet, mergedRecords);</span>
+<span class="fc bfc" id="L736" title="All 2 branches covered.">                if(skipSize &lt; mergedSize) {</span>
+<span class="fc" id="L737">                    skipSize = mergedSize;</span>
+                }
+
+<span class="fc" id="L740">                Class&lt;?&gt; recordClass = anno.recordClass();</span>
+<span class="pc bpc" id="L741" title="1 of 2 branches missed.">                if(recordClass == Object.class) {</span>
+<span class="fc" id="L742">                    recordClass = property.getComponentType();</span>
+                }
+
+<span class="fc" id="L745">                List&lt;?&gt; value = loadRecords(sheet, headers, anno, beginPosition, mergedSize, property, recordClass, config, work);</span>
+<span class="pc bpc" id="L746" title="1 of 2 branches missed.">                if(value != null) {</span>
+<span class="fc" id="L747">                    final Object array = Array.newInstance(recordClass, value.size());</span>
+<span class="fc bfc" id="L748" title="All 2 branches covered.">                    for(int i=0; i &lt; value.size(); i++) {</span>
+<span class="fc" id="L749">                        Array.set(array, i, value.get(i));</span>
+                    }
+
+<span class="fc" id="L752">                    property.setValue(record, array);</span>
+                }
+
+<span class="fc" id="L755">            } else {</span>
+                // mapping by one-to-tone
+
+<span class="fc" id="L758">                int mergedSize = 1;</span>
+<span class="pc bpc" id="L759" title="1 of 2 branches missed.">                if(skipSize &lt; mergedSize) {</span>
+<span class="fc" id="L760">                    skipSize = mergedSize;</span>
+                }
+
+<span class="fc" id="L763">                Class&lt;?&gt; recordClass = anno.recordClass();</span>
+<span class="pc bpc" id="L764" title="1 of 2 branches missed.">                if(recordClass == Object.class) {</span>
+<span class="fc" id="L765">                    recordClass = property.getType();</span>
+                }
+
+<span class="fc" id="L768">                List&lt;?&gt; value = loadRecords(sheet, headers, anno, beginPosition, mergedSize, property, recordClass, config, work);</span>
+<span class="pc bpc" id="L769" title="1 of 4 branches missed.">                if(value != null &amp;&amp; !value.isEmpty()) {</span>
+<span class="fc" id="L770">                    property.setValue(record, value.get(0));</span>
+                }
+
+            }
+<span class="fc" id="L774">        }</span>
+
+<span class="fc" id="L776">        return skipSize;</span>
+    }
+
+    /**
+     * レコードが有効かどうか判定する
+     * &lt;p&gt;アノテーション{@link XlsIgnorable}のメソッドで判定を行う。
+     * @param ignoreMethod レコードの判定を無視するかどうかの判定に使用するメソッド
+     * @param record 判定対象のレコードのインスタンス。
+     * @return trueの場合は有効。
+     */
+    private boolean isAvailabledRecord(final Optional&lt;Method&gt; ignoreMethod, final Object record)
+            throws AnnotationReadException, AnnotationInvalidException {
+
+<span class="fc bfc" id="L789" title="All 2 branches covered.">        if(!ignoreMethod.isPresent()) {</span>
+            // 判定用のメソッドが存在しない場合
+<span class="fc" id="L791">            return true;</span>
+        }
+
+        try {
+<span class="fc" id="L795">            boolean ignored = (boolean)ignoreMethod.get().invoke(record);</span>
+<span class="fc bfc" id="L796" title="All 2 branches covered.">            return !ignored;</span>
+
+<span class="nc" id="L798">        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L799">            throw new RuntimeException(&quot;fail execute method of ignoreable record&quot;, e);</span>
+        }
+
+    }
+
+    @Override
+    public void saveProcess(final Sheet sheet, final Object beansObj, final XlsHorizontalRecords anno,
+            final FieldAccessor accessor, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+<span class="pc bpc" id="L808" title="1 of 2 branches missed.">        if(!Utils.isSaveCase(anno.cases())) {</span>
+<span class="nc" id="L809">            return;</span>
+        }
+
+<span class="fc" id="L812">        final Class&lt;?&gt; clazz = accessor.getType();</span>
+<span class="fc" id="L813">        final Object result = accessor.getValue(beansObj);</span>
+<span class="fc bfc" id="L814" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(clazz)) {</span>
+
+<span class="fc" id="L816">            Class&lt;?&gt; recordClass = anno.recordClass();</span>
+<span class="pc bpc" id="L817" title="1 of 2 branches missed.">            if(recordClass == Object.class) {</span>
+<span class="fc" id="L818">                recordClass = accessor.getComponentType();</span>
+            }
+
+<span class="fc bfc" id="L821" title="All 2 branches covered.">            final Collection&lt;Object&gt; value = (result == null ? new ArrayList&lt;Object&gt;() : (Collection&lt;Object&gt;) result);</span>
+<span class="fc" id="L822">            final List&lt;Object&gt; list = Utils.convertCollectionToList(value);</span>
+<span class="fc" id="L823">            saveRecords(sheet, beansObj, anno, accessor, recordClass, list, config, work);</span>
+
+<span class="pc bpc" id="L825" title="1 of 2 branches missed.">        } else if(clazz.isArray()) {</span>
+
+<span class="fc" id="L827">            Class&lt;?&gt; recordClass = anno.recordClass();</span>
+<span class="pc bpc" id="L828" title="1 of 2 branches missed.">            if(recordClass == Object.class) {</span>
+<span class="fc" id="L829">                recordClass = accessor.getComponentType();</span>
+            }
+
+<span class="fc" id="L832">            final List&lt;Object&gt; list = Utils.asList(result, recordClass);</span>
+<span class="fc" id="L833">            saveRecords(sheet, beansObj, anno, accessor, recordClass, list, config, work);</span>
+
+<span class="fc" id="L835">        } else {</span>
+<span class="nc" id="L836">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
+<span class="nc" id="L837">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="nc" id="L838">                    .varWithAnno(&quot;anno&quot;, XlsHorizontalRecords.class)</span>
+<span class="nc" id="L839">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
+<span class="nc" id="L840">                    .var(&quot;expectedType&quot;, &quot;Collection(List/Set) or Array&quot;)</span>
+<span class="nc" id="L841">                    .format());</span>
+        }
+
+<span class="fc" id="L844">    }</span>
+
+    private void saveRecords(final Sheet sheet, final Object beansObj, final XlsHorizontalRecords anno, final FieldAccessor accessor,
+            final Class&lt;?&gt; recordClass, final List&lt;Object&gt; result, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+<span class="fc" id="L849">        RecordsProcessorUtil.checkSavingNestedRecordClass(recordClass, accessor, work.getAnnoReader());</span>
+
+        // get table starting position
+<span class="fc" id="L852">        final Optional&lt;CellPosition&gt; initPosition = getHeaderPosition(sheet, anno, accessor, config);</span>
+<span class="fc bfc" id="L853" title="All 2 branches covered.">        if(!initPosition.isPresent()) {</span>
+<span class="fc" id="L854">            return;</span>
+        }
+
+        // ラベルの設定
+<span class="fc bfc" id="L858" title="All 2 branches covered.">        if(Utils.isNotEmpty(anno.tableLabel())) {</span>
+<span class="fc" id="L859">            final Optional&lt;Cell&gt; tableLabelCell = CellFinder.query(sheet, anno.tableLabel(), config).findOptional();</span>
+<span class="fc" id="L860">            tableLabelCell.ifPresent(c -&gt; {</span>
+<span class="fc" id="L861">                final String label = POIUtils.getCellContents(c, config.getCellFormatter());</span>
+<span class="fc" id="L862">                accessor.setLabel(beansObj, label);</span>
+
+<span class="fc" id="L864">            });</span>
+        }
+
+<span class="fc" id="L867">        int initColumn = initPosition.get().getColumn();</span>
+<span class="fc" id="L868">        int initRow = initPosition.get().getRow();</span>
+
+<span class="fc" id="L870">        int hColumn = initColumn;</span>
+<span class="fc" id="L871">        int hRow = initRow;</span>
+
+        // get header columns.
+<span class="fc" id="L874">        final List&lt;RecordHeader&gt; headers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L875">        int rangeCount = 1;</span>
+        while(true) {
+            try {
+<span class="fc" id="L878">                Cell cell = POIUtils.getCell(sheet, hColumn, hRow);</span>
+<span class="fc bfc" id="L879" title="All 4 branches covered.">                while(POIUtils.isEmptyCellContents(cell, config.getCellFormatter()) &amp;&amp; rangeCount &lt; anno.range()) {</span>
+<span class="fc" id="L880">                    cell = POIUtils.getCell(sheet, hColumn + rangeCount, hRow);</span>
+<span class="fc" id="L881">                    rangeCount++;</span>
+                }
+
+<span class="fc" id="L884">                String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());</span>
+<span class="fc bfc" id="L885" title="All 2 branches covered.">                if(Utils.isEmpty(cellValue)){</span>
+<span class="fc" id="L886">                    break;</span>
+                }
+
+<span class="fc" id="L889">                headers.add(new RecordHeader(cellValue, cell.getColumnIndex() - initColumn));</span>
+<span class="fc" id="L890">                hColumn = hColumn + rangeCount;</span>
+<span class="fc" id="L891">                rangeCount = 1;</span>
+
+                // 結合しているセルの場合は、はじめのセルだけ取得して、後は結合分スキップする。
+<span class="fc" id="L894">                CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());</span>
+<span class="fc bfc" id="L895" title="All 2 branches covered.">                if(mergedRange != null) {</span>
+<span class="fc" id="L896">                    hColumn = hColumn + (mergedRange.getLastColumn() - mergedRange.getFirstColumn());</span>
+                }
+
+<span class="nc" id="L899">            } catch(ArrayIndexOutOfBoundsException ex) {</span>
+<span class="nc" id="L900">                break;</span>
+<span class="fc" id="L901">            }</span>
+
+<span class="fc bfc" id="L903" title="All 4 branches covered.">            if(anno.headerLimit() &gt; 0 &amp;&amp; headers.size() &gt;= anno.headerLimit()){</span>
+<span class="fc" id="L904">                break;</span>
+            }
+        }
+
+        // レコードの操作のアノテーション
+<span class="fc" id="L909">        final XlsRecordOption recordOptionAnno = getRecordOptionAnnotation(accessor);</span>
+
+        /*
+         * 結合セルの補完
+         * POI-3.15より、レコードの挿入や削除を行うと、その範囲にある結合が解除されるようになったため、補完する。
+         */
+<span class="fc" id="L915">        final List&lt;CellRangeAddress&gt; mergedRegionList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L917" title="All 2 branches covered.">        if(recordOptionAnno.overOperation().equals(OverOperation.Insert)</span>
+<span class="fc bfc" id="L918" title="All 2 branches covered.">                || recordOptionAnno.remainedOperation().equals(RemainedOperation.Delete)) {</span>
+
+<span class="fc" id="L920">            final int mergedNum = sheet.getNumMergedRegions();</span>
+<span class="fc bfc" id="L921" title="All 2 branches covered.">            for(int i=0; i &lt; mergedNum; i++) {</span>
+<span class="fc" id="L922">                mergedRegionList.add(sheet.getMergedRegion(i));</span>
+            }
+        }
+
+        // データ行の開始位置の調整
+<span class="fc" id="L927">        hRow += anno.headerBottom();</span>
+<span class="fc" id="L928">        CellPosition startPosition = CellPosition.of(hRow, initColumn);</span>
+
+        // 独自の開始位置を指定する場合
+<span class="fc" id="L931">        final Optional&lt;XlsRecordFinder&gt; finderAnno = accessor.getAnnotation(XlsRecordFinder.class);</span>
+<span class="fc bfc" id="L932" title="All 2 branches covered.">        if(finderAnno.isPresent()) {</span>
+<span class="fc" id="L933">            final RecordFinder finder = config.createBean(finderAnno.get().value());</span>
+<span class="fc" id="L934">            startPosition = finder.find(ProcessCase.Save, finderAnno.get().args(), sheet, startPosition, beansObj, config);</span>
+
+        }
+
+        // 書き込んだセルの範囲などの情報
+<span class="fc" id="L939">        final RecordOperation recordOperation = new RecordOperation(recordOptionAnno);</span>
+<span class="fc" id="L940">        recordOperation.setupCellPositoin(startPosition);</span>
+
+        // XlsColumn(merged=true)の結合したセルの情報
+<span class="fc" id="L943">        final List&lt;CellRangeAddress&gt; mergedRanges = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L945">        saveRecords(sheet, headers, anno, startPosition, new AtomicInteger(0), accessor, recordClass, result, config,</span>
+                work, mergedRanges, recordOperation, new ArrayList&lt;Integer&gt;());
+
+        // 書き込むデータがない場合は、1行目の終端を操作範囲とする。
+<span class="fc bfc" id="L949" title="All 2 branches covered.">        if(result.isEmpty()) {</span>
+<span class="fc" id="L950">            recordOperation.setupCellPositoin(startPosition.getRow(), hColumn-1);</span>
+        }
+
+<span class="fc bfc" id="L953" title="All 2 branches covered.">        if(config.isCorrectCellDataValidationOnSave()) {</span>
+<span class="fc" id="L954">            correctDataValidation(sheet, recordOperation);</span>
+        }
+
+<span class="fc bfc" id="L957" title="All 2 branches covered.">        if(config.isCorrectNameRangeOnSave()) {</span>
+<span class="fc" id="L958">            correctNameRange(sheet, recordOperation);</span>
+        }
+
+        // 結合情報の補完 - POI 3.15以上のときに行う
+<span class="fc" id="L962">        correctMergedCell(sheet, recordOperation, mergedRegionList);</span>
+
+<span class="fc" id="L964">    }</span>
+
+    /**
+     * アノテーション{@link XlsRecordOption}を取得する。
+     * ただし、付与されていない場合は、属性にデフォルト値が指定されているものを取得する。
+     * @param accessor フィールド情報
+     * @return アノテーションのインスタンス
+     */
+    private XlsRecordOption getRecordOptionAnnotation(final FieldAccessor accessor) {
+
+<span class="fc" id="L974">        return accessor.getAnnotation(XlsRecordOption.class)</span>
+<span class="fc" id="L975">                .orElseGet(() -&gt; new XlsRecordOption() {</span>
+
+                    @Override
+                    public Class&lt;? extends Annotation&gt; annotationType() {
+<span class="nc" id="L979">                        return XlsRecordOption.class;</span>
+                    }
+
+                    @Override
+                    public RemainedOperation remainedOperation() {
+<span class="fc" id="L984">                        return RemainedOperation.None;</span>
+                    }
+
+                    @Override
+                    public OverOperation overOperation() {
+<span class="fc" id="L989">                        return OverOperation.Break;</span>
+                    }
+                });
+
+
+    }
+
+    private void saveRecords(final Sheet sheet, final List&lt;RecordHeader&gt; headers,
+            final XlsHorizontalRecords anno,
+            final CellPosition initPosition, final AtomicInteger nestedRecordSize,
+            final FieldAccessor accessor, final Class&lt;?&gt; recordClass, final List&lt;Object&gt; result,
+            final Configuration config, final SavingWorkObject work,
+            final List&lt;CellRangeAddress&gt; mergedRanges, final RecordOperation recordOperation,
+            final List&lt;Integer&gt; inserteRowsIdx) throws XlsMapperException {
+
+<span class="fc" id="L1004">        final int initColumn = initPosition.getColumn();</span>
+<span class="fc" id="L1005">        final int initRow = initPosition.getRow();</span>
+
+<span class="fc" id="L1007">        int hRow = initRow;</span>
+
+        // Check for columns
+<span class="fc" id="L1010">        RecordsProcessorUtil.checkColumns(sheet, recordClass, headers, work.getAnnoReader(), config);</span>
+<span class="fc" id="L1011">        RecordsProcessorUtil.checkMapColumns(sheet, recordClass, headers, work.getAnnoReader(), config);</span>
+<span class="fc" id="L1012">        RecordsProcessorUtil.checkArrayColumns(sheet, recordClass, headers, work.getAnnoReader(), config);</span>
+
+        /*
+         * 書き込む時には終了位置の判定は、Borderで固定する必要がある。
+         * ・Emptyの場合だと、テンプレート用のシートなので必ずデータ用のセルが、空なので書き込まれなくなる。
+         * ・Emptyの場合、Borderに補正して書き込む。
+         */
+<span class="fc" id="L1019">        RecordTerminal terminal = anno.terminal();</span>
+<span class="fc bfc" id="L1020" title="All 2 branches covered.">        if(terminal == RecordTerminal.Empty) {</span>
+<span class="fc" id="L1021">            terminal = RecordTerminal.Border;</span>
+<span class="pc bpc" id="L1022" title="1 of 2 branches missed.">        } else if(terminal == null){</span>
+<span class="nc" id="L1023">            terminal = RecordTerminal.Border;</span>
+        }
+
+        // 各種レコードのコールバック用メソッドを抽出する
+<span class="fc" id="L1027">        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)</span>
+<span class="fc" id="L1028">                .create(recordClass, ProcessCase.Save);</span>
+
+        // レコードの見出しに対するカラム情報のキャッシュ
+<span class="fc" id="L1031">        final Map&lt;String, List&lt;FieldAccessor&gt;&gt; propertiesCache = new HashMap&lt;&gt;();</span>
+
+        // カラムに対するConverterのキャッシュ
+<span class="fc" id="L1034">        final Map&lt;String, CellConverter&lt;?&gt;&gt; converterCache = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L1036">        final int startHeaderIndex = getStartHeaderIndexForSaving(headers, recordClass, work.getAnnoReader(), config);</span>
+
+        // get records
+<span class="pc bpc" id="L1039" title="1 of 2 branches missed.">        for(int r=0; r &lt; POIUtils.getRows(sheet); r++) {</span>
+
+<span class="fc" id="L1041">            boolean emptyFlag = true;</span>
+
+            // 書き込むレコードのオブジェクトを取得。データが0件の場合、nullとなる。
+            final Object record;
+<span class="fc bfc" id="L1045" title="All 2 branches covered.">            if(r &lt; result.size()) {</span>
+<span class="fc" id="L1046">                record = result.get(r);</span>
+            } else {
+<span class="fc" id="L1048">                record = null;</span>
+            }
+
+            // パスの位置の変更
+<span class="fc" id="L1052">            work.getErrors().pushNestedPath(accessor.getName(), r);</span>
+
+<span class="fc bfc" id="L1054" title="All 2 branches covered.">            if(record != null) {</span>
+
+                // execute PreProcess listner
+<span class="fc" id="L1057">                methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
+<span class="fc" id="L1058">                    listenerClass.getPreSaveMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L1059">                        Utils.invokeNeedProcessMethod(listenerClass.getObject(), method, record, sheet, config, work.getErrors(), ProcessCase.Save);</span>
+<span class="fc" id="L1060">                    });</span>
+<span class="fc" id="L1061">                });</span>
+
+                // execute PreProcess method
+<span class="fc" id="L1064">                methodCache.getPreSaveMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L1065">                    Utils.invokeNeedProcessMethod(record, method, record, sheet, config, work.getErrors(), ProcessCase.Save);</span>
+<span class="fc" id="L1066">                });</span>
+
+            }
+
+            // レコードの各列処理で既に行を追加したかどうかのフラグ。(ネスト先でも参照する)
+<span class="fc" id="L1071">            boolean insertRows = inserteRowsIdx.contains(hRow+1);</span>
+
+            // レコードの各列処理で既に行を削除したかどうかのフラグ。
+<span class="fc" id="L1074">            boolean deleteRows = false;</span>
+
+            // 書き込んだセルの座標
+            // ネストしたときに、結合するための情報として使用する。
+<span class="fc" id="L1078">            List&lt;CellPosition&gt; valueCellPositions = new ArrayList&lt;&gt;();</span>
+
+            // hRowという上限がない
+<span class="fc bfc" id="L1081" title="All 2 branches covered.">            for(int i=0; i &lt; headers.size(); i++) {</span>
+<span class="fc" id="L1082">                final RecordHeader headerInfo = headers.get(i);</span>
+<span class="fc" id="L1083">                int hColumn = initColumn + headerInfo.getInterval();</span>
+<span class="fc" id="L1084">                final Cell cell = POIUtils.getCell(sheet, hColumn, hRow);</span>
+
+                // find end of the table
+<span class="fc bfc" id="L1087" title="All 2 branches covered.">                if(!POIUtils.isEmptyCellContents(cell, config.getCellFormatter())){</span>
+<span class="fc" id="L1088">                    emptyFlag = false;</span>
+                }
+
+<span class="pc bpc" id="L1091" title="1 of 4 branches missed.">                if(terminal == RecordTerminal.Border &amp;&amp; i == startHeaderIndex){</span>
+<span class="fc bfc" id="L1092" title="All 2 branches covered.">                    if(!POIUtils.getBorderLeft(cell).equals(BorderStyle.NONE)){</span>
+<span class="fc" id="L1093">                        emptyFlag = false;</span>
+                    } else {
+<span class="fc" id="L1095">                        emptyFlag = true;</span>
+//                            break;
+                    }
+                }
+
+<span class="fc bfc" id="L1100" title="All 2 branches covered.">                if(!anno.terminateLabel().equals(&quot;&quot;)){</span>
+<span class="fc bfc" id="L1101" title="All 2 branches covered.">                    if(Utils.matches(POIUtils.getCellContents(cell, config.getCellFormatter()), anno.terminateLabel(), config)){</span>
+<span class="fc" id="L1102">                        emptyFlag = true;</span>
+//                            break;
+                    }
+                }
+
+                // mapping from Excel columns to Object properties.
+<span class="fc bfc" id="L1108" title="All 2 branches covered.">                if(record != null) {</span>
+<span class="fc" id="L1109">                    final List&lt;FieldAccessor&gt; propeties = propertiesCache.computeIfAbsent(headerInfo.getLabel(), key -&gt; {</span>
+<span class="fc" id="L1110">                        return FieldAccessorUtils.getColumnPropertiesByName(</span>
+<span class="fc" id="L1111">                                record.getClass(), work.getAnnoReader(), config, key)</span>
+<span class="fc" id="L1112">                                .stream()</span>
+<span class="fc" id="L1113">                                .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L1114">                                .collect(Collectors.toList());</span>
+                    });
+
+<span class="fc bfc" id="L1117" title="All 2 branches covered.">                    for(FieldAccessor property : propeties) {</span>
+<span class="fc" id="L1118">                        Cell valueCell = cell;</span>
+<span class="fc" id="L1119">                        final XlsColumn column = property.getAnnotation(XlsColumn.class).get();</span>
+
+<span class="fc bfc" id="L1121" title="All 2 branches covered.">                        if(column.headerMerged() &gt; 0) {</span>
+<span class="fc" id="L1122">                            hColumn = hColumn + column.headerMerged();</span>
+<span class="fc" id="L1123">                            valueCell = POIUtils.getCell(sheet, hColumn, hRow);</span>
+                        }
+
+                        // for merged cell
+<span class="fc bfc" id="L1127" title="All 2 branches covered.">                        if(POIUtils.isEmptyCellContents(valueCell, config.getCellFormatter())) {</span>
+<span class="fc bfc" id="L1128" title="All 4 branches covered.">                            if(column.merged() &amp;&amp; POIUtils.getBorderTop(valueCell).equals(BorderStyle.NONE)) {</span>
+<span class="pc bfc" id="L1129" title="All 2 branches covered.">                                for(int k=hRow-1; k &gt; initRow; k--){</span>
+<span class="fc" id="L1130">                                    Cell tmpCell = POIUtils.getCell(sheet, hColumn, k);</span>
+<span class="pc bpc" id="L1131" title="1 of 2 branches missed.">                                    if(!POIUtils.getBorderBottom(tmpCell).equals(BorderStyle.NONE)){</span>
+<span class="fc" id="L1132">                                        break;</span>
+                                    }
+<span class="nc bnc" id="L1134" title="All 2 branches missed.">                                    if(!POIUtils.isEmptyCellContents(tmpCell, config.getCellFormatter())){</span>
+<span class="nc" id="L1135">                                        valueCell = tmpCell;</span>
+<span class="nc" id="L1136">                                        break;</span>
+                                    }
+                                }
+                            }
+                        }
+
+<span class="fc bfc" id="L1142" title="All 2 branches covered.">                        if(column.headerMerged() &gt; 0){</span>
+<span class="fc" id="L1143">                            hColumn = hColumn - column.headerMerged();</span>
+                        }
+
+                        // 書き込む行が足りない場合の操作
+<span class="fc bfc" id="L1147" title="All 2 branches covered.">                        if(emptyFlag) {</span>
+<span class="fc bfc" id="L1148" title="All 2 branches covered.">                            if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Break)) {</span>
+<span class="fc" id="L1149">                                break;</span>
+
+<span class="fc bfc" id="L1151" title="All 2 branches covered.">                            } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {</span>
+                                // 1つ上のセルの書式をコピーする。
+<span class="fc" id="L1153">                                final Cell fromCell = POIUtils.getCell(sheet, valueCell.getColumnIndex(), valueCell.getRowIndex()-1);</span>
+<span class="fc" id="L1154">                                copyCellStyle(fromCell, valueCell);</span>
+
+<span class="fc" id="L1156">                                recordOperation.incrementCopyRecord();</span>
+
+<span class="pc bpc" id="L1158" title="1 of 2 branches missed.">                            } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {</span>
+                                // すでに他の列の処理に対して行を追加している場合は行の追加は行わない。
+<span class="fc bfc" id="L1160" title="All 2 branches covered.">                                if(!insertRows) {</span>
+                                    // 行を下に追加する
+<span class="fc" id="L1162">                                    POIUtils.insertRow(sheet, valueCell.getRowIndex());</span>
+
+                                    // 現在のセルがずれるため、1つ上のセルを再取得する
+<span class="fc" id="L1165">                                    valueCell = POIUtils.getCell(sheet, valueCell.getColumnIndex(), valueCell.getRowIndex()-1);</span>
+
+<span class="fc" id="L1167">                                    insertRows = true;</span>
+<span class="fc" id="L1168">                                    recordOperation.incrementInsertRecord();</span>
+<span class="fc" id="L1169">                                    inserteRowsIdx.add(valueCell.getRowIndex()+1);</span>
+
+<span class="pc bpc" id="L1171" title="1 of 2 branches missed.">                                    if(logger.isDebugEnabled()) {</span>
+<span class="fc" id="L1172">                                        logger.debug(&quot;insert row : sheet name=[{}], row index=[{}]&quot;, sheet.getSheetName(), valueCell.getRowIndex()+1);</span>
+                                    }
+                                }
+
+                                // １つ上のセルの書式をコピーする
+<span class="fc" id="L1177">                                final Cell fromCell = POIUtils.getCell(sheet, valueCell.getColumnIndex(), valueCell.getRowIndex()-1);</span>
+<span class="fc" id="L1178">                                copyCellStyle(fromCell, valueCell);</span>
+                            }
+
+                        }
+
+<span class="fc" id="L1183">                        valueCellPositions.add(CellPosition.of(valueCell));</span>
+<span class="fc" id="L1184">                        recordOperation.setupCellPositoin(valueCell);</span>
+
+<span class="fc bfc" id="L1186" title="All 2 branches covered.">                        if(!Utils.isSaveCase(column.cases())) {</span>
+<span class="fc" id="L1187">                            continue;</span>
+                        }
+
+                        // set for cell value
+<span class="fc" id="L1191">                        property.setPosition(record, CellPosition.of(valueCell));</span>
+<span class="fc" id="L1192">                        property.setLabel(record, headerInfo.getLabel());</span>
+
+<span class="fc" id="L1194">                        final CellConverter converter = converterCache.computeIfAbsent(property.getName(), key -&gt; getCellConverter(property, config));</span>
+<span class="pc bpc" id="L1195" title="1 of 2 branches missed.">                        if(converter instanceof FieldFormatter) {</span>
+<span class="fc" id="L1196">                            work.getErrors().registerFieldFormatter(property.getName(), property.getType(), (FieldFormatter&lt;?&gt;)converter, true);</span>
+                        }
+
+                        try {
+<span class="fc" id="L1200">                            converter.toCell(property.getValue(record), record, sheet, CellPosition.of(valueCell));</span>
+<span class="nc" id="L1201">                        } catch(TypeBindException e) {</span>
+<span class="nc" id="L1202">                            work.addTypeBindError(e, valueCell, property.getName(), headerInfo.getLabel());</span>
+<span class="nc bnc" id="L1203" title="All 2 branches missed.">                            if(!config.isContinueTypeBindFailure()) {</span>
+<span class="nc" id="L1204">                                throw e;</span>
+                            }
+<span class="fc" id="L1206">                        }</span>
+
+                        // セルをマージする
+<span class="fc bfc" id="L1209" title="All 6 branches covered.">                        if(column.merged() &amp;&amp; (r &gt; 0) &amp;&amp; config.isMergeCellOnSave()) {</span>
+<span class="fc" id="L1210">                            processSavingMergedCell(valueCell, sheet, mergedRanges, config);</span>
+                        }
+<span class="fc" id="L1212">                    }</span>
+                }
+
+                /*
+                 * 残りの行の操作
+                 *  行の追加やコピー処理をしていないときのみ実行する
+                 */
+<span class="fc bfc" id="L1219" title="All 6 branches covered.">                if(record == null &amp;&amp; emptyFlag == false &amp;&amp; recordOperation.isNotExecuteOverRecordOperation()) {</span>
+<span class="fc bfc" id="L1220" title="All 2 branches covered.">                    if(recordOperation.getAnnotation().remainedOperation().equals(RemainedOperation.None)) {</span>
+                        // なにもしない
+
+<span class="fc bfc" id="L1223" title="All 2 branches covered.">                    } else if(recordOperation.getAnnotation().remainedOperation().equals(RemainedOperation.Clear)) {</span>
+<span class="fc" id="L1224">                        final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);</span>
+<span class="fc" id="L1225">                        clearCell.setCellType(CellType.BLANK);</span>
+
+<span class="pc bpc" id="L1227" title="1 of 2 branches missed.">                    } else if(recordOperation.getAnnotation().remainedOperation().equals(RemainedOperation.Delete)) {</span>
+<span class="fc bfc" id="L1228" title="All 2 branches covered.">                        if(initRow == hRow) {</span>
+                            // 1行目は残しておき、値をクリアする
+<span class="fc" id="L1230">                            final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);</span>
+<span class="fc" id="L1231">                            clearCell.setCellType(CellType.BLANK);</span>
+
+<span class="fc bfc" id="L1233" title="All 2 branches covered.">                        } else if(!deleteRows) {</span>
+                            // すでに他の列の処理に対して行を削除している場合は行の削除は行わない。
+<span class="fc" id="L1235">                            final Row row = POIUtils.removeRow(sheet, hRow);</span>
+<span class="fc" id="L1236">                            deleteRows = true;</span>
+
+<span class="pc bpc" id="L1238" title="1 of 2 branches missed.">                            if(row != null) {</span>
+<span class="pc bpc" id="L1239" title="1 of 2 branches missed.">                                if(logger.isDebugEnabled()) {</span>
+<span class="fc" id="L1240">                                    logger.debug(&quot;delete row : sheet name=[{}], row index=[{}]&quot;, sheet.getSheetName(), hRow);</span>
+                                }
+<span class="fc" id="L1242">                                recordOperation.incrementDeleteRecord();</span>
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            // マップや配列形式のカラムを出力する
+<span class="fc bfc" id="L1251" title="All 2 branches covered.">            if(record != null) {</span>
+<span class="fc" id="L1252">                saveMapColumns(sheet, headers, valueCellPositions, CellPosition.of(hRow, initColumn), recordClass, record, terminal, anno, config, work, recordOperation);</span>
+
+<span class="fc" id="L1254">                saveArrayColumns(sheet, headers, valueCellPositions, CellPosition.of(hRow, initColumn), recordClass, record, terminal, anno, config, work, recordOperation);</span>
+
+            }
+
+            // execute nested record.
+<span class="fc" id="L1259">            int skipSize = 0;</span>
+<span class="fc bfc" id="L1260" title="All 2 branches covered.">            if(record != null) {</span>
+<span class="fc" id="L1261">                skipSize = saveNestedRecords(sheet, headers, valueCellPositions, anno, CellPosition.of(hRow, initColumn), record,</span>
+                        config, work, mergedRanges, recordOperation, inserteRowsIdx);
+<span class="fc" id="L1263">                nestedRecordSize.addAndGet(skipSize);</span>
+            }
+
+<span class="fc bfc" id="L1266" title="All 2 branches covered.">            if(record != null) {</span>
+
+                // set PostProcess listener
+<span class="fc" id="L1269">                methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
+<span class="fc" id="L1270">                    listenerClass.getPostSaveMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L1271">                        work.addNeedPostProcess(new NeedProcess(record, listenerClass.getObject(), method));</span>
+<span class="fc" id="L1272">                    });</span>
+<span class="fc" id="L1273">                });</span>
+
+                // set PostProcess method
+<span class="fc" id="L1276">                methodCache.getPostSaveMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L1277">                    work.addNeedPostProcess(new NeedProcess(record, record, method));</span>
+<span class="fc" id="L1278">                });</span>
+
+            }
+
+            // パスの位置の変更
+<span class="fc" id="L1283">            work.getErrors().popNestedPath();</span>
+
+            /*
+             * 行が削除されていない場合は、次の行に進む。
+             * ・行が削除されていると、現在の行数は変わらない。
+             */
+<span class="fc bfc" id="L1289" title="All 2 branches covered.">            if(!deleteRows) {</span>
+<span class="fc bfc" id="L1290" title="All 2 branches covered.">                if(skipSize &gt; 0) {</span>
+<span class="fc" id="L1291">                    hRow += skipSize;</span>
+                } else {
+<span class="fc" id="L1293">                    hRow++;</span>
+                }
+            }
+
+<span class="fc bfc" id="L1297" title="All 4 branches covered.">            if(emptyFlag == true &amp;&amp; (r &gt; result.size())) {</span>
+                // セルが空で、書き込むデータがない場合。
+<span class="fc" id="L1299">                break;</span>
+            }
+        }
+
+
+<span class="fc" id="L1304">    }</span>
+
+    /**
+     * 表の見出しから、レコードのJavaクラスの定義にあるカラムの定義で初めて見つかるリストのインデックスを取得する。
+     * &lt;p&gt;カラムの定義とは、アノテーション「@XlsColumn」が付与されたもの。&lt;/p&gt;
+     * @param headers 表の見出し情報。
+     * @param recordClass アノテーション「@XlsColumn」が定義されたフィールドを持つレコード用のクラス。
+     * @param annoReader AnnotationReader
+     * @param config システム設定
+     * @return 引数「headers」の該当する要素のインデックス番号。不明な場合は、0を返す。
+     */
+    private int getStartHeaderIndexForSaving(final List&lt;RecordHeader&gt; headers, Class&lt;?&gt; recordClass,
+            final AnnotationReader annoReader, final Configuration config) {
+
+        // レコードクラスが不明の場合、0を返す。
+<span class="pc bpc" id="L1319" title="2 of 4 branches missed.">        if((recordClass == null || recordClass.equals(Object.class))) {</span>
+<span class="nc" id="L1320">            return 0;</span>
+        }
+
+<span class="pc bpc" id="L1323" title="1 of 2 branches missed.">        for(int i=0; i &lt; headers.size(); i++) {</span>
+<span class="fc" id="L1324">            RecordHeader headerInfo = headers.get(i);</span>
+<span class="fc" id="L1325">            final List&lt;FieldAccessor&gt; propeties = FieldAccessorUtils.getColumnPropertiesByName(</span>
+<span class="fc" id="L1326">                    recordClass, annoReader, config, headerInfo.getLabel())</span>
+<span class="fc" id="L1327">                    .stream()</span>
+<span class="fc" id="L1328">                    .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L1329">                    .collect(Collectors.toList());</span>
+<span class="fc bfc" id="L1330" title="All 2 branches covered.">            if(!propeties.isEmpty()) {</span>
+<span class="fc" id="L1331">                return i;</span>
+            }
+        }
+
+<span class="nc" id="L1335">        return 0;</span>
+
+    }
+
+    /**
+     * 上部のセルと同じ値の場合マージする
+     * @param currentCell
+     * @param sheet
+     * @param mergedRanges
+     * @param config
+     * @return
+     */
+    private boolean processSavingMergedCell(final Cell currentCell, final Sheet sheet,
+            final List&lt;CellRangeAddress&gt; mergedRanges, final Configuration config) {
+
+<span class="fc" id="L1350">        final int row = currentCell.getRowIndex();</span>
+<span class="fc" id="L1351">        final int column = currentCell.getColumnIndex();</span>
+
+<span class="pc bpc" id="L1353" title="1 of 2 branches missed.">        if(row &lt;= 0) {</span>
+<span class="nc" id="L1354">            return false;</span>
+        }
+
+        // 上のセルと比較する
+<span class="fc" id="L1358">        final String value = POIUtils.getCellContents(currentCell, config.getCellFormatter());</span>
+<span class="fc" id="L1359">        String upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row-1), config.getCellFormatter());</span>
+
+        // 結合されている場合、結合の先頭セルを取得する
+<span class="fc" id="L1362">        int startRow = row - 1;</span>
+<span class="fc" id="L1363">        CellRangeAddress currentMergedRange = null;</span>
+<span class="fc bfc" id="L1364" title="All 2 branches covered.">        for(CellRangeAddress range : mergedRanges) {</span>
+            // 列が範囲外の場合
+<span class="fc bfc" id="L1366" title="All 4 branches covered.">            if((range.getFirstColumn() &gt; column) || (column &gt; range.getLastColumn())) {</span>
+<span class="fc" id="L1367">                continue;</span>
+            }
+
+            // 行が範囲外の場合
+<span class="pc bpc" id="L1371" title="1 of 4 branches missed.">            if((range.getFirstRow() &gt; startRow) || (startRow &gt; range.getLastRow())) {</span>
+<span class="fc" id="L1372">                continue;</span>
+            }
+
+<span class="fc" id="L1375">            upperValue = POIUtils.getCellContents(POIUtils.getCell(sheet, column, range.getFirstRow()), config.getCellFormatter());</span>
+<span class="fc" id="L1376">            currentMergedRange = range;</span>
+<span class="fc" id="L1377">            break;</span>
+        }
+
+<span class="fc bfc" id="L1380" title="All 2 branches covered.">        if(!value.equals(upperValue)) {</span>
+            // 値が異なる場合は結合しない
+<span class="fc" id="L1382">            return false;</span>
+        }
+
+        // 既に結合済みの場合は一端解除する
+<span class="fc bfc" id="L1386" title="All 2 branches covered.">        if(currentMergedRange != null) {</span>
+<span class="fc" id="L1387">            startRow = currentMergedRange.getFirstRow();</span>
+<span class="fc" id="L1388">            mergedRanges.remove(currentMergedRange);</span>
+<span class="fc" id="L1389">            POIUtils.removeMergedRange(sheet, currentMergedRange);</span>
+        }
+
+<span class="fc" id="L1392">        final CellRangeAddress newRange = POIUtils.mergeCells(sheet, column, startRow, column, row);</span>
+<span class="fc" id="L1393">        mergedRanges.add(newRange);</span>
+<span class="fc" id="L1394">        return true;</span>
+
+    }
+
+    private void saveMapColumns(final Sheet sheet, final List&lt;RecordHeader&gt; headers, final List&lt;CellPosition&gt; valueCellPositions,
+            final CellPosition beginPosition, Class&lt;?&gt; recordClass, Object record, RecordTerminal terminal,
+            XlsHorizontalRecords anno, Configuration config, SavingWorkObject work,
+            RecordOperation recordOperation) throws XlsMapperException {
+
+<span class="fc" id="L1403">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L1404">                recordClass, work.getAnnoReader(), XlsMapColumns.class)</span>
+<span class="fc" id="L1405">                .stream()</span>
+<span class="fc" id="L1406">                .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L1407">                .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L1409" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+
+<span class="fc" id="L1411">            final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();</span>
+
+<span class="fc" id="L1413">            Class&lt;?&gt; elementClass = mapAnno.valueClass();</span>
+<span class="pc bpc" id="L1414" title="1 of 2 branches missed.">            if(elementClass == Object.class) {</span>
+<span class="fc" id="L1415">                elementClass = property.getComponentType();</span>
+            }
+
+            // get converter (map key class)
+<span class="fc" id="L1419">            final CellConverter converter = getCellConverter(elementClass, property, config);</span>
+<span class="pc bpc" id="L1420" title="1 of 2 branches missed.">            if(converter instanceof FieldFormatter) {</span>
+<span class="fc" id="L1421">                work.getErrors().registerFieldFormatter(property.getName(), elementClass, (FieldFormatter&lt;?&gt;)converter, true);</span>
+            }
+
+<span class="fc" id="L1424">            boolean foundPreviousColumn = false;</span>
+<span class="fc bfc" id="L1425" title="All 2 branches covered.">            for(RecordHeader headerInfo : headers) {</span>
+<span class="fc" id="L1426">                int hColumn = beginPosition.getColumn() + headerInfo.getInterval();</span>
+<span class="fc bfc" id="L1427" title="All 2 branches covered.">                if(Utils.matches(headerInfo.getLabel(), mapAnno.previousColumnName(), config)){</span>
+<span class="fc" id="L1428">                    foundPreviousColumn = true;</span>
+<span class="fc" id="L1429">                    hColumn++;</span>
+<span class="fc" id="L1430">                    continue;</span>
+                }
+
+<span class="fc bfc" id="L1433" title="All 4 branches covered.">                if(Utils.isNotEmpty(mapAnno.nextColumnName()) &amp;&amp; Utils.matches(headerInfo.getLabel(), mapAnno.nextColumnName(), config)) {</span>
+<span class="fc" id="L1434">                    break;</span>
+                }
+
+<span class="fc bfc" id="L1437" title="All 2 branches covered.">                if(foundPreviousColumn) {</span>
+<span class="fc" id="L1438">                    final Cell cell = POIUtils.getCell(sheet, hColumn, beginPosition.getRow());</span>
+
+                    // 空セルか判断する
+<span class="fc" id="L1441">                    boolean emptyFlag = true;</span>
+<span class="pc bpc" id="L1442" title="1 of 2 branches missed.">                    if(terminal == RecordTerminal.Border) {</span>
+<span class="fc bfc" id="L1443" title="All 2 branches covered.">                        if(!POIUtils.getBorderLeft(cell).equals(BorderStyle.NONE)) {</span>
+<span class="fc" id="L1444">                            emptyFlag = false;</span>
+                        } else {
+<span class="fc" id="L1446">                            emptyFlag = true;</span>
+                        }
+                    }
+
+<span class="fc bfc" id="L1450" title="All 2 branches covered.">                    if(!anno.terminateLabel().equals(&quot;&quot;)) {</span>
+<span class="pc bpc" id="L1451" title="1 of 2 branches missed.">                        if(Utils.matches(POIUtils.getCellContents(cell, config.getCellFormatter()), anno.terminateLabel(), config)) {</span>
+<span class="nc" id="L1452">                            emptyFlag = true;</span>
+                        }
+                    }
+
+                    // 空セルの場合
+<span class="fc bfc" id="L1457" title="All 2 branches covered.">                    if(emptyFlag) {</span>
+<span class="fc bfc" id="L1458" title="All 2 branches covered.">                        if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Break)) {</span>
+<span class="fc" id="L1459">                            break;</span>
+
+<span class="fc bfc" id="L1461" title="All 2 branches covered.">                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {</span>
+<span class="fc" id="L1462">                            final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1);</span>
+<span class="fc" id="L1463">                            copyCellStyle(fromCell, cell);</span>
+
+<span class="pc bpc" id="L1465" title="1 of 2 branches missed.">                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {</span>
+                            // 既に追加ずみなので、セルの書式のコピーのみ行う
+<span class="fc" id="L1467">                            final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1);</span>
+<span class="fc" id="L1468">                            copyCellStyle(fromCell, cell);</span>
+
+                        }
+                    }
+
+<span class="fc" id="L1473">                    valueCellPositions.add(CellPosition.of(cell));</span>
+<span class="fc" id="L1474">                    recordOperation.setupCellPositoin(cell);</span>
+
+<span class="pc bpc" id="L1476" title="1 of 2 branches missed.">                    if(!Utils.isSaveCase(mapAnno.cases())) {</span>
+<span class="nc" id="L1477">                        continue;</span>
+                    }
+
+                    // セルの値を出力する
+<span class="fc" id="L1481">                    property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());</span>
+<span class="fc" id="L1482">                    property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());</span>
+
+                    try {
+<span class="fc" id="L1485">                        Object value = property.getValueOfMap(headerInfo.getLabel(), record);</span>
+<span class="fc" id="L1486">                        converter.toCell(value, record, sheet, CellPosition.of(cell));</span>
+
+<span class="nc" id="L1488">                    } catch(TypeBindException e) {</span>
+
+<span class="nc" id="L1490">                        work.addTypeBindError(e, cell, String.format(&quot;%s[%s]&quot;, property.getName(), headerInfo.getLabel()), headerInfo.getLabel());</span>
+<span class="nc bnc" id="L1491" title="All 2 branches missed.">                        if(!config.isContinueTypeBindFailure()) {</span>
+<span class="nc" id="L1492">                            throw e;</span>
+                        }
+<span class="fc" id="L1494">                    }</span>
+                }
+
+<span class="fc" id="L1497">            }</span>
+<span class="fc" id="L1498">        }</span>
+
+<span class="fc" id="L1500">    }</span>
+
+    private void saveArrayColumns(final Sheet sheet, final List&lt;RecordHeader&gt; headers, final List&lt;CellPosition&gt; valueCellPositions,
+            final CellPosition beginPosition, Class&lt;?&gt; recordClass, Object record, RecordTerminal terminal,
+            XlsHorizontalRecords anno, Configuration config, SavingWorkObject work,
+            RecordOperation recordOperation) throws XlsMapperException {
+
+
+<span class="fc bfc" id="L1508" title="All 2 branches covered.">        for(RecordHeader headerInfo : headers) {</span>
+<span class="fc" id="L1509">            int hColumn = beginPosition.getColumn() + headerInfo.getInterval();</span>
+
+            // アノテーション「@XlsArrayColumns」の属性「columnName」と一致するプロパティを取得する。
+<span class="fc" id="L1512">            final List&lt;FieldAccessor&gt; arrayProperties = FieldAccessorUtils.getArrayColumnsPropertiesByName(</span>
+<span class="fc" id="L1513">                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel());</span>
+
+<span class="fc bfc" id="L1515" title="All 2 branches covered.">            if(arrayProperties.isEmpty()) {</span>
+<span class="fc" id="L1516">                continue;</span>
+            }
+
+<span class="fc bfc" id="L1519" title="All 2 branches covered.">            for(FieldAccessor property : arrayProperties) {</span>
+
+<span class="fc" id="L1521">                final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();</span>
+
+<span class="fc" id="L1523">                Class&lt;?&gt; elementClass = arrayAnno.elementClass();</span>
+<span class="pc bpc" id="L1524" title="1 of 2 branches missed.">                if(elementClass == Object.class) {</span>
+<span class="fc" id="L1525">                    elementClass = property.getComponentType();</span>
+                }
+<span class="fc" id="L1527">                final CellPosition initPosition = CellPosition.of(beginPosition.getRow(), hColumn);</span>
+
+                // 書き込む領域について、上のセルをコピーなどする。
+<span class="fc" id="L1530">                int iColumn = initPosition.getColumn();</span>
+<span class="fc bfc" id="L1531" title="All 2 branches covered.">                for(int i=0; i &lt; arrayAnno.size(); i++) {</span>
+<span class="fc" id="L1532">                    final Cell cell = POIUtils.getCell(sheet, iColumn, initPosition.getRow());</span>
+
+                    // 空セルか判断する - 値のセルかどうか
+<span class="fc" id="L1535">                    boolean emptyFlag = true;</span>
+
+<span class="pc bpc" id="L1537" title="1 of 2 branches missed.">                    if(terminal == RecordTerminal.Border) {</span>
+<span class="fc bfc" id="L1538" title="All 2 branches covered.">                        if(!POIUtils.getBorderLeft(cell).equals(BorderStyle.NONE)) {</span>
+<span class="fc" id="L1539">                            emptyFlag = false;</span>
+                        } else {
+<span class="fc" id="L1541">                            emptyFlag = true;</span>
+                        }
+                    }
+
+<span class="pc bpc" id="L1545" title="1 of 2 branches missed.">                    if(!anno.terminateLabel().equals(&quot;&quot;)) {</span>
+<span class="nc bnc" id="L1546" title="All 2 branches missed.">                        if(Utils.matches(POIUtils.getCellContents(cell, config.getCellFormatter()), anno.terminateLabel(), config)) {</span>
+<span class="nc" id="L1547">                            emptyFlag = true;</span>
+                        }
+                    }
+
+                    // 空セルの場合
+<span class="fc bfc" id="L1552" title="All 2 branches covered.">                    if(emptyFlag) {</span>
+<span class="pc bpc" id="L1553" title="1 of 2 branches missed.">                        if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Break)) {</span>
+<span class="nc" id="L1554">                            break;</span>
+
+<span class="pc bpc" id="L1556" title="1 of 2 branches missed.">                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {</span>
+<span class="nc" id="L1557">                            final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1);</span>
+<span class="nc" id="L1558">                            copyCellStyle(fromCell, cell);</span>
+
+<span class="pc bpc" id="L1560" title="1 of 2 branches missed.">                        } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {</span>
+                            // 既に追加ずみなので、セルの書式のコピーのみ行う
+<span class="fc" id="L1562">                            final Cell fromCell = POIUtils.getCell(sheet, cell.getColumnIndex(), cell.getRowIndex()-1);</span>
+<span class="fc" id="L1563">                            copyCellStyle(fromCell, cell);</span>
+
+                        }
+                    }
+
+                    // 結合情報を考慮して、インデックス（列番号）を次のセルに進める。
+<span class="pc bpc" id="L1569" title="1 of 2 branches missed.">                    if(arrayAnno.elementMerged()) {</span>
+<span class="fc" id="L1570">                        final CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());</span>
+<span class="fc bfc" id="L1571" title="All 2 branches covered.">                        if(mergedRegion != null) {</span>
+<span class="fc" id="L1572">                            iColumn += POIUtils.getColumnSize(mergedRegion);</span>
+                        } else {
+<span class="fc" id="L1574">                            iColumn++;</span>
+                        }
+
+<span class="fc" id="L1577">                    } else {</span>
+<span class="nc" id="L1578">                        iColumn++;</span>
+                    }
+
+<span class="fc" id="L1581">                    recordOperation.setupCellPositoin(cell);</span>
+                }
+
+<span class="pc bpc" id="L1584" title="1 of 2 branches missed.">                if(!Utils.isSaveCase(arrayAnno.cases())) {</span>
+<span class="nc" id="L1585">                    continue;</span>
+                }
+
+                // get converter (component class)
+<span class="fc" id="L1589">                final CellConverter&lt;?&gt; converter = getCellConverter(elementClass, property, config);</span>
+<span class="pc bpc" id="L1590" title="1 of 2 branches missed.">                if(converter instanceof FieldFormatter) {</span>
+<span class="fc" id="L1591">                    work.getErrors().registerFieldFormatter(property.getName(), elementClass, (FieldFormatter&lt;?&gt;)converter, true);</span>
+                }
+
+<span class="fc" id="L1594">                ArrayCellsHandler arrayHandler = new ArrayCellsHandler(property, record, elementClass, sheet, config);</span>
+<span class="fc" id="L1595">                arrayHandler.setLabel(headerInfo.getLabel());</span>
+
+<span class="fc" id="L1597">                final Class&lt;?&gt; propertyType = property.getType();</span>
+<span class="fc" id="L1598">                final Object result = property.getValue(record);</span>
+
+<span class="pc bpc" id="L1600" title="1 of 2 branches missed.">                if(result != null) {</span>
+                    // インデックスが付いていないラベルの設定
+<span class="fc" id="L1602">                    property.setLabel(record, headerInfo.getLabel());</span>
+                }
+
+<span class="pc bpc" id="L1605" title="1 of 2 branches missed.">                if(Collection.class.isAssignableFrom(propertyType)) {</span>
+
+<span class="pc bpc" id="L1607" title="1 of 2 branches missed.">                    final Collection&lt;Object&gt; value = (result == null ? new ArrayList&lt;Object&gt;() : (Collection&lt;Object&gt;) result);</span>
+<span class="fc" id="L1608">                    final List&lt;Object&gt; list = Utils.convertCollectionToList(value);</span>
+<span class="fc" id="L1609">                    arrayHandler.handleOnSaving(list, arrayAnno, initPosition, converter, work, ArrayDirection.Horizon);</span>
+
+<span class="pc bnc" id="L1611" title="All 2 branches missed.">                } else if(propertyType.isArray()) {</span>
+
+<span class="nc" id="L1613">                    final List&lt;Object&gt; list = Utils.asList(result, elementClass);</span>
+<span class="nc" id="L1614">                    arrayHandler.handleOnSaving(list, arrayAnno, initPosition, converter, work, ArrayDirection.Horizon);</span>
+                }
+
+<span class="fc" id="L1617">            }</span>
+<span class="fc" id="L1618">        }</span>
+
+<span class="fc" id="L1620">    }</span>
+
+    /**
+     * セルの書式をコピーする。
+     * &lt;p&gt;コピー先のセルの種類は、空セルとする。&lt;/p&gt;
+     * &lt;p&gt;結合情報も列方向の結合をコピーする。&lt;/p&gt;
+     *
+     * @since 2.0
+     * @param fromCell コピー元
+     * @param toCell コピー先
+     */
+    private void copyCellStyle(final Cell fromCell, final Cell toCell) {
+
+<span class="fc" id="L1633">        final CellStyle style = fromCell.getCellStyle();</span>
+<span class="fc" id="L1634">        toCell.setCellStyle(style);</span>
+<span class="fc" id="L1635">        toCell.setCellType(CellType.BLANK);</span>
+
+        // 横方向に結合されている場合、結合情報のコピーする。（XlsArrayColumns用）
+<span class="fc" id="L1638">        final Sheet sheet = fromCell.getSheet();</span>
+<span class="fc" id="L1639">        final CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, fromCell.getRowIndex(), fromCell.getColumnIndex());</span>
+<span class="fc" id="L1640">        final int mergedSize = POIUtils.getColumnSize(mergedRegion);</span>
+
+<span class="fc bfc" id="L1642" title="All 2 branches covered.">        if(POIUtils.getColumnSize(mergedRegion) &gt;= 2) {</span>
+<span class="fc" id="L1643">            CellRangeAddress newMergedRegion = POIUtils.getMergedRegion(sheet, toCell.getRowIndex(), toCell.getColumnIndex());</span>
+<span class="pc bpc" id="L1644" title="1 of 2 branches missed.">            if(newMergedRegion != null) {</span>
+                // 既に結合している場合 - 通常はありえない。
+<span class="nc" id="L1646">                return;</span>
+            }
+
+<span class="fc" id="L1649">            newMergedRegion = POIUtils.mergeCells(sheet,</span>
+<span class="fc" id="L1650">                    mergedRegion.getFirstColumn(), toCell.getRowIndex(), mergedRegion.getLastColumn(), toCell.getRowIndex());</span>
+
+            // 結合先のセルの書式も設定する
+            // 中間のセルの設定
+<span class="fc bfc" id="L1654" title="All 2 branches covered.">            for(int i=1; i &lt; mergedSize; i++) {</span>
+<span class="fc" id="L1655">                Cell mergedFromCell = POIUtils.getCell(sheet, toCell.getColumnIndex()+i, fromCell.getRowIndex());</span>
+
+<span class="fc" id="L1657">                Cell mergedToCell = POIUtils.getCell(sheet, toCell.getColumnIndex()+i, toCell.getRowIndex());</span>
+<span class="fc" id="L1658">                mergedToCell.setCellStyle(mergedFromCell.getCellStyle());</span>
+<span class="fc" id="L1659">                mergedToCell.setCellType(CellType.BLANK);</span>
+            }
+
+        }
+
+<span class="fc" id="L1664">    }</span>
+
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private int saveNestedRecords(final Sheet sheet, final List&lt;RecordHeader&gt; headers, final List&lt;CellPosition&gt; valueCellPositions,
+            final XlsHorizontalRecords anno,
+            final CellPosition beginPositoin,
+            final Object record,
+            final Configuration config, final SavingWorkObject work,
+            final List&lt;CellRangeAddress&gt; mergedRanges, final RecordOperation recordOperation,
+            final List&lt;Integer&gt; insertRowsIdx) throws XlsMapperException {
+
+<span class="fc" id="L1676">        int skipSize = 0;</span>
+
+<span class="fc" id="L1678">        final List&lt;FieldAccessor&gt; nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L1679">                record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)</span>
+<span class="fc" id="L1680">                .stream()</span>
+<span class="fc" id="L1681">                .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L1682">                .collect(Collectors.toList());</span>
+<span class="fc bfc" id="L1683" title="All 2 branches covered.">        for(FieldAccessor property : nestedProperties) {</span>
+
+<span class="fc" id="L1685">            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();</span>
+
+<span class="pc bpc" id="L1687" title="1 of 2 branches missed.">            if(!Utils.isSaveCase(nestedAnno.cases())) {</span>
+<span class="nc" id="L1688">                continue;</span>
+            }
+
+<span class="fc" id="L1691">            final Class&lt;?&gt; clazz = property.getType();</span>
+<span class="fc bfc" id="L1692" title="All 2 branches covered.">            if(Collection.class.isAssignableFrom(clazz)) {</span>
+                // mapping by one-to-many
+
+<span class="fc" id="L1695">                Class&lt;?&gt; recordClass = nestedAnno.recordClass();</span>
+<span class="pc bpc" id="L1696" title="1 of 2 branches missed.">                if(recordClass == Object.class) {</span>
+<span class="fc" id="L1697">                    recordClass = property.getComponentType();</span>
+                }
+
+<span class="fc" id="L1700">                Collection&lt;Object&gt; value = (Collection&lt;Object&gt;) property.getValue(record);</span>
+<span class="fc bfc" id="L1701" title="All 2 branches covered.">                if(value == null) {</span>
+                    // dummy empty record
+<span class="fc" id="L1703">                    value = (Collection&lt;Object&gt;) Arrays.asList(config.createBean(recordClass));</span>
+                }
+
+<span class="fc" id="L1706">                final List&lt;Object&gt; list = Utils.convertCollectionToList(value);</span>
+<span class="fc" id="L1707">                final AtomicInteger nestedRecordSize = new AtomicInteger(0);</span>
+<span class="fc" id="L1708">                saveRecords(sheet, headers, anno, beginPositoin, nestedRecordSize, property, recordClass, list,</span>
+                        config, work, mergedRanges, recordOperation, insertRowsIdx);
+
+<span class="pc bpc" id="L1711" title="1 of 2 branches missed.">                if(skipSize &lt; list.size()) {</span>
+<span class="fc bfc" id="L1712" title="All 2 branches covered.">                    if(nestedRecordSize.get() &gt; 0) {</span>
+<span class="fc" id="L1713">                        skipSize = nestedRecordSize.get() - skipSize;</span>
+                    } else {
+<span class="fc" id="L1715">                        skipSize = list.size();</span>
+                    }
+                }
+
+<span class="fc" id="L1719">                processSavingNestedMergedRecord(sheet, skipSize, valueCellPositions);</span>
+
+<span class="fc bfc" id="L1721" title="All 2 branches covered.">            } else if(clazz.isArray()) {</span>
+
+                // mapping by one-to-many
+
+<span class="fc" id="L1725">                Class&lt;?&gt; recordClass = nestedAnno.recordClass();</span>
+<span class="pc bpc" id="L1726" title="1 of 2 branches missed.">                if(recordClass == Object.class) {</span>
+<span class="fc" id="L1727">                    recordClass = property.getComponentType();</span>
+                }
+
+<span class="fc" id="L1730">                Object[] value = (Object[])property.getValue(record);</span>
+<span class="fc bfc" id="L1731" title="All 2 branches covered.">                if(value == null) {</span>
+                    // dummy empty record
+<span class="fc" id="L1733">                    value = new Object[]{config.createBean(recordClass)};</span>
+                }
+
+<span class="fc" id="L1736">                final List&lt;Object&gt; list = Arrays.asList(value);</span>
+<span class="fc" id="L1737">                final AtomicInteger nestedRecordSize = new AtomicInteger(0);</span>
+<span class="fc" id="L1738">                saveRecords(sheet, headers, anno, beginPositoin, nestedRecordSize, property, recordClass, list,</span>
+                        config, work, mergedRanges, recordOperation, insertRowsIdx);
+
+<span class="pc bpc" id="L1741" title="1 of 2 branches missed.">                if(nestedRecordSize.get() &gt; 0) {</span>
+<span class="nc" id="L1742">                    skipSize = nestedRecordSize.get() - skipSize;</span>
+                } else {
+<span class="fc" id="L1744">                    skipSize = list.size();</span>
+                }
+
+<span class="fc" id="L1747">                processSavingNestedMergedRecord(sheet, skipSize, valueCellPositions);</span>
+
+<span class="fc" id="L1749">            } else {</span>
+
+                // mapping by one-to-many
+<span class="fc" id="L1752">                Class&lt;?&gt; recordClass = anno.recordClass();</span>
+<span class="pc bpc" id="L1753" title="1 of 2 branches missed.">                if(recordClass == Object.class) {</span>
+<span class="fc" id="L1754">                    recordClass = property.getType();</span>
+                }
+
+<span class="fc" id="L1757">                Object value = property.getValue(record);</span>
+<span class="fc bfc" id="L1758" title="All 2 branches covered.">                if(value == null) {</span>
+                    // dummy empty record
+<span class="fc" id="L1760">                    value = config.createBean(recordClass);</span>
+                }
+
+<span class="fc" id="L1763">                List&lt;Object&gt; list = Arrays.asList(value);</span>
+<span class="fc" id="L1764">                final AtomicInteger nestedRecordSize = new AtomicInteger(0);</span>
+<span class="fc" id="L1765">                saveRecords(sheet, headers, anno, beginPositoin, nestedRecordSize, property, recordClass, list,</span>
+                        config, work, mergedRanges, recordOperation, insertRowsIdx);
+
+<span class="pc bpc" id="L1768" title="1 of 2 branches missed.">                if(nestedRecordSize.get() &gt; 0) {</span>
+<span class="nc" id="L1769">                    skipSize = nestedRecordSize.get() - skipSize;</span>
+                } else {
+<span class="fc" id="L1771">                    skipSize = list.size();</span>
+                }
+
+            }
+<span class="fc" id="L1775">        }</span>
+
+<span class="fc" id="L1777">        return skipSize;</span>
+    }
+
+    /**
+     * ネストしたレコードの親のセルを結合する
+     * @param sheet シート
+     * @param mergedSize 結合するセルのサイズ
+     * @param valueCellPositions 結合する開始位置のセルのアドレス
+     */
+    private void processSavingNestedMergedRecord(final Sheet sheet, final int mergedSize,
+            final List&lt;CellPosition&gt; valueCellPositions) {
+
+<span class="fc bfc" id="L1789" title="All 2 branches covered.">        if(mergedSize &lt;= 1) {</span>
+<span class="fc" id="L1790">            return;</span>
+        }
+
+        // ネストした場合、上のセルのスタイルをコピーして、結合する
+<span class="fc bfc" id="L1794" title="All 2 branches covered.">        for(CellPosition position : valueCellPositions) {</span>
+<span class="fc" id="L1795">            Cell valueCell = POIUtils.getCell(sheet, position);</span>
+<span class="pc bpc" id="L1796" title="1 of 2 branches missed.">            if(valueCell == null) {</span>
+<span class="nc" id="L1797">                continue;</span>
+            }
+
+<span class="fc" id="L1800">            final CellStyle style = valueCell.getCellStyle();</span>
+
+            // 結合するセルに対して、上のセルのスタイルをコピーする。
+            // 行を挿入するときなどに必要になるため、スタイルを設定する。
+<span class="fc bfc" id="L1804" title="All 2 branches covered.">            for(int i=1; i &lt; mergedSize; i++) {</span>
+<span class="fc" id="L1805">                Cell mergedCell = POIUtils.getCell(sheet, position.getColumn(), position.getRow() + i);</span>
+<span class="fc" id="L1806">                mergedCell.setCellStyle(style);</span>
+<span class="fc" id="L1807">                mergedCell.setCellType(CellType.BLANK);</span>
+            }
+
+<span class="fc" id="L1810">            final CellRangeAddress range = new CellRangeAddress(position.getRow(), position.getRow()+ mergedSize-1,</span>
+<span class="fc" id="L1811">                    position.getColumn(), position.getColumn());</span>
+
+            // 既に結合済みのセルがある場合、外す。
+<span class="fc bfc" id="L1814" title="All 2 branches covered.">            for(int rowIdx=range.getFirstRow(); rowIdx &lt;= range.getLastRow(); rowIdx++) {</span>
+<span class="fc" id="L1815">                CellRangeAddress r = POIUtils.getMergedRegion(sheet, rowIdx, position.getColumn());</span>
+<span class="pc bpc" id="L1816" title="1 of 2 branches missed.">                if(r != null) {</span>
+<span class="nc" id="L1817">                    POIUtils.removeMergedRange(sheet, r);</span>
+                }
+            }
+
+<span class="fc" id="L1821">            sheet.addMergedRegion(range);</span>
+<span class="fc" id="L1822">        }</span>
+
+<span class="fc" id="L1824">    }</span>
+
+    /**
+     * セルの入力規則の範囲を修正する。
+     * @param sheet
+     * @param recordOperation
+     */
+    private void correctDataValidation(final Sheet sheet, final RecordOperation recordOperation) {
+
+<span class="fc bfc" id="L1833" title="All 2 branches covered.">        if(recordOperation.isNotExecuteRecordOperation()) {</span>
+<span class="fc" id="L1834">            return;</span>
+        }
+
+        //TODO: セルの結合も考慮する
+
+        // 操作をしていないセルの範囲の取得
+<span class="fc" id="L1840">        final CellRangeAddress notOperateRange = new CellRangeAddress(</span>
+<span class="fc" id="L1841">                recordOperation.getTopLeftPoisitoin().y,</span>
+<span class="fc" id="L1842">                recordOperation.getBottomRightPosition().y - recordOperation.getCountInsertRecord(),</span>
+<span class="fc" id="L1843">                recordOperation.getTopLeftPoisitoin().x,</span>
+<span class="fc" id="L1844">                recordOperation.getBottomRightPosition().x</span>
+                );
+
+<span class="fc" id="L1847">        final List&lt;? extends DataValidation&gt; list = sheet.getDataValidations();</span>
+<span class="fc bfc" id="L1848" title="All 2 branches covered.">        for(DataValidation validation : list) {</span>
+
+<span class="fc" id="L1850">            final CellRangeAddressList region = validation.getRegions().copy();</span>
+<span class="fc" id="L1851">            boolean changedRange = false;</span>
+<span class="fc bfc" id="L1852" title="All 2 branches covered.">            for(CellRangeAddress range : region.getCellRangeAddresses()) {</span>
+
+<span class="fc bfc" id="L1854" title="All 2 branches covered.">                if(notOperateRange.isInRange(range.getFirstRow(), range.getFirstColumn())) {</span>
+                    // 自身のセルの範囲の場合は、行の範囲を広げる
+<span class="fc" id="L1856">                    range.setLastRow(recordOperation.getBottomRightPosition().y);</span>
+<span class="fc" id="L1857">                    changedRange = true;</span>
+
+<span class="fc bfc" id="L1859" title="All 2 branches covered.">                } else if(notOperateRange.getLastRow() &lt; range.getFirstRow()) {</span>
+                    // 自身のセルの範囲より下方にあるセルの範囲の場合、行の挿入や削除に影響を受けているので修正する。
+<span class="fc bfc" id="L1861" title="All 2 branches covered.">                    if(recordOperation.isInsertRecord()) {</span>
+<span class="fc" id="L1862">                        range.setFirstRow(range.getFirstRow() + recordOperation.getCountInsertRecord());</span>
+<span class="fc" id="L1863">                        range.setLastRow(range.getLastRow() + recordOperation.getCountInsertRecord());</span>
+
+<span class="pc bpc" id="L1865" title="1 of 2 branches missed.">                    } else if(recordOperation.isDeleteRecord()) {</span>
+<span class="fc" id="L1866">                        range.setFirstRow(range.getFirstRow() - recordOperation.getCountDeleteRecord());</span>
+<span class="fc" id="L1867">                        range.setLastRow(range.getLastRow() - recordOperation.getCountDeleteRecord());</span>
+
+                    }
+<span class="fc" id="L1870">                    changedRange = true;</span>
+                }
+
+            }
+
+            // 修正した規則を、更新する。
+<span class="fc bfc" id="L1876" title="All 2 branches covered.">            if(changedRange) {</span>
+<span class="fc" id="L1877">                boolean updated = POIUtils.updateDataValidationRegion(sheet, validation.getRegions(), region);</span>
+<span class="pc bpc" id="L1878" title="2 of 4 branches missed.">                assert updated;</span>
+            }
+<span class="fc" id="L1880">        }</span>
+
+<span class="fc" id="L1882">    }</span>
+
+    /**
+     * 名前の定義の範囲を修正する。
+     * @param sheet
+     * @param recordOperation
+     */
+    private void correctNameRange(final Sheet sheet, final RecordOperation recordOperation) {
+
+<span class="fc bfc" id="L1891" title="All 2 branches covered.">        if(recordOperation.isNotExecuteRecordOperation()) {</span>
+<span class="fc" id="L1892">            return;</span>
+        }
+
+<span class="fc" id="L1895">        final Workbook workbook = sheet.getWorkbook();</span>
+<span class="fc" id="L1896">        final int numName = workbook.getNumberOfNames();</span>
+<span class="pc bpc" id="L1897" title="1 of 2 branches missed.">        if(numName == 0) {</span>
+<span class="nc" id="L1898">            return;</span>
+        }
+
+        // 操作をしていないセルの範囲の取得
+<span class="fc" id="L1902">        final CellRangeAddress notOperateRange = new CellRangeAddress(</span>
+<span class="fc" id="L1903">                recordOperation.getTopLeftPoisitoin().y,</span>
+<span class="fc" id="L1904">                recordOperation.getBottomRightPosition().y - recordOperation.getCountInsertRecord(),</span>
+<span class="fc" id="L1905">                recordOperation.getTopLeftPoisitoin().x,</span>
+<span class="fc" id="L1906">                recordOperation.getBottomRightPosition().x</span>
+                );
+
+<span class="fc bfc" id="L1909" title="All 2 branches covered.">        for(int i=0; i &lt; numName; i++) {</span>
+<span class="fc" id="L1910">            final Name name = workbook.getNameAt(i);</span>
+
+<span class="pc bpc" id="L1912" title="2 of 4 branches missed.">            if(name.isDeleted() || name.isFunctionName()) {</span>
+                // 削除されている場合、関数の場合はスキップ
+<span class="nc" id="L1914">                continue;</span>
+            }
+
+<span class="fc bfc" id="L1917" title="All 2 branches covered.">            if(!sheet.getSheetName().equals(name.getSheetName())) {</span>
+                // 自身のシートでない名前は、修正しない。
+<span class="fc" id="L1919">                continue;</span>
+            }
+
+<span class="fc" id="L1922">            AreaReference areaRef = new AreaReference(name.getRefersToFormula(), POIUtils.getVersion(sheet));</span>
+<span class="fc" id="L1923">            CellReference firstCellRef = areaRef.getFirstCell();</span>
+<span class="fc" id="L1924">            CellReference lastCellRef = areaRef.getLastCell();</span>
+
+<span class="fc bfc" id="L1926" title="All 2 branches covered.">            if(notOperateRange.isInRange(firstCellRef.getRow(), firstCellRef.getCol())) {</span>
+                // 自身のセルの範囲の場合は、行の範囲を広げる。
+
+<span class="fc" id="L1929">                lastCellRef= new CellReference(</span>
+<span class="fc" id="L1930">                        lastCellRef.getSheetName(),</span>
+<span class="fc" id="L1931">                        recordOperation.getBottomRightPosition().y, lastCellRef.getCol(),</span>
+<span class="fc" id="L1932">                        lastCellRef.isRowAbsolute(), lastCellRef.isColAbsolute());</span>
+<span class="fc" id="L1933">                areaRef = new AreaReference(firstCellRef, lastCellRef, sheet.getWorkbook().getSpreadsheetVersion());</span>
+
+                // 修正した範囲を再設定する
+<span class="fc" id="L1936">                name.setRefersToFormula(areaRef.formatAsString());</span>
+
+<span class="fc bfc" id="L1938" title="All 2 branches covered.">            } else if(notOperateRange.getLastRow() &lt; firstCellRef.getRow()) {</span>
+                /*
+                 * 名前の定義の場合、自身のセルの範囲より下方にあるセルの範囲の場合、
+                 * 自動的に修正されるため、修正は必要なし。
+                 */
+
+            }
+
+        }
+
+<span class="fc" id="L1948">    }</span>
+
+    /**
+     * 挿入・削除前の情報を元に結合を再設定する
+     *
+     * @since 1.6
+     * @param sheet シート
+     * @param recordOperation 挿入・削除処理の情報
+     * @param mergedRegionList 挿入・削除処理を行う前の結合情報
+     */
+    private void correctMergedCell(final Sheet sheet, final RecordOperation recordOperation, final List&lt;CellRangeAddress&gt; mergedRegionList) {
+
+<span class="fc bfc" id="L1960" title="All 2 branches covered.">        if(recordOperation.isNotExecuteRecordOperation()) {</span>
+<span class="fc" id="L1961">            return;</span>
+        }
+
+        // 操作をしていないセルの範囲の取得
+<span class="fc" id="L1965">        final CellRangeAddress notOperateRange = new CellRangeAddress(</span>
+<span class="fc" id="L1966">                recordOperation.getTopLeftPoisitoin().y,</span>
+<span class="fc" id="L1967">                recordOperation.getBottomRightPosition().y - recordOperation.getCountInsertRecord(),</span>
+<span class="fc" id="L1968">                recordOperation.getTopLeftPoisitoin().x,</span>
+<span class="fc" id="L1969">                recordOperation.getBottomRightPosition().x</span>
+                );
+
+<span class="fc bfc" id="L1972" title="All 2 branches covered.">        for(CellRangeAddress mergedRange : mergedRegionList) {</span>
+
+<span class="fc bfc" id="L1974" title="All 2 branches covered.">            if(notOperateRange.getLastRow() &gt;= mergedRange.getFirstRow()) {</span>
+                // 行の追加・削除をしている上方の範囲の場合
+<span class="fc" id="L1976">                continue;</span>
+
+            } else {
+                /*
+                 * 追加・削除をしている下方の範囲の場合、影響を受けているため修正する。
+                 * ネストしている場合は、追加と削除の両方を行っているので考慮する
+                 */
+
+<span class="pc bpc" id="L1984" title="1 of 4 branches missed.">                if(recordOperation.isInsertRecord() || recordOperation.isDeleteRecord()) {</span>
+                    //
+<span class="fc" id="L1986">                    CellRangeAddress correctedRange = new CellRangeAddress(</span>
+<span class="fc" id="L1987">                            mergedRange.getFirstRow() + recordOperation.getCountInsertRecord() - recordOperation.getCountDeleteRecord(),</span>
+<span class="fc" id="L1988">                            mergedRange.getLastRow() + recordOperation.getCountInsertRecord() - recordOperation.getCountDeleteRecord(),</span>
+<span class="fc" id="L1989">                            mergedRange.getFirstColumn(),</span>
+<span class="fc" id="L1990">                            mergedRange.getLastColumn());</span>
+
+<span class="pc bpc" id="L1992" title="1 of 2 branches missed.">                    if(!isOverMergedRegion(sheet, correctedRange)) {</span>
+<span class="nc" id="L1993">                        sheet.addMergedRegion(correctedRange);</span>
+                    }
+
+                }
+
+            }
+
+<span class="fc" id="L2000">        }</span>
+
+<span class="fc" id="L2002">    }</span>
+
+    /**
+     * 結合する反映が既にシート情報に存在しているかどうか判定する。
+     * @param sheet シート情報
+     * @param region 結合領域の情報
+     * @return trueの場合、結合情報が既に存在する。
+     */
+    private boolean isOverMergedRegion(final Sheet sheet, final CellRangeAddress region) {
+
+<span class="fc" id="L2012">        final int mergedCount = sheet.getNumMergedRegions();</span>
+<span class="pc bpc" id="L2013" title="1 of 2 branches missed.">        for(int i=0; i &lt; mergedCount; i++) {</span>
+<span class="fc" id="L2014">            final CellRangeAddress existsRegion = sheet.getMergedRegion(i);</span>
+
+<span class="pc bpc" id="L2016" title="1 of 4 branches missed.">            if(POIUtils.intersectsRegion(existsRegion, region) || POIUtils.intersectsRegion(region, existsRegion)) {</span>
+<span class="fc" id="L2017">                return true;</span>
+            }
+
+        }
+
+<span class="nc" id="L2022">        return false;</span>
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractFieldValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation.fieldvalidation</a> &gt; <span class="el_source">AbstractFieldValidator.java</span></div><h1>AbstractFieldValidator.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import com.github.mygreen.cellformatter.lang.ArgUtils;
+
+/**
+ * フィールドの値を検証するための抽象クラス。
+ * &lt;p&gt;基本的に、{@link FieldValidator}を実装する際には、このクラスを継承して作成します。&lt;/p&gt;
+ *
+ * @version 2.0
+ * @author T.TSUCHIE
+ * @param &lt;T&gt; チェック対象のフィールドのタイプ
+ *
+ */
+<span class="fc" id="L19">public abstract class AbstractFieldValidator&lt;T&gt; extends GroupValidatorSupport implements FieldValidator&lt;T&gt; {</span>
+
+    @Override
+    public boolean validate(final CellField&lt;T&gt; cellField, final List&lt;Class&lt;?&gt;&gt; validationGroups) {
+
+        // 必須チェックは、CellFieldで行っているため、値が空の場合は無視する。
+<span class="pc bpc" id="L25" title="1 of 4 branches missed.">        if(cellField.isInputEmpty() &amp;&amp; !validateOnEmptyValue()) {</span>
+<span class="fc" id="L26">            return true;</span>
+        }
+
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        if(!containsValidationGroups(validationGroups)) {</span>
+            // バリデーション時のヒントが該当しない場合は、スキップする。
+<span class="fc" id="L31">            return true;</span>
+        }
+
+<span class="fc" id="L34">        onValidate(cellField);</span>
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        return !cellField.hasErrors();</span>
+
+
+    }
+
+    /**
+     * バリデーション時のヒントを追加する。
+     * @param groups バリデーション時のヒント。
+     * @return 自身のインスタンス。
+     */
+    public AbstractFieldValidator&lt;T&gt; addGroup(final Class&lt;?&gt;... groups) {
+
+<span class="fc" id="L48">        super.addGroup(groups);</span>
+<span class="fc" id="L49">        return this;</span>
+    }
+
+    /**
+     * 値の検証を行います。
+     * @param cellField フィールド情報
+     */
+    protected abstract void onValidate(CellField&lt;T&gt; cellField);
+
+    /**
+     * エラーメッセージ中の変数を取得します。
+     * @return エラーメッセージ中の変数。
+     */
+    protected Map&lt;String, Object&gt; getMessageVariables(final CellField&lt;T&gt; cellField) {
+
+<span class="fc" id="L64">        final Map&lt;String, Object&gt; variables = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L65">        variables.put(&quot;validatedValue&quot;, cellField.getValue());</span>
+<span class="fc" id="L66">        Optional.ofNullable(cellField.getFormatter())</span>
+<span class="fc" id="L67">            .ifPresent(f -&gt; variables.put(&quot;fieldFormatter&quot;, f));</span>
+<span class="fc" id="L68">        return variables;</span>
+
+    }
+
+    /**
+     * エラー情報を追加します。
+     * &lt;p&gt;エラーメッセージのキーは、{@link #getMessageKey()}の値を使用するため、必ず空以外の値を返す必要があります。&lt;/p&gt;
+     * &lt;p&gt;エラーメッセージ中の変数は、{@link #getMessageVariables(CellField)}の値を使用します。&lt;/p&gt;
+     * @param cellField フィールド情報
+     */
+    public void error(final CellField&lt;T&gt; cellField) {
+<span class="fc" id="L79">        ArgUtils.notNull(cellField, &quot;cellField&quot;);</span>
+<span class="fc" id="L80">        error(cellField, getMessageKey(), getMessageVariables(cellField));</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * エラー情報を追加します。
+     * &lt;p&gt;エラーメッセージは、{@link #getMessageKey()}の値を使用するため、必ず空以外の値を返す必要があります。&lt;/p&gt;
+     * @param cellField フィールド情報
+     * @param messageVariables メッセージ中の変数
+     */
+    public void error(final CellField&lt;T&gt; cellField, final Map&lt;String, Object&gt; messageVariables) {
+<span class="nc" id="L90">        error(cellField, getMessageKey(), messageVariables);</span>
+<span class="nc" id="L91">    }</span>
+
+    /**
+     * メッセージキーを指定して、エラー情報を追加します。
+     * &lt;p&gt;エラーメッセージ中の変数は、{@link #getMessageVariables(CellField)}の値を使用します。&lt;/p&gt;
+     * @param cellField フィールド情報
+     * @param messageKey メッセージキー
+     * @throws IllegalArgumentException {@literal cellField == null or messageKey == null}
+     * @throws IllegalArgumentException {@literal messageKey.length() == 0}
+     */
+    public void error(final CellField&lt;T&gt; cellField, final String messageKey) {
+<span class="nc" id="L102">        error(cellField, messageKey, getMessageVariables(cellField));</span>
+<span class="nc" id="L103">    }</span>
+
+    /**
+     * メッセージキーを指定して、エラー情報を追加します。
+     * @param cellField フィールド情報
+     * @param messageKey メッセージキー
+     * @param messageVariables メッセージ中の変数
+     * @throws IllegalArgumentException {@literal cellField == null or messageKey == null or messageVariables == null}
+     * @throws IllegalArgumentException {@literal messageKey.length() == 0}
+     */
+    public void error(final CellField&lt;T&gt; cellField, final String messageKey, final Map&lt;String, Object&gt; messageVariables) {
+<span class="fc" id="L114">        ArgUtils.notEmpty(messageKey, &quot;messageKey&quot;);</span>
+<span class="fc" id="L115">        ArgUtils.notNull(cellField, &quot;cellField&quot;);</span>
+<span class="fc" id="L116">        ArgUtils.notNull(messageVariables, &quot;messageVariables&quot;);</span>
+
+<span class="fc" id="L118">        cellField.rejectValue(messageKey, messageVariables);</span>
+
+<span class="fc" id="L120">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

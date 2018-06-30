@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LocalTimeCellConverterFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.cellconverter.impl</a> &gt; <span class="el_source">LocalTimeCellConverterFactory.java</span></div><h1>LocalTimeCellConverterFactory.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.cellconverter.impl;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
+
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+
+/**
+ * {@link LocalTime}を処理する{@link CellConverter}を作成するためのファクトリクラス。
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L23">public class LocalTimeCellConverterFactory extends AbstractTemporalCellConverterFactory&lt;LocalTime&gt;{</span>
+
+    @Override
+    public LocalTimeCellConverter create(final FieldAccessor field, final Configuration config) {
+
+<span class="fc" id="L28">        final LocalTimeCellConverter cellConverter = new LocalTimeCellConverter(field, config);</span>
+<span class="fc" id="L29">        setupCellConverter(cellConverter, field, config);</span>
+
+<span class="fc" id="L31">        return cellConverter;</span>
+
+    }
+
+    @Override
+    protected LocalTime parseTemporal(final String str, final DateTimeFormatter formatter) throws DateTimeParseException {
+<span class="fc" id="L37">        return LocalTime.parse(str, formatter);</span>
+    }
+
+    @Override
+    protected String getDefaultJavaPattern() {
+<span class="fc" id="L42">        return &quot;HH:mm:ss&quot;;</span>
+    }
+
+    @Override
+    protected String getDefaultExcelPattern() {
+<span class="fc" id="L47">        return &quot;hh:mm:ss&quot;;</span>
+    }
+
+    public class LocalTimeCellConverter extends AbstractTemporalCellConverter&lt;LocalTime&gt; {
+
+<span class="fc" id="L52">        private LocalTimeCellConverter(final FieldAccessor field, final Configuration config) {</span>
+<span class="fc" id="L53">            super(field, config);</span>
+<span class="fc" id="L54">        }</span>
+
+        @Override
+        protected LocalTime convertFromDate(final Date date) {
+<span class="fc" id="L58">            LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());</span>
+<span class="fc" id="L59">            return dateTime.toLocalTime();</span>
+        }
+
+        @Override
+        protected Date convertToDate(final LocalTime value, final boolean dateStart1904) {
+
+            final LocalDateTime dateTime;
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">            if(dateStart1904) {</span>
+<span class="nc" id="L67">                dateTime = value.atDate(LocalDate.of(1904, 1, 1));</span>
+            } else {
+<span class="fc" id="L69">                dateTime = value.atDate(LocalDate.of(1899, 12, 31));</span>
+            }
+
+<span class="fc" id="L72">            ZonedDateTime zoneDateTime = ZonedDateTime.of(dateTime, ZoneId.systemDefault());</span>
+
+<span class="fc" id="L74">            return Date.from(zoneDateTime.toInstant());</span>
+        }
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

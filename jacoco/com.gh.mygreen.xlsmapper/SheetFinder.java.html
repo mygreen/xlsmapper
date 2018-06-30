@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SheetFinder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper</a> &gt; <span class="el_source">SheetFinder.java</span></div><h1>SheetFinder.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
+import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.util.ClassUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.xml.AnnotationReadException;
+import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
+
+/**
+ * 読み込み時/書き込み処理時のシートを取得するクラス。
+ * &lt;p&gt;アノテーション{@link XlsSheet}の設定値に従いシートを取得する。
+ * 
+ * @since 1.1
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L31">public class SheetFinder {</span>
+    
+    /**
+     * 読み込み時のシートを取得する。
+     * 
+     * @param workbook Excelのワークブック。
+     * @param sheetAnno JavaBeanのクラスに付与されているアノテーション{@link XlsSheet}。
+     * @param annoReader
+     * @param beanClass JavaBeanのクラス。
+     * @return Excelのシート情報。複数ヒットする場合は、該当するものを全て返す。
+     * @throws SheetNotFoundException 該当のシートが見つからない場合にスローする。
+     * @throws AnnotationInvalidException アノテーションの使用方法が不正な場合
+     * @throws AnnotationReadException アノテーションをXMLで指定する方法が不正な場合。
+     */
+    public Sheet[] findForLoading(final Workbook workbook, final XlsSheet sheetAnno,
+            final AnnotationReader annoReader, final Class&lt;?&gt; beanClass)
+                    throws SheetNotFoundException, AnnotationInvalidException, AnnotationReadException {
+        
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if(sheetAnno.name().length() &gt; 0) {</span>
+            // シート名から取得する。
+<span class="fc" id="L51">            final Sheet xlsSheet = workbook.getSheet(sheetAnno.name());</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            if(xlsSheet == null) {</span>
+<span class="fc" id="L53">                throw new SheetNotFoundException(sheetAnno.name());</span>
+            }
+<span class="fc" id="L55">            return new Sheet[]{ xlsSheet };</span>
+            
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        } else if(sheetAnno.number() &gt;= 0) {</span>
+            // シート番号から取得する
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            if(sheetAnno.number() &gt;= workbook.getNumberOfSheets()) {</span>
+<span class="fc" id="L60">                throw new SheetNotFoundException(sheetAnno.number(), workbook.getNumberOfSheets());</span>
+            }
+            
+<span class="fc" id="L63">            return new Sheet[]{ workbook.getSheetAt(sheetAnno.number()) }; </span>
+            
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        } else if(sheetAnno.regex().length() &gt; 0) {</span>
+            // シート名（正規表現）をもとにして、取得する。
+<span class="fc" id="L67">            final Pattern pattern = Pattern.compile(sheetAnno.regex());</span>
+<span class="fc" id="L68">            final List&lt;Sheet&gt; matches = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            for(int i=0; i &lt; workbook.getNumberOfSheets(); i++) {</span>
+<span class="fc" id="L70">                final Sheet xlsSheet = workbook.getSheetAt(i);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">                if(pattern.matcher(xlsSheet.getSheetName()).matches()) {</span>
+<span class="fc" id="L72">                    matches.add(xlsSheet);</span>
+                }
+            }
+            
+<span class="fc bfc" id="L76" title="All 2 branches covered.">            if(matches.isEmpty()) {</span>
+<span class="fc" id="L77">                throw new SheetNotFoundException(sheetAnno.regex());</span>
+            }
+            
+<span class="fc" id="L80">            return matches.toArray(new Sheet[matches.size()]);</span>
+        }
+        
+<span class="fc" id="L83">        throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create(&quot;anno.attr.required.any&quot;)</span>
+<span class="fc" id="L84">                .varWithClass(&quot;property&quot;, beanClass)</span>
+<span class="fc" id="L85">                .varWithAnno(&quot;anno&quot;, XlsSheet.class)</span>
+<span class="fc" id="L86">                .varWithArrays(&quot;attrNames&quot;, &quot;name&quot;, &quot;number&quot;, &quot;regex&quot;)</span>
+<span class="fc" id="L87">                .format());</span>
+    }
+    
+    /**
+     * 書き込み時のシートを取得する。
+     * @param workbook Excelのワークブック。
+     * @param sheetAnno JavaBeanのクラスに付与されているアノテーション{@link XlsSheet}。
+     * @param annoReader
+     * @param beanObj JavaBeanのオブジェクト。
+     * @return Excelのシート情報。複数ヒットする場合は、該当するものを全て返す。
+     * @throws SheetNotFoundException 該当のシートが見つからない場合にスローする。
+     * @throws AnnotationInvalidException アノテーションの使用方法が不正な場合
+     * @throws AnnotationReadException アノテーションをXMLで指定する方法が不正な場合。
+     */
+    public Sheet[] findForSaving(final Workbook workbook, final XlsSheet sheetAnno,
+            final AnnotationReader annoReader, final Object beanObj)
+                    throws SheetNotFoundException, AnnotationInvalidException, AnnotationReadException {
+        
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if(sheetAnno.name().length() &gt; 0) {</span>
+            // シート名から取得する。
+<span class="fc" id="L107">            final Sheet xlsSheet = workbook.getSheet(sheetAnno.name());</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">            if(xlsSheet == null) {</span>
+<span class="fc" id="L109">                throw new SheetNotFoundException(sheetAnno.name());</span>
+            }
+<span class="fc" id="L111">            return new Sheet[]{ xlsSheet };</span>
+            
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        } else if(sheetAnno.number() &gt;= 0) {</span>
+            // シート番号から取得する
+<span class="fc bfc" id="L115" title="All 2 branches covered.">            if(sheetAnno.number() &gt;= workbook.getNumberOfSheets()) {</span>
+<span class="fc" id="L116">                throw new SheetNotFoundException(sheetAnno.number(), workbook.getNumberOfSheets());</span>
+            }
+            
+<span class="fc" id="L119">            return new Sheet[]{ workbook.getSheetAt(sheetAnno.number()) };</span>
+            
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        } else if(sheetAnno.regex().length() &gt; 0) {</span>
+            // シート名（正規表現）をもとにして、取得する。
+<span class="fc" id="L123">            String sheetNameValue = null;</span>
+<span class="fc" id="L124">            Optional&lt;FieldAccessor&gt; sheetNameField = getSheetNameField(beanObj, annoReader);</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">            if(sheetNameField.isPresent()) {</span>
+<span class="fc" id="L126">                sheetNameValue = (String)sheetNameField.get().getValue(beanObj);</span>
+            }
+            
+<span class="fc" id="L129">            final Pattern pattern = Pattern.compile(sheetAnno.regex());</span>
+<span class="fc" id="L130">            final List&lt;Sheet&gt; matches = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">            for(int i=0; i &lt; workbook.getNumberOfSheets(); i++) {</span>
+<span class="fc" id="L132">                final Sheet xlsSheet = workbook.getSheetAt(i);</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">                if(pattern.matcher(xlsSheet.getSheetName()).matches()) {</span>
+                    
+                    // オブジェクト中の@XslSheetNameで値が設定されている場合、Excelファイル中の一致するシートを元にする比較する
+<span class="fc bfc" id="L136" title="All 4 branches covered.">                    if(Utils.isNotEmpty(sheetNameValue) &amp;&amp; xlsSheet.getSheetName().equals(sheetNameValue)) {</span>
+<span class="fc" id="L137">                        return new Sheet[]{ xlsSheet };</span>
+                        
+                    }
+                    
+<span class="fc" id="L141">                    matches.add(xlsSheet);</span>
+                }
+            }
+            
+<span class="pc bpc" id="L145" title="3 of 4 branches missed.">            if(sheetNameValue != null &amp;&amp; !matches.isEmpty()) {</span>
+                // シート名が直接指定の場合
+<span class="nc" id="L147">                throw new SheetNotFoundException(sheetNameValue);</span>
+                
+<span class="fc bfc" id="L149" title="All 2 branches covered.">            } else if(matches.isEmpty()) {</span>
+<span class="fc" id="L150">                throw new SheetNotFoundException(sheetAnno.regex());</span>
+                
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">            } else if(matches.size() == 1) {</span>
+                // １つのシートに絞り込めた場合
+<span class="nc" id="L154">                return new Sheet[]{ matches.get(0) };</span>
+                
+            } else {
+                // 複数のシートがヒットした場合
+<span class="fc" id="L158">                List&lt;String&gt; names = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">                for(Sheet sheet : matches) {</span>
+<span class="fc" id="L160">                    names.add(sheet.getSheetName());</span>
+<span class="fc" id="L161">                }</span>
+<span class="fc" id="L162">                throw new SheetNotFoundException(sheetAnno.regex(),</span>
+<span class="fc" id="L163">                        MessageBuilder.create(&quot;sheet.regexMultipleHit&quot;)</span>
+<span class="fc" id="L164">                            .var(&quot;regex&quot;, sheetAnno.regex())</span>
+<span class="fc" id="L165">                            .var(&quot;names&quot;, names)</span>
+<span class="fc" id="L166">                            .format());</span>
+            }
+        }
+        
+<span class="fc" id="L170">        throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create(&quot;anno.attr.required.any&quot;)</span>
+<span class="fc" id="L171">                .varWithClass(&quot;property&quot;, beanObj.getClass())</span>
+<span class="fc" id="L172">                .varWithAnno(&quot;anno&quot;, XlsSheet.class)</span>
+<span class="fc" id="L173">                .varWithArrays(&quot;attrNames&quot;, &quot;name&quot;, &quot;number&quot;, &quot;regex&quot;)</span>
+<span class="fc" id="L174">                .format());</span>
+        
+    }
+    
+    /**
+     * アノテーション「@XlsSheetName」が付与されているフィールド／メソッドを取得する。
+     * @param beanObj
+     * @param config
+     * @param annoReader
+     * @return 見つからない場合、空を返す。
+     * @throws AnnotationReadException 
+     */
+    private Optional&lt;FieldAccessor&gt; getSheetNameField(final Object beanObj, final AnnotationReader annoReader) throws AnnotationReadException {
+        
+<span class="fc" id="L188">        FieldAccessorFactory adpterFactory = new FieldAccessorFactory(annoReader);</span>
+        
+<span class="fc" id="L190">        Class&lt;?&gt; clazz = beanObj.getClass();</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        for(Method method : clazz.getMethods()) {</span>
+<span class="fc" id="L192">            method.setAccessible(true);</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">            if(!ClassUtils.isGetterMethod(method)) {</span>
+<span class="fc" id="L194">                continue;</span>
+            }
+            
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">            if(!annoReader.hasAnnotation(method, XlsSheetName.class)) {</span>
+<span class="fc" id="L198">                continue;</span>
+            }
+            
+<span class="nc" id="L201">            return Optional.of(adpterFactory.create(method));</span>
+        }
+        
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">        for(Field field : clazz.getDeclaredFields()) {</span>
+<span class="fc" id="L205">            field.setAccessible(true);</span>
+            
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">            if(!annoReader.hasAnnotation(field, XlsSheetName.class)) {</span>
+<span class="nc" id="L208">                continue;</span>
+            }
+            
+<span class="fc" id="L211">            return Optional.of(adpterFactory.create(field));</span>
+            
+        }
+        
+        // not found
+<span class="nc" id="L216">        return Optional.empty();</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

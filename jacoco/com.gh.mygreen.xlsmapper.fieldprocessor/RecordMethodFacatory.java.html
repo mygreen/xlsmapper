@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RecordMethodFacatory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor</a> &gt; <span class="el_source">RecordMethodFacatory.java</span></div><h1>RecordMethodFacatory.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor;
+
+import java.lang.reflect.Method;
+import java.util.Optional;
+
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
+import com.gh.mygreen.xlsmapper.annotation.XlsListener;
+import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
+import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
+import com.gh.mygreen.xlsmapper.annotation.XlsPreLoad;
+import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
+
+/**
+ * {@link RecordMethodCache}のインスタンスを作成するファクトリクラス。
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class RecordMethodFacatory {
+
+    private final AnnotationReader annoReader;
+
+    private final Configuration config;
+
+    /**
+     * コンストラクタ
+     * @param annoReader XMLで定義したアノテーション情報を提供するクラス。
+     * @param config システム設定
+     * @throws IllegalArgumentException {@literal annoReader == null or config == null.}
+     */
+<span class="fc" id="L36">    public RecordMethodFacatory(final AnnotationReader annoReader, final Configuration config) {</span>
+<span class="fc" id="L37">        ArgUtils.notNull(annoReader, &quot;annoReader&quot;);</span>
+<span class="fc" id="L38">        ArgUtils.notNull(config, &quot;config&quot;);</span>
+
+<span class="fc" id="L40">        this.annoReader = annoReader;</span>
+<span class="fc" id="L41">        this.config = config;</span>
+<span class="fc" id="L42">    }</span>
+
+    /**
+     * レコードクラスを元に、{@link RecordMethodCache}のインスタンスを組み立てる。
+     *
+     * @param recordClass レコードクラス
+     * @param processCase 現在の処理ケース
+     * @return {@link RecordMethodCache}のインスタンス
+     * @throws IllegalArgumentException {@literal recordClass == null}
+     */
+    public RecordMethodCache create(final Class&lt;?&gt; recordClass, final ProcessCase processCase) {
+
+<span class="fc" id="L54">        ArgUtils.notNull(recordClass, &quot;recordClass&quot;);</span>
+
+<span class="fc" id="L56">        final RecordMethodCache recordMethod = new RecordMethodCache();</span>
+
+<span class="fc" id="L58">        setupIgnoreableMethod(recordMethod, recordClass, processCase);</span>
+<span class="fc" id="L59">        setupListenerCallbackMethods(recordMethod, recordClass);</span>
+<span class="fc" id="L60">        setupRecordCallbackMethods(recordMethod, recordClass);</span>
+
+<span class="fc" id="L62">        return recordMethod;</span>
+    }
+
+    /**
+     * レコードの値を無視すると判定するためのメソッドの抽出
+     * @param recordMethod メソッドの格納先
+     * @param recordClass レコードクラス
+     * @param processCase 現在の処理ケース
+     */
+    private void setupIgnoreableMethod(final RecordMethodCache recordMethod,
+            final Class&lt;?&gt; recordClass, final ProcessCase processCase) {
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        for(Method method : recordClass.getMethods()) {</span>
+<span class="fc" id="L75">            method.setAccessible(true);</span>
+
+<span class="fc" id="L77">            XlsIgnorable ignoreAnno = annoReader.getAnnotation(method, XlsIgnorable.class);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            if(ignoreAnno == null) {</span>
+<span class="fc" id="L79">                continue;</span>
+            }
+
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">            if(!Utils.isProcessCase(processCase, ignoreAnno.cases())) {</span>
+<span class="nc" id="L83">                continue;</span>
+            }
+
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">            if(method.getParameterCount() &gt; 0) {</span>
+<span class="nc" id="L87">                continue;</span>
+            }
+
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">            if(!method.getReturnType().equals(Boolean.TYPE)) {</span>
+<span class="nc" id="L91">                continue;</span>
+            }
+
+<span class="fc" id="L94">            recordMethod.ignoreableMethod = Optional.of(method);</span>
+<span class="fc" id="L95">            return;</span>
+        }
+<span class="fc" id="L97">    }</span>
+
+    /**
+     * リスナークラスに定義されているコールバックメソッドの抽出
+     *
+     * @param recordMethod メソッドの格納先
+     * @param recordClass レコードクラス
+     */
+    private void setupListenerCallbackMethods(final RecordMethodCache recordMethod, final Class&lt;?&gt; recordClass) {
+
+        // リスナーオブジェクトに定義されたコールバックメソッドの抽出
+<span class="fc" id="L108">        final XlsListener listenerAnno = annoReader.getAnnotation(recordClass, XlsListener.class);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if(listenerAnno == null) {</span>
+<span class="fc" id="L110">            return;</span>
+        }
+
+<span class="fc" id="L113">        final Class&lt;?&gt;[] listenerClasses = listenerAnno.value();</span>
+
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        for(Class&lt;?&gt; listenerClass : listenerClasses) {</span>
+
+<span class="fc" id="L117">            ListenerClassCache listenerCache = new ListenerClassCache(config.createBean(listenerClass));</span>
+<span class="fc" id="L118">            recordMethod.lisnterClasses.add(listenerCache);</span>
+
+<span class="fc bfc" id="L120" title="All 2 branches covered.">            for(Method method : listenerClass.getMethods()) {</span>
+<span class="fc" id="L121">                method.setAccessible(true);</span>
+
+<span class="fc bfc" id="L123" title="All 2 branches covered.">                if(annoReader.hasAnnotation(method, XlsPreLoad.class)) {</span>
+<span class="fc" id="L124">                    listenerCache.preLoadMethods.add(method);</span>
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">                } else if(annoReader.hasAnnotation(method, XlsPostLoad.class)) {</span>
+<span class="fc" id="L127">                    listenerCache.postLoadMethods.add(method);</span>
+
+<span class="fc bfc" id="L129" title="All 2 branches covered.">                } else if(annoReader.hasAnnotation(method, XlsPreSave.class)) {</span>
+<span class="fc" id="L130">                    listenerCache.preSaveMethods.add(method);</span>
+
+<span class="fc bfc" id="L132" title="All 2 branches covered.">                } else if(annoReader.hasAnnotation(method, XlsPostSave.class)) {</span>
+<span class="fc" id="L133">                    listenerCache.postSaveMethods.add(method);</span>
+
+                }
+
+            }
+        }
+
+<span class="fc" id="L140">    }</span>
+
+    /**
+     * レコードクラスに定義されているコールバックメソッドの抽出
+     *
+     * @param recordMethod メソッドの格納先
+     * @param recordClass レコードクラス
+     */
+    private void setupRecordCallbackMethods(final RecordMethodCache recordMethod, final Class&lt;?&gt; recordClass) {
+
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        for(Method method : recordClass.getMethods()) {</span>
+<span class="fc" id="L151">            method.setAccessible(true);</span>
+
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            if(annoReader.hasAnnotation(method, XlsPreLoad.class)) {</span>
+<span class="fc" id="L154">                recordMethod.preLoadMethods.add(method);</span>
+
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            } else if(annoReader.hasAnnotation(method, XlsPostLoad.class)) {</span>
+<span class="fc" id="L157">                recordMethod.postLoadMethods.add(method);</span>
+
+<span class="fc bfc" id="L159" title="All 2 branches covered.">            } else if(annoReader.hasAnnotation(method, XlsPreSave.class)) {</span>
+<span class="fc" id="L160">                recordMethod.preSaveMethods.add(method);</span>
+
+<span class="fc bfc" id="L162" title="All 2 branches covered.">            } else if(annoReader.hasAnnotation(method, XlsPostSave.class)) {</span>
+<span class="fc" id="L163">                recordMethod.postSaveMethods.add(method);</span>
+
+            }
+
+        }
+
+<span class="fc" id="L169">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
