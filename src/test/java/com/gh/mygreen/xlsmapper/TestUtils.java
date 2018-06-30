@@ -30,7 +30,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  *
  */
 public class TestUtils {
-    
+
     /**
      * セルのアドレスを指定してエラーを取得する。
      * @param errors
@@ -44,10 +44,10 @@ public class TestUtils {
                 return error;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * セルのアドレス形式にフォーマットする。
      * @param cellAddress
@@ -56,7 +56,7 @@ public class TestUtils {
     public static String cellAddress(final Point cellAddress) {
         return POIUtils.formatCellAddress(cellAddress);
     }
-    
+
     /**
      * セルのアドレス形式にフォーマットする。
      * @param cellAddress
@@ -65,7 +65,7 @@ public class TestUtils {
     public static String cellAddress(final CellPosition cellAddress) {
         return cellAddress.formatAsString();
     }
-    
+
     /**
      * 任意の時間でフォーマットする。
      * @param pattern
@@ -76,7 +76,7 @@ public class TestUtils {
         SimpleDateFormat formatter = new SimpleDateFormat(pattern);
         return formatter.format(date);
     }
-    
+
     /**
      * 文字列をタイムスタンプに変換する。(yyyy-MM-dd HH:mm:ss.SSS)の形式
      * @param value
@@ -85,7 +85,7 @@ public class TestUtils {
     public static Timestamp toTimestamp(String value) {
         return Timestamp.valueOf(value);
     }
-    
+
     /**
      * Timestampを{@link java.util.Date}に変換する。
      * @param timestamp
@@ -94,7 +94,7 @@ public class TestUtils {
     public static Date toUtilDate(Timestamp timestamp) {
         return new Date(timestamp.getTime());
     }
-    
+
     /**
      * Timestampを{@link Calendar}に変換する
      * @since 1.0
@@ -106,7 +106,7 @@ public class TestUtils {
         cal.setTime(timestamp);
         return cal;
     }
-    
+
     /**
      * Timestampを{@link java.sql.Date}に変換する。
      * @param timestamp
@@ -115,7 +115,7 @@ public class TestUtils {
     public static  java.sql.Date toSqlDate(Timestamp timestamp) {
         return new java.sql.Date(timestamp.getTime());
     }
-    
+
     /**
      * Timestampを{@link java.sql.Time}に変換する。
      * @param timestamp
@@ -124,7 +124,7 @@ public class TestUtils {
     public static  java.sql.Time toSqlTime(Timestamp timestamp) {
         return new java.sql.Time(timestamp.getTime());
     }
-    
+
     /**
      * 文字列の比較をする。
      * 引数の値がnullでも問題ない。
@@ -133,7 +133,7 @@ public class TestUtils {
      * @return
      */
     public static boolean equalsStr(final String str1, final String str2) {
-        
+
         if(str1 == null && str2 == null) {
             return true;
         } else if(str1 == null || str2 == null) {
@@ -141,18 +141,18 @@ public class TestUtils {
         } else {
             return str1.equals(str2);
         }
-        
+
     }
-    
+
     /**
      * ユニコードに変換する
-     * @param original
+     * @param c 変換対象文字
      * @return
      */
     public static String toUnicode(char c) {
         return toUnicode(String.valueOf(c));
     }
-    
+
     /**
      * ユニコードに変換する
      * @param original
@@ -162,7 +162,7 @@ public class TestUtils {
         if(original == null) {
             return "";
         }
-        
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < original.length(); i++) {
             sb.append(String.format("\\u%04X", Character.codePointAt(original, i)));
@@ -170,7 +170,7 @@ public class TestUtils {
         String unicode = sb.toString();
         return unicode;
     }
-    
+
     /**
      * リストを作成する。
      * @param items
@@ -178,9 +178,9 @@ public class TestUtils {
      */
     public static <T> List<T> toList(T... items) {
         return Arrays.asList(items);
-        
+
     }
-    
+
     /**
      * 配列を作成する。
      * @param items
@@ -188,9 +188,9 @@ public class TestUtils {
      */
     public static <T> T[] toArray(T... items) {
         return items;
-        
+
     }
-    
+
     /**
      * 集合を作成する。
      * @param items
@@ -198,23 +198,23 @@ public class TestUtils {
      */
     public static <T> Set<T> toSet(T... items) {
         return new LinkedHashSet<T>(toList(items));
-        
+
     }
-    
+
     /**
      * 値をトリムする。
      * 引数がnullの場合は、空文字を返す。
      * @param value
      */
     public static String trim(String value) {
-        
+
         if(value == null) {
             return "";
         } else {
             return value.trim();
         }
     }
-    
+
     /**
      * 文字列の形式のセルのアドレスを、Point形式に変換する。
      * @param address
@@ -222,42 +222,42 @@ public class TestUtils {
      */
     public static Point toPointAddress(final String address) {
         ArgUtils.notEmpty(address, "address");
-        
+
         CellReference ref = new CellReference(address);
         return new Point(ref.getCol(), ref.getRow());
     }
-    
+
     /**
      * 基準日を基準にして、daysを加算した日時を取得する。
      * @param base
      * @param days
      */
     public static Date getDateByDay(Date base, int days) {
-        
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(base);
-        
+
         cal.add(Calendar.DAY_OF_MONTH, days);
-        
+
         return cal.getTime();
-        
+
     }
-    
+
     /**
      * テスト用の結果出力ディレクトリを作成します。
      * <p>target/test_out</p> を作成します。
-     * 
+     *
      * @return
      */
     public static File createOutDir() {
-        
+
         final File dir = new File("target/test_out");
-        
+
         if(!dir.exists()) {
             dir.mkdirs();
         }
-        
+
         return dir;
-        
+
     }
 }

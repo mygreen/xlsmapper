@@ -260,7 +260,7 @@ public abstract class BaseCellConverter<T> implements CellConverter<T>, FieldFor
         }
 
         if(char.class.isAssignableFrom(obj.getClass()) || obj instanceof Character) {
-            return ((char)obj) == '\u0000';
+            return ((Character)obj) == '\u0000';
         }
 
         if(obj.getClass().isArray()) {

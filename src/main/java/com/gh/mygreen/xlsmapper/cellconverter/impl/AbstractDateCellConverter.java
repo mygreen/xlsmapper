@@ -87,7 +87,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends BaseCell
 
     /**
      * デフォルトのExcelの書式を設定する
-     * @param excelPattern デフォルトのExcelの書式
+     * @param defaultExcelPattern デフォルトのExcelの書式
      */
     public void setDefaultExcelPattern(String defaultExcelPattern) {
         this.defaultExcelPattern = defaultExcelPattern;

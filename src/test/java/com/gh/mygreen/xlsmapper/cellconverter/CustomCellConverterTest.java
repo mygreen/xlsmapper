@@ -239,7 +239,7 @@ public class CustomCellConverterTest {
 
         /**
          * リストの要素を追加する
-         * @param リストの要素
+         * @param item リストの要素
          */
         public CustomType addItem(String item) {
             if(items == null) {
