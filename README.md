@@ -51,8 +51,13 @@ Apache License verion 2.0
     # pip install janome
     ```
 4. Build with Maven
+    a. make jar files.
     ```console
-    # mven site -Dgpg.skip=true
+    # mvn clean package
+    ```
+    b. generate site.
+    ```console
+    # mvn site -Dgpg.skip=true
     ```
 
 # Documentation
