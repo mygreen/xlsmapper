@@ -211,7 +211,7 @@ public class LabelledArrayCellsProcessor extends AbstractFieldProcessor<XlsLabel
         ArrayCellsHandler arrayHandler = new ArrayCellsHandler(accessor, beansObj, elementClass, sheet, config);
         arrayHandler.setLabel(labelInfo.get().label);
 
-        if(result != null || !result.isEmpty()) {
+        if(result != null) {
             // インデックスが付いていないラベルの設定
             accessor.setLabel(beansObj, labelInfo.get().label);
         }
