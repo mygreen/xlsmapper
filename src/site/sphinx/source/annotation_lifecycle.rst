@@ -47,7 +47,7 @@
      - | 処理対象のSheetオブジェクト。
    
    * - ``com.gh.mygreen.xlsmapper.Configuration``
-     - | :doc:`XlsMapperの設定オブジェクト <otheruse_config>` 。
+     - | :doc:`XlsMapperの設定オブジェクト <configuration>` 。
    
    * - ``com.gh.mygreen.xlsmapper.validation.SheetBindingErrors``
      - | :doc:`シートのエラー情報 <validation>` を格納するオブジェクト。
@@ -120,7 +120,7 @@ JavaBeanクラスに実装する場合
 
 クラスにアノテーション ``@XlsListener`` を付与し、属性 ``value`` で処理が実装されたクラスを指定します。 `[ver1.0+]`
 
-指定したリスナークラスのインスタンスは、システム設定「beanFactory」経由で作成されるため、:doc:`SpringFrameworkのコンテナからインスタンスを取得 <extension_beanfactory>` することもできます。
+指定したリスナークラスのインスタンスは、システム設定「beanFactory」経由で作成されるため、:doc:`SpringFrameworkのコンテナからインスタンスを取得 <spring>` することもできます。
 
 .. sourcecode:: java
     :linenos:

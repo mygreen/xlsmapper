@@ -1,6 +1,13 @@
 @charset "UTF-8";
 
 /**
+ * コンテンツの領域の広さを広げる
+ */
+.wy-nav-content {
+	max-width: 95%;
+}
+
+/**
  * 表内の改行のインデントを解除する
  */
 td div.line-block {

@@ -6,7 +6,7 @@
 
 様々な表に対応するため、マッピング方法を指定するためのアノテーションと補助的に詳細なオプションを指定するためのアノテーションがあります。
 
-もし、独自の構造の表をマッピングするならば、「 :doc:`独自の表・セルのマッピング方法 <extension_fieldprocessor>` 」を参照してください。
+もし、独自の構造の表をマッピングするならば、「 :doc:`独自の表・セルのマッピング方法 <fieldprocessor>` 」を参照してください。
 
 
 .. list-table:: 基本的なマッピング用のアノテーション
@@ -74,6 +74,9 @@
 
    * - :ref:`@XlsRecordOption <annotationXlsRecordOption>`
      - レコードを書き込む際の制御を行います。
+
+   * - :ref:`@XlsRecordFinder <annotationXlsRecordFinder>`
+     - レコードの開始位置をプログラマティックに指定します。
 
 
 .. 以降は、埋め込んで作成する
