@@ -19,7 +19,7 @@ XLSBeansとの違いを以下に示します。
 
 * Generics対応として、``@XlsMapColums、@XlsIterateTables`` にも対応しており、マッピング先のClassを指定する必要がありません。
 
-* :doc:`シートの座標位置の取得 <otheruse_sheetposition>` が、``@XlsMapColumn`` を付与したフィールドにも対応しています。
+* :doc:`シートの座標位置の取得 <sheetinfo_sheetposition>` が、``@XlsMapColumn`` を付与したフィールドにも対応しています。
 
   * フィールド ``Map<String, String> positions`` を定義しておけば、キーに見出し名が入ります。
 
@@ -42,7 +42,7 @@ XLSBeansとの違いを以下に示します。
 
   * 独自にValidatorを実装する方式の他、Bean Validation 1.0/1.1に対応しています。
 
-* セルの座標位置のように、 :doc:`マッピング対象の見出し名を取得 <otheruse_caption>` するこができます。
+* セルの座標位置のように、 :doc:`マッピング対象の見出し名を取得 <sheetinfo_caption>` するこができます。
 
 
 --------------------------------------------------------
