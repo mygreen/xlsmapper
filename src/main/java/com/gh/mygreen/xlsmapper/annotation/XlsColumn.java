@@ -80,7 +80,9 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
  * }
  * </code></pre>
  *
+ * @version 2.0
  * @author Naoki Takezoe
+ * @author T.TSUCHIE
  */
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

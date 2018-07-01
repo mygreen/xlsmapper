@@ -37,7 +37,7 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
  * </div>
  *
  *
- *
+ * @version 2.0
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  */

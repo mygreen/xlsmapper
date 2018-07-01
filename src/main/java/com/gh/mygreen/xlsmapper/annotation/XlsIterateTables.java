@@ -165,7 +165,10 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
  * }
  * </code></pre>
  *
+ * @version 2.0
  * @author Mitsuyoshi Hasegawa
+ * @author T.TSUCHIE
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD})
