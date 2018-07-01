@@ -20,6 +20,11 @@
      - 初期値を設定したい場合に指定します。
 
 
+.. note::
+
+   値の変換用のアノテーションは、セルをマッピングするアノテーション :ref:`@XlsCell <annotationXlsCell>` 、 :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`、 :ref:`@XlsArrayCells <annotationXlsArrayCells>`、 :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>`、 :ref:`@XlsColumn <annotationXlsColumn>`、 :ref:`@XlsMapColumns <annotationXlsMapColumns>`、 :ref:`@XlsArrayColumns <annotationXlsArrayColumns>`  を付与しているプロパティに対して有効になります。
+
+
 .. 以降は、埋め込んで作成する
 .. include::  ./annotation_valueconverter_trim.rst
 .. include::  ./annotation_valueconverter_defaultvalue.rst

@@ -344,7 +344,13 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">15. マイグレーション</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-2-0">15.1. To ver.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-2-0">15.1. To ver.2.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="migration.html#id2">15.1.1. 前提環境の変更</a></li>
+<li class="toctree-l3"><a class="reference internal" href="migration.html#id3">15.1.2. クラス名などの変更</a></li>
+<li class="toctree-l3"><a class="reference internal" href="migration.html#id4">15.1.3. アノテーションの定義の変更</a></li>
+<li class="toctree-l3"><a class="reference internal" href="migration.html#id5">15.1.4. その他の変更</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-1">15.2. To ver.1.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-2">15.3. To ver.1.2</a></li>
 </ul>
@@ -453,7 +459,7 @@ XLSBeansとの違いを以下に示します。</p>
 <li>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsCell</span></code> などセルの座標を指定する際に、Excel形式 <cite>A3</cite> のように指定する <a class="reference internal" href="annotation_mapping_cell.html#annotationxlscell"><span class="std std-ref">属性address</span></a> を追加し、指定しやすいようにしています。</li>
 <li>エラーメッセージの内容を詳細に表示し、設定間違いの対応をしやすくしています。</li>
 <li>Generics対応として、<code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColums、&#64;XlsIterateTables</span></code> にも対応しており、マッピング先のClassを指定する必要がありません。</li>
-<li><span class="xref std std-doc">シートの座標位置の取得</span> が、<code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumn</span></code> を付与したフィールドにも対応しています。<ul>
+<li><a class="reference internal" href="sheetinfo_sheetposition.html"><span class="doc">シートの座標位置の取得</span></a> が、<code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumn</span></code> を付与したフィールドにも対応しています。<ul>
 <li>フィールド <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">positions</span></code> を定義しておけば、キーに見出し名が入ります。</li>
 </ul>
 </li>
@@ -473,7 +479,7 @@ XLSBeansとの違いを以下に示します。</p>
 <li>独自にValidatorを実装する方式の他、Bean Validation 1.0/1.1に対応しています。</li>
 </ul>
 </li>
-<li>セルの座標位置のように、 <span class="xref std std-doc">マッピング対象の見出し名を取得</span> するこができます。</li>
+<li>セルの座標位置のように、 <a class="reference internal" href="sheetinfo_caption.html"><span class="doc">マッピング対象の見出し名を取得</span></a> するこができます。</li>
 </ul>
 </div>
 <div class="section" id="id3">

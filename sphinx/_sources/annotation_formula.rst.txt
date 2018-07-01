@@ -10,6 +10,10 @@
 
 書き込み時にセルの数式を指定するためのアノテーションです。 `[ver.1.5+]`
 
+.. note::
+
+   数式指定用のアノテーションは、セルをマッピングするアノテーション :ref:`@XlsCell <annotationXlsCell>` 、 :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`、 :ref:`@XlsArrayCells <annotationXlsArrayCells>`、 :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>`、 :ref:`@XlsColumn <annotationXlsColumn>`、 :ref:`@XlsMapColumns <annotationXlsMapColumns>`、 :ref:`@XlsArrayColumns <annotationXlsArrayColumns>`  を付与しているプロパティに対して有効になります。
+
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 数式を直接指定する場合（属性value）
@@ -252,8 +256,6 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
 
 
 数式を直接指定する場合は、EL式の1つの実装である `JEXL <http://commons.apache.org/proper/commons-jexl/>`_ が利用できますが、実装を切り替えたり、デフォルトの関数を登録したりとカスタマイズができます。
-
-実装方式は、 :ref:`入力値検証時のメッセージのフォーマットの方式 <validationCutomEL>` と同じです。 
 
 
 設定を変更したい場合は、 ``Configuration#formulaFormatter()`` の値を変更します。

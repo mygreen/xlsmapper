@@ -46,7 +46,7 @@ ver.2.0 - 2018-06-30
 
 * レコードをマッピングする際に、そのレコードを除外するアノテーション ``@XlsIsEmpty`` の名称を :ref:`@XlsIgnorable <annotationXlsIgnorable>` に変更しました。
 
-  * さらに、レコードを除外する条件として、 ``@XlsConverter(ignoreEmptyRecord=true)`` を指定しなくても除外するようにしました。属性 ``ignoreEmptyRecord`` は削除しました。
+  * さらに、レコードを除外する条件として、 ``@XlsHorizontalRecords(ignoreEmptyRecord=true)`` を指定しなくても除外するようにしました。属性 ``ignoreEmptyRecord`` は削除しました。
 
 * 日時型のマッピング時の書式を指定するアノテーション ``@XlsDateConverter`` の名称を ``@XlsDateTimeConverter`` に変更しました。
 
@@ -62,6 +62,8 @@ ver.2.0 - 2018-06-30
 
 
 * マッピングの順番を指定するアノテーション ``@XlsHint(order=1)`` の名称を :ref:`@XlsOrder <annotationXlsOrder>` に変更しました。
+
+* レコードをスキップするかどうか判定用のメソッドを指定するアノテーション ``@XlsIsEmpty`` の名称を :ref:`@XlsIgnorable <annotationXlsIgnorable>` に変更しました。
 
 * 見出し付きセルをマッピングするアノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` において、見出し用のセルが結合されているかを考慮する属性 ``labelMarged`` を追加しました。
 

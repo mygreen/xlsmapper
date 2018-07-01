@@ -343,7 +343,13 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">15. マイグレーション</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-2-0">15.1. To ver.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-2-0">15.1. To ver.2.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="migration.html#id2">15.1.1. 前提環境の変更</a></li>
+<li class="toctree-l3"><a class="reference internal" href="migration.html#id3">15.1.2. クラス名などの変更</a></li>
+<li class="toctree-l3"><a class="reference internal" href="migration.html#id4">15.1.3. アノテーションの定義の変更</a></li>
+<li class="toctree-l3"><a class="reference internal" href="migration.html#id5">15.1.4. その他の変更</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-1">15.2. To ver.1.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="migration.html#to-ver-1-2">15.3. To ver.1.2</a></li>
 </ul>
@@ -480,7 +486,7 @@
 </li>
 <li><code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords/XlsVerticalRecords</span></code> でレコードをマッピングする際に、データ開始位置をプログラマティックに指定できるアノテーション <a class="reference internal" href="annotation_mapping_recordfinder.html#annotationxlsrecordfinder"><span class="std std-ref">&#64;XlsRecordFinder</span></a> を追加しました。</li>
 <li>レコードをマッピングする際に、そのレコードを除外するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsIsEmpty</span></code> の名称を <a class="reference internal" href="annotation_mapping_ignorable.html#annotationxlsignorable"><span class="std std-ref">&#64;XlsIgnorable</span></a> に変更しました。<ul>
-<li>さらに、レコードを除外する条件として、 <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(ignoreEmptyRecord=true)</span></code> を指定しなくても除外するようにしました。属性 <code class="docutils literal notranslate"><span class="pre">ignoreEmptyRecord</span></code> は削除しました。</li>
+<li>さらに、レコードを除外する条件として、 <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords(ignoreEmptyRecord=true)</span></code> を指定しなくても除外するようにしました。属性 <code class="docutils literal notranslate"><span class="pre">ignoreEmptyRecord</span></code> は削除しました。</li>
 </ul>
 </li>
 <li>日時型のマッピング時の書式を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsDateConverter</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">&#64;XlsDateTimeConverter</span></code> に変更しました。</li>
@@ -494,6 +500,7 @@
 </ul>
 </li>
 <li>マッピングの順番を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHint(order=1)</span></code> の名称を <a class="reference internal" href="annotation_mapping_order.html#annotationxlsorder"><span class="std std-ref">&#64;XlsOrder</span></a> に変更しました。</li>
+<li>レコードをスキップするかどうか判定用のメソッドを指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsIsEmpty</span></code> の名称を <a class="reference internal" href="annotation_mapping_ignorable.html#annotationxlsignorable"><span class="std std-ref">&#64;XlsIgnorable</span></a> に変更しました。</li>
 <li>見出し付きセルをマッピングするアノテーション <a class="reference internal" href="annotation_mapping_labelledcell.html#annotationxlslabelledcell"><span class="std std-ref">&#64;XlsLabelledCell</span></a> において、見出し用のセルが結合されているかを考慮する属性 <code class="docutils literal notranslate"><span class="pre">labelMarged</span></code> を追加しました。<ul>
 <li>従来は、結合されていても考慮されていないため、属性 <code class="docutils literal notranslate"><span class="pre">skip</span></code> で結合セル分を読み飛ばしていましたが、属性 <code class="docutils literal notranslate"><span class="pre">labelMarged</span></code> の初期値は true となるため、動作が変わってきます。</li>
 </ul>

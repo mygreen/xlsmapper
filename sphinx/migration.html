@@ -344,7 +344,13 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">15. マイグレーション</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#to-ver-2-0">15.1. To ver.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#to-ver-2-0">15.1. To ver.2.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">15.1.1. 前提環境の変更</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">15.1.2. クラス名などの変更</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">15.1.3. アノテーションの定義の変更</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">15.1.4. その他の変更</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#to-ver-1-1">15.2. To ver.1.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#to-ver-1-2">15.3. To ver.1.2</a></li>
 </ul>
@@ -448,8 +454,68 @@
 <p><a class="reference internal" href="release.html"><span class="doc">リリースノート</span></a> も参考にしてください。</p>
 <div class="section" id="to-ver-2-0">
 <h2>15.1. To ver.2.0<a class="headerlink" href="#to-ver-2-0" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="id2">
+<h3>15.1.1. 前提環境の変更<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>Java7を使用している場合、Java8に変更します。</li>
+<li>POI-3.16以下を使用してる場合、POI-3.17に変更します。<ul>
+<li>POI-3.17から、セルのタイプ/罫線などの定数値に対応する列挙型が追加されてました。
+今後、定数値は削除され列挙型が推奨されます。
+ただし、開発中(2018年6月時点)の次バージョンのPOI-4.0でメソッド名が変わるため注意が必要です。</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>15.1.2. クラス名などの変更<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>日時型のマッピング時の書式を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsDateConverter</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">&#64;XlsDateTimeConverter</span></code> に変更します。</li>
+<li>列挙型のマッピング時の書式を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsEnumConverter</span></code> において、属性 <code class="docutils literal notranslate"><span class="pre">valueMethodName</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">aliasName</span></code> に変更します。</li>
+<li>配列／リスト型にマッピング時の書式を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayConverter</span></code> において、属性の名称を以下に変更します。<ul>
+<li>属性の名称を <code class="docutils literal notranslate"><span class="pre">itemConverterClass</span></code> → <code class="docutils literal notranslate"><span class="pre">elementConverterClass</span></code> に変更します。</li>
+<li>属性の名称を <code class="docutils literal notranslate"><span class="pre">ignoreEmptyItem</span></code> → <code class="docutils literal notranslate"><span class="pre">ignoreEmptyElement</span></code> に変更します。</li>
+<li>属性の名称を <code class="docutils literal notranslate"><span class="pre">itemClass</span></code> → <code class="docutils literal notranslate"><span class="pre">elementClass</span></code> に変更します。</li>
+<li>要素をパース/フォーマットするクラス <code class="docutils literal notranslate"><span class="pre">ItemConverter</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">ElementConverter</span></code> に変更します。
+デフォルト実装クラスの名称も <code class="docutils literal notranslate"><span class="pre">DefaultItemConverter</span></code> → <code class="docutils literal notranslate"><span class="pre">DefaultElementConverter</span></code> に変更します。</li>
+</ul>
+</li>
+<li>マッピングの順番を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHint(order=1)</span></code> の名称を <a class="reference internal" href="annotation_mapping_order.html#annotationxlsorder"><span class="std std-ref">&#64;XlsOrder</span></a> に変更します。</li>
+<li>レコードをスキップするかどうか判定用のメソッドを指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsIsEmpty</span></code> の名称を <a class="reference internal" href="annotation_mapping_ignorable.html#annotationxlsignorable"><span class="std std-ref">&#64;XlsIgnorable</span></a> に変更します。</li>
+<li>リスナーを指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsListener</span></code> の属性 <code class="docutils literal notranslate"><span class="pre">listenerClass</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">value</span></code> に変更するか、省略します。</li>
+<li><a class="reference internal" href="configuration.html"><span class="doc">システム設定のプロパティ</span></a> を指定するクラス <code class="docutils literal notranslate"><span class="pre">XlsConfig</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">Configuration</span></code> に変更します。</li>
+<li>複数のシートをマッピングした結果を格納するクラス <code class="docutils literal notranslate"><span class="pre">SheetBingingErrorsContainer</span></code> の名称を <code class="docutils literal notranslate"><span class="pre">MultipleSheetBindingErrors</span></code> に変更します。</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>15.1.3. アノテーションの定義の変更<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul>
+<li><p class="first">トリムをするアノテーションを <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(trim=true)</span></code> を、 <a class="reference internal" href="annotation_valueconverter_trim.html#annotationxlstrim"><span class="std std-ref">&#64;XlsTrim</span></a> に変更します。</p>
+</li>
+<li><p class="first">初期値を指摘するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(defaultValue=&quot;初期値&quot;)</span></code> を、 <a class="reference internal" href="annotation_valueconverter_defaultvalue.html#annotationxlsdefaultvalue"><span class="std std-ref">&#64;XlsDefaultValue(&quot;初期値&quot;)</span></a> に変更します。</p>
+</li>
+<li><p class="first">セルの書き込み時の制御設定を行うアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsConverter(wrapText=true,</span> <span class="pre">shrinkToFit=false)</span></code> を、 <cite>&#64;XlsCellOption(wrapText=true, shrinkToFit=false) &lt;annotationXlsCellOption&gt;</cite> に変更します。</p>
+</li>
+<li><p class="first">レコードの書き込み時のオプションを指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords(overRecord=...,</span> <span class="pre">remainedRecord=...)</span></code> を、 <a class="reference internal" href="annotation_mapping_recordoption.html#annotationxlsrecordoption"><span class="std std-ref">&#64;XlsRecordOption(overOperation=..., remainedOperation=...)</span></a> に変更します。</p>
 <blockquote>
-<div><a class="reference internal" href="release.html#realease-2-0"><span class="std std-ref">リリースノート - ver.2.0</span></a> を参照してください。</div></blockquote>
+<div><ul class="simple">
+<li>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsVerticalRecords(overRecord=...,</span> <span class="pre">remainedRecord=...)</span></code> も同様に変更します。</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">レコードを除外する条件として、 <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords(ignoreEmptyRecord=true)</span></code> の属性を削除します。</p>
+<ul class="simple">
+<li>属性の値がfalseのときは、レコードのメソッドに付与しているアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsIgnorable(以前は、&#64;XlsIsEmpty)</span></code> を削除します。</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h3>15.1.4. その他の変更<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>メッセージ定義のプロパティファイル <code class="docutils literal notranslate"><span class="pre">SheetValidationMessages.properties</span></code> をasciiコードの変換を止め、さらに、文字コードをUTF-8に変更します。</li>
+<li>XMLによるマッピングの指定方法を、システム設定のプロパティで設定するよう変更します。詳細は、<a class="reference internal" href="xmlmapping.html"><span class="doc">XMLによるマッピング方法</span></a> を参照してください。</li>
+</ul>
+</div>
 </div>
 <div class="section" id="to-ver-1-1">
 <h2>15.2. To ver.1.1<a class="headerlink" href="#to-ver-1-1" title="このヘッドラインへのパーマリンク">¶</a></h2>

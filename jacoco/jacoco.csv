@@ -58,7 +58,7 @@ XlsMapper,com.gh.mygreen.xlsmapper.fieldaccessor,PositionSetterFactory.new Posit
 XlsMapper,com.gh.mygreen.xlsmapper.fieldaccessor,PositionSetterFactory.new PositionSetter() {...},7,36,0,0,2,6,0,2,0,2
 XlsMapper,com.gh.mygreen.xlsmapper.fieldaccessor,MapPositionSetterFactory.new MapPositionSetter() {...},7,40,1,1,2,10,1,2,0,2
 XlsMapper,com.gh.mygreen.xlsmapper.fieldaccessor,FieldAccessException,18,0,0,0,7,0,3,0,3,0
-XlsMapper,com.gh.mygreen.xlsmapper.fieldaccessor,FieldAccessorProxyComparator,14,60,5,7,4,14,5,5,0,4
+XlsMapper,com.gh.mygreen.xlsmapper.fieldaccessor,FieldAccessorProxyComparator,12,62,4,8,3,15,4,6,0,4
 XlsMapper,com.gh.mygreen.xlsmapper.fieldaccessor,PositionGetterFactory,0,257,3,29,0,58,3,19,0,6
 XlsMapper,com.gh.mygreen.xlsmapper.fieldaccessor,ArrayPositionSetterFactory.new ArrayPositionSetter() {...},7,39,1,1,2,10,1,2,0,2
 XlsMapper,com.gh.mygreen.xlsmapper.fieldaccessor,PositionSetterFactory.new PositionSetter() {...},7,23,0,0,2,6,0,2,0,2
