@@ -209,7 +209,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 					<docfilessubdirs>true</docfilessubdirs>
  					<header>${project.name} ${project.version}
  <![CDATA[
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script>
@@ -480,7 +480,7 @@ $(document).ready(function() {
 					<docfilessubdirs>true</docfilessubdirs>
 					<header>${project.name} ${project.version}
  <![CDATA[
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script>
