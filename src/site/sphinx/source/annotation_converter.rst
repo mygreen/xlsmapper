@@ -84,6 +84,11 @@
      - 書き込み時のセルの配置位置やインデントなどの書式を指定します。
 
 
+.. note::
+
+   書式指定用のアノテーションは、セルをマッピングするアノテーション :ref:`@XlsCell <annotationXlsCell>` 、 :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`、 :ref:`@XlsArrayCells <annotationXlsArrayCells>`、 :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>`、 :ref:`@XlsColumn <annotationXlsColumn>`、 :ref:`@XlsMapColumns <annotationXlsMapColumns>`、 :ref:`@XlsArrayColumns <annotationXlsArrayColumns>`  を付与しているプロパティに対して有効になります。
+
+
 .. 以降は、埋め込んで作成する
 .. include::  ./annotation_converter_boolean.rst
 .. include::  ./annotation_converter_number.rst
