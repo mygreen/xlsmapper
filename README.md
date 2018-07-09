@@ -68,6 +68,7 @@ Apache License verion 2.0
   - http://mygreen.github.io/xlsmapper/sphinx/index.html
 - Javadoc
   - http://mygreen.github.io/xlsmapper/apidocs/index.html
+  - http://javadoc.io/doc/com.github.mygreen/xlsmapper/
 
 # Getting Started
 For example, here is one Excel sheet.
