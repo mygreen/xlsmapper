@@ -65,6 +65,17 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 		<poi.version>3.17</poi.version>
 		<slf4j.version>1.7.1</slf4j.version>
 		<jacoco.include.package>com.gh.mygreen.xlsmapper.*</jacoco.include.package>
+		
+		<!-- SonarQubeの解析から除外したいファイル -->
+		<sonar.exclusions>
+			**/sample/*,
+			**/*Test.*,
+			**/*.js,
+		</sonar.exclusions>
+		<sonar.projectName>${groupId}/${project.artifactId}</sonar.projectName>
+		<sonar.host.url>https://sonarcloud.io/</sonar.host.url>
+		<sonar.organization>mygreen-github</sonar.organization>
+		
 	</properties>
 
 	<!-- ビルド環境によって、sphinxのスクリプトを切り替える -->
@@ -279,7 +290,7 @@ $(document).ready(function() {
 			<plugin>
 		        <groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.8</version>
+				<version>0.7.9</version>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -308,6 +319,11 @@ $(document).ready(function() {
 						<version>3.1.5</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.4.1.1168</version>
 			</plugin>
 			<plugin>
 				<!-- pgp -->
@@ -529,6 +545,10 @@ $(document).ready(function() {
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</reporting>
