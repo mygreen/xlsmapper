@@ -436,7 +436,7 @@ public class POIUtils {
      */
     public static Row insertRow(final Sheet sheet, final int rowIndex) {
 
-        ArgUtils.notNull(sheet, "cell");
+        ArgUtils.notNull(sheet, "sheet");
         ArgUtils.notMin(rowIndex, 0, "rowIndex");
 
         // 最終行を取得する
