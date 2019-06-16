@@ -11,29 +11,29 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
 import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 
 /**
- * 指定したラベルセルのコメント情報をマッピングする。
+ * 指定したラベルセルのコメント情報をマッピングします。
  * 
  * <h3 class="description">基本的な使い方</h3>
  * <p>属性{@link #label()} で、見出しとなるセルの値を指定します。</p>
- * <p>属性{@link #type()}で見出しとなるセルから見て、設定されている位置を指定します。</p>
  * <p>セルが見つからない場合はエラーとなりますが、属性{@link #optional()}を'true'とすることで無視して処理を続行します。</p>
+ * <p>このアノテーションは、String型にのみマッピング可能です。</p>
  *
  * <pre class="highlight"><code class="java">
  * {@literal @XlsSheet(name="Users")}
  * public class SampleSheet {
  *
- *     {@literal @XlsLabelledCell(label="ラベル1", type=LabelledCellType.Right)}
- *     private String title;
+ *     {@literal @XlsLabelledComment(label="ラベル1")}
+ *     private String titleComment;
  *
  *     // ラベルセルが見つからなくても処理を続行する
- *     {@literal @XlsLabelledCell(label="ラベル2", type=LabelledCellType.Bottom, optional=true)}
- *     private String summary;
+ *     {@literal @XlsLabelledComment(label="ラベル2", optional=true)}
+ *     private String summaryComment;
  *
  * }
  * </code></pre>
  *
  * <div class="picture">
- *    <img src="doc-files/LabelledCell.png" alt="">
+ *    <img src="doc-files/LabelledComment.png" alt="">
  *    <p>基本的な使い方</p>
  * </div>
  *
@@ -68,11 +68,33 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
  * public class SampleSheet {
  *
  *     // 正規表現による指定
- *     {@literal @XlsLabelledCell(label="/名前.+/", type=LabelledCellType.Right)}
- *     private String className;
+ *     {@literal @XlsLabelledComment(label="/名前.+/")}
+ *     private String classNameComment;
  *
- *     {@literal @XlsLabelledCell(label="コメント（オプション）", type=LabelledCellType.Right)}
- *     private String comment;
+ *     {@literal @XlsLabelledComment(label="コメント（オプション）")}
+ *     private String commentComment;
+ *
+ * }
+ * </code></pre>
+ *
+ * <h3 class="description">書き込み時のコメント書式を制御したい場合</h3>
+ * <p>アノテーション {@link XlsCommentOption} を使用することで、書き込み時のコメントの制御を指定することができます。
+ *   <br>既にコメントが設定されている場合は、基本的にその設定値を引き継ぎます。
+ * </p>
+ * 
+ * <pre class="highlight"><code class="java">
+ * {@literal @XlsSheet(name="Users")}
+ * public class SampleSheet {
+ *
+ *     // コメントの表示指定する場合
+ *     {@literal @XlsLabelledComment(label="タイトル")}
+ *     {@literal @XlsCommentOption(visible=true)}
+ *     private String titleComment;
+ *
+ *     // コメント枠のサイズを指定する場合
+ *     {@literal @XlsLabelledComment(label="名前")}
+ *     {@literal @XlsCommentOption(verticalSize=5, horizontalSize=3)}
+ *     private String nameComment;
  *
  * }
  * </code></pre>
@@ -127,17 +149,17 @@ public @interface XlsLabelledComment {
      * {@literal @XlsSheet(name="Users")}
      * public class SampleSheet {
      *
-     *     {@literal @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, headerLabel="アクション")}
-     *     private String actionClassName;
+     *     {@literal @XlsLabelledComment(label="クラス名", headerLabel="アクション")}
+     *     private String actionClassNameComment;
      *
-     *     {@literal @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right, headerLabel="アクションフォーム")}
-     *     private String formClassName;
+     *     {@literal @XlsLabelledComment(label="クラス名", headerLabel="アクションフォーム")}
+     *     private String formClassNameComment;
      *
      * }
      * </code></pre>
      *
      * <div class="picture">
-     *    <img src="doc-files/LabelledCell_headerLabel.png" alt="">
+     *    <img src="doc-files/LabelledComment_headerLabel.png" alt="">
      *    <p>属性headerLabelの概要</p>
      * </div>
      *

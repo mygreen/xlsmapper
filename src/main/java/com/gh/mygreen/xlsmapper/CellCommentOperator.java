@@ -193,8 +193,7 @@ public class CellCommentOperator {
     /**
      * セルのコメントを実際に処理する実装を設定する。
      * 
-     * @param cellCommentHandler
-     *            セルのコメントを実際に処理する実装。
+     * @param commentHandler セルのコメントを実際に処理する実装。
      */
     public void setCommentHandler(CellCommentHandler commentHandler) {
         this.commentHandler = commentHandler;

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import com.gh.mygreen.xlsmapper.CellCommentHandler;
 
 /**
- * 書き込み時のコメントの位置、書式などのを指定するためのアノテーションです。
+ * {@link XlsComment}/{@link XlsLabelledComment}/値セルのフィールド（{@code Map<String, String> comments}) の書き込み時のコメントのサイズなどの制御を指定するためのアノテーションです。
  *
  * @since 2.1
  * @author T.TSUCHIE
@@ -21,27 +21,29 @@ import com.gh.mygreen.xlsmapper.CellCommentHandler;
 public @interface XlsCommentOption {
     
     /**
-     * コメントを表示状態にするかどうか。
-     * @return trueのとき表示する。
+     * コメントを表示状態にするかどうか指定します。
+     * @return trueのとき表示します。
      */
     boolean visible() default false;
     
     /**
-     * 書込み対象のコメントが空のとき、すでに設定されているコメントを削除するかどうか。
-     * @return trueのとき削除する。
+     * 書込み対象のコメントが空のとき、すでに設定されているコメントを削除するかどうか指定します。
+     * @return trueのとき削除します。
      */
     boolean removeIfEmpty() default false;
     
     /**
-     * コメントの縦サイズ。
-     * 行の個数分で表現する。
-     * @return 1以上のとき有効とする。
+     * コメントの縦サイズを指定します。
+     * <p>行の個数分で表現する。</p>
+     * <p>既にコメントが設定されている場合は無視されます。</p>
+     * @return 1以上のとき有効となります。
      */
     int verticalSize() default 0;
     
     /**
-     * コメントの横サイズ。
-     * 列の個数分で表現する。
+     * コメントの横サイズを指定します。
+     * <p>列の個数分で表現します。</p>
+     * <p>既にコメントが設定されている場合は無視されます。</p>
      * @return 1以上の時有効とする。
      */
     int horizontalSize() default 0;

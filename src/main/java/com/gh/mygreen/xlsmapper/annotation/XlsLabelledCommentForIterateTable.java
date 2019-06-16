@@ -5,7 +5,8 @@ import java.lang.annotation.Annotation;
 import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 
 /**
- *
+ * {@link XlsIterateTables}内の{@link XlsLabelledComment}をブリッジするクラス。
+ * 
  * @since 2.1
  * @author T.TSUCHIE
  *

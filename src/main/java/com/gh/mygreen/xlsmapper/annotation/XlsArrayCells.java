@@ -186,6 +186,7 @@ public @interface XlsArrayCells {
     /**
      * 配列またはリスト要素の値のクラスを指定します。
      * <p>省略した場合、定義されたGenericsタイプから取得します。</p>
+     * @return 要素のクラスタイプを指定します。
      */
     Class<?> elementClass() default Object.class;
 
