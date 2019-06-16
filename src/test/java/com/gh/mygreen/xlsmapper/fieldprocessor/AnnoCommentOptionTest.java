@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -21,6 +22,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.gh.mygreen.xlsmapper.DefaultCellCommentHandler;
 import com.gh.mygreen.xlsmapper.XlsMapper;
 import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
@@ -91,6 +93,28 @@ public class AnnoCommentOptionTest {
 
             assertThat(sheet.comments, hasEntry("labelledCell1", "コメントです。\n改行。\nフォント。"));
             assertThat(sheet.comments, hasEntry("labelledCell2", "コメント。"));
+            
+        }
+    }
+    
+    /**
+     * 読み込みのテスト - 処理の独自実装
+     */
+    @Test
+    public void test_load_comment_customHandlerl() throws Exception {
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<CustomHandlerSheet> errors = mapper.loadDetail(in, CustomHandlerSheet.class);
+            
+            CustomHandlerSheet sheet = errors.getTarget();
+            
+            assertThat(sheet.value1, is("値1"));
+            assertThat(sheet.value2, is("値2"));
+            
+            assertThat(sheet.comments, hasEntry("value1", "あいうえお。\nかきくけこ。"));
+            assertThat(sheet.comments, hasEntry("value2", "あいうえお。かきくけこ。"));
             
         }
     }
@@ -390,6 +414,65 @@ public class AnnoCommentOptionTest {
         
     }
     
+    /**
+     * 書き込み時のテスト - 独自の処理
+     */
+    @Test
+    public void test_save_comment_customHandler() throws Exception {
+        
+        // テストデータの作成
+        CustomHandlerSheet outSheet = new CustomHandlerSheet();
+        
+        outSheet.value1 = "値1";
+        outSheet.value2 = "値2";
+        
+        outSheet.comments = new HashMap<>();
+        outSheet.comments.put("value1", "あいうえお。\nかきくけこ。");
+        outSheet.comments.put("value2", "あいうえお。\nかきくけこ。");
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+        
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile);
+                InputStream in2 = new FileInputStream(outFile)) {
+            SheetBindingErrors<CustomHandlerSheet> errors = mapper.loadDetail(in, CustomHandlerSheet.class);
+
+            CustomHandlerSheet sheet = errors.getTarget();
+
+            assertThat(sheet.comments, hasEntry("value1", "あいうえお。\nかきくけこ。"));
+            assertThat(sheet.comments, hasEntry("value2", "あいうえお。かきくけこ。"));
+            
+            Workbook book = WorkbookFactory.create(in2);
+            Sheet xlsSheet = book.getSheet(sheet.sheetName);
+            {
+                Cell cell = POIUtils.getCell(xlsSheet, sheet.positions.get("value1"));
+                Comment comment = cell.getCellComment();
+                ClientAnchor anchor = comment.getClientAnchor();
+                assertThat(anchor.getRow2() - anchor.getRow1(), is(2));
+                assertThat(anchor.getCol2() - anchor.getCol1(), is(2));
+            }
+            
+            {
+                Cell cell = POIUtils.getCell(xlsSheet, sheet.positions.get("value2"));
+                Comment comment = cell.getCellComment();
+                ClientAnchor anchor = comment.getClientAnchor();
+                assertThat(anchor.getRow2() - anchor.getRow1(), is(1));
+                assertThat(anchor.getCol2() - anchor.getCol1(), is(1));
+            }
+
+        }
+        
+    }
+    
     @XlsSheet(name="通常のテスト")
     private static class NormalSheet {
         
@@ -550,5 +633,56 @@ public class AnnoCommentOptionTest {
         private String value3;
 
         
+    }
+    
+    @XlsSheet(name = "独自実装")
+    private static class CustomHandlerSheet {
+        
+        private Map<String, CellPosition> positions;
+        
+        private Map<String, String> labels;
+        
+        private Map<String, String> comments;
+        
+        @XlsSheetName
+        private String sheetName;
+        
+        @XlsLabelledCell(label = "標準の処理", type = LabelledCellType.Right)
+        private String value1;
+        
+        @XlsCommentOption(handler = CustomCellCommentHandler.class)
+        @XlsLabelledCell(label = "独自実装の処理", type = LabelledCellType.Right)
+        private String value2;
+        
+        static class CustomCellCommentHandler extends DefaultCellCommentHandler {
+            
+            public CustomCellCommentHandler() {
+                super();
+                // 初期設定値の変更
+                setMaxHorizontalSize(1);
+                setMaxVerticalSize(1);
+            }
+            
+            // 読み込み時の処理
+            @Override
+            public Optional<String> handleLoad(final Cell cell, Optional<XlsCommentOption> commentOption) {
+                
+                Optional<String> comment = super.handleLoad(cell, commentOption);
+                
+                // 改行を除去する。
+                return comment.map(text -> text.replaceAll("\r|\n|\r\n", ""));
+            }
+            
+            // 書き込み時の処理
+            @Override
+            public void handleSave(final Cell cell, final Optional<String> text, final Optional<XlsCommentOption> commentOption) {
+                
+                // 改行を除去する。
+                text.map(comment -> comment.replaceAll("\r|\n|\r\n", ""))
+                        .ifPresent(comment -> super.handleSave(cell, Optional.of(comment), commentOption));
+                
+            }
+            
+        }
     }
 }
