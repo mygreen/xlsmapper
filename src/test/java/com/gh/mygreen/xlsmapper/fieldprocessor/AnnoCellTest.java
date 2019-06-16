@@ -1,9 +1,9 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
-import static org.assertj.core.api.Assertions.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.awt.Point;
 import java.io.File;
@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.ss.util.CellReference;
@@ -32,7 +33,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * {@link CellProcessor}のテスタ。
  * アノテーション{@link XlsCell}のテスタ。
  * 
- * @version 1.5
+ * @version 2.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -182,6 +183,28 @@ public class AnnoCellTest {
     }    
     
     /**
+     * 読み込みのテスト - コメント情報
+     * @since 2.1
+     */
+    @Test
+    public void test_load_cell_comment() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
+
+            CommentSheet sheet = errors.getTarget();
+
+            assertThat(sheet.name, is("山田太郎"));
+            assertThat(sheet.comments, hasEntry("name", "氏名を入力してください。"));
+
+        }
+        
+    }
+    
+    /**
      * 書き込みのテスト - 通常のデータ
      */
     @Test
@@ -316,6 +339,41 @@ public class AnnoCellTest {
             
         }
         
+    }
+    
+    /**
+     * 書込みのテスト - コメント情報
+     * @since 2.1
+     */
+    @Test
+    public void test_save_cell_comment() throws Exception {
+        
+        // テストデータの作成
+        final CommentSheet outSheet = new CommentSheet();
+        
+        outSheet.name("山田太郎")
+            .comment("name", "氏名を入力してください。");
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            mapper.save(template, out, outSheet);
+        }
+
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
+
+            CommentSheet sheet = errors.getTarget();
+
+            assertThat(sheet.name, is(outSheet.name));
+            assertThat(sheet.comments, hasEntry("name", outSheet.comments.get("name")));
+        }
     }
     
     @XlsSheet(name="Cell(通常)")
@@ -592,6 +650,32 @@ public class AnnoCellTest {
                     address.y + 1);
             
             return formula;
+        }
+    }
+    
+    @XlsSheet(name="コメント情報")
+    private static class CommentSheet {
+        
+        private Map<String, Point> positions;
+
+        private Map<String, String> labels;
+        
+        private Map<String, String> comments;
+        
+        @XlsCell(address = "B5")
+        private String name;
+        
+        public CommentSheet name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public CommentSheet comment(String key, String text) {
+            if(comments == null) {
+                this.comments = new HashMap<String, String>();
+            }
+            this.comments.put(key, text);
+            return this;
         }
     }
 }

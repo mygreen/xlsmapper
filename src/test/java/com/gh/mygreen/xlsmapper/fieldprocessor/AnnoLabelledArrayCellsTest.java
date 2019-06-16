@@ -3,8 +3,8 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
  * {@link LabelledArrayCellsProcessor}のテスタ。
  * アノテーション{@link XlsLabelledArrayCells}のテスタ。
  *
+ * @version 2.1
  * @since 2.0
  * @author T.TSUCHIE
  *
@@ -611,6 +613,48 @@ public class AnnoLabelledArrayCellsTest {
             }
         }
     }
+    
+    /**
+     * 読み込みのテスト - コメント情報
+     * @since 2.1
+     */
+    @Test
+    public void test_load_labelled_array_cell_comment() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
+
+            CommentSheet sheet = errors.getTarget();
+
+            assertThat(sheet.hArray)
+                .hasSize(3)
+                .containsExactly("今日は", "、", "いい天気ですね。");
+
+            assertThat(sheet.comments)
+                .containsEntry("hArray[0]", "コメント1")
+                .doesNotContainKey("hArray[1]")
+                .containsEntry("hArray[2]", "コメント3")
+                ;
+
+            // vertical
+            assertThat(sheet.vArray)
+                .hasSize(3)
+                .containsExactly("Hello", ",", "World");
+
+            assertThat(sheet.comments)
+                .doesNotContainKey("vArray[0]")
+                .containsEntry("vArray[1]", "コメント2")
+                .doesNotContainKey("vArray[2]")
+                ;
+
+
+        }
+        
+    }
+
 
     /**
      * 書き込みテスト - 通常のテスト
@@ -970,6 +1014,49 @@ public class AnnoLabelledArrayCellsTest {
         }
 
     }
+    
+    /**
+     * 書き込みのテスト - コメントのテスト
+     * @since 2.1
+     */
+    @Test
+    public void test_save_labelled_array_cell_comment() throws Exception {
+
+        // テストデータの作成
+        CommentSheet outSheet = new CommentSheet();
+
+        outSheet.hArray = Arrays.asList("今日は", "、", "いい天気ですね。");
+        outSheet.vArray = Arrays.asList("Hello", ",", "World");
+        
+        outSheet.comment("hArray[0]", "コメント1").comment("hArray[2]", "コメント3")
+            .comment("vArray[1]", "コメント2");
+        
+
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            mapper.save(template, out, outSheet);
+        }
+
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
+
+            CommentSheet sheet = errors.getTarget();
+
+            assertThat(sheet.hArray).containsExactlyElementsOf(outSheet.hArray);
+            assertThat(sheet.vArray).containsExactlyElementsOf(outSheet.vArray);
+
+            assertThat(sheet.comments).containsAllEntriesOf(outSheet.comments);
+            
+        }
+
+    }
 
     @XlsSheet(name="通常")
     private static class NormalSheet {
@@ -1120,6 +1207,31 @@ public class AnnoLabelledArrayCellsTest {
         @XlsDateTimeConverter(excelPattern="yyyy/m/d;@", javaPattern="yyyy/M/d")
         @XlsFormula("\\$I\\$5+{columnNumber}")
         private List<LocalDate> dateList;
+    }
+    
+    @XlsSheet(name="コメント情報")
+    private static class CommentSheet {
+        
+        private Map<String, CellPosition> positions;
+
+        private Map<String, String> labels;
+        
+        private Map<String, String> comments;
+        
+        @XlsLabelledArrayCells(label = "挨拶", type = LabelledCellType.Right, direction=ArrayDirection.Horizon, size=3, elementMerged=true)
+        private List<String> hArray;
+
+        @XlsLabelledArrayCells(label = "挨拶", type = LabelledCellType.Bottom, direction=ArrayDirection.Vertical, size=3, elementMerged=true)
+        private List<String> vArray;
+        
+        public CommentSheet comment(String key, String text) {
+            if(comments == null) {
+                this.comments = new HashMap<String, String>();
+            }
+            this.comments.put(key, text);
+            return this;
+        }
+        
     }
 
 }

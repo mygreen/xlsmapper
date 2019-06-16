@@ -23,6 +23,8 @@ import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCellsForIterateTable;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCellForIterateTable;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledComment;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCommentForIterateTable;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecordsForIterateTables;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -44,7 +46,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * アノテーション{@link XlsIterateTables}を処理する。
  *
- * @version 2.0
+ * @version 2.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -146,6 +148,9 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors(), ProcessCase.Load);
             });
 
+            // process sinslbe labelled comment
+            loadSingleLabelledComment(sheet, tableObj, currentCell, config, work);
+            
             // process single label.
             loadSingleLabelledCell(sheet, tableObj, currentCell, config, work);
 
@@ -208,6 +213,51 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                     .format());
         }
 
+    }
+    
+    /**
+     * XlsLabelledCommentによる処理する。
+     * @param sheet
+     * @param tableObj
+     * @param headerCell
+     * @param config
+     * @throws XlsMapperException
+     */
+    private void loadSingleLabelledComment(final Sheet sheet, final Object tableObj,
+            final Cell headerCell, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+        final LabelledCommentProcessor labelledCommentProcessor =
+                (LabelledCommentProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledComment.class);
+
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
+                tableObj.getClass(), work.getAnnoReader(), XlsLabelledComment.class)
+                .stream()
+                .filter(p -> p.isReadable())
+                .collect(Collectors.toList());
+
+        for(FieldAccessor property : properties) {
+            final XlsLabelledComment anno = property.getAnnotation(XlsLabelledComment.class).get();
+
+            Cell titleCell = null;
+            try {
+                titleCell = CellFinder.query(sheet, anno.label(), config)
+                        .startPosition(headerCell)
+                        .excludeStartPosition(true)
+                        .findWhenNotFoundException();
+
+            } catch (CellNotFoundException e) {
+                if (anno.optional()) {
+                    continue;
+                } else {
+                    throw e;
+                }
+            }
+
+            final XlsLabelledComment labelledCell = new XlsLabelledCommentForIterateTable(
+                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());
+
+            labelledCommentProcessor.loadProcess(sheet, tableObj, labelledCell, property, config, work);
+        }
     }
 
     /**
@@ -472,6 +522,9 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 work.getErrors().popNestedPath();
                 break;
             }
+            
+            // process single label comment
+            saveSingleLabelledComment(sheet, tableObj, currentCell, config, work);
 
             // process single label.
             saveSingleLabelledCell(sheet, tableObj, currentCell, config, work);
@@ -503,6 +556,45 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
             work.getErrors().popNestedPath();
         }
 
+
+    }
+    
+    private void saveSingleLabelledComment(final Sheet sheet, final Object tableObj, final Cell headerCell,
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+        final LabelledCommentProcessor labelledCommentProcessor =
+                (LabelledCommentProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledComment.class);
+
+        final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
+                tableObj.getClass(), work.getAnnoReader(), XlsLabelledComment.class)
+                .stream()
+                .filter(p -> p.isWritable())
+                .collect(Collectors.toList());
+
+        for(FieldAccessor property : properties) {
+
+            final XlsLabelledComment anno = property.getAnnotation(XlsLabelledComment.class).get();
+
+            Cell titleCell = null;
+            try {
+                titleCell = CellFinder.query(sheet, anno.label(), config)
+                        .startPosition(headerCell)
+                        .excludeStartPosition(true)
+                        .findWhenNotFoundException();
+
+            } catch (CellNotFoundException e) {
+                if (anno.optional()) {
+                    continue;
+                } else {
+                    throw e;
+                }
+            }
+
+            final XlsLabelledComment labelledCell = new XlsLabelledCommentForIterateTable(
+                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());
+
+            labelledCommentProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);
+        }
 
     }
 

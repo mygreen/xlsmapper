@@ -73,7 +73,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * アノテーション{@link XlsVerticalRecords}を処理するクラス。
  *
- * @version 2.0
+ * @version 2.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -366,6 +366,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     property.setPosition(record, CellPosition.of(valueCell));
                     property.setLabel(record, headerInfo.getLabel());
 
+                    final Cell tempCommentCell = valueCell;
+                    property.getCommentSetter().ifPresent(setter -> 
+                            config.getCommentOperator().loadCellComment(setter, tempCommentCell, record, property, config));
+                    
                     final CellConverter<?> converter = converterCache.computeIfAbsent(property.getName(), key -> getCellConverter(property, config));
                     if(converter instanceof FieldFormatter) {
                         work.getErrors().registerFieldFormatter(property.getName(), property.getType(), (FieldFormatter<?>)converter, true);
@@ -588,6 +592,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
                     property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
 
+                    property.getMapCommentSetter().ifPresent(setter -> 
+                    config.getCommentOperator().loadMapCellComment(setter, cell, record, headerInfo.getLabel(), property, config));
+                    
                     CellRangeAddress mergedRange = POIUtils.getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());
                     if(mergedRange != null) {
                         int mergedSize =  mergedRange.getLastColumn() - mergedRange.getFirstColumn() + 1;
@@ -1175,6 +1182,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         // set for cell value
                         property.setPosition(record, CellPosition.of(valueCell));
                         property.setLabel(record, headerInfo.getLabel());
+                        
+                        final Cell tempCommentCell = valueCell;
+                        property.getCommentGetter().ifPresent(getter -> config.getCommentOperator().saveCellComment(
+                                getter, tempCommentCell, record, accessor, config));
 
                         final CellConverter converter = converterCache.computeIfAbsent(property.getName(), key -> getCellConverter(property, config));
                         if(converter instanceof FieldFormatter) {
@@ -1450,6 +1461,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     // セルの値を出力する
                     property.setMapPosition(record, CellPosition.of(cell), headerInfo.getLabel());
                     property.setMapLabel(record, headerInfo.getLabel(), headerInfo.getLabel());
+                    
+                    property.getMapCommentGetter().ifPresent(getter -> config.getCommentOperator().saveMapCellComment(
+                            getter, cell, record, headerInfo.getLabel(), property, config));
 
                     try {
                         Object value = property.getValueOfMap(headerInfo.getLabel(), record);

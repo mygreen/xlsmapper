@@ -24,7 +24,8 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * ラベル付きのセルの開始位置を検索するクラス。
- *
+ * 
+ * @version 2.1
  * @since 2.0
  * @author T.TSUCHIE
  *
@@ -169,6 +170,12 @@ public class LabelledCellHandler {
 
     }
 
+    /**
+     * 見出し付きのセルの情報を取得する。
+     * @param anno マッピング情報が設定されているアノテーション
+     * @param processCase 処理ケース
+     * @return ラベルや値が設定されているセルの開始情報
+     */
     public Optional<LabelInfo> handle(final Annotation anno, final ProcessCase processCase) {
 
         final AnnotationProxy annoProxy = new AnnotationProxy(anno);
@@ -243,6 +250,17 @@ public class LabelledCellHandler {
         info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());
 
         return Optional.of(info);
+    }
+    
+    /**
+     * ラベルの位置情報を取得する。
+     * @since 2.1
+     * @param anno マッピング情報が設定されているアノテーション
+     * @return ラベルの位置情報。見つからない場合は、空を返す。
+     */
+    public Optional<CellPosition> getLabelPosition(final Annotation anno) {
+        return getLabelPosition(new AnnotationProxy(anno));
+        
     }
 
     /**

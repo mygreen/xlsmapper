@@ -6,18 +6,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsComment;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledComment;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.ArrayCellsProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.CellProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.CommentProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.HorizontalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledArrayCellsProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCommentProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.SheetNameProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.VerticalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
@@ -26,7 +30,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 /**
  * {@link FieldProcessor}を管理するクラス。
  * 
- * @version 2.0
+ * @version 2.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -57,6 +61,8 @@ public class FieldProcessorRegistry {
         registerProcessor(XlsIterateTables.class, new IterateTablesProcessor());
         registerProcessor(XlsArrayCells.class, new ArrayCellsProcessor());
         registerProcessor(XlsLabelledArrayCells.class, new LabelledArrayCellsProcessor());
+        registerProcessor(XlsComment.class, new CommentProcessor());
+        registerProcessor(XlsLabelledComment.class, new LabelledCommentProcessor());
         
     }
     

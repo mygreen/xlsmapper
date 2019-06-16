@@ -4,9 +4,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
@@ -23,7 +23,7 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 /**
  * アノテーション {@link XlsCell} を処理するクラスです。
  *
- * @version 2.0
+ * @version 2.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  */
@@ -39,9 +39,12 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
 
         final CellPosition cellAddress = getCellPosition(accessor, anno);
         accessor.setPosition(beansObj, cellAddress);
-
+        
         final Cell xlsCell = POIUtils.getCell(sheet, cellAddress);
 
+        accessor.getCommentSetter().ifPresent(setter -> 
+                config.getCommentOperator().loadCellComment(setter, xlsCell, beansObj, accessor, config));
+        
         final CellConverter<?> converter = getCellConverter(accessor, config);
         if(converter instanceof FieldFormatter) {
             work.getErrors().registerFieldFormatter(accessor.getName(), accessor.getType(), (FieldFormatter<?>)converter, true);
@@ -118,6 +121,9 @@ public class CellProcessor extends AbstractFieldProcessor<XlsCell> {
 
         final CellPosition cellAddress = getCellPosition(accessor, anno);
         accessor.setPosition(targetObj, cellAddress);
+        
+        accessor.getCommentGetter().ifPresent(getter -> config.getCommentOperator().saveCellComment(
+                getter, POIUtils.getCell(sheet, cellAddress), targetObj, accessor, config));
 
         final CellConverter converter = getCellConverter(accessor, config);
         if(converter instanceof FieldFormatter) {

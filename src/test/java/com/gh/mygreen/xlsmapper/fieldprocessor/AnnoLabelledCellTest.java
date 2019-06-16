@@ -1,9 +1,10 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.awt.Point;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +37,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * {@link LabelledCellProcessor}のテスタ
  * アノテーション{@link XlsLabelledCell}のテスタ。
  *
- * @version 2.0
+ * @version 2.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -281,12 +283,12 @@ public class AnnoLabelledCellTest {
      * 読み込みのテスト - 数式のテスト
      */
     @Test
-    public void test_load_labelled_formula() throws Exception {
+    public void test_load_labelled_cell_formula() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
         mapper.getConiguration().setContinueTypeBindFailure(true);
 
-        try(InputStream in = new FileInputStream(new File("src/test/data/anno_LabelledCell.xlsx"))) {
+        try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
 
             FormulaSheet sheet = errors.getTarget();
@@ -297,6 +299,28 @@ public class AnnoLabelledCellTest {
 
         }
 
+    }
+    
+    /**
+     * 読み込みのテスト - コメント情報
+     * @since 2.1
+     */
+    @Test
+    public void test_load_labelled_cell_comment() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
+
+            CommentSheet sheet = errors.getTarget();
+
+            assertThat(sheet.name, is("山田太郎"));
+            assertThat(sheet.comments, hasEntry("name", "氏名を入力してください。"));
+
+        }
+        
     }
 
     /**
@@ -586,7 +610,7 @@ public class AnnoLabelledCellTest {
      * 書き込みのテスト - 数式のテスト
      */
     @Test
-    public void test_save_labelled_formula() throws Exception {
+    public void test_save_labelled_cell_formula() throws Exception {
 
         // テストデータの作成
         final FormulaSheet outSheet = new FormulaSheet();
@@ -621,6 +645,41 @@ public class AnnoLabelledCellTest {
 
         }
 
+    }
+    
+    /**
+     * 書込みのテスト - コメント情報
+     * @since 2.1
+     */
+    @Test
+    public void test_save_labelled_cell_comment() throws Exception {
+        
+        // テストデータの作成
+        final CommentSheet outSheet = new CommentSheet();
+        
+        outSheet.name("山田太郎")
+            .comment("name", "氏名を入力してください。");
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            mapper.save(template, out, outSheet);
+        }
+
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
+
+            CommentSheet sheet = errors.getTarget();
+
+            assertThat(sheet.name, is(outSheet.name));
+            assertThat(sheet.comments, hasEntry("name", outSheet.comments.get("name")));
+        }
     }
 
     @XlsSheet(name="通常")
@@ -1268,6 +1327,32 @@ public class AnnoLabelledCellTest {
             return this;
         }
 
+    }
+    
+    @XlsSheet(name="コメント情報")
+    private static class CommentSheet {
+        
+        private Map<String, Point> positions;
+
+        private Map<String, String> labels;
+        
+        private Map<String, String> comments;
+        
+        @XlsLabelledCell(label="名前", type=LabelledCellType.Right)
+        private String name;
+        
+        public CommentSheet name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public CommentSheet comment(String key, String text) {
+            if(comments == null) {
+                this.comments = new HashMap<String, String>();
+            }
+            this.comments.put(key, text);
+            return this;
+        }
     }
 
 }
