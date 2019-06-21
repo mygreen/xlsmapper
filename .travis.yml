@@ -2,7 +2,7 @@ sudo: false
 install: true
 language: java
 jdk:
-  - oraclejdk8
+  - openjdk8
 addons:
   apt:
     packages:
