@@ -2,6 +2,22 @@
 リリースノート
 ======================================
 
+--------------------------------------------------------
+ver.2.1 - 2019-06-22
+--------------------------------------------------------
+
+* セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.11に対応しました。
+
+  * 日付の書式の新元号 ``令和`` に対応します。
+
+* `#104 <https://github.com/mygreen/xlsmapper/pull/104>`_ セルコメントのマッピング機能を追加しました。
+
+  * 既存のセルのマッピング時にセルコメントもマッピングできるフィールド ``comments`` を追加( :doc:`sheetinfo_comment` )。
+  * :ref:`@XlsComment <annotationXlsComment>` - セルの座標を直接指定して、セルのコメントをマッピングします。
+  * :ref:`@XlsLablledComment <annotationXlsLabelledComment>` - レコードの隣接するカラムをマッピングします。
+  * :ref:`@XlsCommentOption <annotationXlsCommentOption>` - 書き込み時のセルのコメントのサイズなどの制御を指定します。
+
+
 .. _realease_2_0:
 
 --------------------------------------------------------
