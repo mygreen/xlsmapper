@@ -1,10 +1,10 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 
 import java.awt.Point;
 import java.io.File;
@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -65,7 +66,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
  * {@link VerticalRecordsProcessor}のテスタ
  * アノテーション{@link XlsVerticalRecords}のテスタ。
  *
- * @version 2.0
+ * @version 2.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -907,6 +908,50 @@ public class AnnoVerticalRecordsTest {
 
 
     }
+    
+    /**
+     * コメント情報のマッピングのテスト
+     * 
+     * @since 2.1
+     */
+    @Test
+    public void test_load_vr_comment() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(false)
+            .setRegexLabelText(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<CommentCellSheet> errors = mapper.loadDetail(in, CommentCellSheet.class);
+
+            CommentCellSheet sheet = errors.getTarget();
+
+            if(sheet.normal != null) {
+
+                assertThat(sheet.normal, hasSize(2));
+                for(CommentCellSheet.NormalRecord record : sheet.normal) {
+                    assertRecord(record, errors);
+                }
+
+            }
+            
+            if(sheet.map != null) {
+                assertThat(sheet.map, hasSize(2));
+                for(CommentCellSheet.MapRecord record : sheet.map) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+            if(sheet.array != null) {
+                assertThat(sheet.array, hasSize(2));
+                for(CommentCellSheet.ArrayRecord record : sheet.array) {
+                    assertRecord(record, errors);
+                }
+            }
+            
+        }
+        
+    }
 
     private void assertRecord(final NormalRecord record, final SheetBindingErrors<?> errors) {
 
@@ -1454,6 +1499,51 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
             .containsEntry("dates[1]", label)
             .containsEntry("dates[2]", label)
             ;
+
+    }
+    
+    private void assertRecord(final CommentCellSheet.NormalRecord record, final SheetBindingErrors<?> errors) {
+
+        if(record.no == 1) {
+            assertThat(record.comments, hasEntry("name", "コメント1"));
+            assertThat(record.comments, not(hasKey("attended")));
+            
+        } else if(record.no == 2) {
+            assertThat(record.comments, not(hasKey("name")));
+            assertThat(record.comments, hasEntry("attended", "コメント2"));
+        }
+
+    }
+    
+    private void assertRecord(final CommentCellSheet.MapRecord record, final SheetBindingErrors<?> errors) {
+
+        if(record.no == 1) {
+            assertThat(record.comments, hasEntry("dayOfAttends[4月1日]", "コメント1"));
+            assertThat(record.comments, not(hasKey("dayOfAttends[4月2日]")));
+            assertThat(record.comments, hasEntry("dayOfAttends[4月3日]", "コメント3"));
+            
+        } else if(record.no == 2) {
+            assertThat(record.comments, not(hasKey("dayOfAttends[4月1日]")));
+            assertThat(record.comments, hasEntry("dayOfAttends[4月2日]", "コメント2"));
+            assertThat(record.comments, not(hasKey("dayOfAttends[4月3日]")));
+            
+        }
+
+    }
+    
+    private void assertRecord(final CommentCellSheet.ArrayRecord record, final SheetBindingErrors<?> errors) {
+
+        if(record.no == 1) {
+            assertThat(record.comments, hasEntry("contacted[0]", "コメント1"));
+            assertThat(record.comments, not(hasKey("contacted[1]")));
+            assertThat(record.comments, hasEntry("contacted[2]", "コメント3"));
+            
+        } else if(record.no == 2) {
+            assertThat(record.comments, not(hasKey("contacted[0]")));
+            assertThat(record.comments, hasEntry("contacted[1]", "コメント2"));
+            assertThat(record.comments, not(hasKey("contacted[2]")));
+            
+        }
 
     }
 
@@ -3217,6 +3307,84 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
         }
 
     }
+    
+    /**
+     * コメント情報のマッピングのテスト
+     * @since 2.1
+     */
+    @Test
+    public void test_save_hr_comment() throws Exception {
+        
+        // テストデータの作成
+        CommentCellSheet outSheet = new CommentCellSheet();
+        
+        outSheet.addNormalRecord(new CommentCellSheet.NormalRecord().no(1).name("山田太郎").attended(true)
+                .comment("name", "コメント1"));
+        outSheet.addNormalRecord(new CommentCellSheet.NormalRecord().no(2).name("鈴木次郎").attended(false)
+                .comment("attended", "コメント2"));
+        
+        outSheet.addMapRecord(new CommentCellSheet.MapRecord().no(0).name("山田太郎")
+                .dayOfAttends("4月1日", true).dayOfAttends("4月2日", false).dayOfAttends("4月3日", null)
+                .comment("dayOfAttends[4月1日]", "コメント1").comment("dayOfAttends[4月3日]", "コメント3"));
+        outSheet.addMapRecord(new CommentCellSheet.MapRecord().no(1).name("鈴木次郎")
+                .dayOfAttends("4月1日", false).dayOfAttends("4月2日", false).dayOfAttends("4月3日", true)
+                .comment("dayOfAttends[4月2日]", "コメント2"));
+        
+        outSheet.addArraylRecord(new CommentCellSheet.ArrayRecord().no(0).name("山田太郎")
+                .contacted(Arrays.asList("東京都", "test01@example.com", "090-111-2222"))
+                .comment("contacted[0]", "コメント1").comment("contacted[2]", "コメント3"));
+        outSheet.addArraylRecord(new CommentCellSheet.ArrayRecord().no(1).name("鈴木次郎")
+                .contacted(Arrays.asList("栃木県", "test02@example.com", "090-1234-5678"))
+                .comment("contacted[1]", "コメント2"));
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(false)
+            .setRegexLabelText(true);
+        
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            mapper.save(template, out, outSheet);
+        }
+        
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<CommentCellSheet> errors = mapper.loadDetail(in, CommentCellSheet.class);
+
+            CommentCellSheet sheet = errors.getTarget();
+
+            if(sheet.normal != null) {
+                assertThat(sheet.normal, hasSize(outSheet.normal.size()));
+
+                for(int i=0; i < sheet.normal.size(); i++) {
+                    assertRecord(sheet.normal.get(i), outSheet.normal.get(i), errors);
+                }
+
+            }
+            
+            if(sheet.map != null) {
+                assertThat(sheet.map, hasSize(outSheet.map.size()));
+
+                for(int i=0; i < sheet.map.size(); i++) {
+                    assertRecord(sheet.map.get(i), outSheet.map.get(i), errors);
+                }
+
+            }
+            
+            if(sheet.array != null) {
+                assertThat(sheet.array, hasSize(outSheet.array.size()));
+
+                for(int i=0; i < sheet.array.size(); i++) {
+                    assertRecord(sheet.array.get(i), outSheet.array.get(i), errors);
+                }
+
+            }
+            
+        }
+        
+    }
 
     /**
      * 書き込んだレコードを検証するための
@@ -3862,6 +4030,73 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
             .containsEntry("dates[1]", label)
             .containsEntry("dates[2]", label)
             ;
+
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final CommentCellSheet.NormalRecord inRecord, final CommentCellSheet.NormalRecord outRecord, final SheetBindingErrors<?> errors) {
+
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        assertThat(inRecord.attended, is(outRecord.attended));
+        
+        
+        assertThat(inRecord.comments, is(outRecord.comments));
+//        assertThat(inRecord.comments, hasEntry("no", outRecord.comments.get("no")));
+//        assertThat(inRecord.comments, hasEntry("name", outRecord.comments.get("name")));
+//        assertThat(inRecord.comments, hasEntry("attended", outRecord.comments.get("attended")));
+
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final CommentCellSheet.MapRecord inRecord, final CommentCellSheet.MapRecord outRecord, final SheetBindingErrors<?> errors) {
+
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        assertThat(inRecord.dayOfAttends, is(outRecord.dayOfAttends));
+        
+        assertThat(inRecord.comments, is(outRecord.comments));
+//        assertThat(inRecord.comments, hasEntry("dayOfAttends[4月1日]", outRecord.comments.get("dayOfAttends[4月1日]")));
+//        assertThat(inRecord.comments, hasEntry("dayOfAttends[4月2日]", outRecord.comments.get("dayOfAttends[4月2日]")));
+//        assertThat(inRecord.comments, hasEntry("dayOfAttends[4月3日]", outRecord.comments.get("dayOfAttends[4月3日]")));
+
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final CommentCellSheet.ArrayRecord inRecord, final CommentCellSheet.ArrayRecord outRecord, final SheetBindingErrors<?> errors) {
+
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        assertThat(inRecord.contacted, contains(outRecord.contacted.toArray(new String[outRecord.contacted.size()])));
+        
+        assertThat(inRecord.comments, is(outRecord.comments));
+//        assertThat(inRecord.comments, hasEntry("contacted[0]", outRecord.comments.get("contacted[0]")));
+//        assertThat(inRecord.comments, hasEntry("contacted[1]", outRecord.comments.get("contacted[1]")));
+//        assertThat(inRecord.comments, hasEntry("contacted[2]", outRecord.comments.get("contacted[2]")));
 
     }
 
@@ -7173,6 +7408,227 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 
        }
 
+   }
+   
+   @XlsSheet(name = "コメント情報")
+   private static class CommentCellSheet {
+       
+       private Map<String, CellPosition> positions;
+
+       private Map<String, String> labels;
+       
+       @XlsOrder(1)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel = "通常のカラム", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       private List<NormalRecord> normal;
+       
+       @XlsOrder(2)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel = "マップカラム", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       private List<MapRecord> map;
+       
+       @XlsOrder(3)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel = "配列カラム", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       private List<ArrayRecord> array;
+       
+       /**
+        * noを自動的に付与する。
+        * @param record クラスAのレコード
+        * @return 自身のインスタンス
+        */
+       public CommentCellSheet addNormalRecord(NormalRecord record) {
+           if(normal == null) {
+               this.normal = new ArrayList<>();
+           }
+
+           this.normal.add(record);
+           record.no(normal.size());
+
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record クラスAのレコード
+        * @return 自身のインスタンス
+        */
+       public CommentCellSheet addMapRecord(MapRecord record) {
+           if(map == null) {
+               this.map = new ArrayList<>();
+           }
+
+           this.map.add(record);
+           record.no(map.size());
+
+           return this;
+       }
+       
+       /**
+        * noを自動的に付与する。
+        * @param record クラスAのレコード
+        * @return 自身のインスタンス
+        */
+       public CommentCellSheet addArraylRecord(ArrayRecord record) {
+           if(array == null) {
+               this.array = new ArrayList<>();
+           }
+
+           this.array.add(record);
+           record.no(array.size());
+
+           return this;
+       }
+       
+       /**
+        * 通常のレコード
+        *
+        */
+       private static class NormalRecord {
+           
+           private Map<String, CellPosition> positions;
+
+           private Map<String, String> labels;
+
+           private Map<String, String> comments;
+           
+           @XlsColumn(columnName="No.")
+           private int no;
+
+           @XlsColumn(columnName="氏名")
+           private String name;
+
+           @XlsBooleanConverter(loadForTrue = "出席", loadForFalse = "欠席", saveAsTrue = "出席", saveAsFalse = "欠席")
+           @XlsColumn(columnName = "出欠")
+           private Boolean attended;
+           
+           
+           public NormalRecord no(int no) {
+               this.no = no;
+               return this;
+           }
+
+           public NormalRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+           
+           public NormalRecord attended(Boolean attended) {
+               this.attended = attended;
+               return this;
+           }
+           
+           public NormalRecord comment(String key, String text) {
+               if(comments == null) {
+                   this.comments = new HashMap<String, String>();
+               }
+               this.comments.put(key, text);
+               return this;
+           }
+           
+       }
+       
+       /**
+        * マップのレコード
+        */
+       private static class MapRecord {
+           
+           private Map<String, CellPosition> positions;
+
+           private Map<String, String> labels;
+
+           private Map<String, String> comments;
+           
+           @XlsColumn(columnName="No.")
+           private int no;
+
+           @XlsColumn(columnName="氏名")
+           private String name;
+
+           @XlsBooleanConverter(loadForTrue = "出席", loadForFalse = {"欠席", "-"}, saveAsTrue = "出席", saveAsFalse = "欠席")
+           @XlsMapColumns(previousColumnName = "氏名")
+           private Map<String, Boolean> dayOfAttends;
+           
+           public MapRecord no(int no) {
+               this.no = no;
+               return this;
+           }
+
+           public MapRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+
+           public MapRecord dayOfAttends(String key, Boolean value) {
+               if(dayOfAttends == null) {
+                   this.dayOfAttends = new LinkedHashMap<String, Boolean>();
+               }
+               this.dayOfAttends.put(key, value);
+               return this;
+           }
+           
+           public MapRecord comment(String key, String text) {
+               if(comments == null) {
+                   this.comments = new HashMap<String, String>();
+               }
+               this.comments.put(key, text);
+               return this;
+           }
+
+       }
+       
+       /**
+        * 配列のレコードの定義
+        *
+        */
+       private static class ArrayRecord {
+
+           private Map<String, CellPosition> positions;
+
+           private Map<String, String> labels;
+
+           private Map<String, String> comments;
+           
+           @XlsColumn(columnName="No.")
+           private int no;
+
+           @XlsColumn(columnName="氏名")
+           private String name;
+
+           @XlsArrayColumns(columnName="連絡先", size=3, elementMerged=true)
+           private List<String> contacted;
+
+           @XlsIgnorable
+           public boolean isEmpty() {
+               return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "comments", "no");
+           }
+
+           public ArrayRecord no(int no) {
+               this.no = no;
+               return this;
+           }
+
+           public ArrayRecord name(String name) {
+               this.name = name;
+               return this;
+           }
+
+           public ArrayRecord contacted(List<String> contacted) {
+               this.contacted = contacted;
+               return this;
+           }
+           
+           public ArrayRecord comment(String key, String text) {
+               if(comments == null) {
+                   this.comments = new HashMap<String, String>();
+               }
+               this.comments.put(key, text);
+               return this;
+           }
+
+
+       }
+       
    }
 
 

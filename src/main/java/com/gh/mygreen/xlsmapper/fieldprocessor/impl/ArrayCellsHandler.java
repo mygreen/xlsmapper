@@ -28,7 +28,8 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * 配列やリスト形式の要素を処理するためのクラス。
- *
+ * 
+ * @version 2.1
  * @since 2.0
  * @author T.TSUCHIE
  *
@@ -141,6 +142,11 @@ public class ArrayCellsHandler {
                 if(Utils.isNotEmpty(label)) {
                     field.setArrayLabel(beansObj, label, i);
                 }
+                
+                final int comemntIndex = i;
+                field.getArrayCommentSetter().ifPresent(setter -> 
+                    config.getCommentOperator().loadArrayCellComment(setter, cell, beansObj, comemntIndex, field, config));
+
 
                 try {
                     final Object value = converter.toObject(cell);
@@ -184,6 +190,10 @@ public class ArrayCellsHandler {
                 if(Utils.isNotEmpty(label)) {
                     field.setArrayLabel(beansObj, label, i);
                 }
+                
+                final int comemntIndex = i;
+                field.getArrayCommentSetter().ifPresent(setter -> 
+                    config.getCommentOperator().loadArrayCellComment(setter, cell, beansObj, comemntIndex, field, config));
 
                 try {
                     final Object value = converter.toObject(cell);
@@ -277,6 +287,11 @@ public class ArrayCellsHandler {
                 if(Utils.isNotEmpty(label)) {
                     field.setArrayLabel(beansObj, label, i);
                 }
+                
+                final int commentIndex = i;
+                final Cell tempCellComment = POIUtils.getCell(sheet, cellAddress);
+                field.getArrayCommentGetter().ifPresent(getter -> config.getCommentOperator().saveArrayCellComment(
+                        getter, tempCellComment, beansObj, commentIndex, field, config));
 
                 if(i < dataList.size()) {
                     final Object elementValue = dataList.get(i);
@@ -293,6 +308,10 @@ public class ArrayCellsHandler {
                     // 書き込むリストのサイズを超えている場合、値をクリアする
                     final Cell cell = POIUtils.getCell(sheet, cellAddress);
                     cell.setCellType(CellType.BLANK);
+                    
+                    if(cell.getCellComment() != null) {
+                        cell.removeCellComment();
+                    }
 
                 }
 
@@ -335,6 +354,11 @@ public class ArrayCellsHandler {
                 if(Utils.isNotEmpty(label)) {
                     field.setArrayLabel(beansObj, label, i);
                 }
+                
+                final int commentIndex = i;
+                final Cell tempCellComment = POIUtils.getCell(sheet, cellAddress);
+                field.getArrayCommentGetter().ifPresent(getter -> config.getCommentOperator().saveArrayCellComment(
+                        getter, tempCellComment, beansObj, commentIndex, field, config));
 
                 if(i < dataList.size()) {
                     final Object elementValue = dataList.get(i);
@@ -351,6 +375,10 @@ public class ArrayCellsHandler {
                     // 書き込むリストのサイズを超えている場合、値をクリアする
                     final Cell cell = POIUtils.getCell(sheet, cellAddress);
                     cell.setCellType(CellType.BLANK);
+                    
+                    if(cell.getCellComment() != null) {
+                        cell.removeCellComment();
+                    }
 
                 }
 

@@ -19,16 +19,24 @@
  
   * アノテーション ``@XlsMapColumns`` のセルの位置情報のキーは、 *\<プロパティ名\>[<セルの見出し\>]* としてセットされます。
  
+  * アノテーション ``@XlsArrayColumns`` のセルの位置情報のキーは、 *\<プロパティ名\>[<インデックス\>]* としてセットされます。
+  
 2. アノテーションを付与した *\<setterメソッド名\>Label* というメソッドを用意しておくと、引数にセルの位置が渡されます。
  
-  * 位置情報を取得用のsetterメソッドは、引数 ``String label`` を取る必要があります。
+  * 位置情報を取得用のsetterメソッドは、引数 ``String`` 型を取る必要があります。
   * ただし、``@XlsMapColumns`` に対するsetterメソッドは、第一引数にセルの見出しが必要になります。
   
     * String key, String label
      
+  * ただし、``@XlsArrayColumns`` に対するsetterメソッドは、第一引数にセルのインデックスが必要になります。
+  
+    * int index, String label
+
 3. アノテーションを付与した *\<フィールド名\>Label* というString型のフィールドを用意しておくと、セルの位置が渡されます。
  
   * ただし、``@XlsMapColumns`` に対するフィールドは、``Map<String, String>`` 型にする必要があります。キーには見出しが入ります。
+  
+  * また、``@XlsArrayColumns`` に対するフィールドは、``List<String>`` 型にする必要があります。
 
 
 .. sourcecode:: java
@@ -52,7 +60,7 @@
         }
         
         // @XlsMapColumnsの場合
-        @XlsMapColumns(previousColumnName="名前")
+        @XlsMapColumns(previousColumnName="出欠")
         private Map<String, String> attendedMap;
         
         // プロパティごとに個別に見出し情報を定義するフィールド
@@ -64,6 +72,21 @@
         public void setAttendedMapLabel(String key, String label) {
             //...
         }
+        
+        // @XlsArrayColumnsの場合
+        ＠XlsArrayColumns(columnName="ふりがな")
+        private List<String> rubyList;
+        
+        // プロパティごとに個別に見出し情報を定義するフィールド
+        private Map<String, String> rubyListLabel;
+        
+        // プロパティごとに個別に見出し情報を定義するメソッド
+        // @XlsArrayColumnsの場合indexは、インデックスの値
+        // フィールド labelsが定義あれば必要ありません。
+        public void setRubyListLabel(int index, String label) {
+            //...
+        }
+        
     
     }
 

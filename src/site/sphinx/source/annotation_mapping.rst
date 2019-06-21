@@ -55,6 +55,12 @@
    * - :ref:`@XlsIterateTables <annotationXlsIterateTables>`
      - シート内で繰り返される同一構造の表をマッピングします。
 
+   * - :ref:`@XlsComment <annotationXlsComment>`
+     - セルの座標を直接指定して、セルのコメントをマッピングします。
+
+   * - :ref:`@XlsLablledComment <annotationXlsLabelledComment>`
+     - 指定したラベルセルのコメント情報をマッピングします。
+
 
 .. list-table:: 補助的なマッピング用のアノテーション
    :widths: 30 70
@@ -78,6 +84,8 @@
    * - :ref:`@XlsRecordFinder <annotationXlsRecordFinder>`
      - レコードの開始位置をプログラマティックに指定します。
 
+   * - :ref:`@XlsCommentOption <annotationXlsCommentOption>`
+     - 書き込み時のセルのコメントのサイズなどの制御を指定します。
 
 .. 以降は、埋め込んで作成する
 .. include::  ./annotation_mapping_sheet.rst
@@ -93,9 +101,13 @@
 .. include::  ./annotation_mapping_arraycolumns.rst
 .. include::  ./annotation_mapping_nestedrecords.rst
 .. include::  ./annotation_mapping_iteratetables.rst
+.. include::  ./annotation_mapping_comment.rst
+.. include::  ./annotation_mapping_labelledcomment.rst
+..
 .. include::  ./annotation_mapping_order.rst
 .. include::  ./annotation_mapping_ignorable.rst
 .. include::  ./annotation_mapping_arrayoption.rst
 .. include::  ./annotation_mapping_recordoption.rst
 .. include::  ./annotation_mapping_recordfinder.rst
+.. include::  ./annotation_mapping_commentoption.rst
 

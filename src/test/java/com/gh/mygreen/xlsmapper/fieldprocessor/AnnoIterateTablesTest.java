@@ -1,9 +1,9 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.assertj.core.api.Assertions.*;
 
 import java.awt.Point;
 import java.io.File;
@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ import com.gh.mygreen.xlsmapper.annotation.XlsIgnorable;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledComment;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsRecordOption.OverOperation;
@@ -47,7 +49,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * {@link IterateTablesProcessor}のテスタ
  * アノテーション{@link XlsIterateTables}のテスタ。
  *
- * @version 2.0
+ * @version 2.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -308,6 +310,36 @@ public class AnnoIterateTablesTest {
         }
 
     }
+    
+    /**
+     * コメント情報のマッピング
+     * @since 2.1
+     */
+    @Test
+    public void test_load_it_comment() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(false)
+            .setRegexLabelText(true)
+            .setNormalizeLabelText(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
+
+            CommentSheet sheet = errors.getTarget();
+
+            if(sheet.tables != null) {
+                assertThat(sheet.tables, hasSize(2));
+                for(CommentSheet.Table table : sheet.tables) {
+                    assertTable(table, errors);
+                }
+            }
+        }
+        
+    }
+    
+    
+    
 
     private void assertTable(final HorizontalClassTable table, final SheetBindingErrors<?> errors) {
 
@@ -710,6 +742,71 @@ public class AnnoIterateTablesTest {
         }
 
 
+
+    }
+    
+    private void assertTable(final CommentSheet.Table table, final SheetBindingErrors<?> errors) {
+
+        if(table.name.equals("1年2組")) {
+
+            assertThat(table.no, is(1));
+            assertThat(table.name, is("1年2組"));
+            
+            assertThat(table.noDesc, is("コメント1"));
+            assertThat(table.nameDesc, is(nullValue()));
+            
+            assertThat(table.comments, hasEntry("name", "コメント3"));
+
+            assertThat(table.records, hasSize(2));
+            for(CommentSheet.Record record : table.records) {
+
+                if(record.no == 1) {
+                    assertThat(record.name, is("阿部一郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))));
+                    
+                    assertThat(record.comments, hasEntry("no", "コメント5"));
+
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("泉太郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))));
+
+                    assertThat(record.comments, hasEntry("birthday", "コメント6"));
+                }
+
+            }
+
+        } else if(table.name.equals("2年3組")) {
+
+            assertThat(table.no, is(2));
+            assertThat(table.name, is("2年3組"));
+
+            assertThat(table.noDesc, is(nullValue()));
+            assertThat(table.nameDesc, is("コメント2"));
+
+            assertThat(table.comments, is(nullValue()));
+
+            assertThat(table.records, hasSize(3));
+            for(CommentSheet.Record record : table.records) {
+
+                if(record.no == 1) {
+                    assertThat(record.name, is("鈴木一郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))));
+
+                } else if(record.no == 2) {
+                    assertThat(record.name, is("林次郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))));
+
+                    assertThat(record.comments, hasEntry("name", "コメント4"));
+                    
+                } else if(record.no == 3) {
+                    assertThat(record.name, is("山田太郎"));
+                    assertThat(record.birthday, is(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))));
+
+                }
+
+            }
+
+        }
 
     }
 
@@ -1170,6 +1267,104 @@ public class AnnoIterateTablesTest {
 
         }
 
+    }
+    
+    /**
+     * 書込みのテスト - コメント情報
+     */
+    @Test
+    public void test_save_it_comment() throws Exception {
+        
+        // テストデータの作成
+        CommentSheet outSheet = new CommentSheet();
+
+        outSheet.add(new CommentSheet.Table().name("1年2組").noDesc("コメント1").comment("name", "コメント3")
+                .add(new CommentSheet.Record().name("阿部一郎").birthday(toUtilDate(toTimestamp("2000-04-01 00:00:00.000"))).comment("no", "コメント5"))
+                .add(new CommentSheet.Record().name("泉太郎").birthday(toUtilDate(toTimestamp("2000-04-02 00:00:00.000"))))
+                .add(new CommentSheet.Record().name("山田花子").birthday(toUtilDate(toTimestamp("2000-04-03 00:00:00.000"))).comment("birthday", "コメント6"))
+        );
+
+        outSheet.add(new CommentSheet.Table().name("2年3組").nameDesc("コメント2")
+                .add(new CommentSheet.Record().name("鈴木一郎").birthday(toUtilDate(toTimestamp("1999-04-01 00:00:00.000"))))
+                .add(new CommentSheet.Record().name("林次郎").birthday(toUtilDate(toTimestamp("1999-04-02 00:00:00.000"))).comment("name", "コメント4"))
+                .add(new CommentSheet.Record().name("山田太郎").birthday(toUtilDate(toTimestamp("1999-04-03 00:00:00.000"))))
+        );
+
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConiguration().setContinueTypeBindFailure(true);
+
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            mapper.save(template, out, outSheet);
+        }
+
+        // 書き込んだファイルを読み込み値の検証を行う。
+        try(InputStream in = new FileInputStream(outFile)) {
+            SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
+
+            CommentSheet sheet = errors.getTarget();
+
+            if(sheet.tables != null) {
+                assertThat(sheet.tables, hasSize(outSheet.tables.size()));
+
+                for(int i=0; i < sheet.tables.size(); i++) {
+                    assertTable(sheet.tables.get(i), outSheet.tables.get(i), errors);
+                }
+
+            }
+
+        }
+        
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertTable(final CommentSheet.Table inRecord, final CommentSheet.Table outRecord, final SheetBindingErrors<?> errors) {
+
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        
+        assertThat(inRecord.noDesc, is(outRecord.noDesc));
+        assertThat(inRecord.nameDesc, is(outRecord.nameDesc));
+        
+        assertThat(inRecord.comments, is(outRecord.comments));
+
+        if(inRecord.records != null) {
+            assertThat(inRecord.records, hasSize(outRecord.records.size()));
+
+            for(int i=0; i < inRecord.records.size(); i++) {
+                assertRecord(inRecord.records.get(i), outRecord.records.get(i), errors);
+            }
+
+        }
+    }
+    
+    /**
+     * 書き込んだレコードを検証するための
+     * @param inRecord
+     * @param outRecord
+     * @param errors
+     */
+    private void assertRecord(final CommentSheet.Record inRecord, final CommentSheet.Record outRecord, final SheetBindingErrors<?> errors) {
+
+        System.out.printf("%s - assertRecord::%s no=%d\n",
+                this.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no);
+
+        assertThat(inRecord.no, is(outRecord.no));
+        assertThat(inRecord.name, is(outRecord.name));
+        assertThat(inRecord.birthday, is(outRecord.birthday));
+        
+        assertThat(inRecord.comments, is(outRecord.comments));
     }
 
     /**
@@ -2279,6 +2474,154 @@ public class AnnoIterateTablesTest {
 
             public ArrayCellRecord telNumber(List<String> telNumber) {
                 this.telNumber = telNumber;
+                return this;
+            }
+
+        }
+
+    }
+    
+    @XlsSheet(name="コメント情報")
+    private static class CommentSheet {
+
+        private Map<String, Point> positions;
+
+        private Map<String, String> labels;
+        
+        private Map<String, String> comments;
+
+        @XlsIterateTables(tableLabel="クラス情報", bottom=3)
+        private List<Table> tables;
+
+        public CommentSheet add(Table table) {
+
+            if(tables == null) {
+                this.tables = new ArrayList<>();
+            }
+
+            this.tables.add(table);
+            table.no(tables.size());
+
+            return this;
+        }
+        
+        /**
+         * 繰り返し用のテーブルの定義 - horizontal
+         */
+        private static class Table {
+
+            private Map<String, Point> positions;
+
+            private Map<String, String> labels;
+            
+            private Map<String, String> comments;
+
+            @XlsOrder(1)
+            @XlsLabelledCell(label="番号", type=LabelledCellType.Right)
+            private int no;
+
+            @XlsOrder(2)
+            @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
+            private String name;
+
+            @XlsOrder(3)
+            @XlsLabelledComment(label = "番号")
+            private String noDesc;
+            
+            @XlsOrder(4)
+            @XlsLabelledComment(label = "クラス名")
+            private String nameDesc;
+
+            @XlsOrder(5)
+            @XlsHorizontalRecords(tableLabel="クラス情報", terminal=RecordTerminal.Border)
+            @XlsRecordOption(overOperation=OverOperation.Insert, remainedOperation=RemainedOperation.Delete)
+            private List<Record> records;
+            
+            public Table no(int no) {
+                this.no = no;
+                return this;
+            }
+
+            public Table name(String name) {
+                this.name = name;
+                return this;
+            }
+            
+            public Table noDesc(String noDesc) {
+                this.noDesc = noDesc;
+                return this;
+            }
+            
+            public Table nameDesc(String nameDesc) {
+                this.nameDesc = nameDesc;
+                return this;
+            }
+
+            public Table add(Record record) {
+
+                if(records == null) {
+                    this.records = new ArrayList<>();
+                }
+
+                this.records.add(record);
+                record.no(records.size());
+
+                return this;
+            }
+            
+            public Table comment(String key, String text) {
+                if(comments == null) {
+                    this.comments = new HashMap<String, String>();
+                }
+                this.comments.put(key, text);
+                return this;
+            }
+
+        }
+        
+        private static class Record {
+
+            private Map<String, Point> positions;
+
+            private Map<String, String> labels;
+            
+            private Map<String, String> comments;
+
+            @XlsColumn(columnName="No.")
+            private int no;
+
+            @XlsColumn(columnName="氏名")
+            private String name;
+
+            @XlsDateTimeConverter(javaPattern="yyyy年M月d日", excelPattern="yyyy/m/d")
+            @XlsColumn(columnName="誕生日")
+            private Date birthday;
+
+            @XlsIgnorable
+            public boolean isEmpty() {
+                return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
+            }
+
+            public Record no(int no) {
+                this.no = no;
+                return this;
+            }
+
+            public Record name(String name) {
+                this.name = name;
+                return this;
+            }
+
+            public Record birthday(Date birthday) {
+                this.birthday = birthday;
+                return this;
+            }
+            
+            public Record comment(String key, String text) {
+                if(comments == null) {
+                    this.comments = new HashMap<String, String>();
+                }
+                this.comments.put(key, text);
                 return this;
             }
 

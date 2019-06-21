@@ -25,6 +25,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * {@link FieldAccessor}のインスタンスを作成するクラス。
  *
+ * @version 2.1
  * @since 2.0
  * @author T.TSUCHIE
  *
@@ -44,7 +45,17 @@ public class FieldAccessorFactory {
     private LabelGetterFactory labelGetterFactory = new LabelGetterFactory();
     private MapLabelSetterFactory mapLabelSetterFactory = new MapLabelSetterFactory();
     private ArrayLabelSetterFactory arrayLabelSetterFactory = new ArrayLabelSetterFactory();
+    
+    private CommentSetterFactory commentSetterFactory = new CommentSetterFactory();
+    private CommentGetterFactory commentGetterFactory = new CommentGetterFactory();
+    
+    private MapCommentSetterFactory mapCommentSetterFactory = new MapCommentSetterFactory();
+    private MapCommentGetterFactory mapCommentGetterFactory = new MapCommentGetterFactory();
+    
+    private ArrayCommentSetterFactory arrayCommentSetterFactory = new ArrayCommentSetterFactory();
+    private ArrayCommentGetterFactory arrayCommentGetterFactory = new ArrayCommentGetterFactory();
 
+    
     /**
      * コンストラクタ
      * @param annoReader XMLで定義したアノテーション情報を提供するクラス。
@@ -108,6 +119,10 @@ public class FieldAccessorFactory {
             // マップ形式の場合
             accessor.mapPositionSetter = mapPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+            accessor.mapCommentSetter = mapCommentSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.mapCommentGetter = mapCommentGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
 
         } else if(accessor.hasAnnotation(XlsArrayColumns.class)
                 || accessor.hasAnnotation(XlsArrayCells.class)
@@ -116,6 +131,9 @@ public class FieldAccessorFactory {
             // リストや配列形式の場合
             accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             accessor.arrayLabelSetter = arrayLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+            accessor.arrayCommentSetter = arrayCommentSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.arrayCommentGetter = arrayCommentGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
 
             if(accessor.hasAnnotation(XlsArrayColumns.class)
                     || accessor.hasAnnotation(XlsLabelledArrayCells.class)) {
@@ -130,6 +148,10 @@ public class FieldAccessorFactory {
 
             accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+            accessor.commentSetter = commentSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.commentGetter = commentGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
 
         }
 
@@ -258,6 +280,10 @@ public class FieldAccessorFactory {
 
             accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
             accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            
+            accessor.commentSetter = commentSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+            accessor.commentGetter = commentGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());
+
         }
 
 

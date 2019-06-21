@@ -19,7 +19,7 @@ import com.gh.mygreen.xlsmapper.util.CellPosition;
  * メソッド（setter/getter）とフィールドのアクセスを吸収するクラス。
  * <p>インスタンスは、{@link FieldAccessorFactory}から作成します。</p>
  *
- * @version 2.0
+ * @version 2.1
  * @author T.TSUCHIE
  *
  */
@@ -101,9 +101,39 @@ public class FieldAccessor {
     Optional<MapLabelSetter> mapLabelSetter = Optional.empty();
     
     /**
-     * {@link XlsArrayColumns}用の位置情報のSetter
+     * {@link XlsArrayColumns}用のラベル情報のSetter
      */
     Optional<ArrayLabelSetter> arrayLabelSetter = Optional.empty();
+    
+    /**
+     * コメント情報のSetter
+     */
+    Optional<CommentSetter> commentSetter = Optional.empty();
+    
+    /**
+     * コメント情報のgetter
+     */
+    Optional<CommentGetter> commentGetter = Optional.empty();
+    
+    /**
+     * {@link XlsMapColumns}用のコメント情報のSetter
+     */
+    Optional<MapCommentSetter> mapCommentSetter = Optional.empty();
+    
+    /**
+     * {@link XlsMapColumns}用のコメント情報のGetter
+     */
+    Optional<MapCommentGetter> mapCommentGetter = Optional.empty();
+    
+    /**
+     * {@link XlsArrayColumns}用のコメント情報のSetter
+     */
+    Optional<ArrayCommentSetter> arrayCommentSetter = Optional.empty();
+    
+    /**
+     * {@link XlsArrayColumns}用のコメント情報のGetter
+     */
+    Optional<ArrayCommentGetter> arrayCommentGetter = Optional.empty();
     
     FieldAccessor() {
         
@@ -478,6 +508,60 @@ public class FieldAccessor {
         
         arrayLabelSetter.ifPresent(setter -> setter.set(targetObj, label, index));
         
+    }
+    
+    /**
+     * フィールドに対する{@link CommentSetter}を取得する。
+     * @since 2.1
+     * @return コメントの格納先がない場合は空を返す。
+     */
+    public Optional<CommentSetter> getCommentSetter() {
+        return commentSetter;
+    }
+    
+    /**
+     * フィールドに対する{@link CommentGetter}を取得する。
+     * @since 2.1
+     * @return コメントの格納先がない場合は空を返す。
+     */
+    public Optional<CommentGetter> getCommentGetter() {
+        return commentGetter;
+    }
+    
+    /**
+     * フィールドに対する{@link MapCommentSetter}を取得する。
+     * @since 2.1
+     * @return コメントの格納先がない場合は空を返す。
+     */
+    public Optional<MapCommentSetter> getMapCommentSetter() {
+        return mapCommentSetter;
+    }
+    
+    /**
+     * フィールドに対する{@link MapCommentGetter}を取得する。
+     * @since 2.1
+     * @return コメントの格納先がない場合は空を返す。
+     */
+    public Optional<MapCommentGetter> getMapCommentGetter() {
+        return mapCommentGetter;
+    }
+    
+    /**
+     * フィールドに対する{@link ArrayCommentSetter}を取得する。
+     * @since 2.1
+     * @return コメントの格納先がない場合は空を返す。
+     */
+    public Optional<ArrayCommentSetter> getArrayCommentSetter() {
+        return arrayCommentSetter;
+    }
+    
+    /**
+     * フィールドに対する{@link ArrayCommentGetter}を取得する。
+     * @since 2.1
+     * @return コメントの格納先がない場合は空を返す。
+     */
+    public Optional<ArrayCommentGetter> getArrayCommentGetter() {
+        return arrayCommentGetter;
     }
     
 }

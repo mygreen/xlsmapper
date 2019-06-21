@@ -17,7 +17,7 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 /**
  * マッピングする際の設定などを保持するクラス。
  *
- * @version 2.0
+ * @version 2.1
  * @author T.TSUCHIE
  *
  */
@@ -70,6 +70,9 @@ public class Configuration {
 
     /** 数式をフォーマットするクラス */
     private MessageInterpolator formulaFormatter = new MessageInterpolator();
+    
+    /** セルコメントを操作するクラス */
+    private CellCommentOperator commentOperator = new CellCommentOperator();
 
     /** Beanに対するアノテーションのマッピング情報 */
     private AnnotationMappingInfo annotationMapping = null;
@@ -427,6 +430,26 @@ public class Configuration {
      */
     public void setAnnotationMapping(AnnotationMappingInfo annotationMapping) {
         this.annotationMapping = annotationMapping;
+    }
+
+    /**
+     * セルコメントを操作するクラスを取得します。
+     * @since 2.1
+     * @return セルコメントを操作するクラス
+     */
+    public CellCommentOperator getCommentOperator() {
+        return commentOperator;
+    }
+
+    /**
+     * セルコメントを操作するクラスを設定します。
+     * @since 2.1
+     * @param commentOperator セルコメントを操作するクラス
+     * @return 自身のインスタンス
+     */
+    public Configuration setCommentOperator(CellCommentOperator commentOperator) {
+        this.commentOperator = commentOperator;
+        return this;
     }
 
 }

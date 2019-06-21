@@ -15,6 +15,7 @@ import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellHandler.LabelInfo;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
 import com.gh.mygreen.xlsmapper.util.Utils;
 import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
@@ -22,7 +23,7 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 /**
  * {@link XlsLabelledCell}を処理するFieldProcessor。
  *
- * @version 2.0
+ * @version 2.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
@@ -51,6 +52,9 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
 
         accessor.setPosition(beansObj, labelInfo.get().valueAddress);
         accessor.setLabel(beansObj, labelInfo.get().label);
+        
+        accessor.getCommentSetter().ifPresent(setter -> 
+                config.getCommentOperator().loadCellComment(setter, labelInfo.get().valueCell, beansObj, accessor, config));
 
         final CellConverter<?> converter = getCellConverter(accessor, config);
         if(converter instanceof FieldFormatter) {
@@ -91,6 +95,10 @@ public class LabelledCellProcessor extends AbstractFieldProcessor<XlsLabelledCel
 
         accessor.setPosition(targetObj, labelInfo.get().valueAddress);
         accessor.setLabel(targetObj, labelInfo.get().label);
+        
+        accessor.getCommentGetter().ifPresent(getter -> 
+                    config.getCommentOperator().saveCellComment(getter, POIUtils.getCell(sheet, labelInfo.get().valueAddress), 
+                        targetObj, accessor, config));
 
         final CellConverter converter = getCellConverter(accessor, config);
         if(converter instanceof FieldFormatter) {

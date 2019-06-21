@@ -67,13 +67,16 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
  * }
  * </code></pre>
  *
- * <h3 class="description">位置情報／見出し情報を取得する際の注意事項</h3>
+ * <h3 class="description">位置情報／見出し情報／セルのコメント情報を取得する際の注意事項</h3>
  * <p>マッピング対象のセルのアドレスを取得する際に、フィールド{@literal Map<String, CellPosition> positions}を定義しておけば、
  *    自動的にアドレスがマッピングされます。
  *    <br>通常は、キーにはプロパティ名が記述（フィールドの場合はフィールド名）が入ります。
  *    <br>アノテーション{@link XlsMapColumns}でマッピングしたセルのキーは、{@literal <プロパティ名>[<セルの見出し>]}の形式になります。
  * </p>
  * <p>同様に、マッピング対象の見出しを取得する、フィールド{@literal Map<String, String> labels}へのアクセスも、
+ *    キーは{@literal <プロパティ名>[<セルの見出し>]}の形式になります。
+ * </p>
+ * <p>また、マッピング対象のセルのコメント情報を取得する、フィールド{@literal Map<String, String> comments}へのアクセスも、
  *    キーは{@literal <プロパティ名>[<セルの見出し>]}の形式になります。
  * </p>
  *
@@ -86,6 +89,9 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
  *     // 見出し情報
  *     private {@literal Map<String, String>} labels;
  *
+ *     // セルのコメント情報
+ *     private {@literal Map<String, String>} comments;
+ *     
  *     {@literal @XlsColumn(columnName="ID")}
  *     private int id;
  *
@@ -98,18 +104,20 @@ import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
  * }
  *
  *
- * // 位置情報・見出し情報へのアクセス
+ * // 位置情報・見出し情報・セルのコメント情報へのアクセス
  * SampleRecord record = ...;
  *
  * CellPosition position = record.positions.get("attendedMap[4月2日]");
  *
  * String label = recrod.labeles.get("attendedMap[4月2日]");
+ * 
+ * String comment = recrod.comments.get("attendedMap[4月2日]");
  * </code></pre>
  *
  *
  * <div class="picture">
  *    <img src="doc-files/MapColumns_positions.png" alt="">
- *    <p>位置情報・見出し情報の取得</p>
+ *    <p>位置情報・見出し情報・セルのコメント情報の取得</p>
  * </div>
  *
  *
