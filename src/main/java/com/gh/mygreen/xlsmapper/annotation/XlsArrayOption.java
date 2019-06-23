@@ -86,7 +86,7 @@ public @interface XlsArrayOption {
      * @author T.TSUCHIE
      *
      */
-    public static enum OverOperation {
+    public enum OverOperation {
 
         /**
          * 隣接するセルへの書き込みを中断します。
@@ -109,7 +109,7 @@ public @interface XlsArrayOption {
      * @author T.TSUCHIE
      *
      */
-    public static enum RemainedOperation {
+    public enum RemainedOperation {
 
         /**
          * 隣接するセルへの書き込み、その後、何もしません。

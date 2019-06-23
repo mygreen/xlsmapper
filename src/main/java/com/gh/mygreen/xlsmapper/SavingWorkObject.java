@@ -18,7 +18,7 @@ public class SavingWorkObject {
     
     private AnnotationReader annoReader;
     
-    private final List<NeedProcess> needPostProcesses = new ArrayList<NeedProcess>();
+    private final List<NeedProcess> needPostProcesses = new ArrayList<>();
     
     private SheetBindingErrors<?> errors;
     

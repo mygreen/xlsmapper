@@ -111,12 +111,12 @@ public @interface XlsArrayConverter {
      *
      *     {@literal @Override}
      *     public User convertToObject(final String str, final {@literal Class<User>} targetClass) throws ConversionException {
-     *         //TODO: 文字列 {@literal =>} オブジェクトに変換する処理
+     *         // 文字列 {@literal =>} オブジェクトに変換する処理
      *     }
      *
      *     {@literal @Override}
      *     public String convertToString(final User value) {
-     *         //TODO: オブジェクト {@literal =>} 文字列に変換する処理
+     *         // オブジェクト {@literal =>} 文字列に変換する処理
      *     }
      *
      * }

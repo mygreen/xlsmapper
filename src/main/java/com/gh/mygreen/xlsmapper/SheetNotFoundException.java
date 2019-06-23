@@ -15,11 +15,11 @@ public class SheetNotFoundException extends XlsMapperException {
     /** serialVersionUID */
     private static final long serialVersionUID = 1604967589865552445L;
     
-    private String sheetName;
+    private final String sheetName;
     
-    private Integer sheetNumber;
+    private final Integer sheetNumber;
     
-    private Integer bookSheetSize;
+    private final Integer bookSheetSize;
     
     /**
      * 指定したシート名が見つからない場合に、そのシート名を指定するコンストラクタ。
@@ -41,6 +41,8 @@ public class SheetNotFoundException extends XlsMapperException {
     public SheetNotFoundException(final String sheetName, final String message) {
         super(message);
         this.sheetName = sheetName;
+        this.sheetNumber = null;
+        this.bookSheetSize = null;
     }
     
     /**
@@ -53,6 +55,7 @@ public class SheetNotFoundException extends XlsMapperException {
                 .var("sheetNumber", sheetNumber)
                 .var("bookSheetSize", bookSheetSize)
                 .format());
+        this.sheetName = null;
         this.sheetNumber = sheetNumber;
         this.bookSheetSize = bookSheetSize;
     }

@@ -115,12 +115,16 @@ public class XlsLoader {
                     .format());
         }
 
-        final Workbook book;
+        Workbook book = null;
         try {
             book = WorkbookFactory.create(xlsIn);
 
         } catch (InvalidFormatException e) {
             throw new XlsMapperException(MessageBuilder.create("file.failLoadExcel.notSupportType").format(), e);
+        } finally {
+            if(book != null) {
+                book.close();
+            }
         }
 
         try {
@@ -190,12 +194,16 @@ public class XlsLoader {
 
         final MultipleSheetBindingErrors<P> multipleResult = new MultipleSheetBindingErrors<>();
 
-        final Workbook book;
+        Workbook book = null;
         try {
             book = WorkbookFactory.create(xlsIn);
 
         } catch (InvalidFormatException e) {
             throw new XlsMapperException(MessageBuilder.create("file.failLoadExcel.notSupportType").format(), e);
+        } finally {
+            if(book != null) {
+                book.close();
+            }
         }
 
         if(sheetAnno.number() == -1 && sheetAnno.name().isEmpty() && sheetAnno.regex().isEmpty()) {
@@ -274,12 +282,16 @@ public class XlsLoader {
 
         final MultipleSheetBindingErrors<Object> multipleStore = new MultipleSheetBindingErrors<>();
 
-        final Workbook book;
+        Workbook book = null;
         try {
             book = WorkbookFactory.create(xlsIn);
 
         } catch (InvalidFormatException e) {
             throw new XlsMapperException(MessageBuilder.create("file.failLoadExcel.notSupportType").format(), e);
+        } finally {
+            if(book != null) {
+                book.close();
+            }
         }
 
         for(Class<?> clazz : classes) {

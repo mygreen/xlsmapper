@@ -36,7 +36,7 @@ public class DefaultElementConverter implements ElementConverter<Object> {
         primitiveDefaults.put(Float.TYPE, 0.0f);
         primitiveDefaults.put(Double.TYPE, 0.0);
         primitiveDefaults.put(BigInteger.class, new BigInteger("0"));
-        primitiveDefaults.put(BigDecimal.class, new BigDecimal(0.0));
+        primitiveDefaults.put(BigDecimal.class, new BigDecimal("0.0"));
     }
     
     @Override

@@ -15,7 +15,6 @@ import org.apache.poi.ss.util.CellReference;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
-import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
@@ -128,7 +127,7 @@ public class CellFormulaHandler {
             
             return config.getFormulaFormatter().interpolate(formula.get(), vars);
             
-        } else {
+        } else if(method.isPresent()) {
             
             // メソッドの引数の組み立て
             final Class<?>[] paramTypes = method.get().getParameterTypes();
@@ -169,6 +168,9 @@ public class CellFormulaHandler {
                         t);
             }
             
+        } else {
+            // 数式や対応するメソッドがない場合
+            throw new IllegalStateException("not found for formula or method.");
         }
         
     }
