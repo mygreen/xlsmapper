@@ -66,7 +66,7 @@ public class SpringTest {
         config.setBeanFactory(springBeanFactory);
 
         XlsMapper mapper = new XlsMapper();
-        mapper.setConiguration(config);
+        mapper.setConfiguration(config);
 
         try(InputStream in = new FileInputStream("src/test/data/spring.xlsx")) {
             SheetBindingErrors<SampleSheet> errors = mapper.loadDetail(in, SampleSheet.class);
@@ -95,7 +95,7 @@ public class SpringTest {
         config.setBeanFactory(springBeanFactory);
 
         XlsMapper mapper = new XlsMapper();
-        mapper.setConiguration(config);
+        mapper.setConfiguration(config);
 
         try(InputStream in = new FileInputStream("src/test/data/spring.xlsx")) {
             SheetBindingErrors<NotSpringBeanSheet> errors = mapper.loadDetail(in, NotSpringBeanSheet.class);

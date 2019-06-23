@@ -75,7 +75,7 @@ public class AnnoLabelledCellTest {
     @Test
     public void test_load_labelled_cell_normal() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
@@ -111,7 +111,7 @@ public class AnnoLabelledCellTest {
     @Test(expected=TypeBindException.class)
     public void test_load_labelled_cell_bind_error() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -128,7 +128,7 @@ public class AnnoLabelledCellTest {
     @Test(expected=CellNotFoundException.class)
     public void test_load_labelled_cell_notFoundCell() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             mapper.load(in, NotFounceLabelCellSheet.class);
@@ -145,7 +145,7 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_invalid_annotation2() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             mapper.load(in, InvalidAnnoSheet2.class);
@@ -164,7 +164,7 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_methodAnno() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
@@ -199,7 +199,7 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_distance() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<DistanceSheet> errors = mapper.loadDetail(in, DistanceSheet.class);
@@ -230,7 +230,7 @@ public class AnnoLabelledCellTest {
         XlsMapper mapper = new XlsMapper();
 
         // エラー確認（正規表現が無効）
-        mapper.getConiguration().setRegexLabelText(false)
+        mapper.getConfiguration().setRegexLabelText(false)
             .setNormalizeLabelText(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
@@ -244,7 +244,7 @@ public class AnnoLabelledCellTest {
         }
 
         // エラー確認（正規化が無効）
-        mapper.getConiguration().setRegexLabelText(true)
+        mapper.getConfiguration().setRegexLabelText(true)
             .setNormalizeLabelText(false);
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
@@ -257,7 +257,7 @@ public class AnnoLabelledCellTest {
         }
 
         // 正規表現、正規化の両方が有効
-        mapper.getConiguration().setRegexLabelText(true)
+        mapper.getConfiguration().setRegexLabelText(true)
             .setNormalizeLabelText(true);
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RegexSheet> errors = mapper.loadDetail(in, RegexSheet.class);
@@ -286,7 +286,7 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_formula() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
@@ -309,7 +309,7 @@ public class AnnoLabelledCellTest {
     public void test_load_labelled_cell_comment() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
@@ -349,7 +349,7 @@ public class AnnoLabelledCellTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -414,7 +414,7 @@ public class AnnoLabelledCellTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -497,7 +497,7 @@ public class AnnoLabelledCellTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
 
@@ -570,7 +570,7 @@ public class AnnoLabelledCellTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
 
@@ -620,7 +620,7 @@ public class AnnoLabelledCellTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -662,7 +662,7 @@ public class AnnoLabelledCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);

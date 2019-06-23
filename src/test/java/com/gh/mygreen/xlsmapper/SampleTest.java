@@ -412,7 +412,7 @@ public class SampleTest {
                 .buildXml();
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
         // XmlMapperクラスに直接渡せます。
         OverrideSheetName sheet = mapper.load(

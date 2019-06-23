@@ -76,7 +76,7 @@ public class AnnoDefaultValueTest {
     public void test_load_normal() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalValueSheet> errors = mapper.loadDetail(in, NormalValueSheet.class);
@@ -114,8 +114,8 @@ public class AnnoDefaultValueTest {
                 .buildXml();
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -140,7 +140,7 @@ public class AnnoDefaultValueTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -155,43 +155,43 @@ public class AnnoDefaultValueTest {
             Sheet sheet = WorkbookFactory.create(in).getSheet("通常のテスト");
             {
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C4"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo("あいう");
             }
 
             {
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C5"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo("");
             }
 
             {
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C6"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo("  初期値  ");
             }
 
             {
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C7"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo("初期値");
             }
 
             {
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C8"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo("2017-08-20");
             }
 
             {
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C9"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEmpty();
             }
 
             {
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C10"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo("初期値");
             }
 

@@ -72,7 +72,7 @@ public class TemporalCellConverterTest {
     public void test_load_date_time() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
             SheetBindingErrors<TemporalSheet> errors = mapper.loadDetail(in, TemporalSheet.class);
@@ -277,7 +277,7 @@ public class TemporalCellConverterTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, "convert_jsr310.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");

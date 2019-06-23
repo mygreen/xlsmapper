@@ -64,7 +64,7 @@ public class AnnoLabelledCommentTest {
     public void test_load_labelled_comment() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
@@ -96,7 +96,7 @@ public class AnnoLabelledCommentTest {
     public void test_load_labelled_comment_notFoundCell() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             assertThatThrownBy(() -> mapper.loadDetail(in, NotFoundCellSheet.class))
@@ -114,7 +114,7 @@ public class AnnoLabelledCommentTest {
     public void test_load_labelled_comment_invalidAnno() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             assertThatThrownBy(() -> mapper.loadDetail(in, InvalidAnnoSheet.class))
@@ -139,7 +139,7 @@ public class AnnoLabelledCommentTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);

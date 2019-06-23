@@ -109,7 +109,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedPosition() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -157,7 +157,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedPosition_error1() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -174,7 +174,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedPosition_error2() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -191,7 +191,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedPosition_error3() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -208,7 +208,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_endPosition() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<EndPositionSheet> errors = mapper.loadDetail(in, EndPositionSheet.class);
@@ -254,7 +254,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_headerSpace() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -301,7 +301,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_columnSetting() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ColumnSettingSheet> errors = mapper.loadDetail(in, ColumnSettingSheet.class);
@@ -353,7 +353,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_columnSetting_bind_error() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -371,7 +371,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_mapColumnSetting() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
@@ -416,7 +416,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_mapColumnSetting_bind_error() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -434,7 +434,7 @@ public class AnnoHorizontalRecordsTest {
 
         XlsMapper mapper = new XlsMapper();
 
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         // optional=false - 例外が発生
         {
@@ -450,7 +450,7 @@ public class AnnoHorizontalRecordsTest {
                             .buildClass())
                     .buildXml();
 
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
             try(InputStream in = new FileInputStream(inputFile)) {
                 SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
@@ -480,7 +480,7 @@ public class AnnoHorizontalRecordsTest {
                             .buildClass())
                     .buildXml();
 
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
             try(InputStream in = new FileInputStream(inputFile)) {
                 SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
@@ -522,9 +522,9 @@ public class AnnoHorizontalRecordsTest {
                             .buildClass())
                     .buildXml();
 
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
-            mapper.getConiguration().setContinueTypeBindFailure(true);
+            mapper.getConfiguration().setContinueTypeBindFailure(true);
 
             try(InputStream in = new FileInputStream(inputFile)) {
                 SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
@@ -554,9 +554,9 @@ public class AnnoHorizontalRecordsTest {
                             .buildClass())
                     .buildXml();
 
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
-            mapper.getConiguration().setContinueTypeBindFailure(true);
+            mapper.getConfiguration().setContinueTypeBindFailure(true);
 
             try(InputStream in = new FileInputStream(inputFile)) {
                 SheetBindingErrors<MapColumnSettingSheet> errors = mapper.loadDetail(in, MapColumnSettingSheet.class);
@@ -586,7 +586,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_recordSetting() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RecodSettingSheet> errors = mapper.loadDetail(in, RecodSettingSheet.class);
@@ -625,7 +625,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_methodAnno() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
@@ -658,7 +658,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_startedDataPosition() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<StartedDataPositionSheet> errors = mapper.loadDetail(in, StartedDataPositionSheet.class);
@@ -694,7 +694,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_concatTable() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ConcatSheet> errors = mapper.loadDetail(in, ConcatSheet.class);
@@ -731,7 +731,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_regexLabel() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false)
+        mapper.getConfiguration().setContinueTypeBindFailure(false)
             .setNormalizeLabelText(true)
             .setRegexLabelText(true);
 
@@ -788,7 +788,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_nestedRecords() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NestedSheet> errors = mapper.loadDetail(in, NestedSheet.class);
@@ -839,7 +839,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_formula() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
@@ -871,7 +871,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_customDataPosition() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false)
+        mapper.getConfiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
@@ -909,7 +909,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_arrayColumns() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false)
+        mapper.getConfiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
@@ -956,7 +956,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_load_hr_comment() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false)
+        mapper.getConfiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
@@ -1690,7 +1690,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1762,7 +1762,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1790,7 +1790,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1818,7 +1818,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1854,7 +1854,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1931,7 +1931,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1994,7 +1994,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_save_hr_columnSetting1() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         test_save_hr_columnSetting(mapper);
     }
@@ -2008,7 +2008,7 @@ public class AnnoHorizontalRecordsTest {
     public void test_save_hr_columnSetting2() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setMergeCellOnSave(true);
 
         test_save_hr_columnSetting(mapper);
@@ -2180,7 +2180,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -2254,7 +2254,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         // optional=false - 例外が発生
         {
@@ -2270,9 +2270,9 @@ public class AnnoHorizontalRecordsTest {
                             .buildClass())
                     .buildXml();
 
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
-            mapper.getConiguration().setContinueTypeBindFailure(true);
+            mapper.getConfiguration().setContinueTypeBindFailure(true);
 
             File outFile = new File(OUT_DIR, outFilename);
             try(InputStream template = new FileInputStream(templateFile);
@@ -2302,9 +2302,9 @@ public class AnnoHorizontalRecordsTest {
                             .buildClass())
                     .buildXml();
 
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
-            mapper.getConiguration().setContinueTypeBindFailure(true);
+            mapper.getConfiguration().setContinueTypeBindFailure(true);
 
             File outFile = new File(OUT_DIR, outFilename);
             try(InputStream template = new FileInputStream(templateFile);
@@ -2370,7 +2370,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         // optional=false - 例外が発生
         {
@@ -2386,9 +2386,9 @@ public class AnnoHorizontalRecordsTest {
                             .buildClass())
                     .buildXml();
 
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
-            mapper.getConiguration().setContinueTypeBindFailure(true);
+            mapper.getConfiguration().setContinueTypeBindFailure(true);
 
             File outFile = new File(OUT_DIR, outFilename);
             try(InputStream template = new FileInputStream(templateFile);
@@ -2418,9 +2418,9 @@ public class AnnoHorizontalRecordsTest {
                             .buildClass())
                     .buildXml();
 
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
-            mapper.getConiguration().setContinueTypeBindFailure(true);
+            mapper.getConfiguration().setContinueTypeBindFailure(true);
 
             File outFile = new File(OUT_DIR, outFilename);
             try(InputStream template = new FileInputStream(templateFile);
@@ -2500,7 +2500,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -2601,7 +2601,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
 
@@ -2721,7 +2721,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
 
@@ -2816,7 +2816,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -2890,7 +2890,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -2953,7 +2953,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -3008,7 +3008,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
 
@@ -3250,7 +3250,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -3329,7 +3329,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setCorrectCellDataValidationOnSave(true)
             .setCorrectNameRangeOnSave(true);
 
@@ -3444,7 +3444,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -3536,7 +3536,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -3594,7 +3594,7 @@ public class AnnoHorizontalRecordsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false)
+        mapper.getConfiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -3672,7 +3672,7 @@ public class AnnoHorizontalRecordsTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false)
+        mapper.getConfiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true);
         
         File outFile = new File(OUT_DIR, outFilename);

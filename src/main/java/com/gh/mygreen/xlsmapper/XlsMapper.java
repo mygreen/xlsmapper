@@ -178,15 +178,15 @@ public class XlsMapper {
      */
     public XlsMapper() {
         this.configuration = new Configuration();
-        this.loader = new XlsLoader(getConiguration());
-        this.saver = new XlsSaver(getConiguration());
+        this.loader = new XlsLoader(getConfiguration());
+        this.saver = new XlsSaver(getConfiguration());
     }
 
     /**
      * システム情報を取得します。
      * @return 現在のシステム情報
      */
-    public Configuration getConiguration() {
+    public Configuration getConfiguration() {
         return configuration;
     }
 
@@ -194,7 +194,7 @@ public class XlsMapper {
      * システム情報を設定します。
      * @param configuration システム情報
      */
-    public void setConiguration(Configuration configuration) {
+    public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
         getLoader().setConfiguration(configuration);
         getSaver().setConfiguration(configuration);

@@ -83,7 +83,7 @@ public class SheetBeanValidatorTest {
     public void test_simple_success() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors<SimpleBeanSheet> errors;
@@ -114,7 +114,7 @@ public class SheetBeanValidatorTest {
     public void test_simple_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors<SimpleBeanSheet> errors;
@@ -190,7 +190,7 @@ public class SheetBeanValidatorTest {
     public void test_list_success() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors<ListBeanSheet> errors;
@@ -218,7 +218,7 @@ public class SheetBeanValidatorTest {
     public void test_list_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors<ListBeanSheet> errors;
@@ -284,7 +284,7 @@ public class SheetBeanValidatorTest {
     public void test_interpolator_el() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         SheetBindingErrors<SimpleBeanSheet> errors;

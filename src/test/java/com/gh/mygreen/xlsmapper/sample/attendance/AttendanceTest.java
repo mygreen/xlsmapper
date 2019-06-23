@@ -138,7 +138,7 @@ public class AttendanceTest {
         sheet.addDay(new DayRecord(LocalTime.of(10, 0), LocalTime.of(20, 0), LocalTime.of(1, 0), "基本設計のレビュー。"));
 
         XlsMapper xlsMapper = new XlsMapper();
-        xlsMapper.getConiguration().setFormulaRecalcurationOnSave(true);
+        xlsMapper.getConfiguration().setFormulaRecalcurationOnSave(true);
 
         String outDirPath = createOutDir().toString();
 

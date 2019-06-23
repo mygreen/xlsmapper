@@ -59,7 +59,7 @@ public class TextCellConverterTest {
     public void test_load_text() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
             SheetBindingErrors<TextSheet> errors = mapper.loadDetail(in, TextSheet.class);
@@ -224,7 +224,7 @@ public class TextCellConverterTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, "convert_text.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");

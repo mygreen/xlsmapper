@@ -71,7 +71,7 @@ public class AnnoCellTest {
     @Test
     public void test_load_cell_normal() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
@@ -92,7 +92,7 @@ public class AnnoCellTest {
     @Test
     public void test_load_cell_bind_error() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             
@@ -109,7 +109,7 @@ public class AnnoCellTest {
     public void test_load_cell_invalid_annotation1() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             
@@ -127,7 +127,7 @@ public class AnnoCellTest {
     public void test_load_cell_invalid_annotation2() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             
@@ -145,7 +145,7 @@ public class AnnoCellTest {
     @Test
     public void test_load_cell_methodAnno() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
@@ -167,7 +167,7 @@ public class AnnoCellTest {
     @Test
     public void test_load_cell_formula() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
@@ -190,7 +190,7 @@ public class AnnoCellTest {
     public void test_load_cell_comment() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
@@ -220,7 +220,7 @@ public class AnnoCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -265,7 +265,7 @@ public class AnnoCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -314,7 +314,7 @@ public class AnnoCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -356,7 +356,7 @@ public class AnnoCellTest {
         
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);

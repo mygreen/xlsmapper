@@ -72,7 +72,7 @@ public class BooleanCellConverterTest {
     @Test
     public void test_load_boolean() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
             SheetBindingErrors<BooleanSheet> errors = mapper.loadDetail(in, BooleanSheet.class);
@@ -296,7 +296,7 @@ public class BooleanCellConverterTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, "convert_boolean.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");
