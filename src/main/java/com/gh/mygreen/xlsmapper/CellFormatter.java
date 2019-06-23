@@ -20,7 +20,7 @@ public interface CellFormatter {
      * キャッシュの情報の初期化と設定を行います。
      * @param cached trueのとき、キャッシュを有効にします。
      */
-    default public void init(boolean cached) {
+    public default  void init(boolean cached) {
 
     }
 

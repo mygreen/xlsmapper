@@ -16,8 +16,8 @@ import java.util.Optional;
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsNumberConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
@@ -62,13 +62,15 @@ public abstract class AbstractNumberCellConverterFactory<T extends Number> exten
         final MathContext mathContext = createMathContext(convertAnno);
         
         if(numberFormat.isPresent()) {
+            final NumberFormat fromatter = numberFormat.get();
+            
             // 書式が指定されている場合
             return new TextFormatter<T>() {
                 
                 @Override
                 public T parse(final String text) {
                     ParsePosition position = new ParsePosition(0);
-                    BigDecimal number = (BigDecimal) numberFormat.get().parse(text, position);
+                    BigDecimal number = (BigDecimal) fromatter.parse(text, position);
                     
                     if(position.getIndex() != text.length()) {
                         throw new TextParseException(text, field.getType());
@@ -89,7 +91,7 @@ public abstract class AbstractNumberCellConverterFactory<T extends Number> exten
                 
                 @Override
                 public String format(final T value) {
-                    return numberFormat.get().format(value);
+                    return fromatter.format(value);
                 }
                 
             };

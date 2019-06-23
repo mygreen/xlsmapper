@@ -3,10 +3,10 @@ package com.gh.mygreen.xlsmapper.xml;
 import java.lang.annotation.Annotation;
 
 import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.ClassInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.FieldInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.MethodInfo;
-import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * アノテーション用のXMLのオブジェクト（{@link AnnotationMappingInfo}）を組み立てるためのヘルパークラス。
@@ -113,9 +113,9 @@ public class XmlBuilder {
 
     /**
      * JavaオブジェクトをOGNL式に変換するためのクラスを取得する。
-     * @return
+     * @return OGNL式のフォーマッタを返す。
      */
-    public static OgnlValueFormatter getValueFormatter() {
+    public synchronized static OgnlValueFormatter getValueFormatter() {
         return valueFormatter;
     }
 

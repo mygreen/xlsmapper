@@ -106,46 +106,45 @@ public class XlsSaver {
 
         final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));
 
-        final Workbook book;
-        try {
-            book = WorkbookFactory.create(templateXlsIn);
+        try(Workbook book = WorkbookFactory.create(templateXlsIn)) {
 
+            final Class<?> clazz = beanObj.getClass();
+            final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
+            if(sheetAnno == null) {
+                throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
+                        .varWithClass("property", clazz)
+                        .varWithAnno("anno", XlsSheet.class)
+                        .format());
+    
+            }
+    
+            final SheetBindingErrors<P> bindingResult;
+            try {
+                final Sheet[] xlsSheet = configuration.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);
+                bindingResult = saveSheet(xlsSheet[0], beanObj, annoReader);
+    
+            } catch(SheetNotFoundException e) {
+                if(configuration.isIgnoreSheetNotFound()){
+                    logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), e);
+                    return null;
+    
+                } else {
+                    throw e;
+                }
+            }
+    
+            if(configuration.isFormulaRecalcurationOnSave()) {
+                book.setForceFormulaRecalculation(true);
+            }
+    
+            book.write(xlsOut);
+    
+            return bindingResult;
+            
         } catch (InvalidFormatException e) {
             throw new XlsMapperException(MessageBuilder.create("file.faiiLoadTemplateExcel.notSupportType").format(), e);
         }
 
-        final Class<?> clazz = beanObj.getClass();
-        final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);
-        if(sheetAnno == null) {
-            throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
-                    .varWithClass("property", clazz)
-                    .varWithAnno("anno", XlsSheet.class)
-                    .format());
-
-        }
-
-        final SheetBindingErrors<P> bindingResult;
-        try {
-            final Sheet[] xlsSheet = configuration.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);
-            bindingResult = saveSheet(xlsSheet[0], beanObj, annoReader);
-
-        } catch(SheetNotFoundException e) {
-            if(configuration.isIgnoreSheetNotFound()){
-                logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), e);
-                return null;
-
-            } else {
-                throw e;
-            }
-        }
-
-        if(configuration.isFormulaRecalcurationOnSave()) {
-            book.setForceFormulaRecalculation(true);
-        }
-
-        book.write(xlsOut);
-
-        return bindingResult;
     }
 
     /**
@@ -185,47 +184,46 @@ public class XlsSaver {
 
         final MultipleSheetBindingErrors<Object> multipleResult = new MultipleSheetBindingErrors<>();
 
-        final Workbook book;
-        try {
-            book = WorkbookFactory.create(templateXlsIn);
+        try(Workbook book = WorkbookFactory.create(templateXlsIn)) {
 
+            for(int i=0; i < beanObjs.length; i++) {
+                final Object beanObj = beanObjs[i];
+                final Class<?> clazz = beanObj.getClass();
+    
+                final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
+                if(sheetAnno == null) {
+                    throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
+                            .varWithClass("property", clazz)
+                            .varWithAnno("anno", XlsSheet.class)
+                            .format());
+                }
+    
+                try {
+                    final Sheet[] xlsSheet = configuration.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);
+                    multipleResult.addBindingErrors(saveSheet(xlsSheet[0], beanObj, annoReader));
+    
+                } catch(SheetNotFoundException e) {
+                    if(configuration.isIgnoreSheetNotFound()){
+                        logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), e);
+                        continue;
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+    
+            if(configuration.isFormulaRecalcurationOnSave()) {
+                book.setForceFormulaRecalculation(true);
+            }
+    
+            book.write(xlsOut);
+    
+            return multipleResult;
+            
         } catch (InvalidFormatException e) {
             throw new XlsMapperException(MessageBuilder.create("file.faiiLoadTemplateExcel.notSupportType").format(), e);
         }
 
-        for(int i=0; i < beanObjs.length; i++) {
-            final Object beanObj = beanObjs[i];
-            final Class<?> clazz = beanObj.getClass();
-
-            final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);
-            if(sheetAnno == null) {
-                throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create("anno.notFound")
-                        .varWithClass("property", clazz)
-                        .varWithAnno("anno", XlsSheet.class)
-                        .format());
-            }
-
-            try {
-                final Sheet[] xlsSheet = configuration.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);
-                multipleResult.addBindingErrors(saveSheet(xlsSheet[0], beanObj, annoReader));
-
-            } catch(SheetNotFoundException e) {
-                if(configuration.isIgnoreSheetNotFound()){
-                    logger.warn(MessageBuilder.create("log.skipNotFoundSheet").format(), e);
-                    continue;
-                } else {
-                    throw e;
-                }
-            }
-        }
-
-        if(configuration.isFormulaRecalcurationOnSave()) {
-            book.setForceFormulaRecalculation(true);
-        }
-
-        book.write(xlsOut);
-
-        return multipleResult;
     }
 
     /**

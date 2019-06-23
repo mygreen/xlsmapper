@@ -127,7 +127,7 @@ public @interface XlsCellOption {
      * @author T.TSUCHIE
      *
      */
-    public static enum HorizontalAlign {
+    public enum HorizontalAlign {
 
         /** デフォルト（既存の設定を引き継ぐ） */
         Default(null),
@@ -168,7 +168,7 @@ public @interface XlsCellOption {
      * @author T.TSUCHIE
      *
      */
-    public static enum VerticalAlign {
+    public enum VerticalAlign {
 
         /** デフォルト（既存の設定を引き継ぐ） */
         Default(null),

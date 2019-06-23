@@ -15,10 +15,11 @@ public class AnnotationInvalidException extends XlsMapperException {
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
     
-    private Annotation targetAnnotation;
+    private transient final Annotation targetAnnotation;
     
     public AnnotationInvalidException(final String message) {
         super(message);
+        this.targetAnnotation = null;
     }
     
     public AnnotationInvalidException(final Annotation targetAnnotation, final String message) {

@@ -17,7 +17,7 @@ public class SheetBindingErrorsFactory {
      * @return 基本的にインスタンスを作成するのみで、シート名などの設定は別途行う。
      */
     public <P> SheetBindingErrors<P> create(P target) {
-        return new SheetBindingErrors<P>(target);
+        return new SheetBindingErrors<>(target);
     }
 
 }

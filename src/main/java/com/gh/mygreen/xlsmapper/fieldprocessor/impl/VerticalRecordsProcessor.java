@@ -319,7 +319,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                 for(FieldAccessor property : propeties) {
                     Cell valueCell = cell;
-                    final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
+                    final XlsColumn column = property.getAnnotationNullable(XlsColumn.class);
 
                     if(column.headerMerged() > 0){
                         hRow = hRow + column.headerMerged();
@@ -556,7 +556,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
-            final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();
+            final XlsMapColumns mapAnno = property.getAnnotationNullable(XlsMapColumns.class);
 
             if(!Utils.isLoadCase(mapAnno.cases())) {
                 continue;
@@ -638,7 +638,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
             for(FieldAccessor property : arrayProperties) {
 
-                final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();
+                final XlsArrayColumns arrayAnno = property.getAnnotationNullable(XlsArrayColumns.class);
 
                 if(!Utils.isLoadCase(arrayAnno.cases())) {
                     continue;
@@ -715,7 +715,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 .collect(Collectors.toList());
         for(FieldAccessor property : nestedProperties) {
 
-            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+            final XlsNestedRecords nestedAnno = property.getAnnotationNullable(XlsNestedRecords.class);
 
             if(!Utils.isLoadCase(nestedAnno.cases())) {
                 continue;
@@ -1115,7 +1115,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                     for(FieldAccessor property : propeties) {
                         Cell valueCell = cell;
-                        final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
+                        final XlsColumn column = property.getAnnotationNullable(XlsColumn.class);
 
                         //TODO: マージを考慮する必要はないかも
                         if(column.headerMerged() > 0) {
@@ -1383,7 +1383,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 .collect(Collectors.toList());
         for(FieldAccessor property : properties) {
 
-            final XlsMapColumns mapAnno = property.getAnnotation(XlsMapColumns.class).get();
+            final XlsMapColumns mapAnno = property.getAnnotationNullable(XlsMapColumns.class);
 
             Class<?> valueClass = mapAnno.valueClass();
             if(valueClass == Object.class) {
@@ -1500,7 +1500,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
             for(FieldAccessor property : arrayProperties) {
 
-                final XlsArrayColumns arrayAnno = property.getAnnotation(XlsArrayColumns.class).get();
+                final XlsArrayColumns arrayAnno = property.getAnnotationNullable(XlsArrayColumns.class);
 
                 Class<?> elementClass = arrayAnno.elementClass();
                 if(elementClass == Object.class) {
@@ -1665,7 +1665,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 .collect(Collectors.toList());
         for(FieldAccessor property : nestedProperties) {
 
-            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+            final XlsNestedRecords nestedAnno = property.getAnnotationNullable(XlsNestedRecords.class);
 
             if(!Utils.isSaveCase(nestedAnno.cases())) {
                 continue;

@@ -84,7 +84,7 @@ public class OptionalProcessCase<T> {
      */
     public T get(final ProcessCase processCase) {
 
-        if(!isPresent(processCase)) {
+        if(!value.isPresent() || !isPresent(processCase)) {
             throw new NoSuchElementException(String.format("No value present in processCase '%s'.", processCase.name()));
         }
 

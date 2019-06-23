@@ -94,10 +94,10 @@ public class ArrayCellsHandler {
 
         /**
          * 連続するセルの個数を指定します。
-         * @return アノテーションの属性「size」の値
+         * @return アノテーションの属性「size」の値。存在しない場合、{@literal -1} を返す。
          */
         public int size() {
-            return ClassUtils.getAnnotationAttribute(target, "size", int.class).get();
+            return ClassUtils.getAnnotationAttribute(target, "size", int.class).orElse(-1);
         }
 
         /**

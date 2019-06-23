@@ -193,7 +193,7 @@ public class DefaultCellCommentHandler implements CellCommentHandler {
             lineWrappingCount = commentColumnSize / maxHorizontalSize;
         }
         
-        if(commentOption.map(option -> option.horizontalSize()).orElse(0) > 0) {
+        if(commentOption.isPresent() && commentOption.get().horizontalSize() > 0) {
             // 直接指定されている場合
             columnSize = commentOption.get().horizontalSize();
             // 行の折り返し回数を計算する
@@ -202,17 +202,15 @@ public class DefaultCellCommentHandler implements CellCommentHandler {
         
         // コメントの縦サイズ。行数をもとに決定。
         int rowSize = split.length + lineWrappingCount > maxVerticalSize ? maxVerticalSize : split.length + lineWrappingCount;
-        if(commentOption.map(option -> option.verticalSize()).orElse(0) > 0) {
+        if(commentOption.isPresent() && commentOption.get().verticalSize() > 0) {
             // 直接指定されている場合
             rowSize = commentOption.get().verticalSize();
         }
         
-        ClientAnchor anchor = drawing.createAnchor(
+        return drawing.createAnchor(
                 0, 0, 0, 0,
                 address.getColumn() + horizontalPrefix, address.getRow() + vertialPrefix,
                 address.getColumn() + horizontalPrefix + columnSize, address.getRow() + vertialPrefix + rowSize);
-        
-        return anchor;
     }
     
     /**

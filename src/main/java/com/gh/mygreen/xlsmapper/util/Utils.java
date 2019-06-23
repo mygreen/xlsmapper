@@ -235,9 +235,14 @@ public class Utils {
      * @param text2 アノテーションに指定されているラベル。
      *              {@literal /<ラベル>/}と指定する場合、正規表現による比較を行う。
      * @param config システム設定
-     * @return true:ラベルが一致する。
+     * @return true:ラベルが一致する。比較対象のラベルがnullの場合は、falseを返す。
      */
     public static boolean matches(final String text1, final String text2, final Configuration config){
+        
+        if(text1 == null || text2 == null) {
+            return false;
+        }
+        
         if(config.isRegexLabelText() && text2.startsWith("/") && text2.endsWith("/")){
             return normalize(text1, config).matches(text2.substring(1, text2.length() - 1));
         } else {
