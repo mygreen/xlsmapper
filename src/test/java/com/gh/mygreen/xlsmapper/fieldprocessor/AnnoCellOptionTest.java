@@ -86,7 +86,7 @@ public class AnnoCellOptionTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -103,7 +103,7 @@ public class AnnoCellOptionTest {
             {
                 // 折り返し設定(Java側なし)(Excel側なし)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C5"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -113,7 +113,7 @@ public class AnnoCellOptionTest {
             {
                 // 折り返し設定(Java側なし)(Excel側あり)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C6"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(true);
@@ -123,7 +123,7 @@ public class AnnoCellOptionTest {
             {
                 // 折り返し設定(Java側あり)(Excel側なし)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C7"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(true);
@@ -133,7 +133,7 @@ public class AnnoCellOptionTest {
             {
                 // 折り返し設定(Java側あり)(Excel側あり)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C8"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(true);
@@ -143,7 +143,7 @@ public class AnnoCellOptionTest {
             {
                 // 縮小して表示(Java側なし)(Excel側なし)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C12"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -153,7 +153,7 @@ public class AnnoCellOptionTest {
             {
                 // 縮小して表示(Java側なし)(Excel側あり)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C13"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -163,7 +163,7 @@ public class AnnoCellOptionTest {
             {
                 // 縮小して表示(Java側あり)(Excel側なし)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C14"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -173,7 +173,7 @@ public class AnnoCellOptionTest {
             {
                 // 縮小して表示(Java側あり)(Excel側あり)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C15"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -183,7 +183,7 @@ public class AnnoCellOptionTest {
             {
                 // 折り返し設定＋縮小して表示
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C18"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -226,7 +226,7 @@ public class AnnoCellOptionTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -243,7 +243,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(デフォルト)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C4"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER);
@@ -254,7 +254,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(標準)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C5"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -265,7 +265,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(左詰め)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C6"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.LEFT);
@@ -276,7 +276,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(左詰め)(インデント)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C7"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.LEFT);
@@ -287,7 +287,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(中央揃え)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C8"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER);
@@ -298,7 +298,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(右詰め)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C9"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.RIGHT);
@@ -309,7 +309,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(右詰め)(インデント)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C10"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.RIGHT);
@@ -320,7 +320,7 @@ public class AnnoCellOptionTest {
             {
                 // 繰り返し
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C11"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.FILL);
@@ -331,7 +331,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(両端揃え)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C12"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.JUSTIFY);
@@ -342,7 +342,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(選択範囲内で中央)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C13"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER_SELECTION);
@@ -353,7 +353,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(均等割り付け)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C14"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.DISTRIBUTED);
@@ -364,7 +364,7 @@ public class AnnoCellOptionTest {
             {
                 // 横位置(均等割り付け)(インデント)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C15"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.DISTRIBUTED);
@@ -375,7 +375,7 @@ public class AnnoCellOptionTest {
             {
                 // 縦位置(デフォルト)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C19"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER);
@@ -386,7 +386,7 @@ public class AnnoCellOptionTest {
             {
                 // 縦位置(上詰め)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C20"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -397,7 +397,7 @@ public class AnnoCellOptionTest {
             {
                 // 縦位置(中央揃え)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C21"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -408,7 +408,7 @@ public class AnnoCellOptionTest {
             {
                 // 縦位置(下詰め)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C22"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -419,7 +419,7 @@ public class AnnoCellOptionTest {
             {
                 // 縦位置(両端揃え)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C23"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -430,7 +430,7 @@ public class AnnoCellOptionTest {
             {
                 // 縦位置(均等割り付け)
                 Cell cell = POIUtils.getCell(sheet, CellPosition.of("C24"));
-                String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+                String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);

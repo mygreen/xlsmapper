@@ -72,7 +72,7 @@ public class CustomCellConverterTest {
     public void testLoadWithConvertAnno() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
             SheetBindingErrors<CustomWithAnnoSheet> errors = mapper.loadDetail(in, CustomWithAnnoSheet.class);
@@ -94,9 +94,9 @@ public class CustomCellConverterTest {
     public void testLoadWithConverRegistry() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
-        mapper.getConiguration().getConverterRegistry().registerConverter(CustomType.class, new CustomCellConverterFactory());
+        mapper.getConfiguration().getConverterRegistry().registerConverter(CustomType.class, new CustomCellConverterFactory());
 
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
             SheetBindingErrors<CustomWithRegisterSheet> errors = mapper.loadDetail(in, CustomWithRegisterSheet.class);
@@ -128,7 +128,7 @@ public class CustomCellConverterTest {
         }
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         // ファイルへの書き込み
         File outFile = new File(OUT_DIR, "convert_custom.xlsx");
@@ -170,9 +170,9 @@ public class CustomCellConverterTest {
         }
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
-        mapper.getConiguration().getConverterRegistry().registerConverter(CustomType.class, new CustomCellConverterFactory());
+        mapper.getConfiguration().getConverterRegistry().registerConverter(CustomType.class, new CustomCellConverterFactory());
 
         // ファイルへの書き込み
         File outFile = new File(OUT_DIR, "convert_custom.xlsx");

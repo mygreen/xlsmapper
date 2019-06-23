@@ -141,7 +141,7 @@ public class XlsMapperTest {
                         .buildClass())
                 .buildXml();
         
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<CustomAnnoSheet> errors = mapper.loadDetail(in, CustomAnnoSheet.class);
@@ -170,7 +170,7 @@ public class XlsMapperTest {
                         .buildClass())
                 .buildXml();
         
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             
@@ -200,7 +200,7 @@ public class XlsMapperTest {
                         .buildClass())
                 .buildXml();
         
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<CustomAnnoSheet> errors = mapper.loadDetail(in, CustomAnnoSheet.class);
@@ -229,7 +229,7 @@ public class XlsMapperTest {
                         .buildClass())
                 .buildXml();
         
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
         
         try(InputStream in = new FileInputStream(inputFile)) {
             
@@ -302,7 +302,7 @@ public class XlsMapperTest {
                         .buildClass())
                 .buildXml();
         
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
         
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -342,7 +342,7 @@ public class XlsMapperTest {
                         .buildClass())
                 .buildXml();
         
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
         
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -375,7 +375,7 @@ public class XlsMapperTest {
                         .buildClass())
                 .buildXml();
         
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
         
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -415,7 +415,7 @@ public class XlsMapperTest {
                         .buildClass())
                 .buildXml();
         
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
         
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);

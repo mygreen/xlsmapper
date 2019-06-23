@@ -75,7 +75,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_name() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NamedSheet> errors = mapper.loadDetail(in, NamedSheet.class);
@@ -92,7 +92,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_name_notFound() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -108,7 +108,7 @@ public class AnnoSheetTest {
     public void test_loadMultple_sheet_name_notFound() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -124,7 +124,7 @@ public class AnnoSheetTest {
     public void test_loadMultple_sheet_name_notFound2() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -144,7 +144,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_skip_notFound() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
@@ -164,7 +164,7 @@ public class AnnoSheetTest {
     public void testMultple_load_sheet_skip_notFound() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
@@ -184,7 +184,7 @@ public class AnnoSheetTest {
     public void testMultple_load_sheet_skip_notFound2() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
@@ -200,7 +200,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_indexed() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<IndexedSheet> errors = mapper.loadDetail(in, IndexedSheet.class);
@@ -217,7 +217,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_indexed_nofFound() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -236,7 +236,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_regexp_single() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<RegexpSheet> errors = mapper.loadDetail(in, RegexpSheet.class);
@@ -256,7 +256,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_regexp_single_notFound() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -275,7 +275,7 @@ public class AnnoSheetTest {
     public void test_load_sheetName_regexp_multiple() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             RegexpSheet[] sheet = mapper.loadMultiple(in, RegexpSheet.class);
@@ -294,7 +294,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_noSetting() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -313,7 +313,7 @@ public class AnnoSheetTest {
     public void test_load_sheet_noGrant() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -332,7 +332,7 @@ public class AnnoSheetTest {
     public void test_loadMultiple_sheet_noGrant() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -351,7 +351,7 @@ public class AnnoSheetTest {
     public void test_loadMultiple_sheet_noGrant2() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -374,7 +374,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -406,7 +406,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -430,7 +430,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -454,7 +454,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -479,7 +479,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -504,7 +504,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setIgnoreSheetNotFound(true);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -529,7 +529,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -554,7 +554,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -578,7 +578,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -603,7 +603,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -631,7 +631,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -656,7 +656,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -680,7 +680,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -705,7 +705,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -730,7 +730,7 @@ public class AnnoSheetTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);

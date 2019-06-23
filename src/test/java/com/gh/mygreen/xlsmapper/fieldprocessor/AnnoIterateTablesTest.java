@@ -88,7 +88,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_normal() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
@@ -112,7 +112,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_normal_array() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalArraySheet> errors = mapper.loadDetail(in, NormalArraySheet.class);
@@ -135,7 +135,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_vertical() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<VerticalSheet> errors = mapper.loadDetail(in, VerticalSheet.class);
@@ -159,7 +159,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_horizontal_vertical() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             assertThatThrownBy(() -> mapper.load(in, HorizontalAndVerticalSheet.class))
@@ -175,7 +175,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_not_found_cell() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -193,7 +193,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_optional() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<OptionalCellSheet> errors = mapper.loadDetail(in, OptionalCellSheet.class);
@@ -216,7 +216,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_concat_table() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ConcatTableSheet> errors = mapper.loadDetail(in, ConcatTableSheet.class);
@@ -240,7 +240,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_methodAnno() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<MethodAnnoSheet> errors = mapper.loadDetail(in, MethodAnnoSheet.class);
@@ -265,7 +265,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_regex() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
 
@@ -292,7 +292,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_arrayCell() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false)
+        mapper.getConfiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
 
@@ -319,7 +319,7 @@ public class AnnoIterateTablesTest {
     public void test_load_it_comment() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false)
+        mapper.getConfiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
         
@@ -833,7 +833,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -884,7 +884,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -935,7 +935,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -987,7 +987,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1024,7 +1024,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1083,7 +1083,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1134,7 +1134,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -1186,7 +1186,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
 
@@ -1239,7 +1239,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false)
+        mapper.getConfiguration().setContinueTypeBindFailure(false)
             .setRegexLabelText(true)
             .setNormalizeLabelText(true);
 
@@ -1292,7 +1292,7 @@ public class AnnoIterateTablesTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);

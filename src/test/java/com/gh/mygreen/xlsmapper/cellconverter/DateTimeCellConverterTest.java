@@ -74,7 +74,7 @@ public class DateTimeCellConverterTest {
     public void test_load_date_time() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream("src/test/data/convert.xlsx")) {
             SheetBindingErrors<DateTimeSheet> errors = mapper.loadDetail(in, DateTimeSheet.class);
@@ -333,7 +333,7 @@ public class DateTimeCellConverterTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, "convert_datetime.xlsx");
         try(InputStream template = new FileInputStream("src/test/data/convert_template.xlsx");

@@ -53,7 +53,7 @@ public class ObjectValidatorTest {
     public void test_success() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         try(InputStream in = new FileInputStream("src/test/data/validator_field.xlsx")) {
@@ -79,7 +79,7 @@ public class ObjectValidatorTest {
     public void test_error() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         try(InputStream in = new FileInputStream("src/test/data/validator_field.xlsx")) {
@@ -150,7 +150,7 @@ public class ObjectValidatorTest {
     public void test_success_group() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         try(InputStream in = new FileInputStream("src/test/data/validator_field.xlsx")) {
@@ -175,7 +175,7 @@ public class ObjectValidatorTest {
     public void test_error_group() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
         
         // シートの読み込み
         try(InputStream in = new FileInputStream("src/test/data/validator_field.xlsx")) {

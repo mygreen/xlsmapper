@@ -101,7 +101,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -120,7 +120,7 @@ public class AnnoFormulaTest {
             Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
 
             String formula = cell.getCellFormula();
-            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
+            CellFormatter formatter = mapper.getConfiguration().getCellFormatter();
             String value = formatter.format(cell);
 
             assertThat(formula, is("SUM(C2:C3)"));
@@ -154,7 +154,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);;
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -173,7 +173,7 @@ public class AnnoFormulaTest {
             Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
 
             String formula = cell.getCellFormula();
-            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
+            CellFormatter formatter = mapper.getConfiguration().getCellFormatter();
             String value = formatter.format(cell);
 
             assertThat(formula, is("SUM(D2:D3)"));
@@ -210,7 +210,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);;
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -230,7 +230,7 @@ public class AnnoFormulaTest {
             assertThat(cell.getCellTypeEnum(), is(CellType.FORMULA));
 
             String formula = cell.getCellFormula();
-            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
+            CellFormatter formatter = mapper.getConfiguration().getCellFormatter();
             String value = formatter.format(cell);
 
             assertThat(formula, is("SUM(C2:C3)"));
@@ -267,7 +267,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);;
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -286,7 +286,7 @@ public class AnnoFormulaTest {
             Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
             assertThat(cell.getCellTypeEnum(), is(CellType.NUMERIC));
 
-            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
+            CellFormatter formatter = mapper.getConfiguration().getCellFormatter();
             String value = formatter.format(cell);
 
             assertThat(value, is("12.345"));
@@ -319,7 +319,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -338,7 +338,7 @@ public class AnnoFormulaTest {
             Cell cell = POIUtils.getCell(sheet, CellPosition.of("A2"));
             assertThat(cell.getCellTypeEnum(), is(CellType.BLANK));
 
-            CellFormatter formatter = mapper.getConiguration().getCellFormatter();
+            CellFormatter formatter = mapper.getConfiguration().getCellFormatter();
             String value = formatter.format(cell);
 
             assertThat(value, is(""));
@@ -370,7 +370,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);;
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -408,7 +408,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -446,7 +446,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -484,7 +484,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true)
+        mapper.getConfiguration().setContinueTypeBindFailure(true)
             .setAnnotationMapping(xmlInfo);
 
         File outFile = new File(OUT_DIR, outFilename);
@@ -517,7 +517,7 @@ public class AnnoFormulaTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);

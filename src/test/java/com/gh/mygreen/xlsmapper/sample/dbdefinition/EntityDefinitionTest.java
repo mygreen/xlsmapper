@@ -133,7 +133,7 @@ public class EntityDefinitionTest {
     public void testSave() throws Exception {
 
         XlsMapper xlsMapper = new XlsMapper();
-        xlsMapper.getConiguration().setFormulaRecalcurationOnSave(true);
+        xlsMapper.getConfiguration().setFormulaRecalcurationOnSave(true);
 
         // サンプルから読み込む
         SheetBindingErrors<EntitySheet> bindingResult;

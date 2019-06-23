@@ -81,7 +81,7 @@ public class AnnoArrayCellsTest {
     @Test
     public void test_load_array_cell_normal() throws Exception {
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<NormalSheet> errors = mapper.loadDetail(in, NormalSheet.class);
@@ -123,7 +123,7 @@ public class AnnoArrayCellsTest {
     public void test_load_array_cell_invalidAnno_notSupportType() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         // アノテーションの変更 - タイプが不正
         AnnotationMappingInfo xmlInfo = createXml()
@@ -136,7 +136,7 @@ public class AnnoArrayCellsTest {
                                 .buildField())
                     .buildClass())
                 .buildXml();
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -154,7 +154,7 @@ public class AnnoArrayCellsTest {
     public void test_load_array_cell_invalidAnno_wrongAddress() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         {
             // アノテーションの変更 - addressが不正
@@ -167,7 +167,7 @@ public class AnnoArrayCellsTest {
                                     .buildField())
                         .buildClass())
                     .buildXml();
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
             try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -191,7 +191,7 @@ public class AnnoArrayCellsTest {
                                     .buildField())
                         .buildClass())
                     .buildXml();
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
             try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -215,7 +215,7 @@ public class AnnoArrayCellsTest {
                                     .buildField())
                         .buildClass())
                     .buildXml();
-            mapper.getConiguration().setAnnotationMapping(xmlInfo);
+            mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
             try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -235,7 +235,7 @@ public class AnnoArrayCellsTest {
     public void test_load_array_cell_invalidAnno_wrongSize() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         // アノテーションの変更 - sizeが不正
         AnnotationMappingInfo xmlInfo = createXml()
@@ -248,7 +248,7 @@ public class AnnoArrayCellsTest {
                                 .buildField())
                     .buildClass())
                 .buildXml();
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
         try(InputStream in = new FileInputStream(inputFile)) {
 
@@ -266,7 +266,7 @@ public class AnnoArrayCellsTest {
     public void test_load_array_cell_itemMerged() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ElementMergedSheet> errors = mapper.loadDetail(in, ElementMergedSheet.class);
@@ -333,7 +333,7 @@ public class AnnoArrayCellsTest {
     public void test_load_array_cell_convert() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<ConverterSheet> errors = mapper.loadDetail(in, ConverterSheet.class);
@@ -392,7 +392,7 @@ public class AnnoArrayCellsTest {
     public void test_load_array_cell_formula() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<FormulaSheet> errors = mapper.loadDetail(in, FormulaSheet.class);
@@ -418,7 +418,7 @@ public class AnnoArrayCellsTest {
     public void test_load_array_cell_comment() throws Exception {
         
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         try(InputStream in = new FileInputStream(inputFile)) {
             SheetBindingErrors<CommentSheet> errors = mapper.loadDetail(in, CommentSheet.class);
@@ -465,7 +465,7 @@ public class AnnoArrayCellsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -497,7 +497,7 @@ public class AnnoArrayCellsTest {
     public void test_save_array_cell_invalidAnno_notSupportType() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         // テストデータの作成
         final InvalidAnnoSheet outSheet = new InvalidAnnoSheet();
@@ -515,7 +515,7 @@ public class AnnoArrayCellsTest {
                                 .buildField())
                     .buildClass())
                 .buildXml();
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -536,7 +536,7 @@ public class AnnoArrayCellsTest {
     public void test_save_array_cell_invalidAnno_wrongSize() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(false);
+        mapper.getConfiguration().setContinueTypeBindFailure(false);
 
         // テストデータの作成
         final InvalidAnnoSheet outSheet = new InvalidAnnoSheet();
@@ -553,7 +553,7 @@ public class AnnoArrayCellsTest {
                                 .buildField())
                     .buildClass())
                 .buildXml();
-        mapper.getConiguration().setAnnotationMapping(xmlInfo);
+        mapper.getConfiguration().setAnnotationMapping(xmlInfo);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -584,7 +584,7 @@ public class AnnoArrayCellsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -628,7 +628,7 @@ public class AnnoArrayCellsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -668,7 +668,7 @@ public class AnnoArrayCellsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -697,7 +697,7 @@ public class AnnoArrayCellsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -737,7 +737,7 @@ public class AnnoArrayCellsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -766,7 +766,7 @@ public class AnnoArrayCellsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -811,7 +811,7 @@ public class AnnoArrayCellsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
@@ -859,7 +859,7 @@ public class AnnoArrayCellsTest {
 
         // ファイルへの書き込み
         XlsMapper mapper = new XlsMapper();
-        mapper.getConiguration().setContinueTypeBindFailure(true);
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
 
         File outFile = new File(OUT_DIR, outFilename);
         try(InputStream template = new FileInputStream(templateFile);
