@@ -28,8 +28,7 @@ public class MultipleLoaderClassResolver implements ClassResolver {
      * @return loaded class from ClassLoader defined loaderMap.
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Class classForName(String className, Map loaderMap)
-            throws ClassNotFoundException {
+    public Class classForName(String className, Map loaderMap) throws ClassNotFoundException {
         Collection<ClassLoader> loaders = null;
         // add context-classloader
         loaders = new HashSet<ClassLoader>();
@@ -57,7 +56,12 @@ public class MultipleLoaderClassResolver implements ClassResolver {
                 }
             }
         }
-        // can't load class at end.
-        throw lastCause;
+        
+        if(lastCause != null) {
+            // can't load class at end.
+            throw lastCause;
+        }
+        
+        return clazz;
     }
 }

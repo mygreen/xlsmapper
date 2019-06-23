@@ -47,7 +47,7 @@ public class RecordsProcessorUtil {
         List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsColumn.class);
         
         for(FieldAccessor property : properties) {
-            final XlsColumn column = property.getAnnotation(XlsColumn.class).get();
+            final XlsColumn column = property.getAnnotationNullable(XlsColumn.class);
             
             if(column.optional()){
                 continue;
@@ -85,7 +85,7 @@ public class RecordsProcessorUtil {
         List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsMapColumns.class);
         
         for(FieldAccessor property : properties) {
-            final XlsMapColumns mapColumns = property.getAnnotation(XlsMapColumns.class).get();
+            final XlsMapColumns mapColumns = property.getAnnotationNullable(XlsMapColumns.class);
             if(mapColumns.optional()) {
                 continue;
             }
@@ -131,7 +131,7 @@ public class RecordsProcessorUtil {
         List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsArrayColumns.class);
         
         for(FieldAccessor property : properties) {
-            final XlsArrayColumns arrayColumns = property.getAnnotation(XlsArrayColumns.class).get();
+            final XlsArrayColumns arrayColumns = property.getAnnotationNullable(XlsArrayColumns.class);
             if(arrayColumns.optional()) {
                 continue;
             }
@@ -230,7 +230,7 @@ public class RecordsProcessorUtil {
             
             nestedRecordClasses.add(recordClass);
             
-            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+            final XlsNestedRecords nestedAnno = property.getAnnotationNullable(XlsNestedRecords.class);
             final Class<?> clazz = property.getType();
             
             if(Collection.class.isAssignableFrom(clazz)) {
@@ -313,7 +313,7 @@ public class RecordsProcessorUtil {
             
             nestedRecordClasses.add(recordClass);
             
-            final XlsNestedRecords nestedAnno = property.getAnnotation(XlsNestedRecords.class).get();
+            final XlsNestedRecords nestedAnno = property.getAnnotationNullable(XlsNestedRecords.class);
             final Class<?> clazz = property.getType();
             
             if(Collection.class.isAssignableFrom(clazz)) {

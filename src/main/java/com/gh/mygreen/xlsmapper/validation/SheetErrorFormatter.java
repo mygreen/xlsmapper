@@ -81,8 +81,9 @@ public class SheetErrorFormatter {
             } catch(Throwable e) {
             }
             
-            if(error.getLabelAsOptional().isPresent()) {
-                vars.put("label", error.getLabelAsOptional().get());
+            final Optional<String> label = error.getLabelAsOptional();
+            if(label.isPresent()) {
+                vars.put("label", label.get());
             } else {
                 try {
                     vars.put("label", getMessage(labelCode, null));
@@ -111,8 +112,10 @@ public class SheetErrorFormatter {
             // オブジェクトエラーのメッセージを処理する。
             
             final String[] labelCode = messageCodeGenerator.generateObjectNameCodes(error.getObjectName());
-            if(error.getLabelAsOptional().isPresent()) {
-                vars.put("label", error.getLabelAsOptional().get());
+            
+            final Optional<String> label = error.getLabelAsOptional();
+            if(label.isPresent()) {
+                vars.put("label", label.get());
             } else {
                 try {
                     vars.put("label", getMessage(labelCode, null));

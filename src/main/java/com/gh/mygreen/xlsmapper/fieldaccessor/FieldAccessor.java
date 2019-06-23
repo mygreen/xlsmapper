@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayColumns;
@@ -301,6 +300,21 @@ public class FieldAccessor {
     }
     
     /**
+     * タイプを指定して、アノテーションを取得する。
+     * <p>
+     * 確実に存在しているアノテーションを取得する場合に使用します。
+     * そうでない場合は、{@link #getAnnotation(Class)}を使用します。
+     * </p>
+     * @since 2.1
+     * @param annoClass アノテーションのクラスタイプ。
+     * @return 存在しない場合、nullを返します。
+     */
+    @SuppressWarnings("unchecked")
+    public <A extends Annotation> A getAnnotationNullable(final Class<A> annoClass) {
+        return (A)annotationMap.get(annoClass);
+    }
+    
+    /**
      * フィールドの名称を取得します。
      * @return フィールドの名称
      */
@@ -320,10 +334,11 @@ public class FieldAccessor {
     /**
      * フィールドのタイプがListや配列の時の要素のGenericsのクラスタイプを取得します。
      * @return クラスタイプ。
-     * @throws NoSuchElementException {@literal Genericsの指定がないとき、またはサポートしていないクラスタイプの場合}
+     * @throws IllegalStateException {@literal Genericsの指定がないとき、またはサポートしていないクラスタイプの場合}
      */
     public Class<?> getComponentType() {
-        return componentType.get();
+        return componentType.orElseThrow(() ->
+                new IllegalStateException("Because this field is List.class or Map.class, this field has not component type."));
     }
     
     /**

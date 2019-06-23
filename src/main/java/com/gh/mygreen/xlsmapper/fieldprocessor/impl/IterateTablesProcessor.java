@@ -236,7 +236,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
-            final XlsLabelledComment anno = property.getAnnotation(XlsLabelledComment.class).get();
+            final XlsLabelledComment anno = property.getAnnotationNullable(XlsLabelledComment.class);
 
             Cell titleCell = null;
             try {
@@ -281,7 +281,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
-            final XlsLabelledCell anno = property.getAnnotation(XlsLabelledCell.class).get();
+            final XlsLabelledCell anno = property.getAnnotationNullable(XlsLabelledCell.class);
 
             Cell titleCell = null;
             try {
@@ -326,7 +326,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
-            final XlsLabelledArrayCells anno = property.getAnnotation(XlsLabelledArrayCells.class).get();
+            final XlsLabelledArrayCells anno = property.getAnnotationNullable(XlsLabelledArrayCells.class);
 
             Cell titleCell = null;
             try {
@@ -373,7 +373,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();
         for(FieldAccessor property : properties) {
-            final XlsHorizontalRecords anno = property.getAnnotation(XlsHorizontalRecords.class).get();
+            final XlsHorizontalRecords anno = property.getAnnotationNullable(XlsHorizontalRecords.class);
 
             if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {
 
@@ -413,7 +413,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();
         for(FieldAccessor property : properties) {
-            final XlsVerticalRecords anno = property.getAnnotation(XlsVerticalRecords.class).get();
+            final XlsVerticalRecords anno = property.getAnnotationNullable(XlsVerticalRecords.class);
 
             if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {
 
@@ -573,7 +573,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 
         for(FieldAccessor property : properties) {
 
-            final XlsLabelledComment anno = property.getAnnotation(XlsLabelledComment.class).get();
+            final XlsLabelledComment anno = property.getAnnotationNullable(XlsLabelledComment.class);
 
             Cell titleCell = null;
             try {
@@ -612,7 +612,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 
         for(FieldAccessor property : properties) {
 
-            final XlsLabelledCell anno = property.getAnnotation(XlsLabelledCell.class).get();
+            final XlsLabelledCell anno = property.getAnnotationNullable(XlsLabelledCell.class);
 
             Cell titleCell = null;
             try {
@@ -651,7 +651,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
 
         for(FieldAccessor property : properties) {
 
-            final XlsLabelledArrayCells anno = property.getAnnotation(XlsLabelledArrayCells.class).get();
+            final XlsLabelledArrayCells anno = property.getAnnotationNullable(XlsLabelledArrayCells.class);
 
             Cell titleCell = null;
             try {
@@ -699,7 +699,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();
         for(FieldAccessor property : properties) {
 
-            final XlsHorizontalRecords anno = property.getAnnotation(XlsHorizontalRecords.class).get();
+            final XlsHorizontalRecords anno = property.getAnnotationNullable(XlsHorizontalRecords.class);
 
             // 処理対象と同じテーブルラベルのとき、マッピングを実行する。
             if(iterateTables.tableLabel().equals(anno.tableLabel())) {
@@ -741,7 +741,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();
         for(FieldAccessor property : properties) {
 
-            final XlsVerticalRecords anno = property.getAnnotation(XlsVerticalRecords.class).get();
+            final XlsVerticalRecords anno = property.getAnnotationNullable(XlsVerticalRecords.class);
 
             // 処理対象と同じテーブルラベルのとき、マッピングを実行する。
             if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {

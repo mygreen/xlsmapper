@@ -98,10 +98,10 @@ public class LabelledCellHandler {
 
         /**
          * 見出しセルから見て値が設定されているセルの位置・方向を指定します。
-         * @return アノテーションの属性「type」の値
+         * @return アノテーションの属性「type」の値。属性が存在しない場合は、nullを返す。
          */
         public LabelledCellType type() {
-            return ClassUtils.getAnnotationAttribute(target, "type", LabelledCellType.class).get();
+            return ClassUtils.getAnnotationAttribute(target, "type", LabelledCellType.class).orElse(null);
         }
 
         /**

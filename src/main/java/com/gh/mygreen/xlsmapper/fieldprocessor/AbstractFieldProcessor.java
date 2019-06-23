@@ -49,7 +49,7 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Fi
         final CellConverter<?> converter;
 
         if(accessor.hasAnnotation(XlsConverter.class)) {
-            XlsConverter converterAnno = accessor.getAnnotation(XlsConverter.class).get();
+            XlsConverter converterAnno = accessor.getAnnotationNullable(XlsConverter.class);
             converter = config.createBean(converterAnno.value()).create(accessor, config);
 
         } else {
@@ -79,7 +79,7 @@ public abstract class AbstractFieldProcessor<A extends Annotation> implements Fi
         final CellConverter<?> converter;
 
         if(accessor.hasAnnotation(XlsConverter.class)) {
-            XlsConverter converterAnno = accessor.getAnnotation(XlsConverter.class).get();
+            XlsConverter converterAnno = accessor.getAnnotationNullable(XlsConverter.class);
             converter = config.createBean(converterAnno.value()).create(accessor, config);
 
         } else {
