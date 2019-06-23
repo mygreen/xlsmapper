@@ -3,12 +3,14 @@
 ======================================
 
 --------------------------------------------------------
-ver.2.1 - 2019-06-22
+ver.2.1 - 2019-06-23
 --------------------------------------------------------
 
 * セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.11に対応しました。
 
   * 日付の書式の新元号 ``令和`` に対応します。
+
+* `#103 <https://github.com/mygreen/xlsmapper/pull/103>`_ / `#108 <https://github.com/mygreen/xlsmapper/pull/108>`_ XlsMapperのメソッド ``getConfiguration/setConfiguration`` の綴り間違いを修正しました。
 
 * `#104 <https://github.com/mygreen/xlsmapper/pull/104>`_ セルコメントのマッピング機能を追加しました。
 
