@@ -15,28 +15,29 @@ public class AnnotationInvalidException extends XlsMapperException {
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
     
-    private Annotation targetAnnotation;
+    private transient final Annotation targetAnnotation;
     
     public AnnotationInvalidException(final String message) {
 <span class="fc" id="L21">        super(message);</span>
-<span class="fc" id="L22">    }</span>
+<span class="fc" id="L22">        this.targetAnnotation = null;</span>
+<span class="fc" id="L23">    }</span>
     
     public AnnotationInvalidException(final Annotation targetAnnotation, final String message) {
-<span class="fc" id="L25">        super(message);</span>
-<span class="fc" id="L26">        this.targetAnnotation = targetAnnotation;</span>
-<span class="fc" id="L27">    }</span>
+<span class="fc" id="L26">        super(message);</span>
+<span class="fc" id="L27">        this.targetAnnotation = targetAnnotation;</span>
+<span class="fc" id="L28">    }</span>
     
     public AnnotationInvalidException(final Annotation targetAnnotation, final String message, final Exception exception) {
-<span class="fc" id="L30">        super(message, exception);</span>
-<span class="fc" id="L31">        this.targetAnnotation = targetAnnotation;</span>
-<span class="fc" id="L32">    }</span>
+<span class="fc" id="L31">        super(message, exception);</span>
+<span class="fc" id="L32">        this.targetAnnotation = targetAnnotation;</span>
+<span class="fc" id="L33">    }</span>
     
     /**
      * エラーの元となったアノテーションを取得する。
      * @return 必要なアノテーションが付与されていない時など、nullを返すときもあります。
      */
     public Annotation getTargetAnnotation() {
-<span class="nc" id="L39">        return targetAnnotation;</span>
+<span class="nc" id="L40">        return targetAnnotation;</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

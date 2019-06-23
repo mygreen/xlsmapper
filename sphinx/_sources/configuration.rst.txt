@@ -144,4 +144,10 @@ Configurationでは以下の設定を行うことができます。
        | 詳細は、:doc:`xmlmapping` のを参照してください。
        | **Ver.2.0以上** から利用可能です。
 
+   * - ``commentOperator``
+     - ``CellCommentOperator``
+     - | セルのコメント情報をマッピングするデフォルトの処理を設定します。
+       | 詳細は、:doc:`sheetinfo_comment` や :ref:`@XlsCommentOption <annotationXlsCommentOption>` を参照してください。
+       | **Ver.2.1以上** から利用可能です。
+
 

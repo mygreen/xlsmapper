@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LabelledCommentProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor.impl</a> &gt; <span class="el_source">LabelledCommentProcessor.java</span></div><h1>LabelledCommentProcessor.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
+
+import java.util.Optional;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+
+import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.LoadingWorkObject;
+import com.gh.mygreen.xlsmapper.SavingWorkObject;
+import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledComment;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+
+/**
+ * {@link XlsLabelledComment}を処理するFieldProcessor。
+ *
+ * @since 2.1
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L29">public class LabelledCommentProcessor extends AbstractFieldProcessor&lt;XlsLabelledComment&gt; {</span>
+
+    @Override
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsLabelledComment anno,
+            final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
+<span class="nc" id="L36">            return;</span>
+        }
+        
+<span class="fc" id="L39">        validatePropertyType(accessor, anno);</span>
+        
+        // マッピング対象のセル情報の取得
+<span class="fc" id="L42">        LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);</span>
+<span class="fc" id="L43">        Optional&lt;CellPosition&gt; labelAddress = labelHandler.getLabelPosition(anno);</span>
+
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if(!labelAddress.isPresent()) {</span>
+            /*
+             * ラベル用のセルが見つからない場合
+             * optional=falseの場合は、例外がスローされここには到達しない。
+             */
+<span class="fc" id="L50">            return;</span>
+        }
+
+<span class="fc" id="L53">        final Cell xlsCell = POIUtils.getCell(sheet, labelAddress.get());</span>
+<span class="fc" id="L54">        accessor.setPosition(beansObj, labelAddress.get());</span>
+<span class="fc" id="L55">        accessor.setLabel(beansObj, config.getCellFormatter().format(xlsCell));</span>
+        
+<span class="fc" id="L57">        config.getCommentOperator().loadCellComment(</span>
+<span class="fc" id="L58">                (targetObj, comment) -&gt; accessor.setValue(targetObj, comment),</span>
+                xlsCell, beansObj, accessor, config);
+        
+<span class="fc" id="L61">    }</span>
+    
+    /**
+     * プロパティのクラスタイプの検証。文字列以外はエラーとする。
+     * @param accessor プロパティ情報
+     * @param anno アノテーション
+     */
+    private void validatePropertyType(final FieldAccessor accessor, final XlsLabelledComment anno) {
+        
+<span class="fc" id="L70">        final Class&lt;?&gt; clazz = accessor.getType();</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if(!String.class.isAssignableFrom(clazz)) {</span>
+<span class="nc" id="L72">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
+<span class="nc" id="L73">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="nc" id="L74">                    .varWithAnno(&quot;anno&quot;, XlsLabelledComment.class)</span>
+<span class="nc" id="L75">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
+<span class="nc" id="L76">                    .var(&quot;expectedType&quot;, &quot;String&quot;)</span>
+<span class="nc" id="L77">                    .format());</span>
+        }
+        
+<span class="fc" id="L80">    }</span>
+
+    @Override
+    public void saveProcess(final Sheet sheet, final Object targetObj, final XlsLabelledComment anno, final FieldAccessor accessor,
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if(!Utils.isSaveCase(anno.cases())) {</span>
+<span class="nc" id="L87">            return;</span>
+        }
+        
+<span class="fc" id="L90">        validatePropertyType(accessor, anno);</span>
+        
+        // マッピング対象のセル情報の取得
+<span class="fc" id="L93">        LabelledCellHandler labelHandler = new LabelledCellHandler(accessor, sheet, config);</span>
+<span class="fc" id="L94">        Optional&lt;CellPosition&gt; labelAddress = labelHandler.getLabelPosition(anno);</span>
+
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if(!labelAddress.isPresent()) {</span>
+            /*
+             * ラベル用のセルが見つからない場合
+             * optional=falseの場合は、例外がスローされここには到達しない。
+             */
+<span class="fc" id="L101">            return;</span>
+        }
+        
+<span class="fc" id="L104">        final Cell xlsCell = POIUtils.getCell(sheet, labelAddress.get());</span>
+<span class="fc" id="L105">        accessor.setPosition(targetObj, labelAddress.get());</span>
+<span class="fc" id="L106">        accessor.setLabel(targetObj, config.getCellFormatter().format(xlsCell));</span>
+        
+<span class="fc" id="L108">        config.getCommentOperator().saveCellComment((beanObj) -&gt; Optional.ofNullable((String)accessor.getValue(beanObj)),</span>
+                xlsCell, targetObj, accessor, config);
+
+<span class="fc" id="L111">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

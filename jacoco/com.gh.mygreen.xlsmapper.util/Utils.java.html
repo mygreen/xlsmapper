@@ -235,13 +235,18 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @param text2 アノテーションに指定されているラベル。
      *              {@literal /&lt;ラベル&gt;/}と指定する場合、正規表現による比較を行う。
      * @param config システム設定
-     * @return true:ラベルが一致する。
+     * @return true:ラベルが一致する。比較対象のラベルがnullの場合は、falseを返す。
      */
     public static boolean matches(final String text1, final String text2, final Configuration config){
-<span class="pc bpc" id="L241" title="1 of 6 branches missed.">        if(config.isRegexLabelText() &amp;&amp; text2.startsWith(&quot;/&quot;) &amp;&amp; text2.endsWith(&quot;/&quot;)){</span>
-<span class="fc" id="L242">            return normalize(text1, config).matches(text2.substring(1, text2.length() - 1));</span>
+        
+<span class="pc bpc" id="L242" title="2 of 4 branches missed.">        if(text1 == null || text2 == null) {</span>
+<span class="nc" id="L243">            return false;</span>
+        }
+        
+<span class="pc bpc" id="L246" title="1 of 6 branches missed.">        if(config.isRegexLabelText() &amp;&amp; text2.startsWith(&quot;/&quot;) &amp;&amp; text2.endsWith(&quot;/&quot;)){</span>
+<span class="fc" id="L247">            return normalize(text1, config).matches(text2.substring(1, text2.length() - 1));</span>
         } else {
-<span class="fc" id="L244">            return normalize(text1, config).equals(normalize(text2, config));</span>
+<span class="fc" id="L249">            return normalize(text1, config).equals(normalize(text2, config));</span>
 //            return normalize(text1, config).equals(text2);
         }
     }
@@ -254,10 +259,10 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @return true:ラベルが一致する。
      */
     public static String normalize(final String text, final Configuration config){
-<span class="pc bpc" id="L257" title="1 of 4 branches missed.">        if(text != null &amp;&amp; config.isNormalizeLabelText()){</span>
-<span class="fc" id="L258">            return text.trim().replaceAll(&quot;[\n\r]&quot;, &quot;&quot;).replaceAll(&quot;[\t 　]+&quot;, &quot; &quot;);</span>
+<span class="pc bpc" id="L262" title="1 of 4 branches missed.">        if(text != null &amp;&amp; config.isNormalizeLabelText()){</span>
+<span class="fc" id="L263">            return text.trim().replaceAll(&quot;[\n\r]&quot;, &quot;&quot;).replaceAll(&quot;[\t 　]+&quot;, &quot; &quot;);</span>
         }
-<span class="fc" id="L260">        return text;</span>
+<span class="fc" id="L265">        return text;</span>
     }
 
     /**
@@ -267,15 +272,15 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @return trueの場合、空文字を判定する。
      */
     public static boolean isEmpty(final String str) {
-<span class="fc bfc" id="L270" title="All 4 branches covered.">        if(str == null || str.isEmpty()) {</span>
-<span class="fc" id="L271">            return true;</span>
+<span class="fc bfc" id="L275" title="All 4 branches covered.">        if(str == null || str.isEmpty()) {</span>
+<span class="fc" id="L276">            return true;</span>
         }
 
-<span class="fc bfc" id="L274" title="All 2 branches covered.">        if(str.length() == 1) {</span>
-<span class="fc bfc" id="L275" title="All 2 branches covered.">            return str.charAt(0) == '\u0000';</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">        if(str.length() == 1) {</span>
+<span class="fc bfc" id="L280" title="All 2 branches covered.">            return str.charAt(0) == '\u0000';</span>
         }
 
-<span class="fc" id="L278">        return false;</span>
+<span class="fc" id="L283">        return false;</span>
     }
 
     /**
@@ -284,7 +289,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @return
      */
     public static boolean isNotEmpty(final String str) {
-<span class="fc bfc" id="L287" title="All 2 branches covered.">        return !isEmpty(str);</span>
+<span class="fc bfc" id="L292" title="All 2 branches covered.">        return !isEmpty(str);</span>
     }
 
     /**
@@ -293,15 +298,15 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @return nullまたはサイズが0のときにtrueを返す。
      */
     public static boolean isEmpty(final Collection&lt;?&gt; collection) {
-<span class="nc bnc" id="L296" title="All 4 branches missed.">        if(collection == null || collection.isEmpty()) {</span>
-<span class="nc" id="L297">            return true;</span>
+<span class="nc bnc" id="L301" title="All 4 branches missed.">        if(collection == null || collection.isEmpty()) {</span>
+<span class="nc" id="L302">            return true;</span>
         }
 
-<span class="nc" id="L300">        return false;</span>
+<span class="nc" id="L305">        return false;</span>
     }
 
     public static boolean isNotEmpty(final Collection&lt;?&gt; collection) {
-<span class="nc bnc" id="L304" title="All 2 branches missed.">        return !isEmpty(collection);</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">        return !isEmpty(collection);</span>
     }
 
     /**
@@ -310,11 +315,11 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @return nullまたは、配列のサイズが0のときにtrueを返す。
      */
     public static boolean isEmpty(final Object[] arrays) {
-<span class="nc bnc" id="L313" title="All 4 branches missed.">        if(arrays == null || arrays.length == 0) {</span>
-<span class="nc" id="L314">            return true;</span>
+<span class="nc bnc" id="L318" title="All 4 branches missed.">        if(arrays == null || arrays.length == 0) {</span>
+<span class="nc" id="L319">            return true;</span>
         }
 
-<span class="nc" id="L317">        return false;</span>
+<span class="nc" id="L322">        return false;</span>
     }
 
     /**
@@ -323,7 +328,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @return
      */
     public static boolean isNotEmpty(final Object[] arrays) {
-<span class="nc bnc" id="L326" title="All 2 branches missed.">        return !isEmpty(arrays);</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">        return !isEmpty(arrays);</span>
     }
 
     /**
@@ -335,24 +340,24 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static boolean equals(final Object obj1, final Object obj2) {
 
-<span class="pc bpc" id="L338" title="3 of 4 branches missed.">        if(obj1 == null &amp;&amp; obj2 == null) {</span>
-<span class="nc" id="L339">            return true;</span>
+<span class="pc bpc" id="L343" title="3 of 4 branches missed.">        if(obj1 == null &amp;&amp; obj2 == null) {</span>
+<span class="nc" id="L344">            return true;</span>
         }
 
-<span class="pc bpc" id="L342" title="1 of 2 branches missed.">        if(obj1 == null) {</span>
-<span class="nc" id="L343">            return false;</span>
+<span class="pc bpc" id="L347" title="1 of 2 branches missed.">        if(obj1 == null) {</span>
+<span class="nc" id="L348">            return false;</span>
         }
 
-<span class="pc bpc" id="L346" title="1 of 2 branches missed.">        if(obj2 == null) {</span>
-<span class="nc" id="L347">            return false;</span>
+<span class="pc bpc" id="L351" title="1 of 2 branches missed.">        if(obj2 == null) {</span>
+<span class="nc" id="L352">            return false;</span>
         }
 
-<span class="fc" id="L350">        return obj1.equals(obj2);</span>
+<span class="fc" id="L355">        return obj1.equals(obj2);</span>
 
     }
 
     public static boolean notEquals(final Object obj1, final Object obj2) {
-<span class="nc bnc" id="L355" title="All 2 branches missed.">        return !equals(obj1, obj2);</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">        return !equals(obj1, obj2);</span>
     }
 
     /**
@@ -364,11 +369,11 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static String convertToString(final Object value) {
 
-<span class="nc bnc" id="L367" title="All 2 branches missed.">        if(value == null) {</span>
-<span class="nc" id="L368">            return &quot;null&quot;;</span>
+<span class="nc bnc" id="L372" title="All 2 branches missed.">        if(value == null) {</span>
+<span class="nc" id="L373">            return &quot;null&quot;;</span>
         }
 
-<span class="nc" id="L371">        return value.toString();</span>
+<span class="nc" id="L376">        return value.toString();</span>
 
     }
 
@@ -380,11 +385,11 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static String trim(final String value, final Optional&lt;XlsTrim&gt; trimAnno) {
 
-<span class="pc bpc" id="L383" title="1 of 4 branches missed.">        if(!trimAnno.isPresent() || value == null) {</span>
-<span class="fc" id="L384">            return value;</span>
+<span class="pc bpc" id="L388" title="1 of 4 branches missed.">        if(!trimAnno.isPresent() || value == null) {</span>
+<span class="fc" id="L389">            return value;</span>
         }
 
-<span class="fc" id="L387">        return value.trim();</span>
+<span class="fc" id="L392">        return value.trim();</span>
 
     }
 
@@ -395,11 +400,11 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @return トリミングした結果。
      */
     public static String trim(final String value, final boolean trimmed) {
-<span class="pc bpc" id="L398" title="1 of 4 branches missed.">        if(!trimmed || value == null) {</span>
-<span class="fc" id="L399">            return value;</span>
+<span class="pc bpc" id="L403" title="1 of 4 branches missed.">        if(!trimmed || value == null) {</span>
+<span class="fc" id="L404">            return value;</span>
         }
 
-<span class="fc" id="L402">        return value.trim();</span>
+<span class="fc" id="L407">        return value.trim();</span>
 
     }
 
@@ -420,43 +425,43 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
             final Sheet sheet, final Configuration config, final SheetBindingErrors&lt;?&gt; errors, final ProcessCase processCase)
                     throws XlsMapperException {
 
-<span class="fc" id="L423">        final Class&lt;?&gt;[] paramTypes = method.getParameterTypes();</span>
-<span class="fc" id="L424">        final Object[] paramValues =  new Object[paramTypes.length];</span>
+<span class="fc" id="L428">        final Class&lt;?&gt;[] paramTypes = method.getParameterTypes();</span>
+<span class="fc" id="L429">        final Object[] paramValues =  new Object[paramTypes.length];</span>
 
-<span class="fc bfc" id="L426" title="All 2 branches covered.">        for(int i=0; i &lt; paramTypes.length; i++) {</span>
-<span class="fc bfc" id="L427" title="All 2 branches covered.">            if(Sheet.class.isAssignableFrom(paramTypes[i])) {</span>
-<span class="fc" id="L428">                paramValues[i] = sheet;</span>
+<span class="fc bfc" id="L431" title="All 2 branches covered.">        for(int i=0; i &lt; paramTypes.length; i++) {</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">            if(Sheet.class.isAssignableFrom(paramTypes[i])) {</span>
+<span class="fc" id="L433">                paramValues[i] = sheet;</span>
 
-<span class="fc bfc" id="L430" title="All 2 branches covered.">            } else if(Configuration.class.isAssignableFrom(paramTypes[i])) {</span>
-<span class="fc" id="L431">                paramValues[i] = config;</span>
+<span class="fc bfc" id="L435" title="All 2 branches covered.">            } else if(Configuration.class.isAssignableFrom(paramTypes[i])) {</span>
+<span class="fc" id="L436">                paramValues[i] = config;</span>
 
-<span class="fc bfc" id="L433" title="All 2 branches covered.">            } else if(SheetBindingErrors.class.isAssignableFrom(paramTypes[i])) {</span>
-<span class="fc" id="L434">                paramValues[i] = errors;</span>
+<span class="fc bfc" id="L438" title="All 2 branches covered.">            } else if(SheetBindingErrors.class.isAssignableFrom(paramTypes[i])) {</span>
+<span class="fc" id="L439">                paramValues[i] = errors;</span>
 
-<span class="pc bpc" id="L436" title="1 of 2 branches missed.">            } else if(paramTypes[i].isAssignableFrom(beanObj.getClass())) {</span>
-<span class="fc" id="L437">                paramValues[i] = beanObj;</span>
+<span class="pc bpc" id="L441" title="1 of 2 branches missed.">            } else if(paramTypes[i].isAssignableFrom(beanObj.getClass())) {</span>
+<span class="fc" id="L442">                paramValues[i] = beanObj;</span>
 
-<span class="nc bnc" id="L439" title="All 2 branches missed.">            } else if(ProcessCase.class.equals(paramTypes[i])) {</span>
-<span class="nc" id="L440">                paramValues[i] = processCase;</span>
+<span class="nc bnc" id="L444" title="All 2 branches missed.">            } else if(ProcessCase.class.equals(paramTypes[i])) {</span>
+<span class="nc" id="L445">                paramValues[i] = processCase;</span>
 
-<span class="nc bnc" id="L442" title="All 2 branches missed.">            } else if(paramTypes[i].equals(Object.class)) {</span>
-<span class="nc" id="L443">                paramValues[i] = beanObj;</span>
+<span class="nc bnc" id="L447" title="All 2 branches missed.">            } else if(paramTypes[i].equals(Object.class)) {</span>
+<span class="nc" id="L448">                paramValues[i] = beanObj;</span>
 
             } else {
-<span class="nc" id="L446">                paramValues[i] = null;</span>
+<span class="nc" id="L451">                paramValues[i] = null;</span>
             }
         }
 
         try {
-<span class="fc" id="L451">            method.setAccessible(true);</span>
-<span class="fc" id="L452">            method.invoke(processObj, paramValues);</span>
-<span class="nc" id="L453">        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
-<span class="nc bnc" id="L454" title="All 2 branches missed.">            Throwable t = e.getCause() == null ? e : e.getCause();</span>
-<span class="nc" id="L455">            throw new XlsMapperException(</span>
-<span class="nc" id="L456">                    String.format(&quot;fail execute method '%s#%s'.&quot;, processObj.getClass().getName(), method.getName()),</span>
+<span class="fc" id="L456">            method.setAccessible(true);</span>
+<span class="fc" id="L457">            method.invoke(processObj, paramValues);</span>
+<span class="nc" id="L458">        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc bnc" id="L459" title="All 2 branches missed.">            Throwable t = e.getCause() == null ? e : e.getCause();</span>
+<span class="nc" id="L460">            throw new XlsMapperException(</span>
+<span class="nc" id="L461">                    String.format(&quot;fail execute method '%s#%s'.&quot;, processObj.getClass().getName(), method.getName()),</span>
                     t);
-<span class="fc" id="L458">        }</span>
-<span class="fc" id="L459">    }</span>
+<span class="fc" id="L463">        }</span>
+<span class="fc" id="L464">    }</span>
 
     /**
      * 文字列形式のロケールをオブジェクトに変換する。
@@ -466,20 +471,20 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static Locale getLocale(final String str) {
 
-<span class="fc bfc" id="L469" title="All 2 branches covered.">        if(isEmpty(str)) {</span>
-<span class="fc" id="L470">            return Locale.getDefault();</span>
+<span class="fc bfc" id="L474" title="All 2 branches covered.">        if(isEmpty(str)) {</span>
+<span class="fc" id="L475">            return Locale.getDefault();</span>
         }
 
-<span class="pc bpc" id="L473" title="1 of 2 branches missed.">        if(!str.contains(&quot;_&quot;)) {</span>
-<span class="nc" id="L474">            return new Locale(str);</span>
+<span class="pc bpc" id="L478" title="1 of 2 branches missed.">        if(!str.contains(&quot;_&quot;)) {</span>
+<span class="nc" id="L479">            return new Locale(str);</span>
         }
 
-<span class="fc" id="L477">        final String[] split = str.split(&quot;_&quot;);</span>
-<span class="pc bpc" id="L478" title="1 of 2 branches missed.">        if(split.length == 2) {</span>
-<span class="fc" id="L479">            return new Locale(split[0], split[1]);</span>
+<span class="fc" id="L482">        final String[] split = str.split(&quot;_&quot;);</span>
+<span class="pc bpc" id="L483" title="1 of 2 branches missed.">        if(split.length == 2) {</span>
+<span class="fc" id="L484">            return new Locale(split[0], split[1]);</span>
 
         } else {
-<span class="nc" id="L482">            return new Locale(split[0], split[1], split[2]);</span>
+<span class="nc" id="L487">            return new Locale(split[0], split[1], split[2]);</span>
         }
 
     }
@@ -492,39 +497,39 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static String removeEscapeChar(final String str, final char escapeChar) {
 
-<span class="pc bpc" id="L495" title="2 of 4 branches missed.">        if(str == null || str.isEmpty()) {</span>
-<span class="nc" id="L496">            return str;</span>
+<span class="pc bpc" id="L500" title="2 of 4 branches missed.">        if(str == null || str.isEmpty()) {</span>
+<span class="nc" id="L501">            return str;</span>
         }
 
-<span class="fc" id="L499">        final String escapeStr = String.valueOf(escapeChar);</span>
-<span class="fc" id="L500">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L504">        final String escapeStr = String.valueOf(escapeChar);</span>
+<span class="fc" id="L505">        StringBuilder sb = new StringBuilder();</span>
 
-<span class="fc" id="L502">        LinkedList&lt;String&gt; stack = new LinkedList&lt;String&gt;();</span>
+<span class="fc" id="L507">        LinkedList&lt;String&gt; stack = new LinkedList&lt;String&gt;();</span>
 
-<span class="fc" id="L504">        final int length = str.length();</span>
-<span class="fc bfc" id="L505" title="All 2 branches covered.">        for(int i=0; i &lt; length; i++) {</span>
-<span class="fc" id="L506">            final char c = str.charAt(i);</span>
+<span class="fc" id="L509">        final int length = str.length();</span>
+<span class="fc bfc" id="L510" title="All 2 branches covered.">        for(int i=0; i &lt; length; i++) {</span>
+<span class="fc" id="L511">            final char c = str.charAt(i);</span>
 
-<span class="fc bfc" id="L508" title="All 2 branches covered.">            if(StackUtils.equalsTopElement(stack, escapeStr)) {</span>
+<span class="fc bfc" id="L513" title="All 2 branches covered.">            if(StackUtils.equalsTopElement(stack, escapeStr)) {</span>
                 // スタックの一番上がエスケープ文字の場合
-<span class="fc" id="L510">                StackUtils.popup(stack);</span>
-<span class="fc" id="L511">                sb.append(c);</span>
+<span class="fc" id="L515">                StackUtils.popup(stack);</span>
+<span class="fc" id="L516">                sb.append(c);</span>
 
-<span class="fc bfc" id="L513" title="All 2 branches covered.">            } else if(c == escapeChar) {</span>
+<span class="fc bfc" id="L518" title="All 2 branches covered.">            } else if(c == escapeChar) {</span>
                 // スタックに積む
-<span class="fc" id="L515">                stack.push(String.valueOf(c));</span>
+<span class="fc" id="L520">                stack.push(String.valueOf(c));</span>
 
             } else {
-<span class="fc" id="L518">                sb.append(c);</span>
+<span class="fc" id="L523">                sb.append(c);</span>
             }
 
         }
 
-<span class="pc bpc" id="L523" title="1 of 2 branches missed.">        if(!stack.isEmpty()) {</span>
-<span class="nc" id="L524">            sb.append(StackUtils.popupAndConcat(stack));</span>
+<span class="pc bpc" id="L528" title="1 of 2 branches missed.">        if(!stack.isEmpty()) {</span>
+<span class="nc" id="L529">            sb.append(StackUtils.popupAndConcat(stack));</span>
         }
 
-<span class="fc" id="L527">        return sb.toString();</span>
+<span class="fc" id="L532">        return sb.toString();</span>
 
     }
 
@@ -543,42 +548,42 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
     public static Collection convertListToCollection(final List list, final Class&lt;Collection&gt; toClass,
             final BeanFactory&lt;Class&lt;?&gt;, Object&gt; beanFactory) {
 
-<span class="fc bfc" id="L546" title="All 2 branches covered.">        if(list.getClass().equals(toClass)) {</span>
-<span class="fc" id="L547">            return list;</span>
+<span class="fc bfc" id="L551" title="All 2 branches covered.">        if(list.getClass().equals(toClass)) {</span>
+<span class="fc" id="L552">            return list;</span>
         }
 
-<span class="fc bfc" id="L550" title="All 2 branches covered.">        if(toClass.isInterface()) {</span>
-<span class="fc bfc" id="L551" title="All 2 branches covered.">            if(List.class.isAssignableFrom(toClass)) {</span>
+<span class="fc bfc" id="L555" title="All 2 branches covered.">        if(toClass.isInterface()) {</span>
+<span class="fc bfc" id="L556" title="All 2 branches covered.">            if(List.class.isAssignableFrom(toClass)) {</span>
                 // 変換先がListの実態の場合はそのまま。
-<span class="fc" id="L553">                return list;</span>
+<span class="fc" id="L558">                return list;</span>
 
-<span class="fc bfc" id="L555" title="All 2 branches covered.">            } else if(Set.class.isAssignableFrom(toClass)) {</span>
+<span class="fc bfc" id="L560" title="All 2 branches covered.">            } else if(Set.class.isAssignableFrom(toClass)) {</span>
 
-<span class="fc" id="L557">                Collection value = (Collection) beanFactory.create(LinkedHashSet.class);</span>
-<span class="fc" id="L558">                value.addAll(list);</span>
-<span class="fc" id="L559">                return value;</span>
+<span class="fc" id="L562">                Collection value = (Collection) beanFactory.create(LinkedHashSet.class);</span>
+<span class="fc" id="L563">                value.addAll(list);</span>
+<span class="fc" id="L564">                return value;</span>
 
-<span class="fc bfc" id="L561" title="All 2 branches covered.">            } else if(Queue.class.isAssignableFrom(toClass)) {</span>
+<span class="fc bfc" id="L566" title="All 2 branches covered.">            } else if(Queue.class.isAssignableFrom(toClass)) {</span>
 
-<span class="fc" id="L563">                Collection value = (Collection) beanFactory.create(LinkedList.class);</span>
-<span class="fc" id="L564">                value.addAll(list);</span>
-<span class="fc" id="L565">                return value;</span>
-
-<span class="pc bpc" id="L567" title="1 of 2 branches missed.">            } else if(Collection.class.isAssignableFrom(toClass)) {</span>
-<span class="fc" id="L568">                Collection value = (Collection) beanFactory.create(ArrayList.class);</span>
+<span class="fc" id="L568">                Collection value = (Collection) beanFactory.create(LinkedList.class);</span>
 <span class="fc" id="L569">                value.addAll(list);</span>
 <span class="fc" id="L570">                return value;</span>
 
+<span class="pc bpc" id="L572" title="1 of 2 branches missed.">            } else if(Collection.class.isAssignableFrom(toClass)) {</span>
+<span class="fc" id="L573">                Collection value = (Collection) beanFactory.create(ArrayList.class);</span>
+<span class="fc" id="L574">                value.addAll(list);</span>
+<span class="fc" id="L575">                return value;</span>
+
             } else {
-<span class="nc" id="L573">                throw new IllegalArgumentException(&quot;not support class type:&quot; + toClass.getName());</span>
+<span class="nc" id="L578">                throw new IllegalArgumentException(&quot;not support class type:&quot; + toClass.getName());</span>
             }
 
         }
 
-<span class="fc" id="L578">        Collection value = (Collection) beanFactory.create(toClass);</span>
-<span class="fc" id="L579">        value.addAll(list);</span>
+<span class="fc" id="L583">        Collection value = (Collection) beanFactory.create(toClass);</span>
+<span class="fc" id="L584">        value.addAll(list);</span>
 
-<span class="fc" id="L581">        return value;</span>
+<span class="fc" id="L586">        return value;</span>
 
     }
 
@@ -591,11 +596,11 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static &lt;T&gt; List&lt;T&gt; convertCollectionToList(final Collection&lt;T&gt; collection) {
 
-<span class="fc bfc" id="L594" title="All 2 branches covered.">        if(List.class.isAssignableFrom(collection.getClass())) {</span>
-<span class="fc" id="L595">            return (List&lt;T&gt;)collection;</span>
+<span class="fc bfc" id="L599" title="All 2 branches covered.">        if(List.class.isAssignableFrom(collection.getClass())) {</span>
+<span class="fc" id="L600">            return (List&lt;T&gt;)collection;</span>
         }
 
-<span class="fc" id="L598">        return new ArrayList&lt;&gt;(collection);</span>
+<span class="fc" id="L603">        return new ArrayList&lt;&gt;(collection);</span>
 
     }
 
@@ -610,28 +615,28 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @throws IllegalArgumentException {@literal index &lt; 0.}
      */
     public static &lt;P&gt; void addListWithIndex(final List&lt;P&gt; list, final P element, final int index) {
-<span class="fc" id="L613">        ArgUtils.notNull(list, &quot;list&quot;);</span>
-<span class="fc" id="L614">        ArgUtils.notMin(index, 0, &quot;index&quot;);</span>
+<span class="fc" id="L618">        ArgUtils.notNull(list, &quot;list&quot;);</span>
+<span class="fc" id="L619">        ArgUtils.notMin(index, 0, &quot;index&quot;);</span>
 
-<span class="fc" id="L616">        final int listSize = list.size();</span>
-<span class="fc bfc" id="L617" title="All 2 branches covered.">        if(listSize &lt; index) {</span>
+<span class="fc" id="L621">        final int listSize = list.size();</span>
+<span class="fc bfc" id="L622" title="All 2 branches covered.">        if(listSize &lt; index) {</span>
             // 足りない場合は、要素を追加する。
-<span class="fc" id="L619">            final int lackSize = index - listSize;</span>
-<span class="fc bfc" id="L620" title="All 2 branches covered.">            for(int i=0; i &lt; lackSize; i++) {</span>
-<span class="fc" id="L621">                list.add(null);</span>
+<span class="fc" id="L624">            final int lackSize = index - listSize;</span>
+<span class="fc bfc" id="L625" title="All 2 branches covered.">            for(int i=0; i &lt; lackSize; i++) {</span>
+<span class="fc" id="L626">                list.add(null);</span>
             }
-<span class="fc" id="L623">            list.add(element);</span>
+<span class="fc" id="L628">            list.add(element);</span>
 
-<span class="fc bfc" id="L625" title="All 2 branches covered.">        } else if(listSize == index) {</span>
+<span class="fc bfc" id="L630" title="All 2 branches covered.">        } else if(listSize == index) {</span>
             // 最後の要素に追加する
-<span class="fc" id="L627">            list.add(element);</span>
+<span class="fc" id="L632">            list.add(element);</span>
 
         } else {
             // リストのサイズが足りている場合
-<span class="fc" id="L631">            list.set(index, element);</span>
+<span class="fc" id="L636">            list.set(index, element);</span>
         }
 
-<span class="fc" id="L634">    }</span>
+<span class="fc" id="L639">    }</span>
 
     /**
      * プリミティブ型のデフォルト値を取得します。
@@ -640,39 +645,39 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @throws IllegalArgumentException {@literal type is null.}
      */
     public static Object getPrimitiveDefaultValue(final Class&lt;?&gt; type) {
-<span class="fc" id="L643">        ArgUtils.notNull(type, &quot;type&quot;);</span>
+<span class="fc" id="L648">        ArgUtils.notNull(type, &quot;type&quot;);</span>
 
-<span class="fc bfc" id="L645" title="All 2 branches covered.">        if(!type.isPrimitive()) {</span>
-<span class="fc" id="L646">            return null;</span>
+<span class="fc bfc" id="L650" title="All 2 branches covered.">        if(!type.isPrimitive()) {</span>
+<span class="fc" id="L651">            return null;</span>
         }
 
-<span class="fc bfc" id="L649" title="All 2 branches covered.">        if(type.equals(boolean.class)) {</span>
-<span class="fc" id="L650">            return false;</span>
+<span class="fc bfc" id="L654" title="All 2 branches covered.">        if(type.equals(boolean.class)) {</span>
+<span class="fc" id="L655">            return false;</span>
 
-<span class="fc bfc" id="L652" title="All 2 branches covered.">        } else if(type.equals(char.class)) {</span>
-<span class="fc" id="L653">            return '\u0000';</span>
+<span class="fc bfc" id="L657" title="All 2 branches covered.">        } else if(type.equals(char.class)) {</span>
+<span class="fc" id="L658">            return '\u0000';</span>
 
-<span class="fc bfc" id="L655" title="All 2 branches covered.">        } else if(type.equals(byte.class)) {</span>
-<span class="fc" id="L656">            return (byte)0;</span>
+<span class="fc bfc" id="L660" title="All 2 branches covered.">        } else if(type.equals(byte.class)) {</span>
+<span class="fc" id="L661">            return (byte)0;</span>
 
-<span class="fc bfc" id="L658" title="All 2 branches covered.">        } else if(type.equals(short.class)) {</span>
-<span class="fc" id="L659">            return (short)0;</span>
+<span class="fc bfc" id="L663" title="All 2 branches covered.">        } else if(type.equals(short.class)) {</span>
+<span class="fc" id="L664">            return (short)0;</span>
 
-<span class="fc bfc" id="L661" title="All 2 branches covered.">        } else if(type.equals(int.class)) {</span>
-<span class="fc" id="L662">            return 0;</span>
+<span class="fc bfc" id="L666" title="All 2 branches covered.">        } else if(type.equals(int.class)) {</span>
+<span class="fc" id="L667">            return 0;</span>
 
-<span class="fc bfc" id="L664" title="All 2 branches covered.">        } else if(type.equals(long.class)) {</span>
-<span class="fc" id="L665">            return 0l;</span>
+<span class="fc bfc" id="L669" title="All 2 branches covered.">        } else if(type.equals(long.class)) {</span>
+<span class="fc" id="L670">            return 0l;</span>
 
-<span class="fc bfc" id="L667" title="All 2 branches covered.">        } else if(type.equals(float.class)) {</span>
-<span class="fc" id="L668">            return 0.0f;</span>
+<span class="fc bfc" id="L672" title="All 2 branches covered.">        } else if(type.equals(float.class)) {</span>
+<span class="fc" id="L673">            return 0.0f;</span>
 
-<span class="pc bpc" id="L670" title="1 of 2 branches missed.">        } else if(type.equals(double.class)) {</span>
-<span class="fc" id="L671">            return 0.0d;</span>
+<span class="pc bpc" id="L675" title="1 of 2 branches missed.">        } else if(type.equals(double.class)) {</span>
+<span class="fc" id="L676">            return 0.0d;</span>
 
         }
 
-<span class="nc" id="L675">        return null;</span>
+<span class="nc" id="L680">        return null;</span>
     }
 
     /**
@@ -684,87 +689,87 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @throws IllegalArgumentException {@literal arrayが配列でない場合。componentTypeがサポートしていないプリミティブ型の場合。}
      */
     public static List&lt;Object&gt; asList(final Object object, final Class&lt;?&gt; componentType) {
-<span class="fc" id="L687">        ArgUtils.notNull(componentType, &quot;componentType&quot;);</span>
+<span class="fc" id="L692">        ArgUtils.notNull(componentType, &quot;componentType&quot;);</span>
 
-<span class="fc bfc" id="L689" title="All 2 branches covered.">        if(object == null) {</span>
-<span class="fc" id="L690">            return new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L694" title="All 2 branches covered.">        if(object == null) {</span>
+<span class="fc" id="L695">            return new ArrayList&lt;&gt;();</span>
         }
 
-<span class="fc bfc" id="L693" title="All 2 branches covered.">        if(!object.getClass().isArray()) {</span>
-<span class="fc" id="L694">            throw new IllegalArgumentException(String.format(&quot;args0 is not arrays : %s.&quot;, object.getClass().getName()));</span>
+<span class="fc bfc" id="L698" title="All 2 branches covered.">        if(!object.getClass().isArray()) {</span>
+<span class="fc" id="L699">            throw new IllegalArgumentException(String.format(&quot;args0 is not arrays : %s.&quot;, object.getClass().getName()));</span>
         }
 
-<span class="fc bfc" id="L697" title="All 2 branches covered.">        if(!componentType.isPrimitive()) {</span>
-<span class="fc" id="L698">            return Arrays.asList((Object[])object);</span>
+<span class="fc bfc" id="L702" title="All 2 branches covered.">        if(!componentType.isPrimitive()) {</span>
+<span class="fc" id="L703">            return Arrays.asList((Object[])object);</span>
         }
 
-<span class="fc bfc" id="L701" title="All 2 branches covered.">        if(componentType.equals(boolean.class)) {</span>
-<span class="fc" id="L702">            boolean[] array = (boolean[])object;</span>
-<span class="fc" id="L703">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
-<span class="fc bfc" id="L704" title="All 2 branches covered.">            for(boolean v : array) {</span>
-<span class="fc" id="L705">                list.add(v);</span>
+<span class="fc bfc" id="L706" title="All 2 branches covered.">        if(componentType.equals(boolean.class)) {</span>
+<span class="fc" id="L707">            boolean[] array = (boolean[])object;</span>
+<span class="fc" id="L708">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L709" title="All 2 branches covered.">            for(boolean v : array) {</span>
+<span class="fc" id="L710">                list.add(v);</span>
             }
-<span class="fc" id="L707">            return list;</span>
+<span class="fc" id="L712">            return list;</span>
 
-<span class="fc bfc" id="L709" title="All 2 branches covered.">        } else if(componentType.equals(char.class)) {</span>
-<span class="fc" id="L710">            char[] array = (char[])object;</span>
-<span class="fc" id="L711">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
-<span class="fc bfc" id="L712" title="All 2 branches covered.">            for(char v : array) {</span>
-<span class="fc" id="L713">                list.add(v);</span>
+<span class="fc bfc" id="L714" title="All 2 branches covered.">        } else if(componentType.equals(char.class)) {</span>
+<span class="fc" id="L715">            char[] array = (char[])object;</span>
+<span class="fc" id="L716">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L717" title="All 2 branches covered.">            for(char v : array) {</span>
+<span class="fc" id="L718">                list.add(v);</span>
             }
-<span class="fc" id="L715">            return list;</span>
+<span class="fc" id="L720">            return list;</span>
 
-<span class="fc bfc" id="L717" title="All 2 branches covered.">        } else if(componentType.equals(byte.class)) {</span>
-<span class="fc" id="L718">            byte[] array = (byte[])object;</span>
-<span class="fc" id="L719">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
-<span class="fc bfc" id="L720" title="All 2 branches covered.">            for(byte v : array) {</span>
-<span class="fc" id="L721">                list.add(v);</span>
+<span class="fc bfc" id="L722" title="All 2 branches covered.">        } else if(componentType.equals(byte.class)) {</span>
+<span class="fc" id="L723">            byte[] array = (byte[])object;</span>
+<span class="fc" id="L724">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L725" title="All 2 branches covered.">            for(byte v : array) {</span>
+<span class="fc" id="L726">                list.add(v);</span>
             }
-<span class="fc" id="L723">            return list;</span>
+<span class="fc" id="L728">            return list;</span>
 
-<span class="fc bfc" id="L725" title="All 2 branches covered.">        } else if(componentType.equals(short.class)) {</span>
-<span class="fc" id="L726">            short[] array = (short[])object;</span>
-<span class="fc" id="L727">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
-<span class="fc bfc" id="L728" title="All 2 branches covered.">            for(short v : array) {</span>
-<span class="fc" id="L729">                list.add(v);</span>
+<span class="fc bfc" id="L730" title="All 2 branches covered.">        } else if(componentType.equals(short.class)) {</span>
+<span class="fc" id="L731">            short[] array = (short[])object;</span>
+<span class="fc" id="L732">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L733" title="All 2 branches covered.">            for(short v : array) {</span>
+<span class="fc" id="L734">                list.add(v);</span>
             }
-<span class="fc" id="L731">            return list;</span>
+<span class="fc" id="L736">            return list;</span>
 
-<span class="fc bfc" id="L733" title="All 2 branches covered.">        } else if(componentType.equals(int.class)) {</span>
-<span class="fc" id="L734">            int[] array = (int[])object;</span>
-<span class="fc" id="L735">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
-<span class="fc bfc" id="L736" title="All 2 branches covered.">            for(int v : array) {</span>
-<span class="fc" id="L737">                list.add(v);</span>
+<span class="fc bfc" id="L738" title="All 2 branches covered.">        } else if(componentType.equals(int.class)) {</span>
+<span class="fc" id="L739">            int[] array = (int[])object;</span>
+<span class="fc" id="L740">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L741" title="All 2 branches covered.">            for(int v : array) {</span>
+<span class="fc" id="L742">                list.add(v);</span>
             }
-<span class="fc" id="L739">            return list;</span>
+<span class="fc" id="L744">            return list;</span>
 
-<span class="fc bfc" id="L741" title="All 2 branches covered.">        } else if(componentType.equals(long.class)) {</span>
-<span class="fc" id="L742">            long[] array = (long[])object;</span>
-<span class="fc" id="L743">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
-<span class="fc bfc" id="L744" title="All 2 branches covered.">            for(long v : array) {</span>
-<span class="fc" id="L745">                list.add(v);</span>
+<span class="fc bfc" id="L746" title="All 2 branches covered.">        } else if(componentType.equals(long.class)) {</span>
+<span class="fc" id="L747">            long[] array = (long[])object;</span>
+<span class="fc" id="L748">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L749" title="All 2 branches covered.">            for(long v : array) {</span>
+<span class="fc" id="L750">                list.add(v);</span>
             }
-<span class="fc" id="L747">            return list;</span>
+<span class="fc" id="L752">            return list;</span>
 
-<span class="fc bfc" id="L749" title="All 2 branches covered.">        } else if(componentType.equals(float.class)) {</span>
-<span class="fc" id="L750">            float[] array = (float[])object;</span>
-<span class="fc" id="L751">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
-<span class="fc bfc" id="L752" title="All 2 branches covered.">            for(float v : array) {</span>
-<span class="fc" id="L753">                list.add(v);</span>
+<span class="fc bfc" id="L754" title="All 2 branches covered.">        } else if(componentType.equals(float.class)) {</span>
+<span class="fc" id="L755">            float[] array = (float[])object;</span>
+<span class="fc" id="L756">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L757" title="All 2 branches covered.">            for(float v : array) {</span>
+<span class="fc" id="L758">                list.add(v);</span>
             }
-<span class="fc" id="L755">            return list;</span>
+<span class="fc" id="L760">            return list;</span>
 
-<span class="pc bpc" id="L757" title="1 of 2 branches missed.">        } else if(componentType.equals(double.class)) {</span>
-<span class="fc" id="L758">            double[] array = (double[])object;</span>
-<span class="fc" id="L759">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
-<span class="fc bfc" id="L760" title="All 2 branches covered.">            for(double v : array) {</span>
-<span class="fc" id="L761">                list.add(v);</span>
+<span class="pc bpc" id="L762" title="1 of 2 branches missed.">        } else if(componentType.equals(double.class)) {</span>
+<span class="fc" id="L763">            double[] array = (double[])object;</span>
+<span class="fc" id="L764">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L765" title="All 2 branches covered.">            for(double v : array) {</span>
+<span class="fc" id="L766">                list.add(v);</span>
             }
-<span class="fc" id="L763">            return list;</span>
+<span class="fc" id="L768">            return list;</span>
 
         }
 
-<span class="nc" id="L767">        throw new IllegalArgumentException(String.format(&quot;not support primitive type : %s.&quot;, componentType.getName()));</span>
+<span class="nc" id="L772">        throw new IllegalArgumentException(String.format(&quot;not support primitive type : %s.&quot;, componentType.getName()));</span>
 
     }
 
@@ -775,18 +780,18 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @throws IllegalArgumentException {@literal collection is null.}
      */
     public static int[] toArray(final Collection&lt;Integer&gt; collection) {
-<span class="fc" id="L778">        ArgUtils.notNull(collection, &quot;collection&quot;);</span>
+<span class="fc" id="L783">        ArgUtils.notNull(collection, &quot;collection&quot;);</span>
 
-<span class="fc" id="L780">        final int size = collection.size();</span>
-<span class="fc" id="L781">        final int[] array = new int[size];</span>
+<span class="fc" id="L785">        final int size = collection.size();</span>
+<span class="fc" id="L786">        final int[] array = new int[size];</span>
 
-<span class="fc" id="L783">        int i=0;</span>
-<span class="fc bfc" id="L784" title="All 2 branches covered.">        for(Integer value : collection) {</span>
-<span class="fc" id="L785">            array[i] = value;</span>
-<span class="fc" id="L786">            i++;</span>
-<span class="fc" id="L787">        }</span>
+<span class="fc" id="L788">        int i=0;</span>
+<span class="fc bfc" id="L789" title="All 2 branches covered.">        for(Integer value : collection) {</span>
+<span class="fc" id="L790">            array[i] = value;</span>
+<span class="fc" id="L791">            i++;</span>
+<span class="fc" id="L792">        }</span>
 
-<span class="fc" id="L789">        return array;</span>
+<span class="fc" id="L794">        return array;</span>
     }
 
     /**
@@ -799,47 +804,47 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static int getArraySize(final Object object, final Class&lt;?&gt; componentType) {
 
-<span class="fc" id="L802">        ArgUtils.notNull(componentType, &quot;componentType&quot;);</span>
+<span class="fc" id="L807">        ArgUtils.notNull(componentType, &quot;componentType&quot;);</span>
 
-<span class="pc bpc" id="L804" title="1 of 2 branches missed.">        if(object == null) {</span>
-<span class="nc" id="L805">            return 0;</span>
+<span class="pc bpc" id="L809" title="1 of 2 branches missed.">        if(object == null) {</span>
+<span class="nc" id="L810">            return 0;</span>
         }
 
-<span class="pc bpc" id="L808" title="1 of 2 branches missed.">        if(!object.getClass().isArray()) {</span>
-<span class="nc" id="L809">            throw new IllegalArgumentException(String.format(&quot;args0 is not arrays : %s.&quot;, object.getClass().getName()));</span>
+<span class="pc bpc" id="L813" title="1 of 2 branches missed.">        if(!object.getClass().isArray()) {</span>
+<span class="nc" id="L814">            throw new IllegalArgumentException(String.format(&quot;args0 is not arrays : %s.&quot;, object.getClass().getName()));</span>
         }
 
-<span class="fc bfc" id="L812" title="All 2 branches covered.">        if(!componentType.isPrimitive()) {</span>
-<span class="fc" id="L813">            return ((Object[])object).length;</span>
+<span class="fc bfc" id="L817" title="All 2 branches covered.">        if(!componentType.isPrimitive()) {</span>
+<span class="fc" id="L818">            return ((Object[])object).length;</span>
         }
 
-<span class="pc bpc" id="L816" title="1 of 2 branches missed.">        if(componentType.equals(boolean.class)) {</span>
-<span class="nc" id="L817">            return ((boolean[]) object).length;</span>
+<span class="pc bpc" id="L821" title="1 of 2 branches missed.">        if(componentType.equals(boolean.class)) {</span>
+<span class="nc" id="L822">            return ((boolean[]) object).length;</span>
 
-<span class="pc bpc" id="L819" title="1 of 2 branches missed.">        } else if(componentType.equals(char.class)) {</span>
-<span class="nc" id="L820">            return ((char[]) object).length;</span>
+<span class="pc bpc" id="L824" title="1 of 2 branches missed.">        } else if(componentType.equals(char.class)) {</span>
+<span class="nc" id="L825">            return ((char[]) object).length;</span>
 
-<span class="pc bpc" id="L822" title="1 of 2 branches missed.">        } else if(componentType.equals(byte.class)) {</span>
-<span class="nc" id="L823">            return ((byte[]) object).length;</span>
+<span class="pc bpc" id="L827" title="1 of 2 branches missed.">        } else if(componentType.equals(byte.class)) {</span>
+<span class="nc" id="L828">            return ((byte[]) object).length;</span>
 
-<span class="pc bpc" id="L825" title="1 of 2 branches missed.">        } else if(componentType.equals(short.class)) {</span>
-<span class="nc" id="L826">            return ((short[]) object).length;</span>
+<span class="pc bpc" id="L830" title="1 of 2 branches missed.">        } else if(componentType.equals(short.class)) {</span>
+<span class="nc" id="L831">            return ((short[]) object).length;</span>
 
-<span class="pc bpc" id="L828" title="1 of 2 branches missed.">        } else if(componentType.equals(int.class)) {</span>
-<span class="fc" id="L829">            return ((int[]) object).length;</span>
+<span class="pc bpc" id="L833" title="1 of 2 branches missed.">        } else if(componentType.equals(int.class)) {</span>
+<span class="fc" id="L834">            return ((int[]) object).length;</span>
 
-<span class="nc bnc" id="L831" title="All 2 branches missed.">        } else if(componentType.equals(long.class)) {</span>
-<span class="nc" id="L832">            return ((long[]) object).length;</span>
+<span class="nc bnc" id="L836" title="All 2 branches missed.">        } else if(componentType.equals(long.class)) {</span>
+<span class="nc" id="L837">            return ((long[]) object).length;</span>
 
-<span class="nc bnc" id="L834" title="All 2 branches missed.">        } else if(componentType.equals(float.class)) {</span>
-<span class="nc" id="L835">            return ((byte[]) object).length;</span>
+<span class="nc bnc" id="L839" title="All 2 branches missed.">        } else if(componentType.equals(float.class)) {</span>
+<span class="nc" id="L840">            return ((byte[]) object).length;</span>
 
-<span class="nc bnc" id="L837" title="All 2 branches missed.">        } else if(componentType.equals(double.class)) {</span>
-<span class="nc" id="L838">            return ((byte[]) object).length;</span>
+<span class="nc bnc" id="L842" title="All 2 branches missed.">        } else if(componentType.equals(double.class)) {</span>
+<span class="nc" id="L843">            return ((byte[]) object).length;</span>
 
         }
 
-<span class="nc" id="L842">        throw new IllegalArgumentException(String.format(&quot;not support primitive type : %s.&quot;, componentType.getName()));</span>
+<span class="nc" id="L847">        throw new IllegalArgumentException(String.format(&quot;not support primitive type : %s.&quot;, componentType.getName()));</span>
     }
 
     /**
@@ -850,17 +855,17 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static String[] concat(final String[] array1, final String[] array2) {
 
-<span class="pc bpc" id="L853" title="1 of 4 branches missed.">        if(array1 == null || array1.length == 0) {</span>
-<span class="fc" id="L854">            return clone(array2);</span>
+<span class="pc bpc" id="L858" title="1 of 4 branches missed.">        if(array1 == null || array1.length == 0) {</span>
+<span class="fc" id="L859">            return clone(array2);</span>
 
-<span class="pc bpc" id="L856" title="2 of 4 branches missed.">        } else if(array2 == null || array2.length == 0) {</span>
-<span class="nc" id="L857">            return clone(array1);</span>
+<span class="pc bpc" id="L861" title="2 of 4 branches missed.">        } else if(array2 == null || array2.length == 0) {</span>
+<span class="nc" id="L862">            return clone(array1);</span>
         }
 
-<span class="fc" id="L860">        final String[] joinedArray = new String[array1.length + array2.length];</span>
-<span class="fc" id="L861">        System.arraycopy(array1, 0, joinedArray, 0, array1.length);</span>
-<span class="fc" id="L862">        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);</span>
-<span class="fc" id="L863">        return joinedArray;</span>
+<span class="fc" id="L865">        final String[] joinedArray = new String[array1.length + array2.length];</span>
+<span class="fc" id="L866">        System.arraycopy(array1, 0, joinedArray, 0, array1.length);</span>
+<span class="fc" id="L867">        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);</span>
+<span class="fc" id="L868">        return joinedArray;</span>
 
     }
 
@@ -870,10 +875,10 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      * @return クローンした配列。引数がnullの場合は、nullを返します。
      */
     public static String[] clone(final String[] array) {
-<span class="pc bpc" id="L873" title="1 of 2 branches missed.">        if (array == null) {</span>
-<span class="nc" id="L874">            return null;</span>
+<span class="pc bpc" id="L878" title="1 of 2 branches missed.">        if (array == null) {</span>
+<span class="nc" id="L879">            return null;</span>
         }
-<span class="fc" id="L876">        return array.clone();</span>
+<span class="fc" id="L881">        return array.clone();</span>
     }
 
     /**
@@ -885,17 +890,17 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static boolean isLoadCase(final ProcessCase[] cases) {
 
-<span class="pc bpc" id="L888" title="1 of 4 branches missed.">        if(cases == null || cases.length == 0) {</span>
-<span class="fc" id="L889">            return true;</span>
+<span class="pc bpc" id="L893" title="1 of 4 branches missed.">        if(cases == null || cases.length == 0) {</span>
+<span class="fc" id="L894">            return true;</span>
         }
 
-<span class="pc bpc" id="L892" title="1 of 2 branches missed.">        for(ProcessCase pc : cases) {</span>
-<span class="pc bpc" id="L893" title="1 of 2 branches missed.">            if(pc == ProcessCase.Load) {</span>
-<span class="fc" id="L894">                return true;</span>
+<span class="pc bpc" id="L897" title="1 of 2 branches missed.">        for(ProcessCase pc : cases) {</span>
+<span class="pc bpc" id="L898" title="1 of 2 branches missed.">            if(pc == ProcessCase.Load) {</span>
+<span class="fc" id="L899">                return true;</span>
             }
         }
 
-<span class="nc" id="L898">        return false;</span>
+<span class="nc" id="L903">        return false;</span>
 
     }
 
@@ -908,17 +913,17 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static boolean isSaveCase(final ProcessCase[] cases) {
 
-<span class="pc bpc" id="L911" title="1 of 4 branches missed.">        if(cases == null || cases.length == 0) {</span>
-<span class="fc" id="L912">            return true;</span>
+<span class="pc bpc" id="L916" title="1 of 4 branches missed.">        if(cases == null || cases.length == 0) {</span>
+<span class="fc" id="L917">            return true;</span>
         }
 
-<span class="fc bfc" id="L915" title="All 2 branches covered.">        for(ProcessCase pc : cases) {</span>
-<span class="pc bpc" id="L916" title="1 of 2 branches missed.">            if(pc == ProcessCase.Save) {</span>
-<span class="nc" id="L917">                return true;</span>
+<span class="fc bfc" id="L920" title="All 2 branches covered.">        for(ProcessCase pc : cases) {</span>
+<span class="pc bpc" id="L921" title="1 of 2 branches missed.">            if(pc == ProcessCase.Save) {</span>
+<span class="nc" id="L922">                return true;</span>
             }
         }
 
-<span class="fc" id="L921">        return false;</span>
+<span class="fc" id="L926">        return false;</span>
 
     }
 
@@ -932,18 +937,18 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
      */
     public static boolean isProcessCase(final ProcessCase currentCase, ProcessCase[] cases) {
 
-<span class="fc" id="L935">        ArgUtils.notNull(currentCase, &quot;currentCase&quot;);</span>
+<span class="fc" id="L940">        ArgUtils.notNull(currentCase, &quot;currentCase&quot;);</span>
 
-<span class="fc bfc" id="L937" title="All 2 branches covered.">        if(currentCase == ProcessCase.Load) {</span>
-<span class="fc" id="L938">            return isLoadCase(cases);</span>
-<span class="pc bpc" id="L939" title="1 of 2 branches missed.">        } else if(currentCase == ProcessCase.Save) {</span>
-<span class="fc" id="L940">            return isSaveCase(cases);</span>
+<span class="fc bfc" id="L942" title="All 2 branches covered.">        if(currentCase == ProcessCase.Load) {</span>
+<span class="fc" id="L943">            return isLoadCase(cases);</span>
+<span class="pc bpc" id="L944" title="1 of 2 branches missed.">        } else if(currentCase == ProcessCase.Save) {</span>
+<span class="fc" id="L945">            return isSaveCase(cases);</span>
         } else {
-<span class="nc" id="L942">            throw new IllegalArgumentException(&quot;currentCase is not support:&quot; + currentCase);</span>
+<span class="nc" id="L947">            throw new IllegalArgumentException(&quot;currentCase is not support:&quot; + currentCase);</span>
         }
 
     }
 
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

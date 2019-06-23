@@ -6,18 +6,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsComment;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledComment;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.ArrayCellsProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.CellProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.CommentProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.HorizontalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledArrayCellsProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCommentProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.SheetNameProcessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.impl.VerticalRecordsProcessor;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
@@ -26,39 +30,41 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 /**
  * {@link FieldProcessor}を管理するクラス。
  * 
- * @version 2.0
+ * @version 2.1
  * @author Naoki Takezoe
  * @author T.TSUCHIE
  *
  */
 public class FieldProcessorRegistry {
     
-<span class="fc" id="L36">    private Map&lt;Class&lt;? extends Annotation&gt;, FieldProcessor&lt;?&gt;&gt; pocessorMap = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L40">    private Map&lt;Class&lt;? extends Annotation&gt;, FieldProcessor&lt;?&gt;&gt; pocessorMap = new ConcurrentHashMap&lt;&gt;();</span>
     
-<span class="fc" id="L38">    public FieldProcessorRegistry() {</span>
-<span class="fc" id="L39">        this.pocessorMap = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L42">    public FieldProcessorRegistry() {</span>
+<span class="fc" id="L43">        this.pocessorMap = new ConcurrentHashMap&lt;&gt;();</span>
         
-<span class="fc" id="L41">        init();</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L45">        init();</span>
+<span class="fc" id="L46">    }</span>
     
     /**
      * {@link FieldProcessor}の登録状態を初期値に戻します。
      */
     public void init() {
         
-<span class="fc" id="L49">        pocessorMap.clear();</span>
+<span class="fc" id="L53">        pocessorMap.clear();</span>
         
         //標準のフィールドプロセッサを登録する。
-<span class="fc" id="L52">        registerProcessor(XlsSheetName.class, new SheetNameProcessor());</span>
-<span class="fc" id="L53">        registerProcessor(XlsCell.class, new CellProcessor());</span>
-<span class="fc" id="L54">        registerProcessor(XlsLabelledCell.class, new LabelledCellProcessor());</span>
-<span class="fc" id="L55">        registerProcessor(XlsHorizontalRecords.class, new HorizontalRecordsProcessor());</span>
-<span class="fc" id="L56">        registerProcessor(XlsVerticalRecords.class, new VerticalRecordsProcessor());</span>
-<span class="fc" id="L57">        registerProcessor(XlsIterateTables.class, new IterateTablesProcessor());</span>
-<span class="fc" id="L58">        registerProcessor(XlsArrayCells.class, new ArrayCellsProcessor());</span>
-<span class="fc" id="L59">        registerProcessor(XlsLabelledArrayCells.class, new LabelledArrayCellsProcessor());</span>
+<span class="fc" id="L56">        registerProcessor(XlsSheetName.class, new SheetNameProcessor());</span>
+<span class="fc" id="L57">        registerProcessor(XlsCell.class, new CellProcessor());</span>
+<span class="fc" id="L58">        registerProcessor(XlsLabelledCell.class, new LabelledCellProcessor());</span>
+<span class="fc" id="L59">        registerProcessor(XlsHorizontalRecords.class, new HorizontalRecordsProcessor());</span>
+<span class="fc" id="L60">        registerProcessor(XlsVerticalRecords.class, new VerticalRecordsProcessor());</span>
+<span class="fc" id="L61">        registerProcessor(XlsIterateTables.class, new IterateTablesProcessor());</span>
+<span class="fc" id="L62">        registerProcessor(XlsArrayCells.class, new ArrayCellsProcessor());</span>
+<span class="fc" id="L63">        registerProcessor(XlsLabelledArrayCells.class, new LabelledArrayCellsProcessor());</span>
+<span class="fc" id="L64">        registerProcessor(XlsComment.class, new CommentProcessor());</span>
+<span class="fc" id="L65">        registerProcessor(XlsLabelledComment.class, new LabelledCommentProcessor());</span>
         
-<span class="fc" id="L61">    }</span>
+<span class="fc" id="L67">    }</span>
     
     /**
      * アノテーションに対する{@link FieldProcessor}を取得する。
@@ -68,9 +74,9 @@ public class FieldProcessorRegistry {
      */
     @SuppressWarnings(&quot;unchecked&quot;)
     public &lt;A extends Annotation&gt; FieldProcessor&lt;A&gt; getProcessor(final Class&lt;A&gt; annoClass) {
-<span class="fc" id="L71">        ArgUtils.notNull(annoClass, &quot;annoClass&quot;);</span>
+<span class="fc" id="L77">        ArgUtils.notNull(annoClass, &quot;annoClass&quot;);</span>
         
-<span class="fc" id="L73">        return (FieldProcessor&lt;A&gt;) pocessorMap.get(annoClass);</span>
+<span class="fc" id="L79">        return (FieldProcessor&lt;A&gt;) pocessorMap.get(annoClass);</span>
     }
     
     /**
@@ -80,12 +86,12 @@ public class FieldProcessorRegistry {
      * @throws NullPointerException {@literal annoClass == null or processor == null.}
      */
     public &lt;A extends Annotation&gt; void registerProcessor(final Class&lt;A&gt; annoClass, final FieldProcessor&lt;A&gt; processor) {
-<span class="fc" id="L83">        ArgUtils.notNull(annoClass, &quot;annoClass&quot;);</span>
-<span class="fc" id="L84">        ArgUtils.notNull(processor, &quot;processor&quot;);</span>
+<span class="fc" id="L89">        ArgUtils.notNull(annoClass, &quot;annoClass&quot;);</span>
+<span class="fc" id="L90">        ArgUtils.notNull(processor, &quot;processor&quot;);</span>
         
-<span class="fc" id="L86">        pocessorMap.put(annoClass, processor);</span>
+<span class="fc" id="L92">        pocessorMap.put(annoClass, processor);</span>
         
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L94">    }</span>
     
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

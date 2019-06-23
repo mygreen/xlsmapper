@@ -3,10 +3,10 @@
 import java.lang.annotation.Annotation;
 
 import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.ClassInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.FieldInfo;
 import com.gh.mygreen.xlsmapper.xml.bind.MethodInfo;
-import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * アノテーション用のXMLのオブジェクト（{@link AnnotationMappingInfo}）を組み立てるためのヘルパークラス。
@@ -113,9 +113,9 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
     /**
      * JavaオブジェクトをOGNL式に変換するためのクラスを取得する。
-     * @return
+     * @return OGNL式のフォーマッタを返す。
      */
-    public static OgnlValueFormatter getValueFormatter() {
+    public synchronized static OgnlValueFormatter getValueFormatter() {
 <span class="nc" id="L119">        return valueFormatter;</span>
     }
 
@@ -129,4 +129,4 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 <span class="nc" id="L129">    }</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

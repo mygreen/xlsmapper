@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>3. 表・セルのマッピング方法 &mdash; XlsMapper 2.0 ドキュメント</title>
+  <title>3. 表・セルのマッピング方法 &mdash; XlsMapper 2.1 ドキュメント</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -213,22 +213,36 @@
 <li class="toctree-l3"><a class="reference internal" href="#id46">3.13.3. 表の名称を正規表現、正規化して指定する場合</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#xlsorder">3.14. <code class="docutils literal notranslate"><span class="pre">&#64;XlsOrder</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#xlsignorable">3.15. <code class="docutils literal notranslate"><span class="pre">&#64;XlsIgnorable</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#isemptybuilder">3.15.1. IsEmptyBuilderを使った記述の簡単化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xlscomment">3.14. <code class="docutils literal notranslate"><span class="pre">&#64;XlsComment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xlslabelledcomment">3.15. <code class="docutils literal notranslate"><span class="pre">&#64;XlsLabelledComment</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id47">3.15.1. ラベルセルが重複するセルを指定する方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id48">3.15.2. ラベルセルを正規表現、正規化して指定する場合</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#xlsarrayoption">3.16. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayOption</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#overoperation">3.16.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#remainedoperation">3.16.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xlsorder">3.16. <code class="docutils literal notranslate"><span class="pre">&#64;XlsOrder</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xlsignorable">3.17. <code class="docutils literal notranslate"><span class="pre">&#64;XlsIgnorable</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#isemptybuilder">3.17.1. IsEmptyBuilderを使った記述の簡単化</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#xlsrecordoption">3.17. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordOption</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id47">3.17.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id48">3.17.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xlsarrayoption">3.18. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayOption</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overoperation">3.18.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remainedoperation">3.18.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#xlsrecordfinder">3.18. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordFinder</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xlsrecordoption">3.19. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordOption</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id49">3.19.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id50">3.19.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#xlsrecordfinder">3.20. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordFinder</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xlscommentoption">3.21. <code class="docutils literal notranslate"><span class="pre">&#64;XlsCommentOption</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id51">3.21.1. 書き込み時にコメントの表示／非表示設定をする。</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id52">3.21.2. 書き込み時にコメントの枠サイズを指定する</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id53">3.21.3. 書き込み時に既存のコメントを自動削除する</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id54">3.21.4. コメントの読み込み、書き込みの処理の実装を切り替える</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id55">3.21.5. 書き込み時にコメントの枠サイズを自動設定する</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="annotation_converter.html">4. セルの書式の指定方法</a><ul>
@@ -309,6 +323,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="sheetinfo.html#id4">8.2. シート上の見出しの取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sheetinfo.html#id5">8.3. シート上のコメントの取得</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sheetinfo.html#id6">8.3.1. 書き込み時のコメント情報の設定方法</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="xmlmapping.html">9. XMLによるマッピング方法</a><ul>
@@ -356,30 +374,31 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">16. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-2-0-2018-06-30">16.1. ver.2.0 - 2018-06-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-6-2017-01-02">16.2. ver.1.6 - 2017-01-02</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-2-2016-10-30">16.3. ver.1.5.2 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-1-2016-10-30">16.4. ver.1.5.1 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-0-2016-08-30">16.5. ver.1.5.0 - 2016-08-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">16.6. ver.1.4.4 - 2016-07-02</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">16.7. ver.1.4.3 - 2016-05-28</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">16.8. ver.1.4.2 - 2016-05-07</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">16.9. ver.1.4.1 - 2016-04-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">16.10. ver.1.4 - 2016-03-21</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">16.11. ver.1.3 - 2016-03-13</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">16.12. ver.1.2.1 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">16.13. ver.1.2 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">16.14. ver.1.1 - 2016-03-08</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">16.15. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">16.16. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">16.17. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">16.18. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">16.19. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">16.20. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">16.21. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">16.22. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">16.23. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">16.24. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-2-1-2019-06-23">16.1. ver.2.1 - 2019-06-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-2-0-2018-06-30">16.2. ver.2.0 - 2018-06-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-6-2017-01-02">16.3. ver.1.6 - 2017-01-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-2-2016-10-30">16.4. ver.1.5.2 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-1-2016-10-30">16.5. ver.1.5.1 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-0-2016-08-30">16.6. ver.1.5.0 - 2016-08-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">16.7. ver.1.4.4 - 2016-07-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">16.8. ver.1.4.3 - 2016-05-28</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">16.9. ver.1.4.2 - 2016-05-07</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">16.10. ver.1.4.1 - 2016-04-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">16.11. ver.1.4 - 2016-03-21</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">16.12. ver.1.3 - 2016-03-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">16.13. ver.1.2.1 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">16.14. ver.1.2 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">16.15. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">16.16. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">16.17. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">16.18. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">16.19. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">16.20. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">16.21. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">16.22. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">16.23. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">16.24. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">16.25. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -452,8 +471,8 @@
 <p>表やセルをマッピングするためには様々なアノテーションが用意されています。</p>
 <p>様々な表に対応するため、マッピング方法を指定するためのアノテーションと補助的に詳細なオプションを指定するためのアノテーションがあります。</p>
 <p>もし、独自の構造の表をマッピングするならば、「 <a class="reference internal" href="fieldprocessor.html"><span class="doc">独自の表・セルのマッピング方法</span></a> 」を参照してください。</p>
-<table border="1" class="colwidths-given docutils" id="id49">
-<caption><span class="caption-number">表 - 3.1 </span><span class="caption-text">基本的なマッピング用のアノテーション</span><a class="headerlink" href="#id49" title="このテーブルへのパーマリンク">¶</a></caption>
+<table border="1" class="colwidths-given docutils" id="id56">
+<caption><span class="caption-number">表 - 3.1 </span><span class="caption-text">基本的なマッピング用のアノテーション</span><a class="headerlink" href="#id56" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="30%" />
 <col width="70%" />
@@ -503,10 +522,16 @@
 <tr class="row-even"><td><a class="reference internal" href="annotation_mapping_iteratetables.html#annotationxlsiteratetables"><span class="std std-ref">&#64;XlsIterateTables</span></a></td>
 <td>シート内で繰り返される同一構造の表をマッピングします。</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="annotation_mapping_comment.html#annotationxlscomment"><span class="std std-ref">&#64;XlsComment</span></a></td>
+<td>セルの座標を直接指定して、セルのコメントをマッピングします。</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="annotation_mapping_labelledcomment.html#annotationxlslabelledcomment"><span class="std std-ref">&#64;XlsLablledComment</span></a></td>
+<td>指定したラベルセルのコメント情報をマッピングします。</td>
+</tr>
 </tbody>
 </table>
-<table border="1" class="colwidths-given docutils" id="id50">
-<caption><span class="caption-number">表 - 3.2 </span><span class="caption-text">補助的なマッピング用のアノテーション</span><a class="headerlink" href="#id50" title="このテーブルへのパーマリンク">¶</a></caption>
+<table border="1" class="colwidths-given docutils" id="id57">
+<caption><span class="caption-number">表 - 3.2 </span><span class="caption-text">補助的なマッピング用のアノテーション</span><a class="headerlink" href="#id57" title="このテーブルへのパーマリンク">¶</a></caption>
 <colgroup>
 <col width="30%" />
 <col width="70%" />
@@ -532,14 +557,17 @@
 <tr class="row-even"><td><a class="reference internal" href="annotation_mapping_recordfinder.html#annotationxlsrecordfinder"><span class="std std-ref">&#64;XlsRecordFinder</span></a></td>
 <td>レコードの開始位置をプログラマティックに指定します。</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="annotation_mapping_commentoption.html#annotationxlscommentoption"><span class="std std-ref">&#64;XlsCommentOption</span></a></td>
+<td>書き込み時のセルのコメントのサイズなどの制御を指定します。</td>
+</tr>
 </tbody>
 </table>
 <div class="section" id="xlssheet">
 <span id="annotationxlssheet"></span><h2>3.1. <code class="docutils literal notranslate"><span class="pre">&#64;XlsSheet</span></code><a class="headerlink" href="#xlssheet" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>マッピング対象のシートを「シート番号」「シート名」「シート名に対する正規表現」のいずれかで指定します。</p>
 <p>クラスに付与します。</p>
-<div class="literal-block-wrapper docutils container" id="id51">
-<div class="code-block-caption"><span class="caption-number">コード - 3.1.1 </span><span class="caption-text">シート番号で指定する場合</span><a class="headerlink" href="#id51" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id58">
+<div class="code-block-caption"><span class="caption-number">コード - 3.1.1 </span><span class="caption-text">シート番号で指定する場合</span><a class="headerlink" href="#id58" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -550,8 +578,8 @@
 </pre></div>
 </td></tr></table></div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id52">
-<div class="code-block-caption"><span class="caption-number">コード - 3.1.2 </span><span class="caption-text">シート名で指定する場合</span><a class="headerlink" href="#id52" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id59">
+<div class="code-block-caption"><span class="caption-number">コード - 3.1.2 </span><span class="caption-text">シート名で指定する場合</span><a class="headerlink" href="#id59" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -562,8 +590,8 @@
 </pre></div>
 </td></tr></table></div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id53">
-<div class="code-block-caption"><span class="caption-number">コード - 3.1.3 </span><span class="caption-text">シート名を正規表現で指定する場合</span><a class="headerlink" href="#id53" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id60">
+<div class="code-block-caption"><span class="caption-number">コード - 3.1.3 </span><span class="caption-text">シート名を正規表現で指定する場合</span><a class="headerlink" href="#id60" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -716,8 +744,8 @@
 <div class="section" id="xlssheetname">
 <span id="annotationxlssheetname"></span><h2>3.2. <code class="docutils literal notranslate"><span class="pre">&#64;XlsSheetName</span></code><a class="headerlink" href="#xlssheetname" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>シート名をString型のプロパティにマッピングします。</p>
-<div class="literal-block-wrapper docutils container" id="id54">
-<div class="code-block-caption"><span class="caption-number">コード - 3.2.1 </span><span class="caption-text">基本的な使い方</span><a class="headerlink" href="#id54" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id61">
+<div class="code-block-caption"><span class="caption-number">コード - 3.2.1 </span><span class="caption-text">基本的な使い方</span><a class="headerlink" href="#id61" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -743,8 +771,8 @@
 <p>アノテーションをメソッドに付与する場合、書き込み時はgetterメソッドメソッドの付与が必要になります。</p>
 <p>さらに、アノテーションは付与しなくてもよいですが、setterメソッドの定義が必要になります。</p>
 <p>そのため、 <code class="docutils literal notranslate"><span class="pre">&#64;XlsSheetName</span></code> を指定する際にはフィールドに付与することをお薦めします。</p>
-<div class="literal-block-wrapper docutils container" id="id55">
-<div class="code-block-caption"><span class="caption-number">コード - 3.2.2 </span><span class="caption-text">メソッドにアノテーションを付与する場合（読み込み時）</span><a class="headerlink" href="#id55" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id62">
+<div class="code-block-caption"><span class="caption-number">コード - 3.2.2 </span><span class="caption-text">メソッドにアノテーションを付与する場合（読み込み時）</span><a class="headerlink" href="#id62" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -773,8 +801,8 @@
 </pre></div>
 </td></tr></table></div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id56">
-<div class="code-block-caption"><span class="caption-number">コード - 3.2.3 </span><span class="caption-text">メソッドにアノテーションを付与する場合（書き込み時）</span><a class="headerlink" href="#id56" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id63">
+<div class="code-block-caption"><span class="caption-number">コード - 3.2.3 </span><span class="caption-text">メソッドにアノテーションを付与する場合（書き込み時）</span><a class="headerlink" href="#id63" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -831,7 +859,7 @@
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id57">
+<div class="figure align-center" id="id64">
 <img alt="_images/Cell.png" src="_images/Cell.png" />
 <p class="caption"><span class="caption-number">図 - 3.3.1 </span><span class="caption-text">Cell</span></p>
 </div>
@@ -873,7 +901,7 @@
 </li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">optional</span></code> で、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。</li>
 </ul>
-<div class="figure align-center" id="id58">
+<div class="figure align-center" id="id65">
 <img alt="_images/LabelledCell.png" src="_images/LabelledCell.png" />
 <p class="caption"><span class="caption-number">図 - 3.4.1 </span><span class="caption-text">LabelledCell</span></p>
 </div>
@@ -905,7 +933,7 @@
 <li>属性 <code class="docutils literal notranslate"><span class="pre">range</span></code> と <code class="docutils literal notranslate"><span class="pre">skip</span></code> を同時に指定した場合、まず、skip分セルを読み飛ばし、そこからrangeの範囲で空白以外のセルを検索します。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">range</span></code> は、 <strong>読み込み時のみ有効</strong> です。書き込み時に指定しても無視されます。</li>
 </ul>
-<div class="figure align-center" id="id59">
+<div class="figure align-center" id="id66">
 <img alt="_images/LabelledCell_range.png" src="_images/LabelledCell_range.png" />
 <p class="caption"><span class="caption-number">図 - 3.4.2 </span><span class="caption-text">LabelledCell(range)</span></p>
 </div>
@@ -931,7 +959,7 @@
 <ul class="simple">
 <li>属性 <code class="docutils literal notranslate"><span class="pre">range</span></code> と <code class="docutils literal notranslate"><span class="pre">skip</span></code> を同時に指定した場合、まず、skip分セルを読み飛ばし、そこからrangeの範囲で空白以外のセルを検索します。</li>
 </ul>
-<div class="figure align-center" id="id60">
+<div class="figure align-center" id="id67">
 <img alt="_images/LabelledCell_skip.png" src="_images/LabelledCell_skip.png" />
 <p class="caption"><span class="caption-number">図 - 3.4.3 </span><span class="caption-text">LabelledCell(skip)</span></p>
 </div>
@@ -968,7 +996,7 @@
 </li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">labelMerged</span></code> の値がfalseのとき、ラベルセルが結合されていると、値が設定されているデータセルまでの距離が変わるため、属性 <code class="docutils literal notranslate"><span class="pre">skip</span></code> を併用します。</li>
 </ul>
-<div class="figure align-center" id="id61">
+<div class="figure align-center" id="id68">
 <img alt="_images/LabelledCell_labelMerged.png" src="_images/LabelledCell_labelMerged.png" />
 <p class="caption"><span class="caption-number">図 - 3.4.4 </span><span class="caption-text">LabelledCell(labelMerged)</span></p>
 </div>
@@ -1002,7 +1030,7 @@
 <h3>3.4.4. ラベルセルが重複するセルを指定する方法<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>同じラベルのセルが複数ある場合は、区別するための見出しを属性 <code class="docutils literal notranslate"><span class="pre">headerLabel</span></code> で指定します。</p>
 <p>属性headerLabelで指定したセルから、label属性で指定したセルを下方向に検索し、最初に見つかった一致するセルをラベルセルとして使用します。</p>
-<div class="figure align-center" id="id62">
+<div class="figure align-center" id="id69">
 <img alt="_images/LabelledCell_headerLabel.png" src="_images/LabelledCell_headerLabel.png" />
 <p class="caption"><span class="caption-number">図 - 3.4.5 </span><span class="caption-text">LabelledCell(headerLabel)</span></p>
 </div>
@@ -1108,7 +1136,7 @@
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id63">
+<div class="figure align-center" id="id70">
 <img alt="_images/ArrayCells.png" src="_images/ArrayCells.png" />
 <p class="caption"><span class="caption-number">図 - 3.5.1 </span><span class="caption-text">ArrayCells</span></p>
 </div>
@@ -1144,7 +1172,7 @@
 <ul class="simple">
 <li>縦方向にマッピングするため、属性 <code class="docutils literal notranslate"><span class="pre">direction</span></code> を、<code class="docutils literal notranslate"><span class="pre">ArrayDirection.Vertical</span></code> に設定します。</li>
 </ul>
-<div class="figure align-center" id="id64">
+<div class="figure align-center" id="id71">
 <img alt="_images/ArrayCells_direction.png" src="_images/ArrayCells_direction.png" />
 <p class="caption"><span class="caption-number">図 - 3.5.2 </span><span class="caption-text">ArrayCells(direction)</span></p>
 </div>
@@ -1180,7 +1208,7 @@
 </li>
 <li>セルが結合されている場合は、結合後の個数を指定します。</li>
 </ul>
-<div class="figure align-center" id="id65">
+<div class="figure align-center" id="id72">
 <img alt="_images/ArrayCells_elementMerged.png" src="_images/ArrayCells_elementMerged.png" />
 <p class="caption"><span class="caption-number">図 - 3.5.3 </span><span class="caption-text">ArrayCells(elementMerged)</span></p>
 </div>
@@ -1209,7 +1237,7 @@
 <li>属性 <code class="docutils literal notranslate"><span class="pre">overOperation</span></code> で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 <code class="docutils literal notranslate"><span class="pre">size</span></code> の値が小さく、足りない場合の操作を指定します。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">remainedOperation</span></code> で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 <code class="docutils literal notranslate"><span class="pre">size</span></code> の値が大きく、余っている場合の操作を指定します。</li>
 </ul>
-<div class="figure align-center" id="id66">
+<div class="figure align-center" id="id73">
 <img alt="_images/ArrayColumns_ArrayOption.png" src="_images/ArrayColumns_ArrayOption.png" />
 <p class="caption"><span class="caption-number">図 - 3.5.4 </span><span class="caption-text">ArrayCells(ArrayOption)</span></p>
 </div>
@@ -1236,7 +1264,7 @@
 <p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayCells</span></code> でマッピングしたセルのキーは、 <code class="docutils literal notranslate"><span class="pre">&lt;プロパティ名&gt;[&lt;インデックス&gt;]</span></code> の形式になります。
 インデックスは、0から始まります。</p>
 <p>マッピング対象の見出しを取得する、フィールド <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">labels</span></code> は、見出しはないため取得することはできません。</p>
-<div class="figure align-center" id="id67">
+<div class="figure align-center" id="id74">
 <img alt="_images/ArrayCells_positions.png" src="_images/ArrayCells_positions.png" />
 <p class="caption"><span class="caption-number">図 - 3.5.5 </span><span class="caption-text">XlsArrayCells(positions/labels)</span></p>
 </div>
@@ -1305,7 +1333,7 @@
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id68">
+<div class="figure align-center" id="id75">
 <img alt="_images/LabelledArrayCells.png" src="_images/LabelledArrayCells.png" />
 <p class="caption"><span class="caption-number">図 - 3.6.1 </span><span class="caption-text">LabelledArrayCells</span></p>
 </div>
@@ -1345,7 +1373,7 @@
 <ul class="simple">
 <li>縦方向にマッピングするため、属性 <code class="docutils literal notranslate"><span class="pre">direction</span></code> を、<code class="docutils literal notranslate"><span class="pre">ArrayDirection.Vertical</span></code> に設定します。</li>
 </ul>
-<div class="figure align-center" id="id69">
+<div class="figure align-center" id="id76">
 <img alt="_images/LabelledArrayCells_direction.png" src="_images/LabelledArrayCells_direction.png" />
 <p class="caption"><span class="caption-number">図 - 3.6.2 </span><span class="caption-text">LabelledArrayCells(direction)</span></p>
 </div>
@@ -1388,7 +1416,7 @@
 <li>ラベルセルから離れたセルを指定する場合に使用します。</li>
 <li>ただし、データセルが偶然空白のときは、マッピング対象のセルがずれるため、この属性を使用する場合は注意が必要です。</li>
 </ul>
-<div class="figure align-center" id="id70">
+<div class="figure align-center" id="id77">
 <img alt="_images/LabelledArrayCells_range.png" src="_images/LabelledArrayCells_range.png" />
 <p class="caption"><span class="caption-number">図 - 3.6.3 </span><span class="caption-text">LabelledArrayCells(range)</span></p>
 </div>
@@ -1420,7 +1448,7 @@
 <ul class="simple">
 <li>属性 <code class="docutils literal notranslate"><span class="pre">range</span></code> と <code class="docutils literal notranslate"><span class="pre">skip</span></code> を同時に指定した場合、まず、skip分セルを読み飛ばし、そこからrangeの範囲で空白以外のセルを検索します。</li>
 </ul>
-<div class="figure align-center" id="id71">
+<div class="figure align-center" id="id78">
 <img alt="_images/LabelledArrayCells_skip.png" src="_images/LabelledArrayCells_skip.png" />
 <p class="caption"><span class="caption-number">図 - 3.6.4 </span><span class="caption-text">LabelledArrayCells(skip)</span></p>
 </div>
@@ -1448,7 +1476,7 @@
 <h3>3.6.4. 重複するラベルを指定する場合<a class="headerlink" href="#id13" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>同じラベルのセルが複数ある場合は、区別するため見出しを属性 <code class="docutils literal notranslate"><span class="pre">headerLabel</span></code> で指定します。</p>
 <p>属性headerLabelで指定したセルから、label属性で指定したセルを下方向に検索し、最初に見つかった一致するセルをラベルセルとして使用します。</p>
-<div class="figure align-center" id="id72">
+<div class="figure align-center" id="id79">
 <img alt="_images/LabelledArrayCells_headerLabel.png" src="_images/LabelledArrayCells_headerLabel.png" />
 <p class="caption"><span class="caption-number">図 - 3.6.5 </span><span class="caption-text">LabelledArrayCells(headerLabel)</span></p>
 </div>
@@ -1489,7 +1517,7 @@
 </li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">labelMerged</span></code> の値がfalseのとき、ラベルセルが結合されていると、値が設定されているデータセルまでの距離が変わるため、属性 <code class="docutils literal notranslate"><span class="pre">skip</span></code> を併用します。</li>
 </ul>
-<div class="figure align-center" id="id73">
+<div class="figure align-center" id="id80">
 <img alt="_images/LabelledArrayCells_labelMerged.png" src="_images/LabelledArrayCells_labelMerged.png" />
 <p class="caption"><span class="caption-number">図 - 3.6.6 </span><span class="caption-text">LabelledArrayCells(labelMerged)</span></p>
 </div>
@@ -1535,7 +1563,7 @@
 </li>
 <li>セルが結合されている場合は、結合後の個数を指定します。</li>
 </ul>
-<div class="figure align-center" id="id74">
+<div class="figure align-center" id="id81">
 <img alt="_images/LabelledArrayCells_elementMerged.png" src="_images/LabelledArrayCells_elementMerged.png" />
 <p class="caption"><span class="caption-number">図 - 3.6.7 </span><span class="caption-text">LabelledArrayCells(elementMerged)</span></p>
 </div>
@@ -1566,7 +1594,7 @@
 <li>属性 <code class="docutils literal notranslate"><span class="pre">overOperation</span></code> で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 <code class="docutils literal notranslate"><span class="pre">size</span></code> の値が小さく、足りない場合の操作を指定します。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">remainedOperation</span></code> で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 <code class="docutils literal notranslate"><span class="pre">size</span></code> の値が大きく、余っている場合の操作を指定します。</li>
 </ul>
-<div class="figure align-center" id="id75">
+<div class="figure align-center" id="id82">
 <img alt="_images/LabelledArrayCells_ArrayOption.png" src="_images/LabelledArrayCells_ArrayOption.png" />
 <p class="caption"><span class="caption-number">図 - 3.6.8 </span><span class="caption-text">LabelledArrayCells(ArrayOption)</span></p>
 </div>
@@ -1596,7 +1624,7 @@
 インデックスは、0から始まります。</p>
 <p>同様に、マッピング対象の見出しを取得する、フィールド <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">labels</span></code> へのアクセスも、キーは、 <code class="docutils literal notranslate"><span class="pre">&lt;プロパティ名&gt;[&lt;インデックス&gt;]</span></code> の形式になります。
 ただし、見出し情報の場合は、全ての要素が同じ値になるため、従来通りの <code class="docutils literal notranslate"><span class="pre">&lt;プロパティ名&gt;</span></code> でも取得できます。</p>
-<div class="figure align-center" id="id76">
+<div class="figure align-center" id="id83">
 <img alt="_images/LabelledArrayCells_positions.png" src="_images/LabelledArrayCells_positions.png" />
 <p class="caption"><span class="caption-number">図 - 3.6.9 </span><span class="caption-text">LabelledArrayCells(positions/labels)</span></p>
 </div>
@@ -1700,7 +1728,7 @@
 <span id="annotationxlshorizontalrecords"></span><h2>3.7. <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code><a class="headerlink" href="#xlshorizontalrecords" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>水平方向に連続する行をCollection(List、Set)または配列にマッピングします。</p>
 <p>標準では表には最上部に表の名称と列名を記述した行が必要になります。</p>
-<div class="figure align-center" id="id77">
+<div class="figure align-center" id="id84">
 <img alt="_images/HorizontalRecord.png" src="_images/HorizontalRecord.png" />
 <p class="caption"><span class="caption-number">図 - 3.7.1 </span><span class="caption-text">HorizontalRecords</span></p>
 </div>
@@ -1812,7 +1840,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <div class="section" id="id19">
 <h3>3.7.2. 表の名称から開始位置が離れた場所にある場合<a class="headerlink" href="#id19" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性 <code class="docutils literal notranslate"><span class="pre">bottom</span></code> で表の開始位置がどれだけ離れているか指定します。</p>
-<div class="figure align-center" id="id78">
+<div class="figure align-center" id="id85">
 <img alt="_images/HorizontalRecord_bottom.png" src="_images/HorizontalRecord_bottom.png" />
 <p class="caption"><span class="caption-number">図 - 3.7.2 </span><span class="caption-text">HorizontalRecords(bottom)</span></p>
 </div>
@@ -1836,7 +1864,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h3>3.7.3. 表の見出しが縦に結合されデータレコードの開始位置が離れた場所にある場合<a class="headerlink" href="#id20" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>表の見出しセルが縦に結合され、データレコードの開始位置が離れている場合、属性 <code class="docutils literal notranslate"><span class="pre">headerBottom</span></code> でデータレコードの開始位置がどれだけ離れているか指定します。 <cite>[ver1.1+]</cite></p>
 <p>下記の例の場合、見出しの「テスト結果」は横に結合されているため <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumnheadermerged"><span class="std std-ref">&#64;XlsColumn(headerMerged=N)</span></a> と組み合わせて利用します。</p>
-<div class="figure align-center" id="id79">
+<div class="figure align-center" id="id86">
 <img alt="_images/HorizontalRecord_headerBottom.png" src="_images/HorizontalRecord_headerBottom.png" />
 <p class="caption"><span class="caption-number">図 - 3.7.3 </span><span class="caption-text">HorizontalRecords(headerBottom)</span></p>
 </div>
@@ -1915,7 +1943,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>デフォルトでは行に1つもデータが存在しない場合、その表の終端となります。
 行の一番左側の列の罫線によってテーブルの終端を検出する方法もあります。
 この場合は <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code> の属性 <code class="docutils literal notranslate"><span class="pre">terminal</span></code> に <code class="docutils literal notranslate"><span class="pre">RecordTerminal.Border</span></code> を指定してください。</p>
-<div class="figure align-center" id="id80">
+<div class="figure align-center" id="id87">
 <img alt="_images/HorizontalRecord_terminal.png" src="_images/HorizontalRecord_terminal.png" />
 <p class="caption"><span class="caption-number">図 - 3.7.4 </span><span class="caption-text">HorizontalRecords(terminal)</span></p>
 </div>
@@ -1998,7 +2026,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h3>3.7.6. 表の終端の指定（属性terminateLabel）<a class="headerlink" href="#terminatelabel" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>表が他の表と連続しており属性terminalでBorder、Emptyのいずれを指定しても終端を検出できない場合があります。
 このような場合は、属性 <code class="docutils literal notranslate"><span class="pre">terminateLabel</span></code> で終端を示すセルの文字列を指定します。</p>
-<div class="figure align-center" id="id81">
+<div class="figure align-center" id="id88">
 <img alt="_images/HorizontalRecord_terminateLabel.png" src="_images/HorizontalRecord_terminateLabel.png" />
 <p class="caption"><span class="caption-number">図 - 3.7.5 </span><span class="caption-text">HorizontalRecords(terminateLabel)</span></p>
 </div>
@@ -2027,7 +2055,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>例えば、<a class="reference internal" href="annotation_mapping_iteratetables.html#annotationxlsiteratetables"><span class="std std-ref">&#64;XlsIterateTables</span></a> において、
 テーブルが隣接しており終端を検出できないときに、カラム数を明示的に指定してテーブルを区切りたい場合に使用します。</p>
 <p>以下の例は、列の見出しセルを3つ分検出したところでそのテーブルの終端と見なします。</p>
-<div class="figure align-center" id="id82">
+<div class="figure align-center" id="id89">
 <img alt="_images/HorizontalRecord_headerLimit.png" src="_images/HorizontalRecord_headerLimit.png" />
 <p class="caption"><span class="caption-number">図 - 3.7.6 </span><span class="caption-text">HorizontalRecords(headerLimit)</span></p>
 </div>
@@ -2056,7 +2084,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 さらに先のセルの検索を試みます。</p>
 <p>また、属性 <code class="docutils literal notranslate"><span class="pre">headerAddress</span></code> や <code class="docutils literal notranslate"><span class="pre">tableLabel</span></code> で指定した位置から表が開始しないような場合も、
 属性 <code class="docutils literal notranslate"><span class="pre">range</span></code> を指定することで、さらに先のセルの検索を試みます。</p>
-<div class="figure align-center" id="id83">
+<div class="figure align-center" id="id90">
 <img alt="_images/HorizontalRecord_range.png" src="_images/HorizontalRecord_range.png" />
 <p class="caption"><span class="caption-number">図 - 3.7.7 </span><span class="caption-text">HorizontalRecords(range)</span></p>
 </div>
@@ -2083,7 +2111,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>属性 <code class="docutils literal notranslate"><span class="pre">overOperation</span></code> で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が足りないときの操作を指定します。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">remainedOperation</span></code> で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が余っているときの操作を指定します。</li>
 </ul>
-<div class="figure align-center" id="id84">
+<div class="figure align-center" id="id91">
 <img alt="_images/HorizontalRecord_RecordOption.png" src="_images/HorizontalRecord_RecordOption.png" />
 <p class="caption"><span class="caption-number">図 - 3.7.8 </span><span class="caption-text">HorizontalRecords(RecordOption)</span></p>
 </div>
@@ -2112,7 +2140,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>属性 <code class="docutils literal notranslate"><span class="pre">value</span></code> で、レコードの開始位置を検索する実装クラスを指定します。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">args</span></code> で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。</li>
 </ul>
-<div class="figure align-center" id="id85">
+<div class="figure align-center" id="id92">
 <img alt="_images/HorizontalRecord_RecordFinder.png" src="_images/HorizontalRecord_RecordFinder.png" />
 <p class="caption"><span class="caption-number">図 - 3.7.9 </span><span class="caption-text">HorizontalRecords(RecordFinder)</span></p>
 </div>
@@ -2230,7 +2258,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>メソッドに定義する場合、<a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> と同じくList型の引数を1つだけ取るsetterメソッドに対して付与します。</p>
 <p>ここでは、アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> と異なる部分を説明します。
 共通の使い方は、アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> の説明を参照してください。</p>
-<div class="figure align-center" id="id86">
+<div class="figure align-center" id="id93">
 <img alt="_images/VerticalRecord.png" src="_images/VerticalRecord.png" />
 <p class="caption"><span class="caption-number">図 - 3.8.1 </span><span class="caption-text">VerticalRecords</span></p>
 </div>
@@ -2275,7 +2303,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h3>3.8.1. 表の名称位置の指定<a class="headerlink" href="#id26" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>実際に表を作る場合、垂直方向ですが表の名称は上方に設定することが一般的です。
 そのような場合、属性 <code class="docutils literal notranslate"><span class="pre">tableLabelAbove</span></code> の値を <code class="docutils literal notranslate"><span class="pre">true</span></code> に設定すると表のタイトルが上方に位置するとして処理します。 <cite>[ver1.0+]</cite></p>
-<div class="figure align-center" id="id87">
+<div class="figure align-center" id="id94">
 <img alt="_images/VerticalRecord_tableLabelAbove.png" src="_images/VerticalRecord_tableLabelAbove.png" />
 <p class="caption"><span class="caption-number">図 - 3.8.2 </span><span class="caption-text">VerticalRecords（tableLabelAbove）</span></p>
 </div>
@@ -2297,7 +2325,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h3>3.8.2. 表の名称から開始位置が離れた場所にある場合(right)<a class="headerlink" href="#right" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>表の名称が定義してあるセルの直後に表がなく離れている場合、属性 <code class="docutils literal notranslate"><span class="pre">right</span></code> で表の開始位置が <strong>右方向</strong> にどれだけ離れているか指定します。 <cite>[ver1.0]+</cite></p>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">bottom</span></code> と同じような意味になります。</p>
-<div class="figure align-center" id="id88">
+<div class="figure align-center" id="id95">
 <img alt="_images/VerticalRecord_right.png" src="_images/VerticalRecord_right.png" />
 <p class="caption"><span class="caption-number">図 - 3.8.3 </span><span class="caption-text">VerticalRecords（right）</span></p>
 </div>
@@ -2320,7 +2348,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>属性 <code class="docutils literal notranslate"><span class="pre">tableLabelAbove</span></code> の値が <code class="docutils literal notranslate"><span class="pre">true</span></code> のときのみ有効になります。
 表の名称がセルの直後に表がなく離れている場合、属性 <code class="docutils literal notranslate"><span class="pre">bottom</span></code> で表の開始位置が <strong>下方向</strong> にどれだけ離れているか指定します。 <cite>[ver2.0]+</cite></p>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">bottom</span></code> と同じような意味になります。</p>
-<div class="figure align-center" id="id89">
+<div class="figure align-center" id="id96">
 <img alt="_images/VerticalRecord_bottom.png" src="_images/VerticalRecord_bottom.png" />
 <p class="caption"><span class="caption-number">図 - 3.8.4 </span><span class="caption-text">VerticalRecords（bottom）</span></p>
 </div>
@@ -2343,7 +2371,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>表の見出しセルが横に結合され、データレコードの開始位置が離れている場合、属性 <code class="docutils literal notranslate"><span class="pre">headerRight</span></code> でデータレコードの開始位置がどれだけ離れているか指定します。 <cite>[ver1.1+]</cite></p>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> の属性 <code class="docutils literal notranslate"><span class="pre">headerBottom</span></code> と同じような意味になります。</p>
 <p>下記の例の場合、見出しの「テスト結果」は横に結合されているため <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumnheadermerged"><span class="std std-ref">&#64;XlsColumn(headerMerged=N)</span></a> と組み合わせて利用します。</p>
-<div class="figure align-center" id="id90">
+<div class="figure align-center" id="id97">
 <img alt="_images/VerticalRecord_headerRight.png" src="_images/VerticalRecord_headerRight.png" />
 <p class="caption"><span class="caption-number">図 - 3.8.5 </span><span class="caption-text">VerticalRecords(headerRight)</span></p>
 </div>
@@ -2424,7 +2452,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id91">
+<div class="figure align-center" id="id98">
 <img alt="_images/VerticalRecord_RecordOption.png" src="_images/VerticalRecord_RecordOption.png" />
 <p class="caption"><span class="caption-number">図 - 3.8.6 </span><span class="caption-text">VerticalRecords(RecordOption)</span></p>
 </div>
@@ -2453,7 +2481,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>属性 <code class="docutils literal notranslate"><span class="pre">value</span></code> で、レコードの開始位置を検索する実装クラスを指定します。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">args</span></code> で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。</li>
 </ul>
-<div class="figure align-center" id="id92">
+<div class="figure align-center" id="id99">
 <img alt="_images/VerticalRecord_RecordFinder.png" src="_images/VerticalRecord_RecordFinder.png" />
 <p class="caption"><span class="caption-number">図 - 3.8.7 </span><span class="caption-text">VerticalRecords(RecordFinder)</span></p>
 </div>
@@ -2522,7 +2550,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>属性 <code class="docutils literal notranslate"><span class="pre">columnName</span></code> で、見出しとなるセルのラベルを指定します。</li>
 <li>セルが見つからない場合はエラーとなりますが、属性 <code class="docutils literal notranslate"><span class="pre">optional</span></code> を <code class="docutils literal notranslate"><span class="pre">true</span></code> とすることで無視して処理を続行します。</li>
 </ul>
-<div class="figure align-center" id="id93">
+<div class="figure align-center" id="id100">
 <img alt="_images/Column.png" src="_images/Column.png" />
 <p class="caption"><span class="caption-number">図 - 3.9.1 </span><span class="caption-text">Column</span></p>
 </div>
@@ -2555,7 +2583,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h3>3.9.1. データの列が結合されている場合<a class="headerlink" href="#id30" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>同じ値がグループごとに結合されているカラムの場合は属性 <code class="docutils literal notranslate"><span class="pre">merged</span></code> をtrueに設定します。
 こうしておくと、前の列の値が引き継がれて設定されます。</p>
-<div class="figure align-center" id="id94">
+<div class="figure align-center" id="id101">
 <img alt="_images/Column_merged.png" src="_images/Column_merged.png" />
 <p class="caption"><span class="caption-number">図 - 3.9.2 </span><span class="caption-text">Column(merged)</span></p>
 </div>
@@ -2597,7 +2625,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>見出し行が結合され、1つの見出しに対して複数の列が存在する場合は属性 <code class="docutils literal notranslate"><span class="pre">headerMerged</span></code> を使用します。</p>
 <p>属性headerMergedの値には列見出しから何セル分離れているかを指定します。</p>
 <p>属性columnNameで指定する見出しのセル名は、結合されているセルと同じ値を指定します。</p>
-<div class="figure align-center" id="id95">
+<div class="figure align-center" id="id102">
 <img alt="_images/Column_headerMerged.png" src="_images/Column_headerMerged.png" />
 <p class="caption"><span class="caption-number">図 - 3.9.3 </span><span class="caption-text">Column(headerMerged)</span></p>
 </div>
@@ -2698,7 +2726,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>属性 <code class="docutils literal notranslate"><span class="pre">previousColumnName</span></code> で、指定された次のカラム以降、カラム名をキーとしたMapが生成され、Beanにセットされます。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">optional</span></code> で、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。 <cite>[ver2.0+]</cite></li>
 </ul>
-<div class="figure align-center" id="id96">
+<div class="figure align-center" id="id103">
 <img alt="_images/MapColumns.png" src="_images/MapColumns.png" />
 <p class="caption"><span class="caption-number">図 - 3.10.1 </span><span class="caption-text">MapColumns</span></p>
 </div>
@@ -2731,7 +2759,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <ul class="simple">
 <li>属性 <code class="docutils literal notranslate"><span class="pre">optional</span></code> で、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。 <cite>[ver2.0+]</cite></li>
 </ul>
-<div class="figure align-center" id="id97">
+<div class="figure align-center" id="id104">
 <img alt="_images/MapColumns_nextColumnName.png" src="_images/MapColumns_nextColumnName.png" />
 <p class="caption"><span class="caption-number">図 - 3.10.2 </span><span class="caption-text">MapColumns(nextColumnName)</span></p>
 </div>
@@ -2810,7 +2838,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumns</span></code> でマッピングしたセルのキーは、 <code class="docutils literal notranslate"><span class="pre">&lt;プロパティ名&gt;[&lt;セルの見出し&gt;]</span></code> の形式になります。</p>
 <p>同様に、マッピング対象の見出しを取得する、フィールド <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">labels</span></code> へのアクセスも、
 キーは、 <code class="docutils literal notranslate"><span class="pre">&lt;プロパティ名&gt;[&lt;セルの見出し&gt;]</span></code> の形式になります。</p>
-<div class="figure align-center" id="id98">
+<div class="figure align-center" id="id105">
 <img alt="_images/MapColumns_positions.png" src="_images/MapColumns_positions.png" />
 <p class="caption"><span class="caption-number">図 - 3.10.3 </span><span class="caption-text">MapColumns(positions/labels)</span></p>
 </div>
@@ -2937,7 +2965,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>そのような場合、テンプレートファイルを書き込むデータに合わせて書き換えます。
 その際には、 <a class="reference internal" href="annotation_lifecycle.html"><span class="doc">ライフサイクル・コールバック用のアノテーション</span></a> <code class="docutils literal notranslate"><span class="pre">&#64;XlsPreSave</span></code> で、実装を行うことができます。</p>
 <p>実装処理は、Apache POIのAPIを使って行います。。</p>
-<div class="figure align-center" id="id99">
+<div class="figure align-center" id="id106">
 <img alt="_images/MapColumns_preSave.png" src="_images/MapColumns_preSave.png" />
 <p class="caption"><span class="caption-number">図 - 3.10.4 </span><span class="caption-text">MapColumns(preSave)</span></p>
 </div>
@@ -3101,7 +3129,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id100">
+<div class="figure align-center" id="id107">
 <img alt="_images/ArrayColumns.png" src="_images/ArrayColumns.png" />
 <p class="caption"><span class="caption-number">図 - 3.11.1 </span><span class="caption-text">ArrayColumns</span></p>
 </div>
@@ -3142,7 +3170,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </li>
 <li>セルが結合されている場合は、結合後の個数を指定します。</li>
 </ul>
-<div class="figure align-center" id="id101">
+<div class="figure align-center" id="id108">
 <img alt="_images/ArrayColumns_elementMerged.png" src="_images/ArrayColumns_elementMerged.png" />
 <p class="caption"><span class="caption-number">図 - 3.11.2 </span><span class="caption-text">ArrayColumns(elementMerged)</span></p>
 </div>
@@ -3179,7 +3207,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>属性 <code class="docutils literal notranslate"><span class="pre">overOperation</span></code> で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 <code class="docutils literal notranslate"><span class="pre">size</span></code> の値が小さく、足りない場合の操作を指定します。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">remainedOperation</span></code> で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 <code class="docutils literal notranslate"><span class="pre">size</span></code> の値が大きく、余っている場合の操作を指定します。</li>
 </ul>
-<div class="figure align-center" id="id102">
+<div class="figure align-center" id="id109">
 <img alt="_images/ArrayColumns_ArrayOption.png" src="_images/ArrayColumns_ArrayOption.png" />
 <p class="caption"><span class="caption-number">図 - 3.11.3 </span><span class="caption-text">ArrayColumns(ArrayOption)</span></p>
 </div>
@@ -3217,7 +3245,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 インデックスは、0から始まります。</p>
 <p>同様に、マッピング対象の見出しを取得する、フィールド <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">labels</span></code> へのアクセスも、キーは、 <code class="docutils literal notranslate"><span class="pre">&lt;プロパティ名&gt;[&lt;インデックス&gt;]</span></code> の形式になります。
 ただし、見出し情報の場合は、全ての要素が同じ値になるため、従来通りの <code class="docutils literal notranslate"><span class="pre">&lt;プロパティ名&gt;</span></code> でも取得できます。</p>
-<div class="figure align-center" id="id103">
+<div class="figure align-center" id="id110">
 <img alt="_images/ArrayColumns_positions.png" src="_images/ArrayColumns_positions.png" />
 <p class="caption"><span class="caption-number">図 - 3.11.4 </span><span class="caption-text">ArrayColumns(positions/labels)</span></p>
 </div>
@@ -3359,7 +3387,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>属性 <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizotanlRecords#terminalLabel</span></code> の終端の判定は、入れ子になったレコードごとに判定されます。</li>
 <li>読み込みの際、アノテーション <a class="reference internal" href="annotation_mapping_ignorable.html#annotationxlsignorable"><span class="std std-ref">&#64;XlsIgnorable</span></a> で、空のレコードを読み飛ばした結果、レコード数が0件となった場合は、要素数0個リストや配列が設定されます。</li>
 </ul>
-<div class="figure align-center" id="id104">
+<div class="figure align-center" id="id111">
 <img alt="_images/NestedRecords_oneToMany.png" src="_images/NestedRecords_oneToMany.png" />
 <p class="caption"><span class="caption-number">図 - 3.12.1 </span><span class="caption-text">NestedRecords(一対多の関係)</span></p>
 </div>
@@ -3467,7 +3495,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <h3>3.12.2. 一対一の関係<a class="headerlink" href="#id43" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>一対一の関係をマッピングする際には、ネストしたクラスを直接指定します。</p>
 <p>クラス定義などの制約は、基本的に一対多のときと同じです。</p>
-<div class="figure align-center" id="id105">
+<div class="figure align-center" id="id112">
 <img alt="_images/NestedRecords_oneToOne.png" src="_images/NestedRecords_oneToOne.png" />
 <p class="caption"><span class="caption-number">図 - 3.12.2 </span><span class="caption-text">NestedRecords(一対一の関係)</span></p>
 </div>
@@ -3572,12 +3600,12 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>属性 <code class="docutils literal notranslate"><span class="pre">tableLabel</span></code> で繰り返し部分の表の名称を指定します。</p>
 <p>また、属性bottomは、<code class="docutils literal notranslate"><span class="pre">&#64;XlsIterateTables</span></code> 内で <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> を使用する場合に、
 テーブルの開始位置が <code class="docutils literal notranslate"><span class="pre">&#64;XlsIterateTables</span></code> の表の名称セルからどれだけ離れているかを指定します。</p>
-<div class="figure align-center" id="id106">
+<div class="figure align-center" id="id113">
 <img alt="_images/IterateTables.png" src="_images/IterateTables.png" />
 <p class="caption"><span class="caption-number">図 - 3.13.1 </span><span class="caption-text">IterateTables</span></p>
 </div>
-<div class="literal-block-wrapper docutils container" id="id107">
-<div class="code-block-caption"><span class="caption-number">コード - 3.13.1 </span><span class="caption-text">シート用クラスの定義</span><a class="headerlink" href="#id107" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id114">
+<div class="code-block-caption"><span class="caption-number">コード - 3.13.1 </span><span class="caption-text">シート用クラスの定義</span><a class="headerlink" href="#id114" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -3595,8 +3623,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <p>繰り返し部分に対応するJavaBeanでは以下のように、アノテーション <a class="reference internal" href="annotation_mapping_labelledcell.html#annotationxlslabelledcell"><span class="std std-ref">&#64;XlsLabelledCell</span></a> <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> を使用することができます。</p>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> を使用する場合、属性tableLabel は設定する必要はありません。
 <code class="docutils literal notranslate"><span class="pre">&#64;XlsIterateTables</span></code> の属性 tableLabelとbottomの値を引き継ぐため、指定しなくても問題ないためです。</p>
-<div class="literal-block-wrapper docutils container" id="id108">
-<div class="code-block-caption"><span class="caption-number">コード - 3.13.2 </span><span class="caption-text">テーブル用クラスの定義</span><a class="headerlink" href="#id108" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id115">
+<div class="code-block-caption"><span class="caption-number">コード - 3.13.2 </span><span class="caption-text">テーブル用クラスの定義</span><a class="headerlink" href="#id115" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -3616,8 +3644,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </td></tr></table></div>
 </div>
 <p>繰り返し部分に対応するJavaBeanで <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> を使用した場合、通常の場合と同じく <a class="reference internal" href="annotation_mapping_column.html#annotationxlscolumn"><span class="std std-ref">&#64;XlsColumn</span></a> や <a class="reference internal" href="annotation_mapping_mapcolumns.html#annotationxlsmapcolumns"><span class="std std-ref">&#64;XlsMapColumns</span></a> で列とのマッピングを行います。</p>
-<div class="literal-block-wrapper docutils container" id="id109">
-<div class="code-block-caption"><span class="caption-number">コード - 3.13.3 </span><span class="caption-text">レコード用クラスの定義</span><a class="headerlink" href="#id109" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id116">
+<div class="code-block-caption"><span class="caption-number">コード - 3.13.3 </span><span class="caption-text">レコード用クラスの定義</span><a class="headerlink" href="#id116" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -3657,7 +3685,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 <li>ただし、横方向の表をマッピングするアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsHorizontalRecords</span></code> と同時に使用することはできません。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">tableLabelAbove=true</span></code> が自動的に有効になり、表の見出しが上部にあることを前提に処理されます。</li>
 </ul>
-<div class="figure align-center" id="id110">
+<div class="figure align-center" id="id117">
 <img alt="_images/IterateTables_VerticalRecords.png" src="_images/IterateTables_VerticalRecords.png" />
 <p class="caption"><span class="caption-number">図 - 3.13.2 </span><span class="caption-text">IterateTables(縦方向)</span></p>
 </div>
@@ -3767,17 +3795,182 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </td></tr></table></div>
 </div>
 </div>
+<div class="section" id="xlscomment">
+<span id="annotationxlscomment"></span><h2>3.14. <code class="docutils literal notranslate"><span class="pre">&#64;XlsComment</span></code><a class="headerlink" href="#xlscomment" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>セルの列と行を指定して、セルのコメント情報をBeanのプロパティにマッピングします。 <cite>[ver.2.1+]</cite></p>
+<p>フィールドまたはメソッドに対して付与します。</p>
+<p>書込み時のコメントの書式の制御は、アノテーション <a class="reference internal" href="annotation_mapping_commentoption.html#annotationxlscommentoption"><span class="std std-ref">&#64;XlsCommentOption</span></a> で指定します。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal notranslate"><span class="pre">column</span></code> 、 <code class="docutils literal notranslate"><span class="pre">row</span></code> で、インデックスを指定します。<ul>
+<li>columnは列番号で、0から始まります。</li>
+<li>rowは行番号で、0から始まります。</li>
+</ul>
+</li>
+<li>属性 <code class="docutils literal notranslate"><span class="pre">address</span></code> で、 'B3' のようにシートのアドレス形式で指定もできます。<ul>
+<li>属性addressを指定する場合は、column, rowは指定しないでください。</li>
+<li>属性addressの両方を指定した場合、addressの値が優先されます。</li>
+</ul>
+</li>
+</ul>
+<div class="figure align-center" id="id118">
+<img alt="_images/Comment.png" src="_images/Comment.png" />
+<p class="caption"><span class="caption-number">図 - 3.14.1 </span><span class="caption-text">Comment</span></p>
+</div>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="c1">// インデックス形式で指定する場合</span>
+    <span class="nd">@XlsComment</span><span class="o">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">titleComment</span><span class="o">;</span>
+
+    <span class="c1">// アドレス形式で指定する場合</span>
+    <span class="nd">@XlsComment</span><span class="o">(</span><span class="n">address</span><span class="o">=</span><span class="s">&quot;B3&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">titleComment</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="xlslabelledcomment">
+<span id="annotationxlslabelledcomment"></span><h2>3.15. <code class="docutils literal notranslate"><span class="pre">&#64;XlsLabelledComment</span></code><a class="headerlink" href="#xlslabelledcomment" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>セルの見出し用のラベルセルを指定し、セルのコメントをマッピングします。 <cite>[ver.2.1+]</cite></p>
+<p>フィールドまたはメソッドに対して付与します。</p>
+<p>書込み時のコメントの書式の制御は、アノテーション <a class="reference internal" href="annotation_mapping_commentoption.html#annotationxlscommentoption"><span class="std std-ref">&#64;XlsCommentOption</span></a> で指定します。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal notranslate"><span class="pre">label</span></code> で、見出しとなるセルの値を指定します。</li>
+<li>属性 <code class="docutils literal notranslate"><span class="pre">optional</span></code> で、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。</li>
+</ul>
+<div class="figure align-center" id="id119">
+<img alt="_images/LabelledComment.png" src="_images/LabelledComment.png" />
+<p class="caption"><span class="caption-number">図 - 3.15.1 </span><span class="caption-text">LabelledComment</span></p>
+</div>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="nd">@XlsLabelledComment</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;ラベル1&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">titleComment</span><span class="o">;</span>
+
+    <span class="c1">// ラベルセルが見つからなくても処理を続行する</span>
+    <span class="nd">@XlsLabelledComment</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;ラベル2&quot;</span><span class="n">optional</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">summaryComment</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="id47">
+<h3>3.15.1. ラベルセルが重複するセルを指定する方法<a class="headerlink" href="#id47" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>同じラベルのセルが複数ある場合は、区別するための見出しを属性 <code class="docutils literal notranslate"><span class="pre">headerLabel</span></code> で指定します。</p>
+<p>属性headerLabelで指定したセルから、label属性で指定したセルを下方向に検索し、最初に見つかった一致するセルをラベルセルとして使用します。</p>
+<div class="figure align-center" id="id120">
+<img alt="_images/LabelledComment_headerLabel.png" src="_images/LabelledComment_headerLabel.png" />
+<p class="caption"><span class="caption-number">図 - 3.15.2 </span><span class="caption-text">LabelledComment(headerLabel)</span></p>
+</div>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="nd">@XlsLabelledComment</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;クラス名&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">,</span>
+            <span class="n">headerLabel</span><span class="o">=</span><span class="s">&quot;アクション&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">actionClassNameComment</span><span class="o">;</span>
+
+    <span class="nd">@XlsLabelledComment</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;クラス名&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">,</span>
+            <span class="n">headerLabel</span><span class="o">=</span><span class="s">&quot;アクションフォーム&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">formClassNameComment</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="id48">
+<h3>3.15.2. ラベルセルを正規表現、正規化して指定する場合<a class="headerlink" href="#id48" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>シートの構造は同じだが、ラベルのセルが微妙に異なる場合、ラベルセルを正規表現による指定が可能です。
+また、空白や改行を除去してラベルセルを比較するように設定することも可能です。</p>
+<ul class="simple">
+<li>正規表現で指定する場合、アノテーションの属性の値を <code class="docutils literal notranslate"><span class="pre">/正規表現/</span></code> のように、スラッシュで囲み指定します。<ul>
+<li>スラッシュで囲まない場合、通常の文字列として処理されます。</li>
+<li>正規表現の指定機能を有効にするには、<a class="reference internal" href="configuration.html"><span class="doc">システム設定のプロパティ</span></a> <code class="docutils literal notranslate"><span class="pre">regexLabelText</span></code> の値を trueに設定します。</li>
+</ul>
+</li>
+<li>ラベセルの値に改行が空白が入っている場合、それらを除去し、正規化してアノテーションの属性値と比較することが可能です。<ul>
+<li>正規化とは、空白、改行、タブを除去することを指します。</li>
+<li>ラベルを正規化する機能を有効にするには、<a class="reference internal" href="configuration.html"><span class="doc">システム設定のプロパティ</span></a> <code class="docutils literal notranslate"><span class="pre">normalizeLabelText</span></code> の値を trueに設定します。</li>
+</ul>
+</li>
+</ul>
+<p>これらの指定が可能な属性は、<code class="docutils literal notranslate"><span class="pre">label</span></code> , <code class="docutils literal notranslate"><span class="pre">headerLabel</span></code> です。</p>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// システム設定</span>
+<span class="n">XlsMapper</span> <span class="n">xlsMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
+<span class="n">xlsMapper</span><span class="o">.</span><span class="na">getConfiguration</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">setRegexLabelText</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>        <span class="c1">// ラベルを正規表現で指定可能にする機能を有効にする。</span>
+        <span class="o">.</span><span class="na">setNormalizeLabelText</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>   <span class="c1">// ラベルを正規化して比較する機能を有効にする。</span>
+
+<span class="c1">// シート用クラス</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="c1">// 正規表現による指定</span>
+    <span class="nd">@XlsLabelledComment</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;/名前.+/&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">classNameComment</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
 <div class="section" id="xlsorder">
-<span id="annotationxlsorder"></span><h2>3.14. <code class="docutils literal notranslate"><span class="pre">&#64;XlsOrder</span></code><a class="headerlink" href="#xlsorder" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<span id="annotationxlsorder"></span><h2>3.16. <code class="docutils literal notranslate"><span class="pre">&#64;XlsOrder</span></code><a class="headerlink" href="#xlsorder" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>書き込み時に、<code class="docutils literal notranslate"><span class="pre">&#64;XlsHoriontalRecords</span></code> を使用して行の挿入や削除を行う設定を行っている場合、
 フィールドの処理順序によって、<code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">Point&gt;</span> <span class="pre">positions</span></code> フィールドで座標がずれる場合があります。</p>
 <p>このようなときに、<code class="docutils literal notranslate"><span class="pre">&#64;XlsOrder</span></code> の属性 <code class="docutils literal notranslate"><span class="pre">value</span></code> で書き込む処理順序を指定し一定に保つことができます。
 属性 value はJavaの仕様により省略が可能です。</p>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;XlsOrder</span></code> を付与しないフィールドは、付与しているフィールドよりも後から処理が実行されます。
 属性valueが同じ値を設定されているときは、 フィールド名の昇順で優先度を決めて処理されます。</p>
-<div class="figure align-center" id="id111">
+<div class="figure align-center" id="id121">
 <img alt="_images/Hint.png" src="_images/Hint.png" />
-<p class="caption"><span class="caption-number">図 - 3.14.1 </span><span class="caption-text">Order</span></p>
+<p class="caption"><span class="caption-number">図 - 3.16.1 </span><span class="caption-text">Order</span></p>
 </div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -3821,7 +4014,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 </div>
 <div class="section" id="xlsignorable">
-<span id="annotationxlsignorable"></span><h2>3.15. <code class="docutils literal notranslate"><span class="pre">&#64;XlsIgnorable</span></code><a class="headerlink" href="#xlsignorable" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<span id="annotationxlsignorable"></span><h2>3.17. <code class="docutils literal notranslate"><span class="pre">&#64;XlsIgnorable</span></code><a class="headerlink" href="#xlsignorable" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> 、<a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords</span></a> を使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
 レコードが空と判定するためのメソッドに付与します。</p>
 <ul class="simple">
@@ -3903,7 +4096,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </td></tr></table></div>
 <div class="section" id="isemptybuilder">
-<h3>3.15.1. IsEmptyBuilderを使った記述の簡単化<a class="headerlink" href="#isemptybuilder" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<h3>3.17.1. IsEmptyBuilderを使った記述の簡単化<a class="headerlink" href="#isemptybuilder" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">IsEmptyBuilder</span></code> (ver.0.5から追加)を利用することで、より簡潔に記述することも可能です。</p>
 <ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">IsEmptyBuilder#reflectionIsEmpty(...)</span></code> を利用して判定する場合、位置情報を保持するフィールド <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">Point&gt;</span> <span class="pre">positions</span></code> などは除外対象とする必要があります。</li>
@@ -3998,10 +4191,10 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 </div>
 <div class="section" id="xlsarrayoption">
-<span id="annotationxlsarrayoption"></span><h2>3.16. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayOption</span></code><a class="headerlink" href="#xlsarrayoption" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<span id="annotationxlsarrayoption"></span><h2>3.18. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayOption</span></code><a class="headerlink" href="#xlsarrayoption" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_arraycells.html#annotationxlsarraycells"><span class="std std-ref">&#64;XlsArrayCells</span></a> 、 <a class="reference internal" href="annotation_mapping_labelledarraycells.html#annotationxlslabelledarraycells"><span class="std std-ref">&#64;XlsLabelledArrayCells</span></a> 、<a class="reference internal" href="annotation_mapping_arraycolumns.html#annotationxlsarraycolumns"><span class="std std-ref">&#64;XlsArrayColumns</span></a> において、書き込み時の配列・リストの操作を指定するためのアノテーションです。 <cite>[ver.2.0+]</cite></p>
 <div class="section" id="overoperation">
-<h3>3.16.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)<a class="headerlink" href="#overoperation" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<h3>3.18.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)<a class="headerlink" href="#overoperation" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayOption</span></code> を指定することで、書き込み時のセルの制御を指定することができます。</p>
 <ul class="simple">
 <li>属性 <code class="docutils literal notranslate"><span class="pre">overOperation</span></code> で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 <code class="docutils literal notranslate"><span class="pre">size</span></code> の値が小さく、足りない場合の操作を指定します。<ul>
@@ -4010,9 +4203,9 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id112">
+<div class="figure align-center" id="id122">
 <img alt="_images/ArrayOption_overOperation.png" src="_images/ArrayOption_overOperation.png" />
-<p class="caption"><span class="caption-number">図 - 3.16.1 </span><span class="caption-text">ArrayOption(overOperation)</span></p>
+<p class="caption"><span class="caption-number">図 - 3.18.1 </span><span class="caption-text">ArrayOption(overOperation)</span></p>
 </div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -4039,7 +4232,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </td></tr></table></div>
 </div>
 <div class="section" id="remainedoperation">
-<h3>3.16.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)<a class="headerlink" href="#remainedoperation" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<h3>3.18.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)<a class="headerlink" href="#remainedoperation" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayOption</span></code> を指定することで、書き込み時のセルの制御を指定することができます。</p>
 <ul class="simple">
 <li>属性 <code class="docutils literal notranslate"><span class="pre">remainedOperation</span></code> で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 <code class="docutils literal notranslate"><span class="pre">size</span></code> の値が大きく、余っている場合の操作を指定します。<ul>
@@ -4048,9 +4241,9 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id113">
+<div class="figure align-center" id="id123">
 <img alt="_images/ArrayOption_remainedOperation.png" src="_images/ArrayOption_remainedOperation.png" />
-<p class="caption"><span class="caption-number">図 - 3.16.2 </span><span class="caption-text">ArrayOption(remainedOperation)</span></p>
+<p class="caption"><span class="caption-number">図 - 3.18.2 </span><span class="caption-text">ArrayOption(remainedOperation)</span></p>
 </div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -4078,10 +4271,10 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 </div>
 <div class="section" id="xlsrecordoption">
-<span id="annotationxlsrecordoption"></span><h2>3.17. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordOption</span></code><a class="headerlink" href="#xlsrecordoption" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<span id="annotationxlsrecordoption"></span><h2>3.19. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordOption</span></code><a class="headerlink" href="#xlsrecordoption" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> 、 <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords</span></a>  において、書き込み時のレコードの操作を指定するためのアノテーションです。 <cite>[ver.2.0+]</cite></p>
-<div class="section" id="id47">
-<h3>3.17.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)<a class="headerlink" href="#id47" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id49">
+<h3>3.19.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)<a class="headerlink" href="#id49" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordOption</span></code> を指定することで、書き込み時のレコードの制御を指定することができます。</p>
 <ul class="simple">
 <li>属性 <code class="docutils literal notranslate"><span class="pre">overOperation</span></code> で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が足りない場合の操作を指定します。<ul>
@@ -4097,9 +4290,9 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id114">
+<div class="figure align-center" id="id124">
 <img alt="_images/RecordOption_overOperation.png" src="_images/RecordOption_overOperation.png" />
-<p class="caption"><span class="caption-number">図 - 3.17.1 </span><span class="caption-text">RecordOption(overOperation)</span></p>
+<p class="caption"><span class="caption-number">図 - 3.19.1 </span><span class="caption-text">RecordOption(overOperation)</span></p>
 </div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -4133,8 +4326,8 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </pre></div>
 </td></tr></table></div>
 </div>
-<div class="section" id="id48">
-<h3>3.17.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)<a class="headerlink" href="#id48" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="section" id="id50">
+<h3>3.19.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)<a class="headerlink" href="#id50" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordOption</span></code> を指定することで、書き込み時のセルの制御を指定することができます。</p>
 <ul class="simple">
 <li>属性 <code class="docutils literal notranslate"><span class="pre">remainedOperation</span></code> で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が余っている場合の操作を指定します。<ul>
@@ -4147,9 +4340,9 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </ul>
 </li>
 </ul>
-<div class="figure align-center" id="id115">
+<div class="figure align-center" id="id125">
 <img alt="_images/RecordOption_remainedOperation.png" src="_images/RecordOption_remainedOperation.png" />
-<p class="caption"><span class="caption-number">図 - 3.17.2 </span><span class="caption-text">RecordOption(remainedOperation)</span></p>
+<p class="caption"><span class="caption-number">図 - 3.19.2 </span><span class="caption-text">RecordOption(remainedOperation)</span></p>
 </div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -4183,18 +4376,18 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </div>
 </div>
 <div class="section" id="xlsrecordfinder">
-<span id="annotationxlsrecordfinder"></span><h2>3.18. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordFinder</span></code><a class="headerlink" href="#xlsrecordfinder" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<span id="annotationxlsrecordfinder"></span><h2>3.20. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordFinder</span></code><a class="headerlink" href="#xlsrecordfinder" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>アノテーション <a class="reference internal" href="annotation_mapping_horizontalrecords.html#annotationxlshorizontalrecords"><span class="std std-ref">&#64;XlsHorizontalRecords</span></a> 、 <a class="reference internal" href="annotation_mapping_verticalrecords.html#annotationxlsverticalrecords"><span class="std std-ref">&#64;XlsVerticalRecords</span></a>  において、データレコードの開始位置が既存のアノテーションの属性だと表現できない場合に、任意の実装方法を指定するようにします。 <cite>[ver.2.0+]</cite></p>
 <ul class="simple">
 <li>属性 <code class="docutils literal notranslate"><span class="pre">value</span></code> で、レコードの開始位置を検索する <code class="docutils literal notranslate"><span class="pre">RecordFinder</span></code> の実装クラスを指定します。</li>
 <li>属性 <code class="docutils literal notranslate"><span class="pre">args</span></code> で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。</li>
 </ul>
-<div class="figure align-center" id="id116">
+<div class="figure align-center" id="id126">
 <img alt="_images/RecordFinder.png" src="_images/RecordFinder.png" />
-<p class="caption"><span class="caption-number">図 - 3.18.1 </span><span class="caption-text">RecordFinder</span></p>
+<p class="caption"><span class="caption-number">図 - 3.20.1 </span><span class="caption-text">RecordFinder</span></p>
 </div>
-<div class="literal-block-wrapper docutils container" id="id117">
-<div class="code-block-caption"><span class="caption-number">コード - 3.18.1 </span><span class="caption-text">任意の位置のレコードをマッピングする場合</span><a class="headerlink" href="#id117" title="このコードへのパーマリンク">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id127">
+<div class="code-block-caption"><span class="caption-number">コード - 3.20.1 </span><span class="caption-text">任意の位置のレコードをマッピングする場合</span><a class="headerlink" href="#id127" title="このコードへのパーマリンク">¶</a></div>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -4334,6 +4527,296 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 </td></tr></table></div>
 </div>
 </div>
+<div class="section" id="xlscommentoption">
+<span id="annotationxlscommentoption"></span><h2>3.21. <code class="docutils literal notranslate"><span class="pre">&#64;XlsCommentOption</span></code><a class="headerlink" href="#xlscommentoption" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>アノテーション <a class="reference internal" href="annotation_mapping_comment.html#annotationxlscomment"><span class="std std-ref">&#64;XlsComment</span></a> 、 <a class="reference internal" href="annotation_mapping_labelledcomment.html#annotationxlslabelledcomment"><span class="std std-ref">&#64;XlsLabelledComment</span></a>  において、書き込み時のコメントの書式などを指定するためのアノテーションです。 <cite>[ver.2.1+]</cite></p>
+<p>また、フィールド <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">comments</span></code> でコメントをマッピングするセルに対しても指定可能です。</p>
+<div class="section" id="id51">
+<h3>3.21.1. 書き込み時にコメントの表示／非表示設定をする。<a class="headerlink" href="#id51" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsCommentOption</span></code> の属性 <code class="docutils literal notranslate"><span class="pre">visible</span></code> を指定することで、書き込み時にコメントの表示／非表示設定をすることができます。</p>
+<ul class="simple">
+<li>true場合、表示する設定になり、常にコメントが表示されます。</li>
+<li>既に設定されているコメントの設定よりも、アノテーションの設定が優先されます。</li>
+</ul>
+<div class="figure align-center" id="id128">
+<img alt="_images/CommentOption_visible.png" src="_images/CommentOption_visible.png" />
+<p class="caption"><span class="caption-number">図 - 3.21.1 </span><span class="caption-text">CommentOption(visible)</span></p>
+</div>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// 書き込むデータ</span>
+<span class="n">SampleSheet</span> <span class="n">sheet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SampleSheet</span><span class="o">();</span>
+<span class="n">sheet</span><span class="o">.</span><span class="na">birthdayDescription</span> <span class="o">=</span> <span class="s">&quot;yyyy/MM/dd の形式で設定してください。&quot;</span><span class="o">;</span>
+<span class="n">sheet</span><span class="o">.</span><span class="na">setBirthdayComment</span><span class="o">(</span><span class="s">&quot;設定してください。&quot;</span><span class="o">);</span>
+
+<span class="c1">// マッピングの定義</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">comments</span><span class="o">;</span>
+
+    <span class="nd">@XlsCommentOption</span><span class="o">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span>
+    <span class="nd">@XlsLablledComment</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;誕生日&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">birthdayDescription</span><span class="o">;</span>
+
+    <span class="nd">@XlsCommentOption</span><span class="o">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;誕生日&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">LocalDate</span> <span class="n">birthday</span><span class="o">;</span>
+
+    <span class="c1">// 誕生日の値セルのコメントの設定</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setBirthdayComment</span><span class="o">(</span><span class="n">String</span> <span class="n">comment</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">comments</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">comments</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="o">}</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">comments</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;birthday&quot;</span><span class="o">,</span> <span class="n">comment</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="id52">
+<h3>3.21.2. 書き込み時にコメントの枠サイズを指定する<a class="headerlink" href="#id52" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsCommentOption</span></code> の属性 <code class="docutils literal notranslate"><span class="pre">verticalSize</span></code> / <code class="docutils literal notranslate"><span class="pre">horizontalSize</span></code> を指定することで、書き込み時のコメントの枠サイズを指定することができます。</p>
+<ul class="simple">
+<li>属性 <code class="docutils literal notranslate"><span class="pre">verticalSize</span></code> にて、コメント枠の縦サイズを指定します。<ul>
+<li>単位は行数です。</li>
+<li>既にコメントが設定されている場合は、この設定は無視されます。</li>
+</ul>
+</li>
+<li>属性 <code class="docutils literal notranslate"><span class="pre">horizontalSize</span></code> にて、コメント枠の横サイズを指定します。<ul>
+<li>単位は列数です。</li>
+<li>既にコメントが設定されている場合は、この設定は無視されます。</li>
+</ul>
+</li>
+</ul>
+<div class="figure align-center" id="id129">
+<img alt="_images/CommentOption_size.png" src="_images/CommentOption_size.png" />
+<p class="caption"><span class="caption-number">図 - 3.21.2 </span><span class="caption-text">CommentOption(verticalSize/horizontalSize)</span></p>
+</div>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// マッピングの定義</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="nd">@XlsCommentOption</span><span class="o">(</span><span class="n">verticalSize</span><span class="o">=</span><span class="mi">5</span><span class="o">,</span> <span class="n">horizontalSize</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+    <span class="nd">@XlsCellComment</span><span class="o">(</span><span class="n">address</span><span class="o">=</span><span class="s">&quot;B2&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="id53">
+<h3>3.21.3. 書き込み時に既存のコメントを自動削除する<a class="headerlink" href="#id53" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsCommentOption</span></code> の属性 <code class="docutils literal notranslate"><span class="pre">removeIfEmpty</span></code> を指定することで、書き込むコメントの値が空のとき、既存のコメントを自動削除することができます。</p>
+<p>属性 <code class="docutils literal notranslate"><span class="pre">removeIfEmpty</span></code> の初期値は <code class="docutils literal notranslate"><span class="pre">false</span></code> で削除されません。</p>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// マッピングの定義</span>
+<span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleSheet</span> <span class="o">{</span>
+
+    <span class="nd">@XlsCommentOption</span><span class="o">(</span><span class="n">removeIfEmpty</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="nd">@XlsCellComment</span><span class="o">(</span><span class="n">address</span><span class="o">=</span><span class="s">&quot;B2&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="id54">
+<h3>3.21.4. コメントの読み込み、書き込みの処理の実装を切り替える<a class="headerlink" href="#id54" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsCommentOption</span></code> の属性 <code class="docutils literal notranslate"><span class="pre">handler</span></code> にて、コメントの処理を独自実装に切り替えることができます。</p>
+<p>標準のコメントの処理は、 <code class="docutils literal notranslate"><span class="pre">CellCommentHandler</span></code> の実装クラス <code class="docutils literal notranslate"><span class="pre">DefaultCellCommentHandler</span></code> であるため、通常はこのクラスを継承してカスタマイズします。</p>
+<p>全体の処理を切り替えたい場合は、<a class="reference internal" href="configuration.html"><span class="doc">システム設定</span></a> の <code class="docutils literal notranslate"><span class="pre">CellCommentOperator</span></code> のプロパティ <code class="docutils literal notranslate"><span class="pre">commentHandler</span></code> を変更します。</p>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@XlsSheet</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;独自実装&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomHandlerSheet</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">CellPosition</span><span class="o">&gt;</span> <span class="n">positions</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">labels</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">comments</span><span class="o">;</span>
+
+    <span class="nd">@XlsSheetName</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">sheetName</span><span class="o">;</span>
+
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span> <span class="o">=</span> <span class="s">&quot;標準の処理&quot;</span><span class="o">,</span> <span class="n">type</span> <span class="o">=</span> <span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value1</span><span class="o">;</span>
+
+    <span class="nd">@XlsCommentOption</span><span class="o">(</span><span class="n">handler</span> <span class="o">=</span> <span class="n">CustomCellCommentHandler</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="nd">@XlsLabelledCell</span><span class="o">(</span><span class="n">label</span> <span class="o">=</span> <span class="s">&quot;独自実装の処理&quot;</span><span class="o">,</span> <span class="n">type</span> <span class="o">=</span> <span class="n">LabelledCellType</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value2</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * カスタマイズしたセルのコメント処理</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomCellCommentHandler</span> <span class="kd">extends</span> <span class="n">DefaultCellCommentHandler</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nf">CustomCellCommentHandler</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+        <span class="c1">// 初期設定値の変更</span>
+        <span class="n">setMaxHorizontalSize</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+        <span class="n">setMaxVerticalSize</span><span class="o">(</span><span class="mi">4</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// 読み込み時の処理</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">handleLoad</span><span class="o">(</span><span class="kd">final</span> <span class="n">Cell</span> <span class="n">cell</span><span class="o">,</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">XlsCommentOption</span><span class="o">&gt;</span> <span class="n">commentOption</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">comment</span> <span class="o">=</span> <span class="kd">super</span><span class="o">.</span><span class="na">handleLoad</span><span class="o">(</span><span class="n">cell</span><span class="o">,</span> <span class="n">commentOption</span><span class="o">);</span>
+
+        <span class="c1">// 改行を除去する。</span>
+        <span class="k">return</span> <span class="n">comment</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">text</span> <span class="o">-&gt;</span> <span class="n">text</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;\r|\n|\r\n&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="c1">// 書き込み時の処理</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleSave</span><span class="o">(</span><span class="kd">final</span> <span class="n">Cell</span> <span class="n">cell</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">text</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">XlsCommentOption</span><span class="o">&gt;</span> <span class="n">commentOption</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="c1">// 改行を除去する。</span>
+        <span class="n">text</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">comment</span> <span class="o">-&gt;</span> <span class="n">comment</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;\r|\n|\r\n&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">))</span>
+                <span class="o">.</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">comment</span> <span class="o">-&gt;</span> <span class="kd">super</span><span class="o">.</span><span class="na">handleSave</span><span class="o">(</span><span class="n">cell</span><span class="o">,</span> <span class="n">Optional</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">comment</span><span class="o">),</span> <span class="n">commentOption</span><span class="o">));</span>
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="id55">
+<h3>3.21.5. 書き込み時にコメントの枠サイズを自動設定する<a class="headerlink" href="#id55" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsCommentOption</span></code> の属性 <code class="docutils literal notranslate"><span class="pre">verticalSize</span></code> / <code class="docutils literal notranslate"><span class="pre">horizontalSize</span></code> でコメント枠のサイズを指定しない場合は、
+書き込むコメントの文字数、改行数によって自動的に設定されます。</p>
+<p>ただし、コメント枠のサイズは、行数、列数で指定するため、コメントが表示される領域のセルのサイズが他と異なる場合、
+意図したサイズにならない場合があります。</p>
+<p>その際は、アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsCommentOption</span></code> を使用してサイズを直接指定します。</p>
+<p>または、標準の自動設定値を変更します。
+ここでは、標準の設定値を変更します。</p>
+<p>標準のコメントの処理は、 <code class="docutils literal notranslate"><span class="pre">CellCommentHandler</span></code> の実装クラス <code class="docutils literal notranslate"><span class="pre">DefaultCellCommentHandler</span></code> で指定されます。
+この実装は、<a class="reference internal" href="configuration.html"><span class="doc">システム設定</span></a> の <code class="docutils literal notranslate"><span class="pre">CellCommentOperator</span></code> のプロパティ <code class="docutils literal notranslate"><span class="pre">commentHandler</span></code> で保持しています。</p>
+<p>初期値では、コメントの縦サイズは最大4行分まで、横サイズは最大3列分となります。</p>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// コメントを処理するハンドラのインスタンスを生成します。</span>
+<span class="n">DefaultCellCommentHandler</span> <span class="n">commentHandler</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DefaultCellCommentHandler</span><span class="o">();</span>
+
+<span class="c1">// コメントの縦サイズの最大サイズを指定します。</span>
+<span class="n">commentHandler</span><span class="o">.</span><span class="na">setMaxVerticalSize</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+
+<span class="c1">// コメントの横サイズの最大サイズを指定します。</span>
+<span class="n">commentHandler</span><span class="o">.</span><span class="na">setMaxHorizontalSize</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+
+<span class="c1">// システム設定値を変更します。</span>
+<span class="n">XlsMapper</span> <span class="n">xlsMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XlsMapper</span><span class="o">();</span>
+<span class="n">xlsMapper</span><span class="o">.</span><span class="na">getConfiguration</span><span class="o">().</span><span class="na">getCommentOperator</span><span class="o">().</span><span class="na">setCommentHandler</span><span class="o">(</span><span class="n">commentHandler</span><span class="o">);</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
 </div>
 
 
@@ -4356,7 +4839,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018, T.TSUCHIE.
+        &copy; Copyright 2015-2019, T.TSUCHIE.
 
     </p>
   </div>
@@ -4378,7 +4861,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0',
+            VERSION:'2.1',
             LANGUAGE:'ja',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

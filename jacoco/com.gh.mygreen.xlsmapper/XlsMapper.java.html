@@ -178,15 +178,15 @@ public class XlsMapper {
      */
 <span class="fc" id="L179">    public XlsMapper() {</span>
 <span class="fc" id="L180">        this.configuration = new Configuration();</span>
-<span class="fc" id="L181">        this.loader = new XlsLoader(getConiguration());</span>
-<span class="fc" id="L182">        this.saver = new XlsSaver(getConiguration());</span>
+<span class="fc" id="L181">        this.loader = new XlsLoader(getConfiguration());</span>
+<span class="fc" id="L182">        this.saver = new XlsSaver(getConfiguration());</span>
 <span class="fc" id="L183">    }</span>
 
     /**
      * システム情報を取得します。
      * @return 現在のシステム情報
      */
-    public Configuration getConiguration() {
+    public Configuration getConfiguration() {
 <span class="fc" id="L190">        return configuration;</span>
     }
 
@@ -194,7 +194,7 @@ public class XlsMapper {
      * システム情報を設定します。
      * @param configuration システム情報
      */
-    public void setConiguration(Configuration configuration) {
+    public void setConfiguration(Configuration configuration) {
 <span class="fc" id="L198">        this.configuration = configuration;</span>
 <span class="fc" id="L199">        getLoader().setConfiguration(configuration);</span>
 <span class="fc" id="L200">        getSaver().setConfiguration(configuration);</span>
@@ -382,4 +382,4 @@ public class XlsMapper {
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

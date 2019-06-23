@@ -55,7 +55,7 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsColumn.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>          
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          <strong class="jxr_keyword">for</strong>(<a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html">FieldAccessor</a> property : properties) {
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsColumn.html">XlsColumn</a> column = property.getAnnotation(XlsColumn.<strong class="jxr_keyword">class</strong>).get();
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsColumn.html">XlsColumn</a> column = property.getAnnotationNullable(XlsColumn.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>              
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>              <strong class="jxr_keyword">if</strong>(column.optional()){
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>                  <strong class="jxr_keyword">continue</strong>;
@@ -93,7 +93,7 @@
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsMapColumns.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          <strong class="jxr_keyword">for</strong>(<a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html">FieldAccessor</a> property : properties) {
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsMapColumns.html">XlsMapColumns</a> mapColumns = property.getAnnotation(XlsMapColumns.<strong class="jxr_keyword">class</strong>).get();
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsMapColumns.html">XlsMapColumns</a> mapColumns = property.getAnnotationNullable(XlsMapColumns.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>              <strong class="jxr_keyword">if</strong>(mapColumns.optional()) {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>                  <strong class="jxr_keyword">continue</strong>;
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>              }
@@ -139,7 +139,7 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsArrayColumns.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         <strong class="jxr_keyword">for</strong>(<a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html">FieldAccessor</a> property : properties) {
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsArrayColumns.html">XlsArrayColumns</a> arrayColumns = property.getAnnotation(XlsArrayColumns.<strong class="jxr_keyword">class</strong>).get();
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsArrayColumns.html">XlsArrayColumns</a> arrayColumns = property.getAnnotationNullable(XlsArrayColumns.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>             <strong class="jxr_keyword">if</strong>(arrayColumns.optional()) {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 <strong class="jxr_keyword">continue</strong>;
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>             }
@@ -238,7 +238,7 @@
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>             
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>             nestedRecordClasses.add(recordClass);
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>             
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsNestedRecords.html">XlsNestedRecords</a> nestedAnno = property.getAnnotation(XlsNestedRecords.<strong class="jxr_keyword">class</strong>).get();
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsNestedRecords.html">XlsNestedRecords</a> nestedAnno = property.getAnnotationNullable(XlsNestedRecords.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>             <strong class="jxr_keyword">final</strong> Class&lt;?&gt; clazz = property.getType();
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>             
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>             <strong class="jxr_keyword">if</strong>(Collection.<strong class="jxr_keyword">class</strong>.isAssignableFrom(clazz)) {
@@ -321,7 +321,7 @@
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>             
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>             nestedRecordClasses.add(recordClass);
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>             
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsNestedRecords.html">XlsNestedRecords</a> nestedAnno = property.getAnnotation(XlsNestedRecords.<strong class="jxr_keyword">class</strong>).get();
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsNestedRecords.html">XlsNestedRecords</a> nestedAnno = property.getAnnotationNullable(XlsNestedRecords.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>             <strong class="jxr_keyword">final</strong> Class&lt;?&gt; clazz = property.getType();
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>             
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>             <strong class="jxr_keyword">if</strong>(Collection.<strong class="jxr_keyword">class</strong>.isAssignableFrom(clazz)) {
@@ -362,6 +362,6 @@
 <a class="jxr_linenumber" name="L354" href="#L354">354</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2018 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

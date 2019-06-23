@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          mapper.getConiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          mapper.getConfiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          File outFile = <strong class="jxr_keyword">new</strong> File(OUT_DIR, outFilename);
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          <strong class="jxr_keyword">try</strong>(InputStream template = <strong class="jxr_keyword">new</strong> FileInputStream(templateFile);
@@ -111,7 +111,7 @@
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>             {
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>                 <em class="jxr_comment">// 折り返し設定(Java側なし)(Excel側なし)</em>
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C5"</span>));
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -121,7 +121,7 @@
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>             {
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>                 <em class="jxr_comment">// 折り返し設定(Java側なし)(Excel側あり)</em>
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C6"</span>));
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> 
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(<strong class="jxr_keyword">true</strong>);
@@ -131,7 +131,7 @@
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>             {
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>                 <em class="jxr_comment">// 折り返し設定(Java側あり)(Excel側なし)</em>
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C7"</span>));
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> 
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(<strong class="jxr_keyword">true</strong>);
@@ -141,7 +141,7 @@
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>             {
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>                 <em class="jxr_comment">// 折り返し設定(Java側あり)(Excel側あり)</em>
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C8"</span>));
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> 
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(<strong class="jxr_keyword">true</strong>);
@@ -151,7 +151,7 @@
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>             {
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>                 <em class="jxr_comment">// 縮小して表示(Java側なし)(Excel側なし)</em>
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C12"</span>));
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> 
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -161,7 +161,7 @@
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>             {
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>                 <em class="jxr_comment">// 縮小して表示(Java側なし)(Excel側あり)</em>
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C13"</span>));
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L158" href="#L158">158</a> 
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -171,7 +171,7 @@
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>             {
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>                 <em class="jxr_comment">// 縮小して表示(Java側あり)(Excel側なし)</em>
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C14"</span>));
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L168" href="#L168">168</a> 
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -181,7 +181,7 @@
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>             {
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>                 <em class="jxr_comment">// 縮小して表示(Java側あり)(Excel側あり)</em>
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C15"</span>));
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> 
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -191,7 +191,7 @@
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>             {
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>                 <em class="jxr_comment">// 折り返し設定＋縮小して表示</em>
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C18"</span>));
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L188" href="#L188">188</a> 
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>                 assertThat(cell.getCellStyle().getWrapText()).isEqualTo(false);
@@ -234,7 +234,7 @@
 <a class="jxr_linenumber" name="L226" href="#L226">226</a> 
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L228" href="#L228">228</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>         mapper.getConiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>         mapper.getConfiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L230" href="#L230">230</a> 
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>         File outFile = <strong class="jxr_keyword">new</strong> File(OUT_DIR, outFilename);
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>         <strong class="jxr_keyword">try</strong>(InputStream template = <strong class="jxr_keyword">new</strong> FileInputStream(templateFile);
@@ -251,7 +251,7 @@
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>             {
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>                 <em class="jxr_comment">// 横位置(デフォルト)</em>
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C4"</span>));
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L248" href="#L248">248</a> 
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER);
@@ -262,7 +262,7 @@
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>             {
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>                 <em class="jxr_comment">// 横位置(標準)</em>
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C5"</span>));
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L259" href="#L259">259</a> 
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -273,7 +273,7 @@
 <a class="jxr_linenumber" name="L265" href="#L265">265</a>             {
 <a class="jxr_linenumber" name="L266" href="#L266">266</a>                 <em class="jxr_comment">// 横位置(左詰め)</em>
 <a class="jxr_linenumber" name="L267" href="#L267">267</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C6"</span>));
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L270" href="#L270">270</a> 
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.LEFT);
@@ -284,7 +284,7 @@
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>             {
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>                 <em class="jxr_comment">// 横位置(左詰め)(インデント)</em>
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C7"</span>));
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L281" href="#L281">281</a> 
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.LEFT);
@@ -295,7 +295,7 @@
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>             {
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>                 <em class="jxr_comment">// 横位置(中央揃え)</em>
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C8"</span>));
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L292" href="#L292">292</a> 
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER);
@@ -306,7 +306,7 @@
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>             {
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>                 <em class="jxr_comment">// 横位置(右詰め)</em>
 <a class="jxr_linenumber" name="L300" href="#L300">300</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C9"</span>));
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L302" href="#L302">302</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L303" href="#L303">303</a> 
 <a class="jxr_linenumber" name="L304" href="#L304">304</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.RIGHT);
@@ -317,7 +317,7 @@
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>             {
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>                 <em class="jxr_comment">// 横位置(右詰め)(インデント)</em>
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C10"</span>));
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L314" href="#L314">314</a> 
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.RIGHT);
@@ -328,7 +328,7 @@
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>             {
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>                 <em class="jxr_comment">// 繰り返し</em>
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C11"</span>));
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L325" href="#L325">325</a> 
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.FILL);
@@ -339,7 +339,7 @@
 <a class="jxr_linenumber" name="L331" href="#L331">331</a>             {
 <a class="jxr_linenumber" name="L332" href="#L332">332</a>                 <em class="jxr_comment">// 横位置(両端揃え)</em>
 <a class="jxr_linenumber" name="L333" href="#L333">333</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C12"</span>));
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L335" href="#L335">335</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L336" href="#L336">336</a> 
 <a class="jxr_linenumber" name="L337" href="#L337">337</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.JUSTIFY);
@@ -350,7 +350,7 @@
 <a class="jxr_linenumber" name="L342" href="#L342">342</a>             {
 <a class="jxr_linenumber" name="L343" href="#L343">343</a>                 <em class="jxr_comment">// 横位置(選択範囲内で中央)</em>
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C13"</span>));
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L347" href="#L347">347</a> 
 <a class="jxr_linenumber" name="L348" href="#L348">348</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER_SELECTION);
@@ -361,7 +361,7 @@
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>             {
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>                 <em class="jxr_comment">// 横位置(均等割り付け)</em>
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C14"</span>));
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L358" href="#L358">358</a> 
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.DISTRIBUTED);
@@ -372,7 +372,7 @@
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>             {
 <a class="jxr_linenumber" name="L365" href="#L365">365</a>                 <em class="jxr_comment">// 横位置(均等割り付け)(インデント)</em>
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C15"</span>));
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L368" href="#L368">368</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L369" href="#L369">369</a> 
 <a class="jxr_linenumber" name="L370" href="#L370">370</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.DISTRIBUTED);
@@ -383,7 +383,7 @@
 <a class="jxr_linenumber" name="L375" href="#L375">375</a>             {
 <a class="jxr_linenumber" name="L376" href="#L376">376</a>                 <em class="jxr_comment">// 縦位置(デフォルト)</em>
 <a class="jxr_linenumber" name="L377" href="#L377">377</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C19"</span>));
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L379" href="#L379">379</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L380" href="#L380">380</a> 
 <a class="jxr_linenumber" name="L381" href="#L381">381</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER);
@@ -394,7 +394,7 @@
 <a class="jxr_linenumber" name="L386" href="#L386">386</a>             {
 <a class="jxr_linenumber" name="L387" href="#L387">387</a>                 <em class="jxr_comment">// 縦位置(上詰め)</em>
 <a class="jxr_linenumber" name="L388" href="#L388">388</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C20"</span>));
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L390" href="#L390">390</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L391" href="#L391">391</a> 
 <a class="jxr_linenumber" name="L392" href="#L392">392</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -405,7 +405,7 @@
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>             {
 <a class="jxr_linenumber" name="L398" href="#L398">398</a>                 <em class="jxr_comment">// 縦位置(中央揃え)</em>
 <a class="jxr_linenumber" name="L399" href="#L399">399</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C21"</span>));
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L401" href="#L401">401</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L402" href="#L402">402</a> 
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -416,7 +416,7 @@
 <a class="jxr_linenumber" name="L408" href="#L408">408</a>             {
 <a class="jxr_linenumber" name="L409" href="#L409">409</a>                 <em class="jxr_comment">// 縦位置(下詰め)</em>
 <a class="jxr_linenumber" name="L410" href="#L410">410</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C22"</span>));
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L413" href="#L413">413</a> 
 <a class="jxr_linenumber" name="L414" href="#L414">414</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -427,7 +427,7 @@
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>             {
 <a class="jxr_linenumber" name="L420" href="#L420">420</a>                 <em class="jxr_comment">// 縦位置(両端揃え)</em>
 <a class="jxr_linenumber" name="L421" href="#L421">421</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C23"</span>));
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L424" href="#L424">424</a> 
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -438,7 +438,7 @@
 <a class="jxr_linenumber" name="L430" href="#L430">430</a>             {
 <a class="jxr_linenumber" name="L431" href="#L431">431</a>                 <em class="jxr_comment">// 縦位置(均等割り付け)</em>
 <a class="jxr_linenumber" name="L432" href="#L432">432</a>                 Cell cell = POIUtils.getCell(sheet, CellPosition.of(<span class="jxr_string">"C24"</span>));
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>                 String text = POIUtils.getCellContents(cell, mapper.getConiguration().getCellFormatter());
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
 <a class="jxr_linenumber" name="L434" href="#L434">434</a>                 assertThat(text).isEqualTo(value);
 <a class="jxr_linenumber" name="L435" href="#L435">435</a> 
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>                 assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
@@ -580,6 +580,6 @@
 <a class="jxr_linenumber" name="L572" href="#L572">572</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2018 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

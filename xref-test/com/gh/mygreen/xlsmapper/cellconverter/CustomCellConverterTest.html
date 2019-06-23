@@ -80,7 +80,7 @@
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testLoadWithConvertAnno() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>          mapper.getConiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          mapper.getConfiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/convert.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>              SheetBindingErrors&lt;CustomWithAnnoSheet&gt; errors = mapper.loadDetail(in, CustomWithAnnoSheet.<strong class="jxr_keyword">class</strong>);
@@ -102,9 +102,9 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testLoadWithConverRegistry() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>  
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          mapper.getConiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          mapper.getConfiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>  
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          mapper.getConiguration().getConverterRegistry().registerConverter(CustomType.<strong class="jxr_keyword">class</strong>, <strong class="jxr_keyword">new</strong> CustomCellConverterFactory());
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>          mapper.getConfiguration().getConverterRegistry().registerConverter(CustomType.<strong class="jxr_keyword">class</strong>, <strong class="jxr_keyword">new</strong> CustomCellConverterFactory());
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> 
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>         <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/convert.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>             SheetBindingErrors&lt;CustomWithRegisterSheet&gt; errors = mapper.loadDetail(in, CustomWithRegisterSheet.<strong class="jxr_keyword">class</strong>);
@@ -136,7 +136,7 @@
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         }
 <a class="jxr_linenumber" name="L129" href="#L129">129</a> 
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         mapper.getConiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         mapper.getConfiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> 
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         File outFile = <strong class="jxr_keyword">new</strong> File(OUT_DIR, <span class="jxr_string">"convert_custom.xlsx"</span>);
@@ -178,9 +178,9 @@
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>         }
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> 
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>         mapper.getConiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>         mapper.getConfiguration().setContinueTypeBindFailure(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> 
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>         mapper.getConiguration().getConverterRegistry().registerConverter(CustomType.<strong class="jxr_keyword">class</strong>, <strong class="jxr_keyword">new</strong> CustomCellConverterFactory());
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>         mapper.getConfiguration().getConverterRegistry().registerConverter(CustomType.<strong class="jxr_keyword">class</strong>, <strong class="jxr_keyword">new</strong> CustomCellConverterFactory());
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>         File outFile = <strong class="jxr_keyword">new</strong> File(OUT_DIR, <span class="jxr_string">"convert_custom.xlsx"</span>);
@@ -405,6 +405,6 @@
 <a class="jxr_linenumber" name="L397" href="#L397">397</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2018 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

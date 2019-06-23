@@ -28,37 +28,41 @@ import ognl.ClassResolver;
      * @return loaded class from ClassLoader defined loaderMap.
      */
     @SuppressWarnings({&quot;unchecked&quot;, &quot;rawtypes&quot;})
-    public Class classForName(String className, Map loaderMap)
-            throws ClassNotFoundException {
-<span class="nc" id="L33">        Collection&lt;ClassLoader&gt; loaders = null;</span>
+    public Class classForName(String className, Map loaderMap) throws ClassNotFoundException {
+<span class="nc" id="L32">        Collection&lt;ClassLoader&gt; loaders = null;</span>
         // add context-classloader
-<span class="nc" id="L35">        loaders = new HashSet&lt;ClassLoader&gt;();</span>
-<span class="nc" id="L36">        loaders.add(Thread.currentThread().getContextClassLoader());</span>
-<span class="nc bnc" id="L37" title="All 4 branches missed.">        if (loaderMap != null &amp;&amp; !loaderMap.isEmpty()) {</span>
-<span class="nc" id="L38">            loaders.addAll(loaderMap.values());</span>
+<span class="nc" id="L34">        loaders = new HashSet&lt;ClassLoader&gt;();</span>
+<span class="nc" id="L35">        loaders.add(Thread.currentThread().getContextClassLoader());</span>
+<span class="nc bnc" id="L36" title="All 4 branches missed.">        if (loaderMap != null &amp;&amp; !loaderMap.isEmpty()) {</span>
+<span class="nc" id="L37">            loaders.addAll(loaderMap.values());</span>
         }
-<span class="nc" id="L40">        Class clazz = null;</span>
-<span class="nc" id="L41">        ClassNotFoundException lastCause = null;</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">        for (Iterator&lt;ClassLoader&gt; it = loaders.iterator(); it.hasNext();) {</span>
-<span class="nc" id="L43">            ClassLoader loader = it.next();</span>
+<span class="nc" id="L39">        Class clazz = null;</span>
+<span class="nc" id="L40">        ClassNotFoundException lastCause = null;</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        for (Iterator&lt;ClassLoader&gt; it = loaders.iterator(); it.hasNext();) {</span>
+<span class="nc" id="L42">            ClassLoader loader = it.next();</span>
             try {
-<span class="nc" id="L45">                clazz = loader.loadClass(className);</span>
-<span class="nc" id="L46">                return clazz;</span>
-<span class="nc" id="L47">            } catch (ClassNotFoundException fqcnException) {</span>
-<span class="nc" id="L48">                lastCause = fqcnException;</span>
+<span class="nc" id="L44">                clazz = loader.loadClass(className);</span>
+<span class="nc" id="L45">                return clazz;</span>
+<span class="nc" id="L46">            } catch (ClassNotFoundException fqcnException) {</span>
+<span class="nc" id="L47">                lastCause = fqcnException;</span>
                 try {
-<span class="nc bnc" id="L50" title="All 2 branches missed.">                    if (className.indexOf('.') == -1) {</span>
-<span class="nc" id="L51">                        clazz = loader.loadClass(&quot;java.lang.&quot; + className);</span>
-<span class="nc" id="L52">                        return clazz;</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">                    if (className.indexOf('.') == -1) {</span>
+<span class="nc" id="L50">                        clazz = loader.loadClass(&quot;java.lang.&quot; + className);</span>
+<span class="nc" id="L51">                        return clazz;</span>
                     }
-<span class="nc" id="L54">                } catch (ClassNotFoundException defaultClassException) {</span>
-<span class="nc" id="L55">                    lastCause = defaultClassException;</span>
+<span class="nc" id="L53">                } catch (ClassNotFoundException defaultClassException) {</span>
+<span class="nc" id="L54">                    lastCause = defaultClassException;</span>
                     // try next loader.
-<span class="nc" id="L57">                }</span>
+<span class="nc" id="L56">                }</span>
             }
-<span class="nc" id="L59">        }</span>
-        // can't load class at end.
-<span class="nc" id="L61">        throw lastCause;</span>
+<span class="nc" id="L58">        }</span>
+        
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if(lastCause != null) {</span>
+            // can't load class at end.
+<span class="nc" id="L62">            throw lastCause;</span>
+        }
+        
+<span class="nc" id="L65">        return clazz;</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

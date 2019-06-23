@@ -25,36 +25,47 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 /**
  * {@link FieldAccessor}のインスタンスを作成するクラス。
  *
+ * @version 2.1
  * @since 2.0
  * @author T.TSUCHIE
  *
  */
 public class FieldAccessorFactory {
 
-<span class="fc" id="L34">    private static Logger log = LoggerFactory.getLogger(FieldAccessorFactory.class);</span>
+<span class="fc" id="L35">    private static Logger log = LoggerFactory.getLogger(FieldAccessorFactory.class);</span>
 
     private final AnnotationReader annoReader;
 
-<span class="fc" id="L38">    private PositionSetterFactory positionSetterFactory = new PositionSetterFactory();</span>
-<span class="fc" id="L39">    private PositionGetterFactory positionGetterFactory = new PositionGetterFactory();</span>
-<span class="fc" id="L40">    private MapPositionSetterFactory mapPositionSetterFactory = new MapPositionSetterFactory();</span>
-<span class="fc" id="L41">    private ArrayPositionSetterFactory arrayPositionSetterFactory = new ArrayPositionSetterFactory();</span>
+<span class="fc" id="L39">    private PositionSetterFactory positionSetterFactory = new PositionSetterFactory();</span>
+<span class="fc" id="L40">    private PositionGetterFactory positionGetterFactory = new PositionGetterFactory();</span>
+<span class="fc" id="L41">    private MapPositionSetterFactory mapPositionSetterFactory = new MapPositionSetterFactory();</span>
+<span class="fc" id="L42">    private ArrayPositionSetterFactory arrayPositionSetterFactory = new ArrayPositionSetterFactory();</span>
 
-<span class="fc" id="L43">    private LabelSetterFactory labelSetterFactory = new LabelSetterFactory();</span>
-<span class="fc" id="L44">    private LabelGetterFactory labelGetterFactory = new LabelGetterFactory();</span>
-<span class="fc" id="L45">    private MapLabelSetterFactory mapLabelSetterFactory = new MapLabelSetterFactory();</span>
-<span class="fc" id="L46">    private ArrayLabelSetterFactory arrayLabelSetterFactory = new ArrayLabelSetterFactory();</span>
+<span class="fc" id="L44">    private LabelSetterFactory labelSetterFactory = new LabelSetterFactory();</span>
+<span class="fc" id="L45">    private LabelGetterFactory labelGetterFactory = new LabelGetterFactory();</span>
+<span class="fc" id="L46">    private MapLabelSetterFactory mapLabelSetterFactory = new MapLabelSetterFactory();</span>
+<span class="fc" id="L47">    private ArrayLabelSetterFactory arrayLabelSetterFactory = new ArrayLabelSetterFactory();</span>
+    
+<span class="fc" id="L49">    private CommentSetterFactory commentSetterFactory = new CommentSetterFactory();</span>
+<span class="fc" id="L50">    private CommentGetterFactory commentGetterFactory = new CommentGetterFactory();</span>
+    
+<span class="fc" id="L52">    private MapCommentSetterFactory mapCommentSetterFactory = new MapCommentSetterFactory();</span>
+<span class="fc" id="L53">    private MapCommentGetterFactory mapCommentGetterFactory = new MapCommentGetterFactory();</span>
+    
+<span class="fc" id="L55">    private ArrayCommentSetterFactory arrayCommentSetterFactory = new ArrayCommentSetterFactory();</span>
+<span class="fc" id="L56">    private ArrayCommentGetterFactory arrayCommentGetterFactory = new ArrayCommentGetterFactory();</span>
 
+    
     /**
      * コンストラクタ
      * @param annoReader XMLで定義したアノテーション情報を提供するクラス。
      * @throws IllegalArgumentException {@literal annoReader == null.}
      */
-<span class="fc" id="L53">    public FieldAccessorFactory(final AnnotationReader annoReader) {</span>
-<span class="fc" id="L54">        ArgUtils.notNull(annoReader, &quot;annoReader&quot;);</span>
+<span class="fc" id="L64">    public FieldAccessorFactory(final AnnotationReader annoReader) {</span>
+<span class="fc" id="L65">        ArgUtils.notNull(annoReader, &quot;annoReader&quot;);</span>
 
-<span class="fc" id="L56">        this.annoReader = annoReader;</span>
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L67">        this.annoReader = annoReader;</span>
+<span class="fc" id="L68">    }</span>
 
     /**
      * フィールド情報を元にインスタンスを作成する。
@@ -64,76 +75,87 @@ public class FieldAccessorFactory {
      */
     public FieldAccessor create(final Field field) {
 
-<span class="fc" id="L67">        ArgUtils.notNull(field, &quot;field&quot;);</span>
+<span class="fc" id="L78">        ArgUtils.notNull(field, &quot;field&quot;);</span>
 
-<span class="fc" id="L69">        final FieldAccessor accessor = new FieldAccessor();</span>
+<span class="fc" id="L80">        final FieldAccessor accessor = new FieldAccessor();</span>
 
         // 共通情報の設定
-<span class="fc" id="L72">        accessor.name = field.getName();</span>
-<span class="fc" id="L73">        accessor.targetType = field.getType();</span>
-<span class="fc" id="L74">        accessor.declaringClass = field.getDeclaringClass();</span>
+<span class="fc" id="L83">        accessor.name = field.getName();</span>
+<span class="fc" id="L84">        accessor.targetType = field.getType();</span>
+<span class="fc" id="L85">        accessor.declaringClass = field.getDeclaringClass();</span>
 
         // フィールド情報の設定
-<span class="fc" id="L77">        setupWithFiled(accessor, field);</span>
+<span class="fc" id="L88">        setupWithFiled(accessor, field);</span>
 
         // getter情報の設定
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        if(ClassUtils.isPrimitiveBoolean(accessor.getType())) {</span>
-<span class="fc" id="L81">            ClassUtils.extractBooleanGetter(accessor.getDeclaringClass(), accessor.getName())</span>
-<span class="fc" id="L82">                    .ifPresent(getter -&gt; setupWithGetter(accessor, getter));</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if(ClassUtils.isPrimitiveBoolean(accessor.getType())) {</span>
+<span class="fc" id="L92">            ClassUtils.extractBooleanGetter(accessor.getDeclaringClass(), accessor.getName())</span>
+<span class="fc" id="L93">                    .ifPresent(getter -&gt; setupWithGetter(accessor, getter));</span>
 
         } else {
-<span class="fc" id="L85">            ClassUtils.extractGetter(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
-<span class="fc" id="L86">                    .ifPresent(getter -&gt; setupWithGetter(accessor, getter));</span>
+<span class="fc" id="L96">            ClassUtils.extractGetter(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
+<span class="fc" id="L97">                    .ifPresent(getter -&gt; setupWithGetter(accessor, getter));</span>
         }
 
         // setter情報の設定
-<span class="fc" id="L90">        ClassUtils.extractSetter(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
-<span class="fc" id="L91">                .ifPresent(setter -&gt; setupWithSetter(accessor, setter));</span>
+<span class="fc" id="L101">        ClassUtils.extractSetter(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
+<span class="fc" id="L102">                .ifPresent(setter -&gt; setupWithSetter(accessor, setter));</span>
 
         // コンポーネントタイプの設定
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(accessor.getType())) {</span>
-<span class="fc" id="L95">            ParameterizedType type = (ParameterizedType) field.getGenericType();</span>
-<span class="fc" id="L96">            accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[0]);</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(accessor.getType())) {</span>
+<span class="fc" id="L106">            ParameterizedType type = (ParameterizedType) field.getGenericType();</span>
+<span class="fc" id="L107">            accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[0]);</span>
 
-<span class="fc bfc" id="L98" title="All 2 branches covered.">        } else if(accessor.getType().isArray()) {</span>
-<span class="fc" id="L99">            accessor.componentType = Optional.of(accessor.getType().getComponentType());</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        } else if(accessor.getType().isArray()) {</span>
+<span class="fc" id="L110">            accessor.componentType = Optional.of(accessor.getType().getComponentType());</span>
 
-<span class="fc bfc" id="L101" title="All 2 branches covered.">        } else if(Map.class.isAssignableFrom(accessor.getType())) {</span>
-<span class="fc" id="L102">            ParameterizedType type = (ParameterizedType) field.getGenericType();</span>
-<span class="fc" id="L103">            accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[1]);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        } else if(Map.class.isAssignableFrom(accessor.getType())) {</span>
+<span class="fc" id="L113">            ParameterizedType type = (ParameterizedType) field.getGenericType();</span>
+<span class="fc" id="L114">            accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[1]);</span>
         }
 
         // 位置・ラベル情報のアクセッサの設定
-<span class="fc bfc" id="L107" title="All 2 branches covered.">        if(accessor.hasAnnotation(XlsMapColumns.class)) {</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if(accessor.hasAnnotation(XlsMapColumns.class)) {</span>
             // マップ形式の場合
-<span class="fc" id="L109">            accessor.mapPositionSetter = mapPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
-<span class="fc" id="L110">            accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L120">            accessor.mapPositionSetter = mapPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L121">            accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+            
+<span class="fc" id="L123">            accessor.mapCommentSetter = mapCommentSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L124">            accessor.mapCommentGetter = mapCommentGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+            
 
-<span class="fc bfc" id="L112" title="All 2 branches covered.">        } else if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsArrayCells.class)</span>
-<span class="fc bfc" id="L114" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsLabelledArrayCells.class)</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsIterateTables.class)){</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        } else if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsArrayCells.class)</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsLabelledArrayCells.class)</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsIterateTables.class)){</span>
             // リストや配列形式の場合
-<span class="fc" id="L117">            accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
-<span class="fc" id="L118">            accessor.arrayLabelSetter = arrayLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L132">            accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L133">            accessor.arrayLabelSetter = arrayLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+            
+<span class="fc" id="L135">            accessor.arrayCommentSetter = arrayCommentSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L136">            accessor.arrayCommentGetter = arrayCommentGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
 
-<span class="fc bfc" id="L120" title="All 2 branches covered.">            if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
-<span class="fc bfc" id="L121" title="All 2 branches covered.">                    || accessor.hasAnnotation(XlsLabelledArrayCells.class)) {</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">            if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">                    || accessor.hasAnnotation(XlsLabelledArrayCells.class)) {</span>
                 // インデックスが付いていないラベルの設定
-<span class="fc" id="L123">                accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L141">                accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
             }
 
         } else {
             // リストやMapではない通常のプロパティの場合
-<span class="fc" id="L128">            accessor.positionSetter = positionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
-<span class="fc" id="L129">            accessor.positionGetter = positionGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L146">            accessor.positionSetter = positionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L147">            accessor.positionGetter = positionGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
 
-<span class="fc" id="L131">            accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
-<span class="fc" id="L132">            accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L149">            accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L150">            accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+            
+<span class="fc" id="L152">            accessor.commentSetter = commentSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L153">            accessor.commentGetter = commentGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+            
 
         }
 
-<span class="fc" id="L136">        return accessor;</span>
+<span class="fc" id="L158">        return accessor;</span>
     }
 
     /**
@@ -145,201 +167,205 @@ public class FieldAccessorFactory {
      */
     public FieldAccessor create(final Method method) {
 
-<span class="fc" id="L148">        ArgUtils.notNull(method, &quot;method&quot;);</span>
+<span class="fc" id="L170">        ArgUtils.notNull(method, &quot;method&quot;);</span>
 
-<span class="fc" id="L150">        final FieldAccessor accessor = new FieldAccessor();</span>
+<span class="fc" id="L172">        final FieldAccessor accessor = new FieldAccessor();</span>
 
-<span class="fc" id="L152">        final String methodName = method.getName();</span>
-<span class="fc bfc" id="L153" title="All 4 branches covered.">        if(ClassUtils.isGetterMethod(method) || ClassUtils.isBooleanGetterMethod(method)) {</span>
+<span class="fc" id="L174">        final String methodName = method.getName();</span>
+<span class="fc bfc" id="L175" title="All 4 branches covered.">        if(ClassUtils.isGetterMethod(method) || ClassUtils.isBooleanGetterMethod(method)) {</span>
             final String propertyName;
-<span class="fc bfc" id="L155" title="All 2 branches covered.">            if(methodName.startsWith(&quot;get&quot;)) {</span>
-<span class="fc" id="L156">                propertyName = Utils.uncapitalize(methodName.substring(3));</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">            if(methodName.startsWith(&quot;get&quot;)) {</span>
+<span class="fc" id="L178">                propertyName = Utils.uncapitalize(methodName.substring(3));</span>
             } else {
-<span class="fc" id="L158">                propertyName = Utils.uncapitalize(methodName.substring(2));</span>
+<span class="fc" id="L180">                propertyName = Utils.uncapitalize(methodName.substring(2));</span>
             }
 
             // 共通情報の設定
-<span class="fc" id="L162">            accessor.name = propertyName;</span>
-<span class="fc" id="L163">            accessor.targetType = method.getReturnType();</span>
-<span class="fc" id="L164">            accessor.declaringClass = method.getDeclaringClass();</span>
+<span class="fc" id="L184">            accessor.name = propertyName;</span>
+<span class="fc" id="L185">            accessor.targetType = method.getReturnType();</span>
+<span class="fc" id="L186">            accessor.declaringClass = method.getDeclaringClass();</span>
 
             // getter情報の設定
-<span class="fc" id="L167">            setupWithGetter(accessor, method);</span>
+<span class="fc" id="L189">            setupWithGetter(accessor, method);</span>
 
             // フィールド情報の設定
-<span class="fc" id="L170">            ClassUtils.extractField(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
-<span class="fc" id="L171">                    .ifPresent(field -&gt; setupWithFiled(accessor, field));</span>
+<span class="fc" id="L192">            ClassUtils.extractField(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
+<span class="fc" id="L193">                    .ifPresent(field -&gt; setupWithFiled(accessor, field));</span>
 
             // setter情報の設定
-<span class="fc" id="L174">            ClassUtils.extractSetter(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
-<span class="fc" id="L175">                    .ifPresent(setter -&gt; setupWithSetter(accessor, setter));</span>
+<span class="fc" id="L196">            ClassUtils.extractSetter(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
+<span class="fc" id="L197">                    .ifPresent(setter -&gt; setupWithSetter(accessor, setter));</span>
 
             // コンポーネントタイプの設定
-<span class="fc bfc" id="L178" title="All 2 branches covered.">            if(Collection.class.isAssignableFrom(accessor.getType())) {</span>
-<span class="fc" id="L179">                ParameterizedType type = (ParameterizedType) method.getGenericReturnType();</span>
-<span class="fc" id="L180">                accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[0]);</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">            if(Collection.class.isAssignableFrom(accessor.getType())) {</span>
+<span class="fc" id="L201">                ParameterizedType type = (ParameterizedType) method.getGenericReturnType();</span>
+<span class="fc" id="L202">                accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[0]);</span>
 
-<span class="fc bfc" id="L182" title="All 2 branches covered.">            } else if(accessor.getType().isArray()) {</span>
-<span class="fc" id="L183">                accessor.componentType = Optional.of(accessor.getType().getComponentType());</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">            } else if(accessor.getType().isArray()) {</span>
+<span class="fc" id="L205">                accessor.componentType = Optional.of(accessor.getType().getComponentType());</span>
 
-<span class="fc bfc" id="L185" title="All 2 branches covered.">            } else if(Map.class.isAssignableFrom(accessor.getType())) {</span>
-<span class="fc" id="L186">                ParameterizedType type = (ParameterizedType) method.getGenericReturnType();</span>
-<span class="fc" id="L187">                accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[1]);</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            } else if(Map.class.isAssignableFrom(accessor.getType())) {</span>
+<span class="fc" id="L208">                ParameterizedType type = (ParameterizedType) method.getGenericReturnType();</span>
+<span class="fc" id="L209">                accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[1]);</span>
             }
 
-<span class="fc bfc" id="L190" title="All 2 branches covered.">        } else if(ClassUtils.isSetterMethod(method)) {</span>
-<span class="fc" id="L191">            final String propertyName = Utils.uncapitalize(methodName.substring(3));</span>
+<span class="fc bfc" id="L212" title="All 2 branches covered.">        } else if(ClassUtils.isSetterMethod(method)) {</span>
+<span class="fc" id="L213">            final String propertyName = Utils.uncapitalize(methodName.substring(3));</span>
 
             // 共通情報の設定
-<span class="fc" id="L194">            accessor.name = propertyName;</span>
-<span class="fc" id="L195">            accessor.targetType = method.getParameterTypes()[0];</span>
-<span class="fc" id="L196">            accessor.declaringClass = method.getDeclaringClass();</span>
+<span class="fc" id="L216">            accessor.name = propertyName;</span>
+<span class="fc" id="L217">            accessor.targetType = method.getParameterTypes()[0];</span>
+<span class="fc" id="L218">            accessor.declaringClass = method.getDeclaringClass();</span>
 
             // setter情報の設定
-<span class="fc" id="L199">            setupWithSetter(accessor, method);</span>
+<span class="fc" id="L221">            setupWithSetter(accessor, method);</span>
 
             // フィールド情報の設定
-<span class="fc" id="L202">            ClassUtils.extractField(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
-<span class="fc" id="L203">                    .ifPresent(field -&gt; setupWithFiled(accessor, field));</span>
+<span class="fc" id="L224">            ClassUtils.extractField(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
+<span class="fc" id="L225">                    .ifPresent(field -&gt; setupWithFiled(accessor, field));</span>
 
             // getter情報の設定
-<span class="fc bfc" id="L206" title="All 2 branches covered.">            if(ClassUtils.isPrimitiveBoolean(accessor.getType())) {</span>
-<span class="fc" id="L207">                ClassUtils.extractBooleanGetter(accessor.getDeclaringClass(), accessor.getName())</span>
-<span class="fc" id="L208">                        .ifPresent(getter -&gt; setupWithGetter(accessor, getter));</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">            if(ClassUtils.isPrimitiveBoolean(accessor.getType())) {</span>
+<span class="fc" id="L229">                ClassUtils.extractBooleanGetter(accessor.getDeclaringClass(), accessor.getName())</span>
+<span class="fc" id="L230">                        .ifPresent(getter -&gt; setupWithGetter(accessor, getter));</span>
 
             } else {
-<span class="fc" id="L211">                ClassUtils.extractGetter(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
-<span class="fc" id="L212">                        .ifPresent(getter -&gt; setupWithGetter(accessor, getter));</span>
+<span class="fc" id="L233">                ClassUtils.extractGetter(accessor.getDeclaringClass(), accessor.getName(), accessor.getType())</span>
+<span class="fc" id="L234">                        .ifPresent(getter -&gt; setupWithGetter(accessor, getter));</span>
             }
 
             // コンポーネントタイプの設定
-<span class="fc bfc" id="L216" title="All 2 branches covered.">            if(Collection.class.isAssignableFrom(accessor.getType())) {</span>
-<span class="fc" id="L217">                ParameterizedType type = (ParameterizedType) method.getGenericParameterTypes()[0];</span>
-<span class="fc" id="L218">                accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[0]);</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">            if(Collection.class.isAssignableFrom(accessor.getType())) {</span>
+<span class="fc" id="L239">                ParameterizedType type = (ParameterizedType) method.getGenericParameterTypes()[0];</span>
+<span class="fc" id="L240">                accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[0]);</span>
 
-<span class="fc bfc" id="L220" title="All 2 branches covered.">            } else if(accessor.getType().isArray()) {</span>
-<span class="fc" id="L221">                accessor.componentType = Optional.of(accessor.getType().getComponentType());</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">            } else if(accessor.getType().isArray()) {</span>
+<span class="fc" id="L243">                accessor.componentType = Optional.of(accessor.getType().getComponentType());</span>
 
-<span class="fc bfc" id="L223" title="All 2 branches covered.">            } else if(Map.class.isAssignableFrom(accessor.getType())) {</span>
-<span class="fc" id="L224">                ParameterizedType type = (ParameterizedType) method.getGenericParameterTypes()[0];</span>
-<span class="fc" id="L225">                accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[1]);</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">            } else if(Map.class.isAssignableFrom(accessor.getType())) {</span>
+<span class="fc" id="L246">                ParameterizedType type = (ParameterizedType) method.getGenericParameterTypes()[0];</span>
+<span class="fc" id="L247">                accessor.componentType = Optional.of((Class&lt;?&gt;) type.getActualTypeArguments()[1]);</span>
             }
 
-<span class="fc" id="L228">        } else {</span>
-<span class="fc" id="L229">            throw new IllegalArgumentException(MessageBuilder.create(&quot;method.noAccessor&quot;)</span>
-<span class="fc" id="L230">                    .varWithClass(&quot;className&quot;, method.getDeclaringClass())</span>
-<span class="fc" id="L231">                    .var(&quot;methodName&quot;, methodName)</span>
-<span class="fc" id="L232">                    .format());</span>
+<span class="fc" id="L250">        } else {</span>
+<span class="fc" id="L251">            throw new IllegalArgumentException(MessageBuilder.create(&quot;method.noAccessor&quot;)</span>
+<span class="fc" id="L252">                    .varWithClass(&quot;className&quot;, method.getDeclaringClass())</span>
+<span class="fc" id="L253">                    .var(&quot;methodName&quot;, methodName)</span>
+<span class="fc" id="L254">                    .format());</span>
         }
 
         // 位置・ラベル情報のアクセッサの設定
-<span class="fc bfc" id="L236" title="All 2 branches covered.">        if(accessor.hasAnnotation(XlsMapColumns.class)) {</span>
-<span class="fc" id="L237">            accessor.mapPositionSetter = mapPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
-<span class="fc" id="L238">            accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc bfc" id="L258" title="All 2 branches covered.">        if(accessor.hasAnnotation(XlsMapColumns.class)) {</span>
+<span class="fc" id="L259">            accessor.mapPositionSetter = mapPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L260">            accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
 
-<span class="pc bpc" id="L240" title="1 of 2 branches missed.">        } else if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
-<span class="pc bpc" id="L241" title="1 of 2 branches missed.">                || accessor.hasAnnotation(XlsArrayCells.class)</span>
-<span class="pc bpc" id="L242" title="1 of 2 branches missed.">                || accessor.hasAnnotation(XlsLabelledArrayCells.class)</span>
-<span class="fc bfc" id="L243" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsIterateTables.class)){</span>
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">        } else if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
+<span class="pc bpc" id="L263" title="1 of 2 branches missed.">                || accessor.hasAnnotation(XlsArrayCells.class)</span>
+<span class="pc bpc" id="L264" title="1 of 2 branches missed.">                || accessor.hasAnnotation(XlsLabelledArrayCells.class)</span>
+<span class="fc bfc" id="L265" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsIterateTables.class)){</span>
             // リストや配列形式の場合
-<span class="fc" id="L245">            accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
-<span class="fc" id="L246">            accessor.arrayLabelSetter = arrayLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L267">            accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L268">            accessor.arrayLabelSetter = arrayLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
 
-<span class="pc bpc" id="L248" title="1 of 2 branches missed.">            if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
-<span class="pc bpc" id="L249" title="1 of 2 branches missed.">                    || accessor.hasAnnotation(XlsLabelledArrayCells.class)) {</span>
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">            if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
+<span class="pc bpc" id="L271" title="1 of 2 branches missed.">                    || accessor.hasAnnotation(XlsLabelledArrayCells.class)) {</span>
                 // インデックスが付いていないラベルの設定
-<span class="nc" id="L251">                accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="nc" id="L273">                accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
             }
 
         } else {
             // XlsMapColumnsを持たない通常のプロパティの場合
-<span class="fc" id="L256">            accessor.positionSetter = positionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
-<span class="fc" id="L257">            accessor.positionGetter = positionGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L278">            accessor.positionSetter = positionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L279">            accessor.positionGetter = positionGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
 
-<span class="fc" id="L259">            accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
-<span class="fc" id="L260">            accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L281">            accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L282">            accessor.labelGetter = labelGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+            
+<span class="fc" id="L284">            accessor.commentSetter = commentSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L285">            accessor.commentGetter = commentGetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+
         }
 
 
-<span class="fc" id="L264">        return accessor;</span>
+<span class="fc" id="L290">        return accessor;</span>
     }
 
     private void setupWithFiled(final FieldAccessor accessor, final Field field) {
 
-<span class="fc" id="L269">        accessor.targetField = Optional.of(field);</span>
+<span class="fc" id="L295">        accessor.targetField = Optional.of(field);</span>
 
-<span class="fc" id="L271">        final Annotation[] annos = annoReader.getAnnotations(field);</span>
-<span class="fc bfc" id="L272" title="All 2 branches covered.">        for(Annotation anno : annos) {</span>
-<span class="pc bpc" id="L273" title="1 of 2 branches missed.">            if(!isSupportedAnnotation(anno)) {</span>
-<span class="nc" id="L274">                continue;</span>
+<span class="fc" id="L297">        final Annotation[] annos = annoReader.getAnnotations(field);</span>
+<span class="fc bfc" id="L298" title="All 2 branches covered.">        for(Annotation anno : annos) {</span>
+<span class="pc bpc" id="L299" title="1 of 2 branches missed.">            if(!isSupportedAnnotation(anno)) {</span>
+<span class="nc" id="L300">                continue;</span>
             }
 
-<span class="fc" id="L277">            final Class&lt;? extends Annotation&gt; annoClass = anno.annotationType();</span>
+<span class="fc" id="L303">            final Class&lt;? extends Annotation&gt; annoClass = anno.annotationType();</span>
 
-<span class="pc bpc" id="L279" title="1 of 2 branches missed.">            if(accessor.annotationMap.containsKey(annoClass)) {</span>
-<span class="nc" id="L280">                final String message = MessageBuilder.create(&quot;anno.duplicated&quot;)</span>
-<span class="nc" id="L281">                        .varWithClass(&quot;classType&quot;, accessor.getDeclaringClass())</span>
-<span class="nc" id="L282">                        .var(&quot;property&quot;, field.getName())</span>
-<span class="nc" id="L283">                        .varWithAnno(&quot;anno&quot;, annoClass)</span>
-<span class="nc" id="L284">                        .format();</span>
-<span class="nc" id="L285">                log.warn(message);</span>
+<span class="pc bpc" id="L305" title="1 of 2 branches missed.">            if(accessor.annotationMap.containsKey(annoClass)) {</span>
+<span class="nc" id="L306">                final String message = MessageBuilder.create(&quot;anno.duplicated&quot;)</span>
+<span class="nc" id="L307">                        .varWithClass(&quot;classType&quot;, accessor.getDeclaringClass())</span>
+<span class="nc" id="L308">                        .var(&quot;property&quot;, field.getName())</span>
+<span class="nc" id="L309">                        .varWithAnno(&quot;anno&quot;, annoClass)</span>
+<span class="nc" id="L310">                        .format();</span>
+<span class="nc" id="L311">                log.warn(message);</span>
             }
 
-<span class="fc" id="L288">            accessor.annotationMap.put(annoClass, anno);</span>
+<span class="fc" id="L314">            accessor.annotationMap.put(annoClass, anno);</span>
         }
 
 
-<span class="fc" id="L292">    }</span>
+<span class="fc" id="L318">    }</span>
 
     private void setupWithGetter(final FieldAccessor accessor, final Method method) {
 
-<span class="fc" id="L296">        accessor.targetGetter = Optional.of(method);</span>
+<span class="fc" id="L322">        accessor.targetGetter = Optional.of(method);</span>
 
-<span class="fc" id="L298">        final Annotation[] annos = annoReader.getAnnotations(method);</span>
-<span class="fc bfc" id="L299" title="All 2 branches covered.">        for(Annotation anno : annos) {</span>
-<span class="pc bpc" id="L300" title="1 of 2 branches missed.">            if(!isSupportedAnnotation(anno)) {</span>
-<span class="nc" id="L301">                continue;</span>
+<span class="fc" id="L324">        final Annotation[] annos = annoReader.getAnnotations(method);</span>
+<span class="fc bfc" id="L325" title="All 2 branches covered.">        for(Annotation anno : annos) {</span>
+<span class="pc bpc" id="L326" title="1 of 2 branches missed.">            if(!isSupportedAnnotation(anno)) {</span>
+<span class="nc" id="L327">                continue;</span>
             }
 
-<span class="fc" id="L304">            final Class&lt;? extends Annotation&gt; annoClass = anno.annotationType();</span>
+<span class="fc" id="L330">            final Class&lt;? extends Annotation&gt; annoClass = anno.annotationType();</span>
 
-<span class="pc bpc" id="L306" title="1 of 2 branches missed.">            if(accessor.annotationMap.containsKey(annoClass)) {</span>
-<span class="nc" id="L307">                final String message = MessageBuilder.create(&quot;anno.duplicated&quot;)</span>
-<span class="nc" id="L308">                        .varWithClass(&quot;classType&quot;, accessor.getDeclaringClass())</span>
-<span class="nc" id="L309">                        .var(&quot;property&quot;, method.getName() + &quot;()&quot;)</span>
-<span class="nc" id="L310">                        .varWithAnno(&quot;anno&quot;, annoClass)</span>
-<span class="nc" id="L311">                        .format();</span>
-<span class="nc" id="L312">                log.warn(message);</span>
+<span class="pc bpc" id="L332" title="1 of 2 branches missed.">            if(accessor.annotationMap.containsKey(annoClass)) {</span>
+<span class="nc" id="L333">                final String message = MessageBuilder.create(&quot;anno.duplicated&quot;)</span>
+<span class="nc" id="L334">                        .varWithClass(&quot;classType&quot;, accessor.getDeclaringClass())</span>
+<span class="nc" id="L335">                        .var(&quot;property&quot;, method.getName() + &quot;()&quot;)</span>
+<span class="nc" id="L336">                        .varWithAnno(&quot;anno&quot;, annoClass)</span>
+<span class="nc" id="L337">                        .format();</span>
+<span class="nc" id="L338">                log.warn(message);</span>
             }
 
-<span class="fc" id="L315">            accessor.annotationMap.put(annoClass, anno);</span>
+<span class="fc" id="L341">            accessor.annotationMap.put(annoClass, anno);</span>
         }
-<span class="fc" id="L317">    }</span>
+<span class="fc" id="L343">    }</span>
 
     private void setupWithSetter(final FieldAccessor accessor, final Method method) {
 
-<span class="fc" id="L321">        accessor.targetSetter = Optional.of(method);</span>
+<span class="fc" id="L347">        accessor.targetSetter = Optional.of(method);</span>
 
-<span class="fc" id="L323">        final Annotation[] annos = annoReader.getAnnotations(method);</span>
-<span class="fc bfc" id="L324" title="All 2 branches covered.">        for(Annotation anno : annos) {</span>
-<span class="pc bpc" id="L325" title="1 of 2 branches missed.">            if(!isSupportedAnnotation(anno)) {</span>
-<span class="nc" id="L326">                continue;</span>
+<span class="fc" id="L349">        final Annotation[] annos = annoReader.getAnnotations(method);</span>
+<span class="fc bfc" id="L350" title="All 2 branches covered.">        for(Annotation anno : annos) {</span>
+<span class="pc bpc" id="L351" title="1 of 2 branches missed.">            if(!isSupportedAnnotation(anno)) {</span>
+<span class="nc" id="L352">                continue;</span>
             }
 
-<span class="fc" id="L329">            final Class&lt;? extends Annotation&gt; annoClass = anno.annotationType();</span>
+<span class="fc" id="L355">            final Class&lt;? extends Annotation&gt; annoClass = anno.annotationType();</span>
 
-<span class="pc bpc" id="L331" title="1 of 2 branches missed.">            if(accessor.annotationMap.containsKey(annoClass)) {</span>
-<span class="nc" id="L332">                final String message = MessageBuilder.create(&quot;anno.duplicated&quot;)</span>
-<span class="nc" id="L333">                        .varWithClass(&quot;classType&quot;, accessor.getDeclaringClass())</span>
-<span class="nc" id="L334">                        .var(&quot;property&quot;, method.getName() + &quot;(...)&quot;)</span>
-<span class="nc" id="L335">                        .varWithAnno(&quot;anno&quot;, annoClass)</span>
-<span class="nc" id="L336">                        .format();</span>
-<span class="nc" id="L337">                log.warn(message);</span>
+<span class="pc bpc" id="L357" title="1 of 2 branches missed.">            if(accessor.annotationMap.containsKey(annoClass)) {</span>
+<span class="nc" id="L358">                final String message = MessageBuilder.create(&quot;anno.duplicated&quot;)</span>
+<span class="nc" id="L359">                        .varWithClass(&quot;classType&quot;, accessor.getDeclaringClass())</span>
+<span class="nc" id="L360">                        .var(&quot;property&quot;, method.getName() + &quot;(...)&quot;)</span>
+<span class="nc" id="L361">                        .varWithAnno(&quot;anno&quot;, annoClass)</span>
+<span class="nc" id="L362">                        .format();</span>
+<span class="nc" id="L363">                log.warn(message);</span>
             }
 
-<span class="fc" id="L340">            accessor.annotationMap.put(annoClass, anno);</span>
+<span class="fc" id="L366">            accessor.annotationMap.put(annoClass, anno);</span>
         }
-<span class="fc" id="L342">    }</span>
+<span class="fc" id="L368">    }</span>
 
     /**
      * サポートするアノテーションか判定する。
@@ -350,13 +376,13 @@ public class FieldAccessorFactory {
      */
     private boolean isSupportedAnnotation(final Annotation anno) {
 
-<span class="fc" id="L353">        final String name = anno.annotationType().getName();</span>
-<span class="pc bpc" id="L354" title="1 of 2 branches missed.">        if(name.startsWith(&quot;java.lang.annotation.&quot;)) {</span>
-<span class="nc" id="L355">            return false;</span>
+<span class="fc" id="L379">        final String name = anno.annotationType().getName();</span>
+<span class="pc bpc" id="L380" title="1 of 2 branches missed.">        if(name.startsWith(&quot;java.lang.annotation.&quot;)) {</span>
+<span class="nc" id="L381">            return false;</span>
         }
 
-<span class="fc" id="L358">        return true;</span>
+<span class="fc" id="L384">        return true;</span>
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

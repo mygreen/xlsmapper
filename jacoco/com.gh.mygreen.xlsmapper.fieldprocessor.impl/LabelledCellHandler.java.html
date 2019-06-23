@@ -24,7 +24,8 @@ import com.gh.mygreen.xlsmapper.util.Utils;
 
 /**
  * ラベル付きのセルの開始位置を検索するクラス。
- *
+ * 
+ * @version 2.1
  * @since 2.0
  * @author T.TSUCHIE
  *
@@ -37,17 +38,17 @@ public class LabelledCellHandler {
 
     private final Configuration config;
 
-<span class="fc" id="L40">    public LabelledCellHandler(final FieldAccessor field, final Sheet sheet, final Configuration config) {</span>
-<span class="fc" id="L41">        this.field = field;</span>
-<span class="fc" id="L42">        this.sheet = sheet;</span>
-<span class="fc" id="L43">        this.config = config;</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L41">    public LabelledCellHandler(final FieldAccessor field, final Sheet sheet, final Configuration config) {</span>
+<span class="fc" id="L42">        this.field = field;</span>
+<span class="fc" id="L43">        this.sheet = sheet;</span>
+<span class="fc" id="L44">        this.config = config;</span>
+<span class="fc" id="L45">    }</span>
 
     /**
      * ラベル情報
      *
      */
-<span class="fc" id="L50">    public static class LabelInfo {</span>
+<span class="fc" id="L51">    public static class LabelInfo {</span>
 
         /**
          * 値のセル - ラベルのセルではない。
@@ -74,17 +75,17 @@ public class LabelledCellHandler {
 
         private final Annotation target;
 
-<span class="fc" id="L77">        public AnnotationProxy(final Annotation target) {</span>
-<span class="fc" id="L78">            ArgUtils.notNull(target, &quot;target&quot;);</span>
-<span class="fc" id="L79">            this.target = target;</span>
-<span class="fc" id="L80">        }</span>
+<span class="fc" id="L78">        public AnnotationProxy(final Annotation target) {</span>
+<span class="fc" id="L79">            ArgUtils.notNull(target, &quot;target&quot;);</span>
+<span class="fc" id="L80">            this.target = target;</span>
+<span class="fc" id="L81">        }</span>
 
         /**
          * 対象となるアノテーションを取得する
          * @return アノテーションのインスタンス。
          */
         public Annotation getTarget() {
-<span class="fc" id="L87">            return target;</span>
+<span class="fc" id="L88">            return target;</span>
         }
 
         /**
@@ -92,15 +93,15 @@ public class LabelledCellHandler {
          * @return アノテーションのクラスタイプ
          */
         public Class&lt;? extends Annotation&gt; annotationType() {
-<span class="fc" id="L95">            return target.annotationType();</span>
+<span class="fc" id="L96">            return target.annotationType();</span>
         }
 
         /**
          * 見出しセルから見て値が設定されているセルの位置・方向を指定します。
-         * @return アノテーションの属性「type」の値
+         * @return アノテーションの属性「type」の値。属性が存在しない場合は、nullを返す。
          */
         public LabelledCellType type() {
-<span class="fc" id="L103">            return ClassUtils.getAnnotationAttribute(target, &quot;type&quot;, LabelledCellType.class).get();</span>
+<span class="fc" id="L104">            return ClassUtils.getAnnotationAttribute(target, &quot;type&quot;, LabelledCellType.class).orElse(null);</span>
         }
 
         /**
@@ -108,7 +109,7 @@ public class LabelledCellHandler {
          * @return アノテーションの属性「range」の値
          */
         public int range() {
-<span class="fc" id="L111">            return ClassUtils.getAnnotationAttribute(target, &quot;range&quot;, int.class).orElse(1);</span>
+<span class="fc" id="L112">            return ClassUtils.getAnnotationAttribute(target, &quot;range&quot;, int.class).orElse(1);</span>
         }
 
         /**
@@ -116,7 +117,7 @@ public class LabelledCellHandler {
          * @return アノテーションの属性「skip」の値
          */
         public int skip() {
-<span class="fc" id="L119">            return ClassUtils.getAnnotationAttribute(target, &quot;skip&quot;, int.class).orElse(0);</span>
+<span class="fc" id="L120">            return ClassUtils.getAnnotationAttribute(target, &quot;skip&quot;, int.class).orElse(0);</span>
         }
 
         /**
@@ -124,7 +125,7 @@ public class LabelledCellHandler {
          * @return アノテーションの属性「label」の値
          */
         public String label() {
-<span class="fc" id="L127">            return ClassUtils.getAnnotationAttribute(target, &quot;label&quot;, String.class).orElse(&quot;&quot;);</span>
+<span class="fc" id="L128">            return ClassUtils.getAnnotationAttribute(target, &quot;label&quot;, String.class).orElse(&quot;&quot;);</span>
         }
 
         /**
@@ -132,7 +133,7 @@ public class LabelledCellHandler {
          * @return アノテーションの属性「headerLabel」の値
          */
         public String headerLabel() {
-<span class="fc" id="L135">            return ClassUtils.getAnnotationAttribute(target, &quot;headerLabel&quot;, String.class).orElse(&quot;&quot;);</span>
+<span class="fc" id="L136">            return ClassUtils.getAnnotationAttribute(target, &quot;headerLabel&quot;, String.class).orElse(&quot;&quot;);</span>
         }
 
         /**
@@ -140,7 +141,7 @@ public class LabelledCellHandler {
          * @return アノテーションの属性「labelRow」の値
          */
         public int labelRow() {
-<span class="fc" id="L143">            return ClassUtils.getAnnotationAttribute(target, &quot;labelRow&quot;, int.class).orElse(-1);</span>
+<span class="fc" id="L144">            return ClassUtils.getAnnotationAttribute(target, &quot;labelRow&quot;, int.class).orElse(-1);</span>
         }
 
         /**
@@ -148,7 +149,7 @@ public class LabelledCellHandler {
          * @return アノテーションの属性「labelColumn」の値
          */
         public int labelColumn() {
-<span class="fc" id="L151">            return ClassUtils.getAnnotationAttribute(target, &quot;labelColumn&quot;, int.class).orElse(-1);</span>
+<span class="fc" id="L152">            return ClassUtils.getAnnotationAttribute(target, &quot;labelColumn&quot;, int.class).orElse(-1);</span>
         }
 
         /**
@@ -156,7 +157,7 @@ public class LabelledCellHandler {
          * @return アノテーションの属性「optional」の値
          */
         public boolean optional() {
-<span class="fc" id="L159">            return ClassUtils.getAnnotationAttribute(target, &quot;optional&quot;, boolean.class).orElse(false);</span>
+<span class="fc" id="L160">            return ClassUtils.getAnnotationAttribute(target, &quot;optional&quot;, boolean.class).orElse(false);</span>
         }
 
         /**
@@ -164,85 +165,102 @@ public class LabelledCellHandler {
          * @return アノテーションの属性「labelMerged」の値
          */
         public boolean labelMerged() {
-<span class="fc" id="L167">            return ClassUtils.getAnnotationAttribute(target, &quot;labelMerged&quot;, boolean.class).orElse(false);</span>
+<span class="fc" id="L168">            return ClassUtils.getAnnotationAttribute(target, &quot;labelMerged&quot;, boolean.class).orElse(false);</span>
         }
 
     }
 
+    /**
+     * 見出し付きのセルの情報を取得する。
+     * @param anno マッピング情報が設定されているアノテーション
+     * @param processCase 処理ケース
+     * @return ラベルや値が設定されているセルの開始情報
+     */
     public Optional&lt;LabelInfo&gt; handle(final Annotation anno, final ProcessCase processCase) {
 
-<span class="fc" id="L174">        final AnnotationProxy annoProxy = new AnnotationProxy(anno);</span>
+<span class="fc" id="L181">        final AnnotationProxy annoProxy = new AnnotationProxy(anno);</span>
 
         // ラベルの位置を取得する
-<span class="fc" id="L177">        final Optional&lt;CellPosition&gt; labelPosition = getLabelPosition(annoProxy);</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">        if(!labelPosition.isPresent()) {</span>
-<span class="fc" id="L179">            return Optional.empty();</span>
+<span class="fc" id="L184">        final Optional&lt;CellPosition&gt; labelPosition = getLabelPosition(annoProxy);</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        if(!labelPosition.isPresent()) {</span>
+<span class="fc" id="L186">            return Optional.empty();</span>
         }
 
-<span class="fc" id="L182">        final int column = labelPosition.get().getColumn();</span>
-<span class="fc" id="L183">        final int row = labelPosition.get().getRow();</span>
+<span class="fc" id="L189">        final int column = labelPosition.get().getColumn();</span>
+<span class="fc" id="L190">        final int row = labelPosition.get().getRow();</span>
 
         /*
          * 見出しか結合している場合を考慮する場合
          * ・結合サイズ分で補正する。
          * ・考慮しない場合は、mergedXXXSizeの値は0のまま。
          */
-<span class="fc" id="L190">        int mergedRowSize = 0;</span>
-<span class="fc" id="L191">        int mergedColumnSize = 0;</span>
-<span class="fc bfc" id="L192" title="All 2 branches covered.">        if(annoProxy.labelMerged()) {</span>
-<span class="fc" id="L193">            CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, row, column);</span>
-<span class="fc bfc" id="L194" title="All 2 branches covered.">            if(mergedRegion != null) {</span>
-<span class="fc" id="L195">                mergedRowSize = mergedRegion.getLastRow() - mergedRegion.getFirstRow();</span>
-<span class="fc" id="L196">                mergedColumnSize = mergedRegion.getLastColumn() - mergedRegion.getFirstColumn();</span>
+<span class="fc" id="L197">        int mergedRowSize = 0;</span>
+<span class="fc" id="L198">        int mergedColumnSize = 0;</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        if(annoProxy.labelMerged()) {</span>
+<span class="fc" id="L200">            CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, row, column);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">            if(mergedRegion != null) {</span>
+<span class="fc" id="L202">                mergedRowSize = mergedRegion.getLastRow() - mergedRegion.getFirstRow();</span>
+<span class="fc" id="L203">                mergedColumnSize = mergedRegion.getLastColumn() - mergedRegion.getFirstColumn();</span>
             }
         }
 
-<span class="fc" id="L200">        int range = annoProxy.range();</span>
-<span class="pc bpc" id="L201" title="1 of 2 branches missed.">        if(range &lt; 1){</span>
-<span class="nc" id="L202">            range = 1;</span>
+<span class="fc" id="L207">        int range = annoProxy.range();</span>
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">        if(range &lt; 1){</span>
+<span class="nc" id="L209">            range = 1;</span>
         }
 
         // 値が設定されているセルを検索する。
-<span class="fc" id="L206">        Point targetPosition = new Point();</span>
-<span class="fc" id="L207">        Cell targetCell = null;</span>
-<span class="fc bfc" id="L208" title="All 2 branches covered.">        for(int i=0; i &lt; range; i++){</span>
-<span class="fc" id="L209">            final int index = annoProxy.skip() + i +1;</span>
-<span class="fc bfc" id="L210" title="All 2 branches covered.">            if(annoProxy.type() == LabelledCellType.Left) {</span>
-<span class="fc" id="L211">                targetPosition.x = column - index;</span>
-<span class="fc" id="L212">                targetPosition.y = row;</span>
-<span class="fc" id="L213">                targetCell = POIUtils.getCell(sheet, targetPosition);</span>
+<span class="fc" id="L213">        Point targetPosition = new Point();</span>
+<span class="fc" id="L214">        Cell targetCell = null;</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">        for(int i=0; i &lt; range; i++){</span>
+<span class="fc" id="L216">            final int index = annoProxy.skip() + i +1;</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">            if(annoProxy.type() == LabelledCellType.Left) {</span>
+<span class="fc" id="L218">                targetPosition.x = column - index;</span>
+<span class="fc" id="L219">                targetPosition.y = row;</span>
+<span class="fc" id="L220">                targetCell = POIUtils.getCell(sheet, targetPosition);</span>
 
-<span class="fc bfc" id="L215" title="All 2 branches covered.">            } else if(annoProxy.type() == LabelledCellType.Right) {</span>
-<span class="fc" id="L216">                targetPosition.x = column + index + mergedColumnSize;</span>
-<span class="fc" id="L217">                targetPosition.y = row;</span>
-<span class="fc" id="L218">                targetCell = POIUtils.getCell(sheet, targetPosition);</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">            } else if(annoProxy.type() == LabelledCellType.Right) {</span>
+<span class="fc" id="L223">                targetPosition.x = column + index + mergedColumnSize;</span>
+<span class="fc" id="L224">                targetPosition.y = row;</span>
+<span class="fc" id="L225">                targetCell = POIUtils.getCell(sheet, targetPosition);</span>
 
-<span class="pc bpc" id="L220" title="1 of 2 branches missed.">            } else if(annoProxy.type() == LabelledCellType.Bottom) {</span>
-<span class="fc" id="L221">                targetPosition.x = column;</span>
-<span class="fc" id="L222">                targetPosition.y = row + index + mergedRowSize;</span>
-<span class="fc" id="L223">                targetCell = POIUtils.getCell(sheet, targetPosition);</span>
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">            } else if(annoProxy.type() == LabelledCellType.Bottom) {</span>
+<span class="fc" id="L228">                targetPosition.x = column;</span>
+<span class="fc" id="L229">                targetPosition.y = row + index + mergedRowSize;</span>
+<span class="fc" id="L230">                targetCell = POIUtils.getCell(sheet, targetPosition);</span>
 
             }
 
-<span class="fc bfc" id="L227" title="All 2 branches covered.">            if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length() &gt; 0){</span>
-<span class="fc" id="L228">                break;</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">            if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length() &gt; 0){</span>
+<span class="fc" id="L235">                break;</span>
             }
 
-<span class="fc bfc" id="L231" title="All 2 branches covered.">            if(processCase.equals(ProcessCase.Save)) {</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">            if(processCase.equals(ProcessCase.Save)) {</span>
                 /*
                  * 書き込み時は、属性rangeの範囲を考慮しない。
                  * テンプレートファイルの場合、値は空を設定しているため。
                  */
-<span class="fc" id="L236">                break;</span>
+<span class="fc" id="L243">                break;</span>
             }
         }
 
-<span class="fc" id="L240">        final LabelInfo info = new LabelInfo();</span>
-<span class="fc" id="L241">        info.valueCell = targetCell;</span>
-<span class="fc" id="L242">        info.valueAddress = CellPosition.of(targetPosition);</span>
-<span class="fc" id="L243">        info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());</span>
+<span class="fc" id="L247">        final LabelInfo info = new LabelInfo();</span>
+<span class="fc" id="L248">        info.valueCell = targetCell;</span>
+<span class="fc" id="L249">        info.valueAddress = CellPosition.of(targetPosition);</span>
+<span class="fc" id="L250">        info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());</span>
 
-<span class="fc" id="L245">        return Optional.of(info);</span>
+<span class="fc" id="L252">        return Optional.of(info);</span>
+    }
+    
+    /**
+     * ラベルの位置情報を取得する。
+     * @since 2.1
+     * @param anno マッピング情報が設定されているアノテーション
+     * @return ラベルの位置情報。見つからない場合は、空を返す。
+     */
+    public Optional&lt;CellPosition&gt; getLabelPosition(final Annotation anno) {
+<span class="fc" id="L262">        return getLabelPosition(new AnnotationProxy(anno));</span>
+        
     }
 
     /**
@@ -253,25 +271,25 @@ public class LabelledCellHandler {
      */
     private Optional&lt;CellPosition&gt; getLabelPosition(final AnnotationProxy anno) {
 
-<span class="fc bfc" id="L256" title="All 2 branches covered.">        if(Utils.isNotEmpty(anno.label())) {</span>
+<span class="fc bfc" id="L274" title="All 2 branches covered.">        if(Utils.isNotEmpty(anno.label())) {</span>
             // 属性「label」によるラベルの指定がある場合
             try {
-<span class="fc bfc" id="L259" title="All 2 branches covered.">                if(Utils.isNotEmpty(anno.headerLabel())){</span>
-<span class="fc" id="L260">                    Cell headerCell = CellFinder.query(sheet, anno.headerLabel(), config).findWhenNotFoundException();</span>
-<span class="fc" id="L261">                    Cell labelCell = CellFinder.query(sheet, anno.label(), config)</span>
-<span class="fc" id="L262">                            .startPosition(headerCell.getColumnIndex(), headerCell.getRowIndex() + 1)</span>
-<span class="fc" id="L263">                            .findWhenNotFoundException();</span>
-<span class="fc" id="L264">                    return Optional.of(CellPosition.of(labelCell));</span>
+<span class="fc bfc" id="L277" title="All 2 branches covered.">                if(Utils.isNotEmpty(anno.headerLabel())){</span>
+<span class="fc" id="L278">                    Cell headerCell = CellFinder.query(sheet, anno.headerLabel(), config).findWhenNotFoundException();</span>
+<span class="fc" id="L279">                    Cell labelCell = CellFinder.query(sheet, anno.label(), config)</span>
+<span class="fc" id="L280">                            .startPosition(headerCell.getColumnIndex(), headerCell.getRowIndex() + 1)</span>
+<span class="fc" id="L281">                            .findWhenNotFoundException();</span>
+<span class="fc" id="L282">                    return Optional.of(CellPosition.of(labelCell));</span>
 
                 } else {
-<span class="fc" id="L267">                    Cell labelCell = CellFinder.query(sheet, anno.label(), config).findWhenNotFoundException();</span>
-<span class="fc" id="L268">                    return Optional.of(CellPosition.of(labelCell));</span>
+<span class="fc" id="L285">                    Cell labelCell = CellFinder.query(sheet, anno.label(), config).findWhenNotFoundException();</span>
+<span class="fc" id="L286">                    return Optional.of(CellPosition.of(labelCell));</span>
                 }
-<span class="fc" id="L270">            } catch(CellNotFoundException ex){</span>
-<span class="fc bfc" id="L271" title="All 2 branches covered.">                if(anno.optional()){</span>
-<span class="fc" id="L272">                    return Optional.empty();</span>
+<span class="fc" id="L288">            } catch(CellNotFoundException ex){</span>
+<span class="fc bfc" id="L289" title="All 2 branches covered.">                if(anno.optional()){</span>
+<span class="fc" id="L290">                    return Optional.empty();</span>
                 } else {
-<span class="fc" id="L274">                    throw ex;</span>
+<span class="fc" id="L292">                    throw ex;</span>
                 }
             }
 
@@ -280,31 +298,31 @@ public class LabelledCellHandler {
              * 属性「labelRow」「labelColumn」によるアドレスを直接指定の場合
              * これは、アノテーション @XlsIterateTables の中で指定しているときに設定される。
              */
-<span class="fc bfc" id="L283" title="All 2 branches covered.">            if(anno.labelRow() &lt; 0) {</span>
-<span class="fc" id="L284">                throw new AnnotationInvalidException(anno.getTarget(), MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
-<span class="fc" id="L285">                        .var(&quot;property&quot;, field.getNameWithClass())</span>
-<span class="fc" id="L286">                        .varWithAnno(&quot;anno&quot;, anno.annotationType())</span>
-<span class="fc" id="L287">                        .var(&quot;attrName&quot;, &quot;labelRow&quot;)</span>
-<span class="fc" id="L288">                        .var(&quot;attrValue&quot;, anno.labelRow())</span>
-<span class="fc" id="L289">                        .var(&quot;min&quot;, 0)</span>
-<span class="fc" id="L290">                        .format());</span>
+<span class="fc bfc" id="L301" title="All 2 branches covered.">            if(anno.labelRow() &lt; 0) {</span>
+<span class="fc" id="L302">                throw new AnnotationInvalidException(anno.getTarget(), MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
+<span class="fc" id="L303">                        .var(&quot;property&quot;, field.getNameWithClass())</span>
+<span class="fc" id="L304">                        .varWithAnno(&quot;anno&quot;, anno.annotationType())</span>
+<span class="fc" id="L305">                        .var(&quot;attrName&quot;, &quot;labelRow&quot;)</span>
+<span class="fc" id="L306">                        .var(&quot;attrValue&quot;, anno.labelRow())</span>
+<span class="fc" id="L307">                        .var(&quot;min&quot;, 0)</span>
+<span class="fc" id="L308">                        .format());</span>
             }
 
-<span class="pc bpc" id="L293" title="1 of 2 branches missed.">            if(anno.labelColumn() &lt; 0) {</span>
-<span class="nc" id="L294">                throw new AnnotationInvalidException(anno.getTarget(), MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
-<span class="nc" id="L295">                        .var(&quot;property&quot;, field.getNameWithClass())</span>
-<span class="nc" id="L296">                        .varWithAnno(&quot;anno&quot;, anno.annotationType())</span>
-<span class="nc" id="L297">                        .var(&quot;attrName&quot;, &quot;labelColumn&quot;)</span>
-<span class="nc" id="L298">                        .var(&quot;attrValue&quot;, anno.labelColumn())</span>
-<span class="nc" id="L299">                        .var(&quot;min&quot;, 0)</span>
-<span class="nc" id="L300">                        .format());</span>
+<span class="pc bpc" id="L311" title="1 of 2 branches missed.">            if(anno.labelColumn() &lt; 0) {</span>
+<span class="nc" id="L312">                throw new AnnotationInvalidException(anno.getTarget(), MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
+<span class="nc" id="L313">                        .var(&quot;property&quot;, field.getNameWithClass())</span>
+<span class="nc" id="L314">                        .varWithAnno(&quot;anno&quot;, anno.annotationType())</span>
+<span class="nc" id="L315">                        .var(&quot;attrName&quot;, &quot;labelColumn&quot;)</span>
+<span class="nc" id="L316">                        .var(&quot;attrValue&quot;, anno.labelColumn())</span>
+<span class="nc" id="L317">                        .var(&quot;min&quot;, 0)</span>
+<span class="nc" id="L318">                        .format());</span>
 
             }
 
-<span class="fc" id="L304">            return Optional.of(CellPosition.of(anno.labelRow(), anno.labelColumn()));</span>
+<span class="fc" id="L322">            return Optional.of(CellPosition.of(anno.labelRow(), anno.labelColumn()));</span>
         }
 
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

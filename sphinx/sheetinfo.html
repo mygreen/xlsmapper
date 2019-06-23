@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>8. シート情報の取得 &mdash; XlsMapper 2.0 ドキュメント</title>
+  <title>8. シート情報の取得 &mdash; XlsMapper 2.1 ドキュメント</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -213,22 +213,36 @@
 <li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id46">3.13.3. 表の名称を正規表現、正規化して指定する場合</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsorder">3.14. <code class="docutils literal notranslate"><span class="pre">&#64;XlsOrder</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsignorable">3.15. <code class="docutils literal notranslate"><span class="pre">&#64;XlsIgnorable</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#isemptybuilder">3.15.1. IsEmptyBuilderを使った記述の簡単化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlscomment">3.14. <code class="docutils literal notranslate"><span class="pre">&#64;XlsComment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlslabelledcomment">3.15. <code class="docutils literal notranslate"><span class="pre">&#64;XlsLabelledComment</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id47">3.15.1. ラベルセルが重複するセルを指定する方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id48">3.15.2. ラベルセルを正規表現、正規化して指定する場合</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsarrayoption">3.16. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayOption</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#overoperation">3.16.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#remainedoperation">3.16.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsorder">3.16. <code class="docutils literal notranslate"><span class="pre">&#64;XlsOrder</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsignorable">3.17. <code class="docutils literal notranslate"><span class="pre">&#64;XlsIgnorable</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#isemptybuilder">3.17.1. IsEmptyBuilderを使った記述の簡単化</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsrecordoption">3.17. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordOption</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id47">3.17.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id48">3.17.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsarrayoption">3.18. <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayOption</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#overoperation">3.18.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#remainedoperation">3.18.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsrecordfinder">3.18. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordFinder</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsrecordoption">3.19. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordOption</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id49">3.19.1. 書き込み時に配列・リストのサイズが不足している場合(overOperation)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id50">3.19.2. 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlsrecordfinder">3.20. <code class="docutils literal notranslate"><span class="pre">&#64;XlsRecordFinder</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="annotation_mapping.html#xlscommentoption">3.21. <code class="docutils literal notranslate"><span class="pre">&#64;XlsCommentOption</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id51">3.21.1. 書き込み時にコメントの表示／非表示設定をする。</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id52">3.21.2. 書き込み時にコメントの枠サイズを指定する</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id53">3.21.3. 書き込み時に既存のコメントを自動削除する</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id54">3.21.4. コメントの読み込み、書き込みの処理の実装を切り替える</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotation_mapping.html#id55">3.21.5. 書き込み時にコメントの枠サイズを自動設定する</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="annotation_converter.html">4. セルの書式の指定方法</a><ul>
@@ -309,6 +323,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#id4">8.2. シート上の見出しの取得</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">8.3. シート上のコメントの取得</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">8.3.1. 書き込み時のコメント情報の設定方法</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="xmlmapping.html">9. XMLによるマッピング方法</a><ul>
@@ -356,30 +374,31 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release.html">16. リリースノート</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-2-0-2018-06-30">16.1. ver.2.0 - 2018-06-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-6-2017-01-02">16.2. ver.1.6 - 2017-01-02</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-2-2016-10-30">16.3. ver.1.5.2 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-1-2016-10-30">16.4. ver.1.5.1 - 2016-10-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-0-2016-08-30">16.5. ver.1.5.0 - 2016-08-30</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">16.6. ver.1.4.4 - 2016-07-02</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">16.7. ver.1.4.3 - 2016-05-28</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">16.8. ver.1.4.2 - 2016-05-07</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">16.9. ver.1.4.1 - 2016-04-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">16.10. ver.1.4 - 2016-03-21</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">16.11. ver.1.3 - 2016-03-13</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">16.12. ver.1.2.1 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">16.13. ver.1.2 - 2016-03-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">16.14. ver.1.1 - 2016-03-08</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">16.15. ver.1.0a - 2015-09-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">16.16. ver.1.0 - 2015-07-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">16.17. ver.0.5 - 2015-06-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">16.18. ver.0.4 - 2015-04-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">16.19. ver.0.3 - 2015-01-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">16.20. ver.0.2.3 - 2015-01-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">16.21. ver.0.2.2 - 2014-12-01</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">16.22. ver.0.2.1 - 2014-11-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">16.23. ver.0.2 - 2014-11-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">16.24. ver.0.1 - 2014-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-2-1-2019-06-23">16.1. ver.2.1 - 2019-06-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-2-0-2018-06-30">16.2. ver.2.0 - 2018-06-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-6-2017-01-02">16.3. ver.1.6 - 2017-01-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-2-2016-10-30">16.4. ver.1.5.2 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-1-2016-10-30">16.5. ver.1.5.1 - 2016-10-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-5-0-2016-08-30">16.6. ver.1.5.0 - 2016-08-30</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-4-2016-07-02">16.7. ver.1.4.4 - 2016-07-02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-3-2016-05-28">16.8. ver.1.4.3 - 2016-05-28</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2-2016-05-07">16.9. ver.1.4.2 - 2016-05-07</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-1-2016-04-29">16.10. ver.1.4.1 - 2016-04-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-4-2016-03-21">16.11. ver.1.4 - 2016-03-21</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-3-2016-03-13">16.12. ver.1.3 - 2016-03-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-1-2016-03-12">16.13. ver.1.2.1 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-2-2016-03-12">16.14. ver.1.2 - 2016-03-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-1-2016-03-08">16.15. ver.1.1 - 2016-03-08</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0a-2015-09-23">16.16. ver.1.0a - 2015-09-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-1-0-2015-07-19">16.17. ver.1.0 - 2015-07-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-5-2015-06-29">16.18. ver.0.5 - 2015-06-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-4-2015-04-05">16.19. ver.0.4 - 2015-04-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-3-2015-01-11">16.20. ver.0.3 - 2015-01-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-3-2015-01-01">16.21. ver.0.2.3 - 2015-01-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2-2014-12-01">16.22. ver.0.2.2 - 2014-12-01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-1-2014-11-25">16.23. ver.0.2.1 - 2014-11-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-2-2014-11-24">16.24. ver.0.2 - 2014-11-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html#ver-0-1-2014-10-30">16.25. ver.0.1 - 2014-10-30</a></li>
 </ul>
 </li>
 </ul>
@@ -647,6 +666,7 @@
 <blockquote>
 <div><ul class="simple">
 <li>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumns</span></code> のセルの位置情報のキーは、 <em>&lt;プロパティ名&gt;[&lt;セルの見出し&gt;]</em> としてセットされます。</li>
+<li>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayColumns</span></code> のセルの位置情報のキーは、 <em>&lt;プロパティ名&gt;[&lt;インデックス&gt;]</em> としてセットされます。</li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="2">
@@ -654,9 +674,13 @@
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li>位置情報を取得用のsetterメソッドは、引数 <code class="docutils literal notranslate"><span class="pre">String</span> <span class="pre">label</span></code> を取る必要があります。</li>
+<li>位置情報を取得用のsetterメソッドは、引数 <code class="docutils literal notranslate"><span class="pre">String</span></code> 型を取る必要があります。</li>
 <li>ただし、<code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumns</span></code> に対するsetterメソッドは、第一引数にセルの見出しが必要になります。<ul>
 <li>String key, String label</li>
+</ul>
+</li>
+<li>ただし、<code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayColumns</span></code> に対するsetterメソッドは、第一引数にセルのインデックスが必要になります。<ul>
+<li>int index, String label</li>
 </ul>
 </li>
 </ul>
@@ -667,6 +691,7 @@
 <blockquote>
 <div><ul class="simple">
 <li>ただし、<code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumns</span></code> に対するフィールドは、<code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span></code> 型にする必要があります。キーには見出しが入ります。</li>
+<li>また、<code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayColumns</span></code> に対するフィールドは、<code class="docutils literal notranslate"><span class="pre">List&lt;String&gt;</span></code> 型にする必要があります。</li>
 </ul>
 </div></blockquote>
 <div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -700,44 +725,363 @@
 29
 30
 31
-32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleRecord</span> <span class="o">{</span>
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47</pre></div></td><td class="code"><div class="highlight"><pre><span></span>public class SampleRecord {
 
-    <span class="c1">// 汎用的な見出し情報</span>
-    <span class="kd">public</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">labels</span><span class="o">;</span>
+    // 汎用的な見出し情報
+    public Map&lt;String, String&gt; labels;
 
-    <span class="c1">// プロパティごとに個別に見出し情報を定義するフィールド</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">nameLabel</span><span class="o">;</span>
+    // プロパティごとに個別に見出し情報を定義するフィールド
+    private String nameLabel;
 
-    <span class="nd">@XlsColumns</span><span class="o">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    @XlsColumns(label=&quot;名前&quot;)
+    private String name;
 
-    <span class="c1">// プロパティごとに個別に見出し情報を定義するメソッド</span>
-    <span class="c1">// フィールド labelsが定義あれば必要ありません。</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setNameLabel</span><span class="o">(</span><span class="n">String</span> <span class="n">label</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">//...</span>
-    <span class="o">}</span>
+    // プロパティごとに個別に見出し情報を定義するメソッド
+    // フィールド labelsが定義あれば必要ありません。
+    public void setNameLabel(String label) {
+        //...
+    }
 
-    <span class="c1">// @XlsMapColumnsの場合</span>
-    <span class="nd">@XlsMapColumns</span><span class="o">(</span><span class="n">previousColumnName</span><span class="o">=</span><span class="s">&quot;名前&quot;</span><span class="o">)</span>
-    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attendedMap</span><span class="o">;</span>
+    // @XlsMapColumnsの場合
+    @XlsMapColumns(previousColumnName=&quot;出欠&quot;)
+    private Map&lt;String, String&gt; attendedMap;
 
-    <span class="c1">// プロパティごとに個別に見出し情報を定義するフィールド</span>
-    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attendedMapLabel</span><span class="o">;</span>
+    // プロパティごとに個別に見出し情報を定義するフィールド
+    private Map&lt;String, String&gt; attendedMapLabel;
 
-    <span class="c1">// プロパティごとに個別に見出し情報を定義するメソッド</span>
-    <span class="c1">// @XlsMapColumnsの場合keyは、セルの見出しの値</span>
-    <span class="c1">// フィールド labelsが定義あれば必要ありません。</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAttendedMapLabel</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">String</span> <span class="n">label</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">//...</span>
-    <span class="o">}</span>
+    // プロパティごとに個別に見出し情報を定義するメソッド
+    // @XlsMapColumnsの場合keyは、セルの見出しの値
+    // フィールド labelsが定義あれば必要ありません。
+    public void setAttendedMapLabel(String key, String label) {
+        //...
+    }
 
-<span class="o">}</span>
+    // @XlsArrayColumnsの場合
+    ＠XlsArrayColumns(columnName=&quot;ふりがな&quot;)
+    private List&lt;String&gt; rubyList;
+
+    // プロパティごとに個別に見出し情報を定義するフィールド
+    private Map&lt;String, String&gt; rubyListLabel;
+
+    // プロパティごとに個別に見出し情報を定義するメソッド
+    // @XlsArrayColumnsの場合indexは、インデックスの値
+    // フィールド labelsが定義あれば必要ありません。
+    public void setRubyListLabel(int index, String label) {
+        //...
+    }
+
+
+}
 </pre></div>
 </td></tr></table></div>
 <div class="admonition note">
 <p class="first admonition-title">注釈</p>
 <p class="last">フィールド <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">labels</span></code> と対応するsetterメソッドやフィールドをそれぞれ定義していた場合、
 優先度 <em>labels &gt; setterメソッド &gt; フィールド</em> に従い設定されます。</p>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>8.3. シート上のコメントの取得<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>読み込み時にマッピングしたセルに設定されているコメントを取得することができます。 <cite>[ver.2.1]</cite></p>
+<p>書き込み時は、セルにコメントを設定することができます。</p>
+<p>取得方法は複数ありますが、 <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">comments</span></code> フィールドを用いるのが記述量が少なく簡単だと思います。</p>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p>セルのコメントを取得できるのは、アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsCell,</span> <span class="pre">&#64;XlsLabelledCell,</span> <span class="pre">&#64;XlsColumn,</span> <span class="pre">&#64;XlsMapColumns,</span> <span class="pre">&#64;XlsArrayColumns,</span> <span class="pre">&#64;XlsArrayCell,</span> <span class="pre">&#64;XlsLabelledArrayCell</span></code> を付与したプロパティです。</p>
+<p class="last">見出しセルに対するコメントの取得は、アノテーション <a class="reference internal" href="annotation_mapping_labelledcomment.html#annotationxlslabelledcomment"><span class="std std-ref">&#64;XlsLablledComment</span></a> を使用します。
+さらに、任意の位置のセルのコメントの取得は、アノテーション <a class="reference internal" href="annotation_mapping_comment.html#annotationxlscomment"><span class="std std-ref">&#64;XlsComment</span></a> を使用します。</p>
+</div>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">comments</span></code> というフィールドを定義しておくとプロパティ名をキーにセルの位置がセットされるようになっています。</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumns</span></code> のセルのコメント情報のキーは、 <em>&lt;プロパティ名&gt;[&lt;セルの見出し&gt;]</em> としてセットされます。</li>
+<li>アノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayColumns</span></code> のセルのコメント情報のキーは、 <em>&lt;プロパティ名&gt;[&lt;インデックス&gt;]</em> としてセットされます。</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>アノテーションを付与した <em>&lt;setterメソッド名&gt;Comment</em> というメソッドを用意しておくと、引数にセルのコメントが渡されます。</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>コメント情報取得用のsetterメソッドは、引数 <code class="docutils literal notranslate"><span class="pre">String</span></code> 型を取る必要があります。</li>
+<li>ただし、<code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumns</span></code> に対するsetterメソッドは、第一引数にセルの見出しが必要になります。<ul>
+<li>String key, String label</li>
+</ul>
+</li>
+<li>また、<code class="docutils literal notranslate"><span class="pre">&#64;XlsArraysColumns</span></code> に対するsetterメソッドは、第一引数にセルのインデックスが必要になります。<ul>
+<li>int index, String label</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li>アノテーションを付与した <em>&lt;フィールド名&gt;Comment</em> というString型のフィールドを用意しておくと、セルのコメントが渡されます。</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li>ただし、<code class="docutils literal notranslate"><span class="pre">&#64;XlsMapColumns</span></code> に対するフィールドは、<code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span></code> 型にする必要があります。キーには見出しが入ります。</li>
+<li>また、<code class="docutils literal notranslate"><span class="pre">&#64;XlsArrayColumns</span></code> に対するフィールドは、<code class="docutils literal notranslate"><span class="pre">List&lt;String&gt;</span></code> 型にする必要があります。</li>
+</ul>
+</div></blockquote>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46</pre></div></td><td class="code"><div class="highlight"><pre><span></span>public class SampleRecord {
+
+    // 汎用的なコメント情報
+    public Map&lt;String, String&gt; comments;
+
+    // プロパティごとに個別にコメント情報を定義するフィールド
+    private String nameComment;
+
+    @XlsColumns(label=&quot;名前&quot;)
+    private String name;
+
+    // プロパティごとに個別にコメント情報を定義するメソッド
+    // フィールド commentsが定義あれば必要ありません。
+    public void setNameComment(String comment) {
+        //...
+    }
+
+    // @XlsMapColumnsの場合
+    @XlsMapColumns(previousColumnName=&quot;名前&quot;)
+    private Map&lt;String, String&gt; attendedMap;
+
+    // プロパティごとに個別にコメント情報を定義するフィールド
+    private Map&lt;String, String&gt; attendedMapComment;
+
+    // プロパティごとに個別に見出し情報を定義するメソッド
+    // @XlsMapColumnsの場合keyは、セルの見出しの値
+    // フィールド commentsが定義あれば必要ありません。
+    public void setAttendedMapComment(String key, String comment) {
+        //...
+    }
+
+    // @XlsArrayColumnsの場合
+    ＠XlsArrayColumns(columnName=&quot;ふりがな&quot;)
+    private List&lt;String&gt; rubyList;
+
+    // プロパティごとに個別にコメント情報を定義するフィールド
+    private Map&lt;String, String&gt; rubyListComment;
+
+    // プロパティごとに個別にコメント情報を定義するメソッド
+    // @XlsArrayColumnsの場合indexは、インデックスの値
+    // フィールド labelsが定義あれば必要ありません。
+    public void setRubyListComment(int index, String comment) {
+        //...
+    }
+
+}
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p class="last">フィールド <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">comments</span></code> と対応するsetterメソッドやフィールドをそれぞれ定義していた場合、
+優先度 <em>comments &gt; setterメソッド &gt; フィールド</em> に従い設定されます。</p>
+</div>
+<div class="section" id="id6">
+<h3>8.3.1. 書き込み時のコメント情報の設定方法<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>書き込み時は、読み込み時と同様に複数の定義方法があります。</p>
+<p>書き込むコメント情報の定義方法は複数ありますが、 <code class="docutils literal notranslate"><span class="pre">Map&lt;String,</span> <span class="pre">String&gt;</span> <span class="pre">comments</span></code> フィールドを用いるのが記述量が少なく簡単だと思います。</p>
+<p>各プロパティに対するメソッドを定義しておけば、getterメソッド経由で取得されます。</p>
+<div class="highlight-java notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66</pre></div></td><td class="code"><div class="highlight"><pre><span></span>// 書き込むデータの定義
+SampleSheet sheet = new SampleSheet();
+
+SampleRecord record = new SampleRecord();
+
+// コメントを保持するフィールドのインスタンス定義
+record.comments = new HashMal&lt;&gt;();
+
+// プロパティ「name」に対するコメントを設定する
+record.comments.put(&quot;name&quot;, &quot;コメント1&quot;);
+
+// @XlsMapColumnsに対するコメントを設定する。
+record.comments.put(&quot;attendedMap[4月1日]&quot;, &quot;コメント2&quot;);
+record.comments.put(&quot;attendedMap[4月2日]&quot;, &quot;コメント3&quot;);
+
+// @XlsArrayColumnsNi対するコメントを設定する。
+record.comments.put(&quot;rubyList[0]&quot;, &quot;コメント4&quot;);
+record.comments.put(&quot;rubyList[1]&quot;, &quot;コメント5&quot;);
+
+// レコードの定義
+public class SampleRecord {
+
+    // 汎用的なコメント情報
+    public Map&lt;String, String&gt; comments;
+
+    // プロパティごとに個別にコメント情報を定義するフィールド
+    private String nameComment;
+
+    @XlsColumns(label=&quot;名前&quot;)
+    private String name;
+
+    // プロパティごとに個別にコメント情報を定義するメソッド
+    // フィールド commentsが定義あれば必要ありません。
+    public String getNameComment() {
+        //...
+    }
+
+    // @XlsMapColumnsの場合
+    @XlsMapColumns(previousColumnName=&quot;名前&quot;)
+    private Map&lt;String, String&gt; attendedMap;
+
+    // プロパティごとに個別にコメント情報を定義するフィールド
+    private Map&lt;String, String&gt; attendedMapComment;
+
+    // プロパティごとに個別に見出し情報を定義するメソッド
+    // @XlsMapColumnsの場合keyは、セルの見出しの値
+    // フィールド commentsが定義あれば必要ありません。
+    public String getAttendedMapComment(String key) {
+        //...
+    }
+
+    // @XlsArrayColumnsの場合
+    ＠XlsArrayColumns(columnName=&quot;ふりがな&quot;)
+    private List&lt;String&gt; rubyList;
+
+    // プロパティごとに個別にコメント情報を定義するフィールド
+    private Map&lt;String, String&gt; rubyListComment;
+
+    // プロパティごとに個別にコメント情報を定義するメソッド
+    // @XlsArrayColumnsの場合indexは、インデックスの値
+    // フィールド labelsが定義あれば必要ありません。
+    public String setRubyListComment(int index) {
+        //...
+    }
+
+}
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">注釈</p>
+<p>書き込み時のコメントの枠サイズなどは、アノテーション <a class="reference internal" href="annotation_mapping_commentoption.html#annotationxlscommentoption"><span class="std std-ref">&#64;XlsCommentOption</span></a> を使用します。</p>
+<p class="last">フォントなどは、セルの設定値を引き継ぎます。
+ただし、すでにコメントが設定されている場合は、設定されている書式に従います。</p>
+</div>
 </div>
 </div>
 </div>
@@ -762,7 +1106,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018, T.TSUCHIE.
+        &copy; Copyright 2015-2019, T.TSUCHIE.
 
     </p>
   </div>
@@ -784,7 +1128,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0',
+            VERSION:'2.1',
             LANGUAGE:'ja',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

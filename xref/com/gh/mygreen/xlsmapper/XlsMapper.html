@@ -186,15 +186,15 @@
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsMapper.html">XlsMapper</a>() {
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>         <strong class="jxr_keyword">this</strong>.configuration = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/Configuration.html">Configuration</a>();
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>         <strong class="jxr_keyword">this</strong>.loader = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsLoader.html">XlsLoader</a>(getConiguration());
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>         <strong class="jxr_keyword">this</strong>.saver = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsSaver.html">XlsSaver</a>(getConiguration());
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>         <strong class="jxr_keyword">this</strong>.loader = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsLoader.html">XlsLoader</a>(getConfiguration());
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>         <strong class="jxr_keyword">this</strong>.saver = <strong class="jxr_keyword">new</strong> <a href="../../../../com/gh/mygreen/xlsmapper/XlsSaver.html">XlsSaver</a>(getConfiguration());
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>     }
 <a class="jxr_linenumber" name="L184" href="#L184">184</a> 
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L186" href="#L186">186</a> <em class="jxr_javadoccomment">     * システム情報を取得します。</em>
 <a class="jxr_linenumber" name="L187" href="#L187">187</a> <em class="jxr_javadoccomment">     * @return 現在のシステム情報</em>
 <a class="jxr_linenumber" name="L188" href="#L188">188</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../com/gh/mygreen/xlsmapper/Configuration.html">Configuration</a> getConiguration() {
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../com/gh/mygreen/xlsmapper/Configuration.html">Configuration</a> getConfiguration() {
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         <strong class="jxr_keyword">return</strong> configuration;
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>     }
 <a class="jxr_linenumber" name="L192" href="#L192">192</a> 
@@ -202,7 +202,7 @@
 <a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_javadoccomment">     * システム情報を設定します。</em>
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_javadoccomment">     * @param configuration システム情報</em>
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setConiguration(<a href="../../../../com/gh/mygreen/xlsmapper/Configuration.html">Configuration</a> configuration) {
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setConfiguration(<a href="../../../../com/gh/mygreen/xlsmapper/Configuration.html">Configuration</a> configuration) {
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>         <strong class="jxr_keyword">this</strong>.configuration = configuration;
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>         getLoader().setConfiguration(configuration);
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>         getSaver().setConfiguration(configuration);
@@ -392,6 +392,6 @@
 <a class="jxr_linenumber" name="L384" href="#L384">384</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2018 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

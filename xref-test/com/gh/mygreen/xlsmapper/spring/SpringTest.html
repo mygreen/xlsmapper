@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          config.setBeanFactory(springBeanFactory);
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          mapper.setConiguration(config);
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          mapper.setConfiguration(config);
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/spring.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>              SheetBindingErrors&lt;SampleSheet&gt; errors = mapper.loadDetail(in, SampleSheet.<strong class="jxr_keyword">class</strong>);
@@ -103,7 +103,7 @@
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          config.setBeanFactory(springBeanFactory);
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>          mapper.setConiguration(config);
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>          mapper.setConfiguration(config);
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>         <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/spring.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>             SheetBindingErrors&lt;NotSpringBeanSheet&gt; errors = mapper.loadDetail(in, NotSpringBeanSheet.<strong class="jxr_keyword">class</strong>);
@@ -179,6 +179,6 @@
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2018 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

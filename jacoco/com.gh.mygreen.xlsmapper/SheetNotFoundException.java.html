@@ -15,11 +15,11 @@ public class SheetNotFoundException extends XlsMapperException {
     /** serialVersionUID */
     private static final long serialVersionUID = 1604967589865552445L;
     
-    private String sheetName;
+    private final String sheetName;
     
-    private Integer sheetNumber;
+    private final Integer sheetNumber;
     
-    private Integer bookSheetSize;
+    private final Integer bookSheetSize;
     
     /**
      * 指定したシート名が見つからない場合に、そのシート名を指定するコンストラクタ。
@@ -41,7 +41,9 @@ public class SheetNotFoundException extends XlsMapperException {
     public SheetNotFoundException(final String sheetName, final String message) {
 <span class="fc" id="L42">        super(message);</span>
 <span class="fc" id="L43">        this.sheetName = sheetName;</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L44">        this.sheetNumber = null;</span>
+<span class="fc" id="L45">        this.bookSheetSize = null;</span>
+<span class="fc" id="L46">    }</span>
     
     /**
      * 指定したシートのインデックスが見つからない場合に、そのシートインデックスを指定するコンストラクタ。
@@ -49,20 +51,21 @@ public class SheetNotFoundException extends XlsMapperException {
      * @param bookSheetSize ワークブックのシートサイズ。
      */
     public SheetNotFoundException(final int sheetNumber, final int bookSheetSize) {
-<span class="fc" id="L52">        super(MessageBuilder.create(&quot;sheet.notFound.overSize&quot;)</span>
-<span class="fc" id="L53">                .var(&quot;sheetNumber&quot;, sheetNumber)</span>
-<span class="fc" id="L54">                .var(&quot;bookSheetSize&quot;, bookSheetSize)</span>
-<span class="fc" id="L55">                .format());</span>
-<span class="fc" id="L56">        this.sheetNumber = sheetNumber;</span>
-<span class="fc" id="L57">        this.bookSheetSize = bookSheetSize;</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L54">        super(MessageBuilder.create(&quot;sheet.notFound.overSize&quot;)</span>
+<span class="fc" id="L55">                .var(&quot;sheetNumber&quot;, sheetNumber)</span>
+<span class="fc" id="L56">                .var(&quot;bookSheetSize&quot;, bookSheetSize)</span>
+<span class="fc" id="L57">                .format());</span>
+<span class="fc" id="L58">        this.sheetName = null;</span>
+<span class="fc" id="L59">        this.sheetNumber = sheetNumber;</span>
+<span class="fc" id="L60">        this.bookSheetSize = bookSheetSize;</span>
+<span class="fc" id="L61">    }</span>
     
     /**
      * 検索対象のシート名。{@link XlsSheet}のname属性を指定されていた場合に設定される。
      * @return
      */
     public String getSheetName() {
-<span class="nc" id="L65">        return sheetName;</span>
+<span class="nc" id="L68">        return sheetName;</span>
     }
     
     /**
@@ -70,7 +73,7 @@ public class SheetNotFoundException extends XlsMapperException {
      * @return
      */
     public Integer getSheetNumber() {
-<span class="nc" id="L73">        return sheetNumber;</span>
+<span class="nc" id="L76">        return sheetNumber;</span>
     }
     
     /**
@@ -78,8 +81,8 @@ public class SheetNotFoundException extends XlsMapperException {
      * @return
      */
     public Integer getBookSheetSize() {
-<span class="nc" id="L81">        return bookSheetSize;</span>
+<span class="nc" id="L84">        return bookSheetSize;</span>
     }
     
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
