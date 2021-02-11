@@ -1,6 +1,6 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mygreen/xlsmapper/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.mygreen/xlsmapper/)
 [![Javadocs](http://javadoc.io/badge/com.github.mygreen/xlsmapper.svg?color=blue)](http://javadoc.io/doc/com.github.mygreen/xlsmapper)
-[![Build Status](https://travis-ci.org/mygreen/xlsmapper.svg?branch=master)](https://travis-ci.org/mygreen/xlsmapper)
+[![Java CI with Maven](https://github.com/mygreen/xlsmapper/workflows/Java%20CI%20with%20Maven/badge.svg)](https://github.com/mygreen/xlsmapper/actions?query=workflow%3A%22Java+CI+with+Maven%22)
 [![SonarQube](https://sonarcloud.io/api/project_badges/measure?project=com.github.mygreen%3Axlsmapper&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.github.mygreen%3Axlsmapper)
 
 # XlsMapper
