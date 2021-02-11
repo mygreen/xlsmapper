@@ -266,7 +266,7 @@ $(document).ready(function() {
 						<user.language>ja</user.language>
 						<user.country>JP</user.country>
 					</systemPropertyVariables>
-					<argLine>${jacocoArgs}</argLine>
+					<argLine>${jacocoArgs} -Duser.language=ja -Duser.country=JP</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
