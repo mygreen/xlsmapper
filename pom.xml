@@ -65,7 +65,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 		<poi.version>3.17</poi.version>
 		<slf4j.version>1.7.1</slf4j.version>
 		<jacoco.include.package>com.gh.mygreen.xlsmapper.*</jacoco.include.package>
-		
+
 		<!-- SonarQubeの解析から除外したいファイル -->
 		<sonar.exclusions>
 			**/sample/*,
@@ -75,7 +75,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 		<sonar.projectName>${project.groupId}/${project.artifactId}</sonar.projectName>
 		<sonar.host.url>https://sonarcloud.io/</sonar.host.url>
 		<sonar.organization>mygreen-github</sonar.organization>
-		
+
 	</properties>
 
 	<!-- ビルド環境によって、sphinxのスクリプトを切り替える -->
@@ -262,6 +262,10 @@ $(document).ready(function() {
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
+					<systemPropertyVariables>
+						<user.language>ja</user.language>
+						<user.country>JP</user.country>
+					</systemPropertyVariables>
 					<argLine>${jacocoArgs}</argLine>
 				</configuration>
 			</plugin>
