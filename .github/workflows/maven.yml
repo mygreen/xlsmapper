@@ -18,8 +18,9 @@ jobs:
     - name: Set up Locale
       run: |
         sudo apt-get install fonts-ipafont language-pack-ja
-        sudo update-locale LANG=ja_JP.UTF-8
-        sudo update-locale LC_ALL=ja_JP.UTF-8
+        sudo localectl set-locale LANG="ja_JP.UTF-8"
+        sudo update-locale LANG="ja_JP.UTF-8"
+        sudo update-locale LC_ALL="ja_JP.UTF-8"
     - name: Set up Time-Zone
       run: sudo timedatectl set-timezone Asia/Tokyo
     - uses: actions/checkout@v2
