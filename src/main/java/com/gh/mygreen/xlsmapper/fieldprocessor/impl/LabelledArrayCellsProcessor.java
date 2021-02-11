@@ -39,6 +39,11 @@ public class LabelledArrayCellsProcessor extends AbstractFieldProcessor<XlsLabel
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work)
             throws XlsMapperException {
 
+        if(!accessor.isWritable()) {
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isLoadCase(anno.cases())) {
             return;
         }
@@ -148,6 +153,11 @@ public class LabelledArrayCellsProcessor extends AbstractFieldProcessor<XlsLabel
             final FieldAccessor accessor, final Configuration config, final SavingWorkObject work)
             throws XlsMapperException {
 
+        if(!accessor.isReadable()) {
+            // セルの値を参照するメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isSaveCase(anno.cases())) {
             return;
         }

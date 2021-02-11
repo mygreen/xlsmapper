@@ -31,6 +31,11 @@ public class CommentProcessor extends AbstractFieldProcessor<XlsComment> {
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsComment anno, final FieldAccessor accessor,
             final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
+        if(!accessor.isWritable()) {
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isLoadCase(anno.cases())) {
             return;
         }
@@ -118,6 +123,11 @@ public class CommentProcessor extends AbstractFieldProcessor<XlsComment> {
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsComment anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
+        if(!accessor.isReadable()) {
+            // セルの値を参照するメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isSaveCase(anno.cases())) {
             return;
         }

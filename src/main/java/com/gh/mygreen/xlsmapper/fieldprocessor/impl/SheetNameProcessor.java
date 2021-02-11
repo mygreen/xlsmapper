@@ -2,9 +2,9 @@ package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -25,6 +25,11 @@ public class SheetNameProcessor extends AbstractFieldProcessor<XlsSheetName> {
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsSheetName anno, final FieldAccessor accessor,
             final Configuration config, final LoadingWorkObject work) {
 
+        if(!accessor.isWritable()) {
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isLoadCase(anno.cases())) {
             return;
         }
@@ -38,6 +43,11 @@ public class SheetNameProcessor extends AbstractFieldProcessor<XlsSheetName> {
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsSheetName anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
+        if(!accessor.isWritable()) {
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isSaveCase(anno.cases())) {
             return;
         }
