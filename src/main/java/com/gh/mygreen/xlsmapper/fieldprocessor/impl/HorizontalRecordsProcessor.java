@@ -1117,7 +1117,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                         return FieldAccessorUtils.getColumnPropertiesByName(
                                 record.getClass(), work.getAnnoReader(), config, key)
                                 .stream()
-                                .filter(p -> p.isWritable())
+                                .filter(p -> p.isReadable())
                                 .collect(Collectors.toList());
                     });
 
@@ -1336,7 +1336,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             final List<FieldAccessor> propeties = FieldAccessorUtils.getColumnPropertiesByName(
                     recordClass, annoReader, config, headerInfo.getLabel())
                     .stream()
-                    .filter(p -> p.isWritable())
+                    .filter(p -> p.isReadable())
                     .collect(Collectors.toList());
             if(!propeties.isEmpty()) {
                 return i;
@@ -1414,7 +1414,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 recordClass, work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -1692,7 +1692,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
         for(FieldAccessor property : nestedProperties) {
 
