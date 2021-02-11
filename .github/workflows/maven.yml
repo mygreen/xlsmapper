@@ -20,10 +20,8 @@ jobs:
         sudo apt-get -y install fonts-ipafont language-pack-ja
         sudo update-locale LANG=ja_JP.UTF-8
         sudo update-locale LC_ALL=ja_JP.UTF-8
-        echo "/etc/default/locale" && cat /etc/default/locale
-        echo "locale available" && locale -a
-        echo "locale list" && locale
-        source /etc/default/locale
+        sudo localectl set-locale LANG=ja_JP.UTF-8
+        sudo localectl set-locale LC_ALL=ja_JP.UTF-8
     - name: Set up Time-Zone
       run: sudo timedatectl set-timezone Asia/Tokyo
     - uses: actions/checkout@v2
