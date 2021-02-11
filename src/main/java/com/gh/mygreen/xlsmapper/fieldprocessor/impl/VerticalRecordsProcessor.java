@@ -635,7 +635,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
             // アノテーション「@XlsArrayColumns」の属性「columnName」と一致するプロパティを取得する。
             final List<FieldAccessor> arrayProperties = FieldAccessorUtils.getArrayColumnsPropertiesByName(
-                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel());
+                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel())
+                    .stream()
+                    .filter(f -> f.isWritable())
+                    .collect(Collectors.toList());
 
             if(arrayProperties.isEmpty()) {
                 continue;
@@ -718,6 +721,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 .stream()
                 .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
+        
         for(FieldAccessor property : nestedProperties) {
 
             final XlsNestedRecords nestedAnno = property.getAnnotationNullable(XlsNestedRecords.class);
@@ -1502,7 +1506,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
             // アノテーション「@XlsArrayColumns」の属性「columnName」と一致するプロパティを取得する。
             final List<FieldAccessor> arrayProperties = FieldAccessorUtils.getArrayColumnsPropertiesByName(
-                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel());
+                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel())
+                    .stream()
+                    .filter(f -> f.isReadable())
+                    .collect(Collectors.toList());
 
             if(arrayProperties.isEmpty()) {
                 continue;
@@ -1673,6 +1680,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 .stream()
                 .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
+        
         for(FieldAccessor property : nestedProperties) {
 
             final XlsNestedRecords nestedAnno = property.getAnnotationNullable(XlsNestedRecords.class);
