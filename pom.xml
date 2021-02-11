@@ -262,10 +262,6 @@ $(document).ready(function() {
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<systemPropertyVariables>
-						<user.language>ja</user.language>
-						<user.country>JP</user.country>
-					</systemPropertyVariables>
 					<argLine>${jacocoArgs} -Duser.language=ja -Duser.country=JP</argLine>
 				</configuration>
 			</plugin>
