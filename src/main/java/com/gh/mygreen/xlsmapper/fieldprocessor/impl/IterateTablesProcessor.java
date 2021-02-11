@@ -232,7 +232,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledComment.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -277,7 +277,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -322,7 +322,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -368,7 +368,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();
@@ -408,7 +408,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsVerticalRecords.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();

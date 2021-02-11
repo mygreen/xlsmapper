@@ -316,7 +316,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
                     return FieldAccessorUtils.getColumnPropertiesByName(
                             record.getClass(), work.getAnnoReader(), config, key)
                             .stream()
-                            .filter(p -> p.isReadable())
+                            .filter(p -> p.isWritable())
                             .collect(Collectors.toList());
                 });
 
@@ -525,7 +525,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             final List<FieldAccessor> propeties = FieldAccessorUtils.getColumnPropertiesByName(
                     recordClass, annoReader, config, headerInfo.getLabel())
                     .stream()
-                    .filter(p -> p.isReadable())
+                    .filter(p -> p.isWritable())
                     .collect(Collectors.toList());
 
             if(!propeties.isEmpty()) {
@@ -543,7 +543,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final List<FieldAccessor> mapProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 recordClass, work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
-                .filter(f -> f.isReadable())
+                .filter(f -> f.isWritable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : mapProperties) {
@@ -703,7 +703,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
         final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
-                .filter(f -> f.isReadable())
+                .filter(f -> f.isWritable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : nestedProperties) {
