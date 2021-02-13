@@ -299,4 +299,4 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 
 # -- Options for manual search ---------------------------------------
 html_search_language = 'ja'
-html_search_options = {'type': 'janome'}
+#html_search_options = {'type': 'janome'}
