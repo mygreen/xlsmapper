@@ -57,6 +57,11 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno,
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
+        if(!accessor.isWritable()) {
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isLoadCase(anno.cases())) {
             return;
         }
@@ -232,7 +237,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledComment.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -277,7 +282,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -322,7 +327,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -368,7 +373,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();
@@ -408,7 +413,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsVerticalRecords.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();
@@ -435,6 +440,11 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
+        if(!accessor.isReadable()) {
+            // セルの値を参照するメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isSaveCase(anno.cases())) {
             return;
         }
@@ -568,7 +578,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledComment.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -607,7 +617,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -646,7 +656,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -693,7 +703,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
 
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();
@@ -735,7 +745,7 @@ public class IterateTablesProcessor extends AbstractFieldProcessor<XlsIterateTab
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 tableObj.getClass(), work.getAnnoReader(), XlsVerticalRecords.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
 
         final List<FieldAccessorProxy> accessorProxies = new ArrayList<>();

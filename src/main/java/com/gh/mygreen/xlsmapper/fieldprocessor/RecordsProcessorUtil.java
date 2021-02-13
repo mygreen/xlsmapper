@@ -223,7 +223,7 @@ public class RecordsProcessorUtil {
         
         final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
         
         for(FieldAccessor property : nestedProperties) {
@@ -306,7 +306,7 @@ public class RecordsProcessorUtil {
         
         final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
         
         for(FieldAccessor property : nestedProperties) {

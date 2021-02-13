@@ -3,7 +3,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import java.awt.Point;
 import java.io.File;
@@ -205,6 +205,40 @@ public class AnnoCellTest {
     }
     
     /**
+     * 読み込みのテスト - setterメソッドが存在しない場合
+     * 
+     * @since 2.1.1
+     */
+    @Test
+    public void test_load_cell_noSetterMethod() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<NoSetterMethodSheet> errors = mapper.loadDetail(in, NoSetterMethodSheet.class);
+
+            NoSetterMethodSheet sheet = errors.getTarget();
+
+            // メソッドが呼び出されないこと
+            assertThat(sheet.calledMethod, is(false));
+
+        }
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            // setter が存在する場合
+            SheetBindingErrors<NoGetterMethodSheet> errors = mapper.loadDetail(in, NoGetterMethodSheet.class);
+
+            NoGetterMethodSheet sheet = errors.getTarget();
+
+            // メソッドが呼び出されること
+            assertThat(sheet.calledMethod, is(true));
+
+        }
+
+    }
+    
+    /**
      * 書き込みのテスト - 通常のデータ
      */
     @Test
@@ -374,6 +408,43 @@ public class AnnoCellTest {
             assertThat(sheet.name, is(outSheet.name));
             assertThat(sheet.comments, hasEntry("name", outSheet.comments.get("name")));
         }
+    }
+    
+    /**
+     * 書き込みのテスト - setterメソッドが存在しない場合
+     * 
+     * @since 2.1.1
+     */
+    @Test
+    public void test_save_cell_noGetterMethod() throws Exception {
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            NoGetterMethodSheet outSheet = new NoGetterMethodSheet();
+            mapper.save(template, out, outSheet);
+            
+            // メソッドが呼び出されないこと
+            assertThat(outSheet.calledMethod, is(false));
+        }
+        
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            // getter が存在する場合
+            NoSetterMethodSheet outSheet = new NoSetterMethodSheet();
+            mapper.save(template, out, outSheet);
+            
+            // メソッドが呼び出されること
+            assertThat(outSheet.calledMethod, is(true));
+        }
+        
+
     }
     
     @XlsSheet(name="Cell(通常)")
@@ -677,5 +748,38 @@ public class AnnoCellTest {
             this.comments.put(key, text);
             return this;
         }
+    }
+    
+    /**
+     * setterメソッドが存在しない場合
+     * 
+     */
+    @XlsSheet(name="Cell(通常)")
+    private static class NoSetterMethodSheet {
+        
+        private boolean calledMethod = false;
+        
+        @XlsCell(address = "B4")
+        public String getC1() {
+            this.calledMethod = true;
+            return "value";
+        }
+
+    }
+    
+    /**
+     * getterメソッドが存在しない場合
+     * 
+     */
+    @XlsSheet(name="Cell(通常)")
+    private static class NoGetterMethodSheet {
+        
+        private boolean calledMethod = false;
+        
+        @XlsCell(address = "B4")
+        public void setC1(String posRight) {
+            this.calledMethod = true;
+        }
+
     }
 }

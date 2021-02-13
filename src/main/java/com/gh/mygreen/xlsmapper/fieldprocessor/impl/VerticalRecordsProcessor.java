@@ -84,6 +84,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
+        if(!accessor.isWritable()) {
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isLoadCase(anno.cases())) {
             return;
         }
@@ -313,7 +318,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                     return FieldAccessorUtils.getColumnPropertiesByName(
                             record.getClass(), work.getAnnoReader(), config, key)
                             .stream()
-                            .filter(p -> p.isReadable())
+                            .filter(p -> p.isWritable())
                             .collect(Collectors.toList());
                 });
 
@@ -535,7 +540,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             final List<FieldAccessor> propeties = FieldAccessorUtils.getColumnPropertiesByName(
                     recordClass, annoReader, config, headerInfo.getLabel())
                     .stream()
-                    .filter(p -> p.isReadable())
+                    .filter(p -> p.isWritable())
                     .collect(Collectors.toList());
             if(!propeties.isEmpty()) {
                 return i;
@@ -552,7 +557,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 recordClass, work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
 
         for(FieldAccessor property : properties) {
@@ -630,7 +635,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
             // アノテーション「@XlsArrayColumns」の属性「columnName」と一致するプロパティを取得する。
             final List<FieldAccessor> arrayProperties = FieldAccessorUtils.getArrayColumnsPropertiesByName(
-                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel());
+                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel())
+                    .stream()
+                    .filter(f -> f.isWritable())
+                    .collect(Collectors.toList());
 
             if(arrayProperties.isEmpty()) {
                 continue;
@@ -711,8 +719,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
-                .filter(p -> p.isReadable())
+                .filter(p -> p.isWritable())
                 .collect(Collectors.toList());
+        
         for(FieldAccessor property : nestedProperties) {
 
             final XlsNestedRecords nestedAnno = property.getAnnotationNullable(XlsNestedRecords.class);
@@ -817,6 +826,11 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsVerticalRecords anno,
             final FieldAccessor accessor, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
+        if(!accessor.isReadable()) {
+            // セルの値を参照するメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isSaveCase(anno.cases())) {
             return;
         }
@@ -1109,7 +1123,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         return FieldAccessorUtils.getColumnPropertiesByName(
                                 record.getClass(), work.getAnnoReader(), config, key)
                                 .stream()
-                                .filter(p -> p.isWritable())
+                                .filter(p -> p.isReadable())
                                 .collect(Collectors.toList());
                     });
 
@@ -1379,7 +1393,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final List<FieldAccessor> properties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 recordClass, work.getAnnoReader(), XlsMapColumns.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
         for(FieldAccessor property : properties) {
 
@@ -1492,7 +1506,10 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
             // アノテーション「@XlsArrayColumns」の属性「columnName」と一致するプロパティを取得する。
             final List<FieldAccessor> arrayProperties = FieldAccessorUtils.getArrayColumnsPropertiesByName(
-                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel());
+                    recordClass, work.getAnnoReader(), config, headerInfo.getLabel())
+                    .stream()
+                    .filter(f -> f.isReadable())
+                    .collect(Collectors.toList());
 
             if(arrayProperties.isEmpty()) {
                 continue;
@@ -1661,8 +1678,9 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
         final List<FieldAccessor> nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(
                 record.getClass(), work.getAnnoReader(), XlsNestedRecords.class)
                 .stream()
-                .filter(p -> p.isWritable())
+                .filter(p -> p.isReadable())
                 .collect(Collectors.toList());
+        
         for(FieldAccessor property : nestedProperties) {
 
             final XlsNestedRecords nestedAnno = property.getAnnotationNullable(XlsNestedRecords.class);

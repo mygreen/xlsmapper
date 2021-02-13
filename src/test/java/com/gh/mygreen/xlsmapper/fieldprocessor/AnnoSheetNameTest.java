@@ -1,8 +1,8 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +23,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
  * {@link SheetNameProcessor}のテスタ
  * アノテーション{@link XlsSheetName}のテスタ。
  *
- * @version 1.0
+ * @version 2.1
  * @since 0.5
  * @author T.TSUCHIE
  *
@@ -96,6 +96,40 @@ public class AnnoSheetNameTest {
         }
 
     }
+    
+    /**
+     * 読み込みのテスト - setterメソッドが存在しない場合
+     * 
+     * @since 2.1.1
+     */
+    @Test
+    public void test_load_sheetName_noSetterMethod() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<NoSetterMethodSheet> errors = mapper.loadDetail(in, NoSetterMethodSheet.class);
+
+            NoSetterMethodSheet sheet = errors.getTarget();
+
+            // メソッドが呼び出されないこと
+            assertThat(sheet.calledMethod, is(false));
+
+        }
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            // setter が存在する場合
+            SheetBindingErrors<NoGetterMethodSheet> errors = mapper.loadDetail(in, NoGetterMethodSheet.class);
+
+            NoGetterMethodSheet sheet = errors.getTarget();
+
+            // メソッドが呼び出されること
+            assertThat(sheet.calledMethod, is(true));
+
+        }
+
+    }
 
     /**
      * 書き込みのテスト - 通常のデータ
@@ -163,6 +197,45 @@ public class AnnoSheetNameTest {
         }
 
     }
+    
+    /**
+     * 書き込みのテスト - setterメソッドが存在しない場合
+     * 
+     * @since 2.1.1
+     */
+    @Test
+    public void test_save_labelled_cell_noGetterMethod() throws Exception {
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            NoGetterMethodSheet outSheet = new NoGetterMethodSheet();
+            mapper.save(template, out, outSheet);
+            
+            // メソッドが呼び出されること
+            // ※シート名は保存時でも値の設定なので呼ばれる。
+            assertThat(outSheet.calledMethod, is(true));
+        }
+        
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            // getter が存在する場合
+            NoSetterMethodSheet outSheet = new NoSetterMethodSheet();
+            mapper.save(template, out, outSheet);
+            
+            // メソッドが呼び出されないこと
+         // ※シート名は保存時でも値の設定なので呼ばれない。
+            assertThat(outSheet.calledMethod, is(false));
+        }
+        
+
+    }
 
     /**
      * 名前によるシート指定
@@ -193,6 +266,39 @@ public class AnnoSheetNameTest {
 
         public void setSheetName(String sheetName) {
             this.sheetName = sheetName;
+        }
+
+    }
+    
+    /**
+     * setterメソッドが存在しない場合
+     * 
+     */
+    @XlsSheet(name="シート名（１）")
+    private static class NoSetterMethodSheet {
+        
+        private boolean calledMethod = false;
+        
+        @XlsSheetName
+        public String getSheetName() {
+            this.calledMethod = true;
+            return "value";
+        }
+
+    }
+    
+    /**
+     * getterメソッドが存在しない場合
+     * 
+     */
+    @XlsSheet(name="シート名（１）")
+    private static class NoGetterMethodSheet {
+        
+        private boolean calledMethod = false;
+        
+        @XlsSheetName
+        public void setSheetName(String sheetName) {
+            this.calledMethod = true;
         }
 
     }

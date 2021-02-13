@@ -165,6 +165,9 @@ public class FieldAccessor {
     
     /**
      * 読み込み可能かどうか判定します。
+     * フィールドの値を参照可能かどうか判定します。
+     * <p>シートを読み込み時にセルの値をBeanに設定可能かの判定に使用します。</p>
+     *
      * @return フィールドまたはgetterメソッドが存在する場合にtrueを返します。
      */
     public boolean isReadable() {
@@ -175,6 +178,8 @@ public class FieldAccessor {
     
     /**
      * 書き込み可能かどうか判定します。
+     * <p>シートを書き込み時にBeanの値をセルに設定可能かの判定に使用します。</p>
+     *
      * @return フィールドまたはsetterメソッドが存在する場合にtrueを返します。
      */
     public boolean isWritable() {

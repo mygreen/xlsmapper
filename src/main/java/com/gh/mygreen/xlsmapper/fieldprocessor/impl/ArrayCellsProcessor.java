@@ -34,6 +34,11 @@ public class ArrayCellsProcessor extends AbstractFieldProcessor<XlsArrayCells> {
     public void loadProcess(final Sheet sheet, final Object beansObj, final  XlsArrayCells anno, final FieldAccessor accessor,
             final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
+        if(!accessor.isWritable()) {
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
         if(!Utils.isLoadCase(anno.cases())) {
             return;
         }
@@ -152,6 +157,15 @@ public class ArrayCellsProcessor extends AbstractFieldProcessor<XlsArrayCells> {
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsArrayCells anno,
             final FieldAccessor accessor, final Configuration config, final SavingWorkObject work)
             throws XlsMapperException {
+
+        if(!accessor.isReadable()) {
+            // セルの値を参照するメソッド／フィールドがない場合はスキップ
+            return;
+        }
+        
+        if(!Utils.isSaveCase(anno.cases())) {
+            return;
+        }
 
         final Class<?> clazz = accessor.getType();
         final Object result = accessor.getValue(beansObj);
