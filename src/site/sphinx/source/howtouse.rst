@@ -20,7 +20,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
-        <version>2.1</version>
+        <version>2.1.1</version>
     </dependency>
 
 
