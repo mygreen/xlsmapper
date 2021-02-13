@@ -50,7 +50,7 @@
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoDefaultValueTest.html">AnnoDefaultValueTest</a> {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AnnoDefaultValueTest" href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoDefaultValueTest.html#AnnoDefaultValueTest">AnnoDefaultValueTest</a> {
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">     * テスト結果ファイルの出力ディレクトリ</em>
@@ -88,7 +88,7 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(inputFile)) {
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>              SheetBindingErrors&lt;NormalValueSheet&gt; errors = mapper.loadDetail(in, NormalValueSheet.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>              <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoDefaultValueTest.html">NormalValueSheet</a> sheet = errors.getTarget();
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>              NormalValueSheet sheet = errors.getTarget();
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>              assertThat(sheet.existWithDefault).isEqualTo(<span class="jxr_string">"あいう"</span>);
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>              assertThat(sheet.blank).isNull();
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_save_normal() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         <em class="jxr_comment">// データ作成</em>
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoDefaultValueTest.html">NormalValueSheet</a> outSheet = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoDefaultValueTest.html">NormalValueSheet</a>();
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         NormalValueSheet outSheet = <strong class="jxr_keyword">new</strong> NormalValueSheet();
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         outSheet.existWithDefault = <span class="jxr_string">"あいう"</span>;
 <a class="jxr_linenumber" name="L140" href="#L140">140</a> 
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
@@ -208,7 +208,7 @@
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>     }
 <a class="jxr_linenumber" name="L201" href="#L201">201</a> 
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>     @XlsSheet(name=<span class="jxr_string">"通常のテスト"</span>)
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoDefaultValueTest.html">NormalValueSheet</a> {
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> NormalValueSheet {
 <a class="jxr_linenumber" name="L204" href="#L204">204</a> 
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, Point&gt; positions;
 <a class="jxr_linenumber" name="L206" href="#L206">206</a> 
@@ -247,6 +247,6 @@
 <a class="jxr_linenumber" name="L239" href="#L239">239</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

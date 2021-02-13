@@ -45,7 +45,7 @@
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">ObjectValidatorTest</a> {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="ObjectValidatorTest" href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html#ObjectValidatorTest">ObjectValidatorTest</a> {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">private</strong> SheetErrorFormatter errorFormatter;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      
@@ -68,10 +68,10 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>              
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>              SheetBindingErrors&lt;SampleSheet&gt; errors = mapper.loadDetail(in, SampleSheet.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>              
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              <a href="../../../../../com/gh/mygreen/xlsmapper/XlsMapperTest.html">SampleSheet</a> sheet = errors.getTarget();
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>              SampleSheet sheet = errors.getTarget();
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>              
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>              <em class="jxr_comment">// 入力値検証</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>              <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a> validator = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a>();
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              SampleSheetValidator validator = <strong class="jxr_keyword">new</strong> SampleSheetValidator();
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>              validator.validate(sheet, errors);
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>              
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>              assertThat(errors.getAllErrors(), hasSize(0));
@@ -93,7 +93,7 @@
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/validator_field.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>              SheetBindingErrors&lt;SampleSheet&gt; errors = mapper.loadDetail(in, SampleSheet.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>              
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>              <a href="../../../../../com/gh/mygreen/xlsmapper/XlsMapperTest.html">SampleSheet</a> sheet = errors.getTarget();
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>              SampleSheet sheet = errors.getTarget();
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>              
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>              <em class="jxr_comment">// データの書き換え</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>              sheet.className = <strong class="jxr_keyword">null</strong>;
@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>              sheet.list.get(2).birthday = getDateByDay(<strong class="jxr_keyword">new</strong> Date(), 1);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>              
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>              <em class="jxr_comment">// 入力値検証</em>
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>              <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a> validator = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a>();
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>              SampleSheetValidator validator = <strong class="jxr_keyword">new</strong> SampleSheetValidator();
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>              validator.validate(sheet, errors);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>              
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>              printErrors(errors);
@@ -118,7 +118,7 @@
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>             {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                 <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>                     errors.pushNestedPath(<span class="jxr_string">"list"</span>, 1);
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>                     <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">PersonRecord</a> record = sheet.list.get(1);
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                     PersonRecord record = sheet.list.get(1);
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>                     String fieldName = <span class="jxr_string">"email"</span>;
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>                     FieldError fieldError = errors.getFirstFieldError(fieldName).get();
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>                     assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(record.positions.get(fieldName)));
@@ -133,7 +133,7 @@
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>             {
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>                 <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>                     errors.pushNestedPath(<span class="jxr_string">"list"</span>, 2);
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>                     <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">PersonRecord</a> record = sheet.list.get(2);
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>                     PersonRecord record = sheet.list.get(2);
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>                     String fieldName = <span class="jxr_string">"birthday"</span>;
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>                     FieldError fieldError = errors.getFirstFieldError(fieldName).get();
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>                     assertThat(fieldError.getAddressAsOptional().get().toPoint(), is(record.positions.get(fieldName)));
@@ -165,10 +165,10 @@
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>             
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>             SheetBindingErrors&lt;SampleSheet&gt; errors = mapper.loadDetail(in, SampleSheet.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>             
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>             <a href="../../../../../com/gh/mygreen/xlsmapper/XlsMapperTest.html">SampleSheet</a> sheet = errors.getTarget();
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>             SampleSheet sheet = errors.getTarget();
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>             
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>             <em class="jxr_comment">// 入力値検証</em>
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>             <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a> validator = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a>();
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>             SampleSheetValidator validator = <strong class="jxr_keyword">new</strong> SampleSheetValidator();
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>             validator.validate(sheet, errors, DefaultGroup.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>             
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>             assertThat(errors.getAllErrors(), hasSize(0));
@@ -190,10 +190,10 @@
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>             
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>             SheetBindingErrors&lt;SampleSheet&gt; errors = mapper.loadDetail(in, SampleSheet.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>             
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>             <a href="../../../../../com/gh/mygreen/xlsmapper/XlsMapperTest.html">SampleSheet</a> sheet = errors.getTarget();
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>             SampleSheet sheet = errors.getTarget();
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>             
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>             <em class="jxr_comment">// 入力値検証</em>
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>             <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a> validator = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a>();
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>             SampleSheetValidator validator = <strong class="jxr_keyword">new</strong> SampleSheetValidator();
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>             validator.validate(sheet, errors, Group1.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>             
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>             printErrors(errors);
@@ -221,7 +221,7 @@
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>     }
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>     
 <a class="jxr_linenumber" name="L215" href="#L215">215</a>     @XlsSheet(name=<span class="jxr_string">"サンプル"</span>)
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/XlsMapperTest.html">SampleSheet</a> {
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SampleSheet {
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, Point&gt; positions;
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>         
@@ -241,7 +241,7 @@
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>         }
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>     }
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>     
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">PersonRecord</a> {
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> PersonRecord {
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>         
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, Point&gt; positions;
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>         
@@ -287,16 +287,16 @@
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> <em class="jxr_javadoccomment">     * {@link SampleSheet}のValidator.</em>
 <a class="jxr_linenumber" name="L280" href="#L280">280</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L281" href="#L281">281</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a> <strong class="jxr_keyword">extends</strong> ObjectValidatorSupport&lt;SampleSheet&gt; {
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SampleSheetValidator <strong class="jxr_keyword">extends</strong> ObjectValidatorSupport&lt;SampleSheet&gt; {
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>         
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">PersonRecordVaidator</a> personRecordValidator;
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         <strong class="jxr_keyword">private</strong> PersonRecordVaidator personRecordValidator;
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>         
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">SampleSheetValidator</a>() {
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>             <strong class="jxr_keyword">this</strong>.personRecordValidator = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">PersonRecordVaidator</a>();
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>         <strong class="jxr_keyword">public</strong> SampleSheetValidator() {
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>             <strong class="jxr_keyword">this</strong>.personRecordValidator = <strong class="jxr_keyword">new</strong> PersonRecordVaidator();
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>         }
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>         
 <a class="jxr_linenumber" name="L290" href="#L290">290</a>         @Override
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> validate(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/XlsMapperTest.html">SampleSheet</a> targetObj, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors, <strong class="jxr_keyword">final</strong> Class&lt;?&gt;... groups) {
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> validate(<strong class="jxr_keyword">final</strong> SampleSheet targetObj, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors, <strong class="jxr_keyword">final</strong> Class&lt;?&gt;... groups) {
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>             
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>             CellField&lt;String&gt; classNameField = <strong class="jxr_keyword">new</strong> CellField&lt;String&gt;(<span class="jxr_string">"className"</span>, errors)
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>                     .setRequired(<strong class="jxr_keyword">true</strong>)
@@ -317,10 +317,10 @@
 <a class="jxr_linenumber" name="L309" href="#L309">309</a> <em class="jxr_javadoccomment">     * {@link PersonRecordRecord}のValidator.</em>
 <a class="jxr_linenumber" name="L310" href="#L310">310</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L311" href="#L311">311</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">PersonRecordVaidator</a> <strong class="jxr_keyword">extends</strong> ObjectValidatorSupport&lt;PersonRecord&gt; {
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> PersonRecordVaidator <strong class="jxr_keyword">extends</strong> ObjectValidatorSupport&lt;PersonRecord&gt; {
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>         
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>         @Override
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> validate(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectValidatorTest.html">PersonRecord</a> targetObj, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors, <strong class="jxr_keyword">final</strong> Class&lt;?&gt;... groups) {
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> validate(<strong class="jxr_keyword">final</strong> PersonRecord targetObj, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors, <strong class="jxr_keyword">final</strong> Class&lt;?&gt;... groups) {
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>             
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>             CellField&lt;String&gt; nameField = <strong class="jxr_keyword">new</strong> CellField&lt;String&gt;(<span class="jxr_string">"name"</span>, errors)
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>                     .setRequired(<strong class="jxr_keyword">true</strong>)
@@ -341,13 +341,13 @@
 <a class="jxr_linenumber" name="L333" href="#L333">333</a>         
 <a class="jxr_linenumber" name="L334" href="#L334">334</a>     }
 <a class="jxr_linenumber" name="L335" href="#L335">335</a>     
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/StringValidatorTest.html">Group1</a> {}
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldValidatorTest.html">Group2</a> {}
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldValidatorTest.html">Group3</a> <strong class="jxr_keyword">extends</strong> Group1, <a href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldValidatorTest.html">Group2</a> {}
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">interface</strong> Group1 {}
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">interface</strong> Group2 {}
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">interface</strong> Group3 <strong class="jxr_keyword">extends</strong> Group1, Group2 {}
 <a class="jxr_linenumber" name="L339" href="#L339">339</a>     
 <a class="jxr_linenumber" name="L340" href="#L340">340</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

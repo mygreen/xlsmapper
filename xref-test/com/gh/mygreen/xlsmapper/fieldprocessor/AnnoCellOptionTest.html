@@ -44,7 +44,7 @@
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoCellOptionTest.html">AnnoCellOptionTest</a> {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AnnoCellOptionTest" href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoCellOptionTest.html#AnnoCellOptionTest">AnnoCellOptionTest</a> {
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     * テスト結果ファイルの出力ディレクトリ</em>
@@ -79,7 +79,7 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          <em class="jxr_comment">// テストデータの作成</em>
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          String value = <span class="jxr_string">"あいうえおかきくけこ１２３４５６７８９０"</span>;
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoCellOptionTest.html">TextControlSheet</a> outSheet = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoCellOptionTest.html">TextControlSheet</a>();
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          TextControlSheet outSheet = <strong class="jxr_keyword">new</strong> TextControlSheet();
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          outSheet.wrapText1 = value;
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          outSheet.wrapText2 = value;
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          outSheet.wrapText3 = value;
@@ -211,7 +211,7 @@
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> 
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>         <em class="jxr_comment">// テストデータの作成</em>
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>         String value = <span class="jxr_string">"あいうえおかきくけこ１２３４５６７８９０"</span>;
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>         <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoCellOptionTest.html">AlignSheet</a> outSheet = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoCellOptionTest.html">AlignSheet</a>();
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>         AlignSheet outSheet = <strong class="jxr_keyword">new</strong> AlignSheet();
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>         outSheet.horizontalDefault = value;
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>         outSheet.horizontalGeneral = value;
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>         outSheet.horizontalLeft = value;
@@ -450,7 +450,7 @@
 <a class="jxr_linenumber" name="L442" href="#L442">442</a>     }
 <a class="jxr_linenumber" name="L443" href="#L443">443</a> 
 <a class="jxr_linenumber" name="L444" href="#L444">444</a>     @XlsSheet(name=<span class="jxr_string">"文字の制御"</span>)
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoCellOptionTest.html">TextControlSheet</a> {
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> TextControlSheet {
 <a class="jxr_linenumber" name="L446" href="#L446">446</a> 
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, CellPosition&gt; positions;
 <a class="jxr_linenumber" name="L448" href="#L448">448</a> 
@@ -497,7 +497,7 @@
 <a class="jxr_linenumber" name="L489" href="#L489">489</a>     }
 <a class="jxr_linenumber" name="L490" href="#L490">490</a> 
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>     @XlsSheet(name=<span class="jxr_string">"位置の制御"</span>)
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/AnnoCellOptionTest.html">AlignSheet</a> {
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> AlignSheet {
 <a class="jxr_linenumber" name="L493" href="#L493">493</a> 
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, CellPosition&gt; positions;
 <a class="jxr_linenumber" name="L495" href="#L495">495</a> 
@@ -580,6 +580,6 @@
 <a class="jxr_linenumber" name="L572" href="#L572">572</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

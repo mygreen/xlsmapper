@@ -30,7 +30,7 @@
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/localization/ResourceBundleMessageResolver.html">ResourceBundleMessageResolver</a> <strong class="jxr_keyword">implements</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/localization/MessageResolver.html">MessageResolver</a> {
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="ResourceBundleMessageResolver" href="../../../../../com/gh/mygreen/xlsmapper/localization/ResourceBundleMessageResolver.html#ResourceBundleMessageResolver">ResourceBundleMessageResolver</a> <strong class="jxr_keyword">implements</strong> <a name="MessageResolver" href="../../../../../com/gh/mygreen/xlsmapper/localization/MessageResolver.html#MessageResolver">MessageResolver</a> {
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>      
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">     * デフォルトのメッセージソースのパス</em>
@@ -48,10 +48,10 @@
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">     *      引数baseNameの値が {@literal sample.SampleMessages}のとき、クラスパスのルート上にある「SampleMessages」を読み込みます。</em>
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">     * @throws IllegalArgumentException {@literal baseName is null or empty.}</em>
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/localization/ResourceBundleMessageResolver.html">ResourceBundleMessageResolver</a>(<strong class="jxr_keyword">final</strong> String baseName, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> appendUserResource) {
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">public</strong> <a name="ResourceBundleMessageResolver" href="../../../../../com/gh/mygreen/xlsmapper/localization/ResourceBundleMessageResolver.html#ResourceBundleMessageResolver">ResourceBundleMessageResolver</a>(<strong class="jxr_keyword">final</strong> String baseName, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> appendUserResource) {
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>          ArgUtils.notEmpty(baseName, <span class="jxr_string">"baseName"</span>);
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          addResourceBundle(ResourceBundle.getBundle(baseName, <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/localization/EncodingControl.html">EncodingControl</a>(<span class="jxr_string">"UTF-8"</span>)));
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          addResourceBundle(ResourceBundle.getBundle(baseName, <strong class="jxr_keyword">new</strong> <a name="EncodingControl" href="../../../../../com/gh/mygreen/xlsmapper/localization/EncodingControl.html#EncodingControl">EncodingControl</a>(<span class="jxr_string">"UTF-8"</span>)));
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>          <em class="jxr_comment">// ユーザ定義のリソースを読み込む</em>
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          <strong class="jxr_keyword">if</strong>(appendUserResource) {
@@ -60,7 +60,7 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>              <strong class="jxr_keyword">if</strong>(index &gt; 0) {
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>                  <strong class="jxr_keyword">final</strong> String userName = baseName.substring(index+1);
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>                  <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>                      addResourceBundle(ResourceBundle.getBundle(userName, <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/localization/EncodingControl.html">EncodingControl</a>(<span class="jxr_string">"UTF-8"</span>)));
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>                      addResourceBundle(ResourceBundle.getBundle(userName, <strong class="jxr_keyword">new</strong> <a name="EncodingControl" href="../../../../../com/gh/mygreen/xlsmapper/localization/EncodingControl.html#EncodingControl">EncodingControl</a>(<span class="jxr_string">"UTF-8"</span>)));
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>                  } <strong class="jxr_keyword">catch</strong>(Throwable e) { }
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>              }
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>          }
@@ -72,7 +72,7 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;デフォルトのメッセージソース{@link #DEFAULT_MESSAGE}が自動的に読み込まれます。&lt;/p&gt;</em>
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">     * </em>
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/localization/ResourceBundleMessageResolver.html">ResourceBundleMessageResolver</a>() {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <a name="ResourceBundleMessageResolver" href="../../../../../com/gh/mygreen/xlsmapper/localization/ResourceBundleMessageResolver.html#ResourceBundleMessageResolver">ResourceBundleMessageResolver</a>() {
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">this</strong>(DEFAULT_MESSAGE, <strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      
@@ -82,7 +82,7 @@
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">     * @param resourceBundle 独自のメッセージメース</em>
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">     * @throws IllegalArgumentException resourceBundle is null.</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/localization/ResourceBundleMessageResolver.html">ResourceBundleMessageResolver</a>(<strong class="jxr_keyword">final</strong> ResourceBundle resourceBundle) {
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">public</strong> <a name="ResourceBundleMessageResolver" href="../../../../../com/gh/mygreen/xlsmapper/localization/ResourceBundleMessageResolver.html#ResourceBundleMessageResolver">ResourceBundleMessageResolver</a>(<strong class="jxr_keyword">final</strong> ResourceBundle resourceBundle) {
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>          <strong class="jxr_keyword">this</strong>();
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>          Objects.requireNonNull(resourceBundle, <span class="jxr_string">"resourceBundle should no be null"</span>);
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          addResourceBundle(resourceBundle);
@@ -150,6 +150,6 @@
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

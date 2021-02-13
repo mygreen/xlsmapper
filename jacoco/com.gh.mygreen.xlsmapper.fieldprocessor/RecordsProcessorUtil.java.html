@@ -223,7 +223,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
         
 <span class="fc" id="L224">        final List&lt;FieldAccessor&gt; nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)</span>
 <span class="fc" id="L225">                .stream()</span>
-<span class="fc" id="L226">                .filter(p -&gt; p.isReadable())</span>
+<span class="fc" id="L226">                .filter(p -&gt; p.isWritable())</span>
 <span class="fc" id="L227">                .collect(Collectors.toList());</span>
         
 <span class="fc bfc" id="L229" title="All 2 branches covered.">        for(FieldAccessor property : nestedProperties) {</span>
@@ -306,7 +306,7 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
         
 <span class="fc" id="L307">        final List&lt;FieldAccessor&gt; nestedProperties = FieldAccessorUtils.getPropertiesWithAnnotation(recordClass, reader, XlsNestedRecords.class)</span>
 <span class="fc" id="L308">                .stream()</span>
-<span class="fc" id="L309">                .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L309">                .filter(p -&gt; p.isReadable())</span>
 <span class="fc" id="L310">                .collect(Collectors.toList());</span>
         
 <span class="fc bfc" id="L312" title="All 2 branches covered.">        for(FieldAccessor property : nestedProperties) {</span>
@@ -352,4 +352,4 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
         
 <span class="fc" id="L353">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -28,7 +28,7 @@
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetterFactory.html">MapCommentGetterFactory</a> {
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="MapCommentGetterFactory" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetterFactory.html#MapCommentGetterFactory">MapCommentGetterFactory</a> {
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>      
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger log = LoggerFactory.getLogger(MapCommentGetterFactory.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>      
@@ -46,19 +46,19 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>          ArgUtils.notEmpty(fieldName, <span class="jxr_string">"fieldName"</span>);
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>          
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>          <em class="jxr_comment">// フィールド Map commentsの場合</em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>          Optional&lt;MapCommentGetter&gt; <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html">MapCommentGetter</a> = createMapField(beanClass, fieldName);
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          Optional&lt;MapCommentGetter&gt; <a name="MapCommentGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html#MapCommentGetter">MapCommentGetter</a> = createMapField(beanClass, fieldName);
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          <strong class="jxr_keyword">if</strong>(MapCommentGetter.isPresent()) {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>              <strong class="jxr_keyword">return</strong> MapCommentGetter;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>          }
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          <em class="jxr_comment">// setter メソッドの場合</em>
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>          <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html">MapCommentGetter</a> = createMethod(beanClass, fieldName);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          <a name="MapCommentGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html#MapCommentGetter">MapCommentGetter</a> = createMethod(beanClass, fieldName);
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>          <strong class="jxr_keyword">if</strong>(MapCommentGetter.isPresent()) {
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>              <strong class="jxr_keyword">return</strong> MapCommentGetter;
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          }
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>          <em class="jxr_comment">// フィールド + commentの場合</em>
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html">MapCommentGetter</a> = createField(beanClass, fieldName);
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <a name="MapCommentGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html#MapCommentGetter">MapCommentGetter</a> = createField(beanClass, fieldName);
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">if</strong>(MapCommentGetter.isPresent()) {
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>              <strong class="jxr_keyword">return</strong> MapCommentGetter;
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>          }
@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          <strong class="jxr_keyword">final</strong> Class&lt;?&gt; valueType = (Class&lt;?&gt;) type.getActualTypeArguments()[1];
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          <strong class="jxr_keyword">if</strong>(keyType.equals(String.<strong class="jxr_keyword">class</strong>) &amp;&amp; valueType.equals(String.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>              <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html">MapCommentGetter</a>() {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>              <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="MapCommentGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html#MapCommentGetter">MapCommentGetter</a>() {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>                  
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>                  @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>                  @Override
@@ -139,7 +139,7 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         }
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         <strong class="jxr_keyword">if</strong>(method.getReturnType().equals(String.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html">MapCommentGetter</a>() {
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="MapCommentGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html#MapCommentGetter">MapCommentGetter</a>() {
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>                 
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 @Override
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>                 <strong class="jxr_keyword">public</strong> Optional&lt;String&gt; get(<strong class="jxr_keyword">final</strong> Object beanObj, <strong class="jxr_keyword">final</strong> String key) {
@@ -185,7 +185,7 @@
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>         <strong class="jxr_keyword">if</strong>(keyType.equals(String.<strong class="jxr_keyword">class</strong>) &amp;&amp; valueType.equals(String.<strong class="jxr_keyword">class</strong>)) {
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>             
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html">MapCommentGetter</a>() {
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="MapCommentGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/MapCommentGetter.html#MapCommentGetter">MapCommentGetter</a>() {
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>                 
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>                 @Override
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>                 <strong class="jxr_keyword">public</strong> Optional&lt;String&gt; get(<strong class="jxr_keyword">final</strong> Object beanObj, <strong class="jxr_keyword">final</strong> String key) {
@@ -214,6 +214,6 @@
 <a class="jxr_linenumber" name="L206" href="#L206">206</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

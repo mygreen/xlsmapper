@@ -54,7 +54,7 @@
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">EnumCellConverterTest</a> {
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="EnumCellConverterTest" href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html#EnumCellConverterTest">EnumCellConverterTest</a> {
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_javadoccomment">     * テスト結果ファイルの出力ディレクトリ</em>
@@ -87,23 +87,23 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/convert.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>              SheetBindingErrors&lt;EnumSheet&gt; errors = mapper.loadDetail(in, EnumSheet.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">EnumSheet</a> sheet = errors.getTarget();
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>              EnumSheet sheet = errors.getTarget();
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>              <strong class="jxr_keyword">if</strong>(sheet.simpleRecords != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>                  <strong class="jxr_keyword">for</strong>(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> record : sheet.simpleRecords) {
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>                  <strong class="jxr_keyword">for</strong>(SimpleRecord record : sheet.simpleRecords) {
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>                      assertRecord(record, errors);
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>                  }
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>              }
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>              <strong class="jxr_keyword">if</strong>(sheet.formattedRecords != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>                  <strong class="jxr_keyword">for</strong>(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> record : sheet.formattedRecords) {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                  <strong class="jxr_keyword">for</strong>(FormattedRecord record : sheet.formattedRecords) {
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>                      assertRecord(record, errors);
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                  }
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>              }
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>  
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>              <strong class="jxr_keyword">if</strong>(sheet.formulaRecords != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>                  <strong class="jxr_keyword">for</strong>(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> record : sheet.formulaRecords) {
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                  <strong class="jxr_keyword">for</strong>(FormulaRecord record : sheet.formulaRecords) {
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>                      assertRecord(record, errors);
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>                 }
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>             }
@@ -111,7 +111,7 @@
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         }
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     }
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> SimpleRecord record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         <strong class="jxr_keyword">if</strong>(record.no == 1) {
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>             <em class="jxr_comment">// 空文字</em>
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>             assertThat(record.color, is(nullValue()));
@@ -187,7 +187,7 @@
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         }
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>     }
 <a class="jxr_linenumber" name="L181" href="#L181">181</a> 
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> FormattedRecord record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
 <a class="jxr_linenumber" name="L183" href="#L183">183</a> 
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>         <strong class="jxr_keyword">if</strong>(record.no == 1) {
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>             <em class="jxr_comment">// 空文字</em>
@@ -235,7 +235,7 @@
 <a class="jxr_linenumber" name="L227" href="#L227">227</a> 
 <a class="jxr_linenumber" name="L228" href="#L228">228</a>     }
 <a class="jxr_linenumber" name="L229" href="#L229">229</a> 
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> FormulaRecord record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
 <a class="jxr_linenumber" name="L231" href="#L231">231</a> 
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>         <strong class="jxr_keyword">if</strong>(record.no == 1) {
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>             <em class="jxr_comment">// 空文字</em>
@@ -260,29 +260,29 @@
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_save_enum() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L253" href="#L253">253</a> 
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>         <em class="jxr_comment">// テストデータの作成</em>
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">EnumSheet</a> outSheet = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">EnumSheet</a>();
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>         <strong class="jxr_keyword">final</strong> EnumSheet outSheet = <strong class="jxr_keyword">new</strong> EnumSheet();
 <a class="jxr_linenumber" name="L256" href="#L256">256</a> 
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>         <em class="jxr_comment">// アノテーションなしのデータ作成</em>
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>                 .comment(<span class="jxr_string">"空文字"</span>));
 <a class="jxr_linenumber" name="L260" href="#L260">260</a> 
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L262" href="#L262">262</a>                 .color(Color.Green)
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>                 .operate(Operate.Edit)
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>                 .comment(<span class="jxr_string">"値"</span>));
 <a class="jxr_linenumber" name="L265" href="#L265">265</a> 
 <a class="jxr_linenumber" name="L266" href="#L266">266</a>         <em class="jxr_comment">// アノテーションありのデータ作成</em>
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>                 .comment(<span class="jxr_string">"空文字"</span>));
 <a class="jxr_linenumber" name="L269" href="#L269">269</a> 
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>                 .color(Color.Green)
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>                 .operate(Operate.Edit)
 <a class="jxr_linenumber" name="L273" href="#L273">273</a>                 .comment(<span class="jxr_string">"値"</span>));
 <a class="jxr_linenumber" name="L274" href="#L274">274</a> 
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>         <em class="jxr_comment">// 数式のデータ作成</em>
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a>().comment(<span class="jxr_string">"空文字"</span>));
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a>().comment(<span class="jxr_string">"R"</span>));
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormulaRecord().comment(<span class="jxr_string">"空文字"</span>));
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormulaRecord().comment(<span class="jxr_string">"R"</span>));
 <a class="jxr_linenumber" name="L278" href="#L278">278</a> 
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
@@ -299,7 +299,7 @@
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>         <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(outFile)) {
 <a class="jxr_linenumber" name="L292" href="#L292">292</a> 
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>             SheetBindingErrors&lt;EnumSheet&gt; errors = mapper.loadDetail(in, EnumSheet.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>             <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">EnumSheet</a> sheet = errors.getTarget();
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>             EnumSheet sheet = errors.getTarget();
 <a class="jxr_linenumber" name="L295" href="#L295">295</a> 
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>             <strong class="jxr_keyword">if</strong>(sheet.simpleRecords != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L297" href="#L297">297</a>                 assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
@@ -334,7 +334,7 @@
 <a class="jxr_linenumber" name="L326" href="#L326">326</a> <em class="jxr_javadoccomment">     * @param outRecord</em>
 <a class="jxr_linenumber" name="L327" href="#L327">327</a> <em class="jxr_javadoccomment">     * @param errors</em>
 <a class="jxr_linenumber" name="L328" href="#L328">328</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> inRecord, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> SimpleRecord inRecord, <strong class="jxr_keyword">final</strong> SimpleRecord outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
 <a class="jxr_linenumber" name="L330" href="#L330">330</a> 
 <a class="jxr_linenumber" name="L331" href="#L331">331</a>         System.out.printf(<span class="jxr_string">"%s - assertRecord::%s no=%d, comment=%s\n"</span>,
 <a class="jxr_linenumber" name="L332" href="#L332">332</a>                 <strong class="jxr_keyword">this</strong>.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -351,7 +351,7 @@
 <a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     * @param outRecord</em>
 <a class="jxr_linenumber" name="L344" href="#L344">344</a> <em class="jxr_javadoccomment">     * @param errors</em>
 <a class="jxr_linenumber" name="L345" href="#L345">345</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> inRecord, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> FormattedRecord inRecord, <strong class="jxr_keyword">final</strong> FormattedRecord outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
 <a class="jxr_linenumber" name="L347" href="#L347">347</a> 
 <a class="jxr_linenumber" name="L348" href="#L348">348</a>         System.out.printf(<span class="jxr_string">"%s - assertRecord::%s no=%d, comment=%s\n"</span>,
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>                 <strong class="jxr_keyword">this</strong>.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -376,7 +376,7 @@
 <a class="jxr_linenumber" name="L368" href="#L368">368</a> <em class="jxr_javadoccomment">     * @param outRecord</em>
 <a class="jxr_linenumber" name="L369" href="#L369">369</a> <em class="jxr_javadoccomment">     * @param errors</em>
 <a class="jxr_linenumber" name="L370" href="#L370">370</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> inRecord, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> FormulaRecord inRecord, <strong class="jxr_keyword">final</strong> FormulaRecord outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
 <a class="jxr_linenumber" name="L372" href="#L372">372</a> 
 <a class="jxr_linenumber" name="L373" href="#L373">373</a>         System.out.printf(<span class="jxr_string">"%s - assertRecord::%s no=%d, comment=%s\n"</span>,
 <a class="jxr_linenumber" name="L374" href="#L374">374</a>                 <strong class="jxr_keyword">this</strong>.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -398,7 +398,7 @@
 <a class="jxr_linenumber" name="L390" href="#L390">390</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">     * 列挙型 - 単純な列挙型</em>
 <a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>     <strong class="jxr_keyword">private</strong> enum <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Color</a> {
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>     <strong class="jxr_keyword">private</strong> enum Color {
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>         Red,
 <a class="jxr_linenumber" name="L395" href="#L395">395</a>         Green,
 <a class="jxr_linenumber" name="L396" href="#L396">396</a>         Yellow,
@@ -408,7 +408,7 @@
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L401" href="#L401">401</a> <em class="jxr_javadoccomment">     * 列挙型 - メソッド、フィールドを持つ</em>
 <a class="jxr_linenumber" name="L402" href="#L402">402</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>     <strong class="jxr_keyword">private</strong> enum <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Operate</a> {
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>     <strong class="jxr_keyword">private</strong> enum Operate {
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>         Refer(<span class="jxr_string">"参照"</span>),
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>         Edit(<span class="jxr_string">"編集"</span>),
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>         Delete(<span class="jxr_string">"削除"</span>),
@@ -416,7 +416,7 @@
 <a class="jxr_linenumber" name="L408" href="#L408">408</a> 
 <a class="jxr_linenumber" name="L409" href="#L409">409</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String localeName;
 <a class="jxr_linenumber" name="L410" href="#L410">410</a> 
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Operate</a>(String localeName) {
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>         <strong class="jxr_keyword">private</strong> Operate(String localeName) {
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>             <strong class="jxr_keyword">this</strong>.localeName = localeName;
 <a class="jxr_linenumber" name="L413" href="#L413">413</a>         }
 <a class="jxr_linenumber" name="L414" href="#L414">414</a> 
@@ -427,7 +427,7 @@
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>     }
 <a class="jxr_linenumber" name="L420" href="#L420">420</a> 
 <a class="jxr_linenumber" name="L421" href="#L421">421</a>     @XlsSheet(name=<span class="jxr_string">"列挙型"</span>)
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">EnumSheet</a> {
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> EnumSheet {
 <a class="jxr_linenumber" name="L423" href="#L423">423</a> 
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>         @XlsOrder(1)
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"列挙型（アノテーションなし）"</span>, terminal=RecordTerminal.Border)
@@ -449,7 +449,7 @@
 <a class="jxr_linenumber" name="L441" href="#L441">441</a> <em class="jxr_javadoccomment">         * @param record</em>
 <a class="jxr_linenumber" name="L442" href="#L442">442</a> <em class="jxr_javadoccomment">         * @return</em>
 <a class="jxr_linenumber" name="L443" href="#L443">443</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">EnumSheet</a> add(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> record) {
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>         <strong class="jxr_keyword">public</strong> EnumSheet add(SimpleRecord record) {
 <a class="jxr_linenumber" name="L445" href="#L445">445</a>             <strong class="jxr_keyword">if</strong>(simpleRecords == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L446" href="#L446">446</a>                 <strong class="jxr_keyword">this</strong>.simpleRecords = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>             }
@@ -463,7 +463,7 @@
 <a class="jxr_linenumber" name="L455" href="#L455">455</a> <em class="jxr_javadoccomment">         * @param record</em>
 <a class="jxr_linenumber" name="L456" href="#L456">456</a> <em class="jxr_javadoccomment">         * @return</em>
 <a class="jxr_linenumber" name="L457" href="#L457">457</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">EnumSheet</a> add(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> record) {
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>         <strong class="jxr_keyword">public</strong> EnumSheet add(FormattedRecord record) {
 <a class="jxr_linenumber" name="L459" href="#L459">459</a>             <strong class="jxr_keyword">if</strong>(formattedRecords == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>                 <strong class="jxr_keyword">this</strong>.formattedRecords = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L461" href="#L461">461</a>             }
@@ -477,7 +477,7 @@
 <a class="jxr_linenumber" name="L469" href="#L469">469</a> <em class="jxr_javadoccomment">         * @param record</em>
 <a class="jxr_linenumber" name="L470" href="#L470">470</a> <em class="jxr_javadoccomment">         * @return</em>
 <a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">EnumSheet</a> add(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> record) {
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>         <strong class="jxr_keyword">public</strong> EnumSheet add(FormulaRecord record) {
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>             <strong class="jxr_keyword">if</strong>(formulaRecords == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L474" href="#L474">474</a>                 <strong class="jxr_keyword">this</strong>.formulaRecords = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L475" href="#L475">475</a>             }
@@ -491,7 +491,7 @@
 <a class="jxr_linenumber" name="L483" href="#L483">483</a> <em class="jxr_javadoccomment">     * 列挙型 - アノテーションなし</em>
 <a class="jxr_linenumber" name="L484" href="#L484">484</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L485" href="#L485">485</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> {
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SimpleRecord {
 <a class="jxr_linenumber" name="L487" href="#L487">487</a> 
 <a class="jxr_linenumber" name="L488" href="#L488">488</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, Point&gt; positions;
 <a class="jxr_linenumber" name="L489" href="#L489">489</a> 
@@ -501,10 +501,10 @@
 <a class="jxr_linenumber" name="L493" href="#L493">493</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> no;
 <a class="jxr_linenumber" name="L494" href="#L494">494</a> 
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>         @XlsColumn(columnName=<span class="jxr_string">"Enum型（英字）1"</span>)
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Color</a> color;
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>         <strong class="jxr_keyword">private</strong> Color color;
 <a class="jxr_linenumber" name="L497" href="#L497">497</a> 
 <a class="jxr_linenumber" name="L498" href="#L498">498</a>         @XlsColumn(columnName=<span class="jxr_string">"Enum型（英字）2"</span>)
-<a class="jxr_linenumber" name="L499" href="#L499">499</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Operate</a> operate;
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>         <strong class="jxr_keyword">private</strong> Operate operate;
 <a class="jxr_linenumber" name="L500" href="#L500">500</a> 
 <a class="jxr_linenumber" name="L501" href="#L501">501</a>         @XlsColumn(columnName=<span class="jxr_string">"備考"</span>)
 <a class="jxr_linenumber" name="L502" href="#L502">502</a>         <strong class="jxr_keyword">private</strong> String comment;
@@ -514,22 +514,22 @@
 <a class="jxr_linenumber" name="L506" href="#L506">506</a>             <strong class="jxr_keyword">return</strong> IsEmptyBuilder.reflectionIsEmpty(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"positions"</span>, <span class="jxr_string">"labels"</span>, <span class="jxr_string">"no"</span>);
 <a class="jxr_linenumber" name="L507" href="#L507">507</a>         }
 <a class="jxr_linenumber" name="L508" href="#L508">508</a> 
-<a class="jxr_linenumber" name="L509" href="#L509">509</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> no(<strong class="jxr_keyword">int</strong> no) {
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>         <strong class="jxr_keyword">public</strong> SimpleRecord no(<strong class="jxr_keyword">int</strong> no) {
 <a class="jxr_linenumber" name="L510" href="#L510">510</a>             <strong class="jxr_keyword">this</strong>.no = no;
 <a class="jxr_linenumber" name="L511" href="#L511">511</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L512" href="#L512">512</a>         }
 <a class="jxr_linenumber" name="L513" href="#L513">513</a> 
-<a class="jxr_linenumber" name="L514" href="#L514">514</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> color(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Color</a> color) {
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>         <strong class="jxr_keyword">public</strong> SimpleRecord color(Color color) {
 <a class="jxr_linenumber" name="L515" href="#L515">515</a>             <strong class="jxr_keyword">this</strong>.color = color;
 <a class="jxr_linenumber" name="L516" href="#L516">516</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L517" href="#L517">517</a>         }
 <a class="jxr_linenumber" name="L518" href="#L518">518</a> 
-<a class="jxr_linenumber" name="L519" href="#L519">519</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> operate(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Operate</a> operate) {
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>         <strong class="jxr_keyword">public</strong> SimpleRecord operate(Operate operate) {
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>             <strong class="jxr_keyword">this</strong>.operate = operate;
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>         }
 <a class="jxr_linenumber" name="L523" href="#L523">523</a> 
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> comment(String comment) {
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>         <strong class="jxr_keyword">public</strong> SimpleRecord comment(String comment) {
 <a class="jxr_linenumber" name="L525" href="#L525">525</a>             <strong class="jxr_keyword">this</strong>.comment = comment;
 <a class="jxr_linenumber" name="L526" href="#L526">526</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L527" href="#L527">527</a>         }
@@ -539,7 +539,7 @@
 <a class="jxr_linenumber" name="L531" href="#L531">531</a> <em class="jxr_javadoccomment">     * 列挙型 - 初期値など</em>
 <a class="jxr_linenumber" name="L532" href="#L532">532</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L533" href="#L533">533</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L534" href="#L534">534</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> {
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> FormattedRecord {
 <a class="jxr_linenumber" name="L535" href="#L535">535</a> 
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, Point&gt; positions;
 <a class="jxr_linenumber" name="L537" href="#L537">537</a> 
@@ -552,13 +552,13 @@
 <a class="jxr_linenumber" name="L544" href="#L544">544</a>         @XlsTrim
 <a class="jxr_linenumber" name="L545" href="#L545">545</a>         @XlsEnumConverter(ignoreCase=<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L546" href="#L546">546</a>         @XlsColumn(columnName=<span class="jxr_string">"Enum型（英字）"</span>)
-<a class="jxr_linenumber" name="L547" href="#L547">547</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Color</a> color;
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>         <strong class="jxr_keyword">private</strong> Color color;
 <a class="jxr_linenumber" name="L548" href="#L548">548</a> 
 <a class="jxr_linenumber" name="L549" href="#L549">549</a>         @XlsDefaultValue(<span class="jxr_string">"参照"</span>)
 <a class="jxr_linenumber" name="L550" href="#L550">550</a>         @XlsTrim
 <a class="jxr_linenumber" name="L551" href="#L551">551</a>         @XlsEnumConverter(ignoreCase=<strong class="jxr_keyword">true</strong>, aliasMethod=<span class="jxr_string">"localeName"</span>)
 <a class="jxr_linenumber" name="L552" href="#L552">552</a>         @XlsColumn(columnName=<span class="jxr_string">"Enum型（日本語）"</span>)
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Operate</a> operate;
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>         <strong class="jxr_keyword">private</strong> Operate operate;
 <a class="jxr_linenumber" name="L554" href="#L554">554</a> 
 <a class="jxr_linenumber" name="L555" href="#L555">555</a>         @XlsColumn(columnName=<span class="jxr_string">"備考"</span>)
 <a class="jxr_linenumber" name="L556" href="#L556">556</a>         <strong class="jxr_keyword">private</strong> String comment;
@@ -568,22 +568,22 @@
 <a class="jxr_linenumber" name="L560" href="#L560">560</a>             <strong class="jxr_keyword">return</strong> IsEmptyBuilder.reflectionIsEmpty(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"positions"</span>, <span class="jxr_string">"labels"</span>, <span class="jxr_string">"no"</span>);
 <a class="jxr_linenumber" name="L561" href="#L561">561</a>         }
 <a class="jxr_linenumber" name="L562" href="#L562">562</a> 
-<a class="jxr_linenumber" name="L563" href="#L563">563</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> no(<strong class="jxr_keyword">int</strong> no) {
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>         <strong class="jxr_keyword">public</strong> FormattedRecord no(<strong class="jxr_keyword">int</strong> no) {
 <a class="jxr_linenumber" name="L564" href="#L564">564</a>             <strong class="jxr_keyword">this</strong>.no = no;
 <a class="jxr_linenumber" name="L565" href="#L565">565</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L566" href="#L566">566</a>         }
 <a class="jxr_linenumber" name="L567" href="#L567">567</a> 
-<a class="jxr_linenumber" name="L568" href="#L568">568</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> color(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Color</a> color) {
+<a class="jxr_linenumber" name="L568" href="#L568">568</a>         <strong class="jxr_keyword">public</strong> FormattedRecord color(Color color) {
 <a class="jxr_linenumber" name="L569" href="#L569">569</a>             <strong class="jxr_keyword">this</strong>.color = color;
 <a class="jxr_linenumber" name="L570" href="#L570">570</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L571" href="#L571">571</a>         }
 <a class="jxr_linenumber" name="L572" href="#L572">572</a> 
-<a class="jxr_linenumber" name="L573" href="#L573">573</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> operate(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Operate</a> operate) {
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>         <strong class="jxr_keyword">public</strong> FormattedRecord operate(Operate operate) {
 <a class="jxr_linenumber" name="L574" href="#L574">574</a>             <strong class="jxr_keyword">this</strong>.operate = operate;
 <a class="jxr_linenumber" name="L575" href="#L575">575</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>         }
 <a class="jxr_linenumber" name="L577" href="#L577">577</a> 
-<a class="jxr_linenumber" name="L578" href="#L578">578</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> comment(String comment) {
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>         <strong class="jxr_keyword">public</strong> FormattedRecord comment(String comment) {
 <a class="jxr_linenumber" name="L579" href="#L579">579</a>             <strong class="jxr_keyword">this</strong>.comment = comment;
 <a class="jxr_linenumber" name="L580" href="#L580">580</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L581" href="#L581">581</a>         }
@@ -594,7 +594,7 @@
 <a class="jxr_linenumber" name="L586" href="#L586">586</a> <em class="jxr_javadoccomment">     * 列挙型 - 数式</em>
 <a class="jxr_linenumber" name="L587" href="#L587">587</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L588" href="#L588">588</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L589" href="#L589">589</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> {
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> FormulaRecord {
 <a class="jxr_linenumber" name="L590" href="#L590">590</a> 
 <a class="jxr_linenumber" name="L591" href="#L591">591</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, Point&gt; positions;
 <a class="jxr_linenumber" name="L592" href="#L592">592</a> 
@@ -606,12 +606,12 @@
 <a class="jxr_linenumber" name="L598" href="#L598">598</a>         @XlsEnumConverter(ignoreCase=<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L599" href="#L599">599</a>         @XlsColumn(columnName=<span class="jxr_string">"Enum型（英字）"</span>)
 <a class="jxr_linenumber" name="L600" href="#L600">600</a>         @XlsFormula(<span class="jxr_string">"IF(&#92;&#92;$D{rowNumber}=\&quot;R\&quot;,\&quot;Red\&quot;,\&quot;\&quot;)"</span>)
-<a class="jxr_linenumber" name="L601" href="#L601">601</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Color</a> color;
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>         <strong class="jxr_keyword">private</strong> Color color;
 <a class="jxr_linenumber" name="L602" href="#L602">602</a> 
 <a class="jxr_linenumber" name="L603" href="#L603">603</a>         @XlsEnumConverter(ignoreCase=<strong class="jxr_keyword">true</strong>, aliasMethod=<span class="jxr_string">"localeName"</span>)
 <a class="jxr_linenumber" name="L604" href="#L604">604</a>         @XlsColumn(columnName=<span class="jxr_string">"Enum型（日本語）"</span>)
 <a class="jxr_linenumber" name="L605" href="#L605">605</a>         @XlsFormula(<span class="jxr_string">"IF(&#92;&#92;$D{rowNumber}=\&quot;R\&quot;,\&quot;参照\&quot;,\&quot;\&quot;)"</span>)
-<a class="jxr_linenumber" name="L606" href="#L606">606</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Operate</a> operate;
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>         <strong class="jxr_keyword">private</strong> Operate operate;
 <a class="jxr_linenumber" name="L607" href="#L607">607</a> 
 <a class="jxr_linenumber" name="L608" href="#L608">608</a>         @XlsColumn(columnName=<span class="jxr_string">"備考"</span>)
 <a class="jxr_linenumber" name="L609" href="#L609">609</a>         <strong class="jxr_keyword">private</strong> String comment;
@@ -621,22 +621,22 @@
 <a class="jxr_linenumber" name="L613" href="#L613">613</a>             <strong class="jxr_keyword">return</strong> IsEmptyBuilder.reflectionIsEmpty(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"positions"</span>, <span class="jxr_string">"labels"</span>, <span class="jxr_string">"no"</span>);
 <a class="jxr_linenumber" name="L614" href="#L614">614</a>         }
 <a class="jxr_linenumber" name="L615" href="#L615">615</a> 
-<a class="jxr_linenumber" name="L616" href="#L616">616</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> no(<strong class="jxr_keyword">int</strong> no) {
+<a class="jxr_linenumber" name="L616" href="#L616">616</a>         <strong class="jxr_keyword">public</strong> FormulaRecord no(<strong class="jxr_keyword">int</strong> no) {
 <a class="jxr_linenumber" name="L617" href="#L617">617</a>             <strong class="jxr_keyword">this</strong>.no = no;
 <a class="jxr_linenumber" name="L618" href="#L618">618</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L619" href="#L619">619</a>         }
 <a class="jxr_linenumber" name="L620" href="#L620">620</a> 
-<a class="jxr_linenumber" name="L621" href="#L621">621</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> color(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Color</a> color) {
+<a class="jxr_linenumber" name="L621" href="#L621">621</a>         <strong class="jxr_keyword">public</strong> FormulaRecord color(Color color) {
 <a class="jxr_linenumber" name="L622" href="#L622">622</a>             <strong class="jxr_keyword">this</strong>.color = color;
 <a class="jxr_linenumber" name="L623" href="#L623">623</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L624" href="#L624">624</a>         }
 <a class="jxr_linenumber" name="L625" href="#L625">625</a> 
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> operate(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/EnumCellConverterTest.html">Operate</a> operate) {
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>         <strong class="jxr_keyword">public</strong> FormulaRecord operate(Operate operate) {
 <a class="jxr_linenumber" name="L627" href="#L627">627</a>             <strong class="jxr_keyword">this</strong>.operate = operate;
 <a class="jxr_linenumber" name="L628" href="#L628">628</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L629" href="#L629">629</a>         }
 <a class="jxr_linenumber" name="L630" href="#L630">630</a> 
-<a class="jxr_linenumber" name="L631" href="#L631">631</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> comment(String comment) {
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>         <strong class="jxr_keyword">public</strong> FormulaRecord comment(String comment) {
 <a class="jxr_linenumber" name="L632" href="#L632">632</a>             <strong class="jxr_keyword">this</strong>.comment = comment;
 <a class="jxr_linenumber" name="L633" href="#L633">633</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L634" href="#L634">634</a>         }
@@ -645,6 +645,6 @@
 <a class="jxr_linenumber" name="L637" href="#L637">637</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

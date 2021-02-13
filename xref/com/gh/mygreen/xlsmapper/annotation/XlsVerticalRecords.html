@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
 <head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<title>XlsVerticalRecords xref</title>
+<title>D:\home\workspace2019-12\git_xlsmapper\src\main\java\com\gh\mygreen\xlsmapper\annotation\XlsVerticalRecords.java xref</title>
 <link type="text/css" rel="stylesheet" href="../../../../../stylesheet.css" />
 </head>
 <body>
-<div id="overview"><a href="../../../../../../apidocs/com/gh/mygreen/xlsmapper/annotation/XlsVerticalRecords.html">View Javadoc</a></div><pre>
+<div id="overview"><a href="../../../../../../apidocs/com/gh/mygreen/xlsmapper/annotation">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> com.gh.mygreen.xlsmapper.annotation;
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> java.lang.annotation.Documented;
@@ -171,7 +171,7 @@
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> @Retention(RetentionPolicy.RUNTIME)
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> @Documented
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> @XlsFieldProcessor(value={})
-<a class="jxr_linenumber" name="L166" href="#L166">166</a> <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsVerticalRecords.html">XlsVerticalRecords</a> {
+<a class="jxr_linenumber" name="L166" href="#L166">166</a> <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> XlsVerticalRecords {
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> 
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L169" href="#L169">169</a> <em class="jxr_javadoccomment">     * レコードが見つからない場合に、エラーとしないで、無視して処理を続行するかどうかを指定します。</em>
@@ -256,7 +256,7 @@
 <a class="jxr_linenumber" name="L248" href="#L248">248</a> <em class="jxr_javadoccomment">     * 表の終端の種類を指定します。</em>
 <a class="jxr_linenumber" name="L249" href="#L249">249</a> <em class="jxr_javadoccomment">     * return {@link RecordTerminal#Empty}の場合、空のレコードがあると処理を終了します。</em>
 <a class="jxr_linenumber" name="L250" href="#L250">250</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>     <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/RecordTerminal.html">RecordTerminal</a> terminal() <strong class="jxr_keyword">default</strong> RecordTerminal.Empty;
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>     <a name="RecordTerminal" href="../../../../../com/gh/mygreen/xlsmapper/annotation/RecordTerminal.html#RecordTerminal">RecordTerminal</a> terminal() <strong class="jxr_keyword">default</strong> RecordTerminal.Empty;
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> 
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * 見出し用セルを走査するときの許容する空白セルの個数を指定します。</em>
@@ -386,11 +386,11 @@
 <a class="jxr_linenumber" name="L378" href="#L378">378</a> <em class="jxr_javadoccomment">     * @since 2.0</em>
 <a class="jxr_linenumber" name="L379" href="#L379">379</a> <em class="jxr_javadoccomment">     * @return 何も指定しない場合は全てのケースに適用されます。</em>
 <a class="jxr_linenumber" name="L380" href="#L380">380</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>     <a href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/ProcessCase.html">ProcessCase</a>[] cases() <strong class="jxr_keyword">default</strong> {};
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>     <a name="ProcessCase" href="../../../../../com/gh/mygreen/xlsmapper/fieldprocessor/ProcessCase.html#ProcessCase">ProcessCase</a>[] cases() <strong class="jxr_keyword">default</strong> {};
 <a class="jxr_linenumber" name="L382" href="#L382">382</a> 
 <a class="jxr_linenumber" name="L383" href="#L383">383</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

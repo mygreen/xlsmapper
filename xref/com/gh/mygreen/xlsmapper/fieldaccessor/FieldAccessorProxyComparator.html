@@ -26,10 +26,10 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessorProxyComparator.html">FieldAccessorProxyComparator</a> <strong class="jxr_keyword">implements</strong> Comparator&lt;FieldAccessorProxy&gt; {
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="FieldAccessorProxyComparator" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessorProxyComparator.html#FieldAccessorProxyComparator">FieldAccessorProxyComparator</a> <strong class="jxr_keyword">implements</strong> Comparator&lt;FieldAccessorProxy&gt; {
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>      @Override
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> compare(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessorProxy.html">FieldAccessorProxy</a> o1, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessorProxy.html">FieldAccessorProxy</a> o2) {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> compare(<strong class="jxr_keyword">final</strong> <a name="FieldAccessorProxy" href="../../../../../com/gh/mygreen/x<a name="FieldAccessorProxy" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessorProxy.html#FieldAccessorProxy">FieldAccessorProxy</a>ssor/FieldAccessorProxy.html#FieldAccessorProxy">FieldAccessorProxy</a> o1, <strong class="jxr_keyword">final</strong> <a name="FieldAccessorProxy" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessorProxy.html#FieldAccessorProxy">FieldAccessorProxy</a> o2) {
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>          <strong class="jxr_keyword">final</strong> Optional&lt;Integer&gt; order1 = getOrder(o1);
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>          <strong class="jxr_keyword">final</strong> Optional&lt;Integer&gt; order2 = getOrder(o2);
@@ -56,7 +56,7 @@
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      }
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">private</strong> Optional&lt;Integer&gt; getOrder(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessorProxy.html">FieldAccessorProxy</a> accessorProxy) {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">private</strong> Optional&lt;Integer&gt; getOrder(<strong class="jxr_keyword">final</strong> <a name="FieldAccessorProxy" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessorProxy.html#FieldAccessorProxy">FieldAccessorProxy</a> accessorProxy) {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">return</strong> accessorProxy.getField().getAnnotation(XlsOrder.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>                  .map(anno -&gt; anno.value());
@@ -65,6 +65,6 @@
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

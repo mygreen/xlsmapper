@@ -77,16 +77,16 @@
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">     * フィールドの値のフォーマッタの管理クラス</em>
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldFormatterRegistry.html">FieldFormatterRegistry</a> fieldFormatterRegistry = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldFormatterRegistry.html">FieldFormatterRegistry</a>();
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">private</strong> <a name="FieldFormatterRegistry" href="../../../../../com/gh/mygreen/xlsmapper/validation<a name="FieldFormatterRegistry" href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldFormatterRegistry.html#FieldFormatterRegistry">FieldFormatterRegistry</a>FormatterRegistry.html#FieldFormatterRegistry">FieldFormatterRegistry</a> fieldFormatterRegistry = <strong class="jxr_keyword">new</strong> <a name="FieldFormatterRegistry" href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldFormatterRegistry.html#FieldFormatterRegistry">FieldFormatterRegistry</a>();
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      <em class="jxr_javadoccomment">/** エラーコードの候補を生成するクラス */</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/MessageCodeGenerator.html">MessageCodeGenerator</a> messageCodeGenerator = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/MessageCodeGenerator.html">MessageCodeGenerator</a>();
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">private</strong> <a name="MessageCodeGenerator" href="../../../../../com/gh/mygreen/xlsmapper/validati<a name="MessageCodeGenerator" href="../../../../../com/gh/mygreen/xlsmapper/validation/MessageCodeGenerator.html#MessageCodeGenerator">MessageCodeGenerator</a>tor.html#MessageCodeGenerator">MessageCodeGenerator</a> messageCodeGenerator = <strong class="jxr_keyword">new</strong> <a name="MessageCodeGenerator" href="../../../../../com/gh/mygreen/xlsmapper/validation/MessageCodeGenerator.html#MessageCodeGenerator">MessageCodeGenerator</a>();
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">     * プロパティ式から、値を取得する。</em>
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">     * ・private/protectedなどのフィールドにもアクセス可能にする。</em>
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyValueNavigator.html">PropertyValueNavigator</a> propertyValueNavigator = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyValueNavigator.html">PropertyValueNavigator</a>();
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="PropertyValueNavigator" href="../../../../../com/gh/mygreen/xlsmapper/util/Prope<a name="PropertyValueNavigator" href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyValueNavigator.html#PropertyValueNavigator">PropertyValueNavigator</a>#PropertyValueNavigator">PropertyValueNavigator</a> propertyValueNavigator = <strong class="jxr_keyword">new</strong> <a name="PropertyValueNavigator" href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyValueNavigator.html#PropertyValueNavigator">PropertyValueNavigator</a>();
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      {
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          propertyValueNavigator.setAllowPrivate(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          propertyValueNavigator.setIgnoreNull(<strong class="jxr_keyword">true</strong>);
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     * プロパティ式から、クラスタイプを取得する。</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     * ・private/protectedなどのフィールドにもアクセス可能にする。</em>
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyTypeNavigator.html">PropertyTypeNavigator</a> propertyTypeNavigator = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyTypeNavigator.html">PropertyTypeNavigator</a>();
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="PropertyTypeNavigator" href="../../../../../com/gh/mygreen/xlsmapper/util/Prop<a name="PropertyTypeNavigator" href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyTypeNavigator.html#PropertyTypeNavigator">PropertyTypeNavigator</a>l#PropertyTypeNavigator">PropertyTypeNavigator</a> propertyTypeNavigator = <strong class="jxr_keyword">new</strong> <a name="PropertyTypeNavigator" href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyTypeNavigator.html#PropertyTypeNavigator">PropertyTypeNavigator</a>();
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      {
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          propertyTypeNavigator.setAllowPrivate(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          propertyTypeNavigator.setIgnoreNotResolveType(<strong class="jxr_keyword">true</strong>);
@@ -111,7 +111,7 @@
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> <em class="jxr_javadoccomment">     * @param target 検証対象のオブジェクト</em>
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> <em class="jxr_javadoccomment">     * @param objectName オブジェクト名</em>
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/SheetBindingErrors.html">SheetBindingErrors</a>(<strong class="jxr_keyword">final</strong> P target, <strong class="jxr_keyword">final</strong> String objectName) {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">public</strong> <a name="SheetBindingErrors" href="../../../../../com/gh/mygreen/xlsmapper/validation/SheetBindingErrors.html#SheetBindingErrors">SheetBindingErrors</a>(<strong class="jxr_keyword">final</strong> P target, <strong class="jxr_keyword">final</strong> String objectName) {
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">this</strong>.target = target;
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         <strong class="jxr_keyword">this</strong>.objectName = objectName;
@@ -125,7 +125,7 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">     * @param target 検証対象のオブジェクト</em>
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException {@link target == null.}</em>
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/SheetBindingErrors.html">SheetBindingErrors</a>(<strong class="jxr_keyword">final</strong> P target) {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">public</strong> <a name="SheetBindingErrors" href="../../../../../com/gh/mygreen/xlsmapper/validation/SheetBindingErrors.html#SheetBindingErrors">SheetBindingErrors</a>(<strong class="jxr_keyword">final</strong> P target) {
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         <strong class="jxr_keyword">this</strong>(target, target.getClass().getCanonicalName());
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>     }
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     
@@ -216,7 +216,7 @@
 <a class="jxr_linenumber" name="L208" href="#L208">208</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>     <strong class="jxr_keyword">public</strong> Object getFieldValue(<strong class="jxr_keyword">final</strong> String field) {
 <a class="jxr_linenumber" name="L210" href="#L210">210</a>         
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html">FieldError</a> error = getFirstFieldError(field).orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>         <strong class="jxr_keyword">final</strong> <a name="FieldError" href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html#FieldError">FieldError</a> error = getFirstFieldError(field).orElse(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L212" href="#L212">212</a>         <strong class="jxr_keyword">if</strong>(error != <strong class="jxr_keyword">null</strong> &amp;&amp; !error.isConversionFailure()) {
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>             <strong class="jxr_keyword">return</strong> error.getRejectedValue();
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>         } <strong class="jxr_keyword">else</strong> {
@@ -406,7 +406,7 @@
 <a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">     * @param error エラー情報</em>
 <a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException {@literal error == null.}</em>
 <a class="jxr_linenumber" name="L400" href="#L400">400</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addError(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectError.html">ObjectError</a> error) {
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addError(<strong class="jxr_keyword">final</strong> <a name="ObjectError" href="../../../../../com/gh/mygreen/xlsmapper/validation/ObjectError.html#ObjectError">ObjectError</a> error) {
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>         ArgUtils.notNull(error, <span class="jxr_string">"error"</span>);
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>         <strong class="jxr_keyword">this</strong>.errors.add(error);
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>     }
@@ -443,7 +443,7 @@
 <a class="jxr_linenumber" name="L435" href="#L435">435</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>     <strong class="jxr_keyword">public</strong> List&lt;ObjectError&gt; getGlobalErrors() {
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>         <strong class="jxr_keyword">return</strong> errors.stream()
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>                 .filter(e -&gt; !(e instanceof <a href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html">FieldError</a>))
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>                 .filter(e -&gt; !(e instanceof <a name="FieldError" href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html#FieldError">FieldError</a>))
 <a class="jxr_linenumber" name="L439" href="#L439">439</a>                 .collect(Collectors.toList());
 <a class="jxr_linenumber" name="L440" href="#L440">440</a>     }
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>     
@@ -453,7 +453,7 @@
 <a class="jxr_linenumber" name="L445" href="#L445">445</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L446" href="#L446">446</a>     <strong class="jxr_keyword">public</strong> Optional&lt;ObjectError&gt; getFirstGlobalError() {
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>         <strong class="jxr_keyword">return</strong> errors.stream()
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>                 .filter(e -&gt; !(e instanceof <a href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html">FieldError</a>))
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>                 .filter(e -&gt; !(e instanceof <a name="FieldError" href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html#FieldError">FieldError</a>))
 <a class="jxr_linenumber" name="L449" href="#L449">449</a>                 .findFirst();
 <a class="jxr_linenumber" name="L450" href="#L450">450</a>         
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>     }
@@ -480,8 +480,8 @@
 <a class="jxr_linenumber" name="L472" href="#L472">472</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>     <strong class="jxr_keyword">public</strong> List&lt;FieldError&gt; getFieldErrors() {
 <a class="jxr_linenumber" name="L474" href="#L474">474</a>         <strong class="jxr_keyword">return</strong> errors.stream()
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>                 .filter(e -&gt; e instanceof <a href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html">FieldError</a>)
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>                 .map(e -&gt; (FieldError)e)
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>                 .filter(e -&gt; e instanceof <a name="FieldError" href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html#FieldError">FieldError</a>)
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>                 .map(e -&gt; (<a name="FieldError" href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html#FieldError">FieldError</a>)e)
 <a class="jxr_linenumber" name="L477" href="#L477">477</a>                 .collect(Collectors.toList());
 <a class="jxr_linenumber" name="L478" href="#L478">478</a>         
 <a class="jxr_linenumber" name="L479" href="#L479">479</a>     }
@@ -492,8 +492,8 @@
 <a class="jxr_linenumber" name="L484" href="#L484">484</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L485" href="#L485">485</a>     <strong class="jxr_keyword">public</strong> Optional&lt;FieldError&gt; getFirstFieldError() {
 <a class="jxr_linenumber" name="L486" href="#L486">486</a>         <strong class="jxr_keyword">return</strong> errors.stream()
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>                 .filter(e -&gt; e instanceof <a href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html">FieldError</a>)
-<a class="jxr_linenumber" name="L488" href="#L488">488</a>                 .map(e -&gt; (FieldError)e)
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>                 .filter(e -&gt; e instanceof <a name="FieldError" href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html#FieldError">FieldError</a>)
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>                 .map(e -&gt; (<a name="FieldError" href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html#FieldError">FieldError</a>)e)
 <a class="jxr_linenumber" name="L489" href="#L489">489</a>                 .findFirst();
 <a class="jxr_linenumber" name="L490" href="#L490">490</a>         
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>     }
@@ -567,7 +567,7 @@
 <a class="jxr_linenumber" name="L559" href="#L559">559</a> <em class="jxr_javadoccomment">     * @param fieldError フィールドエラー</em>
 <a class="jxr_linenumber" name="L560" href="#L560">560</a> <em class="jxr_javadoccomment">     * @return true: 一致する場合。</em>
 <a class="jxr_linenumber" name="L561" href="#L561">561</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L562" href="#L562">562</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isMatchingFieldError(<strong class="jxr_keyword">final</strong> String path, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html">FieldError</a> fieldError) {
+<a class="jxr_linenumber" name="L562" href="#L562">562</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isMatchingFieldError(<strong class="jxr_keyword">final</strong> String path, <strong class="jxr_keyword">final</strong> <a name="FieldError" href="../../../../../com/gh/mygreen/xlsmapper/validation/FieldError.html#FieldError">FieldError</a> fieldError) {
 <a class="jxr_linenumber" name="L563" href="#L563">563</a>         
 <a class="jxr_linenumber" name="L564" href="#L564">564</a>         <strong class="jxr_keyword">if</strong> (fieldError.getField().equals(path)) {
 <a class="jxr_linenumber" name="L565" href="#L565">565</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
@@ -586,7 +586,7 @@
 <a class="jxr_linenumber" name="L578" href="#L578">578</a> <em class="jxr_javadoccomment">     * @param errorCode エラーコード</em>
 <a class="jxr_linenumber" name="L579" href="#L579">579</a> <em class="jxr_javadoccomment">     * @return {@link ObjectError}のインスタンスを組み立てるビルダクラス。</em>
 <a class="jxr_linenumber" name="L580" href="#L580">580</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalObjectErrorBuilder.html">InternalObjectErrorBuilder</a> createGlobalError(<strong class="jxr_keyword">final</strong> String errorCode) {
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>     <strong class="jxr_keyword">public</strong> <a name="InternalObjectErrorBuilder" href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalObjectErrorBuilder.html#InternalObjectErrorBuilder">InternalObjectErrorBuilder</a> createGlobalError(<strong class="jxr_keyword">final</strong> String errorCode) {
 <a class="jxr_linenumber" name="L582" href="#L582">582</a>         <strong class="jxr_keyword">return</strong> createGlobalError(<strong class="jxr_keyword">new</strong> String[]{errorCode});
 <a class="jxr_linenumber" name="L583" href="#L583">583</a>     }
 <a class="jxr_linenumber" name="L584" href="#L584">584</a>     
@@ -595,14 +595,14 @@
 <a class="jxr_linenumber" name="L587" href="#L587">587</a> <em class="jxr_javadoccomment">     * @param errorCodes エラーコード。先頭の要素が優先されます。</em>
 <a class="jxr_linenumber" name="L588" href="#L588">588</a> <em class="jxr_javadoccomment">     * @return {@link ObjectError}のインスタンスを組み立てるビルダクラス。</em>
 <a class="jxr_linenumber" name="L589" href="#L589">589</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalObjectErrorBuilder.html">InternalObjectErrorBuilder</a> createGlobalError(<strong class="jxr_keyword">final</strong> String[] errorCodes) {
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>     <strong class="jxr_keyword">public</strong> <a name="InternalObjectErrorBuilder" href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalObjectErrorBuilder.html#InternalObjectErrorBuilder">InternalObjectErrorBuilder</a> createGlobalError(<strong class="jxr_keyword">final</strong> String[] errorCodes) {
 <a class="jxr_linenumber" name="L591" href="#L591">591</a>         
 <a class="jxr_linenumber" name="L592" href="#L592">592</a>         String[] codes = <strong class="jxr_keyword">new</strong> String[0];
 <a class="jxr_linenumber" name="L593" href="#L593">593</a>         <strong class="jxr_keyword">for</strong>(String errorCode : errorCodes) {
 <a class="jxr_linenumber" name="L594" href="#L594">594</a>             codes = Utils.concat(codes, generateMessageCodes(errorCode));
 <a class="jxr_linenumber" name="L595" href="#L595">595</a>         }
 <a class="jxr_linenumber" name="L596" href="#L596">596</a>         
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalObjectErrorBuilder.html">InternalObjectErrorBuilder</a>(<strong class="jxr_keyword">this</strong>, getObjectName(), codes)
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="InternalObjectErrorBuilder" href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalObjectErrorBuilder.html#InternalObjectErrorBuilder">InternalObjectErrorBuilder</a>(<strong class="jxr_keyword">this</strong>, getObjectName(), codes)
 <a class="jxr_linenumber" name="L598" href="#L598">598</a>                 .sheetName(getSheetName());
 <a class="jxr_linenumber" name="L599" href="#L599">599</a>     }
 <a class="jxr_linenumber" name="L600" href="#L600">600</a>     
@@ -612,7 +612,7 @@
 <a class="jxr_linenumber" name="L604" href="#L604">604</a> <em class="jxr_javadoccomment">     * @param errorCode エラーコード</em>
 <a class="jxr_linenumber" name="L605" href="#L605">605</a> <em class="jxr_javadoccomment">     * @return {@link FieldError}のインスタンスを組み立てるビルダクラス。</em>
 <a class="jxr_linenumber" name="L606" href="#L606">606</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L607" href="#L607">607</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html">InternalFieldErrorBuilder</a> createFieldError(<strong class="jxr_keyword">final</strong> String field, <strong class="jxr_keyword">final</strong> String errorCode) {
+<a class="jxr_linenumber" name="L607" href="#L607">607</a>     <strong class="jxr_keyword">public</strong> <a name="InternalFieldErrorBuilder" href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html#InternalFieldErrorBuilder">InternalFieldErrorBuilder</a> createFieldError(<strong class="jxr_keyword">final</strong> String field, <strong class="jxr_keyword">final</strong> String errorCode) {
 <a class="jxr_linenumber" name="L608" href="#L608">608</a>         
 <a class="jxr_linenumber" name="L609" href="#L609">609</a>         <strong class="jxr_keyword">return</strong> createFieldError(field, <strong class="jxr_keyword">new</strong> String[]{errorCode});
 <a class="jxr_linenumber" name="L610" href="#L610">610</a>         
@@ -624,7 +624,7 @@
 <a class="jxr_linenumber" name="L616" href="#L616">616</a> <em class="jxr_javadoccomment">     * @param errorCodes エラーコード。先頭の要素が優先されます。</em>
 <a class="jxr_linenumber" name="L617" href="#L617">617</a> <em class="jxr_javadoccomment">     * @return {@link FieldError}のインスタンスを組み立てるビルダクラス。</em>
 <a class="jxr_linenumber" name="L618" href="#L618">618</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L619" href="#L619">619</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html">InternalFieldErrorBuilder</a> createFieldError(<strong class="jxr_keyword">final</strong> String field, <strong class="jxr_keyword">final</strong> String[] errorCodes) {
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>     <strong class="jxr_keyword">public</strong> <a name="InternalFieldErrorBuilder" href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html#InternalFieldErrorBuilder">InternalFieldErrorBuilder</a> createFieldError(<strong class="jxr_keyword">final</strong> String field, <strong class="jxr_keyword">final</strong> String[] errorCodes) {
 <a class="jxr_linenumber" name="L620" href="#L620">620</a>         
 <a class="jxr_linenumber" name="L621" href="#L621">621</a>         <strong class="jxr_keyword">final</strong> String fieldPath = buildFieldPath(field);
 <a class="jxr_linenumber" name="L622" href="#L622">622</a>         <strong class="jxr_keyword">final</strong> Class&lt;?&gt; fieldType = getFieldType(field);
@@ -635,7 +635,7 @@
 <a class="jxr_linenumber" name="L627" href="#L627">627</a>             codes = Utils.concat(codes, generateMessageCodes(errorCode, fieldPath, fieldType));
 <a class="jxr_linenumber" name="L628" href="#L628">628</a>         }
 <a class="jxr_linenumber" name="L629" href="#L629">629</a>         
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html">InternalFieldErrorBuilder</a>(<strong class="jxr_keyword">this</strong>, getObjectName(), fieldPath, codes)
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="InternalFieldErrorBuilder" href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html#InternalFieldErrorBuilder">InternalFieldErrorBuilder</a>(<strong class="jxr_keyword">this</strong>, getObjectName(), fieldPath, codes)
 <a class="jxr_linenumber" name="L631" href="#L631">631</a>                 .sheetName(getSheetName())
 <a class="jxr_linenumber" name="L632" href="#L632">632</a>                 .rejectedValue(fieldValue);
 <a class="jxr_linenumber" name="L633" href="#L633">633</a>                 
@@ -648,12 +648,12 @@
 <a class="jxr_linenumber" name="L640" href="#L640">640</a> <em class="jxr_javadoccomment">     * @param rejectedValue 型変換に失敗した値</em>
 <a class="jxr_linenumber" name="L641" href="#L641">641</a> <em class="jxr_javadoccomment">     * @return {@link FieldError}のインスタンスを組み立てるビルダクラス。</em>
 <a class="jxr_linenumber" name="L642" href="#L642">642</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html">InternalFieldErrorBuilder</a> createFieldConversionError(<strong class="jxr_keyword">final</strong> String field, <strong class="jxr_keyword">final</strong> Class&lt;?&gt; fieldType, <strong class="jxr_keyword">final</strong> Object rejectedValue) {
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>     <strong class="jxr_keyword">public</strong> <a name="InternalFieldErrorBuilder" href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html#InternalFieldErrorBuilder">InternalFieldErrorBuilder</a> createFieldConversionError(<strong class="jxr_keyword">final</strong> String field, <strong class="jxr_keyword">final</strong> Class&lt;?&gt; fieldType, <strong class="jxr_keyword">final</strong> Object rejectedValue) {
 <a class="jxr_linenumber" name="L644" href="#L644">644</a>         
 <a class="jxr_linenumber" name="L645" href="#L645">645</a>         <strong class="jxr_keyword">final</strong> String fieldPath = buildFieldPath(field);
 <a class="jxr_linenumber" name="L646" href="#L646">646</a>         <strong class="jxr_keyword">final</strong> String[] codes = messageCodeGenerator.generateTypeMismatchCodes(getObjectName(), fieldPath, fieldType);
 <a class="jxr_linenumber" name="L647" href="#L647">647</a>         
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html">InternalFieldErrorBuilder</a>(<strong class="jxr_keyword">this</strong>, getObjectName(), fieldPath, codes)
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="InternalFieldErrorBuilder" href="../../../../../com/gh/mygreen/xlsmapper/validation/InternalFieldErrorBuilder.html#InternalFieldErrorBuilder">InternalFieldErrorBuilder</a>(<strong class="jxr_keyword">this</strong>, getObjectName(), fieldPath, codes)
 <a class="jxr_linenumber" name="L649" href="#L649">649</a>                 .sheetName(getSheetName())
 <a class="jxr_linenumber" name="L650" href="#L650">650</a>                 .rejectedValue(rejectedValue)
 <a class="jxr_linenumber" name="L651" href="#L651">651</a>                 .conversionFailure(<strong class="jxr_keyword">true</strong>);
@@ -700,7 +700,7 @@
 <a class="jxr_linenumber" name="L692" href="#L692">692</a>             }
 <a class="jxr_linenumber" name="L693" href="#L693">693</a>         }
 <a class="jxr_linenumber" name="L694" href="#L694">694</a>         
-<a class="jxr_linenumber" name="L695" href="#L695">695</a>         fieldFormatterRegistry.registerFormatter(fieldPath, (Class)fieldType, (FieldFormatter)formatter);
+<a class="jxr_linenumber" name="L695" href="#L695">695</a>         fieldFormatterRegistry.registerFormatter(fieldPath, (Class)fieldType, (<a name="FieldFormatter" href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldFormatter.html#FieldFormatter">FieldFormatter</a>)formatter);
 <a class="jxr_linenumber" name="L696" href="#L696">696</a>         
 <a class="jxr_linenumber" name="L697" href="#L697">697</a>     }
 <a class="jxr_linenumber" name="L698" href="#L698">698</a>     
@@ -728,11 +728,11 @@
 <a class="jxr_linenumber" name="L720" href="#L720">720</a>         <strong class="jxr_keyword">return</strong> getMessageCodeGenerator().generateCodes(code, getObjectName(), field, fieldType);
 <a class="jxr_linenumber" name="L721" href="#L721">721</a>     }
 <a class="jxr_linenumber" name="L722" href="#L722">722</a>     
-<a class="jxr_linenumber" name="L723" href="#L723">723</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/MessageCodeGenerator.html">MessageCodeGenerator</a> getMessageCodeGenerator() {
+<a class="jxr_linenumber" name="L723" href="#L723">723</a>     <strong class="jxr_keyword">public</strong> <a name="MessageCodeGenerator" href="../../../../../com/gh/mygreen/xlsmapper/validation/MessageCodeGenerator.html#MessageCodeGenerator">MessageCodeGenerator</a> getMessageCodeGenerator() {
 <a class="jxr_linenumber" name="L724" href="#L724">724</a>         <strong class="jxr_keyword">return</strong> messageCodeGenerator;
 <a class="jxr_linenumber" name="L725" href="#L725">725</a>     }
 <a class="jxr_linenumber" name="L726" href="#L726">726</a>     
-<a class="jxr_linenumber" name="L727" href="#L727">727</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setMessageCodeGenerator(<a href="../../../../../com/gh/mygreen/xlsmapper/validation/MessageCodeGenerator.html">MessageCodeGenerator</a> messageCodeGenerator) {
+<a class="jxr_linenumber" name="L727" href="#L727">727</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setMessageCodeGenerator(<a name="MessageCodeGenerator" href="../../../../../com/gh/mygreen/xlsmapper/validation/MessageCodeGenerator.html#MessageCodeGenerator">MessageCodeGenerator</a> messageCodeGenerator) {
 <a class="jxr_linenumber" name="L728" href="#L728">728</a>         <strong class="jxr_keyword">this</strong>.messageCodeGenerator = messageCodeGenerator;
 <a class="jxr_linenumber" name="L729" href="#L729">729</a>     }
 <a class="jxr_linenumber" name="L730" href="#L730">730</a>     
@@ -740,7 +740,7 @@
 <a class="jxr_linenumber" name="L732" href="#L732">732</a> <em class="jxr_javadoccomment">     * フィールドのフォーマッタの管理クラスを取得する。</em>
 <a class="jxr_linenumber" name="L733" href="#L733">733</a> <em class="jxr_javadoccomment">     * @return</em>
 <a class="jxr_linenumber" name="L734" href="#L734">734</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L735" href="#L735">735</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldFormatterRegistry.html">FieldFormatterRegistry</a> getFieldFormatterRegistry() {
+<a class="jxr_linenumber" name="L735" href="#L735">735</a>     <strong class="jxr_keyword">public</strong> <a name="FieldFormatterRegistry" href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldFormatterRegistry.html#FieldFormatterRegistry">FieldFormatterRegistry</a> getFieldFormatterRegistry() {
 <a class="jxr_linenumber" name="L736" href="#L736">736</a>         <strong class="jxr_keyword">return</strong> fieldFormatterRegistry;
 <a class="jxr_linenumber" name="L737" href="#L737">737</a>     }
 <a class="jxr_linenumber" name="L738" href="#L738">738</a>     
@@ -748,13 +748,13 @@
 <a class="jxr_linenumber" name="L740" href="#L740">740</a> <em class="jxr_javadoccomment">     * フィールドのフォーマッタクラスを設定する。</em>
 <a class="jxr_linenumber" name="L741" href="#L741">741</a> <em class="jxr_javadoccomment">     * @param fieldFormatterRegistry フィールドのフォーマッタの管理クラス</em>
 <a class="jxr_linenumber" name="L742" href="#L742">742</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L743" href="#L743">743</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setFieldFormatterRegistry(<a href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldFormatterRegistry.html">FieldFormatterRegistry</a> fieldFormatterRegistry) {
+<a class="jxr_linenumber" name="L743" href="#L743">743</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setFieldFormatterRegistry(<a name="FieldFormatterRegistry" href="../../../../../com/gh/mygreen/xlsmapper/validation/fieldvalidation/FieldFormatterRegistry.html#FieldFormatterRegistry">FieldFormatterRegistry</a> fieldFormatterRegistry) {
 <a class="jxr_linenumber" name="L744" href="#L744">744</a>         <strong class="jxr_keyword">this</strong>.fieldFormatterRegistry = fieldFormatterRegistry;
 <a class="jxr_linenumber" name="L745" href="#L745">745</a>     }
 <a class="jxr_linenumber" name="L746" href="#L746">746</a>     
 <a class="jxr_linenumber" name="L747" href="#L747">747</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

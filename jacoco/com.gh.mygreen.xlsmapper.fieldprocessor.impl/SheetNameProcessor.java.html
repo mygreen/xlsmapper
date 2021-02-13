@@ -2,9 +2,9 @@
 
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.LoadingWorkObject;
 import com.gh.mygreen.xlsmapper.SavingWorkObject;
-import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.XlsMapperException;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
@@ -25,26 +25,36 @@ import com.gh.mygreen.xlsmapper.util.Utils;
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsSheetName anno, final FieldAccessor accessor,
             final Configuration config, final LoadingWorkObject work) {
 
-<span class="pc bpc" id="L28" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
-<span class="nc" id="L29">            return;</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if(!accessor.isWritable()) {</span>
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+<span class="fc" id="L30">            return;</span>
+        }
+        
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
+<span class="nc" id="L34">            return;</span>
         }
 
-<span class="fc" id="L32">        final String sheetName = sheet.getSheetName();</span>
-<span class="fc" id="L33">        accessor.setValue(beansObj, sheetName);</span>
+<span class="fc" id="L37">        final String sheetName = sheet.getSheetName();</span>
+<span class="fc" id="L38">        accessor.setValue(beansObj, sheetName);</span>
 
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L40">    }</span>
 
     @Override
     public void saveProcess(final Sheet sheet, final Object targetObj, final XlsSheetName anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
-<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if(!Utils.isSaveCase(anno.cases())) {</span>
-<span class="nc" id="L42">            return;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if(!accessor.isWritable()) {</span>
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+<span class="fc" id="L48">            return;</span>
+        }
+        
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if(!Utils.isSaveCase(anno.cases())) {</span>
+<span class="nc" id="L52">            return;</span>
         }
 
-<span class="fc" id="L45">        final String sheetName = sheet.getSheetName();</span>
-<span class="fc" id="L46">        accessor.setValue(targetObj, sheetName);</span>
+<span class="fc" id="L55">        final String sheetName = sheet.getSheetName();</span>
+<span class="fc" id="L56">        accessor.setValue(targetObj, sheetName);</span>
 
-<span class="fc" id="L48">    }</span>
+<span class="fc" id="L58">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

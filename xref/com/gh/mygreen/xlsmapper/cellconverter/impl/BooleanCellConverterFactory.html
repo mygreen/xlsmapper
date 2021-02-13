@@ -32,44 +32,44 @@
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/cellconverter/impl/BooleanCellConverterFactory.html">BooleanCellConverterFactory</a> <strong class="jxr_keyword">extends</strong> CellConverterFactorySupport&lt;Boolean&gt;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="BooleanCellConverterFactory" href="../../../../../../com/gh/mygreen/xlsmapper/cellconverter/impl/BooleanCellConverterFactory.html#BooleanCellConverterFactory">BooleanCellConverterFactory</a> <strong class="jxr_keyword">extends</strong> CellConverterFactorySupport&lt;Boolean&gt;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>          <strong class="jxr_keyword">implements</strong> CellConverterFactory&lt;Boolean&gt; {
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>      
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      @Override
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/cellconverter/impl/BooleanCellConverterFactory.html">BooleanCellConverter</a> create(<strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html">FieldAccessor</a> field, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/Configuration.html">Configuration</a> config) {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">public</strong> BooleanCellConverter create(<strong class="jxr_keyword">final</strong> <a name="FieldAccessor" href="../../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html#FieldAccessor">FieldAccessor</a> field, <strong class="jxr_keyword">final</strong> <a name="Configuration" href="../../../../../../com/gh/mygreen/xlsmapper/Configuration.html#Configuration">Configuration</a> config) {
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>          
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/cellconverter/impl/BooleanCellConverterFactory.html">BooleanCellConverter</a> cellConverter = <strong class="jxr_keyword">new</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/cellconverter/impl/BooleanCellConverterFactory.html">BooleanCellConverter</a>(field, config);
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">final</strong> BooleanCellConverter cellConverter = <strong class="jxr_keyword">new</strong> BooleanCellConverter(field, config);
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          setupCellConverter(cellConverter, field, config);
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>          <strong class="jxr_keyword">return</strong> cellConverter;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      @Override
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> setupCustom(<strong class="jxr_keyword">final</strong> BaseCellConverter&lt;Boolean&gt; cellConverter, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html">FieldAccessor</a> field,
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/Configuration.html">Configuration</a> config) {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> setupCustom(<strong class="jxr_keyword">final</strong> BaseCellConverter&lt;Boolean&gt; cellConverter, <strong class="jxr_keyword">final</strong> <a name="FieldAccessor" href="../../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html#FieldAccessor">FieldAccessor</a> field,
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>              <strong class="jxr_keyword">final</strong> <a name="Configuration" href="../../../../../../com/gh/mygreen/xlsmapper/Configuration.html#Configuration">Configuration</a> config) {
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          <em class="jxr_comment">// 何もしない</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>      }
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      @Override
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">protected</strong> TextFormatter&lt;Boolean&gt; createTextFormatter(<strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html">FieldAccessor</a> field, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/Configuration.html">Configuration</a> config) {
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">protected</strong> TextFormatter&lt;Boolean&gt; createTextFormatter(<strong class="jxr_keyword">final</strong> <a name="FieldAccessor" href="../../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html#FieldAccessor">FieldAccessor</a> field, <strong class="jxr_keyword">final</strong> <a name="Configuration" href="../../../../../../com/gh/mygreen/xlsmapper/Configuration.html#Configuration">Configuration</a> config) {
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>          
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          Optional&lt;XlsBooleanConverter&gt; converterAnno = field.getAnnotation(XlsBooleanConverter.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">return</strong> converterAnno.map(anno -&gt; <strong class="jxr_keyword">new</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/textformatter/BooleanFormatter.html">BooleanFormatter</a>(anno.loadForTrue(), anno.loadForFalse(), 
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">return</strong> converterAnno.map(anno -&gt; <strong class="jxr_keyword">new</strong> <a name="BooleanFormatter" href="../../../../../../com/gh/mygreen/xlsmapper/textformatter/BooleanFormatter.html#BooleanFormatter">BooleanFormatter</a>(anno.loadForTrue(), anno.loadForFalse(), 
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>                  anno.saveAsTrue(), anno.saveAsFalse(), anno.ignoreCase(), anno.failToFalse()))
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>                  .orElseGet(() -&gt; <strong class="jxr_keyword">new</strong> BooleanFormatter());
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>                  .orElseGet(() -&gt; <strong class="jxr_keyword">new</strong> <a name="BooleanFormatter" href="../../../../../../com/gh/mygreen/xlsmapper/textformatter/BooleanFormatter.html#BooleanFormatter">BooleanFormatter</a>());
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      }
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/cellconverter/impl/BooleanCellConverterFactory.html">BooleanCellConverter</a> <strong class="jxr_keyword">extends</strong> BaseCellConverter&lt;Boolean&gt; {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> BooleanCellConverter <strong class="jxr_keyword">extends</strong> BaseCellConverter&lt;Boolean&gt; {
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>          
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">private</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/cellconverter/impl/BooleanCellConverterFactory.html">BooleanCellConverter</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html">FieldAccessor</a> field, <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/Configuration.html">Configuration</a> config) {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">private</strong> BooleanCellConverter(<strong class="jxr_keyword">final</strong> <a name="FieldAccessor" href="../../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/FieldAccessor.html#FieldAccessor">FieldAccessor</a> field, <strong class="jxr_keyword">final</strong> <a name="Configuration" href="../../../../../../com/gh/mygreen/xlsmapper/Configuration.html#Configuration">Configuration</a> config) {
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>              <strong class="jxr_keyword">super</strong>(field, config);
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          }
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          @Override
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          <strong class="jxr_keyword">protected</strong> Boolean parseCell(<strong class="jxr_keyword">final</strong> Cell evaluatedCell, <strong class="jxr_keyword">final</strong> String formattedValue) <strong class="jxr_keyword">throws</strong> TypeBindException {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          <strong class="jxr_keyword">protected</strong> Boolean parseCell(<strong class="jxr_keyword">final</strong> Cell evaluatedCell, <strong class="jxr_keyword">final</strong> String formattedValue) <strong class="jxr_keyword">throws</strong> <a name="TypeBindException" href="../../../../../../com/gh/mygreen/xlsmapper/cellconverter/TypeBindException.html#TypeBindException">TypeBindException</a> {
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>              
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>              <strong class="jxr_keyword">if</strong>(evaluatedCell.getCellTypeEnum().equals(CellType.BOOLEAN)) {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>                  <strong class="jxr_keyword">return</strong> evaluatedCell.getBooleanCellValue();
@@ -77,7 +77,7 @@
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>              } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(!formattedValue.isEmpty()) {
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>                  <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>                      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.textFormatter.parse(formattedValue);
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  } <strong class="jxr_keyword">catch</strong>(<a href="../../../../../../com/gh/mygreen/xlsmapper/textformatter/TextParseException.html">TextParseException</a> e) {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  } <strong class="jxr_keyword">catch</strong>(<a name="TextParseException" href="../../../../../../com/gh/mygreen/xlsmapper/textformatter/TextParseException.html#TextParseException">TextParseException</a> e) {
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>                      <strong class="jxr_keyword">throw</strong> newTypeBindExceptionOnParse(e, evaluatedCell, formattedValue);
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>                  }
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>                  
@@ -94,9 +94,9 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          }
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          @Override
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> setupCell(<strong class="jxr_keyword">final</strong> Cell cell, <strong class="jxr_keyword">final</strong> Optional&lt;Boolean&gt; cellValue) <strong class="jxr_keyword">throws</strong> TypeBindException {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> setupCell(<strong class="jxr_keyword">final</strong> Cell cell, <strong class="jxr_keyword">final</strong> Optional&lt;Boolean&gt; cellValue) <strong class="jxr_keyword">throws</strong> <a name="TypeBindException" href="../../../../../../com/gh/mygreen/xlsmapper/cellconverter/TypeBindException.html#TypeBindException">TypeBindException</a> {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>              
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../../../com/gh/mygreen/xlsmapper/textformatter/BooleanFormatter.html">BooleanFormatter</a> formatter = (BooleanFormatter) textFormatter;
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>              <strong class="jxr_keyword">final</strong> <a name="BooleanFormatter" hre<a name="BooleanFormatter" href="../../../../../../com/gh/mygreen/xlsmapper/textformatter/BooleanFormatter.html#BooleanFormatter">BooleanFormatter</a>./../com/gh/mygreen/xlsmapper/textformatter/BooleanFormatter.html#BooleanFormatter">BooleanFormatter</a> formatter = (<a name="BooleanFormatter" href="../../../../../../com/gh/mygreen/xlsmapper/textformatter/BooleanFormatter.html#BooleanFormatter">BooleanFormatter</a>) textFormatter;
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>              
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>              <strong class="jxr_keyword">if</strong>(cellValue.isPresent()) {
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>                  <strong class="jxr_keyword">if</strong>(formatter.getSaveTrueValue().equalsIgnoreCase(<span class="jxr_string">"true"</span>) 
@@ -119,6 +119,6 @@
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

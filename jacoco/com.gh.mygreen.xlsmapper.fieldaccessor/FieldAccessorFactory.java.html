@@ -259,18 +259,18 @@ public class FieldAccessorFactory {
 <span class="fc" id="L259">            accessor.mapPositionSetter = mapPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
 <span class="fc" id="L260">            accessor.mapLabelSetter = mapLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
 
-<span class="pc bpc" id="L262" title="1 of 2 branches missed.">        } else if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
-<span class="pc bpc" id="L263" title="1 of 2 branches missed.">                || accessor.hasAnnotation(XlsArrayCells.class)</span>
-<span class="pc bpc" id="L264" title="1 of 2 branches missed.">                || accessor.hasAnnotation(XlsLabelledArrayCells.class)</span>
+<span class="fc bfc" id="L262" title="All 2 branches covered.">        } else if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsArrayCells.class)</span>
+<span class="fc bfc" id="L264" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsLabelledArrayCells.class)</span>
 <span class="fc bfc" id="L265" title="All 2 branches covered.">                || accessor.hasAnnotation(XlsIterateTables.class)){</span>
             // リストや配列形式の場合
 <span class="fc" id="L267">            accessor.arrayPositionSetter = arrayPositionSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
 <span class="fc" id="L268">            accessor.arrayLabelSetter = arrayLabelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
 
-<span class="pc bpc" id="L270" title="1 of 2 branches missed.">            if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
-<span class="pc bpc" id="L271" title="1 of 2 branches missed.">                    || accessor.hasAnnotation(XlsLabelledArrayCells.class)) {</span>
+<span class="fc bfc" id="L270" title="All 2 branches covered.">            if(accessor.hasAnnotation(XlsArrayColumns.class)</span>
+<span class="fc bfc" id="L271" title="All 2 branches covered.">                    || accessor.hasAnnotation(XlsLabelledArrayCells.class)) {</span>
                 // インデックスが付いていないラベルの設定
-<span class="nc" id="L273">                accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
+<span class="fc" id="L273">                accessor.labelSetter = labelSetterFactory.create(accessor.getDeclaringClass(), accessor.getName());</span>
             }
 
         } else {
@@ -385,4 +385,4 @@ public class FieldAccessorFactory {
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

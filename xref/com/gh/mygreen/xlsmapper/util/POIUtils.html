@@ -66,12 +66,12 @@
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/util/POIUtils.html">POIUtils</a> {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="POIUtils" href="../../../../../com/gh/mygreen/xlsmapper/util/POIUtils.html#POIUtils">POIUtils</a> {
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger = LoggerFactory.getLogger(POIUtils.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      <em class="jxr_javadoccomment">/** 標準のセルフォーマッター */</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/CellFormatter.html">CellFormatter</a> defaultCellFormatter = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/DefaultCellFormatter.html">DefaultCellFormatter</a>();
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <a name="CellFormatter" href="../../../../../com/gh/mygreen/xlsmapper/CellFormatter.html#CellFormatter">CellFormatter</a> defaultCellFormatter = <strong class="jxr_keyword">new</strong> <a name="DefaultCellFormatter" href="../../../../../com/gh/mygreen/xlsmapper/DefaultCellFormatter.html#DefaultCellFormatter">DefaultCellFormatter</a>();
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">     * シートの種類を判定する。</em>
@@ -157,7 +157,7 @@
 <a class="jxr_linenumber" name="L149" href="#L149">149</a> <em class="jxr_javadoccomment">     * @return セル</em>
 <a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException {@literal sheet == null or address == null.}</em>
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Cell getCell(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/util/CellPosition.html">CellPosition</a> address) {
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Cell getCell(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> <a name="CellPosition" href="../../../../../com/gh/mygreen/xlsmapper/util/CellPosition.html#CellPosition">CellPosition</a> address) {
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         ArgUtils.notNull(sheet, <span class="jxr_string">"sheet"</span>);
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         ArgUtils.notNull(address, <span class="jxr_string">"address"</span>);
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>         <strong class="jxr_keyword">return</strong> getCell(sheet, address.getColumn(), address.getRow());
@@ -258,7 +258,7 @@
 <a class="jxr_linenumber" name="L250" href="#L250">250</a> <em class="jxr_javadoccomment">     * @return フォーマットした文字列</em>
 <a class="jxr_linenumber" name="L251" href="#L251">251</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException {@literal cell or cellFormatter is null.}</em>
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String getCellContents(<strong class="jxr_keyword">final</strong> Cell cell, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/CellFormatter.html">CellFormatter</a> cellFormatter) {
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String getCellContents(<strong class="jxr_keyword">final</strong> Cell cell, <strong class="jxr_keyword">final</strong> <a name="CellFormatter" href="../../../../../com/gh/mygreen/xlsmapper/CellFormatter.html#CellFormatter">CellFormatter</a> cellFormatter) {
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>         ArgUtils.notNull(cell, <span class="jxr_string">"cell"</span>);
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>         ArgUtils.notNull(cellFormatter, <span class="jxr_string">"cellFormatter"</span>);
 <a class="jxr_linenumber" name="L256" href="#L256">256</a> 
@@ -284,7 +284,7 @@
 <a class="jxr_linenumber" name="L276" href="#L276">276</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException {@literal  sheet == null or cellFormatter == null.}</em>
 <a class="jxr_linenumber" name="L277" href="#L277">277</a> <em class="jxr_javadoccomment">     * @return</em>
 <a class="jxr_linenumber" name="L278" href="#L278">278</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> isEmptyCellContents(<strong class="jxr_keyword">final</strong> Cell cell, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/CellFormatter.html">CellFormatter</a> cellFormatter) {
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> isEmptyCellContents(<strong class="jxr_keyword">final</strong> Cell cell, <strong class="jxr_keyword">final</strong> <a name="CellFormatter" href="../../../../../com/gh/mygreen/xlsmapper/CellFormatter.html#CellFormatter">CellFormatter</a> cellFormatter) {
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>         ArgUtils.notNull(cell, <span class="jxr_string">"cell"</span>);
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>         ArgUtils.notNull(cellFormatter, <span class="jxr_string">"cellFormatter"</span>);
 <a class="jxr_linenumber" name="L282" href="#L282">282</a> 
@@ -316,7 +316,7 @@
 <a class="jxr_linenumber" name="L308" href="#L308">308</a> <em class="jxr_javadoccomment">     *         cellがnullの場合も空文字を返す。</em>
 <a class="jxr_linenumber" name="L309" href="#L309">309</a> <em class="jxr_javadoccomment">     *         標準の書式の場合も空文字を返す。</em>
 <a class="jxr_linenumber" name="L310" href="#L310">310</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String getCellFormatPattern(<strong class="jxr_keyword">final</strong> Cell cell, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/CellFormatter.html">CellFormatter</a> cellFormatter) {
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String getCellFormatPattern(<strong class="jxr_keyword">final</strong> Cell cell, <strong class="jxr_keyword">final</strong> <a name="CellFormatter" href="../../../../../com/gh/mygreen/xlsmapper/CellFormatter.html#CellFormatter">CellFormatter</a> cellFormatter) {
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>         <strong class="jxr_keyword">if</strong>(cell == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>         }
@@ -820,7 +820,7 @@
 <a class="jxr_linenumber" name="L812" href="#L812">812</a> <em class="jxr_javadoccomment">     * @param endPosition 設定するセルの終了位置</em>
 <a class="jxr_linenumber" name="L813" href="#L813">813</a> <em class="jxr_javadoccomment">     * @return</em>
 <a class="jxr_linenumber" name="L814" href="#L814">814</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L815" href="#L815">815</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyPath.html">Name</a> defineName(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> String name,
+<a class="jxr_linenumber" name="L815" href="#L815">815</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Name defineName(<strong class="jxr_keyword">final</strong> Sheet sheet, <strong class="jxr_keyword">final</strong> String name,
 <a class="jxr_linenumber" name="L816" href="#L816">816</a>             <strong class="jxr_keyword">final</strong> Point startPosition, <strong class="jxr_keyword">final</strong> Point endPosition) {
 <a class="jxr_linenumber" name="L817" href="#L817">817</a> 
 <a class="jxr_linenumber" name="L818" href="#L818">818</a>         ArgUtils.notNull(sheet, <span class="jxr_string">"sheet"</span>);
@@ -829,7 +829,7 @@
 <a class="jxr_linenumber" name="L821" href="#L821">821</a>         ArgUtils.notNull(endPosition, <span class="jxr_string">"endPosition"</span>);
 <a class="jxr_linenumber" name="L822" href="#L822">822</a> 
 <a class="jxr_linenumber" name="L823" href="#L823">823</a>         <strong class="jxr_keyword">final</strong> Workbook workbook = sheet.getWorkbook();
-<a class="jxr_linenumber" name="L824" href="#L824">824</a>         <a href="../../../../../com/gh/mygreen/xlsmapper/util/PropertyPath.html">Name</a> nameObj = workbook.getName(name);
+<a class="jxr_linenumber" name="L824" href="#L824">824</a>         Name nameObj = workbook.getName(name);
 <a class="jxr_linenumber" name="L825" href="#L825">825</a>         <strong class="jxr_keyword">if</strong>(nameObj == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L826" href="#L826">826</a>             nameObj = workbook.createName();
 <a class="jxr_linenumber" name="L827" href="#L827">827</a>             nameObj.setNameName(name);
@@ -1157,6 +1157,6 @@
 <a class="jxr_linenumber" name="L1149" href="#L1149">1149</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

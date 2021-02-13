@@ -57,137 +57,142 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
     public void loadProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno,
             final FieldAccessor accessor, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
-<span class="nc" id="L61">            return;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if(!accessor.isWritable()) {</span>
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+<span class="fc" id="L62">            return;</span>
+        }
+        
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
+<span class="nc" id="L66">            return;</span>
         }
 
-<span class="fc" id="L64">        final Class&lt;?&gt; clazz = accessor.getType();</span>
+<span class="fc" id="L69">        final Class&lt;?&gt; clazz = accessor.getType();</span>
 
-<span class="fc bfc" id="L66" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(clazz)) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(clazz)) {</span>
 
-<span class="fc" id="L68">            Class&lt;?&gt; tableClass = anno.tableClass();</span>
-<span class="pc bpc" id="L69" title="1 of 2 branches missed.">            if(tableClass == Object.class) {</span>
-<span class="fc" id="L70">                tableClass = accessor.getComponentType();</span>
+<span class="fc" id="L73">            Class&lt;?&gt; tableClass = anno.tableClass();</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">            if(tableClass == Object.class) {</span>
+<span class="fc" id="L75">                tableClass = accessor.getComponentType();</span>
             }
 
-<span class="fc" id="L73">            List&lt;?&gt; value = loadTables(sheet, beansObj, anno, accessor, tableClass, config, work);</span>
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">            if(value != null) {</span>
+<span class="fc" id="L78">            List&lt;?&gt; value = loadTables(sheet, beansObj, anno, accessor, tableClass, config, work);</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">            if(value != null) {</span>
                 @SuppressWarnings({&quot;unchecked&quot;, &quot;rawtypes&quot;})
-<span class="fc" id="L76">                Collection&lt;?&gt; collection = Utils.convertListToCollection(value, (Class&lt;Collection&gt;)clazz, config.getBeanFactory());</span>
-<span class="fc" id="L77">                accessor.setValue(beansObj, collection);</span>
+<span class="fc" id="L81">                Collection&lt;?&gt; collection = Utils.convertListToCollection(value, (Class&lt;Collection&gt;)clazz, config.getBeanFactory());</span>
+<span class="fc" id="L82">                accessor.setValue(beansObj, collection);</span>
             }
 
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        } else if(clazz.isArray()) {</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        } else if(clazz.isArray()) {</span>
 
-<span class="fc" id="L82">            Class&lt;?&gt; tableClass = anno.tableClass();</span>
-<span class="pc bpc" id="L83" title="1 of 2 branches missed.">            if(tableClass == Object.class) {</span>
-<span class="fc" id="L84">                tableClass = accessor.getComponentType();</span>
+<span class="fc" id="L87">            Class&lt;?&gt; tableClass = anno.tableClass();</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">            if(tableClass == Object.class) {</span>
+<span class="fc" id="L89">                tableClass = accessor.getComponentType();</span>
             }
 
-<span class="fc" id="L87">            final List&lt;?&gt; value = loadTables(sheet, beansObj, anno, accessor, tableClass, config, work);</span>
-<span class="pc bpc" id="L88" title="1 of 2 branches missed.">            if(value != null) {</span>
+<span class="fc" id="L92">            final List&lt;?&gt; value = loadTables(sheet, beansObj, anno, accessor, tableClass, config, work);</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">            if(value != null) {</span>
 
-<span class="fc" id="L90">                final Object array = Array.newInstance(tableClass, value.size());</span>
-<span class="fc bfc" id="L91" title="All 2 branches covered.">                for(int i=0; i &lt; value.size(); i++) {</span>
-<span class="fc" id="L92">                    Array.set(array, i, value.get(i));</span>
+<span class="fc" id="L95">                final Object array = Array.newInstance(tableClass, value.size());</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">                for(int i=0; i &lt; value.size(); i++) {</span>
+<span class="fc" id="L97">                    Array.set(array, i, value.get(i));</span>
                 }
 
-<span class="fc" id="L95">                accessor.setValue(beansObj, array);</span>
+<span class="fc" id="L100">                accessor.setValue(beansObj, array);</span>
             }
 
-<span class="fc" id="L98">        } else {</span>
-<span class="nc" id="L99">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
-<span class="nc" id="L100">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
-<span class="nc" id="L101">                    .varWithAnno(&quot;anno&quot;, XlsIterateTables.class)</span>
-<span class="nc" id="L102">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
-<span class="nc" id="L103">                    .var(&quot;expectedType&quot;, &quot;Collection(List/Set) or Array&quot;)</span>
-<span class="nc" id="L104">                    .format());</span>
+<span class="fc" id="L103">        } else {</span>
+<span class="nc" id="L104">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
+<span class="nc" id="L105">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="nc" id="L106">                    .varWithAnno(&quot;anno&quot;, XlsIterateTables.class)</span>
+<span class="nc" id="L107">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
+<span class="nc" id="L108">                    .var(&quot;expectedType&quot;, &quot;Collection(List/Set) or Array&quot;)</span>
+<span class="nc" id="L109">                    .format());</span>
         }
 
-<span class="fc" id="L107">    }</span>
+<span class="fc" id="L112">    }</span>
 
     private List&lt;?&gt; loadTables(final Sheet sheet, final Object beansObj, final XlsIterateTables iterateTablesAnno, final FieldAccessor accessor,
             final Class&lt;?&gt; tableClass, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
         // アノテーションの整合性のチェック
-<span class="fc" id="L113">        checkRecordAnnotation(tableClass, work.getAnnoReader());</span>
+<span class="fc" id="L118">        checkRecordAnnotation(tableClass, work.getAnnoReader());</span>
 
-<span class="fc" id="L115">        final List&lt;Object&gt; resultTableList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L120">        final List&lt;Object&gt; resultTableList = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L117">        Cell after = null;</span>
-<span class="fc" id="L118">        Cell currentCell = null;</span>
+<span class="fc" id="L122">        Cell after = null;</span>
+<span class="fc" id="L123">        Cell currentCell = null;</span>
 
         // 各種レコードのコールバック用メソッドを抽出する
-<span class="fc" id="L121">        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)</span>
-<span class="fc" id="L122">                .create(tableClass, ProcessCase.Load);</span>
+<span class="fc" id="L126">        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)</span>
+<span class="fc" id="L127">                .create(tableClass, ProcessCase.Load);</span>
 
-<span class="fc" id="L124">        final String label = iterateTablesAnno.tableLabel();</span>
+<span class="fc" id="L129">        final String label = iterateTablesAnno.tableLabel();</span>
 
-<span class="fc" id="L126">        currentCell = CellFinder.query(sheet, label, config).find(iterateTablesAnno.optional());</span>
+<span class="fc" id="L131">        currentCell = CellFinder.query(sheet, label, config).find(iterateTablesAnno.optional());</span>
 
-<span class="fc bfc" id="L128" title="All 2 branches covered.">        while(currentCell != null) {</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        while(currentCell != null) {</span>
             // 1 table object instance
-<span class="fc" id="L130">            final Object tableObj = config.createBean(tableClass);</span>
+<span class="fc" id="L135">            final Object tableObj = config.createBean(tableClass);</span>
 
             // ラベルの設定
-<span class="fc" id="L133">            accessor.setArrayLabel(beansObj, POIUtils.getCellContents(currentCell, config.getCellFormatter()), resultTableList.size());</span>
+<span class="fc" id="L138">            accessor.setArrayLabel(beansObj, POIUtils.getCellContents(currentCell, config.getCellFormatter()), resultTableList.size());</span>
 
             // パスの位置の変更
-<span class="fc" id="L136">            work.getErrors().pushNestedPath(accessor.getName(), resultTableList.size());</span>
+<span class="fc" id="L141">            work.getErrors().pushNestedPath(accessor.getName(), resultTableList.size());</span>
 
 
             // execute PreProcess listener
-<span class="fc" id="L140">            methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
-<span class="fc" id="L141">                listenerClass.getPreLoadMethods().forEach(method -&gt; {</span>
-<span class="fc" id="L142">                    Utils.invokeNeedProcessMethod(listenerClass.getObject(), method, tableObj, sheet, config, work.getErrors(), ProcessCase.Load);</span>
-<span class="fc" id="L143">                });</span>
-<span class="fc" id="L144">            });</span>
-
-            // execute PreProcess method
-<span class="fc" id="L147">            methodCache.getPreLoadMethods().forEach(method -&gt; {</span>
-<span class="fc" id="L148">                Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors(), ProcessCase.Load);</span>
+<span class="fc" id="L145">            methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
+<span class="fc" id="L146">                listenerClass.getPreLoadMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L147">                    Utils.invokeNeedProcessMethod(listenerClass.getObject(), method, tableObj, sheet, config, work.getErrors(), ProcessCase.Load);</span>
+<span class="fc" id="L148">                });</span>
 <span class="fc" id="L149">            });</span>
 
+            // execute PreProcess method
+<span class="fc" id="L152">            methodCache.getPreLoadMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L153">                Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors(), ProcessCase.Load);</span>
+<span class="fc" id="L154">            });</span>
+
             // process sinslbe labelled comment
-<span class="fc" id="L152">            loadSingleLabelledComment(sheet, tableObj, currentCell, config, work);</span>
+<span class="fc" id="L157">            loadSingleLabelledComment(sheet, tableObj, currentCell, config, work);</span>
             
             // process single label.
-<span class="fc" id="L155">            loadSingleLabelledCell(sheet, tableObj, currentCell, config, work);</span>
+<span class="fc" id="L160">            loadSingleLabelledCell(sheet, tableObj, currentCell, config, work);</span>
 
             // process array labels.
-<span class="fc" id="L158">            loadSingleLabelledArrayCell(sheet, tableObj, currentCell, config, work);</span>
+<span class="fc" id="L163">            loadSingleLabelledArrayCell(sheet, tableObj, currentCell, config, work);</span>
 
             // process horizontal table.
-<span class="fc" id="L161">            loadMultipleHorizontalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);</span>
+<span class="fc" id="L166">            loadMultipleHorizontalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);</span>
 
             // process vertial table
-<span class="fc" id="L164">            loadMultipleVerticalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);</span>
+<span class="fc" id="L169">            loadMultipleVerticalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);</span>
 
-<span class="fc" id="L166">            resultTableList.add(tableObj);</span>
-<span class="fc" id="L167">            after = currentCell;</span>
-<span class="fc" id="L168">            currentCell = CellFinder.query(sheet, label, config)</span>
-<span class="fc" id="L169">                    .startPosition(after)</span>
-<span class="fc" id="L170">                    .excludeStartPosition(true)</span>
-<span class="fc" id="L171">                    .findOptional()</span>
-<span class="fc" id="L172">                    .orElse(null);</span>
+<span class="fc" id="L171">            resultTableList.add(tableObj);</span>
+<span class="fc" id="L172">            after = currentCell;</span>
+<span class="fc" id="L173">            currentCell = CellFinder.query(sheet, label, config)</span>
+<span class="fc" id="L174">                    .startPosition(after)</span>
+<span class="fc" id="L175">                    .excludeStartPosition(true)</span>
+<span class="fc" id="L176">                    .findOptional()</span>
+<span class="fc" id="L177">                    .orElse(null);</span>
 
             // set PostProcess listener
-<span class="fc" id="L175">            methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
-<span class="fc" id="L176">                listenerClass.getPostLoadMethods().forEach(method -&gt; {</span>
-<span class="fc" id="L177">                    work.addNeedPostProcess(new NeedProcess(tableObj, listenerClass.getObject(), method));</span>
-<span class="fc" id="L178">                });</span>
-<span class="fc" id="L179">            });</span>
-
-            // set PostProcess method
-<span class="fc" id="L182">            methodCache.getPostLoadMethods().forEach(method -&gt; {</span>
-<span class="fc" id="L183">                work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));</span>
+<span class="fc" id="L180">            methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
+<span class="fc" id="L181">                listenerClass.getPostLoadMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L182">                    work.addNeedPostProcess(new NeedProcess(tableObj, listenerClass.getObject(), method));</span>
+<span class="fc" id="L183">                });</span>
 <span class="fc" id="L184">            });</span>
 
-            // パスの位置の変更
-<span class="fc" id="L187">            work.getErrors().popNestedPath();</span>
-<span class="fc" id="L188">        }</span>
+            // set PostProcess method
+<span class="fc" id="L187">            methodCache.getPostLoadMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L188">                work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));</span>
+<span class="fc" id="L189">            });</span>
 
-<span class="fc" id="L190">        return resultTableList;</span>
+            // パスの位置の変更
+<span class="fc" id="L192">            work.getErrors().popNestedPath();</span>
+<span class="fc" id="L193">        }</span>
+
+<span class="fc" id="L195">        return resultTableList;</span>
 
     }
 
@@ -199,21 +204,21 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
      */
     private void checkRecordAnnotation(final Class&lt;?&gt; tableClass, final AnnotationReader annoReader) {
 
-<span class="fc" id="L202">        final int horizontalSize = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L207">        final int horizontalSize = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
                 tableClass, annoReader, XlsHorizontalRecords.class)
-<span class="fc" id="L204">                .size();</span>
+<span class="fc" id="L209">                .size();</span>
 
-<span class="fc" id="L206">        final int verticalSize = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L211">        final int verticalSize = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
                 tableClass, annoReader, XlsVerticalRecords.class)
-<span class="fc" id="L208">                .size();</span>
+<span class="fc" id="L213">                .size();</span>
 
-<span class="fc bfc" id="L210" title="All 4 branches covered.">        if(horizontalSize &gt; 0 &amp;&amp; verticalSize &gt; 0) {</span>
-<span class="fc" id="L211">            throw new AnnotationInvalidException(MessageBuilder.create(&quot;anno.XlsIterateTables.horizontalAndVertical&quot;)</span>
-<span class="fc" id="L212">                    .varWithClass(&quot;tableClass&quot;, tableClass)</span>
-<span class="fc" id="L213">                    .format());</span>
+<span class="fc bfc" id="L215" title="All 4 branches covered.">        if(horizontalSize &gt; 0 &amp;&amp; verticalSize &gt; 0) {</span>
+<span class="fc" id="L216">            throw new AnnotationInvalidException(MessageBuilder.create(&quot;anno.XlsIterateTables.horizontalAndVertical&quot;)</span>
+<span class="fc" id="L217">                    .varWithClass(&quot;tableClass&quot;, tableClass)</span>
+<span class="fc" id="L218">                    .format());</span>
         }
 
-<span class="fc" id="L216">    }</span>
+<span class="fc" id="L221">    }</span>
     
     /**
      * XlsLabelledCommentによる処理する。
@@ -226,39 +231,39 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
     private void loadSingleLabelledComment(final Sheet sheet, final Object tableObj,
             final Cell headerCell, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L229">        final LabelledCommentProcessor labelledCommentProcessor =</span>
-<span class="fc" id="L230">                (LabelledCommentProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledComment.class);</span>
+<span class="fc" id="L234">        final LabelledCommentProcessor labelledCommentProcessor =</span>
+<span class="fc" id="L235">                (LabelledCommentProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledComment.class);</span>
 
-<span class="fc" id="L232">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L233">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledComment.class)</span>
-<span class="fc" id="L234">                .stream()</span>
-<span class="fc" id="L235">                .filter(p -&gt; p.isReadable())</span>
-<span class="fc" id="L236">                .collect(Collectors.toList());</span>
+<span class="fc" id="L237">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L238">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledComment.class)</span>
+<span class="fc" id="L239">                .stream()</span>
+<span class="fc" id="L240">                .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L241">                .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L238" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
-<span class="fc" id="L239">            final XlsLabelledComment anno = property.getAnnotationNullable(XlsLabelledComment.class);</span>
+<span class="fc bfc" id="L243" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc" id="L244">            final XlsLabelledComment anno = property.getAnnotationNullable(XlsLabelledComment.class);</span>
 
-<span class="fc" id="L241">            Cell titleCell = null;</span>
+<span class="fc" id="L246">            Cell titleCell = null;</span>
             try {
-<span class="fc" id="L243">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
-<span class="fc" id="L244">                        .startPosition(headerCell)</span>
-<span class="fc" id="L245">                        .excludeStartPosition(true)</span>
-<span class="fc" id="L246">                        .findWhenNotFoundException();</span>
+<span class="fc" id="L248">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
+<span class="fc" id="L249">                        .startPosition(headerCell)</span>
+<span class="fc" id="L250">                        .excludeStartPosition(true)</span>
+<span class="fc" id="L251">                        .findWhenNotFoundException();</span>
 
-<span class="nc" id="L248">            } catch (CellNotFoundException e) {</span>
-<span class="nc bnc" id="L249" title="All 2 branches missed.">                if (anno.optional()) {</span>
-<span class="nc" id="L250">                    continue;</span>
+<span class="nc" id="L253">            } catch (CellNotFoundException e) {</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">                if (anno.optional()) {</span>
+<span class="nc" id="L255">                    continue;</span>
                 } else {
-<span class="nc" id="L252">                    throw e;</span>
+<span class="nc" id="L257">                    throw e;</span>
                 }
-<span class="fc" id="L254">            }</span>
+<span class="fc" id="L259">            }</span>
 
-<span class="fc" id="L256">            final XlsLabelledComment labelledCell = new XlsLabelledCommentForIterateTable(</span>
-<span class="fc" id="L257">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
+<span class="fc" id="L261">            final XlsLabelledComment labelledCell = new XlsLabelledCommentForIterateTable(</span>
+<span class="fc" id="L262">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
 
-<span class="fc" id="L259">            labelledCommentProcessor.loadProcess(sheet, tableObj, labelledCell, property, config, work);</span>
-<span class="fc" id="L260">        }</span>
-<span class="fc" id="L261">    }</span>
+<span class="fc" id="L264">            labelledCommentProcessor.loadProcess(sheet, tableObj, labelledCell, property, config, work);</span>
+<span class="fc" id="L265">        }</span>
+<span class="fc" id="L266">    }</span>
 
     /**
      * XlsLabelledCellによる処理する。
@@ -271,39 +276,39 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
     private void loadSingleLabelledCell(final Sheet sheet, final Object tableObj,
             final Cell headerCell, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L274">        final LabelledCellProcessor labelledCellProcessor =</span>
-<span class="fc" id="L275">                (LabelledCellProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledCell.class);</span>
+<span class="fc" id="L279">        final LabelledCellProcessor labelledCellProcessor =</span>
+<span class="fc" id="L280">                (LabelledCellProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledCell.class);</span>
 
-<span class="fc" id="L277">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L278">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)</span>
-<span class="fc" id="L279">                .stream()</span>
-<span class="fc" id="L280">                .filter(p -&gt; p.isReadable())</span>
-<span class="fc" id="L281">                .collect(Collectors.toList());</span>
+<span class="fc" id="L282">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L283">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)</span>
+<span class="fc" id="L284">                .stream()</span>
+<span class="fc" id="L285">                .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L286">                .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L283" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
-<span class="fc" id="L284">            final XlsLabelledCell anno = property.getAnnotationNullable(XlsLabelledCell.class);</span>
+<span class="fc bfc" id="L288" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc" id="L289">            final XlsLabelledCell anno = property.getAnnotationNullable(XlsLabelledCell.class);</span>
 
-<span class="fc" id="L286">            Cell titleCell = null;</span>
+<span class="fc" id="L291">            Cell titleCell = null;</span>
             try {
-<span class="fc" id="L288">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
-<span class="fc" id="L289">                        .startPosition(headerCell)</span>
-<span class="fc" id="L290">                        .excludeStartPosition(true)</span>
-<span class="fc" id="L291">                        .findWhenNotFoundException();</span>
+<span class="fc" id="L293">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
+<span class="fc" id="L294">                        .startPosition(headerCell)</span>
+<span class="fc" id="L295">                        .excludeStartPosition(true)</span>
+<span class="fc" id="L296">                        .findWhenNotFoundException();</span>
 
-<span class="fc" id="L293">            } catch (CellNotFoundException e) {</span>
-<span class="fc bfc" id="L294" title="All 2 branches covered.">                if (anno.optional()) {</span>
-<span class="fc" id="L295">                    continue;</span>
+<span class="fc" id="L298">            } catch (CellNotFoundException e) {</span>
+<span class="fc bfc" id="L299" title="All 2 branches covered.">                if (anno.optional()) {</span>
+<span class="fc" id="L300">                    continue;</span>
                 } else {
-<span class="fc" id="L297">                    throw e;</span>
+<span class="fc" id="L302">                    throw e;</span>
                 }
-<span class="fc" id="L299">            }</span>
+<span class="fc" id="L304">            }</span>
 
-<span class="fc" id="L301">            final XlsLabelledCell labelledCell = new XlsLabelledCellForIterateTable(</span>
-<span class="fc" id="L302">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
+<span class="fc" id="L306">            final XlsLabelledCell labelledCell = new XlsLabelledCellForIterateTable(</span>
+<span class="fc" id="L307">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
 
-<span class="fc" id="L304">            labelledCellProcessor.loadProcess(sheet, tableObj, labelledCell, property, config, work);</span>
-<span class="fc" id="L305">        }</span>
-<span class="fc" id="L306">    }</span>
+<span class="fc" id="L309">            labelledCellProcessor.loadProcess(sheet, tableObj, labelledCell, property, config, work);</span>
+<span class="fc" id="L310">        }</span>
+<span class="fc" id="L311">    }</span>
 
     /**
      * XlsLabelledArrayCellを処理する。
@@ -316,449 +321,454 @@ import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
     private void loadSingleLabelledArrayCell(final Sheet sheet, final Object tableObj,
             final Cell headerCell, final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L319">        final LabelledArrayCellsProcessor labelledArrayCellProcessor =</span>
-<span class="fc" id="L320">                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledArrayCells.class);</span>
+<span class="fc" id="L324">        final LabelledArrayCellsProcessor labelledArrayCellProcessor =</span>
+<span class="fc" id="L325">                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledArrayCells.class);</span>
 
-<span class="fc" id="L322">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L323">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)</span>
-<span class="fc" id="L324">                .stream()</span>
-<span class="fc" id="L325">                .filter(p -&gt; p.isReadable())</span>
-<span class="fc" id="L326">                .collect(Collectors.toList());</span>
+<span class="fc" id="L327">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L328">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)</span>
+<span class="fc" id="L329">                .stream()</span>
+<span class="fc" id="L330">                .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L331">                .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L328" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
-<span class="fc" id="L329">            final XlsLabelledArrayCells anno = property.getAnnotationNullable(XlsLabelledArrayCells.class);</span>
+<span class="fc bfc" id="L333" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc" id="L334">            final XlsLabelledArrayCells anno = property.getAnnotationNullable(XlsLabelledArrayCells.class);</span>
 
-<span class="fc" id="L331">            Cell titleCell = null;</span>
+<span class="fc" id="L336">            Cell titleCell = null;</span>
             try {
-<span class="fc" id="L333">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
-<span class="fc" id="L334">                        .startPosition(headerCell)</span>
-<span class="fc" id="L335">                        .excludeStartPosition(true)</span>
-<span class="fc" id="L336">                        .findWhenNotFoundException();</span>
+<span class="fc" id="L338">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
+<span class="fc" id="L339">                        .startPosition(headerCell)</span>
+<span class="fc" id="L340">                        .excludeStartPosition(true)</span>
+<span class="fc" id="L341">                        .findWhenNotFoundException();</span>
 
-<span class="nc" id="L338">            } catch (CellNotFoundException e) {</span>
-<span class="nc bnc" id="L339" title="All 2 branches missed.">                if (anno.optional()) {</span>
-<span class="nc" id="L340">                    continue;</span>
+<span class="nc" id="L343">            } catch (CellNotFoundException e) {</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">                if (anno.optional()) {</span>
+<span class="nc" id="L345">                    continue;</span>
                 } else {
-<span class="nc" id="L342">                    throw e;</span>
+<span class="nc" id="L347">                    throw e;</span>
                 }
-<span class="fc" id="L344">            }</span>
+<span class="fc" id="L349">            }</span>
 
-<span class="fc" id="L346">            final XlsLabelledArrayCells wrapAnno = new XlsLabelledArrayCellsForIterateTable(</span>
-<span class="fc" id="L347">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
+<span class="fc" id="L351">            final XlsLabelledArrayCells wrapAnno = new XlsLabelledArrayCellsForIterateTable(</span>
+<span class="fc" id="L352">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
 
-<span class="fc" id="L349">            labelledArrayCellProcessor.loadProcess(sheet, tableObj, wrapAnno, property, config, work);</span>
-<span class="fc" id="L350">        }</span>
-<span class="fc" id="L351">    }</span>
+<span class="fc" id="L354">            labelledArrayCellProcessor.loadProcess(sheet, tableObj, wrapAnno, property, config, work);</span>
+<span class="fc" id="L355">        }</span>
+<span class="fc" id="L356">    }</span>
 
     private void loadMultipleHorizontalTableCell(final Sheet sheet, final Object tableObj,
             final Cell headerCell, final XlsIterateTables iterateTablesAnno,
             final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L357">        int headerColumn = headerCell.getColumnIndex();</span>
-<span class="fc" id="L358">        int headerRow = headerCell.getRowIndex();</span>
+<span class="fc" id="L362">        int headerColumn = headerCell.getColumnIndex();</span>
+<span class="fc" id="L363">        int headerRow = headerCell.getRowIndex();</span>
 
-<span class="pc bpc" id="L360" title="1 of 2 branches missed.">        if (iterateTablesAnno.bottom() &gt; 0) {</span>
+<span class="fc bfc" id="L365" title="All 2 branches covered.">        if (iterateTablesAnno.bottom() &gt; 0) {</span>
             // if positive value set to bottom(), row index of table header move
-<span class="fc" id="L362">            headerRow += iterateTablesAnno.bottom();</span>
+<span class="fc" id="L367">            headerRow += iterateTablesAnno.bottom();</span>
         }
 
-<span class="fc" id="L365">        final HorizontalRecordsProcessor processor =</span>
-<span class="fc" id="L366">                (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsHorizontalRecords.class);</span>
+<span class="fc" id="L370">        final HorizontalRecordsProcessor processor =</span>
+<span class="fc" id="L371">                (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsHorizontalRecords.class);</span>
 
-<span class="fc" id="L368">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L369">                tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)</span>
-<span class="fc" id="L370">                .stream()</span>
-<span class="fc" id="L371">                .filter(p -&gt; p.isReadable())</span>
-<span class="fc" id="L372">                .collect(Collectors.toList());</span>
+<span class="fc" id="L373">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L374">                tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)</span>
+<span class="fc" id="L375">                .stream()</span>
+<span class="fc" id="L376">                .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L377">                .collect(Collectors.toList());</span>
 
-<span class="fc" id="L374">        final List&lt;FieldAccessorProxy&gt; accessorProxies = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L375" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
-<span class="fc" id="L376">            final XlsHorizontalRecords anno = property.getAnnotationNullable(XlsHorizontalRecords.class);</span>
+<span class="fc" id="L379">        final List&lt;FieldAccessorProxy&gt; accessorProxies = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L380" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc" id="L381">            final XlsHorizontalRecords anno = property.getAnnotationNullable(XlsHorizontalRecords.class);</span>
 
-<span class="pc bpc" id="L378" title="1 of 2 branches missed.">            if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {</span>
+<span class="pc bpc" id="L383" title="1 of 2 branches missed.">            if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {</span>
 
-<span class="fc" id="L380">                final XlsHorizontalRecords recordsAnno = new XlsHorizontalRecordsForIterateTables(anno, headerColumn, headerRow);</span>
-<span class="fc" id="L381">                accessorProxies.add(new FieldAccessorProxy(recordsAnno, processor, property));</span>
+<span class="fc" id="L385">                final XlsHorizontalRecords recordsAnno = new XlsHorizontalRecordsForIterateTables(anno, headerColumn, headerRow);</span>
+<span class="fc" id="L386">                accessorProxies.add(new FieldAccessorProxy(recordsAnno, processor, property));</span>
             }
-<span class="fc" id="L383">        }</span>
+<span class="fc" id="L388">        }</span>
 
         // 順番を並び替えて読み込み処理を実行する
-<span class="fc" id="L386">        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());</span>
-<span class="fc bfc" id="L387" title="All 2 branches covered.">        for(FieldAccessorProxy adaptorProxy : accessorProxies) {</span>
-<span class="fc" id="L388">            adaptorProxy.loadProcess(sheet, tableObj, config, work);</span>
-<span class="fc" id="L389">        }</span>
+<span class="fc" id="L391">        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());</span>
+<span class="fc bfc" id="L392" title="All 2 branches covered.">        for(FieldAccessorProxy adaptorProxy : accessorProxies) {</span>
+<span class="fc" id="L393">            adaptorProxy.loadProcess(sheet, tableObj, config, work);</span>
+<span class="fc" id="L394">        }</span>
 
-<span class="fc" id="L391">    }</span>
+<span class="fc" id="L396">    }</span>
 
     private void loadMultipleVerticalTableCell(final Sheet sheet, final Object tableObj,
             final Cell headerCell, final XlsIterateTables iterateTablesAnno,
             final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L397">        int headerColumn = headerCell.getColumnIndex();</span>
-<span class="fc" id="L398">        int headerRow = headerCell.getRowIndex();</span>
+<span class="fc" id="L402">        int headerColumn = headerCell.getColumnIndex();</span>
+<span class="fc" id="L403">        int headerRow = headerCell.getRowIndex();</span>
 
-<span class="pc bpc" id="L400" title="1 of 2 branches missed.">        if (iterateTablesAnno.bottom() &gt; 0) {</span>
+<span class="fc bfc" id="L405" title="All 2 branches covered.">        if (iterateTablesAnno.bottom() &gt; 0) {</span>
             // if positive value set to bottom(), row index of table header move
-<span class="fc" id="L402">            headerRow += iterateTablesAnno.bottom();</span>
+<span class="fc" id="L407">            headerRow += iterateTablesAnno.bottom();</span>
         }
 
-<span class="fc" id="L405">        final VerticalRecordsProcessor processor =</span>
-<span class="fc" id="L406">                (VerticalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsVerticalRecords.class);</span>
+<span class="fc" id="L410">        final VerticalRecordsProcessor processor =</span>
+<span class="fc" id="L411">                (VerticalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsVerticalRecords.class);</span>
 
-<span class="fc" id="L408">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L409">                tableObj.getClass(), work.getAnnoReader(), XlsVerticalRecords.class)</span>
-<span class="fc" id="L410">                .stream()</span>
-<span class="fc" id="L411">                .filter(p -&gt; p.isReadable())</span>
-<span class="fc" id="L412">                .collect(Collectors.toList());</span>
+<span class="fc" id="L413">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L414">                tableObj.getClass(), work.getAnnoReader(), XlsVerticalRecords.class)</span>
+<span class="fc" id="L415">                .stream()</span>
+<span class="fc" id="L416">                .filter(p -&gt; p.isWritable())</span>
+<span class="fc" id="L417">                .collect(Collectors.toList());</span>
 
-<span class="fc" id="L414">        final List&lt;FieldAccessorProxy&gt; accessorProxies = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L415" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
-<span class="fc" id="L416">            final XlsVerticalRecords anno = property.getAnnotationNullable(XlsVerticalRecords.class);</span>
+<span class="fc" id="L419">        final List&lt;FieldAccessorProxy&gt; accessorProxies = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L420" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc" id="L421">            final XlsVerticalRecords anno = property.getAnnotationNullable(XlsVerticalRecords.class);</span>
 
-<span class="pc bpc" id="L418" title="1 of 2 branches missed.">            if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {</span>
+<span class="pc bpc" id="L423" title="1 of 2 branches missed.">            if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {</span>
 
-<span class="fc" id="L420">                final XlsVerticalRecords recordsAnno = new XlsVerticalRecordsForIterateTables(anno, headerColumn, headerRow);</span>
-<span class="fc" id="L421">                accessorProxies.add(new FieldAccessorProxy(recordsAnno, processor, property));</span>
+<span class="fc" id="L425">                final XlsVerticalRecords recordsAnno = new XlsVerticalRecordsForIterateTables(anno, headerColumn, headerRow);</span>
+<span class="fc" id="L426">                accessorProxies.add(new FieldAccessorProxy(recordsAnno, processor, property));</span>
             }
-<span class="fc" id="L423">        }</span>
+<span class="fc" id="L428">        }</span>
 
         // 順番を並び替えて読み込み処理を実行する
-<span class="fc" id="L426">        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());</span>
-<span class="fc bfc" id="L427" title="All 2 branches covered.">        for(FieldAccessorProxy adaptorProxy : accessorProxies) {</span>
-<span class="fc" id="L428">            adaptorProxy.loadProcess(sheet, tableObj, config, work);</span>
-<span class="fc" id="L429">        }</span>
+<span class="fc" id="L431">        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">        for(FieldAccessorProxy adaptorProxy : accessorProxies) {</span>
+<span class="fc" id="L433">            adaptorProxy.loadProcess(sheet, tableObj, config, work);</span>
+<span class="fc" id="L434">        }</span>
 
-<span class="fc" id="L431">    }</span>
+<span class="fc" id="L436">    }</span>
 
     @SuppressWarnings(&quot;unchecked&quot;)
     @Override
     public void saveProcess(final Sheet sheet, final Object beansObj, final XlsIterateTables anno, final FieldAccessor accessor,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
-<span class="pc bpc" id="L438" title="1 of 2 branches missed.">        if(!Utils.isSaveCase(anno.cases())) {</span>
-<span class="nc" id="L439">            return;</span>
+<span class="fc bfc" id="L443" title="All 2 branches covered.">        if(!accessor.isReadable()) {</span>
+            // セルの値を参照するメソッド／フィールドがない場合はスキップ
+<span class="fc" id="L445">            return;</span>
+        }
+        
+<span class="pc bpc" id="L448" title="1 of 2 branches missed.">        if(!Utils.isSaveCase(anno.cases())) {</span>
+<span class="nc" id="L449">            return;</span>
         }
 
-<span class="fc" id="L442">        final Object result = accessor.getValue(beansObj);</span>
-<span class="fc" id="L443">        final Class&lt;?&gt; clazz = accessor.getType();</span>
+<span class="fc" id="L452">        final Object result = accessor.getValue(beansObj);</span>
+<span class="fc" id="L453">        final Class&lt;?&gt; clazz = accessor.getType();</span>
 
-<span class="fc bfc" id="L445" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(clazz)) {</span>
+<span class="fc bfc" id="L455" title="All 2 branches covered.">        if(Collection.class.isAssignableFrom(clazz)) {</span>
 
-<span class="fc" id="L447">            Class&lt;?&gt; tableClass = anno.tableClass();</span>
-<span class="pc bpc" id="L448" title="1 of 2 branches missed.">            if(tableClass == Object.class) {</span>
-<span class="fc" id="L449">                tableClass = accessor.getComponentType();</span>
+<span class="fc" id="L457">            Class&lt;?&gt; tableClass = anno.tableClass();</span>
+<span class="pc bpc" id="L458" title="1 of 2 branches missed.">            if(tableClass == Object.class) {</span>
+<span class="fc" id="L459">                tableClass = accessor.getComponentType();</span>
             }
 
-<span class="pc bpc" id="L452" title="1 of 2 branches missed.">            final Collection&lt;Object&gt; value = (result == null ? new ArrayList&lt;Object&gt;() : (Collection&lt;Object&gt;) result);</span>
-<span class="fc" id="L453">            final List&lt;Object&gt; list = Utils.convertCollectionToList(value);</span>
-<span class="fc" id="L454">            saveTables(sheet, anno, accessor, tableClass, list, config, work);</span>
-
-<span class="pc bpc" id="L456" title="1 of 2 branches missed.">        } else if(clazz.isArray()) {</span>
-
-<span class="fc" id="L458">            Class&lt;?&gt; tableClass = anno.tableClass();</span>
-<span class="pc bpc" id="L459" title="1 of 2 branches missed.">            if(tableClass == Object.class) {</span>
-<span class="fc" id="L460">                tableClass = accessor.getComponentType();</span>
-            }
-
-<span class="fc" id="L463">            final List&lt;Object&gt; list = Utils.asList(result, tableClass);</span>
+<span class="pc bpc" id="L462" title="1 of 2 branches missed.">            final Collection&lt;Object&gt; value = (result == null ? new ArrayList&lt;Object&gt;() : (Collection&lt;Object&gt;) result);</span>
+<span class="fc" id="L463">            final List&lt;Object&gt; list = Utils.convertCollectionToList(value);</span>
 <span class="fc" id="L464">            saveTables(sheet, anno, accessor, tableClass, list, config, work);</span>
 
-<span class="fc" id="L466">        } else {</span>
-<span class="nc" id="L467">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
-<span class="nc" id="L468">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
-<span class="nc" id="L469">                    .varWithAnno(&quot;anno&quot;, XlsIterateTables.class)</span>
-<span class="nc" id="L470">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
-<span class="nc" id="L471">                    .var(&quot;expectedType&quot;, &quot;Collection(List/Set) or Array&quot;)</span>
-<span class="nc" id="L472">                    .format());</span>
+<span class="pc bpc" id="L466" title="1 of 2 branches missed.">        } else if(clazz.isArray()) {</span>
+
+<span class="fc" id="L468">            Class&lt;?&gt; tableClass = anno.tableClass();</span>
+<span class="pc bpc" id="L469" title="1 of 2 branches missed.">            if(tableClass == Object.class) {</span>
+<span class="fc" id="L470">                tableClass = accessor.getComponentType();</span>
+            }
+
+<span class="fc" id="L473">            final List&lt;Object&gt; list = Utils.asList(result, tableClass);</span>
+<span class="fc" id="L474">            saveTables(sheet, anno, accessor, tableClass, list, config, work);</span>
+
+<span class="fc" id="L476">        } else {</span>
+<span class="nc" id="L477">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
+<span class="nc" id="L478">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="nc" id="L479">                    .varWithAnno(&quot;anno&quot;, XlsIterateTables.class)</span>
+<span class="nc" id="L480">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
+<span class="nc" id="L481">                    .var(&quot;expectedType&quot;, &quot;Collection(List/Set) or Array&quot;)</span>
+<span class="nc" id="L482">                    .format());</span>
         }
-<span class="fc" id="L474">    }</span>
+<span class="fc" id="L484">    }</span>
 
     private void saveTables(final Sheet sheet, final XlsIterateTables iterateTablesAnno, final FieldAccessor accessor,
             final Class&lt;?&gt; tableClass, final List&lt;Object&gt; resultTableList,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
         // アノテーションの整合性のチェック
-<span class="fc" id="L481">        checkRecordAnnotation(tableClass, work.getAnnoReader());</span>
+<span class="fc" id="L491">        checkRecordAnnotation(tableClass, work.getAnnoReader());</span>
 
-<span class="fc" id="L483">        Cell after = null;</span>
-<span class="fc" id="L484">        Cell currentCell = null;</span>
-<span class="fc" id="L485">        String label = iterateTablesAnno.tableLabel();</span>
+<span class="fc" id="L493">        Cell after = null;</span>
+<span class="fc" id="L494">        Cell currentCell = null;</span>
+<span class="fc" id="L495">        String label = iterateTablesAnno.tableLabel();</span>
 
         // 各種レコードのコールバック用メソッドを抽出する
-<span class="fc" id="L488">        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)</span>
-<span class="fc" id="L489">                .create(tableClass, ProcessCase.Save);</span>
+<span class="fc" id="L498">        final RecordMethodCache methodCache = new RecordMethodFacatory(work.getAnnoReader(), config)</span>
+<span class="fc" id="L499">                .create(tableClass, ProcessCase.Save);</span>
 
-<span class="fc bfc" id="L491" title="All 2 branches covered.">        for(int i=0; i &lt; resultTableList.size(); i++) {</span>
+<span class="fc bfc" id="L501" title="All 2 branches covered.">        for(int i=0; i &lt; resultTableList.size(); i++) {</span>
 
-<span class="fc" id="L493">            final Object tableObj = resultTableList.get(i);</span>
+<span class="fc" id="L503">            final Object tableObj = resultTableList.get(i);</span>
 
             // パスの位置の変更
-<span class="fc" id="L496">            work.getErrors().pushNestedPath(accessor.getName(), i);</span>
+<span class="fc" id="L506">            work.getErrors().pushNestedPath(accessor.getName(), i);</span>
 
             // execute PreProcess listener
-<span class="fc" id="L499">            methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
-<span class="fc" id="L500">                listenerClass.getPreSaveMethods().forEach(method -&gt; {</span>
-<span class="fc" id="L501">                    Utils.invokeNeedProcessMethod(listenerClass.getObject(), method, tableObj, sheet, config, work.getErrors(), ProcessCase.Save);</span>
-<span class="fc" id="L502">                });</span>
-<span class="fc" id="L503">            });</span>
+<span class="fc" id="L509">            methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
+<span class="fc" id="L510">                listenerClass.getPreSaveMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L511">                    Utils.invokeNeedProcessMethod(listenerClass.getObject(), method, tableObj, sheet, config, work.getErrors(), ProcessCase.Save);</span>
+<span class="fc" id="L512">                });</span>
+<span class="fc" id="L513">            });</span>
 
             // execute PreProcess method
-<span class="fc" id="L506">            methodCache.getPreSaveMethods().forEach(method -&gt; {</span>
-<span class="fc" id="L507">                Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors(), ProcessCase.Save);</span>
-<span class="fc" id="L508">            });</span>
+<span class="fc" id="L516">            methodCache.getPreSaveMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L517">                Utils.invokeNeedProcessMethod(tableObj, method, tableObj, sheet, config, work.getErrors(), ProcessCase.Save);</span>
+<span class="fc" id="L518">            });</span>
 
-<span class="fc bfc" id="L510" title="All 2 branches covered.">            if(after == null) {</span>
-<span class="fc" id="L511">                currentCell = CellFinder.query(sheet, label, config).find(iterateTablesAnno.optional());</span>
+<span class="fc bfc" id="L520" title="All 2 branches covered.">            if(after == null) {</span>
+<span class="fc" id="L521">                currentCell = CellFinder.query(sheet, label, config).find(iterateTablesAnno.optional());</span>
             } else {
-<span class="fc" id="L513">                currentCell = CellFinder.query(sheet, label, config)</span>
-<span class="fc" id="L514">                        .startPosition(after)</span>
-<span class="fc" id="L515">                        .excludeStartPosition(true)</span>
-<span class="fc" id="L516">                        .find(iterateTablesAnno.optional());</span>
+<span class="fc" id="L523">                currentCell = CellFinder.query(sheet, label, config)</span>
+<span class="fc" id="L524">                        .startPosition(after)</span>
+<span class="fc" id="L525">                        .excludeStartPosition(true)</span>
+<span class="fc" id="L526">                        .find(iterateTablesAnno.optional());</span>
             }
-<span class="pc bpc" id="L518" title="1 of 2 branches missed.">            if(currentCell == null) {</span>
+<span class="pc bpc" id="L528" title="1 of 2 branches missed.">            if(currentCell == null) {</span>
                 //TODO: 見出しが足りない場合の追加処理を記述する
 
                 // パスの位置の変更
-<span class="nc" id="L522">                work.getErrors().popNestedPath();</span>
-<span class="nc" id="L523">                break;</span>
+<span class="nc" id="L532">                work.getErrors().popNestedPath();</span>
+<span class="nc" id="L533">                break;</span>
             }
             
             // process single label comment
-<span class="fc" id="L527">            saveSingleLabelledComment(sheet, tableObj, currentCell, config, work);</span>
+<span class="fc" id="L537">            saveSingleLabelledComment(sheet, tableObj, currentCell, config, work);</span>
 
             // process single label.
-<span class="fc" id="L530">            saveSingleLabelledCell(sheet, tableObj, currentCell, config, work);</span>
+<span class="fc" id="L540">            saveSingleLabelledCell(sheet, tableObj, currentCell, config, work);</span>
 
             // process array labels.
-<span class="fc" id="L533">            saveSingleLabelledArrayCell(sheet, tableObj, currentCell, config, work);</span>
+<span class="fc" id="L543">            saveSingleLabelledArrayCell(sheet, tableObj, currentCell, config, work);</span>
 
             // process horizontal table.
-<span class="fc" id="L536">            saveMultipleHorizontalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);</span>
+<span class="fc" id="L546">            saveMultipleHorizontalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);</span>
 
             // process vertical table
-<span class="fc" id="L539">            saveMultipleVerticalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);</span>
+<span class="fc" id="L549">            saveMultipleVerticalTableCell(sheet, tableObj, currentCell, iterateTablesAnno, config, work);</span>
 
-<span class="fc" id="L541">            after = currentCell;</span>
+<span class="fc" id="L551">            after = currentCell;</span>
 
             // set PostProcess listener
-<span class="fc" id="L544">            methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
-<span class="fc" id="L545">                listenerClass.getPostSaveMethods().forEach(method -&gt; {</span>
-<span class="fc" id="L546">                    work.addNeedPostProcess(new NeedProcess(tableObj, listenerClass.getObject(), method));</span>
-<span class="fc" id="L547">                });</span>
-<span class="fc" id="L548">            });</span>
+<span class="fc" id="L554">            methodCache.getListenerClasses().forEach(listenerClass -&gt; {</span>
+<span class="fc" id="L555">                listenerClass.getPostSaveMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L556">                    work.addNeedPostProcess(new NeedProcess(tableObj, listenerClass.getObject(), method));</span>
+<span class="fc" id="L557">                });</span>
+<span class="fc" id="L558">            });</span>
 
             // set PostProcess method
-<span class="fc" id="L551">            methodCache.getPostSaveMethods().forEach(method -&gt; {</span>
-<span class="fc" id="L552">                work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));</span>
-<span class="fc" id="L553">            });</span>
+<span class="fc" id="L561">            methodCache.getPostSaveMethods().forEach(method -&gt; {</span>
+<span class="fc" id="L562">                work.addNeedPostProcess(new NeedProcess(tableObj, tableObj, method));</span>
+<span class="fc" id="L563">            });</span>
 
             // パスの位置の変更
-<span class="fc" id="L556">            work.getErrors().popNestedPath();</span>
+<span class="fc" id="L566">            work.getErrors().popNestedPath();</span>
         }
 
 
-<span class="fc" id="L560">    }</span>
+<span class="fc" id="L570">    }</span>
     
     private void saveSingleLabelledComment(final Sheet sheet, final Object tableObj, final Cell headerCell,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L565">        final LabelledCommentProcessor labelledCommentProcessor =</span>
-<span class="fc" id="L566">                (LabelledCommentProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledComment.class);</span>
+<span class="fc" id="L575">        final LabelledCommentProcessor labelledCommentProcessor =</span>
+<span class="fc" id="L576">                (LabelledCommentProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledComment.class);</span>
 
-<span class="fc" id="L568">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L569">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledComment.class)</span>
-<span class="fc" id="L570">                .stream()</span>
-<span class="fc" id="L571">                .filter(p -&gt; p.isWritable())</span>
-<span class="fc" id="L572">                .collect(Collectors.toList());</span>
+<span class="fc" id="L578">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L579">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledComment.class)</span>
+<span class="fc" id="L580">                .stream()</span>
+<span class="fc" id="L581">                .filter(p -&gt; p.isReadable())</span>
+<span class="fc" id="L582">                .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L574" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc bfc" id="L584" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
 
-<span class="fc" id="L576">            final XlsLabelledComment anno = property.getAnnotationNullable(XlsLabelledComment.class);</span>
+<span class="fc" id="L586">            final XlsLabelledComment anno = property.getAnnotationNullable(XlsLabelledComment.class);</span>
 
-<span class="fc" id="L578">            Cell titleCell = null;</span>
+<span class="fc" id="L588">            Cell titleCell = null;</span>
             try {
-<span class="fc" id="L580">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
-<span class="fc" id="L581">                        .startPosition(headerCell)</span>
-<span class="fc" id="L582">                        .excludeStartPosition(true)</span>
-<span class="fc" id="L583">                        .findWhenNotFoundException();</span>
+<span class="fc" id="L590">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
+<span class="fc" id="L591">                        .startPosition(headerCell)</span>
+<span class="fc" id="L592">                        .excludeStartPosition(true)</span>
+<span class="fc" id="L593">                        .findWhenNotFoundException();</span>
 
-<span class="nc" id="L585">            } catch (CellNotFoundException e) {</span>
-<span class="nc bnc" id="L586" title="All 2 branches missed.">                if (anno.optional()) {</span>
-<span class="nc" id="L587">                    continue;</span>
+<span class="nc" id="L595">            } catch (CellNotFoundException e) {</span>
+<span class="nc bnc" id="L596" title="All 2 branches missed.">                if (anno.optional()) {</span>
+<span class="nc" id="L597">                    continue;</span>
                 } else {
-<span class="nc" id="L589">                    throw e;</span>
+<span class="nc" id="L599">                    throw e;</span>
                 }
-<span class="fc" id="L591">            }</span>
+<span class="fc" id="L601">            }</span>
 
-<span class="fc" id="L593">            final XlsLabelledComment labelledCell = new XlsLabelledCommentForIterateTable(</span>
-<span class="fc" id="L594">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
+<span class="fc" id="L603">            final XlsLabelledComment labelledCell = new XlsLabelledCommentForIterateTable(</span>
+<span class="fc" id="L604">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
 
-<span class="fc" id="L596">            labelledCommentProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);</span>
-<span class="fc" id="L597">        }</span>
+<span class="fc" id="L606">            labelledCommentProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);</span>
+<span class="fc" id="L607">        }</span>
 
-<span class="fc" id="L599">    }</span>
+<span class="fc" id="L609">    }</span>
 
     private void saveSingleLabelledCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L604">        final LabelledCellProcessor labelledCellProcessor =</span>
-<span class="fc" id="L605">                (LabelledCellProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledCell.class);</span>
+<span class="fc" id="L614">        final LabelledCellProcessor labelledCellProcessor =</span>
+<span class="fc" id="L615">                (LabelledCellProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledCell.class);</span>
 
-<span class="fc" id="L607">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L608">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)</span>
-<span class="fc" id="L609">                .stream()</span>
-<span class="fc" id="L610">                .filter(p -&gt; p.isWritable())</span>
-<span class="fc" id="L611">                .collect(Collectors.toList());</span>
+<span class="fc" id="L617">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L618">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledCell.class)</span>
+<span class="fc" id="L619">                .stream()</span>
+<span class="fc" id="L620">                .filter(p -&gt; p.isReadable())</span>
+<span class="fc" id="L621">                .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L613" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc bfc" id="L623" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
 
-<span class="fc" id="L615">            final XlsLabelledCell anno = property.getAnnotationNullable(XlsLabelledCell.class);</span>
+<span class="fc" id="L625">            final XlsLabelledCell anno = property.getAnnotationNullable(XlsLabelledCell.class);</span>
 
-<span class="fc" id="L617">            Cell titleCell = null;</span>
+<span class="fc" id="L627">            Cell titleCell = null;</span>
             try {
-<span class="fc" id="L619">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
-<span class="fc" id="L620">                        .startPosition(headerCell)</span>
-<span class="fc" id="L621">                        .excludeStartPosition(true)</span>
-<span class="fc" id="L622">                        .findWhenNotFoundException();</span>
+<span class="fc" id="L629">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
+<span class="fc" id="L630">                        .startPosition(headerCell)</span>
+<span class="fc" id="L631">                        .excludeStartPosition(true)</span>
+<span class="fc" id="L632">                        .findWhenNotFoundException();</span>
 
-<span class="fc" id="L624">            } catch (CellNotFoundException e) {</span>
-<span class="fc bfc" id="L625" title="All 2 branches covered.">                if (anno.optional()) {</span>
-<span class="fc" id="L626">                    continue;</span>
+<span class="fc" id="L634">            } catch (CellNotFoundException e) {</span>
+<span class="fc bfc" id="L635" title="All 2 branches covered.">                if (anno.optional()) {</span>
+<span class="fc" id="L636">                    continue;</span>
                 } else {
-<span class="fc" id="L628">                    throw e;</span>
+<span class="fc" id="L638">                    throw e;</span>
                 }
-<span class="fc" id="L630">            }</span>
+<span class="fc" id="L640">            }</span>
 
-<span class="fc" id="L632">            final XlsLabelledCell labelledCell = new XlsLabelledCellForIterateTable(</span>
-<span class="fc" id="L633">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
+<span class="fc" id="L642">            final XlsLabelledCell labelledCell = new XlsLabelledCellForIterateTable(</span>
+<span class="fc" id="L643">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
 
-<span class="fc" id="L635">            labelledCellProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);</span>
-<span class="fc" id="L636">        }</span>
+<span class="fc" id="L645">            labelledCellProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);</span>
+<span class="fc" id="L646">        }</span>
 
-<span class="fc" id="L638">    }</span>
+<span class="fc" id="L648">    }</span>
 
     private void saveSingleLabelledArrayCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
             final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L643">        final LabelledArrayCellsProcessor labelledArrayCellProcessor =</span>
-<span class="fc" id="L644">                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledArrayCells.class);</span>
+<span class="fc" id="L653">        final LabelledArrayCellsProcessor labelledArrayCellProcessor =</span>
+<span class="fc" id="L654">                (LabelledArrayCellsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsLabelledArrayCells.class);</span>
 
-<span class="fc" id="L646">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L647">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)</span>
-<span class="fc" id="L648">                .stream()</span>
-<span class="fc" id="L649">                .filter(p -&gt; p.isWritable())</span>
-<span class="fc" id="L650">                .collect(Collectors.toList());</span>
+<span class="fc" id="L656">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L657">                tableObj.getClass(), work.getAnnoReader(), XlsLabelledArrayCells.class)</span>
+<span class="fc" id="L658">                .stream()</span>
+<span class="fc" id="L659">                .filter(p -&gt; p.isReadable())</span>
+<span class="fc" id="L660">                .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L652" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc bfc" id="L662" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
 
-<span class="fc" id="L654">            final XlsLabelledArrayCells anno = property.getAnnotationNullable(XlsLabelledArrayCells.class);</span>
+<span class="fc" id="L664">            final XlsLabelledArrayCells anno = property.getAnnotationNullable(XlsLabelledArrayCells.class);</span>
 
-<span class="fc" id="L656">            Cell titleCell = null;</span>
+<span class="fc" id="L666">            Cell titleCell = null;</span>
             try {
-<span class="fc" id="L658">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
-<span class="fc" id="L659">                        .startPosition(headerCell)</span>
-<span class="fc" id="L660">                        .excludeStartPosition(true)</span>
-<span class="fc" id="L661">                        .findWhenNotFoundException();</span>
+<span class="fc" id="L668">                titleCell = CellFinder.query(sheet, anno.label(), config)</span>
+<span class="fc" id="L669">                        .startPosition(headerCell)</span>
+<span class="fc" id="L670">                        .excludeStartPosition(true)</span>
+<span class="fc" id="L671">                        .findWhenNotFoundException();</span>
 
-<span class="nc" id="L663">            } catch (CellNotFoundException e) {</span>
-<span class="nc bnc" id="L664" title="All 2 branches missed.">                if (anno.optional()) {</span>
-<span class="nc" id="L665">                    continue;</span>
+<span class="nc" id="L673">            } catch (CellNotFoundException e) {</span>
+<span class="nc bnc" id="L674" title="All 2 branches missed.">                if (anno.optional()) {</span>
+<span class="nc" id="L675">                    continue;</span>
                 } else {
-<span class="nc" id="L667">                    throw e;</span>
+<span class="nc" id="L677">                    throw e;</span>
                 }
-<span class="fc" id="L669">            }</span>
+<span class="fc" id="L679">            }</span>
 
-<span class="fc" id="L671">            final XlsLabelledArrayCells labelledCell = new XlsLabelledArrayCellsForIterateTable(</span>
-<span class="fc" id="L672">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
+<span class="fc" id="L681">            final XlsLabelledArrayCells labelledCell = new XlsLabelledArrayCellsForIterateTable(</span>
+<span class="fc" id="L682">                    anno, titleCell.getRowIndex(), titleCell.getColumnIndex());</span>
 
-<span class="fc" id="L674">            labelledArrayCellProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);</span>
-<span class="fc" id="L675">        }</span>
+<span class="fc" id="L684">            labelledArrayCellProcessor.saveProcess(sheet, tableObj, labelledCell, property, config, work);</span>
+<span class="fc" id="L685">        }</span>
 
-<span class="fc" id="L677">    }</span>
+<span class="fc" id="L687">    }</span>
 
     private void saveMultipleHorizontalTableCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
             final XlsIterateTables iterateTables, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L682">        final int headerColumn = headerCell.getColumnIndex();</span>
-<span class="fc" id="L683">        int headerRow = headerCell.getRowIndex();</span>
+<span class="fc" id="L692">        final int headerColumn = headerCell.getColumnIndex();</span>
+<span class="fc" id="L693">        int headerRow = headerCell.getRowIndex();</span>
 
-<span class="pc bpc" id="L685" title="1 of 2 branches missed.">        if (iterateTables.bottom() &gt; 0) {</span>
+<span class="fc bfc" id="L695" title="All 2 branches covered.">        if (iterateTables.bottom() &gt; 0) {</span>
             // if positive value set to bottom(), row index of table header move
-<span class="fc" id="L687">            headerRow += iterateTables.bottom();</span>
+<span class="fc" id="L697">            headerRow += iterateTables.bottom();</span>
         }
 
-<span class="fc" id="L690">        final HorizontalRecordsProcessor processor =</span>
-<span class="fc" id="L691">                (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsHorizontalRecords.class);</span>
+<span class="fc" id="L700">        final HorizontalRecordsProcessor processor =</span>
+<span class="fc" id="L701">                (HorizontalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsHorizontalRecords.class);</span>
 
-<span class="fc" id="L693">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L694">                tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)</span>
-<span class="fc" id="L695">                .stream()</span>
-<span class="fc" id="L696">                .filter(p -&gt; p.isWritable())</span>
-<span class="fc" id="L697">                .collect(Collectors.toList());</span>
+<span class="fc" id="L703">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L704">                tableObj.getClass(), work.getAnnoReader(), XlsHorizontalRecords.class)</span>
+<span class="fc" id="L705">                .stream()</span>
+<span class="fc" id="L706">                .filter(p -&gt; p.isReadable())</span>
+<span class="fc" id="L707">                .collect(Collectors.toList());</span>
 
-<span class="fc" id="L699">        final List&lt;FieldAccessorProxy&gt; accessorProxies = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L700" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc" id="L709">        final List&lt;FieldAccessorProxy&gt; accessorProxies = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L710" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
 
-<span class="fc" id="L702">            final XlsHorizontalRecords anno = property.getAnnotationNullable(XlsHorizontalRecords.class);</span>
+<span class="fc" id="L712">            final XlsHorizontalRecords anno = property.getAnnotationNullable(XlsHorizontalRecords.class);</span>
 
             // 処理対象と同じテーブルラベルのとき、マッピングを実行する。
-<span class="pc bpc" id="L705" title="1 of 2 branches missed.">            if(iterateTables.tableLabel().equals(anno.tableLabel())) {</span>
-<span class="fc" id="L706">                final XlsHorizontalRecords recordsAnno = new XlsHorizontalRecordsForIterateTables(anno, headerColumn, headerRow);</span>
-<span class="fc" id="L707">                accessorProxies.add(new FieldAccessorProxy(recordsAnno, processor, property));</span>
+<span class="pc bpc" id="L715" title="1 of 2 branches missed.">            if(iterateTables.tableLabel().equals(anno.tableLabel())) {</span>
+<span class="fc" id="L716">                final XlsHorizontalRecords recordsAnno = new XlsHorizontalRecordsForIterateTables(anno, headerColumn, headerRow);</span>
+<span class="fc" id="L717">                accessorProxies.add(new FieldAccessorProxy(recordsAnno, processor, property));</span>
 
             }
 
-<span class="fc" id="L711">        }</span>
+<span class="fc" id="L721">        }</span>
 
         // 順番を並び替えて保存処理を実行する
-<span class="fc" id="L714">        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());</span>
-<span class="fc bfc" id="L715" title="All 2 branches covered.">        for(FieldAccessorProxy adaptorProxy : accessorProxies) {</span>
-<span class="fc" id="L716">            adaptorProxy.saveProcess(sheet, tableObj, config, work);</span>
-<span class="fc" id="L717">        }</span>
+<span class="fc" id="L724">        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());</span>
+<span class="fc bfc" id="L725" title="All 2 branches covered.">        for(FieldAccessorProxy adaptorProxy : accessorProxies) {</span>
+<span class="fc" id="L726">            adaptorProxy.saveProcess(sheet, tableObj, config, work);</span>
+<span class="fc" id="L727">        }</span>
 
-<span class="fc" id="L719">    }</span>
+<span class="fc" id="L729">    }</span>
 
     private void saveMultipleVerticalTableCell(final Sheet sheet, final Object tableObj, final Cell headerCell,
             final XlsIterateTables iterateTablesAnno, final Configuration config, final SavingWorkObject work) throws XlsMapperException {
 
-<span class="fc" id="L724">        int headerColumn = headerCell.getColumnIndex();</span>
-<span class="fc" id="L725">        int headerRow = headerCell.getRowIndex();</span>
+<span class="fc" id="L734">        int headerColumn = headerCell.getColumnIndex();</span>
+<span class="fc" id="L735">        int headerRow = headerCell.getRowIndex();</span>
 
-<span class="pc bpc" id="L727" title="1 of 2 branches missed.">        if (iterateTablesAnno.bottom() &gt; 0) {</span>
+<span class="fc bfc" id="L737" title="All 2 branches covered.">        if (iterateTablesAnno.bottom() &gt; 0) {</span>
             // if positive value set to bottom(), row index of table header move
-<span class="fc" id="L729">            headerRow += iterateTablesAnno.bottom();</span>
+<span class="fc" id="L739">            headerRow += iterateTablesAnno.bottom();</span>
         }
 
-<span class="fc" id="L732">        final VerticalRecordsProcessor processor =</span>
-<span class="fc" id="L733">                (VerticalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsVerticalRecords.class);</span>
+<span class="fc" id="L742">        final VerticalRecordsProcessor processor =</span>
+<span class="fc" id="L743">                (VerticalRecordsProcessor) config.getFieldProcessorRegistry().getProcessor(XlsVerticalRecords.class);</span>
 
-<span class="fc" id="L735">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
-<span class="fc" id="L736">                tableObj.getClass(), work.getAnnoReader(), XlsVerticalRecords.class)</span>
-<span class="fc" id="L737">                .stream()</span>
-<span class="fc" id="L738">                .filter(p -&gt; p.isWritable())</span>
-<span class="fc" id="L739">                .collect(Collectors.toList());</span>
+<span class="fc" id="L745">        final List&lt;FieldAccessor&gt; properties = FieldAccessorUtils.getPropertiesWithAnnotation(</span>
+<span class="fc" id="L746">                tableObj.getClass(), work.getAnnoReader(), XlsVerticalRecords.class)</span>
+<span class="fc" id="L747">                .stream()</span>
+<span class="fc" id="L748">                .filter(p -&gt; p.isReadable())</span>
+<span class="fc" id="L749">                .collect(Collectors.toList());</span>
 
-<span class="fc" id="L741">        final List&lt;FieldAccessorProxy&gt; accessorProxies = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L742" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
+<span class="fc" id="L751">        final List&lt;FieldAccessorProxy&gt; accessorProxies = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L752" title="All 2 branches covered.">        for(FieldAccessor property : properties) {</span>
 
-<span class="fc" id="L744">            final XlsVerticalRecords anno = property.getAnnotationNullable(XlsVerticalRecords.class);</span>
+<span class="fc" id="L754">            final XlsVerticalRecords anno = property.getAnnotationNullable(XlsVerticalRecords.class);</span>
 
             // 処理対象と同じテーブルラベルのとき、マッピングを実行する。
-<span class="pc bpc" id="L747" title="1 of 2 branches missed.">            if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {</span>
-<span class="fc" id="L748">                final XlsVerticalRecords recordsAnno = new XlsVerticalRecordsForIterateTables(anno, headerColumn, headerRow);</span>
-<span class="fc" id="L749">                accessorProxies.add(new FieldAccessorProxy(recordsAnno, processor, property));</span>
+<span class="pc bpc" id="L757" title="1 of 2 branches missed.">            if(iterateTablesAnno.tableLabel().equals(anno.tableLabel())) {</span>
+<span class="fc" id="L758">                final XlsVerticalRecords recordsAnno = new XlsVerticalRecordsForIterateTables(anno, headerColumn, headerRow);</span>
+<span class="fc" id="L759">                accessorProxies.add(new FieldAccessorProxy(recordsAnno, processor, property));</span>
 
             }
 
-<span class="fc" id="L753">        }</span>
+<span class="fc" id="L763">        }</span>
 
         // 順番を並び替えて保存処理を実行する
-<span class="fc" id="L756">        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());</span>
-<span class="fc bfc" id="L757" title="All 2 branches covered.">        for(FieldAccessorProxy adaptorProxy : accessorProxies) {</span>
-<span class="fc" id="L758">            adaptorProxy.saveProcess(sheet, tableObj, config, work);</span>
-<span class="fc" id="L759">        }</span>
+<span class="fc" id="L766">        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());</span>
+<span class="fc bfc" id="L767" title="All 2 branches covered.">        for(FieldAccessorProxy adaptorProxy : accessorProxies) {</span>
+<span class="fc" id="L768">            adaptorProxy.saveProcess(sheet, tableObj, config, work);</span>
+<span class="fc" id="L769">        }</span>
 
-<span class="fc" id="L761">    }</span>
+<span class="fc" id="L771">    }</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -64,7 +64,7 @@
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html">LinkCellConverterTest</a> {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="LinkCellConverterTest" href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html#LinkCellConverterTest">LinkCellConverterTest</a> {
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     * テスト結果ファイルの出力ディレクトリ</em>
@@ -97,22 +97,22 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">try</strong>(InputStream in = <strong class="jxr_keyword">new</strong> FileInputStream(<span class="jxr_string">"src/test/data/convert.xlsx"</span>)) {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>              SheetBindingErrors&lt;LinkSheet&gt; errors = mapper.loadDetail(in, LinkSheet.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>              <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html">LinkSheet</a> sheet = errors.getTarget();
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>              LinkSheet sheet = errors.getTarget();
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>              <strong class="jxr_keyword">if</strong>(sheet.simpleRecords != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>                  <strong class="jxr_keyword">for</strong>(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> record : sheet.simpleRecords) {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>                  <strong class="jxr_keyword">for</strong>(SimpleRecord record : sheet.simpleRecords) {
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                      assertRecord(record, errors);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>                  }
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>              }
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>             <strong class="jxr_keyword">if</strong>(sheet.formattedRecords != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>                 <strong class="jxr_keyword">for</strong>(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> record : sheet.formattedRecords) {
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>                 <strong class="jxr_keyword">for</strong>(FormattedRecord record : sheet.formattedRecords) {
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>                     assertRecord(record, errors);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>                 }
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>             }
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> 
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>             <strong class="jxr_keyword">if</strong>(sheet.formulaRecords != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>                 <strong class="jxr_keyword">for</strong>(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> record : sheet.formulaRecords) {
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>                 <strong class="jxr_keyword">for</strong>(FormulaRecord record : sheet.formulaRecords) {
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>                     assertRecord(record, errors);
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>                 }
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>             }
@@ -120,7 +120,7 @@
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         }
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>     }
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> 
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> SimpleRecord record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         <strong class="jxr_keyword">if</strong>(record.no == 1) {
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>             <em class="jxr_comment">// 空文字</em>
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>             assertThat(record.uri, is(nullValue()));
@@ -196,7 +196,7 @@
 <a class="jxr_linenumber" name="L188" href="#L188">188</a> 
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>     }
 <a class="jxr_linenumber" name="L190" href="#L190">190</a> 
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> FormattedRecord record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         <strong class="jxr_keyword">if</strong>(record.no == 1) {
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>             <em class="jxr_comment">// 空文字</em>
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>             assertThat(record.uri, is(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"http://myhome.com/"</span>)));
@@ -257,7 +257,7 @@
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>         }
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>     }
 <a class="jxr_linenumber" name="L251" href="#L251">251</a> 
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> FormulaRecord record, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>         <strong class="jxr_keyword">if</strong>(record.no == 1) {
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>             <em class="jxr_comment">// 空文字</em>
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>             assertThat(record.uri, is(nullValue()));
@@ -280,90 +280,90 @@
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> test_save_link() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L273" href="#L273">273</a> 
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>         <em class="jxr_comment">// テストデータの作成</em>
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html">LinkSheet</a> outSheet = <strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html">LinkSheet</a>();
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>         <strong class="jxr_keyword">final</strong> LinkSheet outSheet = <strong class="jxr_keyword">new</strong> LinkSheet();
 <a class="jxr_linenumber" name="L276" href="#L276">276</a> 
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>         <em class="jxr_comment">// アノテーションなしのデータ作成</em>
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>                 .comment(<span class="jxr_string">"空文字"</span>));
 <a class="jxr_linenumber" name="L280" href="#L280">280</a> 
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"http://www.google.co.jp/"</span>, <span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>                 .comment(<span class="jxr_string">"URL（ラベルが同じ）"</span>));
 <a class="jxr_linenumber" name="L285" href="#L285">285</a> 
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"http://www.google.co.jp/"</span>, <span class="jxr_string">"Googleサイト"</span>))
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>                 .comment(<span class="jxr_string">"URL（ラベルが異なる）"</span>));
 <a class="jxr_linenumber" name="L290" href="#L290">290</a> 
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"hoge@google.com"</span>))
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"hoge@google.com"</span>, <span class="jxr_string">"hoge@google.com"</span>))
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>                 .comment(<span class="jxr_string">"URL（メールアドレス）"</span>));
 <a class="jxr_linenumber" name="L295" href="#L295">295</a> 
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L297" href="#L297">297</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"convert.xlsx"</span>))
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"convert.xlsx"</span>, <span class="jxr_string">".&#92;&#92;convert.xlsx"</span>))
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>                 .comment(<span class="jxr_string">"ファイルパス"</span>));
 <a class="jxr_linenumber" name="L300" href="#L300">300</a> 
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L302" href="#L302">302</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"A1"</span>))
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"A1"</span>, <span class="jxr_string">"セルへのリンク"</span>))
 <a class="jxr_linenumber" name="L304" href="#L304">304</a>                 .comment(<span class="jxr_string">"セルへのリンク"</span>));
 <a class="jxr_linenumber" name="L305" href="#L305">305</a> 
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L308" href="#L308">308</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"http://www.google.co.jp/"</span>, <span class="jxr_string">" 空白を含むリンク "</span>))
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>                 .comment(<span class="jxr_string">"空白を含むリンク"</span>));
 <a class="jxr_linenumber" name="L310" href="#L310">310</a> 
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a>()
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>         outSheet.add(<strong class="jxr_keyword">new</strong> SimpleRecord()
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>             .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>             .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"http://www.google.co.jp/"</span>, <span class="jxr_string">"  "</span>))
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>             .comment(<span class="jxr_string">"ラベルが空白"</span>));
 <a class="jxr_linenumber" name="L315" href="#L315">315</a> 
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>         <em class="jxr_comment">// アノテーションありのデータ作成</em>
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>                 .comment(<span class="jxr_string">"空文字"</span>));
 <a class="jxr_linenumber" name="L319" href="#L319">319</a> 
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"http://www.google.co.jp/"</span>, <span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>                 .comment(<span class="jxr_string">"URL（ラベルが同じ）"</span>));
 <a class="jxr_linenumber" name="L324" href="#L324">324</a> 
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"http://www.google.co.jp/"</span>, <span class="jxr_string">"Googleサイト"</span>))
 <a class="jxr_linenumber" name="L328" href="#L328">328</a>                 .comment(<span class="jxr_string">"URL（ラベルが異なる）"</span>));
 <a class="jxr_linenumber" name="L329" href="#L329">329</a> 
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L331" href="#L331">331</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"hoge@google.com"</span>))
 <a class="jxr_linenumber" name="L332" href="#L332">332</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"hoge@google.com"</span>, <span class="jxr_string">"hoge@google.com"</span>))
 <a class="jxr_linenumber" name="L333" href="#L333">333</a>                 .comment(<span class="jxr_string">"URL（メールアドレス）"</span>));
 <a class="jxr_linenumber" name="L334" href="#L334">334</a> 
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L336" href="#L336">336</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"convert.xlsx"</span>))
 <a class="jxr_linenumber" name="L337" href="#L337">337</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"convert.xlsx"</span>, <span class="jxr_string">".&#92;&#92;convert.xlsx"</span>))
 <a class="jxr_linenumber" name="L338" href="#L338">338</a>                 .comment(<span class="jxr_string">"ファイルパス"</span>));
 <a class="jxr_linenumber" name="L339" href="#L339">339</a> 
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L341" href="#L341">341</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"A1"</span>))
 <a class="jxr_linenumber" name="L342" href="#L342">342</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"A1"</span>, <span class="jxr_string">"セルへのリンク"</span>))
 <a class="jxr_linenumber" name="L343" href="#L343">343</a>                 .comment(<span class="jxr_string">"セルへのリンク"</span>));
 <a class="jxr_linenumber" name="L344" href="#L344">344</a> 
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L347" href="#L347">347</a>                 .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"http://www.google.co.jp/"</span>, <span class="jxr_string">" 空白を含むリンク "</span>))
 <a class="jxr_linenumber" name="L348" href="#L348">348</a>                 .comment(<span class="jxr_string">"空白を含むリンク"</span>));
 <a class="jxr_linenumber" name="L349" href="#L349">349</a> 
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a>()
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormattedRecord()
 <a class="jxr_linenumber" name="L351" href="#L351">351</a>             .uri(<strong class="jxr_keyword">new</strong> URI(<span class="jxr_string">"http://www.google.co.jp/"</span>))
 <a class="jxr_linenumber" name="L352" href="#L352">352</a>             .link(<strong class="jxr_keyword">new</strong> CellLink(<span class="jxr_string">"http://www.google.co.jp/"</span>, <span class="jxr_string">"  "</span>))
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>             .comment(<span class="jxr_string">"ラベルが空白"</span>));
 <a class="jxr_linenumber" name="L354" href="#L354">354</a> 
 <a class="jxr_linenumber" name="L355" href="#L355">355</a> 
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>         <em class="jxr_comment">// 数式のデータ</em>
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a>().comment(<span class="jxr_string">"空文字"</span>));
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>         outSheet.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a>().comment(<span class="jxr_string">"http://www.google.co.jp/"</span>));
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormulaRecord().comment(<span class="jxr_string">"空文字"</span>));
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>         outSheet.add(<strong class="jxr_keyword">new</strong> FormulaRecord().comment(<span class="jxr_string">"http://www.google.co.jp/"</span>));
 <a class="jxr_linenumber" name="L359" href="#L359">359</a> 
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>         <em class="jxr_comment">// ファイルへの書き込み</em>
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>         XlsMapper mapper = <strong class="jxr_keyword">new</strong> XlsMapper();
@@ -381,7 +381,7 @@
 <a class="jxr_linenumber" name="L373" href="#L373">373</a> 
 <a class="jxr_linenumber" name="L374" href="#L374">374</a>             SheetBindingErrors&lt;LinkSheet&gt; errors = mapper.loadDetail(in, LinkSheet.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L375" href="#L375">375</a> 
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>             <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html">LinkSheet</a> sheet = errors.getTarget();
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>             LinkSheet sheet = errors.getTarget();
 <a class="jxr_linenumber" name="L377" href="#L377">377</a> 
 <a class="jxr_linenumber" name="L378" href="#L378">378</a>             <strong class="jxr_keyword">if</strong>(sheet.simpleRecords != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L379" href="#L379">379</a>                 assertThat(sheet.simpleRecords, hasSize(outSheet.simpleRecords.size()));
@@ -417,7 +417,7 @@
 <a class="jxr_linenumber" name="L409" href="#L409">409</a> <em class="jxr_javadoccomment">     * @param outRecord</em>
 <a class="jxr_linenumber" name="L410" href="#L410">410</a> <em class="jxr_javadoccomment">     * @param errors</em>
 <a class="jxr_linenumber" name="L411" href="#L411">411</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> inRecord, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> SimpleRecord inRecord, <strong class="jxr_keyword">final</strong> SimpleRecord outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) {
 <a class="jxr_linenumber" name="L413" href="#L413">413</a> 
 <a class="jxr_linenumber" name="L414" href="#L414">414</a>         System.out.printf(<span class="jxr_string">"%s - assertRecord::%s no=%d, comment=%s\n"</span>,
 <a class="jxr_linenumber" name="L415" href="#L415">415</a>                 <strong class="jxr_keyword">this</strong>.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -435,7 +435,7 @@
 <a class="jxr_linenumber" name="L427" href="#L427">427</a> <em class="jxr_javadoccomment">     * @param errors</em>
 <a class="jxr_linenumber" name="L428" href="#L428">428</a> <em class="jxr_javadoccomment">     * @throws URISyntaxException</em>
 <a class="jxr_linenumber" name="L429" href="#L429">429</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> inRecord, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> FormattedRecord inRecord, <strong class="jxr_keyword">final</strong> FormattedRecord outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
 <a class="jxr_linenumber" name="L431" href="#L431">431</a> 
 <a class="jxr_linenumber" name="L432" href="#L432">432</a>         System.out.printf(<span class="jxr_string">"%s - assertRecord::%s no=%d, comment=%s\n"</span>,
 <a class="jxr_linenumber" name="L433" href="#L433">433</a>                 <strong class="jxr_keyword">this</strong>.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -474,7 +474,7 @@
 <a class="jxr_linenumber" name="L466" href="#L466">466</a> <em class="jxr_javadoccomment">     * @param errors</em>
 <a class="jxr_linenumber" name="L467" href="#L467">467</a> <em class="jxr_javadoccomment">     * @throws URISyntaxException</em>
 <a class="jxr_linenumber" name="L468" href="#L468">468</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> inRecord, <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> assertRecord(<strong class="jxr_keyword">final</strong> FormulaRecord inRecord, <strong class="jxr_keyword">final</strong> FormulaRecord outRecord, <strong class="jxr_keyword">final</strong> SheetBindingErrors&lt;?&gt; errors) <strong class="jxr_keyword">throws</strong> URISyntaxException {
 <a class="jxr_linenumber" name="L470" href="#L470">470</a> 
 <a class="jxr_linenumber" name="L471" href="#L471">471</a>         System.out.printf(<span class="jxr_string">"%s - assertRecord::%s no=%d, comment=%s\n"</span>,
 <a class="jxr_linenumber" name="L472" href="#L472">472</a>                 <strong class="jxr_keyword">this</strong>.getClass().getSimpleName(), inRecord.getClass().getSimpleName(), inRecord.no, inRecord.comment);
@@ -497,7 +497,7 @@
 <a class="jxr_linenumber" name="L489" href="#L489">489</a>     }
 <a class="jxr_linenumber" name="L490" href="#L490">490</a> 
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>     @XlsSheet(name=<span class="jxr_string">"リンク型"</span>)
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html">LinkSheet</a> {
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> LinkSheet {
 <a class="jxr_linenumber" name="L493" href="#L493">493</a> 
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>         @XlsOrder(1)
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>         @XlsHorizontalRecords(tableLabel=<span class="jxr_string">"リンク型（アノテーションなし）"</span>, terminal=RecordTerminal.Border)
@@ -519,7 +519,7 @@
 <a class="jxr_linenumber" name="L511" href="#L511">511</a> <em class="jxr_javadoccomment">         * @param record</em>
 <a class="jxr_linenumber" name="L512" href="#L512">512</a> <em class="jxr_javadoccomment">         * @return</em>
 <a class="jxr_linenumber" name="L513" href="#L513">513</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L514" href="#L514">514</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html">LinkSheet</a> add(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> record) {
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>         <strong class="jxr_keyword">public</strong> LinkSheet add(SimpleRecord record) {
 <a class="jxr_linenumber" name="L515" href="#L515">515</a>             <strong class="jxr_keyword">if</strong>(simpleRecords == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L516" href="#L516">516</a>                 <strong class="jxr_keyword">this</strong>.simpleRecords = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L517" href="#L517">517</a>             }
@@ -533,7 +533,7 @@
 <a class="jxr_linenumber" name="L525" href="#L525">525</a> <em class="jxr_javadoccomment">         * @param record</em>
 <a class="jxr_linenumber" name="L526" href="#L526">526</a> <em class="jxr_javadoccomment">         * @return</em>
 <a class="jxr_linenumber" name="L527" href="#L527">527</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html">LinkSheet</a> add(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> record) {
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>         <strong class="jxr_keyword">public</strong> LinkSheet add(FormattedRecord record) {
 <a class="jxr_linenumber" name="L529" href="#L529">529</a>             <strong class="jxr_keyword">if</strong>(formattedRecords == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L530" href="#L530">530</a>                 <strong class="jxr_keyword">this</strong>.formattedRecords = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L531" href="#L531">531</a>             }
@@ -547,7 +547,7 @@
 <a class="jxr_linenumber" name="L539" href="#L539">539</a> <em class="jxr_javadoccomment">         * @param record</em>
 <a class="jxr_linenumber" name="L540" href="#L540">540</a> <em class="jxr_javadoccomment">         * @return</em>
 <a class="jxr_linenumber" name="L541" href="#L541">541</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L542" href="#L542">542</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/LinkCellConverterTest.html">LinkSheet</a> add(<a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> record) {
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>         <strong class="jxr_keyword">public</strong> LinkSheet add(FormulaRecord record) {
 <a class="jxr_linenumber" name="L543" href="#L543">543</a>             <strong class="jxr_keyword">if</strong>(formulaRecords == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L544" href="#L544">544</a>                 <strong class="jxr_keyword">this</strong>.formulaRecords = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L545" href="#L545">545</a>             }
@@ -561,7 +561,7 @@
 <a class="jxr_linenumber" name="L553" href="#L553">553</a> <em class="jxr_javadoccomment">     * リンク型 - アノテーションなし</em>
 <a class="jxr_linenumber" name="L554" href="#L554">554</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L555" href="#L555">555</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L556" href="#L556">556</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> {
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SimpleRecord {
 <a class="jxr_linenumber" name="L557" href="#L557">557</a> 
 <a class="jxr_linenumber" name="L558" href="#L558">558</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, Point&gt; positions;
 <a class="jxr_linenumber" name="L559" href="#L559">559</a> 
@@ -584,22 +584,22 @@
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>             <strong class="jxr_keyword">return</strong> IsEmptyBuilder.reflectionIsEmpty(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"positions"</span>, <span class="jxr_string">"labels"</span>, <span class="jxr_string">"no"</span>);
 <a class="jxr_linenumber" name="L577" href="#L577">577</a>         }
 <a class="jxr_linenumber" name="L578" href="#L578">578</a> 
-<a class="jxr_linenumber" name="L579" href="#L579">579</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> no(<strong class="jxr_keyword">int</strong> no) {
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>         <strong class="jxr_keyword">public</strong> SimpleRecord no(<strong class="jxr_keyword">int</strong> no) {
 <a class="jxr_linenumber" name="L580" href="#L580">580</a>             <strong class="jxr_keyword">this</strong>.no = no;
 <a class="jxr_linenumber" name="L581" href="#L581">581</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L582" href="#L582">582</a>         }
 <a class="jxr_linenumber" name="L583" href="#L583">583</a> 
-<a class="jxr_linenumber" name="L584" href="#L584">584</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> uri(URI uri) {
+<a class="jxr_linenumber" name="L584" href="#L584">584</a>         <strong class="jxr_keyword">public</strong> SimpleRecord uri(URI uri) {
 <a class="jxr_linenumber" name="L585" href="#L585">585</a>             <strong class="jxr_keyword">this</strong>.uri = uri;
 <a class="jxr_linenumber" name="L586" href="#L586">586</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L587" href="#L587">587</a>         }
 <a class="jxr_linenumber" name="L588" href="#L588">588</a> 
-<a class="jxr_linenumber" name="L589" href="#L589">589</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> link(CellLink link) {
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>         <strong class="jxr_keyword">public</strong> SimpleRecord link(CellLink link) {
 <a class="jxr_linenumber" name="L590" href="#L590">590</a>             <strong class="jxr_keyword">this</strong>.link = link;
 <a class="jxr_linenumber" name="L591" href="#L591">591</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L592" href="#L592">592</a>         }
 <a class="jxr_linenumber" name="L593" href="#L593">593</a> 
-<a class="jxr_linenumber" name="L594" href="#L594">594</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">SimpleRecord</a> comment(String comment) {
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>         <strong class="jxr_keyword">public</strong> SimpleRecord comment(String comment) {
 <a class="jxr_linenumber" name="L595" href="#L595">595</a>             <strong class="jxr_keyword">this</strong>.comment = comment;
 <a class="jxr_linenumber" name="L596" href="#L596">596</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L597" href="#L597">597</a>         }
@@ -610,7 +610,7 @@
 <a class="jxr_linenumber" name="L602" href="#L602">602</a> <em class="jxr_javadoccomment">     * リンク型 - 初期値など</em>
 <a class="jxr_linenumber" name="L603" href="#L603">603</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L604" href="#L604">604</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L605" href="#L605">605</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> {
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> FormattedRecord {
 <a class="jxr_linenumber" name="L606" href="#L606">606</a> 
 <a class="jxr_linenumber" name="L607" href="#L607">607</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, Point&gt; positions;
 <a class="jxr_linenumber" name="L608" href="#L608">608</a> 
@@ -637,22 +637,22 @@
 <a class="jxr_linenumber" name="L629" href="#L629">629</a>             <strong class="jxr_keyword">return</strong> IsEmptyBuilder.reflectionIsEmpty(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"positions"</span>, <span class="jxr_string">"labels"</span>, <span class="jxr_string">"no"</span>);
 <a class="jxr_linenumber" name="L630" href="#L630">630</a>         }
 <a class="jxr_linenumber" name="L631" href="#L631">631</a> 
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> no(<strong class="jxr_keyword">int</strong> no) {
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>         <strong class="jxr_keyword">public</strong> FormattedRecord no(<strong class="jxr_keyword">int</strong> no) {
 <a class="jxr_linenumber" name="L633" href="#L633">633</a>             <strong class="jxr_keyword">this</strong>.no = no;
 <a class="jxr_linenumber" name="L634" href="#L634">634</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L635" href="#L635">635</a>         }
 <a class="jxr_linenumber" name="L636" href="#L636">636</a> 
-<a class="jxr_linenumber" name="L637" href="#L637">637</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> uri(URI uri) {
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>         <strong class="jxr_keyword">public</strong> FormattedRecord uri(URI uri) {
 <a class="jxr_linenumber" name="L638" href="#L638">638</a>             <strong class="jxr_keyword">this</strong>.uri = uri;
 <a class="jxr_linenumber" name="L639" href="#L639">639</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L640" href="#L640">640</a>         }
 <a class="jxr_linenumber" name="L641" href="#L641">641</a> 
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> link(CellLink link) {
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>         <strong class="jxr_keyword">public</strong> FormattedRecord link(CellLink link) {
 <a class="jxr_linenumber" name="L643" href="#L643">643</a>             <strong class="jxr_keyword">this</strong>.link = link;
 <a class="jxr_linenumber" name="L644" href="#L644">644</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L645" href="#L645">645</a>         }
 <a class="jxr_linenumber" name="L646" href="#L646">646</a> 
-<a class="jxr_linenumber" name="L647" href="#L647">647</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormattedRecord</a> comment(String comment) {
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>         <strong class="jxr_keyword">public</strong> FormattedRecord comment(String comment) {
 <a class="jxr_linenumber" name="L648" href="#L648">648</a>             <strong class="jxr_keyword">this</strong>.comment = comment;
 <a class="jxr_linenumber" name="L649" href="#L649">649</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L650" href="#L650">650</a>         }
@@ -663,7 +663,7 @@
 <a class="jxr_linenumber" name="L655" href="#L655">655</a> <em class="jxr_javadoccomment">     * リンク型 - 数式な</em>
 <a class="jxr_linenumber" name="L656" href="#L656">656</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L657" href="#L657">657</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L658" href="#L658">658</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> {
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> FormulaRecord {
 <a class="jxr_linenumber" name="L659" href="#L659">659</a> 
 <a class="jxr_linenumber" name="L660" href="#L660">660</a>         <strong class="jxr_keyword">private</strong> Map&lt;String, Point&gt; positions;
 <a class="jxr_linenumber" name="L661" href="#L661">661</a> 
@@ -715,22 +715,22 @@
 <a class="jxr_linenumber" name="L707" href="#L707">707</a>             <strong class="jxr_keyword">return</strong> String.format(<span class="jxr_string">"HYPERLINK(D%s,\&quot;リンク\&quot;&amp;A%s)"</span>, rowNumber, rowNumber);
 <a class="jxr_linenumber" name="L708" href="#L708">708</a>         }
 <a class="jxr_linenumber" name="L709" href="#L709">709</a> 
-<a class="jxr_linenumber" name="L710" href="#L710">710</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> no(<strong class="jxr_keyword">int</strong> no) {
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>         <strong class="jxr_keyword">public</strong> FormulaRecord no(<strong class="jxr_keyword">int</strong> no) {
 <a class="jxr_linenumber" name="L711" href="#L711">711</a>             <strong class="jxr_keyword">this</strong>.no = no;
 <a class="jxr_linenumber" name="L712" href="#L712">712</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L713" href="#L713">713</a>         }
 <a class="jxr_linenumber" name="L714" href="#L714">714</a> 
-<a class="jxr_linenumber" name="L715" href="#L715">715</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> uri(URI uri) {
+<a class="jxr_linenumber" name="L715" href="#L715">715</a>         <strong class="jxr_keyword">public</strong> FormulaRecord uri(URI uri) {
 <a class="jxr_linenumber" name="L716" href="#L716">716</a>             <strong class="jxr_keyword">this</strong>.uri = uri;
 <a class="jxr_linenumber" name="L717" href="#L717">717</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L718" href="#L718">718</a>         }
 <a class="jxr_linenumber" name="L719" href="#L719">719</a> 
-<a class="jxr_linenumber" name="L720" href="#L720">720</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> link(CellLink link) {
+<a class="jxr_linenumber" name="L720" href="#L720">720</a>         <strong class="jxr_keyword">public</strong> FormulaRecord link(CellLink link) {
 <a class="jxr_linenumber" name="L721" href="#L721">721</a>             <strong class="jxr_keyword">this</strong>.link = link;
 <a class="jxr_linenumber" name="L722" href="#L722">722</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L723" href="#L723">723</a>         }
 <a class="jxr_linenumber" name="L724" href="#L724">724</a> 
-<a class="jxr_linenumber" name="L725" href="#L725">725</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/cellconverter/TextCellConverterTest.html">FormulaRecord</a> comment(String comment) {
+<a class="jxr_linenumber" name="L725" href="#L725">725</a>         <strong class="jxr_keyword">public</strong> FormulaRecord comment(String comment) {
 <a class="jxr_linenumber" name="L726" href="#L726">726</a>             <strong class="jxr_keyword">this</strong>.comment = comment;
 <a class="jxr_linenumber" name="L727" href="#L727">727</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L728" href="#L728">728</a>         }
@@ -740,6 +740,6 @@
 <a class="jxr_linenumber" name="L732" href="#L732">732</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

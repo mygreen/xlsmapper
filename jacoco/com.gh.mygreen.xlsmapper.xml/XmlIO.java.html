@@ -87,10 +87,10 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
         
         final AnnotationMappingInfo xmlInfo;
         
-<span class="pc" id="L90">        try(Reader reader = new InputStreamReader(new FileInputStream(file), encoding)) {</span>
+<span class="fc" id="L90">        try(Reader reader = new InputStreamReader(new FileInputStream(file), encoding)) {</span>
 <span class="fc" id="L91">            xmlInfo = load(reader);</span>
             
-<span class="pc bpc" id="L93" title="6 of 8 branches missed.">        } catch (IOException e) {</span>
+<span class="fc" id="L93">        } catch (IOException e) {</span>
 <span class="fc" id="L94">            throw new XmlOperateException(String.format(&quot;fail load xml file '%s'.&quot;, file.getPath()), e);</span>
 <span class="fc" id="L95">        }</span>
         
@@ -172,15 +172,15 @@ import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 <span class="nc" id="L172">            dir.mkdirs();</span>
         }
         
-<span class="pc" id="L175">        try(Writer writer = new OutputStreamWriter(new FileOutputStream(file), encoding)) {</span>
+<span class="fc" id="L175">        try(Writer writer = new OutputStreamWriter(new FileOutputStream(file), encoding)) {</span>
             
 <span class="fc" id="L177">            marshaller.marshal(xmlInfo, writer);</span>
             
-<span class="pc bpc" id="L179" title="6 of 8 branches missed.">        } catch(JAXBException | IOException e) {</span>
+<span class="nc" id="L179">        } catch(JAXBException | IOException e) {</span>
 <span class="nc" id="L180">            throw new XmlOperateException(String.format(&quot;fail save xml file '%s'.&quot;, file.getPath()), e);</span>
 <span class="fc" id="L181">        }</span>
         
 <span class="fc" id="L183">    }</span>
     
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

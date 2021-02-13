@@ -165,21 +165,26 @@ public class FieldAccessor {
     
     /**
      * 読み込み可能かどうか判定します。
+     * フィールドの値を参照可能かどうか判定します。
+     * &lt;p&gt;シートを読み込み時にセルの値をBeanに設定可能かの判定に使用します。&lt;/p&gt;
+     *
      * @return フィールドまたはgetterメソッドが存在する場合にtrueを返します。
      */
     public boolean isReadable() {
         
-<span class="pc bpc" id="L172" title="3 of 4 branches missed.">        return targetField.isPresent() || targetGetter.isPresent();</span>
+<span class="fc bfc" id="L175" title="All 4 branches covered.">        return targetField.isPresent() || targetGetter.isPresent();</span>
         
     }
     
     /**
      * 書き込み可能かどうか判定します。
+     * &lt;p&gt;シートを書き込み時にBeanの値をセルに設定可能かの判定に使用します。&lt;/p&gt;
+     *
      * @return フィールドまたはsetterメソッドが存在する場合にtrueを返します。
      */
     public boolean isWritable() {
         
-<span class="pc bpc" id="L182" title="3 of 4 branches missed.">        return targetField.isPresent() || targetSetter.isPresent();</span>
+<span class="fc bfc" id="L187" title="All 4 branches covered.">        return targetField.isPresent() || targetSetter.isPresent();</span>
     }
     
     /**
@@ -192,24 +197,24 @@ public class FieldAccessor {
      */
     public Object getValue(final Object targetObj) {
         
-<span class="fc" id="L195">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="fc" id="L200">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
         
-<span class="fc bfc" id="L197" title="All 2 branches covered.">        if(targetGetter.isPresent()) {</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">        if(targetGetter.isPresent()) {</span>
             try {
-<span class="fc" id="L199">                return targetGetter.get().invoke(targetObj);</span>
-<span class="nc" id="L200">            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
-<span class="nc" id="L201">                throw new FieldAccessException(this, &quot;fail getter value&quot;, e);</span>
+<span class="fc" id="L204">                return targetGetter.get().invoke(targetObj);</span>
+<span class="nc" id="L205">            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L206">                throw new FieldAccessException(this, &quot;fail getter value&quot;, e);</span>
             }
             
-<span class="pc bpc" id="L204" title="1 of 2 branches missed.">        } else if(targetField.isPresent()) {</span>
+<span class="pc bpc" id="L209" title="1 of 2 branches missed.">        } else if(targetField.isPresent()) {</span>
             try {
-<span class="fc" id="L206">                return targetField.get().get(targetObj);</span>
-<span class="nc" id="L207">            } catch (IllegalArgumentException | IllegalAccessException e) {</span>
-<span class="nc" id="L208">                throw new FieldAccessException(this, &quot;fail get field value&quot;, e);</span>
+<span class="fc" id="L211">                return targetField.get().get(targetObj);</span>
+<span class="nc" id="L212">            } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L213">                throw new FieldAccessException(this, &quot;fail get field value&quot;, e);</span>
             }
             
         } else {
-<span class="nc" id="L212">            throw new FieldAccessException(this, &quot;not found getter method or field.&quot;);</span>
+<span class="nc" id="L217">            throw new FieldAccessException(this, &quot;not found getter method or field.&quot;);</span>
         }
         
     }
@@ -224,27 +229,27 @@ public class FieldAccessor {
      * 
      */
     public void setValue(final Object targetObj, final Object value) {
-<span class="fc" id="L227">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="fc" id="L232">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
         
-<span class="fc bfc" id="L229" title="All 2 branches covered.">        if(targetSetter.isPresent()) {</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">        if(targetSetter.isPresent()) {</span>
             try {
-<span class="fc" id="L231">                targetSetter.get().invoke(targetObj, value);</span>
-<span class="nc" id="L232">            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
-<span class="nc" id="L233">                throw new FieldAccessException(this, &quot;fail setter value&quot;, e);</span>
-<span class="fc" id="L234">            }</span>
+<span class="fc" id="L236">                targetSetter.get().invoke(targetObj, value);</span>
+<span class="nc" id="L237">            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L238">                throw new FieldAccessException(this, &quot;fail setter value&quot;, e);</span>
+<span class="fc" id="L239">            }</span>
             
-<span class="pc bpc" id="L236" title="1 of 2 branches missed.">        } else if(targetField.isPresent()) {</span>
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">        } else if(targetField.isPresent()) {</span>
             try {
-<span class="fc" id="L238">                targetField.get().set(targetObj, value);</span>
+<span class="fc" id="L243">                targetField.get().set(targetObj, value);</span>
                 
-<span class="nc" id="L240">            } catch (IllegalArgumentException | IllegalAccessException e) {</span>
-<span class="nc" id="L241">                throw new FieldAccessException(this, &quot;fail setter field value&quot;, e);</span>
-<span class="fc" id="L242">            }</span>
+<span class="nc" id="L245">            } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L246">                throw new FieldAccessException(this, &quot;fail setter field value&quot;, e);</span>
+<span class="fc" id="L247">            }</span>
             
         } else {
-<span class="nc" id="L245">            throw new FieldAccessException(this, &quot;not found setter method or field.&quot;);</span>
+<span class="nc" id="L250">            throw new FieldAccessException(this, &quot;not found setter method or field.&quot;);</span>
         }
-<span class="fc" id="L247">    }</span>
+<span class="fc" id="L252">    }</span>
     
     /**
      * フィールドがマップ形式の場合に、キーを指定して値を取得する。
@@ -257,18 +262,18 @@ public class FieldAccessor {
      */
     @SuppressWarnings(&quot;unchecked&quot;)
     public Object getValueOfMap(final Object key, final Object targetObj) {
-<span class="fc" id="L260">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="fc" id="L265">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
         
-<span class="pc bpc" id="L262" title="1 of 2 branches missed.">        if(!Map.class.isAssignableFrom(targetType)) {</span>
-<span class="nc" id="L263">            throw new IllegalStateException(&quot;this method cannot call Map. This target type is &quot; + targetType.getName());</span>
+<span class="pc bpc" id="L267" title="1 of 2 branches missed.">        if(!Map.class.isAssignableFrom(targetType)) {</span>
+<span class="nc" id="L268">            throw new IllegalStateException(&quot;this method cannot call Map. This target type is &quot; + targetType.getName());</span>
         }
         
-<span class="fc" id="L266">        final Map&lt;Object, Object&gt; map = (Map&lt;Object, Object&gt;) getValue(targetObj);</span>
-<span class="fc bfc" id="L267" title="All 2 branches covered.">        if(map == null) {</span>
-<span class="fc" id="L268">            return null;</span>
+<span class="fc" id="L271">        final Map&lt;Object, Object&gt; map = (Map&lt;Object, Object&gt;) getValue(targetObj);</span>
+<span class="fc bfc" id="L272" title="All 2 branches covered.">        if(map == null) {</span>
+<span class="fc" id="L273">            return null;</span>
         }
         
-<span class="fc" id="L271">        return map.get(key);</span>
+<span class="fc" id="L276">        return map.get(key);</span>
         
     }
     
@@ -277,7 +282,7 @@ public class FieldAccessor {
      * @return 付与されているアノテーションの一覧
      */
     public Collection&lt;? extends Annotation&gt; getAnnotations() {
-<span class="nc" id="L280">        return annotationMap.values();</span>
+<span class="nc" id="L285">        return annotationMap.values();</span>
     }
     
     /**
@@ -286,7 +291,7 @@ public class FieldAccessor {
      * @return trueの場合、アノテーションを持ちます。
      */
     public &lt;A extends Annotation&gt; boolean hasAnnotation(final Class&lt;A&gt; annoClass) {
-<span class="fc" id="L289">        return annotationMap.containsKey(annoClass);</span>
+<span class="fc" id="L294">        return annotationMap.containsKey(annoClass);</span>
     }
     
     /**
@@ -296,7 +301,7 @@ public class FieldAccessor {
      */
     @SuppressWarnings(&quot;unchecked&quot;)
     public &lt;A extends Annotation&gt; Optional&lt;A&gt; getAnnotation(final Class&lt;A&gt; annoClass) {
-<span class="fc" id="L299">        return Optional.ofNullable((A)annotationMap.get(annoClass));</span>
+<span class="fc" id="L304">        return Optional.ofNullable((A)annotationMap.get(annoClass));</span>
     }
     
     /**
@@ -311,7 +316,7 @@ public class FieldAccessor {
      */
     @SuppressWarnings(&quot;unchecked&quot;)
     public &lt;A extends Annotation&gt; A getAnnotationNullable(final Class&lt;A&gt; annoClass) {
-<span class="fc" id="L314">        return (A)annotationMap.get(annoClass);</span>
+<span class="fc" id="L319">        return (A)annotationMap.get(annoClass);</span>
     }
     
     /**
@@ -319,7 +324,7 @@ public class FieldAccessor {
      * @return フィールドの名称
      */
     public String getName() {
-<span class="fc" id="L322">        return name;</span>
+<span class="fc" id="L327">        return name;</span>
     }
     
     /**
@@ -328,7 +333,7 @@ public class FieldAccessor {
      */
     public Class&lt;?&gt; getType() {
         
-<span class="fc" id="L331">        return targetType;</span>
+<span class="fc" id="L336">        return targetType;</span>
     }
     
     /**
@@ -337,8 +342,8 @@ public class FieldAccessor {
      * @throws IllegalStateException {@literal Genericsの指定がないとき、またはサポートしていないクラスタイプの場合}
      */
     public Class&lt;?&gt; getComponentType() {
-<span class="fc" id="L340">        return componentType.orElseThrow(() -&gt;</span>
-<span class="nc" id="L341">                new IllegalStateException(&quot;Because this field is List.class or Map.class, this field has not component type.&quot;));</span>
+<span class="fc" id="L345">        return componentType.orElseThrow(() -&gt;</span>
+<span class="nc" id="L346">                new IllegalStateException(&quot;Because this field is List.class or Map.class, this field has not component type.&quot;));</span>
     }
     
     /**
@@ -346,7 +351,7 @@ public class FieldAccessor {
      * @return trueの場合、Listや配列の時の要素のGenericsのクラスタイプの場合。
      */
     public boolean isComponentType() {
-<span class="fc" id="L349">        return componentType.isPresent();</span>
+<span class="fc" id="L354">        return componentType.isPresent();</span>
     }
     
     /**
@@ -354,7 +359,7 @@ public class FieldAccessor {
      * @return フィールドを持たない場合は、空を返します。
      */
     public Optional&lt;Field&gt; getField() {
-<span class="fc" id="L357">        return targetField;</span>
+<span class="fc" id="L362">        return targetField;</span>
     }
     
     /**
@@ -362,7 +367,7 @@ public class FieldAccessor {
      * @return getterメソッドを持たない場合は、空を返します。
      */
     public Optional&lt;Method&gt; getGetter() {
-<span class="fc" id="L365">        return targetGetter;</span>
+<span class="fc" id="L370">        return targetGetter;</span>
     }
     
     /**
@@ -370,7 +375,7 @@ public class FieldAccessor {
      * @return setterメソッドを持たない場合は、空を返します。
      */
     public Optional&lt;Method&gt; getSetter() {
-<span class="fc" id="L373">        return targetSetter;</span>
+<span class="fc" id="L378">        return targetSetter;</span>
     }
     
     /**
@@ -378,7 +383,7 @@ public class FieldAccessor {
      * @return フィールドが定義されているクラス情報
      */
     public Class&lt;?&gt; getDeclaringClass() {
-<span class="fc" id="L381">        return declaringClass;</span>
+<span class="fc" id="L386">        return declaringClass;</span>
     }
     
     /**
@@ -387,7 +392,7 @@ public class FieldAccessor {
      * @return {@literal &lt;クラス名#フィールド名&gt;}
      */
     public String getNameWithClass() {
-<span class="fc" id="L390">        return getDeclaringClass().getName() + &quot;#&quot; + getName();</span>
+<span class="fc" id="L395">        return getDeclaringClass().getName() + &quot;#&quot; + getName();</span>
     }
     
     /**
@@ -399,11 +404,11 @@ public class FieldAccessor {
      */
     public void setPosition(final Object targetObj, final CellPosition position) {
         
-<span class="fc" id="L402">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
-<span class="fc" id="L403">        ArgUtils.notNull(position, &quot;position&quot;);</span>
+<span class="fc" id="L407">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="fc" id="L408">        ArgUtils.notNull(position, &quot;position&quot;);</span>
         
-<span class="fc" id="L405">        positionSetter.ifPresent(setter -&gt; setter.set(targetObj, position));</span>
-<span class="fc" id="L406">    }</span>
+<span class="fc" id="L410">        positionSetter.ifPresent(setter -&gt; setter.set(targetObj, position));</span>
+<span class="fc" id="L411">    }</span>
     
     /**
      * 位置情報を取得します。
@@ -412,9 +417,9 @@ public class FieldAccessor {
      * @throws IllegalArgumentException {@literal targetObj == null or position == null}
      */
     public Optional&lt;CellPosition&gt; getPosition(final Object targetObj) {
-<span class="nc" id="L415">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="nc" id="L420">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
         
-<span class="nc" id="L417">        return positionGetter.map(getter -&gt; getter.get(targetObj)).orElse(Optional.empty());</span>
+<span class="nc" id="L422">        return positionGetter.map(getter -&gt; getter.get(targetObj)).orElse(Optional.empty());</span>
     }
     
     /**
@@ -429,13 +434,13 @@ public class FieldAccessor {
      */
     public void setMapPosition(final Object targetObj, final CellPosition position, final String key) {
         
-<span class="fc" id="L432">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
-<span class="fc" id="L433">        ArgUtils.notNull(position, &quot;position&quot;);</span>
-<span class="fc" id="L434">        ArgUtils.notEmpty(key, &quot;key&quot;);</span>
+<span class="fc" id="L437">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="fc" id="L438">        ArgUtils.notNull(position, &quot;position&quot;);</span>
+<span class="fc" id="L439">        ArgUtils.notEmpty(key, &quot;key&quot;);</span>
         
-<span class="fc" id="L436">        mapPositionSetter.ifPresent(setter -&gt; setter.set(targetObj, position, key));</span>
+<span class="fc" id="L441">        mapPositionSetter.ifPresent(setter -&gt; setter.set(targetObj, position, key));</span>
         
-<span class="fc" id="L438">    }</span>
+<span class="fc" id="L443">    }</span>
     
     /**
      * {@link XlsArrayColumns}フィールド用の位置情報を設定します。
@@ -449,13 +454,13 @@ public class FieldAccessor {
      */
     public void setArrayPosition(final Object targetObj, final CellPosition position, final int index) {
         
-<span class="fc" id="L452">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
-<span class="fc" id="L453">        ArgUtils.notNull(position, &quot;position&quot;);</span>
-<span class="fc" id="L454">        ArgUtils.notMin(index, 0, &quot;index&quot;);</span>
+<span class="fc" id="L457">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="fc" id="L458">        ArgUtils.notNull(position, &quot;position&quot;);</span>
+<span class="fc" id="L459">        ArgUtils.notMin(index, 0, &quot;index&quot;);</span>
         
-<span class="fc" id="L456">        arrayPositionSetter.ifPresent(setter -&gt; setter.set(targetObj, position, index));</span>
+<span class="fc" id="L461">        arrayPositionSetter.ifPresent(setter -&gt; setter.set(targetObj, position, index));</span>
         
-<span class="fc" id="L458">    }</span>
+<span class="fc" id="L463">    }</span>
     
     /**
      * ラベル情報を設定します。
@@ -467,11 +472,11 @@ public class FieldAccessor {
      */
     public void setLabel(final Object targetObj, final String label) {
         
-<span class="fc" id="L470">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
-<span class="fc" id="L471">        ArgUtils.notEmpty(label, &quot;label&quot;);</span>
+<span class="fc" id="L475">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="fc" id="L476">        ArgUtils.notEmpty(label, &quot;label&quot;);</span>
         
-<span class="fc" id="L473">        labelSetter.ifPresent(setter -&gt; setter.set(targetObj, label));</span>
-<span class="fc" id="L474">    }</span>
+<span class="fc" id="L478">        labelSetter.ifPresent(setter -&gt; setter.set(targetObj, label));</span>
+<span class="fc" id="L479">    }</span>
     
     /**
      * ラベル情報を取得します。
@@ -480,9 +485,9 @@ public class FieldAccessor {
      * @throws IllegalArgumentException {@literal targetObj == null or label == null}
      */
     public Optional&lt;String&gt; getLabel(final Object targetObj) {
-<span class="nc" id="L483">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="nc" id="L488">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
         
-<span class="nc" id="L485">        return labelGetter.map(getter -&gt; getter.get(targetObj)).orElse(Optional.empty());</span>
+<span class="nc" id="L490">        return labelGetter.map(getter -&gt; getter.get(targetObj)).orElse(Optional.empty());</span>
     }
     
     /**
@@ -497,13 +502,13 @@ public class FieldAccessor {
      */
     public void setMapLabel(final Object targetObj, final String label, final String key) {
         
-<span class="fc" id="L500">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
-<span class="fc" id="L501">        ArgUtils.notEmpty(label, &quot;label&quot;);</span>
-<span class="fc" id="L502">        ArgUtils.notEmpty(key, &quot;key&quot;);</span>
+<span class="fc" id="L505">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="fc" id="L506">        ArgUtils.notEmpty(label, &quot;label&quot;);</span>
+<span class="fc" id="L507">        ArgUtils.notEmpty(key, &quot;key&quot;);</span>
         
-<span class="fc" id="L504">        mapLabelSetter.ifPresent(setter -&gt; setter.set(targetObj, label, key));</span>
+<span class="fc" id="L509">        mapLabelSetter.ifPresent(setter -&gt; setter.set(targetObj, label, key));</span>
         
-<span class="fc" id="L506">    }</span>
+<span class="fc" id="L511">    }</span>
     
     /**
      * {@link XlsArrayColumns}フィールド用のラベル情報を設定します。
@@ -517,13 +522,13 @@ public class FieldAccessor {
      */
     public void setArrayLabel(final Object targetObj, final String label, final int index) {
         
-<span class="fc" id="L520">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
-<span class="fc" id="L521">        ArgUtils.notEmpty(label, &quot;label&quot;);</span>
-<span class="fc" id="L522">        ArgUtils.notMin(index, 0, &quot;index&quot;);</span>
+<span class="fc" id="L525">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="fc" id="L526">        ArgUtils.notEmpty(label, &quot;label&quot;);</span>
+<span class="fc" id="L527">        ArgUtils.notMin(index, 0, &quot;index&quot;);</span>
         
-<span class="fc" id="L524">        arrayLabelSetter.ifPresent(setter -&gt; setter.set(targetObj, label, index));</span>
+<span class="fc" id="L529">        arrayLabelSetter.ifPresent(setter -&gt; setter.set(targetObj, label, index));</span>
         
-<span class="fc" id="L526">    }</span>
+<span class="fc" id="L531">    }</span>
     
     /**
      * フィールドに対する{@link CommentSetter}を取得する。
@@ -531,7 +536,7 @@ public class FieldAccessor {
      * @return コメントの格納先がない場合は空を返す。
      */
     public Optional&lt;CommentSetter&gt; getCommentSetter() {
-<span class="fc" id="L534">        return commentSetter;</span>
+<span class="fc" id="L539">        return commentSetter;</span>
     }
     
     /**
@@ -540,7 +545,7 @@ public class FieldAccessor {
      * @return コメントの格納先がない場合は空を返す。
      */
     public Optional&lt;CommentGetter&gt; getCommentGetter() {
-<span class="fc" id="L543">        return commentGetter;</span>
+<span class="fc" id="L548">        return commentGetter;</span>
     }
     
     /**
@@ -549,7 +554,7 @@ public class FieldAccessor {
      * @return コメントの格納先がない場合は空を返す。
      */
     public Optional&lt;MapCommentSetter&gt; getMapCommentSetter() {
-<span class="fc" id="L552">        return mapCommentSetter;</span>
+<span class="fc" id="L557">        return mapCommentSetter;</span>
     }
     
     /**
@@ -558,7 +563,7 @@ public class FieldAccessor {
      * @return コメントの格納先がない場合は空を返す。
      */
     public Optional&lt;MapCommentGetter&gt; getMapCommentGetter() {
-<span class="fc" id="L561">        return mapCommentGetter;</span>
+<span class="fc" id="L566">        return mapCommentGetter;</span>
     }
     
     /**
@@ -567,7 +572,7 @@ public class FieldAccessor {
      * @return コメントの格納先がない場合は空を返す。
      */
     public Optional&lt;ArrayCommentSetter&gt; getArrayCommentSetter() {
-<span class="fc" id="L570">        return arrayCommentSetter;</span>
+<span class="fc" id="L575">        return arrayCommentSetter;</span>
     }
     
     /**
@@ -576,8 +581,8 @@ public class FieldAccessor {
      * @return コメントの格納先がない場合は空を返す。
      */
     public Optional&lt;ArrayCommentGetter&gt; getArrayCommentGetter() {
-<span class="fc" id="L579">        return arrayCommentGetter;</span>
+<span class="fc" id="L584">        return arrayCommentGetter;</span>
     }
     
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

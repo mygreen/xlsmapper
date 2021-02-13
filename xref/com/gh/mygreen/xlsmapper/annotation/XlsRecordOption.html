@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
 <head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<title>XlsRecordOption xref</title>
+<title>D:\home\workspace2019-12\git_xlsmapper\src\main\java\com\gh\mygreen\xlsmapper\annotation\XlsRecordOption.java xref</title>
 <link type="text/css" rel="stylesheet" href="../../../../../stylesheet.css" />
 </head>
 <body>
-<div id="overview"><a href="../../../../../../apidocs/com/gh/mygreen/xlsmapper/annotation/XlsRecordOption.html">View Javadoc</a></div><pre>
+<div id="overview"><a href="../../../../../../apidocs/com/gh/mygreen/xlsmapper/annotation">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> com.gh.mygreen.xlsmapper.annotation;
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> java.lang.annotation.Documented;
@@ -24,7 +24,7 @@
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  @Target({ElementType.METHOD, ElementType.FIELD})
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  @Retention(RetentionPolicy.RUNTIME)
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  @Documented
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsRecordOption.html">XlsRecordOption</a> {
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> XlsRecordOption {
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">     * 書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が足りない場合の操作を指定します。</em>
@@ -55,7 +55,7 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">     * @return {@link OverOperation#Break}の場合、足りないレコードがあるとそこで処理を終了します。</em>
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsRecordOption.html">OverOperation</a> overOperation() <strong class="jxr_keyword">default</strong> OverOperation.Break;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      OverOperation overOperation() <strong class="jxr_keyword">default</strong> OverOperation.Break;
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * 書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が余っている場合の操作を指定します。</em>
@@ -86,7 +86,7 @@
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">     * @return {@link RemainedOperation#None}の場合、余っているレコードがあっても何もしません。</em>
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsRecordOption.html">RemainedOperation</a> remainedOperation() <strong class="jxr_keyword">default</strong> RemainedOperation.None;
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      RemainedOperation remainedOperation() <strong class="jxr_keyword">default</strong> RemainedOperation.None;
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>  
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">     * アノテーション {@link XlsHorizontalRecords}や{@link XlsVerticalRecords}で、</em>
@@ -96,7 +96,7 @@
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">     * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> enum <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsRecordOption.html">OverOperation</a> {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> enum OverOperation {
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          <em class="jxr_javadoccomment">/** 前のセルをコピーします */</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          Copy,
@@ -118,7 +118,7 @@
 <a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">     * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> enum <a href="../../../../../com/gh/mygreen/xlsmapper/annotation/XlsRecordOption.html">RemainedOperation</a> {
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> enum RemainedOperation {
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> 
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         <em class="jxr_javadoccomment">/** セルの値をクリアします */</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         Clear,
@@ -134,6 +134,6 @@
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>

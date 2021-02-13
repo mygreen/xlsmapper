@@ -30,7 +30,7 @@
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * @author T.TSUCHIE</em>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetterFactory.html">PositionGetterFactory</a> {
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="PositionGetterFactory" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetterFactory.html#PositionGetterFactory">PositionGetterFactory</a> {
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>      
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger log = LoggerFactory.getLogger(PositionGetterFactory.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      
@@ -92,7 +92,7 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          <strong class="jxr_keyword">final</strong> Class&lt;?&gt; valueType = (Class&lt;?&gt;) type.getActualTypeArguments()[1];
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          <strong class="jxr_keyword">if</strong>(keyType.equals(String.<strong class="jxr_keyword">class</strong>) &amp;&amp; valueType.equals(CellPosition.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>              <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html">PositionGetter</a>() {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>              <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="PositionGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html#PositionGetter">PositionGetter</a>() {
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>                  
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>                  @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>                  @Override
@@ -115,7 +115,7 @@
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>             
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(keyType.equals(String.<strong class="jxr_keyword">class</strong>) &amp;&amp; valueType.equals(Point.<strong class="jxr_keyword">class</strong>)) {
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>             
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html">PositionGetter</a>() {
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="PositionGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html#PositionGetter">PositionGetter</a>() {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                 
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>                 @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>                 @Override
@@ -140,7 +140,7 @@
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>             
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(keyType.equals(String.<strong class="jxr_keyword">class</strong>) &amp;&amp; valueType.equals(org.apache.poi.ss.util.CellAddress.<strong class="jxr_keyword">class</strong>)) {
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>             
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html">PositionGetter</a>() {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="PositionGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html#PositionGetter">PositionGetter</a>() {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>                 @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>                 @Override
@@ -185,14 +185,14 @@
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         }
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>         
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         <strong class="jxr_keyword">if</strong>(method.getReturnType().equals(CellPosition.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html">PositionGetter</a>() {
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="PositionGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html#PositionGetter">PositionGetter</a>() {
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>                 
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>                 @Override
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>                 <strong class="jxr_keyword">public</strong> Optional&lt;CellPosition&gt; get(<strong class="jxr_keyword">final</strong> Object beanObj) {
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>                     ArgUtils.notNull(beanObj, <span class="jxr_string">"beanObj"</span>);
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>                     
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>                     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>                         <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/util/CellPosition.html">CellPosition</a> address = (CellPosition)method.invoke(beanObj);
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>                         <strong class="jxr_keyword">final</strong> <a name="CellPosition" h<a name="CellPosition" href="../../../../../com/gh/mygreen/xlsmapper/util/CellPosition.html#CellPosition">CellPosition</a>./../../com/gh/mygreen/xlsmapper/util/CellPosition.html#CellPosition">CellPosition</a> address = (<a name="CellPosition" href="../../../../../com/gh/mygreen/xlsmapper/util/CellPosition.html#CellPosition">CellPosition</a>)method.invoke(beanObj);
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>                         <strong class="jxr_keyword">return</strong> Optional.ofNullable(address);
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>                         
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>                     } <strong class="jxr_keyword">catch</strong> (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -203,7 +203,7 @@
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>             });
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>             
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(method.getReturnType().equals(Point.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html">PositionGetter</a>() {
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="PositionGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html#PositionGetter">PositionGetter</a>() {
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>                 
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>                 @Override
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>                 <strong class="jxr_keyword">public</strong> Optional&lt;CellPosition&gt; get(<strong class="jxr_keyword">final</strong> Object beanObj) {
@@ -221,7 +221,7 @@
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>             });
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>             
 <a class="jxr_linenumber" name="L215" href="#L215">215</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(method.getReturnType().equals(org.apache.poi.ss.util.CellAddress.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html">PositionGetter</a>() {
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="PositionGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html#PositionGetter">PositionGetter</a>() {
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>                 
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>                 @Override
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>                 <strong class="jxr_keyword">public</strong> Optional&lt;CellPosition&gt; get(<strong class="jxr_keyword">final</strong> Object beanObj) {
@@ -258,14 +258,14 @@
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>         
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>         <strong class="jxr_keyword">if</strong>(positionField.getType().equals(CellPosition.<strong class="jxr_keyword">class</strong>)) {
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>             
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html">PositionGetter</a>() {
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="PositionGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html#PositionGetter">PositionGetter</a>() {
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>                 
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>                 @Override
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>                 <strong class="jxr_keyword">public</strong> Optional&lt;CellPosition&gt; get(<strong class="jxr_keyword">final</strong> Object beanObj) {
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>                     ArgUtils.notNull(beanObj, <span class="jxr_string">"beanObj"</span>);
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>                     
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>                     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>                         <strong class="jxr_keyword">final</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/util/CellPosition.html">CellPosition</a> address = (CellPosition) positionField.get(beanObj);
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>                         <strong class="jxr_keyword">final</strong> <a name="CellPosition" h<a name="CellPosition" href="../../../../../com/gh/mygreen/xlsmapper/util/CellPosition.html#CellPosition">CellPosition</a>./../../com/gh/mygreen/xlsmapper/util/CellPosition.html#CellPosition">CellPosition</a> address = (<a name="CellPosition" href="../../../../../com/gh/mygreen/xlsmapper/util/CellPosition.html#CellPosition">CellPosition</a>) positionField.get(beanObj);
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>                         <strong class="jxr_keyword">return</strong> Optional.ofNullable(address);
 <a class="jxr_linenumber" name="L262" href="#L262">262</a>                         
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>                     } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException | IllegalAccessException e) {
@@ -276,7 +276,7 @@
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>             
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(positionField.getType().equals(Point.<strong class="jxr_keyword">class</strong>)) {
 <a class="jxr_linenumber" name="L270" href="#L270">270</a>             
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html">PositionGetter</a>() {
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="PositionGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html#PositionGetter">PositionGetter</a>() {
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>                 
 <a class="jxr_linenumber" name="L273" href="#L273">273</a>                 @Override
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>                 <strong class="jxr_keyword">public</strong> Optional&lt;CellPosition&gt; get(<strong class="jxr_keyword">final</strong> Object beanObj) {
@@ -294,7 +294,7 @@
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>             
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(positionField.getType().equals(org.apache.poi.ss.util.CellAddress.<strong class="jxr_keyword">class</strong>)) {
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>             
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html">PositionGetter</a>() {
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>             <strong class="jxr_keyword">return</strong> Optional.of(<strong class="jxr_keyword">new</strong> <a name="PositionGetter" href="../../../../../com/gh/mygreen/xlsmapper/fieldaccessor/PositionGetter.html#PositionGetter">PositionGetter</a>() {
 <a class="jxr_linenumber" name="L290" href="#L290">290</a>                 
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>                 @Override
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>                 <strong class="jxr_keyword">public</strong> Optional&lt;CellPosition&gt; get(<strong class="jxr_keyword">final</strong> Object beanObj) {
@@ -318,6 +318,6 @@
 <a class="jxr_linenumber" name="L310" href="#L310">310</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2019 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2021 <a href="http://mygreen.github.io/xlsmapper/">mygreen</a>. All rights reserved.</div>
 </body>
 </html>
