@@ -2,9 +2,11 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.awt.Point;
 import java.io.File;
@@ -867,7 +869,7 @@ public class AnnoVerticalRecordsTest {
      * @since 2.0
      */
     @Test
-    public void test_load_hr_arrayColumns() throws Exception {
+    public void test_load_vr_arrayColumns() throws Exception {
 
         XlsMapper mapper = new XlsMapper();
         mapper.getConfiguration().setContinueTypeBindFailure(false)
@@ -951,6 +953,93 @@ public class AnnoVerticalRecordsTest {
             
         }
         
+    }
+    
+    /**
+     * 読み込みのテスト - setterメソッドが存在しない場合
+     * 
+     * @since 2.1.1
+     */
+    @Test
+    public void test_load_vr_noSetterMethod() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<NoSetterMethodSheet> errors = mapper.loadDetail(in, NoSetterMethodSheet.class);
+
+            NoSetterMethodSheet sheet = errors.getTarget();
+
+            // メソッドが呼び出されないこと
+            assertThat(sheet.calledMethod, is(false));
+            
+            // マップカラムの確認
+            assertThat(sheet.mapRecord, hasSize(2));
+            {
+                NoSetterMethodSheet.MapRecord record = sheet.mapRecord.get(0);
+                assertThat(record.no, is(1));
+                assertThat(record.calledColumnMethod, is(false));
+                assertThat(record.calledMapColumnMethod, is(false));
+            }
+            
+            // 配列カラムの確認
+            assertThat(sheet.arrayRecord, hasSize(2));
+            {
+                NoSetterMethodSheet.ArrayRecord record = sheet.arrayRecord.get(0);
+                assertThat(record.no, is(1));
+                assertThat(record.calledColumnMethod, is(false));
+                assertThat(record.calledArrayColumnMethod, is(false));
+            }
+            
+            // ネストした表確認
+            // ネストと判定されないので、結合は解除したい状態でマッピングされる。
+            assertThat(sheet.nestedRecord, hasSize(3));
+            {
+                NoSetterMethodSheet.NestedRecord record = sheet.nestedRecord.get(0);
+                assertThat(record.largeName, is("機能A"));
+                assertThat(record.calledNestedRecordMethod, is(false));
+            }
+
+        }
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            // setter が存在する場合
+            SheetBindingErrors<NoGetterMethodSheet> errors = mapper.loadDetail(in, NoGetterMethodSheet.class);
+
+            NoGetterMethodSheet sheet = errors.getTarget();
+
+            // メソッドが呼び出されること
+            assertThat(sheet.calledMethod, is(true));
+            
+            // マップカラムの確認
+            assertThat(sheet.mapRecord, hasSize(2));
+            {
+                NoGetterMethodSheet.MapRecord record = sheet.mapRecord.get(0);
+                assertThat(record.no, is(1));
+                assertThat(record.calledColumnMethod, is(true));
+                assertThat(record.calledMapColumnMethod, is(true));
+            }
+            
+            // 配列カラムの確認
+            assertThat(sheet.arrayRecord, hasSize(2));
+            {
+                NoGetterMethodSheet.ArrayRecord record = sheet.arrayRecord.get(0);
+                assertThat(record.no, is(1));
+                assertThat(record.calledColumnMethod, is(true));
+                assertThat(record.calledArrayColumnMethod, is(true));
+            }
+            
+            // ネストした表確認
+            assertThat(sheet.nestedRecord, hasSize(2));
+            {
+                NoGetterMethodSheet.NestedRecord record = sheet.nestedRecord.get(0);
+                assertThat(record.largeName, is("機能A"));
+                assertThat(record.calledNestedRecordMethod, is(true));
+            }
+
+        }
+
     }
 
     private void assertRecord(final NormalRecord record, final SheetBindingErrors<?> errors) {
@@ -3246,7 +3335,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @since 2.0
      */
     @Test
-    public void test_save_hr_arrayColumns() throws Exception {
+    public void test_save_vr_arrayColumns() throws Exception {
         // テストデータの作成
         ArrayColumnsSheet outSheet = new ArrayColumnsSheet();
 
@@ -3313,7 +3402,7 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
      * @since 2.1
      */
     @Test
-    public void test_save_hr_comment() throws Exception {
+    public void test_save_vr_comment() throws Exception {
         
         // テストデータの作成
         CommentCellSheet outSheet = new CommentCellSheet();
@@ -3382,6 +3471,90 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 
             }
             
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - setterメソッドが存在しない場合
+     * 
+     * @since 2.1.1
+     */
+    @Test
+    public void test_save_vr_noGetterMethod() throws Exception {
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            NoGetterMethodSheet outSheet = new NoGetterMethodSheet();
+            outSheet.mapRecord = Arrays.asList(new NoGetterMethodSheet.MapRecord());
+            outSheet.arrayRecord = Arrays.asList(new NoGetterMethodSheet.ArrayRecord());
+            outSheet.nestedRecord = Arrays.asList(new NoGetterMethodSheet.NestedRecord());
+            
+            mapper.save(template, out, outSheet);
+            
+            // メソッドが呼び出されないこと
+            assertThat(outSheet.calledMethod, is(false));
+            
+            // マップカラムの確認
+            {
+                NoGetterMethodSheet.MapRecord record = outSheet.mapRecord.get(0);
+                assertThat(record.calledColumnMethod, is(false));
+                assertThat(record.calledMapColumnMethod, is(false));
+            }
+            
+            // 配列カラムの確認
+            {
+                NoGetterMethodSheet.ArrayRecord record = outSheet.arrayRecord.get(0);
+                assertThat(record.calledColumnMethod, is(false));
+                assertThat(record.calledArrayColumnMethod, is(false));
+            }
+            
+            // ネストした表の確認
+            {
+                NoGetterMethodSheet.NestedRecord record = outSheet.nestedRecord.get(0);
+                assertThat(record.calledNestedRecordMethod, is(false));
+            }
+            
+        }
+        
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            // getter が存在する場合
+            NoSetterMethodSheet outSheet = new NoSetterMethodSheet();
+            outSheet.mapRecord = Arrays.asList(new NoSetterMethodSheet.MapRecord());
+            outSheet.arrayRecord = Arrays.asList(new NoSetterMethodSheet.ArrayRecord());
+            outSheet.nestedRecord = Arrays.asList(new NoSetterMethodSheet.NestedRecord());
+            mapper.save(template, out, outSheet);
+            
+            // メソッドが呼び出されること
+            assertThat(outSheet.calledMethod, is(true));
+            
+            // マップカラムの確認
+            {
+                NoSetterMethodSheet.MapRecord record = outSheet.mapRecord.get(0);
+                assertThat(record.calledColumnMethod, is(true));
+                assertThat(record.calledMapColumnMethod, is(true));
+            }
+            
+            // 配列カラムの確認
+            {
+                NoSetterMethodSheet.ArrayRecord record = outSheet.arrayRecord.get(0);
+                assertThat(record.calledColumnMethod, is(true));
+                assertThat(record.calledArrayColumnMethod, is(true));
+            }
+            
+            // ネストした表の確認
+            {
+                NoSetterMethodSheet.NestedRecord record = outSheet.nestedRecord.get(0);
+                assertThat(record.calledNestedRecordMethod, is(true));
+            }
         }
         
     }
@@ -7629,6 +7802,211 @@ private void assertRecord(final NestedSheet.LargeRecord largeRecord, final Sheet
 
        }
        
+   }
+   
+   /**
+    * setterメソッドが存在しない場合
+    * 
+    */
+   @XlsSheet(name="メソッドが存在しない")
+   private static class NoSetterMethodSheet {
+       
+       private boolean calledMethod = false;
+       
+       @XlsOrder(1)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel="通常の表", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       public List<NormalRecord> getNormalRecords1() {
+           this.calledMethod = true;
+           return Arrays.asList(new NormalRecord().no(1).name("名前").value(123.45));
+       }
+       
+       @XlsOrder(2)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel="マップカラム", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       public List<MapRecord> mapRecord;
+       
+       @XlsOrder(3)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel="配列カラム", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       public List<ArrayRecord> arrayRecord;
+       
+       @XlsOrder(4)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel="ネストした表", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       public List<NestedRecord> nestedRecord;
+       
+       private static class MapRecord {
+           
+           @XlsColumn(columnName="No.")
+           public int no;
+           
+           private boolean calledColumnMethod = false;
+           
+           private boolean calledMapColumnMethod = false;
+           
+           @XlsColumn(columnName="氏名")
+           public String getName() {
+               this.calledColumnMethod = true;
+               return "value1";
+           }
+           
+           @XlsMapColumns(previousColumnName="氏名")
+           public Map<String, String> getDateAttended() {
+               this.calledMapColumnMethod = true;
+               
+               Map<String, String> map = new HashMap<>();
+               map.put("4月1日", "出席");
+               map.put("4月2日", "欠席");
+               map.put("4月3日", "");
+               return map;
+           }
+           
+       }
+       
+       private static class ArrayRecord {
+           
+           @XlsColumn(columnName="No.")
+           public int no;
+           
+           private boolean calledColumnMethod = false;
+           
+           private boolean calledArrayColumnMethod = false;
+           
+           @XlsColumn(columnName="氏名")
+           public String getName() {
+               this.calledColumnMethod = true;
+               return "value1";
+           }
+           
+           @XlsArrayColumns(columnName="電話番号", size=3)
+           @XlsTrim
+           public List<String> getTelNumber() {
+               this.calledArrayColumnMethod = true;
+               return Arrays.asList("090", "1111", "2222");
+           }
+           
+       }
+       
+       private static class NestedRecord {
+           
+           @XlsColumn(columnName="大分類")
+           private String largeName;
+
+           private boolean calledNestedRecordMethod = false;
+           
+           @XlsNestedRecords
+           public List<MiddleRecord> getMiddleRecords() {
+               this.calledNestedRecordMethod = true;
+               
+               MiddleRecord record = new MiddleRecord();
+               record.middleName = "機能2";
+               return Arrays.asList(record);
+           }
+       }
+       
+       private static class MiddleRecord {
+           
+           @XlsColumn(columnName="中分類")
+           public String middleName;
+       }
+       
+
+   }
+   
+   /**
+    * getterメソッドが存在しない場合
+    * 
+    */
+   @XlsSheet(name="メソッドが存在しない")
+   private static class NoGetterMethodSheet {
+       
+       private boolean calledMethod = false;
+       
+       @XlsOrder(1)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel="通常の表", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       public void setNormalRecords1(List<NormalRecord> normalRecords1) {
+           this.calledMethod = true;
+       }
+       
+       @XlsOrder(2)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel="マップカラム", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       public List<MapRecord> mapRecord;
+       
+       @XlsOrder(3)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel="配列カラム", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       public List<ArrayRecord> arrayRecord;
+       
+       @XlsOrder(4)
+       @XlsRecordOption(overOperation = OverOperation.Copy)
+       @XlsVerticalRecords(tableLabel="ネストした表", terminal=RecordTerminal.Border, tableLabelAbove=true)
+       public List<NestedRecord> nestedRecord;
+       
+       private static class MapRecord {
+           
+           @XlsColumn(columnName="No.")
+           public int no;
+           
+           private boolean calledColumnMethod = false;
+           
+           private boolean calledMapColumnMethod = false;
+           
+           @XlsColumn(columnName="氏名")
+           public void setName(String name) {
+               this.calledColumnMethod = true;
+           }
+           
+           @XlsMapColumns(previousColumnName="氏名")
+           public void setDateAttended(Map<String, String> dateAttended) {
+               this.calledMapColumnMethod = true;
+           }
+           
+       }
+       
+       private static class ArrayRecord {
+           
+           @XlsColumn(columnName="No.")
+           public int no;
+           
+           private boolean calledColumnMethod = false;
+           
+           private boolean calledArrayColumnMethod = false;
+           
+           @XlsColumn(columnName="氏名")
+           public void setName(String name) {
+               this.calledColumnMethod = true;
+           }
+           
+           @XlsArrayColumns(columnName="電話番号", size=3)
+           @XlsTrim
+           public void setTelNumber(List<String> telNumber) {
+               this.calledArrayColumnMethod = true;
+           }
+           
+       }
+       
+       private static class NestedRecord {
+           
+           @XlsColumn(columnName="大分類")
+           private String largeName;
+
+           private boolean calledNestedRecordMethod = false;
+           
+           @XlsNestedRecords
+           public void setMiddleRecords(List<MiddleRecord> middleRecords) {
+               this.calledNestedRecordMethod = true;
+           }
+       }
+       
+       private static class MiddleRecord {
+           
+           @XlsColumn(columnName="中分類")
+           public String middleName;
+       }
+
    }
 
 

@@ -3,7 +3,8 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.awt.Point;
 import java.io.File;
@@ -338,8 +339,38 @@ public class AnnoIterateTablesTest {
         
     }
     
-    
-    
+    /**
+     * 読み込みのテスト - setterメソッドが存在しない場合
+     * 
+     * @since 2.1.1
+     */
+    @Test
+    public void test_load_it_noSetterMethod() throws Exception {
+        
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            SheetBindingErrors<NoSetterMethodSheet> errors = mapper.loadDetail(in, NoSetterMethodSheet.class);
+
+            NoSetterMethodSheet sheet = errors.getTarget();
+
+            // メソッドが呼び出されないこと
+            assertThat(sheet.calledMethod, is(false));
+            
+        }
+        
+        try(InputStream in = new FileInputStream(inputFile)) {
+            // setter が存在する場合
+            SheetBindingErrors<NoGetterMethodSheet> errors = mapper.loadDetail(in, NoGetterMethodSheet.class);
+
+            NoGetterMethodSheet sheet = errors.getTarget();
+
+            // メソッドが呼び出されること
+            assertThat(sheet.calledMethod, is(true));
+            
+        }
+    }
 
     private void assertTable(final HorizontalClassTable table, final SheetBindingErrors<?> errors) {
 
@@ -1316,6 +1347,46 @@ public class AnnoIterateTablesTest {
 
             }
 
+        }
+        
+    }
+    
+    /**
+     * 書き込みのテスト - setterメソッドが存在しない場合
+     * 
+     * @since 2.1.1
+     */
+    @Test
+    public void test_save_it_noGetterMethod() throws Exception {
+        
+        // ファイルへの書き込み
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+
+        File outFile = new File(OUT_DIR, outFilename);
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            NoGetterMethodSheet outSheet = new NoGetterMethodSheet();
+            
+            mapper.save(template, out, outSheet);
+            
+            // メソッドが呼び出されないこと
+            assertThat(outSheet.calledMethod, is(false));
+            
+        }
+        
+        try(InputStream template = new FileInputStream(templateFile);
+                OutputStream out = new FileOutputStream(outFile)) {
+
+            // getter が存在する場合
+            NoSetterMethodSheet outSheet = new NoSetterMethodSheet();
+            
+            mapper.save(template, out, outSheet);
+            
+            // メソッドが呼び出されること
+            assertThat(outSheet.calledMethod, is(true));
+            
         }
         
     }
@@ -2627,6 +2698,80 @@ public class AnnoIterateTablesTest {
 
         }
 
+    }
+    
+    /**
+     * setterメソッドが存在しない場合
+     * 
+     */
+    @XlsSheet(name="メソッドが存在しない")
+    private static class NoSetterMethodSheet {
+        
+        private boolean calledMethod = false;
+        
+        @XlsIterateTables(tableLabel="通常の表")
+        public List<NormalTable> getNormalTables() {
+            this.calledMethod = true;
+            
+            List<NormalTable> list = new ArrayList<>();
+            {
+                NormalTable table = new NormalTable();
+                table.no = 1;
+                table.name = "1年2組";
+                list.add(table);
+            }
+            
+            {
+                NormalTable table = new NormalTable();
+                table.no = 2;
+                table.name = "2年3組";
+                list.add(table);
+            }
+            
+            return list;
+            
+        }
+        
+        private static class NormalTable {
+            
+            @XlsOrder(1)
+            @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+            public int no;
+
+            @XlsOrder(2)
+            @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
+            public String name;
+            
+        }
+    }
+    
+    /**
+     * getterメソッドが存在しない場合
+     * 
+     */
+    @XlsSheet(name="メソッドが存在しない")
+    private static class NoGetterMethodSheet {
+        
+        private boolean calledMethod = false;
+        
+        @XlsIterateTables(tableLabel="通常の表")
+        public void setNormalTables(List<NormalTable> normalTables) {
+            this.calledMethod = true;
+            
+        }
+        
+        private static class NormalTable {
+            
+            @XlsOrder(1)
+            @XlsLabelledCell(label="番号", type=LabelledCellType.Right, optional=true)
+            public int no;
+
+            @XlsOrder(2)
+            @XlsLabelledCell(label="クラス名", type=LabelledCellType.Right)
+            public String name;
+            
+        }
+        
     }
 
 
