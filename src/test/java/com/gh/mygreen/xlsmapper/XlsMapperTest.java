@@ -1,16 +1,15 @@
 package com.gh.mygreen.xlsmapper;
 
-import static org.junit.Assert.*;
-import static org.assertj.core.api.Assertions.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,7 +21,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsFieldProcessor;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
@@ -88,8 +86,8 @@ public class XlsMapperTest {
         
         try(InputStream in = new FileInputStream(noExecelFile)) {
             assertThatThrownBy(() -> mapper.load(in, SampleSheet.class))
-                .isInstanceOf(XlsMapperException.class)
-                .hasMessageContaining("サポートしていないExcelファイルの形式のため読み込みに失敗しました。");
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
             
         }
         
@@ -103,8 +101,8 @@ public class XlsMapperTest {
         
         try(InputStream in = new FileInputStream(noExecelFile)) {
             assertThatThrownBy(() -> mapper.loadMultiple(in, SampleSheet.class))
-                .isInstanceOf(XlsMapperException.class)
-                .hasMessageContaining("サポートしていないExcelファイルの形式のため読み込みに失敗しました。");
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
             
         }
         
@@ -118,8 +116,8 @@ public class XlsMapperTest {
         
         try(InputStream in = new FileInputStream(noExecelFile)) {
             assertThatThrownBy(() -> mapper.loadMultiple(in, new Class[]{SampleSheet.class}))
-                .isInstanceOf(XlsMapperException.class)
-                .hasMessageContaining("サポートしていないExcelファイルの形式のため読み込みに失敗しました。");
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
             
         }
         
@@ -256,8 +254,8 @@ public class XlsMapperTest {
                 OutputStream out = new FileOutputStream(outFile)) {
             
             assertThatThrownBy(() -> mapper.save(template, out, outSheet))
-                .isInstanceOf(XlsMapperException.class)
-                .hasMessageContaining("サポートしていないExcelファイルの形式のためテンプレートファイルの読み込みに失敗しました。");
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
             
         }
         
@@ -276,8 +274,8 @@ public class XlsMapperTest {
                 OutputStream out = new FileOutputStream(outFile)) {
             
             assertThatThrownBy(() -> mapper.saveMultiple(template, out, new Object[]{outSheet}))
-                .isInstanceOf(XlsMapperException.class)
-                .hasMessageContaining("サポートしていないExcelファイルの形式のためテンプレートファイルの読み込みに失敗しました。");
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
             
         }
         
