@@ -8,9 +8,9 @@ import org.apache.poi.ss.usermodel.CellType;
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsBooleanConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.BooleanFormatter;
@@ -63,7 +63,7 @@ public class BooleanCellConverterFactory extends CellConverterFactorySupport<Boo
         @Override
         protected Boolean parseCell(final Cell evaluatedCell, final String formattedValue) throws TypeBindException {
             
-            if(evaluatedCell.getCellTypeEnum().equals(CellType.BOOLEAN)) {
+            if(evaluatedCell.getCellType().equals(CellType.BOOLEAN)) {
                 return evaluatedCell.getBooleanCellValue();
                 
             } else if(!formattedValue.isEmpty()) {
@@ -93,7 +93,7 @@ public class BooleanCellConverterFactory extends CellConverterFactorySupport<Boo
             if(cellValue.isPresent()) {
                 if(formatter.getSaveTrueValue().equalsIgnoreCase("true") 
                         && formatter.getSaveFalseValue().equalsIgnoreCase("false")
-                        && cell.getCellTypeEnum().equals(CellType.BOOLEAN)) {
+                        && cell.getCellType().equals(CellType.BOOLEAN)) {
                     // テンプレートのセルの書式がbooleanの場合はそのまま設定する
                     cell.setCellValue(cellValue.get());
                     
@@ -102,7 +102,7 @@ public class BooleanCellConverterFactory extends CellConverterFactorySupport<Boo
                 }
                 
             } else {
-                cell.setCellType(CellType.BLANK);
+                cell.setBlank();
             }
         }
         

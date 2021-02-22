@@ -344,7 +344,7 @@ public class POIUtils {
                 }
 
                 Cell cell = getCell(sheet, c, r);
-                cell.setCellType(CellType.BLANK);
+                cell.setBlank();
             }
         }
 
@@ -952,7 +952,7 @@ public class POIUtils {
         if(style == null) {
             return BorderStyle.NONE;
         } else {
-            return style.getBorderTopEnum();
+            return style.getBorderTop();
         }
 
     }
@@ -990,7 +990,7 @@ public class POIUtils {
         if(style == null) {
             return BorderStyle.NONE;
         } else {
-            return style.getBorderBottomEnum();
+            return style.getBorderBottom();
         }
 
     }
@@ -1028,7 +1028,7 @@ public class POIUtils {
         if(style == null) {
             return BorderStyle.NONE;
         } else {
-            return style.getBorderRightEnum();
+            return style.getBorderRight();
         }
 
     }
@@ -1066,7 +1066,7 @@ public class POIUtils {
         if(style == null) {
             return BorderStyle.NONE;
         } else {
-            return style.getBorderLeftEnum();
+            return style.getBorderLeft();
         }
 
     }

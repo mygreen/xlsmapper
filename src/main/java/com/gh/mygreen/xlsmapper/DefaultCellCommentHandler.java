@@ -222,7 +222,8 @@ public class DefaultCellCommentHandler implements CellCommentHandler {
      */
     protected void applyCommentFormat(final RichTextString toRichText, final Cell cell) {
         
-        toRichText.applyFont(cell.getCellStyle().getFontIndex());
+        toRichText.applyFont(cell.getSheet().getWorkbook().getFontAt(cell.getCellStyle().getFontIndexAsInt()));
+        
     }
     
     /**

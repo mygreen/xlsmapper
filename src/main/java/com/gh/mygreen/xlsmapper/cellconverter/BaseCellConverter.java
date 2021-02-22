@@ -108,7 +108,7 @@ public abstract class BaseCellConverter<T> implements CellConverter<T>, FieldFor
 
         // 数式のセルの場合、予め評価しておく
         final Cell evaluatedCell;
-        if(cell.getCellTypeEnum().equals(CellType.FORMULA)) {
+        if(cell.getCellType().equals(CellType.FORMULA)) {
             final Workbook workbook = cell.getSheet().getWorkbook();
             final CreationHelper helper = workbook.getCreationHelper();
             final FormulaEvaluator evaluator = helper.createFormulaEvaluator();

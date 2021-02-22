@@ -44,7 +44,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Base
     @Override
     protected T parseCell(final Cell evaluatedCell, final String formattedValue) throws TypeBindException {
 
-        if(evaluatedCell.getCellTypeEnum().equals(CellType.NUMERIC)) {
+        if(evaluatedCell.getCellType().equals(CellType.NUMERIC)) {
             try {
                 return convertTypeValue(new BigDecimal(evaluatedCell.getNumericCellValue(), mathContext));
 
@@ -98,7 +98,7 @@ public abstract class AbstractNumberCellConverter<T extends Number> extends Base
             cell.setCellValue(cellValue.get().doubleValue());
 
         } else {
-            cell.setCellType(CellType.BLANK);
+            cell.setBlank();
         }
 
     }

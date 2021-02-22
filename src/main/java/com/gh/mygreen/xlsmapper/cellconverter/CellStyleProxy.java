@@ -110,7 +110,7 @@ public class CellStyleProxy {
      */
     public void setHorizontalAlignment(final HorizontalAlignment align) {
 
-        if(cell.getCellStyle().getAlignmentEnum().equals(align)) {
+        if(cell.getCellStyle().getAlignment().equals(align)) {
             // 既に横位置が同じ値
             return;
         }
@@ -125,7 +125,7 @@ public class CellStyleProxy {
      */
     public void setVerticalAlignment(final VerticalAlignment align) {
 
-        if(cell.getCellStyle().getVerticalAlignmentEnum().equals(align)) {
+        if(cell.getCellStyle().getVerticalAlignment().equals(align)) {
             // 既に縦位置が同じ値
             return;
         }

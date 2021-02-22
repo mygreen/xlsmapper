@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
-import static org.junit.Assert.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -246,8 +245,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.CENTER);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.CENTER);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.CENTER);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -257,8 +256,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.GENERAL);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -268,8 +267,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.LEFT);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.LEFT);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -279,8 +278,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.LEFT);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.LEFT);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)2);
             }
 
@@ -290,8 +289,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.CENTER);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -301,8 +300,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.RIGHT);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.RIGHT);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -312,8 +311,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.RIGHT);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.RIGHT);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)2);
             }
 
@@ -323,8 +322,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.FILL);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.FILL);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -334,8 +333,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.JUSTIFY);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.JUSTIFY);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -345,8 +344,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER_SELECTION);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.CENTER_SELECTION);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -356,8 +355,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.DISTRIBUTED);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.DISTRIBUTED);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -367,8 +366,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.DISTRIBUTED);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.DISTRIBUTED);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)2);
             }
 
@@ -378,8 +377,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.CENTER);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.CENTER);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.CENTER);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.CENTER);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -389,8 +388,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.TOP);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.GENERAL);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.TOP);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -400,8 +399,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.CENTER);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.GENERAL);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.CENTER);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -411,8 +410,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.BOTTOM);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.GENERAL);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.BOTTOM);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -422,8 +421,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.JUSTIFY);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.GENERAL);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.JUSTIFY);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
 
@@ -433,8 +432,8 @@ public class AnnoCellOptionTest {
                 String text = POIUtils.getCellContents(cell, mapper.getConfiguration().getCellFormatter());
                 assertThat(text).isEqualTo(value);
 
-                assertThat(cell.getCellStyle().getAlignmentEnum()).isEqualTo(HorizontalAlignment.GENERAL);
-                assertThat(cell.getCellStyle().getVerticalAlignmentEnum()).isEqualTo(VerticalAlignment.DISTRIBUTED);
+                assertThat(cell.getCellStyle().getAlignment()).isEqualTo(HorizontalAlignment.GENERAL);
+                assertThat(cell.getCellStyle().getVerticalAlignment()).isEqualTo(VerticalAlignment.DISTRIBUTED);
                 assertThat(cell.getCellStyle().getIndention()).isEqualTo((short)0);
             }
         }

@@ -44,7 +44,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends BaseCell
     @Override
     protected T parseCell(final Cell evaluatedCell, final String formattedValue) throws TypeBindException {
 
-        if(evaluatedCell.getCellTypeEnum().equals(CellType.NUMERIC)) {
+        if(evaluatedCell.getCellType().equals(CellType.NUMERIC)) {
             return convertTypeValue(evaluatedCell.getDateCellValue());
 
         } else if(!formattedValue.isEmpty()) {
@@ -73,7 +73,7 @@ public abstract class AbstractDateCellConverter<T extends Date> extends BaseCell
             POIUtils.setCellValueAsDate(cell, cellValue.get(), isStartDate1904);
 
         } else {
-            cell.setCellType(CellType.BLANK);
+            cell.setBlank();
         }
 
     }

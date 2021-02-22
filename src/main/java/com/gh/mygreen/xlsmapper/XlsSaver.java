@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -141,8 +140,6 @@ public class XlsSaver {
     
             return bindingResult;
             
-        } catch (InvalidFormatException e) {
-            throw new XlsMapperException(MessageBuilder.create("file.faiiLoadTemplateExcel.notSupportType").format(), e);
         }
 
     }
@@ -220,8 +217,6 @@ public class XlsSaver {
     
             return multipleResult;
             
-        } catch (InvalidFormatException e) {
-            throw new XlsMapperException(MessageBuilder.create("file.faiiLoadTemplateExcel.notSupportType").format(), e);
         }
 
     }

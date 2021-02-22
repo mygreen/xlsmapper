@@ -3,13 +3,12 @@ package com.gh.mygreen.xlsmapper.cellconverter.impl;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
@@ -92,7 +91,7 @@ public class CharacterCellConverterFactory extends CellConverterFactorySupport<C
                 cell.setCellValue(cellValue.get().toString());
                 
             } else {
-                cell.setCellType(CellType.BLANK);
+                cell.setBlank();
             }
         }
         

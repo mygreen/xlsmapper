@@ -5,15 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 
 import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsArrayConverter;
 import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
 import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
-import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactorySupport;
 import com.gh.mygreen.xlsmapper.cellconverter.DefaultElementConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.ElementConverter;
 import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
@@ -98,7 +97,7 @@ public class ListCellConverterFactory extends CellConverterFactorySupport<List>
             if(cellValue.isPresent()) {
                 cell.setCellValue(formatter.format(cellValue.get()));
             } else {
-                cell.setCellType(CellType.BLANK);
+                cell.setBlank();
             }
             
         }
