@@ -1,9 +1,7 @@
 package com.gh.mygreen.xlsmapper.cellconverter;
 
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
-import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,7 +15,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +31,6 @@ import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
 import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
-import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
  * 独自のセルの変換クラスのテスト
@@ -389,7 +385,7 @@ public class CustomCellConverterTest {
                 String text = getTextFormatter().format(cellValue.get());
                 cell.setCellValue(text);
             } else {
-                cell.setCellType(CellType.BLANK);
+                cell.setBlank();
             }
         }
 
