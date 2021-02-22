@@ -1898,8 +1898,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                 recordOperation.getBottomRightPosition().x - recordOperation.getCountInsertRecord()
                 );
 
-        for(int i=0; i < numName; i++) {
-            final Name name = workbook.getNameAt(i);
+        for(Name name : workbook.getAllNames()) {
 
             if(name.isDeleted() || name.isFunctionName()) {
                 // 削除されている場合、関数の場合はスキップ
