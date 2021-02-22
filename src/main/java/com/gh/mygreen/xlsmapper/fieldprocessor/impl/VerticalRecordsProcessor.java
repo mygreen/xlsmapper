@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -1167,7 +1166,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                                 // 1つ左のセルの書式をコピーする。
                                 final CellStyle style = POIUtils.getCell(sheet, valueCell.getColumnIndex()-1, valueCell.getRowIndex()).getCellStyle();
                                 valueCell.setCellStyle(style);
-                                valueCell.setCellType(CellType.BLANK);
+                                valueCell.setBlank();
 
                                 // セル幅の調整
                                 sheet.setColumnWidth(valueCell.getColumnIndex(), sheet.getColumnWidth(valueCell.getColumnIndex()-1));
@@ -1232,7 +1231,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                     } else if(recordOperation.getAnnotation().remainedOperation().equals(RemainedOperation.Clear)) {
                         Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
-                        clearCell.setCellType(CellType.BLANK);
+                        clearCell.setBlank();
 
                     } else if(recordOperation.getAnnotation().remainedOperation().equals(RemainedOperation.Delete)) {
                         // POIは列の削除をサポートしていないので非対応。
@@ -1450,7 +1449,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
                         } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Copy)) {
                             final CellStyle style = POIUtils.getCell(sheet, cell.getColumnIndex()-1, cell.getRowIndex()).getCellStyle();
                             cell.setCellStyle(style);
-                            cell.setCellType(CellType.BLANK);
+                            cell.setBlank();
 
                         } else if(recordOperation.getAnnotation().overOperation().equals(OverOperation.Insert)) {
                             // POIは列の追加をサポートしていないので非対応。
@@ -1636,7 +1635,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
         final CellStyle style = fromCell.getCellStyle();
         toCell.setCellStyle(style);
-        toCell.setCellType(CellType.BLANK);
+        toCell.setBlank();
 
         // 縦方向に結合されている場合、結合情報のコピーする。（XlsArrayColumns用）
         final Sheet sheet = fromCell.getSheet();
@@ -1659,7 +1658,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
 
                 Cell mergedToCell = POIUtils.getCell(sheet, toCell.getColumnIndex(), toCell.getRowIndex()+i);
                 mergedToCell.setCellStyle(mergedFromCell.getCellStyle());
-                mergedToCell.setCellType(CellType.BLANK);
+                mergedToCell.setBlank();
             }
         }
 
@@ -1805,7 +1804,7 @@ public class VerticalRecordsProcessor extends AbstractFieldProcessor<XlsVertical
             for(int i=1; i < mergedSize; i++) {
                 Cell mergedCell = POIUtils.getCell(sheet, position.getColumn() + i, position.getRow());
                 mergedCell.setCellStyle(style);
-                mergedCell.setCellType(CellType.BLANK);
+                mergedCell.setBlank();
             }
 
             final CellRangeAddress range = new CellRangeAddress(position.getRow(), position.getRow(),

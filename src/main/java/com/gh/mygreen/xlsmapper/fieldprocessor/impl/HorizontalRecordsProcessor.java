@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
@@ -1246,13 +1245,13 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
                     } else if(recordOperation.getAnnotation().remainedOperation().equals(RemainedOperation.Clear)) {
                         final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
-                        clearCell.setCellType(CellType.BLANK);
+                        clearCell.setBlank();
 
                     } else if(recordOperation.getAnnotation().remainedOperation().equals(RemainedOperation.Delete)) {
                         if(initRow == hRow) {
                             // 1行目は残しておき、値をクリアする
                             final Cell clearCell = POIUtils.getCell(sheet, hColumn, hRow);
-                            clearCell.setCellType(CellType.BLANK);
+                            clearCell.setBlank();
 
                         } else if(!deleteRows) {
                             // すでに他の列の処理に対して行を削除している場合は行の削除は行わない。
@@ -1663,7 +1662,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
         final CellStyle style = fromCell.getCellStyle();
         toCell.setCellStyle(style);
-        toCell.setCellType(CellType.BLANK);
+        toCell.setBlank();
 
         // 横方向に結合されている場合、結合情報のコピーする。（XlsArrayColumns用）
         final Sheet sheet = fromCell.getSheet();
@@ -1687,7 +1686,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
 
                 Cell mergedToCell = POIUtils.getCell(sheet, toCell.getColumnIndex()+i, toCell.getRowIndex());
                 mergedToCell.setCellStyle(mergedFromCell.getCellStyle());
-                mergedToCell.setCellType(CellType.BLANK);
+                mergedToCell.setBlank();
             }
 
         }
@@ -1836,7 +1835,7 @@ public class HorizontalRecordsProcessor extends AbstractFieldProcessor<XlsHorizo
             for(int i=1; i < mergedSize; i++) {
                 Cell mergedCell = POIUtils.getCell(sheet, position.getColumn(), position.getRow() + i);
                 mergedCell.setCellStyle(style);
-                mergedCell.setCellType(CellType.BLANK);
+                mergedCell.setBlank();
             }
 
             final CellRangeAddress range = new CellRangeAddress(position.getRow(), position.getRow()+ mergedSize-1,
