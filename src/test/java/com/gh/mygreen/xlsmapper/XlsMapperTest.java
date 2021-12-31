@@ -87,7 +87,7 @@ public class XlsMapperTest {
         try(InputStream in = new FileInputStream(noExecelFile)) {
             assertThatThrownBy(() -> mapper.load(in, SampleSheet.class))
                 .isInstanceOf(IOException.class)
-                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
+                .hasMessageContaining("Can't open workbook - unsupported file type");
             
         }
         
@@ -102,7 +102,7 @@ public class XlsMapperTest {
         try(InputStream in = new FileInputStream(noExecelFile)) {
             assertThatThrownBy(() -> mapper.loadMultiple(in, SampleSheet.class))
                 .isInstanceOf(IOException.class)
-                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
+                .hasMessageContaining("Can't open workbook - unsupported file type");
             
         }
         
@@ -117,7 +117,7 @@ public class XlsMapperTest {
         try(InputStream in = new FileInputStream(noExecelFile)) {
             assertThatThrownBy(() -> mapper.loadMultiple(in, new Class[]{SampleSheet.class}))
                 .isInstanceOf(IOException.class)
-                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
+                .hasMessageContaining("Can't open workbook - unsupported file type");
             
         }
         
@@ -255,7 +255,7 @@ public class XlsMapperTest {
             
             assertThatThrownBy(() -> mapper.save(template, out, outSheet))
                 .isInstanceOf(IOException.class)
-                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
+                .hasMessageContaining("Can't open workbook - unsupported file type");
             
         }
         
@@ -275,7 +275,7 @@ public class XlsMapperTest {
             
             assertThatThrownBy(() -> mapper.saveMultiple(template, out, new Object[]{outSheet}))
                 .isInstanceOf(IOException.class)
-                .hasMessageContaining("Your InputStream was neither an OLE2 stream, nor an OOXML stream");
+                .hasMessageContaining("Can't open workbook - unsupported file type");
             
         }
         
