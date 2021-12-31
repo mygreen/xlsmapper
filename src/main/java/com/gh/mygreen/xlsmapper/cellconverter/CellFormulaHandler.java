@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellReference;
 
@@ -84,13 +83,12 @@ public class CellFormulaHandler {
         
         final String evaluatedFormula = createFormulaValue(config, cell, targetBean);
         if(Utils.isEmpty(evaluatedFormula)) {
-            cell.setCellType(CellType.BLANK);
+            cell.setBlank();
             return;
         }
         
         try {
             cell.setCellFormula(evaluatedFormula);
-            cell.setCellType(CellType.FORMULA);
             
         } catch(FormulaParseException e) {
             // 数式の解析に失敗した場合

@@ -59,7 +59,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 
 	<properties>
 		<java.version>1.8</java.version>
-		<poi.version>3.17</poi.version>
+		<poi.version>5.1.0</poi.version>
 		<slf4j.version>1.7.1</slf4j.version>
 		<jacoco.include.package>com.gh.mygreen.xlsmapper.*</jacoco.include.package>
 
@@ -384,7 +384,7 @@ $(document).ready(function() {
 		<dependency>
 			<groupId>com.github.mygreen</groupId>
 			<artifactId>excel-cellformatter</artifactId>
-			<version>0.11</version>
+			<version>0.12</version>
 		</dependency>
 
 		<!-- Logger -->
