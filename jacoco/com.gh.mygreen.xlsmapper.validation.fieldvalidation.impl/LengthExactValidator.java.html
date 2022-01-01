@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LengthExactValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl</a> &gt; <span class="el_source">LengthExactValidator.java</span></div><h1>LengthExactValidator.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation.fieldvalidation.impl;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.AbstractFieldValidator;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.CellField;
+
+/**
+ * 文字列が指定した文字長かどうか検証する。
+ * &lt;ul&gt;
+ *   &lt;li&gt;メッセージキーは、「cellFieldError.lengthExact」。&lt;/li&gt;
+ *   &lt;li&gt;「validatedValue」：検証対象の値のオブジェクト。&lt;/li&gt;
+ *   &lt;li&gt;「length」：実際の値の文字長。&lt;/li&gt;
+ *   &lt;li&gt;「requiredLengths」：指定した文字長。&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ */
+public class LengthExactValidator extends AbstractFieldValidator&lt;String&gt; {
+
+    /** 必要な文字長 */
+    private final List&lt;Integer&gt; requiredLengths;
+
+    /**
+     * 文字長を指定するコンストラクタ
+     *
+     * @param requiredLengths 必要な文字長。複数指定可能。
+     */
+<span class="fc" id="L35">    public LengthExactValidator(final int... requiredLengths) {</span>
+<span class="fc" id="L36">        ArgUtils.notEmpty(requiredLengths, &quot;requiredLengths&quot;);</span>
+<span class="fc" id="L37">        this.requiredLengths = Arrays.stream(requiredLengths)</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">                .filter(l -&gt; l &gt;= 0)</span>
+<span class="fc" id="L39">                .sorted()</span>
+<span class="fc" id="L40">                .distinct()</span>
+<span class="fc" id="L41">                .boxed()</span>
+<span class="fc" id="L42">                .collect(Collectors.toList());</span>
+<span class="fc" id="L43">    }</span>
+
+    @Override
+    public LengthExactValidator addGroup(final Class&lt;?&gt;... group) {
+<span class="fc" id="L47">        return (LengthExactValidator)super.addGroup(group);</span>
+    }
+
+    @Override
+    public String getMessageKey() {
+<span class="fc" id="L52">        return &quot;cellFieldError.lengthExact&quot;;</span>
+    }
+
+    @Override
+    protected Map&lt;String, Object&gt; getMessageVariables(final CellField&lt;String&gt; cellField) {
+<span class="fc" id="L57">        final Map&lt;String, Object&gt; vars = super.getMessageVariables(cellField);</span>
+
+<span class="fc" id="L59">        vars.put(&quot;length&quot;, cellField.getValue().length());</span>
+<span class="fc" id="L60">        vars.put(&quot;requiredLengths&quot;, getRequiredLengths());</span>
+
+<span class="fc" id="L62">        return vars;</span>
+    }
+
+    @Override
+    protected void onValidate(final CellField&lt;String&gt; cellField) {
+
+<span class="fc" id="L68">        final int length = cellField.getValue().length();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if(requiredLengths.contains(length)) {</span>
+<span class="fc" id="L70">            return;</span>
+        }
+
+<span class="fc" id="L73">        error(cellField);</span>
+<span class="fc" id="L74">    }</span>
+
+    /**
+     * 比較対象の文字長の候補を取得する。
+     * @return 文字長の候補を取得する。
+     */
+    public int[] getRequiredLengths() {
+<span class="fc" id="L81">        return Utils.toArray(requiredLengths);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

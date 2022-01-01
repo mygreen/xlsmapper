@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArrayPositionSetterFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldaccessor</a> &gt; <span class="el_source">ArrayPositionSetterFactory.java</span></div><h1>ArrayPositionSetterFactory.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldaccessor;
+
+import java.awt.Point;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.apache.poi.ss.util.CellAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * {@link ArrayPositionSetter}のインスタンスを作成する
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L29">public class ArrayPositionSetterFactory {</span>
+    
+<span class="fc" id="L31">    private static final Logger log = LoggerFactory.getLogger(ArrayPositionSetterFactory.class);</span>
+    
+    /**
+     * フィールドの位置情報を設定するためのアクセッサを作成します。
+     * @param beanClass フィールドが定義されているクラス情報
+     * @param fieldName フィールドの名称
+     * @return 位置情報のsetterが存在しない場合は空を返す。
+     * @throws IllegalArgumentException {@literal beanClass == null or fieldName == null}
+     * @throws IllegalArgumentException {@literal fieldName.isEmpty() = true}
+     */
+    public Optional&lt;ArrayPositionSetter&gt; create(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+<span class="fc" id="L43">        ArgUtils.notNull(beanClass, &quot;beanClass&quot;);</span>
+<span class="fc" id="L44">        ArgUtils.notEmpty(fieldName, &quot;fieldName&quot;);</span>
+        
+        // フィールド Map positionsの場合
+<span class="fc" id="L47">        Optional&lt;ArrayPositionSetter&gt; arrayPositionSetter = createMapField(beanClass, fieldName);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if(arrayPositionSetter.isPresent()) {</span>
+<span class="fc" id="L49">            return arrayPositionSetter;</span>
+        }
+        
+        // setter メソッドの場合
+<span class="fc" id="L53">        arrayPositionSetter = createMethod(beanClass, fieldName);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if(arrayPositionSetter.isPresent()) {</span>
+<span class="fc" id="L55">            return arrayPositionSetter;</span>
+        }
+        
+        // フィールド + positionの場合
+<span class="fc" id="L59">        arrayPositionSetter = createField(beanClass, fieldName);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if(arrayPositionSetter.isPresent()) {</span>
+<span class="fc" id="L61">            return arrayPositionSetter;</span>
+        }
+        
+        
+<span class="fc" id="L65">        return Optional.empty();</span>
+    }
+    
+    private String createMapKey(final String fieldName, final int index) {
+<span class="fc" id="L69">        return String.format(&quot;%s[%d]&quot;, fieldName, index);</span>
+    }
+    
+    /**
+     * {@link Map}フィールドに位置情報が格納されている場合。
+     * &lt;p&gt;キーはフィールド名。&lt;/p&gt;
+     * &lt;p&gt;マップの値は、{@link CellPosition}、{@link Point}、{@link CellAddress}をサポートする。&lt;/p&gt;
+     * 
+     * @param beanClass フィールドが定義してあるクラスのインスタンス
+     * @param fieldName フィールド名
+     * @return 位置情報の設定用クラス
+     */
+    private Optional&lt;ArrayPositionSetter&gt; createMapField(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+        final Field positionsField;
+        try {
+<span class="fc" id="L85">            positionsField = beanClass.getDeclaredField(&quot;positions&quot;);</span>
+<span class="fc" id="L86">            positionsField.setAccessible(true);</span>
+            
+<span class="fc" id="L88">        } catch (NoSuchFieldException | SecurityException e) {</span>
+            // フィールドが見つからない場合は、何もしない。
+<span class="fc" id="L90">            return Optional.empty();</span>
+<span class="fc" id="L91">        }</span>
+        
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if(!Map.class.isAssignableFrom(positionsField.getType())) {</span>
+<span class="fc" id="L94">            return Optional.empty();</span>
+        }
+        
+<span class="fc" id="L97">        final ParameterizedType type = (ParameterizedType) positionsField.getGenericType();</span>
+<span class="fc" id="L98">        final Class&lt;?&gt; keyType = (Class&lt;?&gt;) type.getActualTypeArguments()[0];</span>
+<span class="fc" id="L99">        final Class&lt;?&gt; valueType = (Class&lt;?&gt;) type.getActualTypeArguments()[1];</span>
+        
+<span class="pc bpc" id="L101" title="1 of 4 branches missed.">        if(keyType.equals(String.class) &amp;&amp; valueType.equals(CellPosition.class)) {</span>
+<span class="fc" id="L102">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                @SuppressWarnings(&quot;unchecked&quot;)
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L107">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L108">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L111">                        Map&lt;String, CellPosition&gt; positionsMapObj = (Map&lt;String, CellPosition&gt;) positionsField.get(beanObj);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">                        if(positionsMapObj == null) {</span>
+<span class="fc" id="L113">                            positionsMapObj = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L114">                            positionsField.set(beanObj, positionsMapObj);</span>
+                        }
+                        
+<span class="fc" id="L117">                        final String mapKey = createMapKey(fieldName, index);</span>
+                        
+<span class="fc" id="L119">                        positionsMapObj.put(mapKey, position);</span>
+                        
+<span class="nc" id="L121">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L122">                        throw new RuntimeException(&quot;fail access positions field.&quot;, e);</span>
+<span class="fc" id="L123">                    }</span>
+<span class="fc" id="L124">                }</span>
+            });
+            
+<span class="pc bpc" id="L127" title="1 of 4 branches missed.">        } else if(keyType.equals(String.class) &amp;&amp; valueType.equals(Point.class)) {</span>
+            
+<span class="fc" id="L129">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                @SuppressWarnings(&quot;unchecked&quot;)
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L134">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L135">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L138">                        Map&lt;String, Point&gt; positionsMapObj = (Map&lt;String, Point&gt;) positionsField.get(beanObj);</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">                        if(positionsMapObj == null) {</span>
+<span class="fc" id="L140">                            positionsMapObj = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L141">                            positionsField.set(beanObj, positionsMapObj);</span>
+                        }
+                        
+<span class="fc" id="L144">                        final String mapKey = createMapKey(fieldName, index);</span>
+<span class="fc" id="L145">                        positionsMapObj.put(mapKey, position.toPoint());</span>
+                        
+<span class="nc" id="L147">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L148">                        throw new RuntimeException(&quot;fail access positions field.&quot;, e);</span>
+<span class="fc" id="L149">                    }</span>
+<span class="fc" id="L150">                }</span>
+            });
+            
+            
+<span class="pc bpc" id="L154" title="1 of 4 branches missed.">        } else if(keyType.equals(String.class) &amp;&amp; valueType.equals(CellAddress.class)) {</span>
+            
+<span class="fc" id="L156">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                @SuppressWarnings(&quot;unchecked&quot;)
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L161">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L162">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L165">                        Map&lt;String, CellAddress&gt; positionsMapObj = (Map&lt;String, CellAddress&gt;) positionsField.get(beanObj);</span>
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">                        if(positionsMapObj == null) {</span>
+<span class="fc" id="L167">                            positionsMapObj = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L168">                            positionsField.set(beanObj, positionsMapObj);</span>
+                        }
+                        
+<span class="fc" id="L171">                        final String mapKey = createMapKey(fieldName, index);</span>
+<span class="fc" id="L172">                        positionsMapObj.put(mapKey, position.toCellAddress());</span>
+                        
+<span class="nc" id="L174">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L175">                        throw new RuntimeException(&quot;fail access positions field.&quot;, e);</span>
+<span class="fc" id="L176">                    }</span>
+<span class="fc" id="L177">                }</span>
+            });
+            
+            
+        } else {
+            // タイプが一致しない場合
+<span class="fc" id="L183">            log.warn(&quot;not match generics type of positions. key type:{}, value type:{}.&quot;, keyType.getName(), valueType.getName());</span>
+<span class="fc" id="L184">            return Optional.empty();</span>
+        }
+        
+    }
+    
+    /**
+     * setterメソッドによる位置情報を格納する場合。
+     * &lt;p&gt;{@code set + &lt;フィールド名&gt; + Position}のメソッド名&lt;/p&gt;
+     * &lt;p&gt;引数として、{@link CellPosition}、{@link Point}、{@code int（列番号）, int（行番号）}、 {@link CellAddress}をサポートする。&lt;/p&gt;
+     * 
+     * @param beanClass フィールドが定義してあるクラスのインスタンス
+     * @param fieldName フィールド名
+     * @return 位置情報の設定用クラス
+     */
+    private Optional&lt;ArrayPositionSetter&gt; createMethod(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+<span class="fc" id="L200">        final String positionMethodName = &quot;set&quot; + Utils.capitalize(fieldName) + &quot;Position&quot;;</span>
+        
+        try {
+<span class="fc" id="L203">            final Method method = beanClass.getDeclaredMethod(positionMethodName, Integer.TYPE, CellPosition.class);</span>
+<span class="fc" id="L204">            method.setAccessible(true);</span>
+            
+<span class="fc" id="L206">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L211">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L212">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L215">                        method.invoke(beanObj, index, position);</span>
+                        
+<span class="nc" id="L217">                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L218">                        throw new RuntimeException(&quot;fail access position field.&quot;, e);</span>
+<span class="fc" id="L219">                    }</span>
+                    
+<span class="fc" id="L221">                }</span>
+            });
+            
+<span class="fc" id="L224">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            
+        }
+        
+        try {
+<span class="fc" id="L229">            final Method method = beanClass.getDeclaredMethod(positionMethodName, Integer.TYPE, Point.class);</span>
+<span class="fc" id="L230">            method.setAccessible(true);</span>
+            
+<span class="fc" id="L232">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L237">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L238">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L241">                        method.invoke(beanObj, index, position.toPoint());</span>
+                        
+<span class="nc" id="L243">                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L244">                        throw new RuntimeException(&quot;fail access position field.&quot;, e);</span>
+<span class="fc" id="L245">                    }</span>
+                    
+<span class="fc" id="L247">                }</span>
+            });
+            
+<span class="fc" id="L250">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            
+        }
+        
+        try {
+<span class="fc" id="L255">            final Method method = beanClass.getDeclaredMethod(positionMethodName, Integer.TYPE, CellAddress.class);</span>
+<span class="fc" id="L256">            method.setAccessible(true);</span>
+            
+<span class="fc" id="L258">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L263">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L264">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L267">                        method.invoke(beanObj, index, position.toCellAddress());</span>
+                        
+<span class="nc" id="L269">                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L270">                        throw new RuntimeException(&quot;fail access position field.&quot;, e);</span>
+<span class="fc" id="L271">                    }</span>
+                    
+<span class="fc" id="L273">                }</span>
+            });
+            
+<span class="fc" id="L276">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            
+        }
+        
+        try {
+<span class="fc" id="L281">            final Method method = beanClass.getDeclaredMethod(positionMethodName, Integer.TYPE, Integer.TYPE, Integer.TYPE);</span>
+<span class="fc" id="L282">            method.setAccessible(true);</span>
+            
+<span class="fc" id="L284">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L289">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L290">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L293">                        method.invoke(beanObj, index, position.getColumn(), position.getRow());</span>
+                        
+<span class="nc" id="L295">                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L296">                        throw new RuntimeException(&quot;fail access position field.&quot;, e);</span>
+<span class="fc" id="L297">                    }</span>
+                    
+<span class="fc" id="L299">                }</span>
+            });
+            
+<span class="fc" id="L302">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            
+        }
+        
+<span class="fc" id="L306">        return Optional.empty();</span>
+        
+    }
+    
+    /**
+     * フィールドによる位置情報を格納する場合。
+     * &lt;p&gt;{@code &lt;フィールド名&gt; + Position}のメソッド名&lt;/p&gt;
+     * &lt;p&gt;引数として、{@link CellPosition}、{@link Point}、 {@link CellAddress}をサポートする。&lt;/p&gt;
+     * 
+     * @param beanClass フィールドが定義してあるクラスのインスタンス
+     * @param fieldName フィールド名
+     * @return 位置情報の設定用クラス
+     */
+    private Optional&lt;ArrayPositionSetter&gt; createField(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+<span class="fc" id="L321">        final String positionFieldName = fieldName + &quot;Position&quot;;</span>
+        
+        final Field positionField;
+        try {
+<span class="fc" id="L325">            positionField = beanClass.getDeclaredField(positionFieldName);</span>
+<span class="fc" id="L326">            positionField.setAccessible(true);</span>
+            
+<span class="fc" id="L328">        } catch (NoSuchFieldException | SecurityException e) {</span>
+<span class="fc" id="L329">            return Optional.empty();</span>
+<span class="fc" id="L330">        }</span>
+        
+<span class="pc bpc" id="L332" title="1 of 2 branches missed.">        if(!List.class.isAssignableFrom(positionField.getType())) {</span>
+<span class="nc" id="L333">            return Optional.empty();</span>
+        }
+        
+<span class="fc" id="L336">        final ParameterizedType type = (ParameterizedType) positionField.getGenericType();</span>
+<span class="fc" id="L337">        final Class&lt;?&gt; valueType = (Class&lt;?&gt;) type.getActualTypeArguments()[0];</span>
+        
+<span class="fc bfc" id="L339" title="All 2 branches covered.">        if(valueType.equals(CellPosition.class)) {</span>
+            
+<span class="fc" id="L341">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                @SuppressWarnings(&quot;unchecked&quot;)
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L346">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L347">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                   try {
+<span class="fc" id="L350">                       List&lt;CellPosition&gt; positionListObj = (List&lt;CellPosition&gt;) positionField.get(beanObj);</span>
+<span class="pc bpc" id="L351" title="1 of 2 branches missed.">                       if(positionListObj == null) {</span>
+<span class="fc" id="L352">                           positionListObj = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L353">                           positionField.set(beanObj, positionListObj);</span>
+                       }
+                       
+<span class="fc" id="L356">                       Utils.addListWithIndex(positionListObj, position, index);</span>
+                       
+<span class="nc" id="L358">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L359">                        throw new RuntimeException(&quot;fail access position field.&quot;, e);</span>
+<span class="fc" id="L360">                    }</span>
+<span class="fc" id="L361">                }</span>
+            });
+            
+<span class="fc bfc" id="L364" title="All 2 branches covered.">        } else if(valueType.equals(Point.class)) {</span>
+            
+<span class="fc" id="L366">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                @SuppressWarnings(&quot;unchecked&quot;)
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L371">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L372">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L375">                        List&lt;Point&gt; positionListObj = (List&lt;Point&gt;) positionField.get(beanObj);</span>
+<span class="pc bpc" id="L376" title="1 of 2 branches missed.">                        if(positionListObj == null) {</span>
+<span class="fc" id="L377">                            positionListObj = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L378">                            positionField.set(beanObj, positionListObj);</span>
+                        }
+                        
+                        
+<span class="fc" id="L382">                        Utils.addListWithIndex(positionListObj, position.toPoint(), index);</span>
+                        
+<span class="nc" id="L384">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L385">                        throw new RuntimeException(&quot;fail access position field.&quot;, e);</span>
+<span class="fc" id="L386">                    }</span>
+<span class="fc" id="L387">                }</span>
+            });
+            
+<span class="fc bfc" id="L390" title="All 2 branches covered.">        } else if(valueType.equals(CellAddress.class)) {</span>
+            
+<span class="fc" id="L392">            return Optional.of(new ArrayPositionSetter() {</span>
+                
+                @SuppressWarnings(&quot;unchecked&quot;)
+                @Override
+                public void set(final Object beanObj, final CellPosition position, final int index) {
+<span class="fc" id="L397">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L398">                    ArgUtils.notNull(position, &quot;position&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L401">                        List&lt;CellAddress&gt; positionListObj = (List&lt;CellAddress&gt;) positionField.get(beanObj);</span>
+<span class="pc bpc" id="L402" title="1 of 2 branches missed.">                        if(positionListObj == null) {</span>
+<span class="fc" id="L403">                            positionListObj = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L404">                            positionField.set(beanObj, positionListObj);</span>
+                        }
+                        
+<span class="fc" id="L407">                        Utils.addListWithIndex(positionListObj, position.toCellAddress(), index);</span>
+                        
+<span class="nc" id="L409">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L410">                        throw new RuntimeException(&quot;fail access position field.&quot;, e);</span>
+<span class="fc" id="L411">                    }</span>
+<span class="fc" id="L412">                }</span>
+            });
+        
+        }
+        
+<span class="fc" id="L417">        return Optional.empty();</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

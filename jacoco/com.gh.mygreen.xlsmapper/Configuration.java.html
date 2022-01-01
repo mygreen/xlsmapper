@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Configuration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper</a> &gt; <span class="el_source">Configuration.java</span></div><h1>Configuration.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterRegistry;
+import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
+import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
+import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegistry;
+import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
+
+
+/**
+ * マッピングする際の設定などを保持するクラス。
+ *
+ * @version 2.1
+ * @author T.TSUCHIE
+ *
+ */
+public class Configuration {
+
+    /** シートが見つからなくても無視するかどうか */
+<span class="fc" id="L27">    private boolean ignoreSheetNotFound = false;</span>
+
+    /** ラベルを正規化するかどうか */
+<span class="fc" id="L30">    private boolean normalizeLabelText = false;</span>
+
+    /** ラベルを正規表現でマッピングするかどうか */
+<span class="fc" id="L33">    private boolean regexLabelText = false;</span>
+
+    /** 型変換エラーが発生しても処理を続けるかどうか */
+<span class="fc" id="L36">    private boolean continueTypeBindFailure = false;</span>
+
+    /** 書き込み時にセルの結合を行うかどうか */
+<span class="fc" id="L39">    private boolean mergeCellOnSave = false;</span>
+
+    /** 書き込み時に名前の定義範囲を修正するかどうか */
+<span class="fc" id="L42">    private boolean correctNameRangeOnSave = false;</span>
+
+    /** 書き込み時にセルの入力規則を修正するかどうか */
+<span class="fc" id="L45">    private boolean correctCellDataValidationOnSave = false;</span>
+
+    /** 書き込み時に式の再計算をするかどうか */
+<span class="fc" id="L48">    private boolean formulaRecalcurationOnSave = true;</span>
+
+    /** 読み込み時にセルの値のキャッシュを行うかどうか */
+<span class="fc" id="L51">    private boolean cacheCellValueOnLoad = true;</span>
+
+    /** POIのセルの値のフォーマッター */
+<span class="fc" id="L54">    private CellFormatter cellFormatter = new DefaultCellFormatter();</span>
+
+    /** アノテーションを処理するプロセッサの管理クラス */
+<span class="fc" id="L57">    private FieldProcessorRegistry fieldProcessorRegistry = new FieldProcessorRegistry();</span>
+
+    /** セルの値の型変換の管理クラス */
+<span class="fc" id="L60">    private CellConverterRegistry converterRegistry = new CellConverterRegistry();</span>
+
+    /** 読み込み時のBeanのインスタンスの作成クラス */
+<span class="fc" id="L63">    private BeanFactory&lt;Class&lt;?&gt;, Object&gt; beanFactory = new DefaultBeanFactory();</span>
+
+    /** {@link SheetBindingErrors}のインスタンス作成クラス */
+<span class="fc" id="L66">    private SheetBindingErrorsFactory bindingErrorsFactory = new SheetBindingErrorsFactory();</span>
+
+    /** 処理対象のシートを取得するクラス */
+<span class="fc" id="L69">    private SheetFinder sheetFinder = new SheetFinder();</span>
+
+    /** 数式をフォーマットするクラス */
+<span class="fc" id="L72">    private MessageInterpolator formulaFormatter = new MessageInterpolator();</span>
+    
+    /** セルコメントを操作するクラス */
+<span class="fc" id="L75">    private CellCommentOperator commentOperator = new CellCommentOperator();</span>
+
+    /** Beanに対するアノテーションのマッピング情報 */
+<span class="fc" id="L78">    private AnnotationMappingInfo annotationMapping = null;</span>
+
+<span class="fc" id="L80">    public Configuration() {</span>
+
+        // 数式をフォーマットする際のEL関数を登録する。
+<span class="fc" id="L83">        ExpressionLanguageJEXLImpl formulaEL = new ExpressionLanguageJEXLImpl();</span>
+<span class="fc" id="L84">        Map&lt;String, Object&gt; funcs = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L85">        funcs.put(&quot;x&quot;, CustomFunctions.class);</span>
+<span class="fc" id="L86">        formulaEL.getJexlEngine().setFunctions(funcs);</span>
+
+<span class="fc" id="L88">        formulaFormatter.setExpressionLanguage(formulaEL);</span>
+<span class="fc" id="L89">    }</span>
+
+    /**
+     * 指定したクラスタイプのインスタンスを作成する
+     * @param clazz
+     * @return
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;P&gt; P createBean(final Class&lt;P&gt; clazz) {
+<span class="fc" id="L98">        return (P) beanFactory.create(clazz);</span>
+    }
+
+    /**
+     * シートが見つからなくても無視するかどうか。
+     * @return 初期値は、'false'です。
+     */
+    public boolean isIgnoreSheetNotFound() {
+<span class="fc" id="L106">        return ignoreSheetNotFound;</span>
+    }
+
+    /**
+     * シートが見つからなくても無視するかどうか設定します。
+     * @param ignoreSheetNotFound 初期値は、'false'です。
+     * @return 自身のインスタンス
+     */
+    public Configuration setIgnoreSheetNotFound(boolean ignoreSheetNotFound) {
+<span class="fc" id="L115">        this.ignoreSheetNotFound = ignoreSheetNotFound;</span>
+<span class="fc" id="L116">        return this;</span>
+    }
+
+    /**
+     * ラベルの文字列を空白などを正規化してマッピングするかどうか。
+     * &lt;p&gt;正規化は、改行コード（{@literal \n},{@literal \r}）の除去、タブ（{@literal \t})、空白（全角、半角）の除去を行います。&lt;/p&gt;
+     * @since 1.1
+     * @return 初期値は、'false'です。
+     */
+    public boolean isNormalizeLabelText() {
+<span class="fc" id="L126">        return normalizeLabelText;</span>
+    }
+
+    /**
+     * ラベルの文字列を空白などを正規化してマッピングするかどうか設定します。
+     * &lt;p&gt;正規化は、改行コード（{@literal \n},{@literal \r}）の除去、タブ（{@literal \t})、空白（全角、半角）の除去を行います。&lt;/p&gt;
+     * @since 1.1
+     * @param normalizeLabelText 初期値は、'false'です。
+     * @return 自身のインスタンス
+     */
+    public Configuration setNormalizeLabelText(boolean normalizeLabelText) {
+<span class="fc" id="L137">        this.normalizeLabelText = normalizeLabelText;</span>
+<span class="fc" id="L138">        return this;</span>
+    }
+
+    /**
+     * ラベルを正規表現でマッピングするかどうか。
+     * &lt;p&gt;ラベルに{@literal /正規表現/}と記述しておくと正規表現でマッピングできる。&lt;/p&gt;
+     * @since 1.1
+     * @return 初期値は、'false'です。
+     */
+    public boolean isRegexLabelText() {
+<span class="fc" id="L148">        return regexLabelText;</span>
+    }
+
+    /**
+     * ラベルを正規表現でマッピングするかどうか設置します。
+     * &lt;p&gt;ラベルに{@literal /正規表現/}と記述しておくと正規表現でマッピングできる。&lt;/p&gt;
+     * @since 1.1
+     * @param regexLabelText 正規表現でマッピングするかどうか。
+     * @return 自身のインスタンス
+     */
+    public Configuration setRegexLabelText(boolean regexLabelText) {
+<span class="fc" id="L159">        this.regexLabelText = regexLabelText;</span>
+<span class="fc" id="L160">        return this;</span>
+    }
+
+    /**
+     * 型変換エラーが発生しても処理を続けるかどうか。
+     * @return 初期値は、'false'です。
+     */
+    public boolean isContinueTypeBindFailure() {
+<span class="fc" id="L168">        return continueTypeBindFailure;</span>
+    }
+
+    /**
+     * 型変換エラーが発生しても処理を続けるかどうか。
+     * @param continueTypeBindFailure 初期値は、'false'です。
+     * @return
+     */
+    public Configuration setContinueTypeBindFailure(boolean continueTypeBindFailure) {
+<span class="fc" id="L177">        this.continueTypeBindFailure = continueTypeBindFailure;</span>
+<span class="fc" id="L178">        return this;</span>
+    }
+
+    /**
+     * 書き込み時にセルの結合を行うかどうか
+     * @return 初期値は、'false'です。
+     */
+    public boolean isMergeCellOnSave() {
+<span class="fc" id="L186">        return mergeCellOnSave;</span>
+    }
+
+    /**
+     * 書き込み時にセルの結合を行うかどうか設定します。
+     * @param mergeCellOnSave 初期値は、'false'です。
+     * @return 自身のインスタンス
+     */
+    public Configuration setMergeCellOnSave(boolean mergeCellOnSave) {
+<span class="fc" id="L195">        this.mergeCellOnSave = mergeCellOnSave;</span>
+<span class="fc" id="L196">        return this;</span>
+    }
+
+    /**
+     * 書き込み時に名前の定義範囲を修正するかどうか
+     * @since 0.3
+     * @return 初期値は、'false'です。
+     */
+    public boolean isCorrectNameRangeOnSave() {
+<span class="fc" id="L205">        return correctNameRangeOnSave;</span>
+    }
+
+    /**
+     * 書き込み時に名前の定義範囲を修正するかどうか設定します。
+     * @since 0.3
+     * @param correctNameRangeOnSave 初期値は、'false'です。
+     * @return 自身のインスタンス
+     */
+    public Configuration setCorrectNameRangeOnSave(boolean correctNameRangeOnSave) {
+<span class="fc" id="L215">        this.correctNameRangeOnSave = correctNameRangeOnSave;</span>
+<span class="fc" id="L216">        return this;</span>
+    }
+
+    /**
+     * 書き込み時にセルの入力規則を修正するかどうか。
+     * @since 0.3
+     * @return 初期値は、'false'です。
+     */
+    public boolean isCorrectCellDataValidationOnSave() {
+<span class="fc" id="L225">        return correctCellDataValidationOnSave;</span>
+    }
+
+    /**
+     * 書き込み時にセルの入力規則を修正するかどうか。
+     * &lt;p&gt;trueの場合（修正する場合）、POI-3.11以上が必要になります。
+     * &lt;p&gt;POI-3.10以前の場合、データの修正は行われません。
+     * @param correctCellDataValidationOnSave 初期値は、'false'です。
+     */
+    public Configuration setCorrectCellDataValidationOnSave(boolean correctCellDataValidationOnSave) {
+<span class="fc" id="L235">        this.correctCellDataValidationOnSave = correctCellDataValidationOnSave;</span>
+<span class="fc" id="L236">        return this;</span>
+    }
+
+     /**
+     * 書き込み時に式の再計算をするか設定します。
+     * &lt;p&gt;数式を含むシートを出力したファイルを開いた場合、一般的には数式が開いたときに再計算されます。
+     * &lt;p&gt;ただし、大量で複雑な数式が記述されていると、パフォーマンスが落ちるため無効にすることもできます。
+     * @since 1.5
+     * @return 初期値は、'true'です。
+     */
+    public boolean isFormulaRecalcurationOnSave() {
+<span class="fc" id="L247">        return formulaRecalcurationOnSave;</span>
+    }
+
+    /**
+     * 書き込み時に式の再計算をするか設定します。
+     * &lt;p&gt;数式を含むシートを出力したファイルを開いた場合、一般的には数式が開いたときに再計算されます。
+     * &lt;p&gt;ただし、大量で複雑な数式が記述されていると、パフォーマンスが落ちるため無効にすることもできます。
+     * @since 1.5
+     * @param formulaRecalcurationOnSave
+     * @return 自身のインスタンス
+     */
+    public Configuration setFormulaRecalcurationOnSave(boolean formulaRecalcurationOnSave) {
+<span class="fc" id="L259">        this.formulaRecalcurationOnSave = formulaRecalcurationOnSave;</span>
+<span class="fc" id="L260">        return this;</span>
+    }
+
+    /**
+     * 読み込み時にセルの値のキャッシュを行うかどうか設定します。
+     * @since 2.0
+     * @return true 初期値は、'true'です。
+     */
+    public boolean isCacheCellValueOnLoad() {
+<span class="fc" id="L269">        return cacheCellValueOnLoad;</span>
+    }
+
+    /**
+     * 読み込み時にセルの値のキャッシュを行うかどうか設定します。
+     * @since 2.0
+     * @param cacheCellValueOnLoad trueのときキャッシュを行います。
+     */
+    public Configuration setCacheCellValueOnLoad(boolean cacheCellValueOnLoad) {
+<span class="nc" id="L278">        this.cacheCellValueOnLoad = cacheCellValueOnLoad;</span>
+<span class="nc" id="L279">        return this;</span>
+    }
+
+    /**
+     * POIのセルのフォーマッターを取得します。
+     * @return セルのフォーマッタ。
+     */
+    public CellFormatter getCellFormatter() {
+<span class="fc" id="L287">        return cellFormatter;</span>
+    }
+
+    /**
+     * POIのセルのフォーマッターを指定します。
+     * @param cellFormatter セルのフォーマッタ
+     * @return 自身のインスタンス
+     */
+    public Configuration setCellFormatter(CellFormatter cellFormatter) {
+<span class="nc" id="L296">        this.cellFormatter = cellFormatter;</span>
+<span class="nc" id="L297">        return this;</span>
+    }
+
+    /**
+     * セルの値の型変換の管理クラスを取得します。
+     * @return
+     */
+    public CellConverterRegistry getConverterRegistry() {
+<span class="fc" id="L305">        return converterRegistry;</span>
+    }
+
+    /**
+     * セルの値の型変換の管理クラスを設定します。
+     * @param converterRegistry
+     * @return 自身のインスタンス
+     */
+    public Configuration setConverterRegistry(CellConverterRegistry converterRegistry) {
+<span class="nc" id="L314">        this.converterRegistry = converterRegistry;</span>
+<span class="nc" id="L315">        return this;</span>
+    }
+
+    /**
+     * アノテーションを処理するプロセッサの管理クラスを取得します。
+     * @return
+     */
+    public FieldProcessorRegistry getFieldProcessorRegistry() {
+<span class="fc" id="L323">        return fieldProcessorRegistry;</span>
+    }
+
+    /**
+     * アノテーションを処理するプロセッサの管理クラスを設定します。
+     * @return 自身のインスタンス
+     */
+    public Configuration setFieldProcessorRegistry(FieldProcessorRegistry fieldProcessorRegistry) {
+<span class="nc" id="L331">        this.fieldProcessorRegistry = fieldProcessorRegistry;</span>
+<span class="nc" id="L332">        return this;</span>
+    }
+
+    /**
+     * Beanを生成するためのFactoryクラスを設定します。
+     * @return
+     */
+    public Configuration setBeanFactory(BeanFactory&lt;Class&lt;?&gt;, Object&gt; beanFactory) {
+<span class="fc" id="L340">        this.beanFactory = beanFactory;</span>
+<span class="fc" id="L341">        return this;</span>
+    }
+
+    /**
+     * Beanを生成するためのFactoryクラスを取得します。
+     * @since 1.0
+     * @return
+     */
+    public BeanFactory&lt;Class&lt;?&gt;, Object&gt; getBeanFactory() {
+<span class="fc" id="L350">        return beanFactory;</span>
+    }
+
+    /**
+     * {@link SheetBindingErrors}を生成するためのFactoryクラスを取得します。
+     * @since 2.0
+     * @return
+     */
+    public SheetBindingErrorsFactory getBindingErrorsFactory() {
+<span class="fc" id="L359">        return bindingErrorsFactory;</span>
+    }
+
+    /**
+     * {@link SheetBindingErrors}を生成するためのFactoryクラスを設定します。
+     * @since 2.0
+     * @param bindingErrorsFactory
+     */
+    public void setBindingErrorsFactory(SheetBindingErrorsFactory bindingErrorsFactory) {
+<span class="nc" id="L368">        this.bindingErrorsFactory = bindingErrorsFactory;</span>
+<span class="nc" id="L369">    }</span>
+
+    /**
+     * 処理対象のシートを取得するためのクラスを取得します。
+     * &lt;p&gt;アノテーション{@link XlsSheet} を処理します。
+     * @since 1.1
+     * @return 現在設定されいるシートを処理するクラスのインタンス。
+     */
+    public SheetFinder getSheetFinder() {
+<span class="fc" id="L378">        return sheetFinder;</span>
+    }
+
+    /**
+     * 処理対象のシートを取得するためのクラスを設定します。
+     * &lt;p&gt;アノテーション{@link XlsSheet} を処理します。
+     * @since 1.1
+     * @param sheetFinder シートを処理するクラスのインタンス。
+     * @return 自身のインスタンス
+     */
+    public Configuration setSheetFinder(SheetFinder sheetFinder) {
+<span class="nc" id="L389">        this.sheetFinder = sheetFinder;</span>
+<span class="nc" id="L390">        return this;</span>
+    }
+
+    /**
+     * 数式をフォーマットするためのクラスを取得します。
+     * &lt;p&gt;出力するセルの数式を設定する際に、独自の変数やEL式を指定したときにフォーマットする際に利用します。
+     *
+     * @since 1.5
+     * @return 数式をフォーマットするクラス。
+     */
+    public MessageInterpolator getFormulaFormatter() {
+<span class="fc" id="L401">        return formulaFormatter;</span>
+    }
+
+    /**
+     * 数式をフォーマットするためのクラスを取得します。
+     * &lt;p&gt;出力するセルの数式を設定する際に、独自の変数やEL式を指定したときにフォーマットする際に利用します。
+     *
+     * @since 1.5
+     * @param formulaFormatter 数式をフォーマットするクラス。
+     * @return 自身のインスタンス
+     */
+    public Configuration setFormulaFormatter(MessageInterpolator formulaFormatter) {
+<span class="nc" id="L413">        this.formulaFormatter = formulaFormatter;</span>
+<span class="nc" id="L414">        return this;</span>
+    }
+
+    /**
+     * アノテーションのマッピング情報を取得する。
+     * @since 2.0
+     * @return 設定されていない場合は、空を返す。
+     */
+    public Optional&lt;AnnotationMappingInfo&gt; getAnnotationMapping() {
+<span class="fc" id="L423">        return Optional.ofNullable(annotationMapping);</span>
+    }
+
+    /**
+     * アノテーションのマッピング情報を設定します。
+     * @since 2.0
+     * @param annotationMapping アノテーションの設定情報
+     */
+    public void setAnnotationMapping(AnnotationMappingInfo annotationMapping) {
+<span class="fc" id="L432">        this.annotationMapping = annotationMapping;</span>
+<span class="fc" id="L433">    }</span>
+
+    /**
+     * セルコメントを操作するクラスを取得します。
+     * @since 2.1
+     * @return セルコメントを操作するクラス
+     */
+    public CellCommentOperator getCommentOperator() {
+<span class="fc" id="L441">        return commentOperator;</span>
+    }
+
+    /**
+     * セルコメントを操作するクラスを設定します。
+     * @since 2.1
+     * @param commentOperator セルコメントを操作するクラス
+     * @return 自身のインスタンス
+     */
+    public Configuration setCommentOperator(CellCommentOperator commentOperator) {
+<span class="nc" id="L451">        this.commentOperator = commentOperator;</span>
+<span class="nc" id="L452">        return this;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

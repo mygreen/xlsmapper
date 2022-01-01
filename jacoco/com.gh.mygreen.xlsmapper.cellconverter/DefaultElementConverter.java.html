@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultElementConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.cellconverter</a> &gt; <span class="el_source">DefaultElementConverter.java</span></div><h1>DefaultElementConverter.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.cellconverter;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+/**
+ * 標準の{@link ElementConverter}の実装クラス。
+ * &lt;p&gt;次の基本的な型のみ対応しています。&lt;/p&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;String型&lt;/li&gt;
+ *   &lt;li&gt;プリミティブ型「boolean/char/byte/short/int/long/float/double」と、そのラッパークラス。&lt;/li&gt;
+ *   &lt;li&gt;{@link BigDecimal}/{@link BigInteger}&lt;/li&gt;
+ * &lt;/ul&gt;
+ * 
+ * 
+ * @since 1.1
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L24">public class DefaultElementConverter implements ElementConverter&lt;Object&gt; {</span>
+    
+    /** プリミティブ型のデフォルト値 */
+<span class="fc" id="L27">    private static final Map&lt;Class&lt;?&gt;, Object&gt; primitiveDefaults = new HashMap&lt;&gt;();</span>
+    
+    static {
+<span class="fc" id="L30">        primitiveDefaults.put(Boolean.TYPE, Boolean.FALSE);</span>
+<span class="fc" id="L31">        primitiveDefaults.put(Byte.TYPE, (byte)0);</span>
+<span class="fc" id="L32">        primitiveDefaults.put(Short.TYPE, (short)0);</span>
+<span class="fc" id="L33">        primitiveDefaults.put(Character.TYPE, (char)0);</span>
+<span class="fc" id="L34">        primitiveDefaults.put(Integer.TYPE, 0);</span>
+<span class="fc" id="L35">        primitiveDefaults.put(Long.TYPE, 0L);</span>
+<span class="fc" id="L36">        primitiveDefaults.put(Float.TYPE, 0.0f);</span>
+<span class="fc" id="L37">        primitiveDefaults.put(Double.TYPE, 0.0);</span>
+<span class="fc" id="L38">        primitiveDefaults.put(BigInteger.class, new BigInteger(&quot;0&quot;));</span>
+<span class="fc" id="L39">        primitiveDefaults.put(BigDecimal.class, new BigDecimal(&quot;0.0&quot;));</span>
+<span class="fc" id="L40">    }</span>
+    
+    @Override
+    public Object convertToObject(final String str, final Class&lt;Object&gt; targetClass) throws ConversionException {
+        
+<span class="fc" id="L45">        ArgUtils.notNull(targetClass, &quot;targetClass&quot;);</span>
+        
+        try {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            if(targetClass.isAssignableFrom(String.class)) {</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                return (Object) (Utils.isEmpty(str) ? null : str.toString());</span>
+                
+<span class="pc bpc" id="L51" title="3 of 4 branches missed.">            } else if(targetClass.isPrimitive() &amp;&amp; targetClass.isAssignableFrom(boolean.class)) {</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Boolean.TYPE) : Boolean.valueOf(str));</span>
+            
+<span class="pc bpc" id="L54" title="3 of 4 branches missed.">            } else if(targetClass.isPrimitive() &amp;&amp; targetClass.isAssignableFrom(char.class)) {</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Character.TYPE) : str.charAt(0));</span>
+            
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">            } else if(targetClass.isAssignableFrom(Character.class)) {</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? null : str.charAt(0));</span>
+                
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">            } else if(targetClass.isAssignableFrom(Boolean.class)) {</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? null : Boolean.valueOf(str));</span>
+                
+<span class="pc bpc" id="L63" title="3 of 4 branches missed.">            } else if(targetClass.isPrimitive() &amp;&amp; targetClass.isAssignableFrom(short.class)) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Short.TYPE) : Short.valueOf(str));</span>
+            
+<span class="pc bpc" id="L66" title="3 of 4 branches missed.">            } else if(targetClass.isPrimitive() &amp;&amp; targetClass.isAssignableFrom(byte.class)) {</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Byte.TYPE) : Byte.valueOf(str));</span>
+            
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">            } else if(targetClass.isAssignableFrom(Byte.class)) {</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? null : Byte.valueOf(str));</span>
+                
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">            } else if(targetClass.isAssignableFrom(Short.class)) {</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? null : Short.valueOf(str));</span>
+                
+<span class="pc bpc" id="L75" title="3 of 4 branches missed.">            } else if(targetClass.isPrimitive() &amp;&amp; targetClass.isAssignableFrom(int.class)) {</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Integer.TYPE) : Integer.valueOf(str));</span>
+            
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">            } else if(targetClass.isAssignableFrom(Integer.class)) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                return (Object) (Utils.isEmpty(str) ? null : Integer.valueOf(str));</span>
+                
+<span class="nc bnc" id="L81" title="All 4 branches missed.">            } else if(targetClass.isPrimitive() &amp;&amp; targetClass.isAssignableFrom(long.class)) {</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Long.TYPE) : Long.valueOf(str));</span>
+            
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            } else if(targetClass.isAssignableFrom(Long.class)) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? null : Long.valueOf(str));</span>
+                
+<span class="nc bnc" id="L87" title="All 4 branches missed.">            } else if(targetClass.isPrimitive() &amp;&amp; targetClass.isAssignableFrom(float.class)) {</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Float.TYPE) : Float.valueOf(str));</span>
+            
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            } else if(targetClass.isAssignableFrom(Float.class)) {</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? null : Float.valueOf(str));</span>
+                
+<span class="nc bnc" id="L93" title="All 4 branches missed.">            } else if(targetClass.isPrimitive() &amp;&amp; targetClass.isAssignableFrom(double.class)) {</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(Double.TYPE) : Double.valueOf(str));</span>
+            
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            } else if(targetClass.isAssignableFrom(Double.class)) {</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? null : Double.valueOf(str));</span>
+                
+<span class="nc bnc" id="L99" title="All 2 branches missed.">            } else if(targetClass.isAssignableFrom(BigInteger.class)) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(BigInteger.class) : new BigInteger(str));</span>
+                
+<span class="nc bnc" id="L102" title="All 2 branches missed.">            } else if(targetClass.isAssignableFrom(BigDecimal.class)) {</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">                return (Object) (Utils.isEmpty(str) ? primitiveDefaults.get(BigDecimal.class) : new BigDecimal(str));</span>
+            }
+        
+<span class="fc" id="L106">        } catch(NumberFormatException e) {</span>
+<span class="fc" id="L107">            throw new ConversionException(String.format(&quot;Cannot convert string to %s.&quot;, str), e, targetClass);</span>
+<span class="nc" id="L108">        }</span>
+        
+<span class="nc" id="L110">        throw new ConversionException(String.format(&quot;Cannot convert string to Object [%s].&quot;, targetClass.getName()), targetClass);</span>
+        
+    }
+    
+    @Override
+    public String convertToString(final Object value) {
+        
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if(value == null) {</span>
+<span class="nc" id="L118">            return &quot;&quot;;</span>
+        }
+        
+<span class="fc" id="L121">        return value.toString();</span>
+        
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

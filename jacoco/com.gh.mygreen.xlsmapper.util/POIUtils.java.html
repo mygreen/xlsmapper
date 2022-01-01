@@ -1,0 +1,1150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>POIUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.util</a> &gt; <span class="el_source">POIUtils.java</span></div><h1>POIUtils.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.util;
+
+import java.awt.Point;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.poi.common.usermodel.HyperlinkType;
+import org.apache.poi.hssf.model.InternalSheet;
+import org.apache.poi.hssf.model.InternalWorkbook;
+import org.apache.poi.hssf.record.DVRecord;
+import org.apache.poi.hssf.record.Record;
+import org.apache.poi.hssf.record.aggregates.DataValidityTable;
+import org.apache.poi.hssf.record.aggregates.RecordAggregate.RecordVisitor;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.SpreadsheetVersion;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.usermodel.Hyperlink;
+import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.AreaReference;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressBase;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDataValidation;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDataValidations;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gh.mygreen.xlsmapper.CellFormatter;
+import com.gh.mygreen.xlsmapper.DefaultCellFormatter;
+import com.github.mygreen.cellformatter.lang.ExcelDateUtils;
+
+/**
+ * Apache POIとJExcel APIの差を埋めるユーティリティクラス。
+ *
+ * @version 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="nc" id="L61">public class POIUtils {</span>
+
+<span class="fc" id="L63">    private static final Logger logger = LoggerFactory.getLogger(POIUtils.class);</span>
+
+    /** 標準のセルフォーマッター */
+<span class="fc" id="L66">    private static CellFormatter defaultCellFormatter = new DefaultCellFormatter();</span>
+
+    /**
+     * シートの種類を判定する。
+     *
+     * @since 2.0
+     * @param sheet 判定対象のオブジェクト
+     * @return シートの種類。不明な場合はnullを返す。
+     * @throws IllegalArgumentException {@literal sheet == null}
+     */
+    public static SpreadsheetVersion getVersion(final Sheet sheet) {
+<span class="fc" id="L77">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">        if(sheet instanceof HSSFSheet) {</span>
+<span class="nc" id="L80">            return SpreadsheetVersion.EXCEL97;</span>
+
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        } else if(sheet instanceof XSSFSheet) {</span>
+<span class="fc" id="L83">            return SpreadsheetVersion.EXCEL2007;</span>
+        }
+
+<span class="nc" id="L86">        return null;</span>
+    }
+
+    /**
+     * シートの最大列数を取得する。
+     * &lt;p&gt;{@literal jxl.Sheet.getColumns()}&lt;/p&gt;
+     * @param sheet シートオブジェクト
+     * @return 最大列数
+     * @throws IllegalArgumentException {@literal sheet == null.}
+     */
+    public static int getColumns(final Sheet sheet) {
+<span class="fc" id="L97">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+
+<span class="fc" id="L99">        int minRowIndex = sheet.getFirstRowNum();</span>
+<span class="fc" id="L100">        int maxRowIndex = sheet.getLastRowNum();</span>
+<span class="fc" id="L101">        int maxColumnsIndex = 0;</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        for(int i = minRowIndex; i &lt;= maxRowIndex; i++) {</span>
+<span class="fc" id="L103">            final Row row = sheet.getRow(i);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            if(row == null) {</span>
+<span class="fc" id="L105">                continue;</span>
+            }
+
+<span class="fc" id="L108">            final int column = row.getLastCellNum();</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            if(column &gt; maxColumnsIndex) {</span>
+<span class="fc" id="L110">                maxColumnsIndex = column;</span>
+            }
+        }
+
+<span class="fc" id="L114">        return maxColumnsIndex;</span>
+    }
+
+    /**
+     * シートの最大行数を取得する
+     *
+     * &lt;p&gt;{@literal jxl.Sheet.getRows()}&lt;/p&gt;
+     * @param sheet シートオブジェクト
+     * @return 最大行数
+     * @throws IllegalArgumentException {@literal sheet == null.}
+     */
+    public static int getRows(final Sheet sheet) {
+<span class="fc" id="L126">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="fc" id="L127">        return sheet.getLastRowNum() + 1;</span>
+    }
+
+    /**
+     * シートから任意アドレスのセルを取得する。
+     * @since 0.5
+     * @param sheet シートオブジェクト
+     * @param address アドレス（Point.x=column, Point.y=row）
+     * @return セル
+     * @throws IllegalArgumentException {@literal sheet == null or address == null.}
+     */
+    public static Cell getCell(final Sheet sheet, final Point address) {
+<span class="fc" id="L139">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="fc" id="L140">        ArgUtils.notNull(address, &quot;address&quot;);</span>
+<span class="fc" id="L141">        return getCell(sheet, address.x, address.y);</span>
+    }
+
+    /**
+     * シートから任意アドレスのセルを取得する。
+     * @since 1.4
+     * @param sheet シートオブジェクト
+     * @param address セルのアドレス
+     * @return セル
+     * @throws IllegalArgumentException {@literal sheet == null or address == null.}
+     */
+    public static Cell getCell(final Sheet sheet, final CellPosition address) {
+<span class="fc" id="L153">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="fc" id="L154">        ArgUtils.notNull(address, &quot;address&quot;);</span>
+<span class="fc" id="L155">        return getCell(sheet, address.getColumn(), address.getRow());</span>
+    }
+
+    /**
+     * シートから任意アドレスのセルを取得する。
+     *
+     * &lt;p&gt;{@literal jxl.Sheet.getCell(int column, int row)}&lt;/p&gt;
+     * @param sheet シートオブジェクト
+     * @param column 列番号（0から始まる）
+     * @param row 行番号（0から始まる）
+     * @return セル
+     * @throws IllegalArgumentException {@literal sheet == null}
+     */
+    public static Cell getCell(final Sheet sheet, final int column, final int row) {
+<span class="fc" id="L169">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+
+<span class="fc" id="L171">        Row rows = sheet.getRow(row);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">        if(rows == null) {</span>
+<span class="fc" id="L173">            rows = sheet.createRow(row);</span>
+        }
+
+<span class="fc" id="L176">        Cell cell = rows.getCell(column);</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        if(cell == null) {</span>
+<span class="fc" id="L178">            cell = rows.createCell(column, CellType.BLANK);</span>
+        }
+
+<span class="fc" id="L181">        return cell;</span>
+    }
+
+    /**
+     * 任意の行のセルを全て取得する。
+     * &lt;p&gt; {@literal jxl.Seet.getRow(int row)}&lt;/p&gt;
+     * @param sheet シートオブジェクト
+     * @param row 行番号（0から始まる）
+     * @return 行レコード（カラムの集合）。
+     *         ただし、シートの最大列数以下の場合、空のセルを補完する。
+     * @throws IllegalArgumentException {@literal sheet == null}
+     */
+    public static Cell[] getRow(final Sheet sheet, final int row) {
+<span class="nc" id="L194">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+
+<span class="nc" id="L196">        Row rows = sheet.getRow(row);</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if(rows == null) {</span>
+<span class="nc" id="L198">            rows = sheet.createRow(row);</span>
+        }
+<span class="nc" id="L200">        int maxColumn = getColumns(sheet);</span>
+<span class="nc" id="L201">        Cell[] cells = new Cell[maxColumn];</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        for(int i=0; i &lt; maxColumn; i++) {</span>
+<span class="nc" id="L203">            Cell cell = rows.getCell(i);</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">            if(cell == null) {</span>
+<span class="nc" id="L205">                cell = rows.createCell(i, CellType.BLANK);</span>
+            }
+<span class="nc" id="L207">            cells[i] = cell;</span>
+        }
+
+<span class="nc" id="L210">        return cells;</span>
+    }
+
+    /**
+     * 任意の列のセルを全て取得する。
+     * &lt;p&gt; {@literal jxl.Seet.getColumn(int col)}&lt;/p&gt;
+     * @param sheet
+     * @param col 列番号（0から始まる）
+     * @return 列レコード（行の集合）。
+     *         ただし、シートの最大行数以下の場合、空のセルを補完する。
+     * @throws IllegalArgumentException {@literal sheet == null}
+     */
+    public static Cell[] getColumn(final Sheet sheet, final int col) {
+<span class="nc" id="L223">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+
+<span class="nc" id="L225">        int maxRow = getRows(sheet);</span>
+<span class="nc" id="L226">        Cell[] cells = new Cell[maxRow];</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">        for(int i=0; i &lt; maxRow; i++) {</span>
+<span class="nc" id="L228">            Row rows = sheet.getRow(i);</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">            if(rows == null) {</span>
+<span class="nc" id="L230">                rows = sheet.createRow(i);</span>
+
+            }
+
+<span class="nc" id="L234">            Cell cell = rows.getCell(col);</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">            if(cell == null) {</span>
+<span class="nc" id="L236">                cell = rows.createCell(col, CellType.BLANK);</span>
+            }
+
+<span class="nc" id="L239">            cells[i] = cell;</span>
+        }
+
+<span class="nc" id="L242">        return cells;</span>
+    }
+
+    /**
+     * フォーマッターを指定してセルの値を取得する
+     *
+     * @param cell
+     * @param cellFormatter
+     * @return フォーマットした文字列
+     * @throws IllegalArgumentException {@literal cell or cellFormatter is null.}
+     */
+    public static String getCellContents(final Cell cell, final CellFormatter cellFormatter) {
+<span class="fc" id="L254">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+<span class="fc" id="L255">        ArgUtils.notNull(cellFormatter, &quot;cellFormatter&quot;);</span>
+
+<span class="fc" id="L257">        return cellFormatter.format(cell);</span>
+
+    }
+
+    /**
+     * 指定してセルの値が空かどうか判定する。
+     * &lt;p&gt;ブランクセルなどの判定は優先的に行う。&lt;/p&gt;
+     * @param cell
+     * @return
+     */
+    public static boolean isEmptyCellContents(final Cell cell) {
+<span class="nc" id="L268">        return isEmptyCellContents(cell, defaultCellFormatter);</span>
+    }
+
+    /**
+     * フォーマッターを指定してセルの値が空かどうか判定する。
+     * &lt;p&gt;ブランクセルなどの判定は優先的に行う。&lt;/p&gt;
+     * @param cell セル
+     * @param cellFormatter セルのフォーマッタ
+     * @throws IllegalArgumentException {@literal  sheet == null or cellFormatter == null.}
+     * @return
+     */
+    public static boolean isEmptyCellContents(final Cell cell, final CellFormatter cellFormatter) {
+<span class="fc" id="L280">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+<span class="fc" id="L281">        ArgUtils.notNull(cellFormatter, &quot;cellFormatter&quot;);</span>
+
+<span class="fc" id="L283">        return getCellContents(cell, cellFormatter).isEmpty();</span>
+    }
+
+    /**
+     * 指定した書式のインデックス番号を取得する。シートに存在しない場合は、新しく作成する。
+     * @param sheet シート
+     * @param pattern 作成する書式のパターン
+     * @return 書式のインデックス番号。
+     * @throws IllegalArgumentException {@literal sheet == null.}
+     * @throws IllegalArgumentException {@literal pattern == null || pattern.isEmpty().}
+     */
+    public static short getDataFormatIndex(final Sheet sheet, final String pattern) {
+<span class="fc" id="L295">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="fc" id="L296">        ArgUtils.notEmpty(pattern, &quot;pattern&quot;);</span>
+
+<span class="fc" id="L298">        return sheet.getWorkbook().getCreationHelper().createDataFormat().getFormat(pattern);</span>
+
+    }
+
+    /**
+     * セルに設定されている書式を取得する。
+     * @since 1.1
+     * @param cell セルのインスタンス。
+     * @param cellFormatter セルのフォーマッタ
+     * @return 書式が設定されていない場合は、空文字を返す。
+     *         cellがnullの場合も空文字を返す。
+     *         標準の書式の場合も空文字を返す。
+     */
+    public static String getCellFormatPattern(final Cell cell, final CellFormatter cellFormatter) {
+<span class="pc bpc" id="L312" title="1 of 2 branches missed.">        if(cell == null) {</span>
+<span class="nc" id="L313">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L316">        String pattern = cellFormatter.getPattern(cell);</span>
+<span class="pc bpc" id="L317" title="1 of 2 branches missed.">        if(pattern.equalsIgnoreCase(&quot;general&quot;)) {</span>
+<span class="nc" id="L318">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L321">        return pattern;</span>
+
+    }
+
+    /**
+     * 指定した範囲のセルを結合する。
+     * @param sheet
+     * @param startCol
+     * @param startRow
+     * @param endCol
+     * @param endRow
+     * @return 結合した範囲のアドレス情報
+     * @throws IllegalArgumentException {@literal sheet == null}
+     */
+    public static CellRangeAddress mergeCells(final Sheet sheet, int startCol, int startRow, int endCol, int endRow) {
+<span class="fc" id="L336">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+
+        // 結合先のセルの値を空に設定する
+<span class="fc bfc" id="L339" title="All 2 branches covered.">        for(int r=startRow; r &lt;= endRow; r++) {</span>
+<span class="fc bfc" id="L340" title="All 2 branches covered.">            for(int c=startCol; c &lt;= endCol; c++) {</span>
+
+<span class="fc bfc" id="L342" title="All 4 branches covered.">                if(r == startRow &amp;&amp; c == startCol) {</span>
+<span class="fc" id="L343">                    continue;</span>
+                }
+
+<span class="fc" id="L346">                Cell cell = getCell(sheet, c, r);</span>
+<span class="fc" id="L347">                cell.setBlank();</span>
+            }
+        }
+
+<span class="fc" id="L351">        final CellRangeAddress range = new CellRangeAddress(startRow, endRow, startCol, endCol);</span>
+<span class="fc" id="L352">        sheet.addMergedRegion(range);</span>
+<span class="fc" id="L353">        return range;</span>
+    }
+
+    /**
+     * 指定したセルのアドレスの結合情報を取得する。
+     * @since 0.5
+     * @param sheet シート情報
+     * @param rowIdx 行番号
+     * @param colIdx 列番号
+     * @return 結合していない場合nullを返す。
+     */
+    public static CellRangeAddress getMergedRegion(final Sheet sheet, final int rowIdx, final int colIdx) {
+<span class="fc" id="L365">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+
+<span class="fc" id="L367">        final int num = sheet.getNumMergedRegions();</span>
+<span class="fc bfc" id="L368" title="All 2 branches covered.">        for(int i=0; i &lt; num; i ++) {</span>
+<span class="fc" id="L369">            final CellRangeAddress range = sheet.getMergedRegion(i);</span>
+<span class="fc bfc" id="L370" title="All 2 branches covered.">            if(range.isInRange(rowIdx, colIdx)) {</span>
+<span class="fc" id="L371">                return range;</span>
+            }
+        }
+
+<span class="fc" id="L375">        return null;</span>
+    }
+
+    /**
+     * 指定した範囲の結合を解除する。
+     * @param sheet
+     * @param mergedRange
+     * @return 引数で指定した結合が見つからない場合。
+     */
+    public static boolean removeMergedRange(final Sheet sheet, final CellRangeAddress mergedRange) {
+<span class="fc" id="L385">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="fc" id="L386">        ArgUtils.notNull(mergedRange, &quot;mergedRange&quot;);</span>
+
+<span class="fc" id="L388">        final String mergedAddress = mergedRange.formatAsString(sheet.getSheetName(), true);</span>
+
+<span class="fc" id="L390">        final int num = sheet.getNumMergedRegions();</span>
+<span class="pc bpc" id="L391" title="1 of 2 branches missed.">        for(int i=0; i &lt; num; i ++) {</span>
+<span class="fc" id="L392">            final CellRangeAddress range = sheet.getMergedRegion(i);</span>
+<span class="fc" id="L393">            final String rangeAddress = range.formatAsString(sheet.getSheetName(), true);</span>
+<span class="fc bfc" id="L394" title="All 2 branches covered.">            if(rangeAddress.equals(mergedAddress)) {</span>
+<span class="fc" id="L395">                sheet.removeMergedRegion(i);</span>
+<span class="fc" id="L396">                return true;</span>
+            }
+        }
+
+<span class="nc" id="L400">        return false;</span>
+    }
+
+    /**
+     * 領域の列サイズ（横セル数）を計算します。
+     *
+     * @since 2.0
+     * @param region 領域
+     * @return 列サイズ（横セル数）。引数がnullの時は、0を返します。
+     */
+    public static int getColumnSize(final CellRangeAddress region) {
+<span class="fc bfc" id="L411" title="All 2 branches covered.">        if(region == null) {</span>
+<span class="fc" id="L412">            return 0;</span>
+        }
+<span class="fc" id="L414">        return region.getLastColumn() - region.getFirstColumn() + 1;</span>
+    }
+
+    /**
+     * 領域の行サイズ（行セル数）を計算します。
+     *
+     * @since 2.0
+     * @param region 領域
+     * @return 行サイズ（行セル数）。引数がnullの時は、0を返します。
+     */
+    public static int getRowSize(final CellRangeAddress region) {
+<span class="fc bfc" id="L425" title="All 2 branches covered.">        if(region == null) {</span>
+<span class="fc" id="L426">            return 0;</span>
+        }
+<span class="fc" id="L428">        return region.getLastRow() - region.getFirstRow() + 1;</span>
+    }
+
+    /**
+     * 指定した行の下に行を1行追加する
+     * @param sheet
+     * @param rowIndex 追加する行数
+     * @return 追加した行を返す。
+     */
+    public static Row insertRow(final Sheet sheet, final int rowIndex) {
+
+<span class="fc" id="L439">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="fc" id="L440">        ArgUtils.notMin(rowIndex, 0, &quot;rowIndex&quot;);</span>
+
+        // 最終行を取得する
+<span class="fc" id="L443">        int lastRow = sheet.getLastRowNum();</span>
+<span class="pc bpc" id="L444" title="1 of 2 branches missed.">        if(lastRow &lt; rowIndex) {</span>
+            // データが定義されている範囲害の場合は、行を新たに作成して返す。
+<span class="nc" id="L446">            return sheet.createRow(rowIndex);</span>
+        }
+
+<span class="fc" id="L449">        sheet.shiftRows(rowIndex, lastRow+1, 1);</span>
+<span class="fc" id="L450">        return sheet.createRow(rowIndex);</span>
+    }
+
+    /**
+     * 指定した行を削除する。
+     * &lt;p&gt;削除した行は上に詰める。
+     * @since 0.5
+     * @param sheet
+     * @param rowIndex 削除する行数
+     * @return 削除した行
+     */
+    public static Row removeRow(final Sheet sheet, final int rowIndex) {
+
+<span class="fc" id="L463">        ArgUtils.notNull(sheet, &quot;cell&quot;);</span>
+<span class="fc" id="L464">        ArgUtils.notMin(rowIndex, 0, &quot;rowIndex&quot;);</span>
+
+<span class="fc" id="L466">        final Row row = sheet.getRow(rowIndex);</span>
+<span class="pc bpc" id="L467" title="1 of 2 branches missed.">        if(row == null) {</span>
+            // 削除対象の行にデータが何もない場合
+<span class="nc" id="L469">            return row;</span>
+        }
+
+<span class="fc" id="L472">        sheet.removeRow(row);</span>
+
+        // 上に1つ行をずらす
+<span class="fc" id="L475">        int lastRow = sheet.getLastRowNum();</span>
+<span class="fc bfc" id="L476" title="All 2 branches covered.">        if(rowIndex +1 &gt; lastRow) {</span>
+<span class="fc" id="L477">            return row;</span>
+        }
+
+<span class="fc" id="L480">        sheet.shiftRows(rowIndex+1, lastRow, -1);</span>
+
+<span class="fc" id="L482">        return row;</span>
+    }
+
+
+    /**
+     * 座標をExcelのアドレス形式'A1'などに変換する
+     * @param rowIndex 行インデックス
+     * @param colIndex 列インデックス
+     * @return
+     */
+    public static String formatCellAddress(final int rowIndex, final int colIndex) {
+<span class="fc" id="L493">        return CellReference.convertNumToColString(colIndex) + String.valueOf(rowIndex+1);</span>
+    }
+
+    /**
+     * 座標をExcelのアドレス形式'A1'になどに変換する。
+     * @param cellAddress セルの位置情報
+     * @return
+     * @throws IllegalArgumentException address == null.
+     */
+    public static String formatCellAddress(final Point cellAddress) {
+<span class="fc" id="L503">        ArgUtils.notNull(cellAddress, &quot;cellAddress&quot;);</span>
+<span class="fc" id="L504">        return formatCellAddress(cellAddress.y, cellAddress.x);</span>
+    }
+
+    /**
+     * セルのアドレス'A1'を取得する。
+     * @param cell セル情報
+     * @return IllegalArgumentException cell == null.
+     */
+    public static String formatCellAddress(final Cell cell) {
+<span class="fc" id="L513">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+<span class="fc" id="L514">        return CellReference.convertNumToColString(cell.getColumnIndex()) + String.valueOf(cell.getRowIndex()+1);</span>
+    }
+
+    /**
+     * リンクのアドレスを判定する。
+     * @param linkAddress リンクのアドレス（URL）
+     * @return 不明な場合は{@link HyperlinkType#NONE}を返す。
+     * @throws IllegalArgumentException linkAddress が空文字の場合。
+     */
+    public static HyperlinkType judgeLinkType(final String linkAddress) {
+
+<span class="fc" id="L525">        ArgUtils.notEmpty(linkAddress, &quot;linkAddress&quot;);</span>
+
+<span class="fc bfc" id="L527" title="All 2 branches covered.">        if(linkAddress.matches(&quot;.*![\\p{Alnum}]+&quot;)) {</span>
+            // !A1のアドレスを含むかどうか
+<span class="fc" id="L529">            return HyperlinkType.DOCUMENT;</span>
+
+<span class="fc bfc" id="L531" title="All 2 branches covered.">        } else if(linkAddress.matches(&quot;[\\p{Alpha}]+[0-9]+&quot;)) {</span>
+            // A1の通常のアドレスの形式
+<span class="fc" id="L533">            return HyperlinkType.DOCUMENT;</span>
+
+<span class="fc bfc" id="L535" title="All 2 branches covered.">        } else if(linkAddress.matches(&quot;.+@.+&quot;)) {</span>
+            // @を含むかどうか
+<span class="fc" id="L537">            return HyperlinkType.EMAIL;</span>
+
+<span class="fc bfc" id="L539" title="All 2 branches covered.">        } else if(linkAddress.matches(&quot;[\\p{Alpha}]+://.+&quot;)) {</span>
+            // プロトコル付きかどうか
+<span class="fc" id="L541">            return HyperlinkType.URL;</span>
+
+<span class="pc bpc" id="L543" title="1 of 2 branches missed.">        } else if(linkAddress.matches(&quot;.+\\.[\\p{Alnum}]+&quot;)) {</span>
+            // 拡張子付きかどうか
+<span class="fc" id="L545">            return HyperlinkType.FILE;</span>
+
+        } else {
+<span class="nc" id="L548">            return HyperlinkType.NONE;</span>
+        }
+
+    }
+
+    /**
+     * 入力規則の範囲を更新する。
+     * @since 0.5
+     * @param sheet シート
+     * @param oldRegion 更新対象の範囲。
+     * @param newRegion 新しい範囲。
+     * @return true:更新完了。false:指定した範囲を持つ入力規則が見つからなかった場合。
+     */
+    public static boolean updateDataValidationRegion(final Sheet sheet,
+            final CellRangeAddressList oldRegion, final CellRangeAddressList newRegion) {
+
+<span class="fc" id="L564">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="fc" id="L565">        ArgUtils.notNull(oldRegion, &quot;oldRegion&quot;);</span>
+<span class="fc" id="L566">        ArgUtils.notNull(newRegion, &quot;newRegion&quot;);</span>
+
+<span class="fc bfc" id="L568" title="All 2 branches covered.">        if(sheet instanceof XSSFSheet) {</span>
+
+<span class="fc" id="L570">            final List&lt;String&gt; oldSqref = convertSqref(oldRegion);</span>
+
+            try {
+<span class="fc" id="L573">                final XSSFSheet xssfSheet = (XSSFSheet) sheet;</span>
+<span class="fc" id="L574">                Field fWorksheet = XSSFSheet.class.getDeclaredField(&quot;worksheet&quot;);</span>
+<span class="fc" id="L575">                fWorksheet.setAccessible(true);</span>
+<span class="fc" id="L576">                CTWorksheet worksheet = (CTWorksheet) fWorksheet.get(xssfSheet);</span>
+
+<span class="fc" id="L578">                CTDataValidations dataValidations = worksheet.getDataValidations();</span>
+<span class="pc bpc" id="L579" title="1 of 2 branches missed.">                if(dataValidations == null) {</span>
+<span class="nc" id="L580">                    return false;</span>
+                }
+
+<span class="pc bpc" id="L583" title="1 of 2 branches missed.">                for(int i=0; i &lt; dataValidations.getCount(); i++) {</span>
+<span class="fc" id="L584">                    CTDataValidation dv = dataValidations.getDataValidationArray(i);</span>
+
+                    // 規則の範囲を比較し、同じならば範囲を書き換える。
+                    @SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L588">                    List&lt;String&gt; sqref = new ArrayList&lt;&gt;(dv.getSqref());</span>
+<span class="fc bfc" id="L589" title="All 2 branches covered.">                    if(equalsSqref(sqref, oldSqref)) {</span>
+<span class="fc" id="L590">                        List&lt;String&gt; newSqref = convertSqref(newRegion);</span>
+<span class="fc" id="L591">                        dv.setSqref(newSqref);</span>
+
+                        // 設定し直す
+<span class="fc" id="L594">                        dataValidations.setDataValidationArray(i, dv);</span>
+<span class="fc" id="L595">                        return true;</span>
+                    }
+
+                }
+
+<span class="nc" id="L600">                return false;</span>
+
+<span class="nc" id="L602">            } catch(Exception e) {</span>
+<span class="nc" id="L603">                throw new RuntimeException(&quot;fail update DataValidation's Regsion.&quot;, e);</span>
+            }
+
+<span class="pc bpc" id="L606" title="1 of 2 branches missed.">        } else if(sheet instanceof HSSFSheet) {</span>
+
+<span class="fc" id="L608">            final HSSFSheet hssfSheet = (HSSFSheet) sheet;</span>
+            try {
+<span class="fc" id="L610">                Field fWorksheet = HSSFSheet.class.getDeclaredField(&quot;_sheet&quot;);</span>
+<span class="fc" id="L611">                fWorksheet.setAccessible(true);</span>
+<span class="fc" id="L612">                InternalSheet worksheet = (InternalSheet) fWorksheet.get(hssfSheet);</span>
+
+<span class="fc" id="L614">                DataValidityTable dvt = worksheet.getOrCreateDataValidityTable();</span>
+
+                // シート内の入力規則のデータを検索して、一致するものがあれば書き換える。
+<span class="fc" id="L617">                final AtomicBoolean updated = new AtomicBoolean(false);</span>
+<span class="fc" id="L618">                RecordVisitor visitor = new RecordVisitor() {</span>
+
+                    @Override
+                    public void visitRecord(final Record r) {
+<span class="fc bfc" id="L622" title="All 2 branches covered.">                        if (!(r instanceof DVRecord)) {</span>
+<span class="fc" id="L623">                            return;</span>
+                        }
+
+<span class="fc" id="L626">                        final DVRecord dvRecord = (DVRecord) r;</span>
+<span class="fc" id="L627">                        final CellRangeAddressList region = dvRecord.getCellRangeAddress();</span>
+<span class="pc bpc" id="L628" title="1 of 2 branches missed.">                        if(equalsRegion(region, oldRegion)) {</span>
+
+                            // 一旦既存の範囲を削除する。
+<span class="fc bfc" id="L631" title="All 2 branches covered.">                            while(region.countRanges() != 0) {</span>
+<span class="fc" id="L632">                                region.remove(0);</span>
+                            }
+
+                            // 新しい範囲を追加する。
+<span class="fc bfc" id="L636" title="All 2 branches covered.">                            for(CellRangeAddress newRange : newRegion.getCellRangeAddresses()) {</span>
+<span class="fc" id="L637">                                region.addCellRangeAddress(newRange);</span>
+                            }
+
+<span class="fc" id="L640">                            updated.set(true);</span>
+<span class="fc" id="L641">                            return;</span>
+                        }
+<span class="nc" id="L643">                    }</span>
+                };
+
+<span class="fc" id="L646">                dvt.visitContainedRecords(visitor);</span>
+
+<span class="fc" id="L648">                return updated.get();</span>
+
+<span class="nc" id="L650">            } catch(Exception e) {</span>
+<span class="nc" id="L651">                throw new RuntimeException(&quot;fail update DataValidation's Regsion.&quot;, e);</span>
+            }
+        } else {
+<span class="nc" id="L654">            throw new UnsupportedOperationException(&quot;not supported update dava validation's region for type &quot; + sheet.getClass().getName());</span>
+        }
+
+    }
+
+    /**
+     * CellRangeAddressを文字列形式のリストに変換する。
+     * @since 0.5
+     * @param region
+     * @return
+     */
+    private static List&lt;String&gt; convertSqref(final CellRangeAddressList region) {
+
+<span class="fc" id="L667">        List&lt;String&gt; sqref = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L668" title="All 2 branches covered.">        for(CellRangeAddress range : region.getCellRangeAddresses()) {</span>
+<span class="fc" id="L669">            sqref.add(range.formatAsString());</span>
+        }
+
+<span class="fc" id="L672">        return sqref;</span>
+
+    }
+
+    /**
+     * 文字列形式のセルの範囲が同じかどうか比較する。
+     * @since 0.5
+     * @param sqref1
+     * @param sqref2
+     * @return
+     */
+    public static boolean equalsSqref(final List&lt;String&gt; sqref1, final List&lt;String&gt; sqref2) {
+
+<span class="fc bfc" id="L685" title="All 2 branches covered.">        if(sqref1.size() != sqref2.size()) {</span>
+<span class="fc" id="L686">            return false;</span>
+        }
+
+<span class="fc" id="L689">        Collections.sort(sqref1);</span>
+<span class="fc" id="L690">        Collections.sort(sqref2);</span>
+
+<span class="fc" id="L692">        final int size = sqref1.size();</span>
+<span class="fc bfc" id="L693" title="All 2 branches covered.">        for(int i=0; i &lt; size; i++) {</span>
+<span class="fc bfc" id="L694" title="All 2 branches covered.">            if(!sqref1.get(i).equals(sqref2.get(i))) {</span>
+<span class="fc" id="L695">                return false;</span>
+            }
+        }
+
+<span class="fc" id="L699">        return true;</span>
+
+    }
+
+    /**
+     * 文字列形式のセルの範囲が同じかどうか比較する。
+     * @since 0.5
+     * @param region1
+     * @param region2
+     * @return
+     */
+    public static boolean equalsRegion(final CellRangeAddressList region1, final CellRangeAddressList region2) {
+
+<span class="fc" id="L712">        return equalsSqref(convertSqref(region1), convertSqref(region2));</span>
+
+    }
+
+    /**
+     * テンプレートの入力規則の制約「リスト」を追加する。
+     * &lt;p&gt;POI-3.7以上が必要。
+     * @param sheet シート
+     * @param constraints 制約とするコレクションの中身
+     * @param startPosition 開始位置
+     * @param endPosition 終了位置
+     */
+    public static void setupExplicitListConstaint(final Sheet sheet, final Collection&lt;String&gt; constraints,
+            final Point startPosition, final Point endPosition) {
+
+<span class="nc" id="L727">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="nc" id="L728">        ArgUtils.notEmpty(constraints, &quot;constraints&quot;);</span>
+<span class="nc" id="L729">        ArgUtils.notNull(startPosition, &quot;startPosition&quot;);</span>
+<span class="nc" id="L730">        ArgUtils.notNull(endPosition, &quot;endPosition&quot;);</span>
+
+<span class="nc" id="L732">        setupExplicitListConstaint(sheet, constraints.toArray(new String[constraints.size()]),</span>
+                startPosition, endPosition);
+<span class="nc" id="L734">    }</span>
+
+    /**
+     * テンプレートの入力規則の制約「リスト」を追加する。
+     * &lt;p&gt;POI-3.7以上が必要。
+     * @param sheet シート
+     * @param constraints 制約とするリストの中身
+     * @param startPosition 開始位置
+     * @param endPosition 終了位置
+     */
+    public static void setupExplicitListConstaint(final Sheet sheet, final String[] constraints,
+            final Point startPosition, final Point endPosition) {
+
+<span class="nc" id="L747">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="nc" id="L748">        ArgUtils.notEmpty(constraints, &quot;constraints&quot;);</span>
+<span class="nc" id="L749">        ArgUtils.notNull(startPosition, &quot;startPosition&quot;);</span>
+<span class="nc" id="L750">        ArgUtils.notNull(endPosition, &quot;endPosition&quot;);</span>
+
+<span class="nc" id="L752">        final DataValidationHelper helper = sheet.getDataValidationHelper();</span>
+<span class="nc" id="L753">        final DataValidationConstraint constraint = helper.createExplicitListConstraint(constraints);</span>
+<span class="nc" id="L754">        setupConstaint(sheet, constraint, startPosition, endPosition);</span>
+
+<span class="nc" id="L756">    }</span>
+
+    /**
+     * テンプレートの入力規則の制約「リスト」を式形式で追加する。
+     * &lt;p&gt;POI-3.7以上が必要。
+     * @param sheet シート
+     * @param listFormula 入力規則の式('='は含まない)
+     * @param startPosition 設定するセルの開始位置
+     * @param endPosition 設定するセルの終了位置
+     */
+    public static void setupFormulaListConstaint(final Sheet sheet, final String listFormula,
+            final Point startPosition, final Point endPosition) {
+
+<span class="nc" id="L769">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="nc" id="L770">        ArgUtils.notEmpty(listFormula, &quot;listFormula&quot;);</span>
+<span class="nc" id="L771">        ArgUtils.notNull(startPosition, &quot;startPosition&quot;);</span>
+<span class="nc" id="L772">        ArgUtils.notNull(endPosition, &quot;endPosition&quot;);</span>
+
+<span class="nc" id="L774">        final DataValidationHelper helper = sheet.getDataValidationHelper();</span>
+<span class="nc" id="L775">        final DataValidationConstraint constraint = helper.createFormulaListConstraint(&quot;=&quot; + listFormula);</span>
+<span class="nc" id="L776">        setupConstaint(sheet, constraint, startPosition, endPosition);</span>
+<span class="nc" id="L777">    }</span>
+
+    /**
+     * 指定した範囲のセルに制約を追加する。
+     * &lt;p&gt;POI-3.7以上が必要。
+     * @param sheet シート
+     * @param constraint 制約
+     * @param startPosition 設定するセルの開始位置
+     * @param endPosition 設定するセルの終了位置
+     */
+    public static void setupConstaint(final Sheet sheet, final DataValidationConstraint constraint,
+            final Point startPosition, final Point endPosition) {
+
+<span class="nc" id="L790">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="nc" id="L791">        ArgUtils.notNull(constraint, &quot;constraint&quot;);</span>
+<span class="nc" id="L792">        ArgUtils.notNull(startPosition, &quot;startPosition&quot;);</span>
+<span class="nc" id="L793">        ArgUtils.notNull(endPosition, &quot;endPosition&quot;);</span>
+
+<span class="nc" id="L795">        final DataValidationHelper helper = sheet.getDataValidationHelper();</span>
+
+<span class="nc" id="L797">        final CellRangeAddressList region = new CellRangeAddressList(</span>
+                startPosition.y, endPosition.y,
+                startPosition.x, endPosition.x
+                );
+<span class="nc" id="L801">        final DataValidation dataValidation = helper.createValidation(constraint, region);</span>
+<span class="nc" id="L802">        sheet.addValidationData(dataValidation);</span>
+<span class="nc" id="L803">    }</span>
+
+    /**
+     * 指定した範囲の名前を登録する。
+     * &lt;p&gt;POI-3.7以上が必要。
+     * &lt;p&gt;指定した名前が既に存在する場合は、新しい範囲に書き換える。
+     * @param sheet シート
+     * @param name 名前
+     * @param startPosition 設定するセルの開始位置
+     * @param endPosition 設定するセルの終了位置
+     * @return
+     */
+    public static Name defineName(final Sheet sheet, final String name,
+            final Point startPosition, final Point endPosition) {
+
+<span class="nc" id="L818">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="nc" id="L819">        ArgUtils.notEmpty(name, &quot;name&quot;);</span>
+<span class="nc" id="L820">        ArgUtils.notNull(startPosition, &quot;startPosition&quot;);</span>
+<span class="nc" id="L821">        ArgUtils.notNull(endPosition, &quot;endPosition&quot;);</span>
+
+<span class="nc" id="L823">        final Workbook workbook = sheet.getWorkbook();</span>
+<span class="nc" id="L824">        Name nameObj = workbook.getName(name);</span>
+<span class="nc bnc" id="L825" title="All 2 branches missed.">        if(nameObj == null) {</span>
+<span class="nc" id="L826">            nameObj = workbook.createName();</span>
+<span class="nc" id="L827">            nameObj.setNameName(name);</span>
+        }
+
+<span class="nc" id="L830">        final AreaReference areaRef = buildNameArea(sheet.getSheetName(), startPosition, endPosition,</span>
+<span class="nc" id="L831">                sheet.getWorkbook().getSpreadsheetVersion());</span>
+<span class="nc" id="L832">        nameObj.setRefersToFormula(areaRef.formatAsString());</span>
+
+<span class="nc" id="L834">        return nameObj;</span>
+
+    }
+
+    /**
+     * 名前の範囲の形式を組み立てる。
+     * &lt;code&gt;シート名!$A$1:$A:$5&lt;/code&gt;
+     * @param sheetName シート名
+     * @param startPosition 設定するセルの開始位置
+     * @param endPosition 設定するセルの終了位置
+     * @param sheetVersion シートの形式
+     * @return
+     */
+    public static AreaReference buildNameArea(final String sheetName,
+            final Point startPosition, final Point endPosition, SpreadsheetVersion sheetVersion) {
+
+<span class="nc" id="L850">        ArgUtils.notEmpty(sheetName, &quot;sheetName&quot;);</span>
+<span class="nc" id="L851">        ArgUtils.notNull(startPosition, &quot;startPosition&quot;);</span>
+<span class="nc" id="L852">        ArgUtils.notNull(endPosition, &quot;endPosition&quot;);</span>
+
+<span class="nc" id="L854">        final CellReference firstRefs = new CellReference(sheetName, startPosition.y, startPosition.x, true, true);</span>
+<span class="nc" id="L855">        final CellReference lastRefs = new CellReference(sheetName, endPosition.y, endPosition.x, true, true);</span>
+
+<span class="nc" id="L857">        return new AreaReference(firstRefs, lastRefs, sheetVersion);</span>
+    }
+
+    /**
+     * セルの範囲が重複（交錯）しているかどうか判定する。
+     * &lt;p&gt;このメソッドは、POI-3.14で追加されたメソッド{@literal Sheet#intersects(...)}と後方互換性を保つためのもの。&lt;/p&gt;
+     *
+     * @param my
+     * @param other
+     * @return trueの場合、1つでもセルの範囲が重複している。
+     */
+    public static boolean intersectsRegion(final CellRangeAddressBase my, final CellRangeAddressBase other) {
+<span class="fc bfc" id="L869" title="All 2 branches covered.">        return my.getFirstRow() &lt;= other.getLastRow() &amp;&amp;</span>
+<span class="fc bfc" id="L870" title="All 2 branches covered.">                my.getFirstColumn() &lt;= other.getLastColumn() &amp;&amp;</span>
+<span class="fc bfc" id="L871" title="All 2 branches covered.">                other.getFirstRow() &lt;= my.getLastRow() &amp;&amp;</span>
+<span class="fc bfc" id="L872" title="All 2 branches covered.">                other.getFirstColumn() &lt;= my.getLastColumn();</span>
+    }
+
+    /**
+     * 日時の開始日が1904年かどうか。
+     * 通常は、1900年始まり。
+     * @param workbook ワークブック
+     * @return trueの場合は、1904年始まり。falseの場合は、1900年始まり。
+     */
+    public static boolean isDateStart1904(final Workbook workbook) {
+
+<span class="pc bpc" id="L883" title="1 of 2 branches missed.">        if(workbook instanceof HSSFWorkbook) {</span>
+            try {
+<span class="nc" id="L885">                Method method = HSSFWorkbook.class.getDeclaredMethod(&quot;getWorkbook&quot;);</span>
+<span class="nc" id="L886">                method.setAccessible(true);</span>
+
+<span class="nc" id="L888">                InternalWorkbook iw = (InternalWorkbook) method.invoke(workbook);</span>
+<span class="nc" id="L889">                return iw.isUsing1904DateWindowing();</span>
+
+<span class="nc" id="L891">            } catch(NoSuchMethodException | SecurityException e) {</span>
+<span class="nc" id="L892">                logger.warn(&quot;fail access method HSSFWorkbook.getWorkbook.&quot;, e);</span>
+<span class="nc" id="L893">                return false;</span>
+<span class="nc" id="L894">            } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L895">                logger.warn(&quot;fail invoke method HSSFWorkbook.getWorkbook.&quot;, e);</span>
+<span class="nc" id="L896">                return false;</span>
+            }
+
+<span class="pc bpc" id="L899" title="1 of 2 branches missed.">        } else if(workbook instanceof XSSFWorkbook) {</span>
+            try {
+<span class="fc" id="L901">                Method method = XSSFWorkbook.class.getDeclaredMethod(&quot;isDate1904&quot;);</span>
+<span class="fc" id="L902">                method.setAccessible(true);</span>
+
+<span class="fc" id="L904">                boolean value = (boolean) method.invoke(workbook);</span>
+<span class="fc" id="L905">                return value;</span>
+
+<span class="nc" id="L907">            } catch(NoSuchMethodException | SecurityException e) {</span>
+<span class="nc" id="L908">                logger.warn(&quot;fail access method XSSFWorkbook.isDate1904.&quot;, e);</span>
+<span class="nc" id="L909">                return false;</span>
+<span class="nc" id="L910">            } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L911">                logger.warn(&quot;fail invoke method XSSFWorkbook.isDate1904.&quot;, e);</span>
+<span class="nc" id="L912">                return false;</span>
+            }
+
+        } else {
+<span class="nc" id="L916">            logger.warn(&quot;unknown workbook type.&quot;, workbook.getClass().getName());</span>
+        }
+
+<span class="nc" id="L919">        return false;</span>
+    }
+
+    /**
+     * 結合を考慮してセルの罫線（上部）を取得する。
+     *
+     * @param cell セル
+     * @return {@literal BorderStyle}
+     * @throws IllegalArgumentException {@literal cell is null.}
+     */
+    public static BorderStyle getBorderTop(final Cell cell) {
+
+<span class="fc" id="L931">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+
+<span class="fc" id="L933">        final Sheet sheet = cell.getSheet();</span>
+<span class="fc" id="L934">        CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());</span>
+
+        final Cell target;
+<span class="fc bfc" id="L937" title="All 2 branches covered.">        if(mergedRegion == null) {</span>
+            // 結合されていない場合
+<span class="fc" id="L939">            target = cell;</span>
+
+        } else {
+<span class="fc bfc" id="L942" title="All 2 branches covered.">            if(mergedRegion.getFirstRow() == cell.getRowIndex()) {</span>
+                // 引数のCellが上部のセルの場合
+<span class="fc" id="L944">                target = cell;</span>
+            } else {
+<span class="fc" id="L946">                target = getCell(sheet, cell.getColumnIndex(), mergedRegion.getFirstRow());</span>
+            }
+
+        }
+
+<span class="fc" id="L951">        final CellStyle style = target.getCellStyle();</span>
+<span class="pc bpc" id="L952" title="1 of 2 branches missed.">        if(style == null) {</span>
+<span class="nc" id="L953">            return BorderStyle.NONE;</span>
+        } else {
+<span class="fc" id="L955">            return style.getBorderTop();</span>
+        }
+
+    }
+
+    /**
+     * 結合を考慮してセルの罫線（下部）を取得する。
+     *
+     * @param cell セル
+     * @return {@literal BorderStyle}
+     * @throws IllegalArgumentException {@literal cell is null.}
+     */
+    public static BorderStyle getBorderBottom(final Cell cell) {
+
+<span class="fc" id="L969">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+
+<span class="fc" id="L971">        final Sheet sheet = cell.getSheet();</span>
+<span class="fc" id="L972">        CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());</span>
+
+        final Cell target;
+<span class="fc bfc" id="L975" title="All 2 branches covered.">        if(mergedRegion == null) {</span>
+            // 結合されていない場合
+<span class="fc" id="L977">            target = cell;</span>
+
+        } else {
+<span class="pc bpc" id="L980" title="1 of 2 branches missed.">            if(mergedRegion.getLastRow() == cell.getRowIndex()) {</span>
+                // 引数のCellが下部のセルの場合
+<span class="fc" id="L982">                target = cell;</span>
+            } else {
+<span class="nc" id="L984">                target = getCell(sheet, cell.getColumnIndex(), mergedRegion.getLastRow());</span>
+            }
+
+        }
+
+<span class="fc" id="L989">        final CellStyle style = target.getCellStyle();</span>
+<span class="pc bpc" id="L990" title="1 of 2 branches missed.">        if(style == null) {</span>
+<span class="nc" id="L991">            return BorderStyle.NONE;</span>
+        } else {
+<span class="fc" id="L993">            return style.getBorderBottom();</span>
+        }
+
+    }
+
+    /**
+     * 結合を考慮してセルの罫線（左部）を取得する。
+     *
+     * @param cell セル
+     * @return {@literal BorderStyle}
+     * @throws IllegalArgumentException {@literal cell is null.}
+     */
+    public static BorderStyle getBorderRight(final Cell cell) {
+
+<span class="fc" id="L1007">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+
+<span class="fc" id="L1009">        final Sheet sheet = cell.getSheet();</span>
+<span class="fc" id="L1010">        CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());</span>
+
+        final Cell target;
+<span class="fc bfc" id="L1013" title="All 2 branches covered.">        if(mergedRegion == null) {</span>
+            // 結合されていない場合
+<span class="fc" id="L1015">            target = cell;</span>
+
+        } else {
+<span class="fc bfc" id="L1018" title="All 2 branches covered.">            if(mergedRegion.getLastColumn() == cell.getColumnIndex()) {</span>
+                // 引数のCellが右部のセルの場合
+<span class="fc" id="L1020">                target = cell;</span>
+            } else {
+<span class="fc" id="L1022">                target = getCell(sheet, mergedRegion.getLastColumn(), cell.getRowIndex());</span>
+            }
+
+        }
+
+<span class="fc" id="L1027">        final CellStyle style = target.getCellStyle();</span>
+<span class="pc bpc" id="L1028" title="1 of 2 branches missed.">        if(style == null) {</span>
+<span class="nc" id="L1029">            return BorderStyle.NONE;</span>
+        } else {
+<span class="fc" id="L1031">            return style.getBorderRight();</span>
+        }
+
+    }
+
+    /**
+     * 結合を考慮してセルの罫線（右部）を取得する。
+     *
+     * @param cell セル
+     * @return {@literal BorderStyle}
+     * @throws IllegalArgumentException {@literal cell is null.}
+     */
+    public static BorderStyle getBorderLeft(final Cell cell) {
+
+<span class="fc" id="L1045">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+
+<span class="fc" id="L1047">        final Sheet sheet = cell.getSheet();</span>
+<span class="fc" id="L1048">        CellRangeAddress mergedRegion = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());</span>
+
+        final Cell target;
+<span class="fc bfc" id="L1051" title="All 2 branches covered.">        if(mergedRegion == null) {</span>
+            // 結合されていない場合
+<span class="fc" id="L1053">            target = cell;</span>
+
+        } else {
+<span class="fc bfc" id="L1056" title="All 2 branches covered.">            if(mergedRegion.getFirstColumn() == cell.getColumnIndex()) {</span>
+                // 引数のCellが左部のセルの場合
+<span class="fc" id="L1058">                target = cell;</span>
+            } else {
+<span class="fc" id="L1060">                target = getCell(sheet, mergedRegion.getFirstColumn(), cell.getRowIndex());</span>
+            }
+
+        }
+
+<span class="fc" id="L1065">        final CellStyle style = target.getCellStyle();</span>
+<span class="pc bpc" id="L1066" title="1 of 2 branches missed.">        if(style == null) {</span>
+<span class="nc" id="L1067">            return BorderStyle.NONE;</span>
+        } else {
+<span class="fc" id="L1069">            return style.getBorderLeft();</span>
+        }
+
+    }
+
+    /**
+     * ハイパーリンクを取得する。
+     * &lt;p&gt;結合されているセルの場合にも対応。
+     * @param cell
+     * @return 見つからない場合は、nullを返す。
+     * @throws IllegalArgumentException {@literal cell is null.}
+     */
+    public static Hyperlink getHyperlink(final Cell cell) {
+
+<span class="fc" id="L1083">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+
+<span class="fc" id="L1085">        Hyperlink link = cell.getHyperlink();</span>
+<span class="fc bfc" id="L1086" title="All 2 branches covered.">        if(link != null) {</span>
+<span class="fc" id="L1087">            return link;</span>
+        }
+
+<span class="fc" id="L1090">        final Sheet sheet = cell.getSheet();</span>
+<span class="fc" id="L1091">        CellRangeAddress mergedRange = getMergedRegion(sheet, cell.getRowIndex(), cell.getColumnIndex());</span>
+<span class="pc bpc" id="L1092" title="1 of 2 branches missed.">        if(mergedRange == null) {</span>
+<span class="fc" id="L1093">            return null;</span>
+        }
+
+<span class="nc bnc" id="L1096" title="All 2 branches missed.">        for(Hyperlink item : sheet.getHyperlinkList()) {</span>
+<span class="nc bnc" id="L1097" title="All 2 branches missed.">            if(item.getFirstRow() == mergedRange.getFirstRow()</span>
+<span class="nc bnc" id="L1098" title="All 2 branches missed.">                    &amp;&amp; item.getFirstColumn() == mergedRange.getFirstColumn()) {</span>
+<span class="nc" id="L1099">                return item;</span>
+            }
+
+<span class="nc" id="L1102">        }</span>
+
+<span class="nc" id="L1104">        return null;</span>
+
+    }
+
+    /**
+     * {@literal 1900-01-01 00:00:00.000}の時間（単位はミリ秒）。
+     * &lt;p&gt;Excelは設定により、1900年始まりか1904年始まりか指定できるため、その基準値として利用する。
+     */
+<span class="fc" id="L1112">    public static final long MILLISECONDS_19000101_END = ExcelDateUtils.parseDate(&quot;1900-01-01 23:59:54.999&quot;).getTime();</span>
+
+    /**
+     * セルに日時を設定する。
+     * &lt;p&gt;1900年1月0日となる経過時間指定の場合は、POIのバグにより設定できあいため、数値として設定する。&lt;/p&gt;
+     *
+     * @param cell 設定するセル
+     * @param date セルに設定する日時
+     * @param dateStart1904 1904年始まりの設定のシートかどうか
+     */
+    public static void setCellValueAsDate(Cell cell, Date date, boolean dateStart1904) {
+
+<span class="fc" id="L1124">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+<span class="fc" id="L1125">        ArgUtils.notNull(date, &quot;date&quot;);</span>
+
+<span class="pc bpc" id="L1127" title="1 of 2 branches missed.">        if(dateStart1904) {</span>
+            // 1904年始まりの場合は、そのまま設定する
+<span class="nc" id="L1129">            cell.setCellValue(date);</span>
+
+        } else {
+
+<span class="fc" id="L1133">            long timemills = date.getTime();</span>
+<span class="fc bfc" id="L1134" title="All 2 branches covered.">            if(timemills &lt;= MILLISECONDS_19000101_END) {</span>
+                // 1900年1月0日の場合は、数値に変換してから設定する
+                // タイムゾーンを除去する
+<span class="fc" id="L1137">                Date strip = new Date(date.getTime() + TimeZone.getDefault().getRawOffset());</span>
+<span class="fc" id="L1138">                double num = ExcelDateUtils.convertExcelNumber(strip, dateStart1904);</span>
+<span class="fc" id="L1139">                cell.setCellValue(num);</span>
+
+<span class="fc" id="L1141">            } else {</span>
+<span class="fc" id="L1142">                cell.setCellValue(date);</span>
+            }
+
+        }
+
+<span class="fc" id="L1147">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

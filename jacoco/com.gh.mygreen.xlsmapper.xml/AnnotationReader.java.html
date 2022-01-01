@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnotationReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.xml</a> &gt; <span class="el_source">AnnotationReader.java</span></div><h1>AnnotationReader.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.xml;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.ClassInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.FieldInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.MethodInfo;
+import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
+
+
+/**
+ * フィールド、メソッドのアノテーションへアクセスするためのクラス。
+ * &lt;p&gt;Javaソースに直接アノテーションを付与する場合と、XMLで定義する方法の両方をサポートする。
+ * 
+ * @version 2.0
+ * @author Naoki Takezoe
+ * @author T.TSUCHIE
+ *
+ */
+public class AnnotationReader {
+    
+    /**
+     * XMLで定義した情報。
+     * nullでもよい。
+     */
+    private final AnnotationMappingInfo xmlInfo;
+    
+    /**
+     * アノテーションを動的に組み立てるクラス。
+     */
+<span class="fc" id="L36">    private DynamicAnnotationBuilder annotationBuilder = DynamicAnnotationBuilder.getInstance();</span>
+    
+    /**
+     * XMLで定義した情報を指定するコンストラクタ。
+     * @param xmlInfo XMLで定義したアノテーションの情報。{@link XmlIO}で読み込んで取得した値。指定しない場合はnull。
+     */
+<span class="fc" id="L42">    public AnnotationReader(final AnnotationMappingInfo xmlInfo) {</span>
+<span class="fc" id="L43">        this.xmlInfo = xmlInfo;</span>
+<span class="fc" id="L44">    }</span>
+    
+    /**
+     * Returns all class annotations.
+     *
+     * @param clazz the target class
+     * @return all annotations present on target class
+     * @throws AnnotationReadException 
+     */
+    public Annotation[] getAnnotations(final Class&lt;?&gt; clazz) throws AnnotationReadException {
+        
+<span class="pc bpc" id="L55" title="2 of 4 branches missed.">        if(xmlInfo != null &amp;&amp; xmlInfo.containsClassInfo(clazz.getName())) {</span>
+<span class="fc" id="L56">            final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());</span>
+<span class="fc" id="L57">            final Map&lt;String, Annotation&gt; map = new HashMap&lt;&gt;();</span>
+            
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">            if(classInfo.isOverride()) {</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">                for(Annotation ann : clazz.getAnnotations()) {</span>
+<span class="nc" id="L61">                    map.put(ann.annotationType().getName(), ann);</span>
+                }
+            }
+            
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            for(AnnotationInfo annInfo: classInfo.getAnnotationInfos()) {</span>
+                try {
+<span class="fc" id="L67">                    map.put(annInfo.getClassName(),</span>
+<span class="fc" id="L68">                            annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo));</span>
+<span class="nc" id="L69">                } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L70">                    throw new AnnotationReadException(String.format(&quot;not found class '%s'&quot;, annInfo.getClassName()), e);</span>
+<span class="fc" id="L71">                }</span>
+<span class="fc" id="L72">            }</span>
+            
+<span class="fc" id="L74">            return map.values().toArray(new Annotation[map.size()]);</span>
+        }
+        
+<span class="nc" id="L77">        return clazz.getAnnotations();</span>
+    }
+    
+    /**
+     * Returns a class annotation for the specified type if such an annotation is present, else null.
+     *
+     * @param &lt;A&gt; the type of the annotation
+     * @param clazz the target class
+     * @param annClass the Class object corresponding to the annotation type
+     * @return the target class's annotation for the specified annotation type if present on this element, else null
+     * @throws AnnotationReadException 
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;A extends Annotation&gt; A getAnnotation(final Class&lt;?&gt; clazz, final Class&lt;A&gt; annClass) throws AnnotationReadException {
+<span class="fc bfc" id="L91" title="All 4 branches covered.">        if(xmlInfo != null &amp;&amp; xmlInfo.containsClassInfo(clazz.getName())) {</span>
+<span class="fc" id="L92">            final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());</span>
+            
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            if(classInfo.containsAnnotationInfo(annClass.getName())) {</span>
+<span class="fc" id="L95">                AnnotationInfo annInfo = classInfo.getAnnotationInfo(annClass.getName());</span>
+                try {
+<span class="fc" id="L97">                    return (A)annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo);</span>
+<span class="nc" id="L98">                } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L99">                    throw new AnnotationReadException(String.format(&quot;not found class '%s'&quot;, annInfo.getClassName()), e);</span>
+                }
+            }
+        }
+        
+<span class="fc" id="L104">        return clazz.getAnnotation(annClass);</span>
+    }
+    
+    /**
+     * メソッドに付与された指定したアノテーションを取得する。
+     * 
+     * @param method 取得対象のメソッド。
+     * @param annClas 取得対象のアノテーションのタイプ。
+     * @return
+     * @throws AnnotationReadException
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;A extends Annotation&gt; A getAnnotation(final Method method, final Class&lt;A&gt; annClas) throws AnnotationReadException {
+        
+<span class="fc" id="L118">        final Class&lt;?&gt; clazz = method.getDeclaringClass();</span>
+        
+<span class="fc bfc" id="L120" title="All 4 branches covered.">        if(xmlInfo != null &amp;&amp; xmlInfo.containsClassInfo(clazz.getName())) {</span>
+<span class="fc" id="L121">            final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());</span>
+            
+<span class="fc bfc" id="L123" title="All 2 branches covered.">            if(classInfo.containsMethodInfo(method.getName())) {</span>
+<span class="fc" id="L124">                MethodInfo methodInfo = classInfo.getMethodInfo(method.getName());</span>
+<span class="pc bpc" id="L125" title="1 of 4 branches missed.">                if(methodInfo != null &amp;&amp; methodInfo.containsAnnotationInfo(annClas.getName())) {</span>
+<span class="fc" id="L126">                    AnnotationInfo annInfo = methodInfo.getAnnotationInfo(annClas.getName());</span>
+                    try {
+<span class="fc" id="L128">                        return (A)annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo);</span>
+<span class="nc" id="L129">                    } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L130">                        throw new AnnotationReadException(String.format(&quot;not found class '%s'&quot;, annInfo.getClassName()), e);</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L135">        return method.getAnnotation(annClas);</span>
+    }
+    
+    /**
+     * メソッドに付与されたアノテーションを持つか判定します。
+     * @since 2.0
+     * @param method 判定対象のメソッド
+     * @param annClass アノテーションのタイプ
+     * @return trueの場合、アノテーションを持ちます。
+     */
+    public &lt;A extends Annotation&gt; boolean hasAnnotation(final Method method, final Class&lt;A&gt; annClass) {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        return getAnnotation(method, annClass) != null;</span>
+    }
+    
+    /**
+     * メソッドに付与されたアノテーションを全て取得する。
+     * 
+     * @param method 取得対象のメソッド。
+     * @return 取得対象のアノテーションのタイプ。
+     * @throws AnnotationReadException
+     */
+    public Annotation[] getAnnotations(final Method method) throws AnnotationReadException {
+        
+<span class="fc" id="L158">        final Class&lt;?&gt; clazz = method.getDeclaringClass();</span>
+        
+<span class="fc bfc" id="L160" title="All 4 branches covered.">        if(xmlInfo != null &amp;&amp; xmlInfo.containsClassInfo(clazz.getName())) {</span>
+<span class="fc" id="L161">            final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());</span>
+            
+<span class="fc bfc" id="L163" title="All 2 branches covered.">            if(classInfo.containsMethodInfo(method.getName())) {</span>
+<span class="fc" id="L164">                final MethodInfo methodInfo = classInfo.getMethodInfo(method.getName());</span>
+<span class="fc" id="L165">                final Map&lt;String, Annotation&gt; map = new HashMap&lt;&gt;();</span>
+                
+<span class="fc bfc" id="L167" title="All 2 branches covered.">                if(methodInfo.isOverride()) {</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">                    for(Annotation ann : method.getAnnotations()) {</span>
+<span class="fc" id="L169">                        map.put(ann.annotationType().getName(), ann);</span>
+                    }
+                }
+                
+<span class="fc bfc" id="L173" title="All 2 branches covered.">                for(AnnotationInfo annInfo: methodInfo.getAnnotationInfos()){</span>
+                    try {
+<span class="fc" id="L175">                        map.put(annInfo.getClassName(),</span>
+<span class="fc" id="L176">                                annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo));</span>
+<span class="nc" id="L177">                    } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L178">                        throw new AnnotationReadException(String.format(&quot;not found class '%s'&quot;, annInfo.getClassName()), e);</span>
+<span class="fc" id="L179">                    }</span>
+<span class="fc" id="L180">                }</span>
+                
+<span class="fc" id="L182">                return map.values().toArray(new Annotation[map.size()]);</span>
+            }
+        }
+<span class="fc" id="L185">        return method.getAnnotations();</span>
+    }
+    
+    /**
+     * フィールドに付与されたアノテーションを指定して取得する。
+     * @param field 取得対象のフィールド
+     * @param annClass アノテーションのタイプ
+     * @return
+     * @throws AnnotationReadException
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;A extends Annotation&gt; A getAnnotation(final Field field, final Class&lt;A&gt; annClass) throws AnnotationReadException {
+        
+<span class="fc" id="L198">        final Class&lt;?&gt; clazz = field.getDeclaringClass();</span>
+        
+<span class="fc bfc" id="L200" title="All 4 branches covered.">        if(xmlInfo != null &amp;&amp; xmlInfo.containsClassInfo(clazz.getName())) {</span>
+<span class="fc" id="L201">            final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());</span>
+            
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">            if(classInfo.containsFieldInfo(field.getName())) {</span>
+<span class="fc" id="L204">                FieldInfo fieldInfo = classInfo.getFieldInfo(field.getName());</span>
+<span class="pc bpc" id="L205" title="1 of 4 branches missed.">                if(fieldInfo != null &amp;&amp; fieldInfo.containsAnnotationInfo(annClass.getName())){</span>
+<span class="fc" id="L206">                    AnnotationInfo annInfo = fieldInfo.getAnnotationInfo(annClass.getName());</span>
+                    try {
+<span class="fc" id="L208">                        return (A)annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo);</span>
+<span class="nc" id="L209">                    } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L210">                        throw new AnnotationReadException(String.format(&quot;not found class '%s'&quot;, annInfo.getClassName()), e);</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L215">        return field.getAnnotation(annClass);</span>
+    }
+    
+    /**
+     * フィールドに付与されたアノテーションを持つか判定します。
+     * @since 2.0
+     * @param field 判定対象のフィールド
+     * @param annClass アノテーションのタイプ
+     * @return trueの場合、アノテーションを持ちます。
+     */
+    public &lt;A extends Annotation&gt; boolean hasAnnotation(final Field field, final Class&lt;A&gt; annClass) {
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">        return getAnnotation(field, annClass) != null;</span>
+    }
+    
+    /**
+     * フィールドに付与されたアノテーションを全て取得する。
+     * @param field 取得対象のフィールド
+     * @return
+     * @throws AnnotationReadException
+     */
+    public Annotation[] getAnnotations(final Field field) throws AnnotationReadException {
+        
+<span class="fc" id="L237">        final Class&lt;?&gt; clazz = field.getDeclaringClass();</span>
+        
+<span class="fc bfc" id="L239" title="All 4 branches covered.">        if(xmlInfo != null &amp;&amp; xmlInfo.containsClassInfo(clazz.getName())) {</span>
+<span class="fc" id="L240">            final ClassInfo classInfo = xmlInfo.getClassInfo(clazz.getName());</span>
+            
+<span class="fc bfc" id="L242" title="All 2 branches covered.">            if(classInfo.containsFieldInfo(field.getName())) {</span>
+<span class="fc" id="L243">                final FieldInfo fieldInfo = classInfo.getFieldInfo(field.getName());</span>
+<span class="fc" id="L244">                final Map&lt;String, Annotation&gt; map = new HashMap&lt;&gt;();</span>
+                
+<span class="fc bfc" id="L246" title="All 2 branches covered.">                if(fieldInfo.isOverride()) {</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">                    for(Annotation ann : field.getAnnotations()) {</span>
+<span class="fc" id="L248">                        map.put(ann.annotationType().getName(), ann);</span>
+                    }
+                }
+                
+<span class="fc bfc" id="L252" title="All 2 branches covered.">                for(AnnotationInfo annInfo: fieldInfo.getAnnotationInfos()){</span>
+                    try {
+<span class="fc" id="L254">                        map.put(annInfo.getClassName(), </span>
+<span class="fc" id="L255">                                annotationBuilder.buildAnnotation(Class.forName(annInfo.getClassName()), annInfo));</span>
+<span class="nc" id="L256">                    } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L257">                        throw new AnnotationReadException(String.format(&quot;not found class '%s'&quot;, annInfo.getClassName()), e);</span>
+<span class="fc" id="L258">                    }</span>
+<span class="fc" id="L259">                }</span>
+<span class="fc" id="L260">                return map.values().toArray(new Annotation[map.size()]);</span>
+            }
+        }
+<span class="fc" id="L263">        return field.getAnnotations();</span>
+    }
+    
+    public DynamicAnnotationBuilder getAnnotationBuilder() {
+<span class="nc" id="L267">        return annotationBuilder;</span>
+    }
+    
+    public void setAnnotationBuilder(DynamicAnnotationBuilder annotationBuilder) {
+<span class="nc" id="L271">        this.annotationBuilder = annotationBuilder;</span>
+<span class="nc" id="L272">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

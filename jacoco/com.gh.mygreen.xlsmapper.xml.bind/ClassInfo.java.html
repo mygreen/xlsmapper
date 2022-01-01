@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClassInfo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.xml.bind</a> &gt; <span class="el_source">ClassInfo.java</span></div><h1>ClassInfo.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.xml.bind;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+
+/**
+ * XMLのクラス情報を保持する。
+ * @version 1.1
+ * @since 0.5
+ * @author T.TSUCHIE
+ *
+ */
+public class ClassInfo implements Serializable {
+    
+    /** serialVersionUID */
+    private static final long serialVersionUID = 1L;
+    
+    private String className;
+    
+    private boolean override;
+    
+<span class="fc" id="L30">    private List&lt;AnnotationInfo&gt; annotationInfos = new ArrayList&lt;&gt;();</span>
+    
+<span class="fc" id="L32">    private List&lt;MethodInfo&gt; methodInfos = new ArrayList&lt;&gt;();</span>
+    
+<span class="fc" id="L34">    private List&lt;FieldInfo&gt; fieldInfos = new ArrayList&lt;&gt;();</span>
+    
+    /**
+     * ビルダクラスのインスタンスを取得する。
+     * @since 1.1
+     * @return
+     */
+    public static Builder builder() {
+<span class="fc" id="L42">        return new Builder();</span>
+    }
+    
+<span class="fc" id="L45">    public ClassInfo() {</span>
+        
+<span class="fc" id="L47">    }</span>
+    
+<span class="fc" id="L49">    private ClassInfo(final Builder builder) {</span>
+<span class="fc" id="L50">        this.className = builder.className;</span>
+<span class="fc" id="L51">        this.override = builder.override;</span>
+<span class="fc" id="L52">        setAnnotationInfos(builder.annotationInfos);</span>
+<span class="fc" id="L53">        setMethodInfos(builder.methodInfos);</span>
+<span class="fc" id="L54">        setFieldInfos(builder.fieldInfos);</span>
+<span class="fc" id="L55">    }</span>
+    
+    @Override
+    public String toString() {
+<span class="nc" id="L59">        StringBuilder sb= new StringBuilder();</span>
+        
+<span class="nc" id="L61">        sb.append(&quot;ClassInfo:&quot;)</span>
+<span class="nc" id="L62">            .append(String.format(&quot; [name=%s]&quot;, getClassName()))</span>
+<span class="nc" id="L63">            .append(String.format(&quot; [override=%b]&quot;, isOverride()));</span>
+        
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        for(AnnotationInfo anno : annotationInfos) {</span>
+<span class="nc" id="L66">            sb.append(&quot;  &quot;).append(anno.toString());</span>
+<span class="nc" id="L67">        }</span>
+        
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        for(MethodInfo method : methodInfos) {</span>
+<span class="nc" id="L70">            sb.append(&quot;  &quot;).append(method.toString());</span>
+<span class="nc" id="L71">        }</span>
+        
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        for(FieldInfo field : fieldInfos) {</span>
+<span class="nc" id="L74">            sb.append(&quot;  &quot;).append(field.toString());</span>
+<span class="nc" id="L75">        }</span>
+        
+<span class="nc" id="L77">        return sb.toString();</span>
+    }
+    
+    /**
+     * クラス名を取得する。
+     * @return FQCN（完全限定クラス名）を指定します。
+     */
+    public String getClassName() {
+<span class="fc" id="L85">        return className;</span>
+    }
+    
+    /**
+     * クラス名を設定する。
+     * @param className FQCN（完全限定クラス名）を設定します。
+     * @throws IllegalArgumentException className is empty.
+     */
+    @XmlAttribute(name=&quot;name&quot;, required=true)
+    public void setClassName(final String className) {
+<span class="fc" id="L95">        ArgUtils.notEmpty(className, &quot;className&quot;);</span>
+<span class="fc" id="L96">        this.className = className;</span>
+<span class="fc" id="L97">    }</span>
+    
+    /**
+     * 既存のクラスの定義にあるアノテーションの設定をXMLの定義で上書きするかどうか。
+     * &lt;p&gt;ただし、XMLに定義していないアノテーションは、既存のクラスに定義にあるものを使用する。&lt;/p&gt;
+     * @since 1.0
+     * @return true:XMLの定義で上書きする。
+     */
+    public boolean isOverride() {
+<span class="fc" id="L106">        return override;</span>
+    }
+    
+    /**
+     * 既存のクラスの定義にあるアノテーションの設定をXMLの定義で上書きするかどうか設定する。
+     * &lt;p&gt;ただし、XMLに定義していないアノテーションは、既存のクラスに定義にあるものを使用する。
+     * @since 1.0
+     * @param override true:XMLの定義で上書きする。
+     */
+    @XmlAttribute(name=&quot;override&quot;, required=false)
+    public void setOverride(final boolean override) {
+<span class="fc" id="L117">        this.override = override;</span>
+<span class="fc" id="L118">    }</span>
+    
+    /**
+     * アノテーション情報を追加する。
+     * &lt;p&gt;ただし、既に同じアノテーションが存在する場合は、それと入れ替えされます。&lt;/p&gt;
+     * @param annotationInfo アノテーション情報。
+     * @throws IllegalArgumentException annotationInfo is null.
+     */
+    public void addAnnotationInfo(final AnnotationInfo annotationInfo) {
+<span class="fc" id="L127">        ArgUtils.notNull(annotationInfo, &quot;annotationInfo&quot;);</span>
+        
+<span class="fc" id="L129">        removeAnnotationInfo(annotationInfo.getClassName());</span>
+<span class="fc" id="L130">        this.annotationInfos.add(annotationInfo);</span>
+<span class="fc" id="L131">    }</span>
+    
+    /**
+     * アノテーションのクラス名を指定してアノテーション情報を取得する。
+     * @param annotationClassName アノテーションのクラス名(FQCN)。
+     * @return 指定したクラスが存在しない場合は、nullを返す。
+     */
+    public AnnotationInfo getAnnotationInfo(final String annotationClassName) {
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        for(AnnotationInfo item : annotationInfos) {</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">            if(item.getClassName().equals( annotationClassName)) {</span>
+<span class="fc" id="L141">                return item;</span>
+            }
+<span class="fc" id="L143">        }</span>
+        
+<span class="fc" id="L145">        return null;</span>
+    }
+    
+    /**
+     * 指定したアノテーション情報を含むかどうか。
+     * @since 1.1
+     * @param annotationClassName アノテーションのクラス名(FQCN)。
+     * @return true:指定したクラスが存在する場合。
+     */
+    public boolean containsAnnotationInfo(final String annotationClassName) {
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        return getAnnotationInfo(annotationClassName) != null;</span>
+    }
+    
+    /**
+     * 指定したアノテーション情報を削除します。
+     * @since 1.4.1
+     * @param annotationClassName アノテーションのクラス名(FQCN)。
+     * @return true:指定したアノテーション名を含み、それが削除できた場合。
+     */
+    public boolean removeAnnotationInfo(final String annotationClassName) {
+        
+<span class="fc" id="L166">        final AnnotationInfo existInfo = getAnnotationInfo(annotationClassName);</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if(existInfo != null) {</span>
+<span class="fc" id="L168">            this.annotationInfos.remove(existInfo);</span>
+<span class="fc" id="L169">            return true;</span>
+        }
+        
+<span class="fc" id="L172">        return false;</span>
+        
+    }
+    
+    /**
+     * メソッド情報を追加する。
+     * &lt;p&gt;ただし、既に同じメソッドが存在する場合は、それと入れ替えされます。&lt;/p&gt;
+     * @param methodInfo メソッド情報。
+     * @throws IllegalArgumentException methodInfo is null. 
+     */
+    public void addMethodInfo(final MethodInfo methodInfo) {
+<span class="fc" id="L183">        ArgUtils.notNull(methodInfo, &quot;methodInfo&quot;);</span>
+        
+<span class="fc" id="L185">        removeMethodInfo(methodInfo.getMethodName());</span>
+<span class="fc" id="L186">        this.methodInfos.add(methodInfo);</span>
+<span class="fc" id="L187">    }</span>
+    
+    /**
+     * メソッド名を指定してメソッド情報を取得する。
+     * @param methodName メソッド名。
+     * @return 指定したメソッド名が存在しない場合は、nullを返す。
+     */
+    public MethodInfo getMethodInfo(final String methodName) {
+<span class="fc bfc" id="L195" title="All 2 branches covered.">        for(MethodInfo item : methodInfos) {</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">            if(item.getMethodName().equals(methodName)) {</span>
+<span class="fc" id="L197">                return item;</span>
+            }
+<span class="fc" id="L199">        }</span>
+        
+<span class="fc" id="L201">        return null;</span>
+    }
+    
+    /**
+     * 指定したメソッド情報を含むかどうか。
+     * @param methodName メソッド名。
+     * @return true: 指定したメソッド名が存在する場合。
+     */
+    public boolean containsMethodInfo(final String methodName) {
+<span class="fc bfc" id="L210" title="All 2 branches covered.">        return getMethodInfo(methodName) != null;</span>
+    }
+    
+    /**
+     * 指定したメソッド情報を削除します。
+     * @since 1.4.1
+     * @param methodName メソッド名。
+     * @return true:指定したメソッド名を含み、それが削除できた場合。
+     */
+    public boolean removeMethodInfo(final String methodName) {
+        
+<span class="fc" id="L221">        final MethodInfo existInfo = getMethodInfo(methodName);</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">        if(existInfo != null) {</span>
+<span class="fc" id="L223">            this.methodInfos.remove(existInfo);</span>
+<span class="fc" id="L224">            return true;</span>
+        }
+        
+<span class="fc" id="L227">        return false;</span>
+        
+    }
+    
+    /**
+     * フィールド情報を追加する。
+     * &lt;p&gt;ただし、既に同じフィールドが存在する場合は、それと入れ替えされます。&lt;/p&gt;
+     * @param fieldInfo フィールド情報。
+     * @throws IllegalArgumentException fieldInfo is null.
+     */
+    public void addFieldInfo(final FieldInfo fieldInfo) {
+<span class="fc" id="L238">        ArgUtils.notNull(fieldInfo, &quot;fieldInfo&quot;);</span>
+        
+<span class="fc" id="L240">        removeFieldInfo(fieldInfo.getFieldName());</span>
+<span class="fc" id="L241">        this.fieldInfos.add(fieldInfo);</span>
+<span class="fc" id="L242">    }</span>
+    
+    /**
+     * フィールド名を指定してフィールド情報を取得する。
+     * @param fieldName フィールド名。
+     * @return 指定したフィールド名が存在しない場合は、nullを返す。
+     */
+    public FieldInfo getFieldInfo(final String fieldName) {
+<span class="fc bfc" id="L250" title="All 2 branches covered.">        for(FieldInfo item : fieldInfos) {</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">            if(item.getFieldName().equals(fieldName)) {</span>
+<span class="fc" id="L252">                return item;</span>
+            }
+<span class="fc" id="L254">        }</span>
+        
+<span class="fc" id="L256">        return null;</span>
+    }
+    
+    /**
+     * 指定したフィールド情報を含むかどうか。
+     * @param fieldName フィールド名。
+     * @return true: 指定したフィールド名が存在する場合。
+     */
+    public boolean containsFieldInfo(final String fieldName) {
+<span class="fc bfc" id="L265" title="All 2 branches covered.">        return getFieldInfo(fieldName) != null;</span>
+    }
+    
+    /**
+     * 指定したフィールド情報を削除します。
+     * @since 1.4.1
+     * @param fieldName フィールドのクラス名(FQCN)。
+     * @return true:指定したフィールド名を含み、それが削除できた場合。
+     */
+    public boolean removeFieldInfo(final String fieldName) {
+        
+<span class="fc" id="L276">        final FieldInfo existInfo = getFieldInfo(fieldName);</span>
+<span class="fc bfc" id="L277" title="All 2 branches covered.">        if(existInfo != null) {</span>
+<span class="fc" id="L278">            this.fieldInfos.remove(existInfo);</span>
+<span class="fc" id="L279">            return true;</span>
+        }
+        
+<span class="fc" id="L282">        return false;</span>
+        
+    }
+    
+    /**
+     * JAXB用のアノテーション情報を設定するメソッド。
+     * &lt;p&gt;XMLの読み込み時に呼ばれます。
+     *  &lt;br&gt;ただし、Java8からはこのメソッドは呼ばれず、{@link #getAnnotationInfos()} で取得したインスタンスに対して要素が追加されます。
+     * &lt;/p&gt;
+     * &lt;p&gt;既存の情報はクリアされます。
+     * @since 1.1
+     * @param annotationInfos アノテーション情報。
+     */
+    @XmlElement(name=&quot;annotation&quot;)
+    public void setAnnotationInfos(final List&lt;AnnotationInfo&gt; annotationInfos) {
+        
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">        if(annotationInfos == this.annotationInfos) {</span>
+            // Java7の場合、getterで取得したインスタンスをそのまま設定するため、スキップする。
+<span class="nc" id="L300">            return;</span>
+        }
+        
+<span class="fc" id="L303">        this.annotationInfos.clear();</span>
+<span class="fc bfc" id="L304" title="All 2 branches covered.">        for(AnnotationInfo item : annotationInfos) {</span>
+<span class="fc" id="L305">            addAnnotationInfo(item);</span>
+<span class="fc" id="L306">        }</span>
+<span class="fc" id="L307">    }</span>
+    
+    /**
+     * JAXB用のアノテーション情報を全て取得するメソッド。
+     * &lt;p&gt;XMLの書き込み時に呼ばれます。
+     *  &lt;br&gt;Java8から読み込み時に呼ばれるようになり、取得したインスタンスに対して、読み込んだ要素が呼ばれます。
+     * &lt;/p&gt;
+     * @since 1.1
+     * @return アノテーション情報。
+     */
+    public List&lt;AnnotationInfo&gt; getAnnotationInfos() {
+<span class="fc" id="L318">        return annotationInfos;</span>
+    }
+    
+    /**
+     * JAXB用のメソッド情報を設定するメソッド。
+     * &lt;p&gt;XMLの読み込み時に呼ばれます。
+     *  &lt;br&gt;ただし、Java8からはこのメソッドは呼ばれず、{@link #getMethodInfos()} で取得したインスタンスに対して要素が追加されます。
+     * &lt;/p&gt;
+     * &lt;p&gt;既存の情報はクリアされます。&lt;/p&gt;
+     * @since 1.1
+     * @param methodInfos メソッド情報。
+     */
+    @XmlElement(name=&quot;method&quot;)
+    public void setMethodInfos(final List&lt;MethodInfo&gt; methodInfos) {
+<span class="pc bpc" id="L332" title="1 of 2 branches missed.">        if(methodInfos == this.methodInfos) {</span>
+            // Java7の場合、getterで取得したインスタンスをそのまま設定するため、スキップする。
+<span class="nc" id="L334">            return;</span>
+        }
+        
+<span class="fc" id="L337">        this.methodInfos.clear();</span>
+<span class="fc bfc" id="L338" title="All 2 branches covered.">        for(MethodInfo item : methodInfos) {</span>
+<span class="fc" id="L339">            addMethodInfo(item);</span>
+<span class="fc" id="L340">        }</span>
+<span class="fc" id="L341">    }</span>
+    
+    /**
+     * JAXB用のメソッド情報を全て取得するメソッド。
+     * &lt;p&gt;XMLの書き込み時に呼ばれます。
+     *  &lt;br&gt;Java8から読み込み時に呼ばれるようになり、取得したインスタンスに対して、読み込んだ要素が呼ばれます。
+     * &lt;/p&gt;
+     * @since 1.1
+     * @return メソッド情報。
+     */
+    public List&lt;MethodInfo&gt; getMethodInfos() {
+<span class="fc" id="L352">        return methodInfos;</span>
+    }
+    
+    /**
+     * JAXB用のフィールド情報を設定するメソッド。
+     * &lt;p&gt;XMLの読み込み時に呼ばれます。
+     *  &lt;br&gt;ただし、Java8からはこのメソッドは呼ばれず、{@link #getFieldInfos()} で取得したインスタンスに対して要素が追加されます。
+     * &lt;/p&gt;
+     * &lt;p&gt;既存の情報はクリアされます。&lt;/p&gt;
+     * @since 1.1
+     * @param fieldInfos フィールド情報。
+     */
+    @XmlElement(name=&quot;field&quot;)
+    public void setFieldInfos(final List&lt;FieldInfo&gt; fieldInfos) {
+<span class="pc bpc" id="L366" title="1 of 2 branches missed.">        if(fieldInfos == this.fieldInfos) {</span>
+            // Java7の場合、getterで取得したインスタンスをそのまま設定するため、スキップする。
+<span class="nc" id="L368">            return;</span>
+        }
+        
+<span class="fc" id="L371">        this.fieldInfos.clear();</span>
+<span class="fc bfc" id="L372" title="All 2 branches covered.">        for(FieldInfo item : fieldInfos) {</span>
+<span class="fc" id="L373">            addFieldInfo(item);</span>
+<span class="fc" id="L374">        }</span>
+<span class="fc" id="L375">    }</span>
+    
+    /**
+     * JAXB用のフィールド情報を全て取得するメソッド。
+     * &lt;p&gt;XMLの書き込み時に呼ばれます。
+     *  &lt;br&gt;Java8から読み込み時に呼ばれるようになり、取得したインスタンスに対して、読み込んだ要素が呼ばれます。
+     * &lt;/p&gt;
+     * @since 1.1
+     * @return フィールド情報。
+     */
+    public List&lt;FieldInfo&gt; getFieldInfos() {
+<span class="fc" id="L386">        return fieldInfos;</span>
+    }
+    
+    /**
+     * {@link ClassInfo}を組み立てるためのクラス。
+     *
+     */
+    public static final class Builder {
+        
+        private String className;
+        
+        private boolean override;
+        
+        private List&lt;AnnotationInfo&gt; annotationInfos;
+        
+        private List&lt;MethodInfo&gt; methodInfos;
+        
+        private List&lt;FieldInfo&gt; fieldInfos;
+        
+<span class="fc" id="L405">        private Builder() {</span>
+<span class="fc" id="L406">            this.annotationInfos = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L407">            this.methodInfos = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L408">            this.fieldInfos = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L409">        }</span>
+        
+        /**
+         * 組み立てた{@link ClassInfo}のインスタンスを取得する。
+         * @return
+         */
+        public ClassInfo buildClass() {
+            
+<span class="pc bpc" id="L417" title="1 of 2 branches missed.">            if(Utils.isEmpty(className)) {</span>
+<span class="nc" id="L418">                throw new IllegalStateException(&quot;class name is required.&quot;);</span>
+            }
+            
+<span class="fc" id="L421">            return new ClassInfo(this);</span>
+        }
+        
+        /**
+         * クラス名を設定する。
+         * @param className クラス名。FQCN（完全限定クラス名）を設定します。
+         * @return
+         * @throws IllegalArgumentException calssName is empty.
+         */
+        public Builder name(final String className) {
+<span class="fc" id="L431">            ArgUtils.notEmpty(className, &quot;className&quot;);</span>
+<span class="fc" id="L432">            this.className = className;</span>
+<span class="fc" id="L433">            return this;</span>
+        }
+        
+        /**
+         * クラス名を設定する。
+         * @param clazz クラス情報。
+         * @return
+         * @throws IllegalArgumentException clazz is null.
+         */
+        public Builder name(final Class&lt;?&gt; clazz) {
+<span class="fc" id="L443">            ArgUtils.notNull(clazz, &quot;clazz&quot;);</span>
+<span class="fc" id="L444">            return name(clazz.getName());</span>
+            
+        }
+        
+        /**
+         * 既存のクラスの定義にあるアノテーションの設定をXMLの定義で上書きするかどうか設定する。
+         * @param override true:XMLの定義で上書きする。
+         * @return
+         */
+        public Builder override(final boolean override) {
+<span class="fc" id="L454">            this.override = override;</span>
+<span class="fc" id="L455">            return this;</span>
+        }
+        
+        /**
+         * クラスに対するアノテーション情報を追加する。
+         * @param annotationInfo アノテーション情報
+         * @return
+         * @throws IllegalArgumentException annotationInfo is null.
+         */
+        public Builder annotation(final AnnotationInfo annotationInfo) {
+<span class="fc" id="L465">            ArgUtils.notNull(annotationInfo, &quot;annotationInfo&quot;);</span>
+<span class="fc" id="L466">            this.annotationInfos.add(annotationInfo);</span>
+<span class="fc" id="L467">            return this;</span>
+        }
+        
+        /**
+         * メソッド情報を追加する。
+         * @param methodInfo メソッド情報
+         * @return
+         * @throws IllegalArgumentException methodInfo is null.
+         */
+        public Builder method(final MethodInfo methodInfo) {
+<span class="fc" id="L477">            ArgUtils.notNull(methodInfo, &quot;methodInfo&quot;);</span>
+<span class="fc" id="L478">            this.methodInfos.add(methodInfo);</span>
+<span class="fc" id="L479">            return this;</span>
+        }
+        
+        /**
+         * フィールド情報を追加する。
+         * @param fieldInfo フィールド情報。
+         * @return
+         * @throws IllegalArgumentException fieldInfo is null.
+         */
+        public Builder field(final FieldInfo fieldInfo) {
+<span class="fc" id="L489">            ArgUtils.notNull(fieldInfo, &quot;fieldInfo&quot;);</span>
+<span class="fc" id="L490">            this.fieldInfos.add(fieldInfo);</span>
+<span class="fc" id="L491">            return this;</span>
+        }
+        
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

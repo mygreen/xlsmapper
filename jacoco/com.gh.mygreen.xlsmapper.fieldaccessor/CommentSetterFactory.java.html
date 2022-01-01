@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommentSetterFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldaccessor</a> &gt; <span class="el_source">CommentSetterFactory.java</span></div><h1>CommentSetterFactory.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldaccessor;
+
+import java.awt.Point;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * {@link CommentSetter}のインスタンスを作成する
+ * 
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L26">public class CommentSetterFactory {</span>
+    
+<span class="fc" id="L28">    private static final Logger log = LoggerFactory.getLogger(CommentSetterFactory.class);</span>
+    
+    /**
+     * フィールドのコメント情報を設定するためのアクセッサを作成します。
+     * @param beanClass フィールドが定義されているクラス情報
+     * @param fieldName フィールドの名称
+     * @return 位置情報のsetterが存在しない場合は空を返す。
+     * @throws IllegalArgumentException {@literal beanClass == null or fieldName == null}
+     * @throws IllegalArgumentException {@literal fieldName.isEmpty() = true}
+     */
+    public Optional&lt;CommentSetter&gt; create(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+<span class="fc" id="L40">        ArgUtils.notNull(beanClass, &quot;beanClass&quot;);</span>
+<span class="fc" id="L41">        ArgUtils.notEmpty(fieldName, &quot;fieldName&quot;);</span>
+        
+        // フィールド Map commentsの場合
+<span class="fc" id="L44">        Optional&lt;CommentSetter&gt; CommentSetter = createMapField(beanClass, fieldName);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if(CommentSetter.isPresent()) {</span>
+<span class="fc" id="L46">            return CommentSetter;</span>
+        }
+        
+        // setter メソッドの場合
+<span class="fc" id="L50">        CommentSetter = createMethod(beanClass, fieldName);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if(CommentSetter.isPresent()) {</span>
+<span class="fc" id="L52">            return CommentSetter;</span>
+        }
+        
+        // フィールド + commentの場合
+<span class="fc" id="L56">        CommentSetter = createField(beanClass, fieldName);</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if(CommentSetter.isPresent()) {</span>
+<span class="fc" id="L58">            return CommentSetter;</span>
+        }
+        
+        
+<span class="fc" id="L62">        return Optional.empty();</span>
+    }
+    
+    /**
+     * {@link Map}フィールドにコメント情報が格納されている場合。
+     * &lt;p&gt;キーはフィールド名。&lt;/p&gt;
+     * &lt;p&gt;マップの値は、Stringをサポートする。&lt;/p&gt;
+     * 
+     * @param beanClass フィールドが定義してあるクラスのインスタンス
+     * @param fieldName フィールド名
+     * @return コメント情報の設定用クラス
+     */
+    private Optional&lt;CommentSetter&gt; createMapField(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+        final Field commentField;
+        try {
+<span class="fc" id="L78">            commentField = beanClass.getDeclaredField(&quot;comments&quot;);</span>
+<span class="fc" id="L79">            commentField.setAccessible(true);</span>
+            
+<span class="fc" id="L81">        } catch (NoSuchFieldException | SecurityException e) {</span>
+            // フィールドが見つからない場合は、何もしない。
+<span class="fc" id="L83">            return Optional.empty();</span>
+<span class="fc" id="L84">        }</span>
+        
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if(!Map.class.isAssignableFrom(commentField.getType())) {</span>
+<span class="fc" id="L87">            return Optional.empty();</span>
+        }
+        
+<span class="fc" id="L90">        final ParameterizedType type = (ParameterizedType) commentField.getGenericType();</span>
+<span class="fc" id="L91">        final Class&lt;?&gt; keyType = (Class&lt;?&gt;) type.getActualTypeArguments()[0];</span>
+<span class="fc" id="L92">        final Class&lt;?&gt; valueType = (Class&lt;?&gt;) type.getActualTypeArguments()[1];</span>
+        
+<span class="pc bpc" id="L94" title="1 of 4 branches missed.">        if(keyType.equals(String.class) &amp;&amp; valueType.equals(String.class)) {</span>
+<span class="fc" id="L95">            return Optional.of(new CommentSetter() {</span>
+                
+                @SuppressWarnings(&quot;unchecked&quot;)
+                @Override
+                public void set(final Object beanObj, final String comment) {
+<span class="fc" id="L100">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L101">                    ArgUtils.notEmpty(comment, &quot;comment&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L104">                        Map&lt;String, String&gt; commentsMapObj = (Map&lt;String, String&gt;) commentField.get(beanObj);</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">                        if(commentsMapObj == null) {</span>
+<span class="fc" id="L106">                            commentsMapObj = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L107">                            commentField.set(beanObj, commentsMapObj);</span>
+                        }
+                        
+<span class="fc" id="L110">                        commentsMapObj.put(fieldName, comment);</span>
+                        
+<span class="nc" id="L112">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L113">                        throw new RuntimeException(&quot;fail access comments field.&quot;, e);</span>
+<span class="fc" id="L114">                    }</span>
+<span class="fc" id="L115">                }</span>
+            });
+            
+        } else {
+            // タイプが一致しない場合
+<span class="fc" id="L120">            log.warn(&quot;not match generics type of comments. key type:{}, value type:{}.&quot;, keyType.getName(), valueType.getName());</span>
+<span class="fc" id="L121">            return Optional.empty();</span>
+        }
+        
+    }
+    
+    /**
+     * setterメソッドによるコメント情報を格納する場合。
+     * &lt;p&gt;{@code set + &lt;フィールド名&gt; + Comment}のメソッド名&lt;/p&gt;
+     * &lt;p&gt;引数として、をサポートする。&lt;/p&gt;
+     * 
+     * @param beanClass フィールドが定義してあるクラスのインスタンス
+     * @param fieldName フィールド名
+     * @return コメント情報の設定用クラス
+     */
+    private Optional&lt;CommentSetter&gt; createMethod(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+<span class="fc" id="L137">        final String commentMethodName = &quot;set&quot; + Utils.capitalize(fieldName) + &quot;Comment&quot;;</span>
+        
+        try {
+<span class="fc" id="L140">            final Method method = beanClass.getDeclaredMethod(commentMethodName, String.class);</span>
+<span class="fc" id="L141">            method.setAccessible(true);</span>
+            
+<span class="fc" id="L143">            return Optional.of(new CommentSetter() {</span>
+                
+                
+                @Override
+                public void set(final Object beanObj, final String comment) {
+<span class="fc" id="L148">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L149">                    ArgUtils.notEmpty(comment, &quot;comment&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L152">                        method.invoke(beanObj, comment);</span>
+                        
+<span class="nc" id="L154">                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L155">                        throw new RuntimeException(&quot;fail access comments field.&quot;, e);</span>
+<span class="fc" id="L156">                    }</span>
+                    
+<span class="fc" id="L158">                }</span>
+            });
+            
+<span class="fc" id="L161">        } catch (NoSuchMethodException | SecurityException e) {</span>
+            
+        }
+        
+<span class="fc" id="L165">        return Optional.empty();</span>
+        
+    }
+    
+    /**
+     * フィールドによるコメント情報を格納する場合。
+     * &lt;p&gt;{@code &lt;フィールド名&gt; + Comment}のメソッド名&lt;/p&gt;
+     * &lt;p&gt;引数として、{@link CellPosition}、{@link Point}、 {@link org.apache.poi.ss.util.CellAddress}をサポートする。&lt;/p&gt;
+     * 
+     * @param beanClass フィールドが定義してあるクラスのインスタンス
+     * @param fieldName フィールド名
+     * @return コメント情報の設定用クラス
+     */
+    private Optional&lt;CommentSetter&gt; createField(final Class&lt;?&gt; beanClass, final String fieldName) {
+        
+<span class="fc" id="L180">        final String commentFieldName = fieldName + &quot;Comment&quot;;</span>
+        
+        final Field commentField;
+        try {
+<span class="fc" id="L184">            commentField = beanClass.getDeclaredField(commentFieldName);</span>
+<span class="fc" id="L185">            commentField.setAccessible(true);</span>
+            
+<span class="fc" id="L187">        } catch (NoSuchFieldException | SecurityException e) {</span>
+<span class="fc" id="L188">            return Optional.empty();</span>
+<span class="fc" id="L189">        }</span>
+        
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        if(commentField.getType().equals(String.class)) {</span>
+            
+<span class="fc" id="L193">            return Optional.of(new CommentSetter() {</span>
+                
+                @Override
+                public void set(final Object beanObj, final String comment) {
+<span class="fc" id="L197">                    ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+<span class="fc" id="L198">                    ArgUtils.notNull(comment, &quot;comment&quot;);</span>
+                    
+                    try {
+<span class="fc" id="L201">                        commentField.set(beanObj, comment);</span>
+<span class="nc" id="L202">                    } catch (IllegalArgumentException | IllegalAccessException e) {</span>
+<span class="nc" id="L203">                        throw new RuntimeException(&quot;fail access comment field.&quot;, e);</span>
+<span class="fc" id="L204">                    }</span>
+<span class="fc" id="L205">                }</span>
+            });
+            
+        }
+        
+<span class="fc" id="L210">        return Optional.empty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

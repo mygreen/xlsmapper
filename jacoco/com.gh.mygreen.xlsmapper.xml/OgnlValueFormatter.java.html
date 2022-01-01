@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OgnlValueFormatter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.xml</a> &gt; <span class="el_source">OgnlValueFormatter.java</span></div><h1>OgnlValueFormatter.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.xml;
+
+/**
+ * Javaのオブジェクトを&lt;a href=&quot;http://s2container.seasar.org/2.4/ja/ognl.html&quot; target=&quot;_blank&quot;&gt;OGNL形式&lt;/a&gt;の文字列に変換します。
+ * &lt;ul&gt;
+ *  &lt;li&gt;このクラスは、{@link XmlBuilder}でアノテーション定義用のXMLを組み立てるために利用します。&lt;/li&gt;
+ *  &lt;li&gt;アノテーションで利用可能な属性の型（プリミティブ型/String/Class/列挙型、それらの一次元配列）に対応しています。&lt;/li&gt;
+ *  &lt;li&gt;プリミティブ型のラッパークラスは、プリミティブ型の形式に変換して処理されます。&lt;/li&gt;
+ * &lt;/ul&gt;
+ * 
+ * @since 1.1
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L15">public class OgnlValueFormatter {</span>
+    
+    /**
+     * JavaオブジェクトをOGNL式に変換する。
+     * @param value 変換対象のオブジェクト。
+     * @return OGNL式。
+     * @throws IllegalArgumentException value class type is not supported.
+     */
+    public String format(final Object value) {
+        
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if(value == null) {</span>
+<span class="fc" id="L26">            return &quot;null&quot;;</span>
+        }
+        
+<span class="fc" id="L29">        final Class&lt;?&gt; clazz = value.getClass();</span>
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        if(clazz.isPrimitive()) {</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">            if(clazz.equals(Boolean.TYPE)) {</span>
+<span class="nc" id="L32">                return format((boolean) value);</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">            } else if(clazz.equals(Byte.TYPE)) {</span>
+<span class="nc" id="L34">                return format((byte) value);</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">            } else if(clazz.equals(Character.TYPE)) {</span>
+<span class="nc" id="L36">                return format((char) value);</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">            } else if(clazz.equals(Short.TYPE)) {</span>
+<span class="nc" id="L38">                return format((short) value);</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            } else if(clazz.equals(Integer.TYPE)) {</span>
+<span class="nc" id="L40">                return format((int) value);</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">            } else if(clazz.equals(Long.TYPE)) {</span>
+<span class="nc" id="L42">                return format((long) value);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">            } else if(clazz.equals(Float.TYPE)) {</span>
+<span class="nc" id="L44">                return format((float) value);</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">            } else if(clazz.equals(Double.TYPE)) {</span>
+<span class="nc" id="L46">                return format((double) value);</span>
+            } 
+            
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        } else if(clazz.isArray()) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            if(value instanceof boolean[]) {</span>
+<span class="fc" id="L51">                return format((boolean[]) value);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            } else if(value instanceof char[]) {</span>
+<span class="fc" id="L53">                return format((char[]) value);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            } else if(value instanceof byte[]) {</span>
+<span class="fc" id="L55">                return format((byte[]) value);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            } else if(value instanceof short[]) {</span>
+<span class="fc" id="L57">                return format((short[]) value);</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            } else if(value instanceof int[]) {</span>
+<span class="fc" id="L59">                return format((int[]) value);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            } else if(value instanceof long[]) {</span>
+<span class="fc" id="L61">                return format((long[]) value);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            } else if(value instanceof float[]) {</span>
+<span class="fc" id="L63">                return format((float[]) value);</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            } else if(value instanceof double[]) {</span>
+<span class="fc" id="L65">                return format((double[]) value);</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            } else if(value instanceof String[]) {</span>
+<span class="fc" id="L67">                return format((String[]) value);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            } else if(value instanceof Enum[]) {</span>
+<span class="fc" id="L69">                return format((Enum[]) value);</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">            } else if(value instanceof Class[]) {</span>
+<span class="fc" id="L71">                return format((Class[]) value);</span>
+            }
+            
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        } else if(value instanceof String) {</span>
+<span class="fc" id="L75">            return format((String) value);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        } else if(value instanceof Boolean) {</span>
+<span class="fc" id="L77">            return format((boolean) value);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        } else if(value instanceof Byte) {</span>
+<span class="fc" id="L79">            return format((byte) value);</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        } else if(value instanceof Character) {</span>
+<span class="fc" id="L81">            return format((char) value);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        } else if(value instanceof Short) {</span>
+<span class="fc" id="L83">            return format((short) value);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        } else if(value instanceof Integer) {</span>
+<span class="fc" id="L85">            return format((int) value);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        } else if(value instanceof Long) {</span>
+<span class="fc" id="L87">            return format((long) value);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        } else if(value instanceof Float) {</span>
+<span class="fc" id="L89">            return format((float) value);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        } else if(value instanceof Double) {</span>
+<span class="fc" id="L91">            return format((double) value);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        } else if(Class.class.isAssignableFrom(clazz)) {</span>
+<span class="fc" id="L93">            return format((Class&lt;?&gt;) value);</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        } else if(Enum.class.isAssignableFrom(clazz)) {</span>
+<span class="fc" id="L95">            return format((Enum&lt;?&gt;) value);</span>
+        }
+        
+<span class="nc" id="L98">        throw new IllegalArgumentException(String.format(&quot;not support type '%s'.&quot;, clazz.getName()));</span>
+    }
+    
+    private String format(final boolean value) {
+<span class="fc" id="L102">        return String.valueOf(value);</span>
+    }
+    
+    private String format(final char value) {
+<span class="fc" id="L106">        return String.format(&quot;'\\u%04X'&quot;, (int)value);</span>
+    }
+    
+    private String format(final byte value) {
+<span class="fc" id="L110">        return String.format(&quot;@Byte@valueOf('%d').byteValue()&quot;, value);</span>
+    }
+    
+    private String format(final short value) {
+<span class="fc" id="L114">        return String.format(&quot;@Short@valueOf('%d').shortValue()&quot;, value);</span>
+    }
+    
+    private String format(final int value) {
+<span class="fc" id="L118">        return String.valueOf(value);</span>
+    }
+    
+    private String format(final long value) {
+<span class="fc" id="L122">        return String.valueOf(value) + &quot;L&quot;;</span>
+    }
+    
+    private String format(final float value) {
+<span class="fc" id="L126">        return String.valueOf(value) + &quot;F&quot;;</span>
+    }
+    
+    private String format(final double value) {
+<span class="fc" id="L130">        return String.valueOf(value) + &quot;D&quot;;</span>
+    }
+    
+    private String format(final String value) {
+<span class="fc" id="L134">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L135">        sb.append(&quot;\&quot;&quot;);</span>
+        
+<span class="fc" id="L137">        final int len = value.length();</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L139">            char c = value.charAt(i);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">            if(c == '&quot;') {</span>
+                // エスケープ
+<span class="fc" id="L142">                sb.append(&quot;\\\&quot;&quot;);</span>
+            } else {
+<span class="fc" id="L144">                sb.append(c);</span>
+            }
+        }
+        
+<span class="fc" id="L148">        sb.append(&quot;\&quot;&quot;);</span>
+<span class="fc" id="L149">        return sb.toString();</span>
+    }
+    
+    private String format(final Enum&lt;?&gt; value) {
+        
+<span class="fc" id="L154">        String className = value.getClass().getName();</span>
+<span class="fc" id="L155">        String itemName = value.name();</span>
+        
+<span class="fc" id="L157">        return &quot;@&quot; + className + &quot;@&quot; + itemName;</span>
+        
+    }
+    
+    private String format(final Class&lt;?&gt; value) {
+        
+<span class="fc" id="L163">        String className = value.getName();</span>
+<span class="fc" id="L164">        return &quot;@&quot; + className + &quot;@class&quot;;</span>
+        
+    }
+    
+    private String format(final boolean[] value) {
+<span class="fc" id="L169">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L170">        sb.append(&quot;new boolean[] {&quot;);</span>
+        
+<span class="fc" id="L172">        final int len = value.length;</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L174">            sb.append(format(value[i]));</span>
+            
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            if(i &lt; len - 1) {</span>
+<span class="fc" id="L177">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+        
+<span class="fc" id="L181">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L183">        return sb.toString();</span>
+    }
+    
+    private String format(final char[] value) {
+<span class="fc" id="L187">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L188">        sb.append(&quot;new char[] {&quot;);</span>
+        
+<span class="fc" id="L190">        final int len = value.length;</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L192">            sb.append(format(value[i]));</span>
+            
+<span class="fc bfc" id="L194" title="All 2 branches covered.">            if(i &lt; len - 1) {</span>
+<span class="fc" id="L195">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+        
+<span class="fc" id="L199">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L201">        return sb.toString();</span>
+    }
+    
+    private String format(final byte[] value) {
+<span class="fc" id="L205">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L206">        sb.append(&quot;new byte[] {&quot;);</span>
+        
+<span class="fc" id="L208">        final int len = value.length;</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L210">            sb.append(format(value[i]));</span>
+            
+<span class="fc bfc" id="L212" title="All 2 branches covered.">            if(i &lt; len - 1) {</span>
+<span class="fc" id="L213">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+        
+<span class="fc" id="L217">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L219">        return sb.toString();</span>
+    }
+    
+    private String format(final short[] value) {
+<span class="fc" id="L223">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L224">        sb.append(&quot;new short[] {&quot;);</span>
+        
+<span class="fc" id="L226">        final int len = value.length;</span>
+<span class="fc bfc" id="L227" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L228">            sb.append(format(value[i]));</span>
+            
+<span class="fc bfc" id="L230" title="All 2 branches covered.">            if(i &lt; len - 1) {</span>
+<span class="fc" id="L231">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+        
+<span class="fc" id="L235">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L237">        return sb.toString();</span>
+    }
+    
+    private String format(final int[] value) {
+<span class="fc" id="L241">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L242">        sb.append(&quot;new int[] {&quot;);</span>
+        
+<span class="fc" id="L244">        final int len = value.length;</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L246">            sb.append(format(value[i]));</span>
+            
+<span class="fc bfc" id="L248" title="All 2 branches covered.">            if(i &lt; len - 1) {</span>
+<span class="fc" id="L249">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+        
+<span class="fc" id="L253">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L255">        return sb.toString();</span>
+    }
+    
+    private String format(final long[] value) {
+<span class="fc" id="L259">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L260">        sb.append(&quot;new long[] {&quot;);</span>
+        
+<span class="fc" id="L262">        final int len = value.length;</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L264">            sb.append(format(value[i]));</span>
+            
+<span class="fc bfc" id="L266" title="All 2 branches covered.">            if(i &lt; len - 1) {</span>
+<span class="fc" id="L267">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+        
+<span class="fc" id="L271">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L273">        return sb.toString();</span>
+    }
+    
+    private String format(final float[] value) {
+<span class="fc" id="L277">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L278">        sb.append(&quot;new float[] {&quot;);</span>
+        
+<span class="fc" id="L280">        final int len = value.length;</span>
+<span class="fc bfc" id="L281" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L282">            sb.append(format(value[i]));</span>
+            
+<span class="fc bfc" id="L284" title="All 2 branches covered.">            if(i &lt; len - 1) {</span>
+<span class="fc" id="L285">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+        
+<span class="fc" id="L289">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L291">        return sb.toString();</span>
+    }
+    
+    private String format(final double[] value) {
+<span class="fc" id="L295">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L296">        sb.append(&quot;new double[] {&quot;);</span>
+        
+<span class="fc" id="L298">        final int len = value.length;</span>
+<span class="fc bfc" id="L299" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L300">            sb.append(format(value[i]));</span>
+            
+<span class="fc bfc" id="L302" title="All 2 branches covered.">            if(i &lt; len - 1) {</span>
+<span class="fc" id="L303">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+        
+<span class="fc" id="L307">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L309">        return sb.toString();</span>
+    }
+    
+    private String format(final String[] value) {
+<span class="fc" id="L313">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L314">        sb.append(&quot;new String[] {&quot;);</span>
+        
+<span class="fc" id="L316">        joinedFormat(value, sb);</span>
+        
+<span class="fc" id="L318">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L320">        return sb.toString();</span>
+    }
+    
+    private void joinedFormat(final Object[] array, final StringBuilder sb) {
+        
+<span class="fc" id="L325">        final int len = array.length;</span>
+<span class="fc bfc" id="L326" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L327">            sb.append(format(array[i]));</span>
+            
+<span class="fc bfc" id="L329" title="All 2 branches covered.">            if(i &lt; len - 1) {</span>
+<span class="fc" id="L330">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+        
+<span class="fc" id="L334">    }</span>
+    
+    private String format(final Enum&lt;?&gt;[] value) {
+<span class="fc" id="L337">        StringBuilder sb = new StringBuilder();</span>
+        
+<span class="fc" id="L339">        String className = value.getClass().getComponentType().getName();</span>
+<span class="fc" id="L340">        sb.append(String.format(&quot;new %s[] {&quot;, className));</span>
+        
+<span class="fc" id="L342">        joinedFormat(value, sb);</span>
+        
+<span class="fc" id="L344">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L346">        return sb.toString();</span>
+    }
+    
+    private String format(final Class&lt;?&gt;[] value) {
+<span class="fc" id="L350">        StringBuilder sb = new StringBuilder();</span>
+        
+<span class="fc" id="L352">        String className = value.getClass().getComponentType().getName();</span>
+<span class="fc" id="L353">        sb.append(String.format(&quot;new %s[] {&quot;, className));</span>
+        
+<span class="fc" id="L355">        joinedFormat(value, sb);</span>
+        
+<span class="fc" id="L357">        sb.append(&quot;}&quot;);</span>
+        
+<span class="fc" id="L359">        return sb.toString();</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

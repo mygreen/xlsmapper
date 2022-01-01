@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FieldErrorBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation</a> &gt; <span class="el_source">FieldErrorBuilder.java</span></div><h1>FieldErrorBuilder.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+
+/**
+ * {@link FieldError}のインスタンスを組み立てるビルダ。
+ *
+ * @version 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class FieldErrorBuilder {
+    
+    private final String objectName;
+    
+    private final String field;
+    
+    private final String[] codes;
+    
+    private Object rejectedValue;
+    
+    private boolean conversionFailure;
+    
+<span class="fc" id="L28">    private Map&lt;String, Object&gt; variables = new HashMap&lt;&gt;();</span>
+    
+    private String defaultMessage;
+    
+    private String sheetName;
+    
+    private String label;
+    
+    private CellPosition address;
+    
+    /**
+     * ビルダのインスタンスを作成します
+     * @param objectName オブジェクト名
+     * @param field フィールド名。ネストしている場合は、親のパスを付与した形式（e.g. person.name）で指定します。
+     * @param codes メッセージコード。複数指定可能で、先頭にあるものほど優先度が高い。
+     */
+<span class="fc" id="L44">    public FieldErrorBuilder(final String objectName, final String field, final String[] codes) {</span>
+<span class="fc" id="L45">        this.objectName = objectName;</span>
+<span class="fc" id="L46">        this.field = field;</span>
+<span class="fc" id="L47">        this.codes = codes;</span>
+<span class="fc" id="L48">    }</span>
+    
+    /**
+     * エラートとなったフィールドの値を設定します。
+     * @param rejectedValue エラー元の値
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder rejectedValue(final Object rejectedValue) {
+<span class="fc" id="L56">        this.rejectedValue = rejectedValue;</span>
+<span class="fc" id="L57">        return this;</span>
+    }
+    
+    /**
+     * 型変換エラーかどうかを設定します。
+     * @param conversionFailure trueの場合、型変換エラー
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder conversionFailure(final boolean conversionFailure) {
+<span class="fc" id="L66">        this.conversionFailure = conversionFailure;</span>
+<span class="fc" id="L67">        return this;</span>
+    }
+    
+    /**
+     * メッセージ中の変数を追加します。
+     * @param variables 変数のマップ
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder variables(final Map&lt;String, Object&gt; variables) {
+<span class="fc" id="L76">        this.variables.putAll(variables);</span>
+<span class="fc" id="L77">        return this;</span>
+    }
+    
+    /**
+     * メッセージ中の変数を追加します。
+     * @param key 変数のキー名
+     * @param value 変数の値
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder variables(final String key, final Object value) {
+<span class="fc" id="L87">        this.variables.put(key, value);</span>
+<span class="fc" id="L88">        return this;</span>
+    }
+    
+    /**
+     * デフォルトメッセージを設定します。
+     * &lt;p&gt;指定したコードに対するメッセージが見つからない場合に、適用されるメッセージ。&lt;/p&gt;
+     * @param defaultMessage デフォルトメッセージ
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder defaultMessage(final String defaultMessage) {
+<span class="fc" id="L98">        this.defaultMessage = defaultMessage;</span>
+<span class="fc" id="L99">        return this;</span>
+    }
+    
+    /**
+     * シート名を設定します。
+     * @param sheetName シート名
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder sheetName(final String sheetName) {
+<span class="fc" id="L108">        this.sheetName = sheetName;</span>
+<span class="fc" id="L109">        return this;</span>
+    }
+    
+    /**
+     * ラベルを設定します。
+     * &lt;p&gt;テーブル名やカラム名が設定します。&lt;/p&gt;
+     * @param label ラベル
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder label(final String label) {
+<span class="fc" id="L119">        this.label = label;</span>
+<span class="fc" id="L120">        return this;</span>
+    }
+    
+    /**
+     * ラベルを設定します。
+     * &lt;p&gt;テーブル名やカラム名が設定します。&lt;/p&gt;
+     * &lt;p&gt;値が存在する場合のみ設定されます。&lt;/p&gt;
+     * @param label ラベル
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder label(final Optional&lt;String&gt; label) {
+<span class="fc" id="L131">        label.ifPresent(l -&gt; label(l));</span>
+<span class="fc" id="L132">        return this;</span>
+    }
+    
+    /**
+     * セルのアドレス情報を設定します。
+     * @param address アドレス情報
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder address(final CellPosition address) {
+<span class="fc" id="L141">        this.address = address;</span>
+<span class="fc" id="L142">        return this;</span>
+    }
+    
+    /**
+     * セルのアドレス情報を設定します。
+     * &lt;p&gt;値が存在する場合のみ設定されます。&lt;/p&gt;
+     * @param address アドレス情報
+     * @return 自身のインスタンス
+     */
+    public FieldErrorBuilder address(final Optional&lt;CellPosition&gt; address) {
+<span class="fc" id="L152">        address.ifPresent(a -&gt; address(a));</span>
+<span class="fc" id="L153">        return this;</span>
+    }
+    
+    /**
+     * {@link FieldError}のインスタンスを組み立てる。
+     * @return {@link FieldError}のインスタンス
+     */
+    public FieldError build() {
+        
+<span class="fc" id="L162">        final FieldError error = new FieldError(objectName, field, conversionFailure, codes, variables);</span>
+<span class="fc" id="L163">        error.setDefaultMessage(defaultMessage);</span>
+<span class="fc" id="L164">        error.setSheetName(sheetName);</span>
+<span class="fc" id="L165">        error.setLabel(label);</span>
+<span class="fc" id="L166">        error.setRejectedValue(rejectedValue);</span>
+<span class="fc" id="L167">        error.setAddress(address);</span>
+        
+<span class="fc" id="L169">        return error;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

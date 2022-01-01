@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FieldError.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation</a> &gt; <span class="el_source">FieldError.java</span></div><h1>FieldError.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation;
+
+import java.util.Map;
+import java.util.Optional;
+
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+
+/**
+ * オブジェクトのフィールドであるセルのエラー情報を保持するクラスです。
+ * 
+ * @version 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class FieldError extends ObjectError {
+
+    /** serialVersionUID */
+    private static final long serialVersionUID = 1L;
+    
+    /**
+     * フィールド名
+     */
+    private final String field;
+    
+    /**
+     * 型変換に失敗したときのエラーかどうか
+     */
+    private final boolean conversionFailure;
+    
+    /**
+     * エラーとなる値
+     */
+    private Object rejectedValue;
+    
+    /**
+     * セルのアドレス情報
+     */
+    private CellPosition address;
+    
+    /**
+     * コンストラクタ
+     * 
+     * @param objectName オブジェクト名
+     * @param field フィールド名
+     * @param conversionFailure 型変換に失敗したときのエラーかどうか
+     * @param codes メッセージコード
+     * @param variables メッセージの引数
+     */
+    public FieldError(final String objectName, final String field, final boolean conversionFailure,
+            final String[] codes, final Map&lt;String, Object&gt; variables) {
+<span class="fc" id="L51">        super(objectName, codes, variables);</span>
+        
+<span class="fc" id="L53">        this.field = field;</span>
+<span class="fc" id="L54">        this.conversionFailure = conversionFailure;</span>
+<span class="fc" id="L55">    }</span>
+    
+    /**
+     * 型変換に失敗したかどうか。
+     * &lt;p&gt;型変換に失敗した場合、検証対象のBeanやフィールドに値が設定されないないため、
+     *    後から値を検証する際に検証をスキップする判定に利用する。
+     * &lt;/p&gt;
+     * @return trueの場合、型変換にしっぱいしたエラー。
+     */
+    public boolean isConversionFailure() {
+<span class="fc" id="L65">        return conversionFailure;</span>
+    }    
+    
+    /**
+     * フィールド名を取得する。
+     * &lt;p&gt;ネストしている場合は、親のパスを付与した形式（e.g. person.name）となります。&lt;/p&gt;
+     * @return Beanにされたフィールドの名称を返す。
+     */
+    public String getField() {
+<span class="fc" id="L74">        return field;</span>
+    }
+    
+    /**
+     * エラートとなったフィールドの値を取得する。
+     * &lt;p&gt;ただし、型変換エラーの場合、変換前の値となります。&lt;/p&gt;
+     * @return フィールドの値。
+     */
+    public Object getRejectedValue() {
+<span class="fc" id="L83">       return rejectedValue;</span>
+    }
+    
+    /**
+     * エラートとなったフィールドの値を設定する。
+     * &lt;p&gt;ただし、型変換エラーの場合、変換前の値となります。&lt;/p&gt;
+     * @param rejectedValue フィールドの値。
+     */
+    public void setRejectedValue(Object rejectedValue) {
+<span class="fc" id="L92">       this.rejectedValue = rejectedValue;</span>
+<span class="fc" id="L93">    }</span>
+    
+    /**
+     * セルのアドレス情報を取得します。
+     * @return 設定されていない場合は、空を返します。
+     */
+    public Optional&lt;CellPosition&gt; getAddressAsOptional() {
+<span class="fc" id="L100">        return Optional.ofNullable(address);</span>
+    }
+    
+    /**
+     * セルのアドレス情報を取得します。
+     * @return 設定されていない場合は、nullを返します。
+     */
+    public CellPosition getAddress() {
+<span class="fc" id="L108">        return address;</span>
+    }
+    
+    /**
+     * セルのアドレス情報を設定します。
+     * @param address アドレス情報
+     */
+    public void setAddress(CellPosition address) {
+<span class="fc" id="L116">        this.address = address;</span>
+<span class="fc" id="L117">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

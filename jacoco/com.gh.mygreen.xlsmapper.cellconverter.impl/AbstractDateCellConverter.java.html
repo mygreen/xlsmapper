@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractDateCellConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.cellconverter.impl</a> &gt; <span class="el_source">AbstractDateCellConverter.java</span></div><h1>AbstractDateCellConverter.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.cellconverter.impl;
+
+import java.util.Date;
+import java.util.Optional;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.cellconverter.BaseCellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellStyleProxy;
+import com.gh.mygreen.xlsmapper.cellconverter.TypeBindException;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * 日時型のConverterの抽象クラス。
+ * &lt;p&gt;{@link Date}を継承している&lt;code&gt;javax.sql.Time/Date/Timestamp&lt;/code&gt;はこのクラスを継承して作成します。&lt;/p&gt;
+ *
+ * @version 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public abstract class AbstractDateCellConverter&lt;T extends Date&gt; extends BaseCellConverter&lt;T&gt; {
+
+    /**
+     * 書き込み時のExcelのセルの書式
+     * &lt;p&gt;セルに書式が設定されていないときのデフォルトの書式
+     */
+    private String defaultExcelPattern;
+
+    /**
+     * アノテーションで書き込み時の指定されてたセルの書式
+     * &lt;p&gt;指定されない場合がある
+     */
+<span class="fc" id="L38">    private Optional&lt;String&gt; settingExcelPattern = Optional.empty();</span>
+
+    public AbstractDateCellConverter(FieldAccessor field, Configuration config) {
+<span class="fc" id="L41">        super(field, config);</span>
+<span class="fc" id="L42">    }</span>
+
+    @Override
+    protected T parseCell(final Cell evaluatedCell, final String formattedValue) throws TypeBindException {
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if(evaluatedCell.getCellType().equals(CellType.NUMERIC)) {</span>
+<span class="fc" id="L48">            return convertTypeValue(evaluatedCell.getDateCellValue());</span>
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        } else if(!formattedValue.isEmpty()) {</span>
+            // セルを文字列としてパースする
+            try {
+<span class="fc" id="L53">                return textFormatter.parse(formattedValue);</span>
+
+<span class="fc" id="L55">            } catch(TextParseException e) {</span>
+<span class="fc" id="L56">                throw newTypeBindExceptionOnParse(e, evaluatedCell, formattedValue);</span>
+            }
+        }
+
+<span class="fc" id="L60">        return null;</span>
+
+    }
+
+    @Override
+    protected void setupCell(final Cell cell, final Optional&lt;T&gt; cellValue) throws TypeBindException {
+
+        // 書式を設定する
+<span class="fc" id="L68">        final CellStyleProxy cellStyle = new CellStyleProxy(cell);</span>
+<span class="fc" id="L69">        cellStyle.setDataFormat(settingExcelPattern.orElse(null), defaultExcelPattern, getConfiguration().getCellFormatter());</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if(cellValue.isPresent()) {</span>
+<span class="fc" id="L72">            boolean isStartDate1904 = POIUtils.isDateStart1904(cell.getSheet().getWorkbook());</span>
+<span class="fc" id="L73">            POIUtils.setCellValueAsDate(cell, cellValue.get(), isStartDate1904);</span>
+
+<span class="fc" id="L75">        } else {</span>
+<span class="fc" id="L76">            cell.setBlank();</span>
+        }
+
+<span class="fc" id="L79">    }</span>
+
+    /**
+     * その型における型に変換する
+     * @param date 変換対象の値
+     * @return 変換後の値
+     */
+    protected abstract T convertTypeValue(Date date);
+
+    /**
+     * デフォルトのExcelの書式を設定する
+     * @param defaultExcelPattern デフォルトのExcelの書式
+     */
+    public void setDefaultExcelPattern(String defaultExcelPattern) {
+<span class="fc" id="L93">        this.defaultExcelPattern = defaultExcelPattern;</span>
+<span class="fc" id="L94">    }</span>
+
+    /**
+     * アノテーションで指定されたExcelの書式を設定する。
+     * @param settingExcelPattern アノテーションで指定されたExcelの書式。空の場合もある。
+     */
+    public void setSettingExcelPattern(String settingExcelPattern) {
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if(Utils.isEmpty(settingExcelPattern)) {</span>
+<span class="fc" id="L103">            this.settingExcelPattern = Optional.empty();</span>
+        } else {
+<span class="fc" id="L105">            this.settingExcelPattern = Optional.of(settingExcelPattern);</span>
+        }
+<span class="fc" id="L107">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,748 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SheetBindingErrors.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation</a> &gt; <span class="el_source">SheetBindingErrors.java</span></div><h1>SheetBindingErrors.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Stack;
+import java.util.stream.Collectors;
+
+import com.gh.mygreen.xlsmapper.util.PropertyTypeNavigator;
+import com.gh.mygreen.xlsmapper.util.PropertyValueNavigator;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatterRegistry;
+import com.github.mygreen.cellformatter.lang.ArgUtils;
+
+
+/**
+ * 1シート分のエラー情報を管理するクラス。
+ * 
+ * @param &lt;P&gt; シートにマッピングするクラスタイプ
+ * @version 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class SheetBindingErrors&lt;P&gt; {
+    
+    /** パスの区切り文字 */
+    public static final String PATH_SEPARATOR = &quot;.&quot;;
+    
+    /**
+     * 検証対象のオブジェクト。
+     * ・ルートオブジェクト
+     */
+    private final P target;
+    
+    /**
+     * オブジェクト名
+     */
+    private final String objectName;
+    
+    /**
+     * シート名
+     */
+    private String sheetName;
+    
+    /**
+     * シートのインデックス
+     */
+<span class="fc" id="L51">    private int sheetIndex = -1;</span>
+    
+    /**
+     * 現在のパス。
+     * キャッシュ用。
+     */
+    private String currentPath;
+    
+    /** 
+     * 検証対象のオブジェクトの現在のパス
+     */
+<span class="fc" id="L62">    private Stack&lt;String&gt; nestedPathStack = new Stack&lt;&gt;();</span>
+    
+    /**
+     * エラーオブジェクト
+     */
+<span class="fc" id="L67">    private final List&lt;ObjectError&gt; errors = new ArrayList&lt;&gt;();</span>
+    
+    /**
+     * フィールドの値のフォーマッタの管理クラス
+     */
+<span class="fc" id="L72">    private FieldFormatterRegistry fieldFormatterRegistry = new FieldFormatterRegistry();</span>
+    
+    /** エラーコードの候補を生成するクラス */
+<span class="fc" id="L75">    private MessageCodeGenerator messageCodeGenerator = new MessageCodeGenerator();</span>
+    
+    /**
+     * プロパティ式から、値を取得する。
+     * ・private/protectedなどのフィールドにもアクセス可能にする。
+     */
+<span class="fc" id="L81">    private final PropertyValueNavigator propertyValueNavigator = new PropertyValueNavigator();</span>
+    {
+<span class="fc" id="L83">        propertyValueNavigator.setAllowPrivate(true);</span>
+<span class="fc" id="L84">        propertyValueNavigator.setIgnoreNull(true);</span>
+<span class="fc" id="L85">        propertyValueNavigator.setIgnoreNotFoundKey(true);</span>
+<span class="fc" id="L86">        propertyValueNavigator.setCacheWithPath(true);</span>
+    }
+    
+    /**
+     * プロパティ式から、クラスタイプを取得する。
+     * ・private/protectedなどのフィールドにもアクセス可能にする。
+     */
+<span class="fc" id="L93">    private final PropertyTypeNavigator propertyTypeNavigator = new PropertyTypeNavigator();</span>
+    {
+<span class="fc" id="L95">        propertyTypeNavigator.setAllowPrivate(true);</span>
+<span class="fc" id="L96">        propertyTypeNavigator.setIgnoreNotResolveType(true);</span>
+<span class="fc" id="L97">        propertyTypeNavigator.setCacheWithPath(true);</span>
+    }
+    
+    /**
+     * オブジェクト名を指定しするコンストラクタ。
+     * &lt;p&gt;エラーメッセージを組み立てる際に、パスのルートとなる。
+     * @param target 検証対象のオブジェクト
+     * @param objectName オブジェクト名
+     */
+<span class="fc" id="L106">    public SheetBindingErrors(final P target, final String objectName) {</span>
+        
+<span class="fc" id="L108">        this.target = target;</span>
+<span class="fc" id="L109">        this.objectName = objectName;</span>
+        
+<span class="fc" id="L111">        this.fieldFormatterRegistry.init();</span>
+<span class="fc" id="L112">    }</span>
+    
+    /**
+     * クラス名をオブジェクト名とするコンストラクタ。
+     * &lt;p&gt;オブジェクト名として、{@link Class#getCanonicalName()}を設定します。&lt;/p&gt;
+     * @param target 検証対象のオブジェクト
+     * @throws IllegalArgumentException {@link target == null.}
+     */
+    public SheetBindingErrors(final P target) {
+<span class="fc" id="L121">        this(target, target.getClass().getCanonicalName());</span>
+<span class="fc" id="L122">    }</span>
+    
+    /**
+     * 検証対象のオブジェクトを取得する。
+     * @return
+     */
+    public P getTarget() {
+<span class="fc" id="L129">        return target;</span>
+    }
+    
+    /**
+     * 現在のオブジェクト名称を取得する
+     * @return コンストラクタで設定したオブジェクト名称。
+     */
+    public String getObjectName() {
+<span class="fc" id="L137">        return objectName;</span>
+    }
+    
+    /**
+     * 現在のシート名を取得する。
+     * @return シート名称
+     */
+    public String getSheetName() {
+<span class="fc" id="L145">        return sheetName;</span>
+    }
+    
+    /**
+     * 現在のシート名を設定します。
+     * @param sheetName シートの名称
+     */
+    public void setSheetName(final String sheetName) {
+<span class="fc" id="L153">        this.sheetName = sheetName;</span>
+<span class="fc" id="L154">    }</span>
+    
+    /**
+     * シート番号を取得する
+     * @return 0から始まる。ただし、シートが設定されていない状態の時は、-1を返す。
+     */
+    public int getSheetIndex() {
+<span class="nc" id="L161">        return sheetIndex;</span>
+    }
+    
+    /**
+     * シート番号を設定する
+     * @param sheetIndex シート番号(0から始まる)
+     */
+    public void setSheetIndex(int sheetIndex) {
+<span class="fc" id="L169">        this.sheetIndex = sheetIndex;</span>
+<span class="fc" id="L170">    }</span>
+    
+    /**
+     * 指定したパスのフィールドのクラスタイプを取得する。
+     * @since 2.0
+     * @param field フィールド名
+     * @return クラスタイプ。ただし、リストなどGenericsのタイプが指定されていない場合、クラスタイプもnullとなる。
+     */
+    public Class&lt;?&gt; getFieldType(final String field) {
+        
+<span class="fc" id="L180">        final String fieldPath = buildFieldPath(field);</span>
+<span class="fc" id="L181">        Class&lt;?&gt; type = propertyTypeNavigator.getPropertyType(target.getClass(), fieldPath);</span>
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">        if(type != null) {</span>
+<span class="fc" id="L183">            return type;</span>
+        }
+        
+<span class="nc" id="L186">        return getActualFieldType(fieldPath);</span>
+    }
+    
+    /**
+     * 指定したパスのフィールドのクラスタイプを取得する。
+     * &lt;p&gt;インスタンスを元に取得するため、サブクラスの可能性がある。&lt;/p&gt;
+     * @since 2.0
+     * @param field フィールド名
+     * @return クラスタイプ。ただし、オブジェクトの値がnullの場合は、クラスタイプもnullとなる。
+     */
+    public Class&lt;?&gt; getActualFieldType(final String field) {
+        
+<span class="nc" id="L198">        final Object fieldValue = getFieldValue(field);</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        return fieldValue == null ? null : fieldValue.getClass();</span>
+        
+    }
+    
+    /**
+     * 指定したパスのフィールドの値を取得する。
+     * &lt;p&gt;フィールドエラーにエラーが存在するときは、エラーオブジェクトから値を取得し、存在しない場合は、実際の値を取得する。&lt;/p&gt;
+     * @param field フィールド名
+     * @return フィールドの値。
+     */
+    public Object getFieldValue(final String field) {
+        
+<span class="fc" id="L211">        final FieldError error = getFirstFieldError(field).orElse(null);</span>
+<span class="pc bpc" id="L212" title="3 of 4 branches missed.">        if(error != null &amp;&amp; !error.isConversionFailure()) {</span>
+<span class="nc" id="L213">            return error.getRejectedValue();</span>
+        } else {
+<span class="fc" id="L215">            return getFieldActualValue(field);</span>
+        }
+        
+    }
+    
+    /**
+     * 指定したパスのフィールドの値を取得する。
+     * @since 2.0
+     * @param field フィールド名
+     * @return フィールドの値。
+     */
+    public Object getFieldActualValue(final String field) {
+<span class="fc" id="L227">        final String fieldPath = buildFieldPath(field);</span>
+<span class="fc" id="L228">        return propertyValueNavigator.getProperty(target, fieldPath);</span>
+    }
+    
+    /**
+     * 現在のパス上のプロパティの値を取得します。
+     * &lt;p&gt;{@link #getTarget()}で取得できるルートオブジェクトに対して、{@link #getCurrentPath()}のパスで示された値を取得します。&lt;/p&gt;
+     * @return 現在のパス上の値。
+     */
+    public Object getValue() {
+<span class="fc" id="L237">        final String currentPath = getCurrentPath();</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">        if(Utils.isEmpty(currentPath)) {</span>
+<span class="fc" id="L239">            return target;</span>
+        } else {
+<span class="fc" id="L241">            return propertyValueNavigator.getProperty(target, currentPath);</span>
+        }
+    }
+    
+    /**
+     * 指定したパスで現在のパスを初期化します。
+     * &lt;p&gt;nullまたは空文字を与えると、トップに移動します。
+     * @param nestedPath ネストするパス
+     */
+    public void setNestedPath(final String nestedPath) {
+<span class="fc" id="L251">        final String canonicalPath = normalizePath(nestedPath);</span>
+<span class="fc" id="L252">        this.nestedPathStack.clear();</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">        if(canonicalPath.isEmpty()) {</span>
+<span class="fc" id="L254">            this.currentPath = buildPath();</span>
+        } else {
+<span class="fc" id="L256">            pushNestedPath(canonicalPath);</span>
+        }
+<span class="fc" id="L258">    }</span>
+    
+    /**
+     * 現在のパスをルートに移動します。
+     */
+    public void setRootPath() {
+<span class="fc" id="L264">        setNestedPath(null);</span>
+<span class="fc" id="L265">    }</span>
+    
+    /**
+     * パスを正規化する。
+     * &lt;ol&gt;
+     *  &lt;li&gt;トリムする。&lt;/li&gt;
+     *  &lt;li&gt;値がnullの場合は、空文字を返す。&lt;/li&gt;
+     *  &lt;li&gt;最後に'.'がついている場合、除去する。&lt;/li&gt;
+     * &lt;/ol&gt;
+     * @param subPath
+     * @return
+     */
+    private String normalizePath(final String subPath) {
+<span class="fc bfc" id="L278" title="All 2 branches covered.">        if(subPath == null) {</span>
+<span class="fc" id="L279">            return &quot;&quot;;</span>
+        }
+        
+<span class="fc" id="L282">        String value = subPath.trim();</span>
+<span class="fc bfc" id="L283" title="All 2 branches covered.">        if(value.isEmpty()) {</span>
+<span class="fc" id="L284">            return value;</span>
+        }
+        
+<span class="fc bfc" id="L287" title="All 2 branches covered.">        if(value.startsWith(PATH_SEPARATOR)) {</span>
+<span class="fc" id="L288">            value = value.substring(1);</span>
+        }
+        
+<span class="fc bfc" id="L291" title="All 2 branches covered.">        if(value.endsWith(PATH_SEPARATOR)) {</span>
+<span class="fc" id="L292">            value = value.substring(0, value.length()-1);</span>
+        }
+        
+<span class="fc" id="L295">        return value;</span>
+        
+    }
+    
+    /**
+     * パスを１つ下位に移動します。
+     * @param subPath ネストするパス
+     * @throws IllegalArgumentException subPath is empty.
+     */
+    public void pushNestedPath(final String subPath) {
+<span class="fc" id="L305">        final String canonicalPath = normalizePath(subPath);</span>
+<span class="fc" id="L306">        ArgUtils.notEmpty(canonicalPath, &quot;canonicalPath&quot;);</span>
+        
+<span class="fc" id="L308">        this.nestedPathStack.push(canonicalPath);</span>
+<span class="fc" id="L309">        this.currentPath = buildPath();</span>
+<span class="fc" id="L310">    }</span>
+    
+    /**
+     * 配列やリストなどのインデックス付きのパスを１つ下位に移動します。
+     * @param subPath ネストするパス
+     * @param index インデックス番号(0から始まります。)
+     * @throws IllegalArgumentException {@literal subPath is empty or index &lt; 0}
+     */
+    public void pushNestedPath(final String subPath, final int index) {
+<span class="fc" id="L319">        final String canonicalPath = normalizePath(subPath);</span>
+<span class="fc" id="L320">        ArgUtils.notEmpty(subPath, &quot;subPath&quot;);</span>
+<span class="fc" id="L321">        ArgUtils.notMin(index, -1, &quot;index&quot;);</span>
+        
+<span class="fc" id="L323">        pushNestedPath(String.format(&quot;%s[%d]&quot;, canonicalPath, index));</span>
+<span class="fc" id="L324">    }</span>
+    
+    /**
+     * マップなどのキー付きのパスを１つ下位に移動します。
+     * @param subPath ネストするパス
+     * @param key マップのキー
+     * @throws IllegalArgumentException {@literal subPath is empty or key is empty}
+     */
+    public void pushNestedPath(final String subPath, final String key) {
+<span class="fc" id="L333">        final String canonicalPath = normalizePath(subPath);</span>
+<span class="fc" id="L334">        ArgUtils.notEmpty(subPath, &quot;subPath&quot;);</span>
+<span class="fc" id="L335">        ArgUtils.notEmpty(key, &quot;key&quot;);</span>
+        
+<span class="fc" id="L337">        pushNestedPath(String.format(&quot;%s[%s]&quot;, canonicalPath, key));</span>
+<span class="fc" id="L338">    }</span>
+    
+    /**
+     * パスを１つ上位に移動します。
+     * @return 現在のパスを返しまます。
+     * @throws IllegalStateException {@literal パスがこれ以上移動できない場合}
+     */
+    public String popNestedPath() {
+        
+<span class="fc bfc" id="L347" title="All 2 branches covered.">        if(nestedPathStack.isEmpty()) {</span>
+<span class="fc" id="L348">            throw new IllegalStateException(&quot;Cannot pop nested path: no nested path on stack&quot;);</span>
+        }
+        
+<span class="fc" id="L351">        final String subPath = nestedPathStack.pop();</span>
+<span class="fc" id="L352">        this.currentPath = buildPath();</span>
+<span class="fc" id="L353">        return subPath;</span>
+    }
+    
+    /**
+     * 現在パスのスタックに積まれているパスを結合し、１つに組み立てる。
+     * &lt;p&gt;ルートの時は空文字を返します。&lt;/p&gt;
+     * @return 結合したパス
+     */
+    private String buildPath() {
+<span class="fc" id="L362">        return Utils.join(nestedPathStack, PATH_SEPARATOR);</span>
+    }
+    
+    /**
+     * 現在のパスを取得します。
+     * &lt;p&gt;ルートの時は空文字を返します。&lt;/p&gt;
+     * @return 現在のパス
+     */
+    public String getCurrentPath() {
+<span class="fc" id="L371">        return currentPath;</span>
+    }
+    
+    /**
+     * 現在のパスに引数で指定したフィールド名を追加した値を返す。
+     * &lt;p&gt;現在のパスが空の場合は、フィールド名を返す。&lt;/p&gt;
+     * @param fieldName フィールド名
+     * @return フィールド名を追加したパス
+     */
+    public String buildFieldPath(final String fieldName) {
+<span class="fc bfc" id="L381" title="All 2 branches covered.">        if(Utils.isEmpty(getCurrentPath())) {</span>
+<span class="fc" id="L382">            return fieldName;</span>
+        } else {
+<span class="fc" id="L384">            return Utils.join(new String[]{getCurrentPath(), fieldName}, PATH_SEPARATOR);</span>
+        }
+    }
+    
+    /**
+     * 全てのエラーをクリアする。
+     * @since 0.5
+     */
+    public void clearAllErrors() {
+<span class="fc" id="L393">        this.errors.clear();</span>
+<span class="fc" id="L394">    }</span>
+    
+    /**
+     * エラー情報を追加する
+     * @param error エラー情報
+     * @throws IllegalArgumentException {@literal error == null.}
+     */
+    public void addError(final ObjectError error) {
+<span class="fc" id="L402">        ArgUtils.notNull(error, &quot;error&quot;);</span>
+<span class="fc" id="L403">        this.errors.add(error);</span>
+<span class="fc" id="L404">    }</span>
+    
+    /**
+     * エラー情報を全て追加する。
+     * @param errors エラー情報
+     * @throws IllegalArgumentException {@literal errors == null.}
+     */
+    public void addAllErrors(final Collection&lt;ObjectError&gt; errors) {
+<span class="nc" id="L412">        ArgUtils.notNull(errors, &quot;errors&quot;);</span>
+<span class="nc" id="L413">        this.errors.addAll(errors);</span>
+<span class="nc" id="L414">    }</span>
+    
+    /**
+     * 全てのエラー情報を取得する
+     * @return 全てのエラー情報
+     */
+    public List&lt;ObjectError&gt; getAllErrors() {
+<span class="fc" id="L421">        return new ArrayList&lt;&gt;(errors);</span>
+    }
+    
+    /**
+     * エラーがあるか確かめる。
+     * @return true:エラーがある。
+     */
+    public boolean hasErrors() {
+<span class="pc bpc" id="L429" title="1 of 2 branches missed.">        return errors.size() &gt; 0;</span>
+    }
+    
+    /**
+     * グローバルエラーを取得する
+     * @return エラーがない場合は空のリストを返す
+     */
+    public List&lt;ObjectError&gt; getGlobalErrors() {
+<span class="fc" id="L437">        return errors.stream()</span>
+<span class="fc bfc" id="L438" title="All 2 branches covered.">                .filter(e -&gt; !(e instanceof FieldError))</span>
+<span class="fc" id="L439">                .collect(Collectors.toList());</span>
+    }
+    
+    /**
+     * 先頭のグローバルエラーを取得する。
+     * @return 存在しない場合は、空を返す。
+     */
+    public Optional&lt;ObjectError&gt; getFirstGlobalError() {
+<span class="fc" id="L447">        return errors.stream()</span>
+<span class="pc bpc" id="L448" title="1 of 2 branches missed.">                .filter(e -&gt; !(e instanceof FieldError))</span>
+<span class="fc" id="L449">                .findFirst();</span>
+        
+    }
+    
+    /**
+     * グローバルエラーがあるか確かめる。
+     * @return true:グローバルエラーがある。
+     */
+    public boolean hasGlobalErrors() {
+<span class="fc" id="L458">        return getFirstGlobalError().isPresent();</span>
+    }
+    
+    /**
+     * グローバルエラーの件数を取得する
+     * @return エラーの件数
+     */
+    public int getGlobalErrorCount() {
+<span class="fc" id="L466">        return getGlobalErrors().size();</span>
+    }
+    
+    /**
+     * フィールドエラーを取得する
+     * @return エラーがない場合は空のリストを返す
+     */
+    public List&lt;FieldError&gt; getFieldErrors() {
+<span class="fc" id="L474">        return errors.stream()</span>
+<span class="fc" id="L475">                .filter(e -&gt; e instanceof FieldError)</span>
+<span class="fc" id="L476">                .map(e -&gt; (FieldError)e)</span>
+<span class="fc" id="L477">                .collect(Collectors.toList());</span>
+        
+    }
+    
+    /**
+     * 先頭のフィールドエラーを取得する
+     * @return エラーがない場合は空を返す
+     */
+    public Optional&lt;FieldError&gt; getFirstFieldError() {
+<span class="fc" id="L486">        return errors.stream()</span>
+<span class="fc" id="L487">                .filter(e -&gt; e instanceof FieldError)</span>
+<span class="fc" id="L488">                .map(e -&gt; (FieldError)e)</span>
+<span class="fc" id="L489">                .findFirst();</span>
+        
+    }
+    
+    /**
+     * フィールドエラーが存在するか確かめる。
+     * @return true:フィールドエラーを持つ。
+     */
+    public boolean hasFieldErrors() {
+<span class="fc" id="L498">        return getFirstFieldError().isPresent();</span>
+    }
+    
+    /**
+     * フィールドエラーの件数を取得する。
+     * @return フィールドエラーの件数
+     */
+    public int getFieldErrorCount() {
+<span class="fc" id="L506">        return getFieldErrors().size();</span>
+    }
+    
+    /**
+     * パスを指定してフィールドエラーを取得する。
+     * &lt;p&gt;検索する際には、引数「path」に現在のパス({@link #getCurrentPath()})を付与して処理します。&lt;/p&gt;
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return エラーがない場合は空のリストを返す
+     */
+    public List&lt;FieldError&gt; getFieldErrors(final String path) {
+<span class="fc" id="L516">        final String fullPath = buildFieldPath(path);</span>
+        
+<span class="fc" id="L518">        return getFieldErrors().stream()</span>
+<span class="fc" id="L519">                .filter(e -&gt; isMatchingFieldError(fullPath, e))</span>
+<span class="fc" id="L520">                .collect(Collectors.toList());</span>
+        
+    }
+    
+    /**
+     * パスを指定して先頭のフィールドエラーを取得する。
+     * &lt;p&gt;検索する際には、引数「path」に現在のパス({@link #getCurrentPath()})を付与して処理します。&lt;/p&gt;
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return エラーがない場合は空を返す
+     */
+    public Optional&lt;FieldError&gt; getFirstFieldError(final String path) {
+<span class="fc" id="L531">        final String fullPath = buildFieldPath(path);</span>
+<span class="fc" id="L532">        return getFieldErrors().stream()</span>
+<span class="fc" id="L533">                .filter(e -&gt; isMatchingFieldError(fullPath, e))</span>
+<span class="fc" id="L534">                .findFirst();</span>
+        
+    }
+    
+    /**
+     * 指定したパスのフィィールドエラーが存在するか確かめる。
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return true:エラーがある場合。
+     */
+    public boolean hasFieldErrors(final String path) {
+<span class="fc" id="L544">        return getFirstFieldError(path).isPresent();</span>
+    }
+    
+    /**
+     * 指定したパスのフィィールドエラーの件数を取得する。
+     * @param path 最後に'*'を付けるとワイルドカードが指定可能。
+     * @return
+     */
+    public int getFieldErrorCount(final String path) {
+<span class="fc" id="L553">        return getFieldErrors(path).size();</span>
+    }
+    
+    /**
+     * 指定したパスがフィールドエラーのパスと一致するかチェックするかどうか。
+     * @param path パス
+     * @param fieldError フィールドエラー
+     * @return true: 一致する場合。
+     */
+    private boolean isMatchingFieldError(final String path, final FieldError fieldError) {
+        
+<span class="fc bfc" id="L564" title="All 2 branches covered.">        if (fieldError.getField().equals(path)) {</span>
+<span class="fc" id="L565">            return true;</span>
+        }
+        
+<span class="fc bfc" id="L568" title="All 2 branches covered.">        if(path.endsWith(&quot;*&quot;)) {</span>
+<span class="fc" id="L569">            String subPath = path.substring(0, path.length()-1);</span>
+<span class="fc" id="L570">            return fieldError.getField().startsWith(subPath);</span>
+        }
+        
+<span class="fc" id="L573">        return false;</span>
+    }
+    
+    /**
+     * グローバルエラーのビルダーを作成します。
+     * @param errorCode エラーコード
+     * @return {@link ObjectError}のインスタンスを組み立てるビルダクラス。
+     */
+    public InternalObjectErrorBuilder createGlobalError(final String errorCode) {
+<span class="fc" id="L582">        return createGlobalError(new String[]{errorCode});</span>
+    }
+    
+    /**
+     * グローバルエラーのビルダーを作成します。
+     * @param errorCodes エラーコード。先頭の要素が優先されます。
+     * @return {@link ObjectError}のインスタンスを組み立てるビルダクラス。
+     */
+    public InternalObjectErrorBuilder createGlobalError(final String[] errorCodes) {
+        
+<span class="fc" id="L592">        String[] codes = new String[0];</span>
+<span class="fc bfc" id="L593" title="All 2 branches covered.">        for(String errorCode : errorCodes) {</span>
+<span class="fc" id="L594">            codes = Utils.concat(codes, generateMessageCodes(errorCode));</span>
+        }
+        
+<span class="fc" id="L597">        return new InternalObjectErrorBuilder(this, getObjectName(), codes)</span>
+<span class="fc" id="L598">                .sheetName(getSheetName());</span>
+    }
+    
+    /**
+     * フィールドエラーのビルダーを作成します。
+     * @param field フィールドパス。
+     * @param errorCode エラーコード
+     * @return {@link FieldError}のインスタンスを組み立てるビルダクラス。
+     */
+    public InternalFieldErrorBuilder createFieldError(final String field, final String errorCode) {
+        
+<span class="fc" id="L609">        return createFieldError(field, new String[]{errorCode});</span>
+        
+    }
+    
+    /**
+     * フィールドエラーのビルダーを作成します。
+     * @param field フィールドパス。
+     * @param errorCodes エラーコード。先頭の要素が優先されます。
+     * @return {@link FieldError}のインスタンスを組み立てるビルダクラス。
+     */
+    public InternalFieldErrorBuilder createFieldError(final String field, final String[] errorCodes) {
+        
+<span class="fc" id="L621">        final String fieldPath = buildFieldPath(field);</span>
+<span class="fc" id="L622">        final Class&lt;?&gt; fieldType = getFieldType(field);</span>
+<span class="fc" id="L623">        final Object fieldValue = getFieldValue(field);</span>
+        
+<span class="fc" id="L625">        String[] codes = new String[0];</span>
+<span class="fc bfc" id="L626" title="All 2 branches covered.">        for(String errorCode : errorCodes) {</span>
+<span class="fc" id="L627">            codes = Utils.concat(codes, generateMessageCodes(errorCode, fieldPath, fieldType));</span>
+        }
+        
+<span class="fc" id="L630">        return new InternalFieldErrorBuilder(this, getObjectName(), fieldPath, codes)</span>
+<span class="fc" id="L631">                .sheetName(getSheetName())</span>
+<span class="fc" id="L632">                .rejectedValue(fieldValue);</span>
+                
+    }
+    
+    /**
+     * 型変換失敗時のフィールエラー用のビルダを作成します。
+     * @param field フィールドパス。
+     * @param fieldType フィールドのクラスタイプ
+     * @param rejectedValue 型変換に失敗した値
+     * @return {@link FieldError}のインスタンスを組み立てるビルダクラス。
+     */
+    public InternalFieldErrorBuilder createFieldConversionError(final String field, final Class&lt;?&gt; fieldType, final Object rejectedValue) {
+        
+<span class="fc" id="L645">        final String fieldPath = buildFieldPath(field);</span>
+<span class="fc" id="L646">        final String[] codes = messageCodeGenerator.generateTypeMismatchCodes(getObjectName(), fieldPath, fieldType);</span>
+        
+<span class="fc" id="L648">        return new InternalFieldErrorBuilder(this, getObjectName(), fieldPath, codes)</span>
+<span class="fc" id="L649">                .sheetName(getSheetName())</span>
+<span class="fc" id="L650">                .rejectedValue(rejectedValue)</span>
+<span class="fc" id="L651">                .conversionFailure(true);</span>
+        
+        
+    }
+    
+    /**
+     * フィールドに対するフォーマッタを登録する。
+     * @since 2.0
+     * @param field フィールド名
+     * @param fieldType フィールドのクラスタイプ
+     * @param formatter フォーマッタ
+     */
+    public void registerFieldFormatter(final String field, final Class&lt;?&gt; fieldType, final FieldFormatter&lt;?&gt; formatter) {
+        
+<span class="nc" id="L665">        registerFieldFormatter(field, fieldType, formatter, false);</span>
+        
+<span class="nc" id="L667">    }</span>
+    
+    /**
+     * フィールドに対するフォーマッタを登録する。
+     * @since 2.0
+     * @param field フィールド名
+     * @param fieldType フィールドのクラスタイプ
+     * @param formatter フォーマッタ
+     * @param strippedIndex 登録するときにフィールドパスから、インデックス情報を除去するかどうか。
+     */
+    @SuppressWarnings({&quot;unchecked&quot;, &quot;rawtypes&quot;})
+    public void registerFieldFormatter(final String field, final Class&lt;?&gt; fieldType, final FieldFormatter&lt;?&gt; formatter,
+            final boolean strippedIndex) {
+        
+<span class="fc" id="L681">        String fieldPath = buildFieldPath(field);</span>
+        
+<span class="pc bpc" id="L683" title="1 of 2 branches missed.">        if(strippedIndex) {</span>
+            // パスからインデックスやキーを削除する
+<span class="fc" id="L685">            List&lt;String&gt; strippedPaths = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L686">            fieldFormatterRegistry.addStrippedPropertyPaths(strippedPaths, &quot;&quot;, fieldPath);</span>
+            
+<span class="fc bfc" id="L688" title="All 2 branches covered.">            if(strippedPaths.size() &gt; 0) {</span>
+                // 辞書順位並び変えて先頭に来るのが、インデックスを全て削除されたパス
+<span class="fc" id="L690">                Collections.sort(strippedPaths);</span>
+<span class="fc" id="L691">                fieldPath = strippedPaths.get(0);</span>
+            }
+        }
+        
+<span class="fc" id="L695">        fieldFormatterRegistry.registerFormatter(fieldPath, (Class)fieldType, (FieldFormatter)formatter);</span>
+        
+<span class="fc" id="L697">    }</span>
+    
+    /**
+     * フィールドとクラスタイプを指定してフォーマッタを取得する。
+     * @since 2.0
+     * @param field フィールド名
+     * @param fieldType フィールドのクラスタイプ
+     * @return 見つからない場合は、nullを返す。
+     */
+    public &lt;T&gt; FieldFormatter&lt;T&gt; findFieldFormatter(final String field, final Class&lt;T&gt; fieldType) {
+<span class="fc" id="L707">        String fieldPath = buildFieldPath(field);</span>
+<span class="fc" id="L708">        return fieldFormatterRegistry.findFormatter(fieldPath, fieldType);</span>
+    }
+    
+    public String[] generateMessageCodes(final String code) {
+<span class="fc" id="L712">        return getMessageCodeGenerator().generateCodes(code, getObjectName());</span>
+    }
+    
+    public String[] generateMessageCodes(final String code, final String field) {
+<span class="nc" id="L716">        return getMessageCodeGenerator().generateCodes(code, getObjectName(), field, null);</span>
+    }
+    
+    public String[] generateMessageCodes(final String code, final String field, final Class&lt;?&gt; fieldType) {
+<span class="fc" id="L720">        return getMessageCodeGenerator().generateCodes(code, getObjectName(), field, fieldType);</span>
+    }
+    
+    public MessageCodeGenerator getMessageCodeGenerator() {
+<span class="fc" id="L724">        return messageCodeGenerator;</span>
+    }
+    
+    public void setMessageCodeGenerator(MessageCodeGenerator messageCodeGenerator) {
+<span class="nc" id="L728">        this.messageCodeGenerator = messageCodeGenerator;</span>
+<span class="nc" id="L729">    }</span>
+    
+    /**
+     * フィールドのフォーマッタの管理クラスを取得する。
+     * @return
+     */
+    public FieldFormatterRegistry getFieldFormatterRegistry() {
+<span class="fc" id="L736">        return fieldFormatterRegistry;</span>
+    }
+    
+    /**
+     * フィールドのフォーマッタクラスを設定する。
+     * @param fieldFormatterRegistry フィールドのフォーマッタの管理クラス
+     */
+    public void setFieldFormatterRegistry(FieldFormatterRegistry fieldFormatterRegistry) {
+<span class="nc" id="L744">        this.fieldFormatterRegistry = fieldFormatterRegistry;</span>
+<span class="nc" id="L745">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

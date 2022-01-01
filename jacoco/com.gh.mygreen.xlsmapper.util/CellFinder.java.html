@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CellFinder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.util</a> &gt; <span class="el_source">CellFinder.java</span></div><h1>CellFinder.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.util;
+
+import java.util.Optional;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
+
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
+
+/**
+ * 指定したラベルを持つセルを検索するクラス。
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class CellFinder {
+    
+    
+    /**
+     * シート情報
+     */
+    private final Sheet sheet;
+    
+    /**
+     * システム設定
+     */
+    private final Configuration config;
+    
+    /**
+     * 検索対象のラベル
+     */
+    private final String label;
+    
+    /**
+     * 起点となる行番号
+     * ・指定しない場合は、-1を指定する
+     */
+<span class="fc" id="L42">    private int startRow = -1;</span>
+    
+    /**
+     * 起点となる列番号
+     * ・指定しない場合は、-1を指定する
+     */
+<span class="fc" id="L48">    private int startColumn = -1;</span>
+    
+    /**
+     * 起点となる位置を除外するかどうか
+     */
+<span class="fc" id="L53">    private boolean excludeStartPoisition = false;</span>
+    
+    /**
+     * 検索する際の条件を組み立てる
+     * @param sheet 検索対象のシート
+     * @param label 検索するセルのラベル
+     * @param config システム設定。
+     *        設定値 {@link Configuration#isNormalizeLabelText()}、{@link Configuration#isRegexLabelText()}の値によって、
+     *        検索する際にラベルを正規化、または正規表現により一致するかで判定を行う。
+     */
+    public static CellFinder query(final Sheet sheet, final String label, final Configuration config) {
+<span class="fc" id="L64">        return new CellFinder(sheet, label, config);</span>
+    }
+    
+<span class="fc" id="L67">    private CellFinder(final Sheet sheet, final String label, final Configuration config) {</span>
+        
+<span class="fc" id="L69">        ArgUtils.notNull(sheet, &quot;sheet&quot;);</span>
+<span class="fc" id="L70">        ArgUtils.notEmpty(label, &quot;label&quot;);</span>
+<span class="fc" id="L71">        ArgUtils.notNull(config, &quot;config&quot;);</span>
+        
+<span class="fc" id="L73">        this.sheet = sheet;</span>
+<span class="fc" id="L74">        this.label = label;</span>
+<span class="fc" id="L75">        this.config = config;</span>
+<span class="fc" id="L76">    }</span>
+    
+    /**
+     * 起点なる位置を指定する。
+     * @param column 列番号(0から始まる)
+     * @param row 行番号(0から始まる)
+     * @return 自身のインスタンス。メソッドチェーンとして続ける。
+     * @throws IllegalArgumentException {@literal column &lt; 0 or row &lt; 0}
+     */
+    public CellFinder startPosition(final int column, final int row) {
+<span class="fc" id="L86">        ArgUtils.notMin(column, 0, &quot;column&quot;);</span>
+<span class="fc" id="L87">        ArgUtils.notMin(row, 0, &quot;row&quot;);</span>
+        
+<span class="fc" id="L89">        this.startColumn = column;</span>
+<span class="fc" id="L90">        this.startRow = row;</span>
+        
+<span class="fc" id="L92">        return this;</span>
+    }
+    
+    /**
+     * 起点なる位置を指定する。
+     * @param cell 起点とうなるセル
+     * @return 自身のインスタンス。メソッドチェーンとして続ける。
+     * @throws NullPointerException {@literal cell == null.}
+     */
+    public CellFinder startPosition(final Cell cell) {
+<span class="fc" id="L102">        ArgUtils.notNull(cell, &quot;cell&quot;);</span>
+        
+<span class="fc" id="L104">        return startPosition(cell.getColumnIndex(), cell.getRowIndex());</span>
+    }
+    
+    /**
+     * 起点なる位置を指定する。
+     * @param address セルのアドレス
+     * @return 自身のインスタンス。メソッドチェーンとして続ける。
+     * @throws NullPointerException {@literal address == null.}
+     */
+    public CellFinder startPosition(final CellPosition address) {
+<span class="fc" id="L114">        ArgUtils.notNull(address, &quot;address&quot;);</span>
+        
+<span class="fc" id="L116">        return startPosition(address.getColumn(), address.getRow());</span>
+    }
+    
+    /**
+     * 起点となる列を指定する。
+     * ただし、行は先頭から検索する。
+     * @param column 列番号(0から始まる）
+     * @return 自身のインスタンス。メソッドチェーンとして続ける。
+     * @throws IllegalArgumentException {@literal column &lt; 0}
+     */
+    public CellFinder startColumn(final int column) {
+<span class="nc" id="L127">        ArgUtils.notMin(column, 0, &quot;column&quot;);</span>
+        
+<span class="nc" id="L129">        this.startColumn = column;</span>
+<span class="nc" id="L130">        this.startRow = -1;</span>
+        
+<span class="nc" id="L132">        return this;</span>
+    }
+    
+    /**
+     * 起点となる行を指定する。
+     * ただし、列は先頭から検索する。
+     * @param row 行番号(0から始まる）
+     * @return 自身のインスタンス。メソッドチェーンとして続ける。
+     * @throws IllegalArgumentException {@literal row &lt; 0}
+     */
+    public CellFinder startRow(final int row) {
+<span class="nc" id="L143">        ArgUtils.notMin(row, 0, &quot;row&quot;);</span>
+        
+<span class="nc" id="L145">        this.startColumn = -1;</span>
+<span class="nc" id="L146">        this.startRow = row;</span>
+        
+<span class="nc" id="L148">        return this;</span>
+    }
+    
+    /**
+     * 起点となる位置を除外するかどうか。
+     * @param excludeStartPosition trueの場合、起点となる位置を除外する
+     * @return 自身のインスタンス。メソッドチェーンとして続ける。
+     */
+    public CellFinder excludeStartPosition(final boolean excludeStartPosition) {
+<span class="fc" id="L157">        this.excludeStartPoisition = excludeStartPosition;</span>
+<span class="fc" id="L158">        return this;</span>
+    }
+    
+    /**
+     * 一致する条件のセルを探す。
+     * @return 見つからない場合は、空を返す。
+     */
+    public Optional&lt;Cell&gt; findOptional() {
+        
+<span class="fc" id="L167">        return Optional.ofNullable(findCell());</span>
+        
+    }
+    
+    /**
+     * 一致する条件のセルを探す。
+     * ただし、指定したセルが見つからない場合は、例外{@link CellNotFoundException}をスローする。
+     * @return 
+     * @throws CellNotFoundException 指定したセルが見つからない場合
+     */
+    public Cell findWhenNotFoundException() {
+        
+<span class="fc" id="L179">        final Cell cell = findCell();</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">        if(cell == null) {</span>
+<span class="fc" id="L181">            throw new CellNotFoundException(sheet.getSheetName(), label);</span>
+        }
+        
+<span class="fc" id="L184">        return cell;</span>
+        
+    }
+    
+    /**
+     * 一致する条件のセルを探す。
+     * @param optional セルが見つからない場合に、nullを返すかどうか。
+     * @return 一致したセルを返す。
+     * @throws CellNotFoundException 引数「optional=false」のときに、一致するセルが見つからない場合にスローする。
+     */
+    public Cell find(final boolean optional) {
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">        if(optional) {</span>
+<span class="nc" id="L196">            return findOptional().orElse(null);</span>
+        } else {
+<span class="fc" id="L198">            return findWhenNotFoundException();</span>
+        }
+    }
+    
+    /**
+     * 条件に一致するセルを探す
+     * @return 見つからない場合は、nullを返す。
+     */
+    private Cell findCell() {
+        
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        final int rowStart = startRow &lt; 0 ? 0 : startRow;</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">        final int columnStart = startColumn &lt; 0 ? 0 : startColumn;</span>
+        
+<span class="fc" id="L211">        final int maxRow = POIUtils.getRows(sheet);</span>
+<span class="fc bfc" id="L212" title="All 2 branches covered.">        for(int i=rowStart; i &lt; maxRow; i++) {</span>
+<span class="fc" id="L213">            final Row row = sheet.getRow(i);</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">            if(row == null) {</span>
+<span class="fc" id="L215">                continue;</span>
+            }
+            
+<span class="fc" id="L218">            final int maxCol = row.getLastCellNum();;</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">            for(int j=columnStart; j &lt; maxCol; j++) {</span>
+                
+<span class="fc bfc" id="L221" title="All 4 branches covered.">                if(excludeStartPoisition &amp;&amp; includeInStartPosition(j, i)) {</span>
+                    // 開始位置を除外する場合
+<span class="fc" id="L223">                    continue;</span>
+                }
+                
+<span class="fc" id="L226">                final Cell cell = row.getCell(j, MissingCellPolicy.CREATE_NULL_AS_BLANK);</span>
+<span class="fc" id="L227">                final String cellValue = POIUtils.getCellContents(cell, config.getCellFormatter());</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">                if(Utils.matches(cellValue, label, config)) {</span>
+<span class="fc" id="L229">                    return cell;</span>
+                }
+            }
+        }
+        
+<span class="fc" id="L234">        return null;</span>
+        
+    }
+    
+    /**
+     * 現在の位置が検索対象の開始位置を含むかどうか判定します。
+     * @param currentColumn 現在の列番号
+     * @param currentRow 現在の行番号
+     * @return trueの場合含みます。
+     */
+    private boolean includeInStartPosition(final int currentColumn, final int currentRow) {
+        
+<span class="pc bpc" id="L246" title="2 of 8 branches missed.">        if(startColumn &gt;=0 &amp;&amp; startRow &gt;= 0</span>
+                &amp;&amp; currentColumn == startColumn &amp;&amp; currentRow == startRow) {
+            // 行と列の両方の指定がある場合
+<span class="fc" id="L249">            return true;</span>
+            
+<span class="pc bpc" id="L251" title="4 of 6 branches missed.">        } else if(startColumn &gt;= 0 &amp;&amp; startRow &lt; 0 &amp;&amp; currentColumn == startColumn) {</span>
+            // 列の指定のみ
+<span class="nc" id="L253">            return true;</span>
+            
+<span class="pc bpc" id="L255" title="5 of 6 branches missed.">        } else if(startColumn &lt; 0 &amp;&amp; startRow &gt;= 0 &amp;&amp; currentRow == startRow) {</span>
+            // 行の指定のみ
+<span class="nc" id="L257">            return true;</span>
+            
+        }
+        
+<span class="fc" id="L261">        return false;</span>
+        
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

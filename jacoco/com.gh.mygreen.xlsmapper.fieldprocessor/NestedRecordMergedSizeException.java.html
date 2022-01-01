@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NestedRecordMergedSizeException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor</a> &gt; <span class="el_source">NestedRecordMergedSizeException.java</span></div><h1>NestedRecordMergedSizeException.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor;
+
+import com.gh.mygreen.xlsmapper.XlsMapperException;
+
+/**
+ * ネストしたレコードにおいて、結合したセルのサイズが不正な場合にスローされる例外。
+ *
+ * @version 2.0
+ * @since 1.4
+ * @author T.TSUCHIE
+ *
+ */
+public class NestedRecordMergedSizeException extends XlsMapperException {
+
+    /** serialVersionUID */
+    private static final long serialVersionUID = 1458115179311554147L;
+
+    /** 処理対象のシート */
+    private final String sheetName;
+
+    /** 実際の結合サイズ */
+    private final int mergedSize;
+
+    public NestedRecordMergedSizeException(final String sheetName, final int mergedSize, final String message) {
+<span class="nc" id="L25">        super(message);</span>
+
+<span class="nc" id="L27">        this.sheetName = sheetName;</span>
+<span class="nc" id="L28">        this.mergedSize = mergedSize;</span>
+
+<span class="nc" id="L30">    }</span>
+
+    /**
+     * 対象のシート名
+     * @return
+     */
+    public String getSheetName() {
+<span class="nc" id="L37">        return sheetName;</span>
+    }
+
+    /**
+     * 実際のセルの結合サイズ
+     * @return
+     */
+    public int getMergedSize() {
+<span class="nc" id="L45">        return mergedSize;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

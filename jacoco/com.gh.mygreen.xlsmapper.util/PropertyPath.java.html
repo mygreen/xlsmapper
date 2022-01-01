@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PropertyPath.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.util</a> &gt; <span class="el_source">PropertyPath.java</span></div><h1>PropertyPath.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.util;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 解析済みのプロパティ式のオブジェクト。
+ * 
+ * @since 1.0
+ * @author T.TSUCHIE
+ *
+ */
+public class PropertyPath implements Serializable {
+    
+    /** serialVersionUID */
+    private static final long serialVersionUID = -4273945900442385415L;
+    
+    /**
+     * 解析元のパス
+     */
+    private final String path;
+    
+    /**
+     * パスを解析してトークンに分解した結果。
+     */
+    private final List&lt;Token&gt; tokens;
+    
+    /**
+     * 解析元のパスを指定するコンストラクタ。
+     * @param path 解析元のパス
+     * @throws IllegalArgumentException path is null or empty.
+     */
+<span class="fc" id="L35">    public PropertyPath(final String path) {</span>
+<span class="fc" id="L36">        ArgUtils.notEmpty(path, &quot;path&quot;);</span>
+<span class="fc" id="L37">        this.path = path;</span>
+<span class="fc" id="L38">        this.tokens = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L39">    }</span>
+    
+    /**
+     * 解析元のパスを取得する。
+     * @return
+     */
+    public String getPath() {
+<span class="nc" id="L46">        return path;</span>
+    }
+    
+    /**
+     * トークンを追加する。
+     * @param token
+     */
+    public void add(final Token token) {
+<span class="fc" id="L54">        this.tokens.add(token);</span>
+<span class="fc" id="L55">    }</span>
+    
+    /**
+     * トークンに分割した結果を取得する。
+     * @return
+     */
+    public List&lt;Token&gt; getPathAsToken() {
+<span class="fc" id="L62">        return new ArrayList&lt;&gt;(tokens);</span>
+    }
+    
+    /**
+     * パスを分割したもの。
+     * @since 1.0
+     * @author T.TSUCHIE
+     *
+     */
+    public static class Token implements Serializable {
+        
+        /** serialVersionUID */
+        private static final long serialVersionUID = 2281725403723210214L;
+        
+        /** トークンの文字 */
+        private final String token;
+        
+        /**
+         * エスケープ文字を除去したした文字
+         */
+        private final String value;
+        
+<span class="fc" id="L84">        public Token(String token) {</span>
+<span class="fc" id="L85">            this.token = token;</span>
+<span class="fc" id="L86">            this.value = Utils.removeEscapeChar(token, '\\');</span>
+<span class="fc" id="L87">        }</span>
+        
+        /**
+         * トークンの値を取得する
+         * @return
+         */
+        public String getToken() {
+<span class="fc" id="L94">            return token;</span>
+        }
+        
+        /**
+         * エスケープ文字を取得する。
+         * @return
+         */
+        public String getValue() {
+<span class="fc" id="L102">            return value;</span>
+        }
+        
+        /**
+         * 括弧で囲まれた条件の書式'[キー]'を表すトークン。
+         */
+        public static class Key extends Token {
+            
+            /** serialVersionUID */
+            private static final long serialVersionUID = -5951809427315756202L;
+
+            public Key(String value) {
+<span class="fc" id="L114">                super(value);</span>
+<span class="fc" id="L115">            }</span>
+            
+            /**
+             * 括弧を除いた条件の値の取得。
+             * @return
+             */
+            public String getKey() {
+<span class="fc" id="L122">                int length = getValue().length();</span>
+<span class="fc" id="L123">                return getValue().substring(1, length-1);</span>
+            }
+            
+        }
+        
+        /**
+         * パスの区切り文字&quot;.&quot;を表すトークン。
+         *
+         */
+        public static class Separator extends Token {
+            
+            /** serialVersionUID */
+            private static final long serialVersionUID = -9021975741257702192L;
+            
+            public Separator() {
+<span class="fc" id="L138">                super(&quot;.&quot;);</span>
+<span class="fc" id="L139">            }</span>
+            
+        }
+        
+        /**
+         * プロパティ名を表すトークン。
+         *
+         */
+        public static class Name extends Token {
+            
+            /** serialVersionUID */
+            private static final long serialVersionUID = -1196971215805919815L;
+            
+            public Name(String value) {
+<span class="fc" id="L153">                super(value);</span>
+<span class="fc" id="L154">            }</span>
+            
+        }
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
