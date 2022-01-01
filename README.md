@@ -13,7 +13,7 @@ Apache License verion 2.0
 
 # Depends
 + Java1.8
-+ Apache POI v3.17
++ Apache POI v5.1.0
 + SpringFramework 3.0+ (optional)
 + BeanValidation 1.0/1.1/2.0 (optional)
 
@@ -24,7 +24,7 @@ Apache License verion 2.0
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
-        <version>2.1.1</version>
+        <version>2.2</version>
     </dependency>
     ```
 
