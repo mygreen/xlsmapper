@@ -1,14 +1,14 @@
 package com.gh.mygreen.xlsmapper.xml;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
-import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.annotation.RecordTerminal;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
 
+import ognl.DefaultTypeConverter;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
@@ -410,7 +410,8 @@ public class OgnlValueFormatterTest {
     private <A> A evalOgnl(final String expression) {
         
         try {
-            OgnlContext context = new OgnlContext();
+            OgnlContext context = new OgnlContext(
+                    new MultipleLoaderClassResolver(), new DefaultTypeConverter(), new AllAllowMemberAccess());
             Object obj = Ognl.getValue(expression, context, new Object());
             
             return (A) obj;
