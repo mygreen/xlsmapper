@@ -28,17 +28,12 @@ Apache License verion 2.0
     </dependency>
     ```
 
-2. Add dependency for Logging library. Example Log4j.
+2. Add dependency for Logging library. Example Logback.
     ```xml
     <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.7.1</version>
-    </dependency>
-    <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.14</version>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.2.10</version>
     </dependency>
     ```
 
