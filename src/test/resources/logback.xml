@@ -9,8 +9,8 @@
 		</filter>
 	</appender>
 	<logger name="com.gh.mygreen.xlsmapper" level="DEBUG">
-        <appender-ref ref="CONSOLE" />
-    </logger>
+		<appender-ref ref="CONSOLE" />
+	</logger>
 	<root>
 		<level value="WARN" />
 		<appender-ref ref="CONSOLE" />
