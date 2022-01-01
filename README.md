@@ -13,7 +13,7 @@ Apache License verion 2.0
 
 # Depends
 + Java1.8
-+ Apache POI v3.17
++ Apache POI v5.1.0
 + SpringFramework 3.0+ (optional)
 + BeanValidation 1.0/1.1/2.0 (optional)
 
@@ -24,21 +24,16 @@ Apache License verion 2.0
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
-        <version>2.1.1</version>
+        <version>2.2</version>
     </dependency>
     ```
 
-2. Add dependency for Logging library. Example Log4j.
+2. Add dependency for Logging library. Example Logback.
     ```xml
     <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.7.1</version>
-    </dependency>
-    <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.14</version>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.2.10</version>
     </dependency>
     ```
 

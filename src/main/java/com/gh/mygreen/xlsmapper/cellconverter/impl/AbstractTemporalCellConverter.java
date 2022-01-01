@@ -46,7 +46,7 @@ public abstract class AbstractTemporalCellConverter<T extends TemporalAccessor &
     @Override
     protected T parseCell(final Cell evaluatedCell, final String formattedValue) throws TypeBindException {
 
-        if(evaluatedCell.getCellTypeEnum().equals(CellType.NUMERIC)) {
+        if(evaluatedCell.getCellType().equals(CellType.NUMERIC)) {
             return convertFromDate(evaluatedCell.getDateCellValue());
 
         } else if(!formattedValue.isEmpty()) {
@@ -76,7 +76,7 @@ public abstract class AbstractTemporalCellConverter<T extends TemporalAccessor &
             POIUtils.setCellValueAsDate(cell, date, isStartDate1904);
 
         } else {
-            cell.setCellType(CellType.BLANK);
+            cell.setBlank();
         }
 
     }

@@ -28,6 +28,8 @@ import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.XlsCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsCommentOption;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;
+import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
@@ -555,6 +557,8 @@ public class AnnoCommentOptionTest {
         
         private Map<String, String> comments;
         
+        private Map<String, Boolean> commentVisibles;
+        
         @XlsSheetName
         private String sheetName;
 
@@ -565,6 +569,25 @@ public class AnnoCommentOptionTest {
         @XlsCommentOption(visible = false)
         @XlsLabelledCell(label = "コメントの表示設定（false）", type = LabelledCellType.Right)
         private String invisible;
+        
+        /**
+         * セルのコメントの表示有無の設定
+         */
+        @XlsPostLoad
+        @XlsPostSave
+        public void doPost(Sheet sheet) {
+            
+            if(commentVisibles == null) {
+                this.commentVisibles = new HashMap<>();
+            }
+            
+            for(Map.Entry<String, CellPosition> entry : positions.entrySet()) {
+                Cell cell = POIUtils.getCell(sheet, entry.getValue());
+                Comment comment = cell.getCellComment();
+                commentVisibles.put(entry.getKey(), comment.isVisible());
+            }
+            
+        }
         
     }
     

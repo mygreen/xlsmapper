@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
@@ -307,7 +306,7 @@ public class ArrayCellsHandler {
                 } else {
                     // 書き込むリストのサイズを超えている場合、値をクリアする
                     final Cell cell = POIUtils.getCell(sheet, cellAddress);
-                    cell.setCellType(CellType.BLANK);
+                    cell.setBlank();
                     
                     if(cell.getCellComment() != null) {
                         cell.removeCellComment();
@@ -374,7 +373,7 @@ public class ArrayCellsHandler {
                 } else {
                     // 書き込むリストのサイズを超えている場合、値をクリアする
                     final Cell cell = POIUtils.getCell(sheet, cellAddress);
-                    cell.setCellType(CellType.BLANK);
+                    cell.setBlank();
                     
                     if(cell.getCellComment() != null) {
                         cell.removeCellComment();

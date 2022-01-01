@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -119,8 +118,6 @@ public class XlsLoader {
         try {
             book = WorkbookFactory.create(xlsIn);
 
-        } catch (InvalidFormatException e) {
-            throw new XlsMapperException(MessageBuilder.create("file.failLoadExcel.notSupportType").format(), e);
         } finally {
             if(book != null) {
                 book.close();
@@ -198,8 +195,6 @@ public class XlsLoader {
         try {
             book = WorkbookFactory.create(xlsIn);
 
-        } catch (InvalidFormatException e) {
-            throw new XlsMapperException(MessageBuilder.create("file.failLoadExcel.notSupportType").format(), e);
         } finally {
             if(book != null) {
                 book.close();
@@ -286,8 +281,6 @@ public class XlsLoader {
         try {
             book = WorkbookFactory.create(xlsIn);
 
-        } catch (InvalidFormatException e) {
-            throw new XlsMapperException(MessageBuilder.create("file.failLoadExcel.notSupportType").format(), e);
         } finally {
             if(book != null) {
                 book.close();

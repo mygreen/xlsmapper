@@ -402,7 +402,7 @@ Bean Validationを使用した入力値検証
     <dependency>
     <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
-        <version>6.0.10.Final</version>
+        <version>6.0.20.Final</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
