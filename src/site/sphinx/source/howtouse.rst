@@ -20,7 +20,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
-        <version>2.1.1</version>
+        <version>2.2</version>
     </dependency>
 
 
@@ -62,7 +62,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
      - ver.1.8
      
    * - `Apache POI <https://poi.apache.org/>`_
-     - ver.3.17+
+     - ver.4.0+。ver.5.1.0推奨。
 
    * - `Spring Framework <https://projects.spring.io/spring-framework/>`_ (option)
      - ver.3.0+
