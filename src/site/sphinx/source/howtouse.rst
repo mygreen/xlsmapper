@@ -28,17 +28,12 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
 
 .. sourcecode:: xml
     :linenos:
-    :caption: ロギングライブラリの実装の追加（Log4jの場合）
+    :caption: ロギングライブラリの実装の追加（Logbackの場合）
     
     <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.7.1</version>
-    </dependency>
-    <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.14</version>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.2.10</version>
     </dependency>
 
 
