@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.gh.mygreen.xlsmapper.xml.bind.AnnotationInfo;
 
-import ognl.DefaultMemberAccess;
+import ognl.DefaultTypeConverter;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
@@ -37,8 +37,8 @@ public class DynamicAnnotationBuilder {
     private OgnlContext ognlContext;
     
     private DynamicAnnotationBuilder() {
-        this.ognlContext = new OgnlContext();
-        this.ognlContext.setMemberAccess(new DefaultMemberAccess(true));
+        this.ognlContext = new OgnlContext(
+                new MultipleLoaderClassResolver(), new DefaultTypeConverter(), new AllAllowMemberAccess());
         
     }
     
@@ -73,9 +73,8 @@ public class DynamicAnnotationBuilder {
                 loaderMap.put(propertyLoader.hashCode(), propertyLoader);
             }
             
-            getInstance().ognlContext = new OgnlContext(loaderMap);
-            getInstance().ognlContext.setMemberAccess(new DefaultMemberAccess(true));
-            getInstance().ognlContext.setClassResolver(new MultipleLoaderClassResolver());
+            getInstance().ognlContext = new OgnlContext(
+                    new AllAllowMemberAccess(), new MultipleLoaderClassResolver(), new DefaultTypeConverter(), loaderMap);
             
         }
     }
