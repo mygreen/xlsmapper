@@ -14,6 +14,14 @@ ver.2.2 - 2022-01-01
 
 * `#116 <https://github.com/mygreen/xlsmapper/pull/116>`_ Hibernate Validatorのバージョンを v6.0.20.Final に更新しました。
 
+* `#110 <https://github.com/mygreen/xlsmapper/pull/110>`_ / `#119 <https://github.com/mygreen/xlsmapper/pull/119>`_ テスト用に使用していたライブラリを更新しました。
+
+  * JUnitを `v4.13.1` に更新しました。
+  * LoggerをLog4j v1.xから、Logbackに変更しました。
+
+* `#120 <https://github.com/mygreen/xlsmapper/pull/120>`_ OGNLのバージョンを v3.3.1に更新しました。
+
+
 --------------------------------------------------------
 ver.2.1.1 - 2021-02-13
 --------------------------------------------------------
