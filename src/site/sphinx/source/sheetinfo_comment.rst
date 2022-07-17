@@ -76,7 +76,7 @@
         }
         
         // @XlsArrayColumnsの場合
-        ＠XlsArrayColumns(columnName="ふりがな")
+        @XlsArrayColumns(columnName="ふりがな")
         private List<String> rubyList;
         
         // プロパティごとに個別にコメント情報を定義するフィールド
@@ -164,7 +164,7 @@
         }
         
         // @XlsArrayColumnsの場合
-        ＠XlsArrayColumns(columnName="ふりがな")
+        @XlsArrayColumns(columnName="ふりがな")
         private List<String> rubyList;
         
         // プロパティごとに個別にコメント情報を定義するフィールド
