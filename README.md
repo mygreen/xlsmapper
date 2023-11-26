@@ -41,18 +41,14 @@ Apache License verion 2.0
 
 1. Setup Java SE 8 (1.8.0_121+)
 2. Setup Maven
-3. Setup Sphinx (building for manual)
-    1. install Python
-    2. install sphinx and theme for read the docs, janome
-    ```console
-    # pip install sphinx
-    # pip install sphinx_rtd_theme --upgrade
-    # pip install janome
-    ```
-4. Build with Maven
-    1. make jar files.
+3. Build jar files.
     ```console
     # mvn clean package
+    ```
+4. Generate site files. (with Docker)
+    1. build docker for sphinx.
+    ```console
+    docker build -t xlsmapper/sphinx ./docker/sphinx
     ```
     2. generate site.
     ```console

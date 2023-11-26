@@ -1,23 +1,21 @@
 @echo off
 
-REM Sphinxのドキュメントをビルドし、taregetのsiteフォルダに配置する。
+rem Sphinxのドキュメントをビルドし、taregetのsiteフォルダに配置する。
 
-echo "Building sphinx documentation for version %1"
+echo "Building sphinx documentation with Docker."
 
 %~d0
 cd %~p0
 
-pushd .\src\site\sphinx
+rmdir /q /s .\src\site\sphinx\source\_build
+docker run --rm -v %~dp0\src\site\sphinx\source:/docs xlsmapper/sphinx sphinx-build -M html . _build
 
-rmdir /q /s build
-call make html PACKAGE_VERSION=%1
-
-popd
-
+rem sphinxの成果物のコピー
 rmdir /q /s .\target\site\sphinx
 mkdir .\target\site\sphinx
-xcopy /y /e .\src\site\sphinx\build\html .\target\site\sphinx
+xcopy /y /e .\src\site\sphinx\source\_build\html .\target\site\sphinx
 
-REM github-pagesのsphinx対応
+rem github-pagesのsphinx対応
 echo "" > .\target\site\.nojekyll
 
+pause

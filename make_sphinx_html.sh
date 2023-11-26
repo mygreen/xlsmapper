@@ -7,16 +7,16 @@ cd $SCRIPT_DIR
 
 if [ -e ./src/site/sphinx/build ]; then
   echo "step - remove old build directory."
-  sudo /bin/rm -rf ./src/site/sphinx/build
+  sudo /bin/rm -rf ./src/site/sphinx/source/_build
 fi
 
-cd ./src/site/sphinx
+SOURCE_DIR=$SCRIPT_DIR/src/site/sphinx/source
 
 echo "step - make html by sphinx."
-make html PACKAGE_VERSION=$1
+docker run --rm -v $SOURCE_DIR:/docs xlsmapper/sphinx sphinx-build -M html . _build
 
 echo "step - change owner for build directry with jenkins."
-sudo /usr/bin/chown -R jenkins:jenkins ./build
+sudo /usr/bin/chown -R jenkins:jenkins $SOURCE_DIR/_build
 
 ## copy html dir
 cd $SCRIPT_DIR
@@ -26,7 +26,7 @@ sudo /bin/rm -rf ./target/site/sphinx
 /bin/mkdir -p ./target/site/sphinx
 
 echo "step - copy build html to target directory."
-/bin/cp -vr ./src/site/sphinx/build/html/* ./target/site/sphinx/
+/bin/cp -vr $SOURCE_DIR/_build/html/* ./target/site/sphinx/
 
 ## github-pagesのsphinx対応
 echo "step - create file or .nojekyll."
