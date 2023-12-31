@@ -190,14 +190,7 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 				<artifactId>maven-source-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>source-jar</id>
 						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>attach-sources</id>
 						<goals>
 							<goal>jar-no-fork</goal>
 						</goals>
