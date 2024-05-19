@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
@@ -29,7 +30,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * ユーティリティクラス。
  *
- * @version 2.0
+ * @version 2.3
  * @author T.TSUCHIE
  * @author Naoki Takezoe
  * @author Mitsuyoshi Hasegawa
@@ -307,6 +308,23 @@ public class Utils {
 
     public static boolean isNotEmpty(final Collection<?> collection) {
         return !isEmpty(collection);
+    }
+    
+    /**
+     * Mapが空か判定する。
+     * @param map
+     * @return nullまたはサイズが0のときにtrueを返す。
+     */
+    public static boolean isEmpty(final Map<?, ?> map) {
+        if(map == null || map.isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isNotEmpty(final Map<?, ?> map) {
+        return !isEmpty(map);
     }
 
     /**

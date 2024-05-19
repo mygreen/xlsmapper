@@ -1,16 +1,15 @@
 package com.gh.mygreen.xlsmapper.localization;
 
 import java.util.Formatter;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
 import com.gh.mygreen.xlsmapper.expression.ExpressionEvaluationException;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguage;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
@@ -39,16 +38,13 @@ public class MessageInterpolator {
     
     private ExpressionLanguage expressionLanguage;
     
+    /**
+     * デフォルトのコンストラクタ
+     * <p>式言語の処理実装として、JEXLの{@link ExpressionLanguageJEXLImpl} が設定されます。
+     * 
+     */
     public MessageInterpolator() {
-        
-        // EL式中で使用可能な関数の登録
-        ExpressionLanguageJEXLImpl el = new ExpressionLanguageJEXLImpl();
-        
-        Map<String, Object> funcs = new HashMap<>(); 
-        funcs.put("f", CustomFunctions.class);
-        el.getJexlEngine().setFunctions(funcs);
-        
-        setExpressionLanguage(el);
+        this.expressionLanguage = new ExpressionLanguageJEXLImpl();
         
     }
     
@@ -262,16 +258,16 @@ public class MessageInterpolator {
         context.computeIfAbsent("formatter", key -> new Formatter());
         
         /*
-         * JEXLで存在しない変数名の場合、nullが帰ってくるため、null判定を行う。
+         * 以下のケースの時、評価値はnullが返されるため、空文字に変換する。
+         * ・JEXLで存在しない変数名のとき。
+         * ・ELインジェクション対象の式のとき
          */
-        Object eval = expressionLanguage.evaluate(expression, context);
-        String value = eval == null ? "" : eval.toString();
-        
+        String evalValue = Objects.toString(expressionLanguage.evaluate(expression, context), "");
         if(logger.isTraceEnabled()) {
-            logger.trace("evaluate expression language: expression='{}' ===> value='{}'", expression, value);
+            logger.trace("evaluate expression language: expression='{}' ===> value='{}'", expression, evalValue);
         }
         
-        return value;
+        return evalValue;
     }
     
     /**
