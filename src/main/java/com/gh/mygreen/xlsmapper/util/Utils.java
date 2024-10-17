@@ -348,7 +348,7 @@ public class Utils {
     public static boolean isNotEmpty(final Object[] arrays) {
         return !isEmpty(arrays);
     }
-
+    
     /**
      * オブジェクトの比較を行う。
      * <p>値がnullの場合を考慮する。
@@ -424,6 +424,23 @@ public class Utils {
 
         return value.trim();
 
+    }
+    
+    /**
+     * 文字列をbooleanに変換します。
+     * 
+     * @since 2.3
+     * @param value 変換対象の値。
+     * @param defaultValue 変換対象がnull or 空文字の時のデフォルト値。
+     * @return 引数がnullのとき、falseを返します。
+     */
+    public static boolean toBoolean(final String value, final boolean defaultValue) {
+        String text = trim(value, true);
+        if(isEmpty(text)) {
+            return defaultValue;
+        }
+        
+        return Boolean.valueOf(text.toLowerCase());
     }
 
     /**

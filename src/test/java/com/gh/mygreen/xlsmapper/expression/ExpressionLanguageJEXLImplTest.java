@@ -25,9 +25,12 @@ public class ExpressionLanguageJEXLImplTest {
     
     private ExpressionLanguageJEXLImpl el;
     
+    private ExpressionLanguageJEXLImpl elResticted;
+    
     @Before
     public void setUp() throws Exception {
-        this.el = new ExpressionLanguageJEXLImpl();
+        this.el = new ExpressionLanguageJEXLImpl(Collections.emptyMap(), false);
+        this.elResticted = new ExpressionLanguageJEXLImpl(Collections.emptyMap(), true);
     }
     
     @Test(expected=IllegalArgumentException.class)
@@ -137,7 +140,7 @@ public class ExpressionLanguageJEXLImplTest {
 
         String expression = "''.getClass().forName('java.lang.Runtime').getRuntime().exec('notepad')";
 
-        Object eval = el.evaluate(expression, Collections.emptyMap());
+        Object eval = elResticted.evaluate(expression, Collections.emptyMap());
         
         // 評価に失敗しnullが返ってくる
         assertThat(eval, nullValue());
