@@ -1,9 +1,11 @@
 package com.gh.mygreen.xlsmapper.validation.beanvalidation;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,9 +17,13 @@ import javax.validation.ValidatorFactory;
 import javax.validation.metadata.ConstraintDescriptor;
 
 import org.hibernate.validator.internal.engine.path.PathImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.gh.mygreen.xlsmapper.fieldaccessor.LabelGetterFactory;
 import com.gh.mygreen.xlsmapper.fieldaccessor.PositionGetterFactory;
+import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.localization.ResourceBundleMessageResolver;
 import com.gh.mygreen.xlsmapper.util.ArgUtils;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.Utils;
@@ -35,6 +41,8 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
  *
  */
 public class SheetBeanValidator implements ObjectValidator<Object> {
+    
+    private static final Logger logger = LoggerFactory.getLogger(SheetBeanValidator.class);
     
     /**
      * BeanValidationのアノテーションの属性で、メッセージ中の変数から除外するもの。
@@ -66,8 +74,12 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
      * @return
      */
     protected Validator createDefaultValidator() {
+        
         final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-        final Validator validator = validatorFactory.getValidator();
+        final Validator validator = validatorFactory.usingContext()
+                .messageInterpolator(new MessageInterpolatorAdapter(new ResourceBundleMessageResolver(), new MessageInterpolator()))
+                .getValidator();
+        
         return validator;
     }
     
@@ -115,14 +127,7 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
             
             final ConstraintDescriptor<?> cd = violation.getConstraintDescriptor();
             
-            /*
-             * エラーメッセージのコードは、後から再変換できるよう、BeanValidationの形式のエラーコードも付けておく。
-             */
-            final String[] errorCodes = new String[]{
-                    cd.getAnnotation().annotationType().getSimpleName(),
-                    cd.getAnnotation().annotationType().getCanonicalName(),
-                    cd.getAnnotation().annotationType().getCanonicalName() + ".message"
-                    };
+            final String[] errorCodes = determineErrorCode(cd);
             
             final Map<String, Object> errorVars = createVariableForConstraint(cd);
             
@@ -131,7 +136,7 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 // オブジェクトエラーの場合
                 errors.createGlobalError(errorCodes)
                     .variables(errorVars)
-                    .defaultMessage(violation.getMessage())
+                    .defaultMessage(violation.getMessageTemplate())
                     .buildAndAddError();
                 
             } else {
@@ -168,13 +173,50 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                     .variables(errorVars)
                     .address(cellAddress)
                     .label(label)
-                    .defaultMessage(violation.getMessage())
+                    .defaultMessage(violation.getMessageTemplate())
                     .buildAndAddError();
                 
             }
             
         }
         
+    }
+    
+    /**
+     * エラーコードを決定する。
+     * <p>※ユーザ指定メッセージの場合はエラーコードは空。</p>
+     * 
+     * @since 2.3
+     * @param descriptor フィールド情報
+     * @return エラーコード
+     */
+    protected String[] determineErrorCode(final ConstraintDescriptor<?> descriptor) {
+        
+     // バリデーション用アノテーションから属性「message」のでデフォルト値を取得し、変更されているかどう比較する。
+        String defaultMessage = null;
+        try {
+            Method messageMethod = descriptor.getAnnotation().annotationType().getMethod("message");
+            messageMethod.setAccessible(true);
+            defaultMessage = Objects.toString(messageMethod.getDefaultValue(), null);
+        } catch (NoSuchMethodException | SecurityException e) {
+            logger.warn("Fail getting annotation's attribute 'message' for " + descriptor.getAnnotation().annotationType().getSimpleName() , e);
+        }
+        
+        if(!descriptor.getMessageTemplate().equals(defaultMessage)) {
+            /*
+             * アノテーション属性「message」の値がデフォルト値から変更されている場合は、
+             * ユーザー指定メッセージとして判断し、エラーコードは空にしてユーザー指定メッセージを優先させる。
+             */
+            return new String[]{};
+            
+        } else {
+            // アノテーションのクラス名をもとに生成する。
+            return new String[]{
+                    descriptor.getAnnotation().annotationType().getSimpleName(),
+                    descriptor.getAnnotation().annotationType().getCanonicalName(),
+                    descriptor.getAnnotation().annotationType().getCanonicalName() + ".message"
+            };
+        }
     }
     
     /**

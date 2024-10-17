@@ -25,7 +25,8 @@ import com.gh.mygreen.xlsmapper.util.Utils;
  *  <li>'cellAddress':シート用のフィールドエラーの場合、セルのアドレスが設定されます。'A1'のような形式になります。</li>
  * </ul>
  * 
- * @version 2.0
+ * @version 2.3
+ * @since 2.0
  * @author T.TSUCHIE
  *
  */
@@ -36,6 +37,9 @@ public class SheetErrorFormatter {
     private MessageInterpolator messageInterporlator = new MessageInterpolator();
     
     private MessageCodeGenerator messageCodeGenerator = new MessageCodeGenerator();
+    
+    /** エラーメッセージの定義が見つからないときのデフォルトのエラーコード */
+    private String defaultErrorCode = "defaultError";
     
     public SheetErrorFormatter() {
         
@@ -133,8 +137,14 @@ public class SheetErrorFormatter {
             error.getSheetName().ifPresent(s -> vars.put("sheetName", s));
             
         }
-        
-        final String message = getMessage(error.getCodes(), error.getDefaultMessage());
+
+        final String message;
+        if(Utils.isEmpty(error.getCodes())) {
+            // エラーコードの指定がない場合は、ユーザー指定のメッセージとして処理する。
+            message = error.getDefaultMessage().orElse(defaultErrorCode);
+        } else {
+            message = getMessage(error.getCodes(), error.getDefaultMessage());
+        }
         return messageInterporlator.interpolate(message, vars, true, messageResolver);
         
     }

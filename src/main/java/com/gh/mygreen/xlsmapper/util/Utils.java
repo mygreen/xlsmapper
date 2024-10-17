@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
@@ -29,7 +30,7 @@ import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 /**
  * ユーティリティクラス。
  *
- * @version 2.0
+ * @version 2.3
  * @author T.TSUCHIE
  * @author Naoki Takezoe
  * @author Mitsuyoshi Hasegawa
@@ -308,6 +309,23 @@ public class Utils {
     public static boolean isNotEmpty(final Collection<?> collection) {
         return !isEmpty(collection);
     }
+    
+    /**
+     * Mapが空か判定する。
+     * @param map
+     * @return nullまたはサイズが0のときにtrueを返す。
+     */
+    public static boolean isEmpty(final Map<?, ?> map) {
+        if(map == null || map.isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isNotEmpty(final Map<?, ?> map) {
+        return !isEmpty(map);
+    }
 
     /**
      * 配列がが空か判定する。
@@ -330,7 +348,7 @@ public class Utils {
     public static boolean isNotEmpty(final Object[] arrays) {
         return !isEmpty(arrays);
     }
-
+    
     /**
      * オブジェクトの比較を行う。
      * <p>値がnullの場合を考慮する。
@@ -406,6 +424,23 @@ public class Utils {
 
         return value.trim();
 
+    }
+    
+    /**
+     * 文字列をbooleanに変換します。
+     * 
+     * @since 2.3
+     * @param value 変換対象の値。
+     * @param defaultValue 変換対象がnull or 空文字の時のデフォルト値。
+     * @return 引数がnullのとき、falseを返します。
+     */
+    public static boolean toBoolean(final String value, final boolean defaultValue) {
+        String text = trim(value, true);
+        if(isEmpty(text)) {
+            return defaultValue;
+        }
+        
+        return Boolean.valueOf(text.toLowerCase());
     }
 
     /**
