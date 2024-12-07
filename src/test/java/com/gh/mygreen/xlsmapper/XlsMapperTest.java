@@ -4,6 +4,7 @@ import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,6 +15,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.constraints.Pattern;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,14 +26,19 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
 import com.gh.mygreen.xlsmapper.annotation.XlsFieldProcessor;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
 import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessor;
 import com.gh.mygreen.xlsmapper.util.CellPosition;
 import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.validation.ObjectError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
+import com.gh.mygreen.xlsmapper.validation.beanvalidation.SheetBeanValidator;
 import com.gh.mygreen.xlsmapper.xml.bind.AnnotationMappingInfo;
 
 /**
@@ -238,6 +248,34 @@ public class XlsMapperTest {
             
             
         }
+        
+    }
+    
+    /**
+     * ELインジェクションのテスト
+     */
+    @Test
+    public void testLoad_elinjection() throws Exception {
+        
+        XlsMapper xlsMapper = new XlsMapper();
+        
+        // シートの読み込み
+        SheetBindingErrors<ELInjectionSheet> bindingErrors;
+        try (InputStream in = new FileInputStream(new File("src/test/data/elinjection.xlsx"))) {
+            bindingErrors = xlsMapper.loadDetail(in, ELInjectionSheet.class);
+        }
+        ELInjectionSheet sheet = bindingErrors.getTarget();
+        
+        // 入力値検証
+        SheetBeanValidator sheetValidator = new SheetBeanValidator();
+        sheetValidator.validate(sheet, bindingErrors);
+        
+        List<ObjectError> errors = bindingErrors.getAllErrors();
+        assertThat(errors).hasSize(1);
+        
+        SheetErrorFormatter errorFormatter = new SheetErrorFormatter();
+        String message = errorFormatter.format(errors.get(0));
+        assertThat(message).isEqualTo("[テスト]:数値 - セル(C4)の値'abc${''.getClass().forName('java.lang.Runtime').getRuntime().exec('notepad')}efg'は、正規表現「^[0-9]+」に一致していません。");
         
     }
     
@@ -515,6 +553,24 @@ public class XlsMapperTest {
             Cell cell = POIUtils.getCell(sheet, CellPosition.of(anno.address()));
             cell.setCellValue(value);
         }
+        
+    }
+    
+    /**
+     * ELインジェクション確認用のシート。
+     * <p>バリデーションエラーを発生させるためのもの。
+     *
+     */
+    @XlsSheet(name = "テスト")
+    private static class ELInjectionSheet {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @Pattern(regexp = "^[0-9]+")
+        @XlsLabelledCell(label = "数値", type = LabelledCellType.Right)
+        public String value;
         
     }
 }
