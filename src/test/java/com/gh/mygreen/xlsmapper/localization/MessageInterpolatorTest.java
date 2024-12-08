@@ -4,6 +4,7 @@ import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,8 @@ import org.junit.Test;
  *
  */
 public class MessageInterpolatorTest {
+    
+    private MessageResolver testMessageResolver = new ResourceBundleMessageResolver();
     
     /**
      * 変数のみ - EL式なし
@@ -156,13 +159,12 @@ public class MessageInterpolatorTest {
     /**
      * 再起的にメッセージを評価する。
      * 変数の再起
+     * ※v2.3からは、ELインジェクション対策のため変数は再帰的評価は行わない。
      */
     @Test
     public void testInterpolate_recursive_vars() {
         
         MessageInterpolator interpolator = new MessageInterpolator();
-        interpolator.setRecursiveForVar(true);
-        interpolator.setRecursiveForEl(true);
         
         String message = "{abc} : {message}";
         
@@ -170,19 +172,19 @@ public class MessageInterpolatorTest {
         vars.put("message", "${1+2}");
         
         String actual = interpolator.interpolate(message, vars, true);
-        assertThat(actual, is("{abc} : 3"));
+        assertThat(actual, is("{abc} : ${1+2}"));
         
     }
     
     /**
      * 再起的にメッセージを評価する。
      * 式の再起
+     * ※v2.3からは、ELインジェクション対策のためEL式は再帰的評価は行わない。
      */
     @Test
     public void testInterpolate_recursive_el() {
         
         MessageInterpolator interpolator = new MessageInterpolator();
-        interpolator.setRecursiveForEl(true);
         
         String message = "{abc} : ${value}";
         
@@ -191,7 +193,7 @@ public class MessageInterpolatorTest {
         vars.put("min", 3);
         
         String actual = interpolator.interpolate(message, vars, true);
-        assertThat(actual, is("{abc} : 3"));
+        assertThat(actual, is("{abc} : {min}"));
         
     }
     
@@ -203,20 +205,17 @@ public class MessageInterpolatorTest {
     public void testInterpolate_recursive_maxDepth() {
         
         MessageInterpolator interpolator = new MessageInterpolator();
-        interpolator.setRecursiveForVar(true);
         
-        String message = "{abc} : {value}";
+        String message = "{abc} : {testRecursive.value}";
         
         // depth2
         {
             interpolator.setMaxRecursiveDepth(2);
             
-            Map<String, Object> vars = new HashMap<>();
-            vars.put("value", "{min}");
-            vars.put("min", "{value}");
+            Map<String, Object> vars = Collections.emptyMap();
             
-            String actual = interpolator.interpolate(message, vars, true);
-            assertThat(actual, is("{abc} : {value}"));
+            String actual = interpolator.interpolate(message, vars, true, testMessageResolver);
+            assertThat(actual, is("{abc} : {testRecursive.value}"));
         
         }
         
@@ -224,12 +223,10 @@ public class MessageInterpolatorTest {
         {
             interpolator.setMaxRecursiveDepth(3);
             
-            Map<String, Object> vars = new HashMap<>();
-            vars.put("value", "{min}");
-            vars.put("min", "{value}");
+            Map<String, Object> vars = Collections.emptyMap();
             
-            String actual = interpolator.interpolate(message, vars, true);
-            assertThat(actual, is("{abc} : {min}"));
+            String actual = interpolator.interpolate(message, vars, true, testMessageResolver);
+            assertThat(actual, is("{abc} : {testRecursive.min}"));
         
         }
         

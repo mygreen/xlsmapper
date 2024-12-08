@@ -49,16 +49,6 @@ public class MessageInterpolator {
     }
     
     /**
-     * EL式のときは再帰的評価するかどうか。
-     */
-    private boolean recursiveForEl = false;
-    
-    /**
-     * リソースファイルのキーを除く変数のときは再帰的評価するかどうか。
-     */
-    private boolean recursiveForVar = false;
-    
-    /**
      * 再帰処理の最大回数
      */
     private int maxRecursiveDepth = 5;
@@ -216,14 +206,10 @@ public class MessageInterpolator {
             final String varName = expression.substring(1, expression.length()-1);
             
             if(values.containsKey(varName)) {
-                // 該当するキーが存在する場合
+                // 該当するキーが存在する場合（再帰評価は行わない）
                 final Object value = values.get(varName);
                 final String eval = (value == null) ? "" : value.toString();
-                if(!eval.isEmpty() && recursivable(recursive && recursiveForVar, maxRecursiveDepth, currentRecursiveDepth, eval)) {
-                    return parse(eval, values, recursive, currentRecursiveDepth + 1, messageResolver);
-                } else {
-                    return eval;
-                }
+                return eval;
                 
             } else if(messageResolver != null) {
                 // メッセージコードをとして解決をする。
@@ -245,14 +231,10 @@ public class MessageInterpolator {
             }
             
         } else if(expression.startsWith("${")) {
-            // EL式で処理する
+            // EL式を評価する（再帰評価は行わない）
             final String expr = expression.substring(2, expression.length()-1);
             final String eval = evaluateExpression(expr, values);
-            if(recursivable(recursive && recursiveForEl, maxRecursiveDepth, currentRecursiveDepth, eval)) {
-                return parse(eval, values, recursive, currentRecursiveDepth + 1, messageResolver);
-            } else {
-                return eval;
-            }
+            return eval;
             
         }
         
@@ -333,52 +315,6 @@ public class MessageInterpolator {
      */
     public void setExpressionLanguage(ExpressionLanguage expressionLanguage) {
         this.expressionLanguage = expressionLanguage;
-    }
-    
-    /**
-     * EL式の場合は再帰的評価するか判定する。
-     * 
-     * @since 2.3
-     * @return {@literal true}のとき再帰的評価する。
-     */
-    public boolean isRecursiveForEl() {
-        return recursiveForEl;
-    }
-    
-    /**
-     * EL式の場合は再帰的評価するかどうか設定する。
-     * <p>入力値などの任意の値がEL式(<code>${...}</code>)の形式の場合、
-     *    不要に再帰的に評価されてELインジェクションが発生してしまうのを防ぐために設定します。
-     * <p>デフォルト値は、{@literal false} で再帰的に評価しない。
-     * 
-     * @since 2.3
-     * @param recursiveForEl {@literal true} のとき再帰的評価する。
-     */
-    public void setRecursiveForEl(boolean recursiveForEl) {
-        this.recursiveForEl = recursiveForEl;
-    }
-    
-    /**
-     * リソースファイルのキーを除く変数を再帰的に評価するかどうか判定する。
-     * 
-     * @since 2.3
-     * @return {@literal true}のとき再帰的に評価する。
-     */
-    public boolean isRecursiveForVar() {
-        return recursiveForVar;
-    }
-    
-    /**
-     * リソースファイルのキーを除く変数を再帰的評価するかどうか設定する。
-     * <p>入力値などの任意の値が変数(<code>{...}</code>)の形式の場合、
-     *   不要に再帰的に評価されてELインジェクションが発生してしまうのを防ぐために設定します。
-     * <p>デフォルト値は、{@literal false} で再帰的に評価しない。
-     * 
-     * @since 2.3
-     * @param recursiveForVar {@literal true} のとき再帰的評価する。
-     */
-    public void setRecursiveForVar(boolean recursiveForVar) {
-        this.recursiveForVar = recursiveForVar;
     }
     
     /**
