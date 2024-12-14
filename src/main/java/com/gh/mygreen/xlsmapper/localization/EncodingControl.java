@@ -3,8 +3,6 @@ package com.gh.mygreen.xlsmapper.localization;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -12,6 +10,9 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link ResourceBundle}を任意の文字コードで読み込むためのコントローラ。
@@ -21,6 +22,10 @@ import java.util.ResourceBundle;
  *
  */
 public class EncodingControl extends ResourceBundle.Control {
+    
+    private static final Logger logger = LoggerFactory.getLogger(EncodingControl.class);
+    
+    private static final String SUPPORT_FORMAT = "java.properties";
     
     private final Charset encoding;
     
@@ -40,99 +45,41 @@ public class EncodingControl extends ResourceBundle.Control {
     }
     
     @Override
-    public ResourceBundle newBundle(final String baseName, final Locale locale, String format, final ClassLoader loader, final boolean reload) 
+    public ResourceBundle newBundle(final String baseName, final Locale locale, final String format,
+            final ClassLoader loader, final boolean reload)
             throws IllegalAccessException, InstantiationException, IOException {
-        
-        String bundleName = toBundleName(baseName, locale);
-        ResourceBundle bundle = null;
-        if (format.equals("java.class"))
-        {
-          try
-          {
-            @SuppressWarnings(
-            { "unchecked" })
-            Class<? extends ResourceBundle> bundleClass = (Class<? extends ResourceBundle>) loader.loadClass(bundleName);
 
-            // If the class isn't a ResourceBundle subclass, throw a
-            // ClassCastException.
-            if (ResourceBundle.class.isAssignableFrom(bundleClass))
-            {
-              bundle = bundleClass.newInstance();
-            }
-            else
-            {
-              throw new ClassCastException(bundleClass.getName() + " cannot be cast to ResourceBundle");
-            }
-          }
-          catch (ClassNotFoundException ignored)
-          {
-          }
-        }
-        else if (format.equals("java.properties"))
-        {
-          final String resourceName = toResourceName(bundleName, "properties");
-          final ClassLoader classLoader = loader;
-          final boolean reloadFlag = reload;
-          InputStreamReader isr = null;
-          InputStream stream;
-          try
-          {
-            stream = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>()
-            {
-              @Override
-              public InputStream run() throws IOException
-              {
-                InputStream is = null;
-                if (reloadFlag)
-                {
-                  URL url = classLoader.getResource(resourceName);
-                  if (url != null)
-                  {
-                    URLConnection connection = url.openConnection();
-                    if (connection != null)
-                    {
-                      // Disable caches to get fresh data for
-                      // reloading.
-                      connection.setUseCaches(false);
-                      is = connection.getInputStream();
-                    }
-                  }
+        if(format.equals(SUPPORT_FORMAT)) {
+            final String bundleName = toBundleName(baseName, locale);
+            final String resourceName = toResourceName(bundleName, "properties");
+            
+            try (InputStream stream = getResourceStream(loader, resourceName)) {
+                try (InputStreamReader isr = new InputStreamReader(stream, encoding)) {
+                    return new PropertyResourceBundle(isr);
                 }
-                else
-                {
-                  is = classLoader.getResourceAsStream(resourceName);
-                }
-                return is;
-              }
-            });
-            if (stream != null)
-            {
-              isr = new InputStreamReader(stream, encoding);
+            } catch (PrivilegedActionException e) {
+                throw(IOException) e.getException();
             }
-          }
-          catch (PrivilegedActionException e)
-          {
-            throw (IOException) e.getException();
-          }
-          if (isr != null)
-          {
-            try
-            {
-              bundle = new PropertyResourceBundle(isr);
-            }
-            finally
-            {
-              isr.close();
-            }
-          }
+        } else {
+            // 「java.class」はサポートしない。
+            // プロパティファイル(java.properties)のみサポートする。
+            logger.trace("Not support format. baseName={}, format={}, reload={}.", baseName, format, reload);
+            return null;
         }
-        else
-        {
-          throw new IllegalArgumentException("unknown format: " + format);
-        }
-        return bundle;
+
     }
     
+    private InputStream getResourceStream(final ClassLoader loader, final String resourceName) throws PrivilegedActionException {
+       
+        return AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
+            
+            @Override
+            public InputStream run() throws IOException {
+                // realod=trueのときもキャッシュを使用せずに新しく読み込む。
+                return loader.getResourceAsStream(resourceName);
+            }
+        });
+    }
     
     /**
      * 設定されている文字コードを取得します。
