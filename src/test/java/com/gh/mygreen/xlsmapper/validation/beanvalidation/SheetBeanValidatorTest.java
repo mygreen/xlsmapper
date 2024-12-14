@@ -20,6 +20,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
@@ -44,9 +45,9 @@ import com.gh.mygreen.xlsmapper.localization.MessageResolver;
 import com.gh.mygreen.xlsmapper.localization.ResourceBundleMessageResolver;
 import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
 import com.gh.mygreen.xlsmapper.validation.FieldError;
+import com.gh.mygreen.xlsmapper.validation.ObjectError;
 import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
 import com.gh.mygreen.xlsmapper.validation.SheetErrorFormatter;
-import com.gh.mygreen.xlsmapper.validation.ObjectError;
 
 /**
  * {@link SheetBeanValidator}のテスタ
@@ -377,6 +378,50 @@ public class SheetBeanValidatorTest {
         
     }
     
+    /**
+     * アノテーションのメッセージ属性の変更 - エラーあり
+     */
+    @Test
+    public void test_change_attribute_message() throws Exception {
+        
+
+        XlsMapper mapper = new XlsMapper();
+        mapper.getConfiguration().setContinueTypeBindFailure(true);
+        
+        // シートの読み込み
+        SheetBindingErrors<ChangeAttributeMessage> errors;
+        ChangeAttributeMessage sheet;
+        try(InputStream in = new FileInputStream("src/test/data/validator_bean.xlsx")) {
+            errors = mapper.loadDetail(in, ChangeAttributeMessage.class);
+            sheet = errors.getTarget();
+            
+        }
+        
+        // データの書き換え
+        sheet.code = "あいうえお"; // 不正な値に変更
+        
+        // 入力値検証
+        SheetBeanValidator sheetValidator = new SheetBeanValidator(getBeanValidator());
+        sheetValidator.validate(sheet, errors);
+        
+        printErrors(errors);
+        
+        
+        {
+            String fieldName = "code";
+            FieldError fieldError = errors.getFirstFieldError(fieldName).get();
+            assertThat(fieldError.getAddress().toPoint(), is(sheet.positions.get(fieldName)));
+            assertThat(fieldError.getLabel(), is(sheet.labels.get(fieldName)));
+            assertThat(fieldError.getCodes(), emptyArray());    // ユーザーメッセージの場合はエラーコードは空。
+            assertThat(fieldError.getVariables(), hasEntry("validatedValue", (Object)sheet.code));
+            assertThat(fieldError.getVariables(), hasEntry("regexp", "[\\p{Alnum}]+"));
+            
+            String message = errorFormatter.format(fieldError);
+            assertThat(message, is("半角英数字で設定してください。"));
+        }
+        
+    }
+    
     private void printErrors(SheetBindingErrors<?> errors) {
         
         for(ObjectError error : errors.getAllErrors()) {
@@ -463,6 +508,19 @@ public class SheetBeanValidatorTest {
         public boolean isEmpty() {
             return IsEmptyBuilder.reflectionIsEmpty(this, "positions", "labels", "no");
         }
+        
+    }
+    
+    @XlsSheet(name="メッセージ属性を変更")
+    private static class ChangeAttributeMessage {
+        
+        private Map<String, Point> positions;
+        
+        private Map<String, String> labels;
+        
+        @Pattern(regexp="[\\p{Alnum}]+", message="半角英数字で設定してください。")
+        @XlsLabelledCell(label="コード", type=LabelledCellType.Right)
+        private String code;
         
     }
 }

@@ -1,12 +1,9 @@
 package com.gh.mygreen.xlsmapper;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
 import com.gh.mygreen.xlsmapper.cellconverter.CellConverterRegistry;
-import com.gh.mygreen.xlsmapper.expression.CustomFunctions;
 import com.gh.mygreen.xlsmapper.expression.ExpressionLanguageJEXLImpl;
 import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessorRegistry;
 import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
@@ -69,25 +66,14 @@ public class Configuration {
     private SheetFinder sheetFinder = new SheetFinder();
 
     /** 数式をフォーマットするクラス */
-    private MessageInterpolator formulaFormatter = new MessageInterpolator();
+    private MessageInterpolator formulaFormatter = new MessageInterpolator(new ExpressionLanguageJEXLImpl());
     
     /** セルコメントを操作するクラス */
     private CellCommentOperator commentOperator = new CellCommentOperator();
 
     /** Beanに対するアノテーションのマッピング情報 */
     private AnnotationMappingInfo annotationMapping = null;
-
-    public Configuration() {
-
-        // 数式をフォーマットする際のEL関数を登録する。
-        ExpressionLanguageJEXLImpl formulaEL = new ExpressionLanguageJEXLImpl();
-        Map<String, Object> funcs = new HashMap<>();
-        funcs.put("x", CustomFunctions.class);
-        formulaEL.getJexlEngine().setFunctions(funcs);
-
-        formulaFormatter.setExpressionLanguage(formulaEL);
-    }
-
+    
     /**
      * 指定したクラスタイプのインスタンスを作成する
      * @param clazz
