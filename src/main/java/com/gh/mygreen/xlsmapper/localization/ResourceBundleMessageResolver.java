@@ -111,6 +111,7 @@ public class ResourceBundleMessageResolver implements MessageResolver {
             return false;
         }
         
+        // 後から追加したリソースを優先するために、先頭に追加する。
         messageBundles.addFirst(resourceBundle);
         final List<String> keys = new ArrayList<String>();
         
