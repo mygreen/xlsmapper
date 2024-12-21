@@ -37,4 +37,6 @@ jobs:
       with:
         maven-version: 3.9.6
     - name: Build with Maven
+      env:
+        TZ: 'Asia/Tokyo'
       run: mvn -B clean verify -Dgpg.skip=true
