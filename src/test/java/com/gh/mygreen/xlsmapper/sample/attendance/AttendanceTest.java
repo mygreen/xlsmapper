@@ -1,8 +1,7 @@
 package com.gh.mygreen.xlsmapper.sample.attendance;
 
-import static org.junit.Assert.*;
-import static org.assertj.core.api.Assertions.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,14 +47,15 @@ public class AttendanceTest {
     public void setupBefore() {
 
         // BeanValidatorの式言語の実装を独自のものにする。
-        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-        Validator validator = validatorFactory.usingContext()
+        ValidatorFactory validatorFactory = Validation.byDefaultProvider().configure()
                 .messageInterpolator(new MessageInterpolatorAdapter(
                         // メッセージリソースの取得方法を切り替える
                         new ResourceBundleMessageResolver(),
 
                         // EL式の処理を切り替える
                         new MessageInterpolator(new ExpressionLanguageJEXLImpl())))
+                .buildValidatorFactory();
+        Validator validator = validatorFactory.usingContext()
                 .getValidator();
 
         // BeanValidationのValidatorを渡す
