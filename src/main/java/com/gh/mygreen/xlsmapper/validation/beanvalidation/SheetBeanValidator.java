@@ -1,5 +1,6 @@
 package com.gh.mygreen.xlsmapper.validation.beanvalidation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.metadata.ConstraintDescriptor;
 
+import org.hibernate.validator.internal.engine.path.NodeImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +36,7 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 
 /**
- * BeanValidaion JSR-303(ver.1.0)/JSR-349(ver.1.1)を利用したValidator.
+ * BeanValidaion JSR-303(ver.1.0)/JSR-349(ver.1.1)/JSR-380()ver.2.0を利用したValidator.
  * 
  * @version 2.0
  * @author T.TSUCHIE
@@ -75,9 +77,10 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
      */
     protected Validator createDefaultValidator() {
         
-        final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-        final Validator validator = validatorFactory.usingContext()
+        final ValidatorFactory validatorFactory = Validation.byDefaultProvider().configure()
                 .messageInterpolator(new MessageInterpolatorAdapter(new ResourceBundleMessageResolver(), new MessageInterpolator()))
+                .buildValidatorFactory();
+        final Validator validator = validatorFactory.usingContext()
                 .getValidator();
         
         return validator;
@@ -147,12 +150,12 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 final Path path = violation.getPropertyPath();
                 Optional<CellPosition> cellAddress = Optional.empty();
                 Optional<String> label = Optional.empty();
-                if(path instanceof PathImpl) {
-                    final PathImpl pathImpl = (PathImpl) path;
-                    cellAddress = new PositionGetterFactory().create(parentObj.getClass(), pathImpl.getLeafNode().getName())
+                if(Path.class.isAssignableFrom(PathImpl.class)) {
+                    final String pathNodeName = getPathNodeName(path);
+                    cellAddress = new PositionGetterFactory().create(parentObj.getClass(), pathNodeName)
                             .map(getter -> getter.get(parentObj)).orElse(Optional.empty());
                     
-                    label = new LabelGetterFactory().create(parentObj.getClass(), pathImpl.getLeafNode().getName())
+                    label = new LabelGetterFactory().create(parentObj.getClass(), pathNodeName)
                             .map(getter -> getter.get(parentObj)).orElse(Optional.empty());
                     
                 }
@@ -178,6 +181,32 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
                 
             }
             
+        }
+        
+    }
+    
+    /**
+     * BeanValidationのPathの名称を取得する。
+     * <p>Hibernateのバージョンにより、パッケージが異なるのでリフレクションで取得する。
+     * 
+     * @param path パス
+     * @return 名称
+     */
+    private String getPathNodeName(final Path path) {
+        
+        try {
+            Method getLeafNodeMethod = PathImpl.class.getMethod("getLeafNode");
+            Object leafNodeObj = getLeafNodeMethod.invoke(path);
+            if(leafNodeObj == null) {
+                return null;
+            }
+            
+            Method getNodeNameMethod = NodeImpl.class.getMethod("getName");
+            Object nodeName = getNodeNameMethod.invoke(leafNodeObj);
+            return nodeName != null ? nodeName.toString() : null;
+            
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new RuntimeException("fail PathImple.getLeafNode().getName()", e);
         }
         
     }
