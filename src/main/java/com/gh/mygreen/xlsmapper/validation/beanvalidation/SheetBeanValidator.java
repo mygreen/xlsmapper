@@ -221,7 +221,7 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
      */
     protected String[] determineErrorCode(final ConstraintDescriptor<?> descriptor) {
         
-     // バリデーション用アノテーションから属性「message」のでデフォルト値を取得し、変更されているかどう比較する。
+        // バリデーション用アノテーションから属性「message」のでデフォルト値を取得し、変更されているかどう比較する。
         String defaultMessage = null;
         try {
             Method messageMethod = descriptor.getAnnotation().annotationType().getMethod("message");
