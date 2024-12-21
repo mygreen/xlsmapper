@@ -36,9 +36,9 @@ import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
 
 
 /**
- * BeanValidaion JSR-303(ver.1.0)/JSR-349(ver.1.1)/JSR-380()ver.2.0を利用したValidator.
+ * Bean Validaion JSR-303(ver.1.0)/JSR-349(ver.1.1)/JSR-380(ver.2.0)を利用したValidator.
  * 
- * @version 2.0
+ * @version 2.3
  * @author T.TSUCHIE
  *
  */
@@ -72,8 +72,8 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
     }
     
     /**
-     * Bean Validatorのデフォルトのインスタンスを取得する。
-     * @return
+     * Bean Validaion のデフォルトのインスタンスを作成する。
+     * @return Validatorのインスタンス。
      */
     protected Validator createDefaultValidator() {
         
@@ -87,8 +87,8 @@ public class SheetBeanValidator implements ObjectValidator<Object> {
     }
     
     /**
-     * BeanValidationのValidatorを取得する。
-     * @return
+     * Bean ValidationのValidatorを取得する。
+     * @return Validatorのインスタンス。
      */
     public Validator getTargetValidator() {
         return targetValidator;

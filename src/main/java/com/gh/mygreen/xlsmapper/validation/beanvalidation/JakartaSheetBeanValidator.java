@@ -36,9 +36,9 @@ import jakarta.validation.metadata.ConstraintDescriptor;
 
 
 /**
- * Jakarata Bean Validaion 3.0/3.1 を利用したValidator.
+ * Jakarta Bean Validaion 3.0/3.1 を利用したValidator.
  * 
- * @version 2.3
+ * @since 2.3
  * @author T.TSUCHIE
  *
  */
@@ -72,8 +72,8 @@ public class JakartaSheetBeanValidator implements ObjectValidator<Object> {
     }
     
     /**
-     * Bean Validatorのデフォルトのインスタンスを取得する。
-     * @return
+     * Bean Validaion のデフォルトのインスタンスを作成します。
+     * @return Validatorのインスタンス。
      */
     protected Validator createDefaultValidator() {
         
@@ -87,8 +87,8 @@ public class JakartaSheetBeanValidator implements ObjectValidator<Object> {
     }
     
     /**
-     * BeanValidationのValidatorを取得する。
-     * @return
+     * Bean ValidationのValidatorを取得する。
+     * @return Validatorのインスタンス。
      */
     public Validator getTargetValidator() {
         return targetValidator;
