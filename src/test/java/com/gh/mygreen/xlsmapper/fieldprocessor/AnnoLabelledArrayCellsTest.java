@@ -4,8 +4,8 @@ import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.FileInputStream;

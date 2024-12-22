@@ -1,6 +1,6 @@
 package com.gh.mygreen.xlsmapper.spring;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.awt.Point;
@@ -18,9 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.SpringBeanFactory;
 import com.gh.mygreen.xlsmapper.XlsMapper;
-import com.gh.mygreen.xlsmapper.Configuration;
 import com.gh.mygreen.xlsmapper.annotation.XlsColumn;
 import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsPostLoad;

@@ -3,9 +3,9 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.awt.Point;

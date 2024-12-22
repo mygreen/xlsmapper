@@ -1,13 +1,11 @@
 package com.gh.mygreen.xlsmapper.sample.dbdefinition;
 
-import static org.junit.Assert.*;
-import static org.assertj.core.api.Assertions.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -15,8 +13,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 

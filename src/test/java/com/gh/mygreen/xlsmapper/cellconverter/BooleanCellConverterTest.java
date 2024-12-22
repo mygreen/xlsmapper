@@ -1,8 +1,9 @@
 package com.gh.mygreen.xlsmapper.cellconverter;
 
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.awt.Point;
 import java.io.File;

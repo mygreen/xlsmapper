@@ -1,11 +1,9 @@
 package com.gh.mygreen.xlsmapper.localization;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Before;
 import org.junit.Test;

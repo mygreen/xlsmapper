@@ -1,5 +1,6 @@
 package com.gh.mygreen.xlsmapper.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -11,9 +12,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.gh.mygreen.xlsmapper.util.PropertyAccessException;
-import com.gh.mygreen.xlsmapper.util.PropertyValueNavigator;
 
 /**
  * {@link PropertyValueNavigator}のテスタ
