@@ -13,7 +13,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 /**
  * XlsMapperの{@link MessageInterpolator}とBeanValidationの{@link javax.validation.MessageInterpolator}のAdaptor。
- * <p>BeanValidatorのメッセ－時処理時、特に式言語の実装切り替えする場合に利用する。
+ * <p>BeanValidatorのメッセ－ジ処理時、特に式言語の実装切り替えする場合に利用する。
  *
  * @author T.TSUCHIE
  *
