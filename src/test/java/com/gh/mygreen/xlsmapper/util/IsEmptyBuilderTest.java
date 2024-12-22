@@ -1,7 +1,7 @@
 package com.gh.mygreen.xlsmapper.util;
 
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,10 +12,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.gh.mygreen.xlsmapper.util.IsEmptyBuilder;
-import com.gh.mygreen.xlsmapper.util.IsEmptyComparator;
-import com.gh.mygreen.xlsmapper.util.IsEmptyConfig;
 
 /**
  * {@link IsEmptyBuilder}のテスタ。

@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper.util;
 
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;

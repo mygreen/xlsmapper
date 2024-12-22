@@ -1,8 +1,7 @@
 package com.gh.mygreen.xlsmapper.xml;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static com.gh.mygreen.xlsmapper.TestUtils.*;
 
 import java.lang.annotation.Annotation;
 

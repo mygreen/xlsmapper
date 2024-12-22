@@ -1,9 +1,10 @@
 package com.gh.mygreen.xlsmapper.fieldprocessor;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper.util;
 
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
@@ -12,9 +11,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Before;
-
-
-
 import org.junit.Test;
 
 import com.gh.mygreen.xlsmapper.Configuration;

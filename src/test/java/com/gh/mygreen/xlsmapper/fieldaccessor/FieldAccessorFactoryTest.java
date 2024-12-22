@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper.fieldaccessor;
 
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.lang.reflect.Field;
@@ -25,8 +24,6 @@ import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
 import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
 import com.gh.mygreen.xlsmapper.annotation.XlsMapColumns;
 import com.gh.mygreen.xlsmapper.annotation.XlsOrder;
-import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
-import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
 import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
 
 /**

@@ -1,6 +1,5 @@
 package com.gh.mygreen.xlsmapper.fieldaccessor;
 
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.awt.Point;
@@ -11,8 +10,6 @@ import java.util.Optional;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellReference;
 import org.junit.Before;
-
-
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
