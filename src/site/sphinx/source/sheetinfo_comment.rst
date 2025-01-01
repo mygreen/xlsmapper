@@ -115,21 +115,21 @@
     // 書き込むデータの定義
     SampleSheet sheet = new SampleSheet();
     
-    SampleRecord record = new SampleRecord();
+    SampleRecord item = new SampleRecord();
     
     // コメントを保持するフィールドのインスタンス定義
-    record.comments = new HashMal<>();
+    item.comments = new HashMal<>();
     
     // プロパティ「name」に対するコメントを設定する
-    record.comments.put("name", "コメント1");
+    item.comments.put("name", "コメント1");
     
     // @XlsMapColumnsに対するコメントを設定する。
-    record.comments.put("attendedMap[4月1日]", "コメント2");
-    record.comments.put("attendedMap[4月2日]", "コメント3");
+    item.comments.put("attendedMap[4月1日]", "コメント2");
+    item.comments.put("attendedMap[4月2日]", "コメント3");
     
-    // @XlsArrayColumnsNi対するコメントを設定する。
-    record.comments.put("rubyList[0]", "コメント4");
-    record.comments.put("rubyList[1]", "コメント5");
+    // @XlsArrayColumnsに対するコメントを設定する。
+    item.comments.put("rubyList[0]", "コメント4");
+    item.comments.put("rubyList[1]", "コメント5");
     
     // レコードの定義
     public class SampleRecord {

@@ -346,18 +346,18 @@ JavaBeanの定義
         private List<SampleRecord> records;
         
         // レコードを追加する
-        public void add(SampleRecord record) {
+        public void add(SampleRecord target) {
             if(records == null) {
                 this.records = new ArrayList<>();
             }
             
             // 自身のインスタンスを渡す
-            record.setParent(this); 
+            target.setParent(this); 
             
             // No.を自動的に振る
-            record.setNo(records.size()+1);
+            target.setNo(records.size()+1);
             
-            this.records.add(record);
+            this.records.add(target);
         }
         
         public List<SampleRecord> getRecords() {
