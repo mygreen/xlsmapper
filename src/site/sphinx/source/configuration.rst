@@ -3,7 +3,7 @@
 ====================================================
 
 
-読み込み時及び書き込み時の動作をConfigurationクラスでカスタマイズすることができます。
+読み込み時及び書き込み時の動作をConfigurationクラスでカスタマイズできます。
 
 .. sourcecode:: java
     :linenos:
@@ -37,7 +37,7 @@ Configurationは、XlsMapperクラスのインスタンスを作成時にも持�
     SheetObject sheet = xlsMapper.load(
         new FileInputStream("example.xls"), SheetObject.class);
 
-Configurationでは以下の設定を行うことができます。
+Configurationでは以下の設定ができます。
 
 .. list-table:: Configurationで設定可能な項目
    :widths: 20 30 50
@@ -120,12 +120,12 @@ Configurationでは以下の設定を行うことができます。
    * - ``beanFactory``
      - ``BeanFactory``
      - | 読み込み時などのJavaBeansオブジェクトのインスタンスを作成すためのコールバック用クラス。
-       | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用することができます。
+       | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用できます。
        
    * - ``bindingErrorsFactory``
      - ``SheetBindingErrorsFactory``
      - | マッピング時のエラー情報 ``SheetBindingErrors`` のインスタンスを作成すためのコールバック用クラス。
-       | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用することができます。
+       | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用できます。
        | **Ver.2.0以上** から利用可能です。
        
    * - ``sheetFinder``

@@ -62,7 +62,7 @@ IsEmptyBuilderを使った記述の簡単化
 
 * ``IsEmptyBuilder#reflectionIsEmpty(...)`` を利用して判定する場合、位置情報を保持するフィールド ``Map<String, Point> positions`` などは除外対象とする必要があります。
 * 独自に判定する場合、``IsEmptyBuilder#append(...)`` を利用します。
-* さらに、 ``IsEmptyBuilder#compare(IsEmptyComparator)`` を利用することで独自の判定をすることができます。その際に、Lambda式を利用すると簡潔に記載できます。
+* さらに、 ``IsEmptyBuilder#compare(IsEmptyComparator)`` を利用することで独自の判定をできます。その際に、Lambda式を利用すると簡潔に記載できます。
 
 .. sourcecode:: java
     :linenos:

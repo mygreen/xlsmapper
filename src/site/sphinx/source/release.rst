@@ -311,7 +311,7 @@ ver.1.1 - 2016-03-08
   * XML読み込み用のクラス ``XmlLoader`` の名称を ``XmlIO`` に変更し、XMLの書き込み用メソッドを追加しました。
   * 例外クラス ``XmlLoadException`` の名称を ``XmlOperateException`` に変更しました。
   * 読み込み時/書き込み時の処理対象となるシートの抽出処理を、 ``SheetFinder`` クラスに分離しました。
-    :doc:`XlsMapperConfigのプロパティ「sheetFinder」<configuration>` でカスタマイズすることができます。
+    :doc:`XlsMapperConfigのプロパティ「sheetFinder」<configuration>` でカスタマイズできます。
 
 * `#72 <https://github.com/mygreen/xlsmapper/issues/72>`_ : ラベルや見出しを正規表現で指定、正規化してマッピングする機能を追加しました。
 
@@ -376,13 +376,13 @@ ver.1.0 - 2015-07-19
 
 * `#50 <https://github.com/mygreen/xlsmapper/issues/50>`_ : クラス ``IsEmptyBuilder`` にて、検証対象のタイプがMap, Collection, 配列の場合、要素をチェックするように機能追加しました。要素の値が全てnullまたは空と判定できた場合は、そのオブジェクトの値が空と判定します。
 
-    * 設定用クラス ``IsEmptyConfig`` で、要素をチェックするかなどを変更することができます。
+    * 設定用クラス ``IsEmptyConfig`` で、要素をチェックするかなどを変更できます。
 
 * `#53 <https://github.com/mygreen/xlsmapper/issues/53>`_ : フィールドの入力値検証を行うためのFieldValidatorの実装である、「MaxValidator/MinValidator/RangeValidator」において、メッセージ表示用に値をフォーマットを ``FieldFormatter`` で行うように機能追加しました。
 
     * 標準では、``DefaultFieldFormatter`` が設定されていますが、独自の実装に切り替えることができます。
 
-* `#56 <https://github.com/mygreen/xlsmapper/issues/56>`_ : AnnotationReaderで読み込むXMLに属性 ``override=true`` を定義すると、JavaクラスとXMLファイルでそｚれぞれに定義しているアノテーションの差分を考慮するよう機能追加しました。
+* `#56 <https://github.com/mygreen/xlsmapper/issues/56>`_ : AnnotationReaderで読み込むXMLに属性 ``override=true`` を定義すると、JavaクラスとXMLファイルでそれぞれに定義しているアノテーションの差分を考慮するよう機能追加しました。
 
 * `#58 <https://github.com/mygreen/xlsmapper/issues/58>`_ : ドキュメント `拡張方法 <http://mygreen.github.io/xlsmapper/sphinx/extension.html>`_ を記載しました。
 
@@ -407,7 +407,7 @@ ver.0.5 - 2015-06-29
 
 * `#21 <https://github.com/mygreen/xlsmapper/issues/21>`_ : セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.4に対応しました。
 
-* `#22 <https://github.com/mygreen/xlsmapper/issues/22>`_ : 内部クラス定義にてクラス定義がprivateなどの非公開の場合ににも対応しました。読み込み時にインスタンスの生成に失敗する事象を改善しました。
+* `#22 <https://github.com/mygreen/xlsmapper/issues/22>`_ : 内部クラス定義にてクラス定義がprivateなどの非公開の場合にも対応しました。読み込み時にインスタンスの生成に失敗する事象を改善しました。
 
 * `#23 <https://github.com/mygreen/xlsmapper/issues/23>`_ : 読み込み時に、文字列形式のセルをdoubleなどの数値型のクラスにマッピングする際にエラーが発生する事象を改善しました。
 
@@ -549,7 +549,7 @@ ver.0.2.2 - 2014-12-01
 
 下記の不良を修正。
  
-* `#5 <https://github.com/mygreen/xlsmapper/issues/5>`_  : 書き込み時に、リストのトリムが有効にならない。
+* `#5 <https://github.com/mygreen/xlsmapper/issues/5>`_  : 書き込み時に、リストのトリムが有効になりません。
 
 * `#6 <https://github.com/mygreen/xlsmapper/issues/6>`_  : 入力値検証の際に変数の値がnullにしているとNPEが発生する。
 

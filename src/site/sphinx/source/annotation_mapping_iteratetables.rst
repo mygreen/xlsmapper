@@ -11,7 +11,7 @@
 * 横方向の表をマッピングするアノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 。
 * 縦方向の表をマッピングするアノテーション :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` `[ver.2.0+]` 。
 
-  * ただし、アノテーション ``@XlsHorizontalRecords`` と同時に使用することはできません。
+  * ただし、アノテーション ``@XlsHorizontalRecords`` と同時に使用はできません。
 
 * 見出し付きの1つのセルをマッピングするアノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` 。
 * 見出し付きの連続し隣接する複数のセルをマッピングするアノテーション :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>` `[ver.2.0+]`。
@@ -44,7 +44,7 @@
     }
 
 
-繰り返し部分に対応するJavaBeanでは以下のように、アノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を使用することができます。
+繰り返し部分に対応するJavaBeanでは以下のように、アノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を使用できます。
 
 アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を使用する場合、属性tableLabel は設定する必要はありません。
 ``@XlsIterateTables`` の属性 tableLabelとbottomの値を引き継ぐため、指定しなくても問題ないためです。
@@ -95,7 +95,7 @@
 縦方向の表を組み合わせてマッピングする場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-縦方向の表をマッピングするアノテーション :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` も使用することができます。
+縦方向の表をマッピングするアノテーション :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` も使用できます。
 
 * ただし、横方向の表をマッピングするアノテーション ``@XlsHorizontalRecords`` と同時に使用することはできません。
 * 属性 ``tableLabelAbove=true`` が自動的に有効になり、表の見出しが上部にあることを前提に処理されます。

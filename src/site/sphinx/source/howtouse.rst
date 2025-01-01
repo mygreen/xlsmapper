@@ -4,7 +4,7 @@
 
 本ライブラリは、Excelファイルをアノテーションを用いてJavaBeansにマッピングするライブラリ「`XLSBeans <http://amateras.osdn.jp/cgi-bin/fswiki/wiki.cgi?page=XLSBeans>`_」を拡張し、機能を追加したものです。
 
-違いの詳細は、「 :doc:`XLSBeansとの違い <diff_xlsbeans>` 」を参照してください。
+違いの詳細は、「:doc:`XLSBeansとの違い <diff_xlsbeans>`」を参照してください。
 
 
 ----------------------------

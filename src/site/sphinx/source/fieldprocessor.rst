@@ -2,11 +2,11 @@
 独自の表・セルのマッピング方法
 =========================================================
 
-Excelのシートを独自の基準で走査して、Javaクラスにマッピングする、 FieldProcessor を実装することができます。
+Excelのシートを独自の基準で走査して、Javaクラスにマッピングする、 FieldProcessorを実装できます。
 
 * 読み込み時用と書き込み時用のメソッドがあり、それぞれ実装します。
-* 抽象クラス「com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor」を継承すると便利です。
-* 実装のサンプルは、パッケージ ``com.gh.mygreen.xlsmapper.fieldprocessor.impl`` 以下に格納されているクラスを参照してください。。
+* 抽象クラス「``com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor``」を継承すると便利です。
+* 実装のサンプルは、パッケージ ``com.gh.mygreen.xlsmapper.fieldprocessor.impl`` 以下に格納されているクラスを参照してください。
 
 .. sourcecode:: java
     :linenos:
@@ -33,7 +33,7 @@ Excelのシートを独自の基準で走査して、Javaクラスにマッピ�
     }
 
 
-* 作成した FieldProcessorは、 ``FieldProcessorRegistry#registerProcessor(...)`` にて登録します。
+* 作成したFieldProcessorは、 ``FieldProcessorRegistry#registerProcessor(...)`` にて登録します。
 
   * システム標準の ``FieldProcessorRegistry`` は、``XlsMapperConfg#getFieldProcessorRegistry()`` から取得できます。
 
@@ -51,7 +51,7 @@ Excelのシートを独自の基準で走査して、Javaクラスにマッピ�
     
 
 
-また、アノテーションを作成するう際に、メタアノテーション ``@XlsFieldProcessor`` でFieldProcessorを指定することもできます。 `[ver2.0+]` 
+また、アノテーションを作成するう際に、メタアノテーション ``@XlsFieldProcessor`` でFieldProcessorを指定できます。 `[ver2.0+]` 
 
 .. sourcecode:: java
     :linenos:

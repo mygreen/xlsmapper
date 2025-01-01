@@ -2,7 +2,7 @@
 XLSBeansとの違い
 ======================================
 
-XlsMapperは、XLSBeans ver.1.1 のソースを元に開発を行っています。
+XlsMapperは、`XLSBeans ver.1.1 <https://github.com/takezoe/xlsbeans>`_ のソースを元に開発をしています。
 
 そのため、仕様、特にアノテーションの使い方はXLSBeansと共通しています。
 XLSBeansとの違いを以下に示します。
