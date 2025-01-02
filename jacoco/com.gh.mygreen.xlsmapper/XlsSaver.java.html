@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XlsSaver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper</a> &gt; <span class="el_source">XlsSaver.java</span></div><h1>XlsSaver.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gh.mygreen.xlsmapper.annotation.XlsFieldProcessor;
+import com.gh.mygreen.xlsmapper.annotation.XlsListener;
+import com.gh.mygreen.xlsmapper.annotation.XlsPostSave;
+import com.gh.mygreen.xlsmapper.annotation.XlsPreSave;
+import com.gh.mygreen.xlsmapper.annotation.XlsSheet;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorFactory;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxy;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessorProxyComparator;
+import com.gh.mygreen.xlsmapper.fieldprocessor.FieldProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.ClassUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.MultipleSheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.xml.AnnotationReader;
+
+
+/**
+ * JavaBeanをExcelのシートにマッピングし出力するクラス。
+ *
+ * @version 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class XlsSaver {
+
+<span class="fc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(XlsSaver.class);</span>
+
+    private Configuration configuration;
+
+    /**
+     * 独自のシステム情報を設定するコンストラクタ
+     * @param configuration システム情報
+     */
+<span class="fc" id="L56">    public XlsSaver(Configuration configuration) {</span>
+<span class="fc" id="L57">        this.configuration = configuration;</span>
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * デフォルトのコンストラクタ
+     */
+    public XlsSaver() {
+<span class="nc" id="L64">        this(new Configuration());</span>
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * JavaのオブジェクトをExeclファイルに出力する。
+     * &lt;p&gt;出力するファイルは、引数で指定した雛形となるテンプレート用のExcelファイルをもとに出力する。&lt;/p&gt;
+     *
+     * @param templateXlsIn 雛形となるExcelファイルの入力
+     * @param xlsOut 出力先のストリーム
+     * @param beanObj 書き込むBeanオブジェクト
+     * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
+     */
+    public void save(final InputStream templateXlsIn, final OutputStream xlsOut, final Object beanObj)
+            throws XlsMapperException, IOException {
+
+<span class="fc" id="L81">        saveDetail(templateXlsIn, xlsOut, beanObj);</span>
+<span class="fc" id="L82">    }</span>
+
+    /**
+     * JavaのオブジェクトをExeclファイルに出力する。
+     * &lt;p&gt;出力するファイルは、引数で指定した雛形となるテンプレート用のExcelファイルをもとに出力する。&lt;/p&gt;
+     *
+     * @param &lt;P&gt; マッピング対象のクラスタイプ
+     * @param templateXlsIn 雛形となるExcelファイルの入力
+     * @param xlsOut 出力先のストリーム
+     * @param beanObj 書き込むBeanオブジェクト
+     * @return マッピング結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、nullを返します。
+     * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObj == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
+     */
+    public &lt;P&gt; SheetBindingErrors&lt;P&gt; saveDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final P beanObj)
+            throws XlsMapperException, IOException {
+
+<span class="fc" id="L101">        ArgUtils.notNull(templateXlsIn, &quot;templateXlsIn&quot;);</span>
+<span class="fc" id="L102">        ArgUtils.notNull(xlsOut, &quot;xlsOut&quot;);</span>
+<span class="fc" id="L103">        ArgUtils.notNull(beanObj, &quot;beanObj&quot;);</span>
+
+
+<span class="fc" id="L106">        final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));</span>
+
+<span class="fc" id="L108">        try(Workbook book = WorkbookFactory.create(templateXlsIn)) {</span>
+
+<span class="fc" id="L110">            final Class&lt;?&gt; clazz = beanObj.getClass();</span>
+<span class="fc" id="L111">            final XlsSheet sheetAnno = clazz.getAnnotation(XlsSheet.class);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">            if(sheetAnno == null) {</span>
+<span class="fc" id="L113">                throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create(&quot;anno.notFound&quot;)</span>
+<span class="fc" id="L114">                        .varWithClass(&quot;property&quot;, clazz)</span>
+<span class="fc" id="L115">                        .varWithAnno(&quot;anno&quot;, XlsSheet.class)</span>
+<span class="fc" id="L116">                        .format());</span>
+    
+            }
+    
+            final SheetBindingErrors&lt;P&gt; bindingResult;
+            try {
+<span class="fc" id="L122">                final Sheet[] xlsSheet = configuration.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);</span>
+<span class="fc" id="L123">                bindingResult = saveSheet(xlsSheet[0], beanObj, annoReader);</span>
+    
+<span class="fc" id="L125">            } catch(SheetNotFoundException e) {</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">                if(configuration.isIgnoreSheetNotFound()){</span>
+<span class="fc" id="L127">                    logger.warn(MessageBuilder.create(&quot;log.skipNotFoundSheet&quot;).format(), e);</span>
+<span class="fc" id="L128">                    return null;</span>
+    
+                } else {
+<span class="fc" id="L131">                    throw e;</span>
+                }
+<span class="fc" id="L133">            }</span>
+    
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">            if(configuration.isFormulaRecalcurationOnSave()) {</span>
+<span class="fc" id="L136">                book.setForceFormulaRecalculation(true);</span>
+            }
+    
+<span class="fc" id="L139">            book.write(xlsOut);</span>
+    
+<span class="fc" id="L141">            return bindingResult;</span>
+            
+        }
+
+    }
+
+    /**
+     * 複数のオブジェクトをそれぞれのシートへ保存する。
+     * @param templateXlsIn 雛形となるExcelファイルの入力
+     * @param xlsOut xlsOut 出力先のストリーム
+     * @param beanObjs 書き込むオブジェクトの配列。
+     * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
+     */
+    public void saveMultiple(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs)
+            throws XlsMapperException, IOException {
+
+<span class="fc" id="L159">        saveMultipleDetail(templateXlsIn, xlsOut, beanObjs);</span>
+<span class="fc" id="L160">    }</span>
+
+    /**
+     * 複数のオブジェクトをそれぞれのシートへ保存する。
+     * @param templateXlsIn 雛形となるExcelファイルの入力
+     * @param xlsOut xlsOut 出力先のストリーム
+     * @param beanObjs 書き込むオブジェクトの配列。
+     * @return マッピング結果。
+     *         {@link Configuration#isIgnoreSheetNotFound()}の値がtrueで、シートが見つからない場合、結果に含まれません。
+     * @throws IllegalArgumentException {@literal templateXlsIn == null or xlsOut == null or beanObjs == null}
+     * @throws XlsMapperException マッピングに失敗した場合
+     * @throws IOException テンプレｰトのファイルの読み込みやファイルの出力に失敗した場合
+     */
+    public MultipleSheetBindingErrors&lt;Object&gt; saveMultipleDetail(final InputStream templateXlsIn, final OutputStream xlsOut, final Object[] beanObjs)
+            throws XlsMapperException, IOException {
+
+<span class="fc" id="L176">        ArgUtils.notNull(templateXlsIn, &quot;templateXlsIn&quot;);</span>
+<span class="fc" id="L177">        ArgUtils.notNull(xlsOut, &quot;xlsOut&quot;);</span>
+<span class="fc" id="L178">        ArgUtils.notEmpty(beanObjs, &quot;beanObjs&quot;);</span>
+
+<span class="fc" id="L180">        final AnnotationReader annoReader = new AnnotationReader(configuration.getAnnotationMapping().orElse(null));</span>
+
+<span class="fc" id="L182">        final MultipleSheetBindingErrors&lt;Object&gt; multipleResult = new MultipleSheetBindingErrors&lt;&gt;();</span>
+
+<span class="fc" id="L184">        try(Workbook book = WorkbookFactory.create(templateXlsIn)) {</span>
+
+<span class="fc bfc" id="L186" title="All 2 branches covered.">            for(int i=0; i &lt; beanObjs.length; i++) {</span>
+<span class="fc" id="L187">                final Object beanObj = beanObjs[i];</span>
+<span class="fc" id="L188">                final Class&lt;?&gt; clazz = beanObj.getClass();</span>
+    
+<span class="fc" id="L190">                final XlsSheet sheetAnno = annoReader.getAnnotation(clazz, XlsSheet.class);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">                if(sheetAnno == null) {</span>
+<span class="fc" id="L192">                    throw new AnnotationInvalidException(sheetAnno, MessageBuilder.create(&quot;anno.notFound&quot;)</span>
+<span class="fc" id="L193">                            .varWithClass(&quot;property&quot;, clazz)</span>
+<span class="fc" id="L194">                            .varWithAnno(&quot;anno&quot;, XlsSheet.class)</span>
+<span class="fc" id="L195">                            .format());</span>
+                }
+    
+                try {
+<span class="fc" id="L199">                    final Sheet[] xlsSheet = configuration.getSheetFinder().findForSaving(book, sheetAnno, annoReader, beanObj);</span>
+<span class="fc" id="L200">                    multipleResult.addBindingErrors(saveSheet(xlsSheet[0], beanObj, annoReader));</span>
+    
+<span class="fc" id="L202">                } catch(SheetNotFoundException e) {</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">                    if(configuration.isIgnoreSheetNotFound()){</span>
+<span class="fc" id="L204">                        logger.warn(MessageBuilder.create(&quot;log.skipNotFoundSheet&quot;).format(), e);</span>
+<span class="fc" id="L205">                        continue;</span>
+                    } else {
+<span class="fc" id="L207">                        throw e;</span>
+                    }
+<span class="fc" id="L209">                }</span>
+            }
+    
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">            if(configuration.isFormulaRecalcurationOnSave()) {</span>
+<span class="fc" id="L213">                book.setForceFormulaRecalculation(true);</span>
+            }
+    
+<span class="fc" id="L216">            book.write(xlsOut);</span>
+    
+<span class="fc" id="L218">            return multipleResult;</span>
+            
+        }
+
+    }
+
+    /**
+     * 任意のクラスのオブジェクトを、Excelシートにマッピングする。
+     * @param sheet
+     * @param beanObj
+     * @param configuration
+     * @param work
+     * @throws XlsMapperException
+     */
+    private &lt;P&gt; SheetBindingErrors&lt;P&gt; saveSheet(final Sheet sheet, final P beanObj, final AnnotationReader annoReader)
+            throws XlsMapperException {
+
+<span class="fc" id="L235">        final Class&lt;?&gt; clazz = beanObj.getClass();</span>
+
+<span class="fc" id="L237">        final SheetBindingErrors&lt;P&gt; errors =  configuration.getBindingErrorsFactory().create(beanObj);</span>
+<span class="fc" id="L238">        errors.setSheetName(sheet.getSheetName());</span>
+<span class="fc" id="L239">        errors.setSheetIndex(sheet.getWorkbook().getSheetIndex(sheet));</span>
+
+<span class="fc" id="L241">        final SavingWorkObject work = new SavingWorkObject();</span>
+<span class="fc" id="L242">        work.setAnnoReader(annoReader);</span>
+<span class="fc" id="L243">        work.setErrors(errors);</span>
+
+        // セルのキャッシュ情報の初期化
+<span class="fc" id="L246">        configuration.getCellFormatter().init(false);</span>
+
+<span class="fc" id="L248">        final FieldAccessorFactory adpterFactory = new FieldAccessorFactory(annoReader);</span>
+
+        // リスナークラスの@PreSave用メソッドの実行
+<span class="fc" id="L251">        final XlsListener listenerAnno = annoReader.getAnnotation(beanObj.getClass(), XlsListener.class);</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        if(listenerAnno != null) {</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">            for(Class&lt;?&gt; listenerClass : listenerAnno.value()) {</span>
+<span class="fc" id="L254">                final Object listenerObj = configuration.createBean(listenerClass);</span>
+
+<span class="fc bfc" id="L256" title="All 2 branches covered.">                for(Method method : listenerObj.getClass().getMethods()) {</span>
+<span class="fc bfc" id="L257" title="All 2 branches covered.">                    if(annoReader.hasAnnotation(method, XlsPreSave.class)) {</span>
+<span class="fc" id="L258">                        Utils.invokeNeedProcessMethod(listenerObj, method, beanObj, sheet, configuration, work.getErrors(), ProcessCase.Save);</span>
+                    }
+                }
+            }
+
+        }
+
+        // @PreSave用のメソッドの取得と実行
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        for(Method method : clazz.getMethods()) {</span>
+
+<span class="fc" id="L268">            final XlsPreSave preProcessAnno = annoReader.getAnnotation(method, XlsPreSave.class);</span>
+<span class="fc bfc" id="L269" title="All 2 branches covered.">            if(preProcessAnno != null) {</span>
+<span class="fc" id="L270">                Utils.invokeNeedProcessMethod(beanObj, method, beanObj, sheet, configuration, work.getErrors(), ProcessCase.Save);</span>
+            }
+        }
+
+<span class="fc" id="L274">        final List&lt;FieldAccessorProxy&gt; accessorProxies = new ArrayList&lt;&gt;();</span>
+
+        // public メソッドの処理
+<span class="fc bfc" id="L277" title="All 2 branches covered.">        for(Method method : clazz.getMethods()) {</span>
+<span class="fc" id="L278">            method.setAccessible(true);</span>
+
+<span class="fc bfc" id="L280" title="All 2 branches covered.">            for(Annotation anno : annoReader.getAnnotations(method)) {</span>
+
+<span class="fc" id="L282">                final XlsFieldProcessor annoFieldProcessor = anno.annotationType().getAnnotation(XlsFieldProcessor.class);</span>
+<span class="fc bfc" id="L283" title="All 4 branches covered.">                if(ClassUtils.isAccessorMethod(method) &amp;&amp; annoFieldProcessor != null) {</span>
+
+                    // 登録済みのFieldProcessorの取得
+<span class="fc" id="L286">                    FieldProcessor&lt;?&gt; processor = configuration.getFieldProcessorRegistry().getProcessor(anno.annotationType());</span>
+
+                    // アノテーションに指定されているFieldProcessorの場合
+<span class="fc bfc" id="L289" title="All 4 branches covered.">                    if(processor == null &amp;&amp; annoFieldProcessor.value().length &gt; 0) {</span>
+<span class="fc" id="L290">                        processor = configuration.createBean(annoFieldProcessor.value()[0]);</span>
+
+                    }
+
+<span class="fc bfc" id="L294" title="All 2 branches covered.">                    if(processor != null) {</span>
+<span class="fc" id="L295">                        final FieldAccessor accessor = adpterFactory.create(method);</span>
+
+<span class="fc" id="L297">                        final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);</span>
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">                        if(!accessorProxies.contains(accessorProxy)) {</span>
+<span class="fc" id="L299">                            accessorProxies.add(accessorProxy);</span>
+                        }
+
+<span class="fc" id="L302">                    } else {</span>
+                        // FieldProcessorが見つからない場合
+<span class="fc" id="L304">                        throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.XlsFieldProcessor.notResolve&quot;)</span>
+<span class="fc" id="L305">                                .varWithAnno(&quot;anno&quot;, anno.annotationType())</span>
+<span class="fc" id="L306">                                .format());</span>
+                    }
+
+                }
+
+<span class="fc bfc" id="L311" title="All 2 branches covered.">                if(anno instanceof XlsPostSave) {</span>
+<span class="fc" id="L312">                    work.addNeedPostProcess(new NeedProcess(beanObj, beanObj, method));</span>
+                }
+            }
+        }
+
+        // フィールドの処理
+<span class="fc bfc" id="L318" title="All 2 branches covered.">        for(Field field : clazz.getDeclaredFields()) {</span>
+
+<span class="fc" id="L320">            field.setAccessible(true);</span>
+<span class="fc" id="L321">            final FieldAccessor accessor = adpterFactory.create(field);</span>
+
+<span class="fc bfc" id="L323" title="All 2 branches covered.">            for(Annotation anno : annoReader.getAnnotations(field)) {</span>
+
+<span class="fc" id="L325">                final XlsFieldProcessor annoFieldProcessor = anno.annotationType().getAnnotation(XlsFieldProcessor.class);</span>
+<span class="fc bfc" id="L326" title="All 2 branches covered.">                if(annoFieldProcessor != null) {</span>
+                    // 登録済みのFieldProcessorの取得
+<span class="fc" id="L328">                    FieldProcessor&lt;?&gt; processor = configuration.getFieldProcessorRegistry().getProcessor(anno.annotationType());</span>
+
+                    // アノテーションに指定されているFieldProcessorの場合
+<span class="fc bfc" id="L331" title="All 4 branches covered.">                    if(processor == null &amp;&amp; annoFieldProcessor.value().length &gt; 0) {</span>
+<span class="fc" id="L332">                        processor = configuration.createBean(annoFieldProcessor.value()[0]);</span>
+                    }
+
+<span class="fc bfc" id="L335" title="All 2 branches covered.">                    if(processor != null) {</span>
+<span class="fc" id="L336">                        final FieldAccessorProxy accessorProxy = new FieldAccessorProxy(anno, processor, accessor);</span>
+<span class="pc bpc" id="L337" title="1 of 2 branches missed.">                        if(!accessorProxies.contains(accessorProxy)) {</span>
+<span class="fc" id="L338">                            accessorProxies.add(accessorProxy);</span>
+                        }
+
+<span class="fc" id="L341">                    } else {</span>
+                        // FieldProcessorが見つからない場合
+<span class="fc" id="L343">                        throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.XlsFieldProcessor.notResolve&quot;)</span>
+<span class="fc" id="L344">                                .varWithAnno(&quot;anno&quot;, anno.annotationType())</span>
+<span class="fc" id="L345">                                .format());</span>
+                    }
+
+                }
+            }
+
+        }
+
+        // 順番を並び替えて保存処理を実行する
+<span class="fc" id="L354">        Collections.sort(accessorProxies, new FieldAccessorProxyComparator());</span>
+<span class="fc bfc" id="L355" title="All 2 branches covered.">        for(FieldAccessorProxy accessorProxy : accessorProxies) {</span>
+<span class="fc" id="L356">            accessorProxy.saveProcess(sheet, beanObj, configuration, work);</span>
+<span class="fc" id="L357">        }</span>
+
+        // リスナークラスの@PostSaveの取得
+<span class="fc bfc" id="L360" title="All 2 branches covered.">        if(listenerAnno != null) {</span>
+<span class="fc bfc" id="L361" title="All 2 branches covered.">            for(Class&lt;?&gt; listenerClass : listenerAnno.value()) {</span>
+<span class="fc" id="L362">                final Object listenerObj = configuration.createBean(listenerClass);</span>
+<span class="fc bfc" id="L363" title="All 2 branches covered.">                for(Method method : listenerObj.getClass().getMethods()) {</span>
+<span class="fc bfc" id="L364" title="All 2 branches covered.">                    if(annoReader.hasAnnotation(method, XlsPostSave.class)) {</span>
+<span class="fc" id="L365">                        work.addNeedPostProcess(new NeedProcess(beanObj, listenerObj, method));</span>
+                    }
+                }
+            }
+
+        }
+
+        //@PostSaveが付与されているメソッドの実行
+<span class="fc bfc" id="L373" title="All 2 branches covered.">        for(NeedProcess need : work.getNeedPostProcesses()) {</span>
+<span class="fc" id="L374">            Utils.invokeNeedProcessMethod(need.getProcess(), need.getMethod(), need.getTarget(), sheet, configuration, work.getErrors(), ProcessCase.Save);</span>
+<span class="fc" id="L375">        }</span>
+
+<span class="fc" id="L377">        return errors;</span>
+
+    }
+
+    /**
+     * システム情報を取得します。
+     * @return 現在のシステム情報
+     */
+    public Configuration getConfiguration() {
+<span class="nc" id="L386">        return configuration;</span>
+    }
+
+    /**
+     * システム情報を設定します。
+     * @param configuration システム情報
+     */
+    public void setConfiguration(Configuration configuration) {
+<span class="fc" id="L394">        this.configuration = configuration;</span>
+<span class="fc" id="L395">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

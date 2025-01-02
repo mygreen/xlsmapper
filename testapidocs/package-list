@@ -1,0 +1,16 @@
+com.gh.mygreen.xlsmapper
+com.gh.mygreen.xlsmapper.cellconverter
+com.gh.mygreen.xlsmapper.expression
+com.gh.mygreen.xlsmapper.fieldaccessor
+com.gh.mygreen.xlsmapper.fieldprocessor
+com.gh.mygreen.xlsmapper.localization
+com.gh.mygreen.xlsmapper.sample
+com.gh.mygreen.xlsmapper.sample.attendance
+com.gh.mygreen.xlsmapper.sample.dbdefinition
+com.gh.mygreen.xlsmapper.spring
+com.gh.mygreen.xlsmapper.util
+com.gh.mygreen.xlsmapper.validation
+com.gh.mygreen.xlsmapper.validation.beanvalidation
+com.gh.mygreen.xlsmapper.validation.fieldvalidation
+com.gh.mygreen.xlsmapper.xml
+test.external

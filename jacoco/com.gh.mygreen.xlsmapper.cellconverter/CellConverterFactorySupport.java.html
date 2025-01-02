@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CellConverterFactorySupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.cellconverter</a> &gt; <span class="el_source">CellConverterFactorySupport.java</span></div><h1>CellConverterFactorySupport.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.cellconverter;
+
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Optional;
+
+import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.annotation.XlsCellOption;
+import com.gh.mygreen.xlsmapper.annotation.XlsDefaultValue;
+import com.gh.mygreen.xlsmapper.annotation.XlsFormula;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
+import com.gh.mygreen.xlsmapper.expression.ExpressionEvaluationException;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
+import com.gh.mygreen.xlsmapper.textformatter.TextFormatter;
+import com.gh.mygreen.xlsmapper.textformatter.TextParseException;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * {@link CellConverter}を作成するための抽象クラス。
+ *
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L27">public abstract class CellConverterFactorySupport&lt;T&gt;  {</span>
+
+    /**
+     * 引数で指定したCellConverterに対して、トリムなどの共通の設定を行う。
+     * @param cellConverter 設定を行うCellConverter
+     * @param field フィールド情報
+     * @param config システム設定情報
+     */
+    protected void setupCellConverter(final BaseCellConverter&lt;T&gt; cellConverter, final FieldAccessor field, final Configuration config) {
+
+<span class="fc" id="L37">        final TextFormatter&lt;T&gt; textFormatter = createTextFormatter(field, config);</span>
+<span class="fc" id="L38">        cellConverter.setTextFormatter(textFormatter);</span>
+
+        // トリムの設定
+<span class="fc" id="L41">        final Optional&lt;XlsTrim&gt; trimAnno = field.getAnnotation(XlsTrim.class);</span>
+<span class="fc" id="L42">        final boolean trimmed = trimAnno.map(anno -&gt; true).orElse(false);</span>
+
+<span class="fc" id="L44">        cellConverter.setTrimmed(trimmed);</span>
+
+        // 初期値の設定
+<span class="fc" id="L47">        final Optional&lt;XlsDefaultValue&gt; defaultValueAnno = field.getAnnotation(XlsDefaultValue.class);</span>
+<span class="fc" id="L48">        defaultValueAnno.ifPresent(anno -&gt; {</span>
+<span class="fc" id="L49">            String text = Utils.trim(anno.value(), trimmed);</span>
+
+            try {
+<span class="fc" id="L52">                T defaultValue = textFormatter.parse(text);</span>
+<span class="fc" id="L53">                cellConverter.setDefaultValue(defaultValue, anno.cases());</span>
+
+<span class="fc" id="L55">            } catch(TextParseException e) {</span>
+<span class="fc" id="L56">                throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.XlsDefaultValue.failParse&quot;)</span>
+<span class="fc" id="L57">                        .var(&quot;property&quot;, field.getNameWithClass())</span>
+<span class="fc" id="L58">                        .var(&quot;defaultValue&quot;, text)</span>
+<span class="fc" id="L59">                        .varWithClass(&quot;type&quot;, field.getType())</span>
+<span class="fc" id="L60">                        .format(), e);</span>
+<span class="fc" id="L61">            }</span>
+<span class="fc" id="L62">        });</span>
+
+        // セルの書式の設定
+<span class="fc" id="L65">        final Optional&lt;XlsCellOption&gt; cellOptionAnno = field.getAnnotation(XlsCellOption.class);</span>
+<span class="fc" id="L66">        cellOptionAnno.ifPresent(anno -&gt; {</span>
+<span class="fc" id="L67">            cellConverter.setShrinktToFit(anno.shrinkToFit());</span>
+<span class="fc" id="L68">            cellConverter.setWrapText(anno.wrapText());</span>
+<span class="fc" id="L69">            cellConverter.setIndent(anno.indent());</span>
+<span class="fc" id="L70">            cellConverter.setHorizontalAlignment(anno.horizontalAlign().poiAlignType());</span>
+<span class="fc" id="L71">            cellConverter.setVerticalAlignment(anno.verticalAlign().poiAlignType());</span>
+<span class="fc" id="L72">        });</span>
+
+        // 数式の設定
+<span class="fc" id="L75">        final Optional&lt;XlsFormula&gt; formulaAnno = field.getAnnotation(XlsFormula.class);</span>
+<span class="fc" id="L76">        formulaAnno.ifPresent(anno -&gt; {</span>
+<span class="fc" id="L77">            CellFormulaHandler formulaHandler = createCellFormulaHandler(anno, field, config);</span>
+<span class="fc" id="L78">            cellConverter.setFormulaHandler(formulaHandler);</span>
+
+<span class="fc" id="L80">        });</span>
+
+        // 各個別の設定
+<span class="fc" id="L83">        setupCustom(cellConverter, field, config);</span>
+
+<span class="fc" id="L85">    }</span>
+
+    /**
+     * 各個別に、Converterの設定を行う。
+     * @param cellConverter 組み立てるCellConverterのインスタンス
+     * @param field フィールド情報
+     * @param config システム情報
+     */
+    protected abstract void setupCustom(BaseCellConverter&lt;T&gt; cellConverter, FieldAccessor field, Configuration config);
+
+    /**
+     * {@link TextFormatter}のインスタンスを作成する。
+     * @param field フィールド情報
+     * @param config システム情報
+     * @return {@link TextFormatter}のインスタンス
+     */
+    protected abstract TextFormatter&lt;T&gt; createTextFormatter(FieldAccessor field, Configuration config);
+
+    /**
+     * 数式を処理する{@link CellFormulaHandler}を作成する。
+     * @param formulaAnno 数式のアノテーション
+     * @param field フィールド情報
+     * @param config システム情報
+     * @return {@link CellFormulaHandler}のインスタンス
+     */
+    protected CellFormulaHandler createCellFormulaHandler(final XlsFormula formulaAnno, final FieldAccessor field, final Configuration config) {
+
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if(!formulaAnno.value().isEmpty()) {</span>
+<span class="fc" id="L113">            final String formulaExpression = formulaAnno.value();</span>
+            try {
+                // EL式として正しいか検証する
+<span class="fc" id="L116">                config.getFormulaFormatter().interpolate(formulaExpression, Collections.emptyMap());</span>
+
+<span class="nc" id="L118">            } catch(ExpressionEvaluationException e) {</span>
+<span class="nc" id="L119">                throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create(&quot;anno.attr.invalidEL&quot;)</span>
+<span class="nc" id="L120">                        .var(&quot;property&quot;, field.getNameWithClass())</span>
+<span class="nc" id="L121">                        .varWithAnno(&quot;anno&quot;, XlsFormula.class)</span>
+<span class="nc" id="L122">                        .var(&quot;attrName&quot;, &quot;value&quot;)</span>
+<span class="nc" id="L123">                        .var(&quot;attrValue&quot;, formulaExpression)</span>
+<span class="nc" id="L124">                        .format());</span>
+<span class="fc" id="L125">            }</span>
+
+<span class="fc" id="L127">            CellFormulaHandler handler = new CellFormulaHandler(formulaExpression);</span>
+<span class="fc" id="L128">            handler.setPrimaryFormula(formulaAnno.primary());</span>
+<span class="fc" id="L129">            return handler;</span>
+
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        } else if(!formulaAnno.methodName().isEmpty()) {</span>
+            // 戻り値が文字列の数式を返すメソッドを探す
+<span class="fc" id="L133">            final Class&lt;?&gt; targetClass = field.getDeclaringClass();</span>
+<span class="fc" id="L134">            Method method = null;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            for(Method m : targetClass.getDeclaredMethods()) {</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">                if(m.getName().equals(formulaAnno.methodName())</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">                        &amp;&amp; m.getReturnType().equals(String.class)) {</span>
+<span class="fc" id="L138">                    method = m;</span>
+<span class="fc" id="L139">                    break;</span>
+                }
+            }
+
+<span class="fc bfc" id="L143" title="All 2 branches covered.">            if(method == null) {</span>
+<span class="fc" id="L144">                throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create(&quot;anno.attr.notFoundMethod&quot;)</span>
+<span class="fc" id="L145">                        .var(&quot;property&quot;, field.getNameWithClass())</span>
+<span class="fc" id="L146">                        .varWithAnno(&quot;anno&quot;, XlsFormula.class)</span>
+<span class="fc" id="L147">                        .var(&quot;attrName&quot;, &quot;methodName&quot;)</span>
+<span class="fc" id="L148">                        .var(&quot;attrValue&quot;, formulaAnno.methodName())</span>
+<span class="fc" id="L149">                        .varWithClass(&quot;definedClass&quot;, targetClass)</span>
+<span class="fc" id="L150">                        .format());</span>
+            }
+
+<span class="fc" id="L153">            method.setAccessible(true);</span>
+<span class="fc" id="L154">            CellFormulaHandler handler = new CellFormulaHandler(method);</span>
+<span class="fc" id="L155">            handler.setPrimaryFormula(formulaAnno.primary());</span>
+<span class="fc" id="L156">            return handler;</span>
+
+        } else {
+<span class="fc" id="L159">            throw new AnnotationInvalidException(formulaAnno, MessageBuilder.create(&quot;anno.attr.required.any&quot;)</span>
+<span class="fc" id="L160">                    .var(&quot;property&quot;, field.getNameWithClass())</span>
+<span class="fc" id="L161">                    .varWithAnno(&quot;anno&quot;, XlsFormula.class)</span>
+<span class="fc" id="L162">                    .varWithArrays(&quot;attrNames&quot;, &quot;value&quot;, &quot;methodName&quot;)</span>
+<span class="fc" id="L163">                    .format());</span>
+        }
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

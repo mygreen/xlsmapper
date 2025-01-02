@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SheetNameProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor.impl</a> &gt; <span class="el_source">SheetNameProcessor.java</span></div><h1>SheetNameProcessor.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
+
+import org.apache.poi.ss.usermodel.Sheet;
+
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.LoadingWorkObject;
+import com.gh.mygreen.xlsmapper.SavingWorkObject;
+import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+
+/**
+ * アノテーション {@link XlsSheetName} を処理する。
+ *
+ * @version 2.0
+ * @author Naoki Takezoe
+ * @author T.TSUCHIE
+ */
+<span class="fc" id="L22">public class SheetNameProcessor extends AbstractFieldProcessor&lt;XlsSheetName&gt; {</span>
+
+    @Override
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsSheetName anno, final FieldAccessor accessor,
+            final Configuration config, final LoadingWorkObject work) {
+
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if(!accessor.isWritable()) {</span>
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+<span class="fc" id="L30">            return;</span>
+        }
+        
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
+<span class="nc" id="L34">            return;</span>
+        }
+
+<span class="fc" id="L37">        final String sheetName = sheet.getSheetName();</span>
+<span class="fc" id="L38">        accessor.setValue(beansObj, sheetName);</span>
+
+<span class="fc" id="L40">    }</span>
+
+    @Override
+    public void saveProcess(final Sheet sheet, final Object targetObj, final XlsSheetName anno, final FieldAccessor accessor,
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if(!accessor.isWritable()) {</span>
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+<span class="fc" id="L48">            return;</span>
+        }
+        
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if(!Utils.isSaveCase(anno.cases())) {</span>
+<span class="nc" id="L52">            return;</span>
+        }
+
+<span class="fc" id="L55">        final String sheetName = sheet.getSheetName();</span>
+<span class="fc" id="L56">        accessor.setValue(targetObj, sheetName);</span>
+
+<span class="fc" id="L58">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InternalObjectErrorBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation</a> &gt; <span class="el_source">InternalObjectErrorBuilder.java</span></div><h1>InternalObjectErrorBuilder.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation;
+
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * {@link SheetBindingErrors}経由で呼び出される{@link ObjectError}のビルダクラス。
+ * &lt;p&gt;{@link #buildAndAddError()}でチェインでより使い安くする。&lt;/p&gt;
+ * 
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class InternalObjectErrorBuilder extends ObjectErrorBuilder {
+    
+    private final SheetBindingErrors&lt;?&gt; errors;
+    
+    /**
+     * ビルダのインスタンスを作成します。
+     * @param errors エラー情報
+     * @param objectName オブジェクト名
+     * @param codes メッセージコード。複数指定可能で、先頭にあるものほど優先度が高い。
+     */
+    public InternalObjectErrorBuilder(final SheetBindingErrors&lt;?&gt; errors, final String objectName, final String[] codes) {
+<span class="fc" id="L25">        super(objectName, codes);</span>
+<span class="fc" id="L26">        this.errors = errors;</span>
+        
+<span class="fc" id="L28">    }</span>
+    
+    @Override
+    public InternalObjectErrorBuilder variables(final Map&lt;String, Object&gt; variables) {
+<span class="nc" id="L32">        super.variables(variables);</span>
+<span class="nc" id="L33">        return this;</span>
+    }
+    
+    @Override
+    public InternalObjectErrorBuilder variables(final String key, final Object value) {
+<span class="nc" id="L38">        super.variables(key, value);</span>
+<span class="nc" id="L39">        return this;</span>
+    }
+    
+    @Override
+    public InternalObjectErrorBuilder defaultMessage(final String defaultMessage) {
+<span class="nc" id="L44">        super.defaultMessage(defaultMessage);</span>
+<span class="nc" id="L45">        return this;</span>
+    }
+    
+    @Override
+    public InternalObjectErrorBuilder sheetName(final String sheetName) {
+<span class="fc" id="L50">        super.sheetName(sheetName);</span>
+<span class="fc" id="L51">        return this;</span>
+    }
+    
+    @Override
+    public InternalObjectErrorBuilder label(final String label) {
+<span class="nc" id="L56">        super.label(label);</span>
+<span class="nc" id="L57">        return this;</span>
+    }
+    
+    @Override
+    public InternalObjectErrorBuilder label(final Optional&lt;String&gt; label) {
+<span class="nc" id="L62">        super.label(label);</span>
+<span class="nc" id="L63">        return this;</span>
+    }
+    
+    /**
+     * {@link ObjectError}のインスタンスを組み立て、{@link SheetBindingErrors}にエラーとして追加します。
+     * @return {@link SheetBindingErrors}のインスタンス
+     */
+    public SheetBindingErrors&lt;?&gt; buildAndAddError() {
+        
+<span class="fc" id="L72">        final ObjectError error = build();</span>
+        
+<span class="fc" id="L74">        errors.addError(error);</span>
+        
+<span class="fc" id="L76">        return errors;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

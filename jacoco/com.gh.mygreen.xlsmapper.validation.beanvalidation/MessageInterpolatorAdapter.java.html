@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MessageInterpolatorAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation.beanvalidation</a> &gt; <span class="el_source">MessageInterpolatorAdapter.java</span></div><h1>MessageInterpolatorAdapter.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation.beanvalidation;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.validation.metadata.ConstraintDescriptor;
+
+import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.localization.MessageResolver;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+
+
+/**
+ * XlsMapperの{@link MessageInterpolator}とBeanValidationの{@link javax.validation.MessageInterpolator}のAdaptor。
+ * &lt;p&gt;BeanValidatorのメッセ－ジ処理時、特に式言語の実装切り替えする場合に利用する。
+ *
+ * @author T.TSUCHIE
+ *
+ */
+public class MessageInterpolatorAdapter implements javax.validation.MessageInterpolator {
+    
+    private final MessageResolver messageResolver;
+    
+    private final MessageInterpolator sheetMessageInterpolator;
+    
+    public MessageInterpolatorAdapter(final MessageResolver messageResolver, 
+<span class="fc" id="L28">            final MessageInterpolator sheetMessageInterpolator) {</span>
+<span class="fc" id="L29">        ArgUtils.notNull(messageResolver, &quot;messageResolver&quot;);</span>
+<span class="fc" id="L30">        ArgUtils.notNull(sheetMessageInterpolator, &quot;sheetMessageInterpolator&quot;);</span>
+<span class="fc" id="L31">        this.messageResolver = messageResolver;</span>
+<span class="fc" id="L32">        this.sheetMessageInterpolator = sheetMessageInterpolator;</span>
+<span class="fc" id="L33">    }</span>
+    
+    @Override
+    public String interpolate(final String messageTemplate, final Context context) {
+<span class="fc" id="L37">        return sheetMessageInterpolator.interpolate(messageTemplate, createMessageVars(context), true, messageResolver);</span>
+    }
+    
+    @Override
+    public String interpolate(final String messageTemplate, final Context context, final Locale locale) {
+<span class="nc" id="L42">        return sheetMessageInterpolator.interpolate(messageTemplate, createMessageVars(context), true, messageResolver);</span>
+    }
+    
+    /**
+     * メッセージ中で利用可能な変数を作成する
+     * @param context コンテキスト
+     * @return メッセージ変数のマップ
+     */
+    protected Map&lt;String, Object&gt; createMessageVars(final Context context) {
+        
+<span class="fc" id="L52">        final Map&lt;String, Object&gt; vars = new HashMap&lt;String, Object&gt;();</span>
+        
+<span class="fc" id="L54">        final ConstraintDescriptor&lt;?&gt; descriptor = context.getConstraintDescriptor();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        for(Map.Entry&lt;String, Object&gt; entry : descriptor.getAttributes().entrySet()) {</span>
+<span class="fc" id="L56">            final String attrName = entry.getKey();</span>
+<span class="fc" id="L57">            final Object attrValue = entry.getValue();</span>
+            
+<span class="fc" id="L59">            vars.put(attrName, attrValue);</span>
+<span class="fc" id="L60">        }</span>
+        
+        // 検証対象の値
+<span class="fc" id="L63">        vars.computeIfAbsent(&quot;validatedValue&quot;, key -&gt; context.getValidatedValue());</span>
+        
+<span class="fc" id="L65">        return vars;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

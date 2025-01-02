@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XlsLabelledCommentForIterateTable.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.annotation</a> &gt; <span class="el_source">XlsLabelledCommentForIterateTable.java</span></div><h1>XlsLabelledCommentForIterateTable.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.annotation;
+
+import java.lang.annotation.Annotation;
+
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+
+/**
+ * {@link XlsIterateTables}内の{@link XlsLabelledComment}をブリッジするクラス。
+ * 
+ * @since 2.1
+ * @author T.TSUCHIE
+ *
+ */
+public class XlsLabelledCommentForIterateTable implements XlsLabelledComment {
+
+<span class="fc" id="L16">    private Class&lt;? extends Annotation&gt; annotationType = null;</span>
+    
+<span class="fc" id="L18">    private String label = null;</span>
+<span class="fc" id="L19">    private int labelColumn = -1;</span>
+<span class="fc" id="L20">    private int labelRow = -1;</span>
+<span class="fc" id="L21">    private boolean optional = false;</span>
+<span class="fc" id="L22">    private String headerLabel = null;</span>
+<span class="fc" id="L23">    private ProcessCase[] cases = {};</span>
+    
+<span class="fc" id="L25">    public XlsLabelledCommentForIterateTable(XlsLabelledComment anno, int labelRow, int labelColumn) {</span>
+<span class="fc" id="L26">        this.annotationType = anno.annotationType();</span>
+<span class="fc" id="L27">        this.label = &quot;&quot;;</span>
+<span class="fc" id="L28">        this.labelRow = labelRow;</span>
+<span class="fc" id="L29">        this.labelColumn = labelColumn;</span>
+<span class="fc" id="L30">        this.optional = anno.optional();</span>
+<span class="fc" id="L31">        this.headerLabel = anno.headerLabel();</span>
+<span class="fc" id="L32">        this.cases = anno.cases();</span>
+        
+<span class="fc" id="L34">    }</span>
+    
+    @Override
+    public Class&lt;? extends Annotation&gt; annotationType() {
+<span class="fc" id="L38">        return annotationType;</span>
+    }
+
+    @Override
+    public boolean optional() {
+<span class="nc" id="L43">        return optional;</span>
+    }
+
+    @Override
+    public String label() {
+<span class="fc" id="L48">        return label;</span>
+    }
+
+    @Override
+    public int labelRow() {
+<span class="fc" id="L53">        return labelRow;</span>
+    }
+
+    @Override
+    public int labelColumn() {
+<span class="fc" id="L58">        return labelColumn;</span>
+    }
+
+    @Override
+    public String headerLabel() {
+<span class="nc" id="L63">        return headerLabel;</span>
+    }
+
+    @Override
+    public ProcessCase[] cases() {
+<span class="fc" id="L68">        return cases;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

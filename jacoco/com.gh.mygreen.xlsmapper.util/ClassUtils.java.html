@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClassUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.util</a> &gt; <span class="el_source">ClassUtils.java</span></div><h1>ClassUtils.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.util;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Optional;
+
+import com.github.mygreen.cellformatter.lang.ArgUtils;
+
+/**
+ * クラスやメソッドに関するユーティリティクラス。
+ * また、リフレクションについても処理する。
+ * 
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="nc" id="L18">public class ClassUtils {</span>
+    
+    /**
+     * メソッドがアクセッサメソッド（getter/setter）か判定します。
+     * 
+     * @param method メソッド情報
+     * @return trueの場合、アクセッサメソッド。
+     */
+    public static boolean isAccessorMethod(final Method method) {
+        
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        return isGetterMethod(method)</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">                || isBooleanGetterMethod(method)</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">                || isSetterMethod(method);</span>
+        
+    }
+    
+    /**
+     * メソッドがgetterの書式かどうか判定する。
+     * ただし、boolean型にたいするisは{@link #isBooleanGetterMethod(Method)}で判定すること。
+     * &lt;ol&gt;
+     *  &lt;li&gt;メソッド名が'get'か始まっていること。&lt;/li&gt;
+     *  &lt;li&gt;メソッド名が4文字以上であること。&lt;/li&gt;
+     *  &lt;li&gt;引数がないこと。&lt;/li&gt;
+     *  &lt;li&gt;戻り値が存在すること。&lt;/li&gt;
+     * &lt;/ol&gt;
+     * @param method メソッド情報
+     * @return trueの場合はgetterメソッドである。
+     */
+    public static boolean isGetterMethod(final Method method) {
+        
+<span class="fc" id="L48">        final String methodName = method.getName();</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if(!methodName.startsWith(&quot;get&quot;)) {</span>
+<span class="fc" id="L50">            return false;</span>
+            
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        } else if(methodName.length() &lt;= 3) {</span>
+<span class="nc" id="L53">            return false;</span>
+        }
+        
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if(method.getParameterCount() &gt; 0) {</span>
+<span class="fc" id="L57">            return false;</span>
+        }
+        
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if(method.getReturnType().equals(Void.class)) {</span>
+<span class="nc" id="L61">            return false;</span>
+        }
+        
+<span class="fc" id="L64">        return true;</span>
+        
+    }
+    
+    /**
+     * メソッドがsetterの書式かどうか判定する。
+     * &lt;ol&gt;
+     *  &lt;li&gt;メソッド名が'set'か始まっていること。&lt;/li&gt;
+     *  &lt;li&gt;メソッド名が4文字以上であること。&lt;/li&gt;
+     *  &lt;li&gt;引数が1つのみ存在すること&lt;/li&gt;
+     *  &lt;li&gt;戻り値は、検証しません。&lt;/li&gt;
+     * &lt;/ol&gt;
+     * @param method メソッド情報
+     * @return trueの場合はsetterメソッドである。
+     */
+    public static boolean isSetterMethod(final Method method) {
+        
+<span class="fc" id="L81">        final String methodName = method.getName();</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if(!methodName.startsWith(&quot;set&quot;)) {</span>
+<span class="fc" id="L83">            return false;</span>
+            
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        } else if(methodName.length() &lt;= 3) {</span>
+<span class="nc" id="L86">            return false;</span>
+        }
+        
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if(method.getParameterCount() != 1) {</span>
+<span class="fc" id="L90">            return false;</span>
+        }
+        
+<span class="fc" id="L93">        return true;</span>
+        
+    }
+    
+    /**
+     * メソッドがプリミティブ型のbooleanに対するgetterの書式かどうか判定する。
+     * &lt;ol&gt;
+     *  &lt;li&gt;メソッド名が'is'か始まっていること。&lt;/li&gt;
+     *  &lt;li&gt;メソッド名が3文字以上であること。&lt;/li&gt;
+     *  &lt;li&gt;引数がないこと。&lt;/li&gt;
+     *  &lt;li&gt;戻り値がプリミティブのboolean型であること。&lt;/li&gt;
+     * &lt;/ol&gt;
+     * 
+     * @param method メソッド情報
+     * @return trueの場合はboolean型のgetterメソッドである。
+     */
+    public static boolean isBooleanGetterMethod(final Method method) {
+        
+<span class="fc" id="L111">        final String methodName = method.getName();</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if(!methodName.startsWith(&quot;is&quot;)) {</span>
+<span class="fc" id="L113">            return false;</span>
+            
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        } else if(methodName.length() &lt;= 2) {</span>
+<span class="nc" id="L116">            return false;</span>
+        }
+        
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">        if(method.getParameterCount() &gt; 0) {</span>
+<span class="nc" id="L120">            return false;</span>
+        }
+        
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if(!isPrimitiveBoolean(method.getReturnType())) {</span>
+<span class="nc" id="L124">            return false;</span>
+        }
+        
+<span class="fc" id="L127">        return true;</span>
+    }
+    
+    /**
+     * タイプがプリミティブのboolean型かどうか判定する。
+     * @param type 判定対象のクラスタイプ。
+     * @return trueの場合、プリミティブのboolean型。
+     * @throws IllegalArgumentException {@literal type == null.}
+     */
+    public static boolean isPrimitiveBoolean(final Class&lt;?&gt; type) {
+<span class="fc" id="L137">        ArgUtils.notNull(type, &quot;type&quot;);</span>
+        
+<span class="fc bfc" id="L139" title="All 4 branches covered.">        if(type.isPrimitive() &amp;&amp; boolean.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L140">            return true;</span>
+        }
+        
+<span class="fc" id="L143">        return false;</span>
+    }
+    
+    /**
+     * クラスから、指定したフィールド情報を取得します。
+     * @param targetClass フィールドが定義されているクラス
+     * @param propertyName プロパティ名
+     * @param propertyType プロパティタイプ
+     * @return 存在しない場合、空を返します。
+     */
+    public static Optional&lt;Field&gt; extractField(final Class&lt;?&gt; targetClass, final String propertyName, final Class&lt;?&gt; propertyType) {
+        
+        final Field field;
+        try {
+<span class="fc" id="L157">            field = targetClass.getDeclaredField(propertyName);</span>
+<span class="fc" id="L158">        } catch (NoSuchFieldException | SecurityException e) {</span>
+<span class="fc" id="L159">            return Optional.empty();</span>
+<span class="fc" id="L160">        }</span>
+        
+<span class="fc" id="L162">        field.setAccessible(true);</span>
+        
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">        if(!field.getType().equals(propertyType)) {</span>
+<span class="nc" id="L165">            return Optional.empty();</span>
+            
+        }
+        
+<span class="fc" id="L169">        return Optional.of(field);</span>
+        
+    }
+    
+    /**
+     * クラスから、指定したgetterメソッド情報を取得します。
+     * @param targetClass し抽出先のクラス
+     * @param propertyName プロパティ名
+     * @param propertyType プロパティタイプ
+     * @return 存在しない場合、空を返します。
+     */
+    public static Optional&lt;Method&gt; extractGetter(final Class&lt;?&gt; targetClass, final String propertyName, final Class&lt;?&gt; propertyType) {
+        
+<span class="fc" id="L182">        final String methodName = &quot;get&quot; + Utils.capitalize(propertyName);</span>
+        
+        Method method;
+        try {
+<span class="fc" id="L186">            method = targetClass.getMethod(methodName);</span>
+            
+<span class="fc" id="L188">        } catch (NoSuchMethodException | SecurityException e) {</span>
+<span class="fc" id="L189">            return Optional.empty();</span>
+<span class="fc" id="L190">        }</span>
+        
+<span class="fc" id="L192">        method.setAccessible(true);</span>
+        
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">        if(method.getParameterCount() &gt; 0) {</span>
+<span class="nc" id="L195">            return Optional.empty();</span>
+        }
+        
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">        if(!method.getReturnType().equals(propertyType)) {</span>
+<span class="nc" id="L199">            return Optional.empty();</span>
+        }
+        
+<span class="fc" id="L202">        return Optional.of(method);</span>
+    }
+    
+    /**
+     * クラスから、指定したboolean型のgetterメソッド情報を取得します。
+     * @param targetClass 抽出先のクラス
+     * @param propertyName プロパティ名
+     * @return 存在しない場合、空を返します。
+     */
+    public static Optional&lt;Method&gt; extractBooleanGetter(final Class&lt;?&gt; targetClass, final String propertyName) {
+        
+<span class="fc" id="L213">        final String methodName = &quot;is&quot; + Utils.capitalize(propertyName);</span>
+        
+        Method method;
+        try {
+<span class="fc" id="L217">            method = targetClass.getMethod(methodName);</span>
+            
+<span class="fc" id="L219">        } catch (NoSuchMethodException | SecurityException e) {</span>
+<span class="fc" id="L220">            return Optional.empty();</span>
+<span class="fc" id="L221">        }</span>
+        
+<span class="fc" id="L223">        method.setAccessible(true);</span>
+        
+<span class="pc bpc" id="L225" title="1 of 2 branches missed.">        if(!method.getReturnType().equals(boolean.class)) {</span>
+<span class="nc" id="L226">            return Optional.empty();</span>
+        }
+        
+<span class="fc" id="L229">        return Optional.of(method);</span>
+    }
+    
+    /**
+     * クラスから、指定したsetterメソッド情報を取得します。
+     * @param targetClass 抽出先のクラス
+     * @param propertyName プロパティ名
+     * @param propertyType プロパティタイプ
+     * @return 存在しない場合、空を返します。
+     */
+    public static Optional&lt;Method&gt; extractSetter(final Class&lt;?&gt; targetClass, final String propertyName, final Class&lt;?&gt; propertyType) {
+        
+<span class="fc" id="L241">        final String methodName = &quot;set&quot; + Utils.capitalize(propertyName);</span>
+        
+        Method method;
+        try {
+<span class="fc" id="L245">            method = targetClass.getMethod(methodName, propertyType);</span>
+<span class="fc" id="L246">        } catch (NoSuchMethodException | SecurityException e) {</span>
+<span class="fc" id="L247">            return Optional.empty();</span>
+<span class="fc" id="L248">        }</span>
+        
+<span class="fc" id="L250">        method.setAccessible(true);</span>
+        
+<span class="fc" id="L252">        return Optional.of(method);</span>
+    }
+    
+    /**
+     * アノテーションの指定した属性値を取得する。
+     * &lt;p&gt;アノテーションの修飾子はpublicである必要があります。&lt;/p&gt;
+     * @param anno アノテーションのインスタンス
+     * @param attrName 属性名
+     * @param attrType 属性のタイプ。
+     * @return 属性を持たない場合、空を返す。
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public static &lt;T&gt; Optional&lt;T&gt; getAnnotationAttribute(final Annotation anno, final String attrName, final Class&lt;T&gt; attrType) {
+        
+        try {
+<span class="fc" id="L267">            final Method method = anno.annotationType().getMethod(attrName);</span>
+<span class="fc" id="L268">            method.setAccessible(true);</span>
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">            if(!attrType.equals(method.getReturnType())) {</span>
+<span class="nc" id="L270">                return Optional.empty();</span>
+            }
+            
+<span class="fc" id="L273">            final Object value = method.invoke(anno);</span>
+<span class="fc" id="L274">            return Optional.of((T)value);</span>
+            
+<span class="nc" id="L276">        } catch (Exception e) {</span>
+<span class="nc" id="L277">            return Optional.empty();</span>
+        }
+        
+    }
+    
+    /**
+     * アノテーションの指定した属性値を持つかどうか判定する。
+     * &lt;p&gt;アノテーションの修飾子はpublicである必要があります。&lt;/p&gt;
+     * @param anno アノテーションのインスタンス
+     * @param attrName 属性名
+     * @param attrType 属性のタイプ。
+     * @return 属性を持つ場合trueを返す。
+     */
+    public static &lt;T&gt;  boolean hasAnnotationAttribute(final Annotation anno, final String attrName, final Class&lt;T&gt; attrType) {
+        
+<span class="nc" id="L292">        return getAnnotationAttribute(anno, attrName, attrType).isPresent();</span>
+        
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ObjectValidatorSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation</a> &gt; <span class="el_source">ObjectValidatorSupport.java</span></div><h1>ObjectValidatorSupport.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation;
+
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+
+/**
+ * オブジェクトのValidatorの抽象クラス。
+ *
+ * @author T.TSUCHIE
+ * @version 2.0
+ * @param &lt;T&gt; 検証対象のオブジェクトのクラスタイプ
+ */
+<span class="fc" id="L12">public abstract class ObjectValidatorSupport&lt;T&gt; implements ObjectValidator&lt;T&gt; {</span>
+
+    /**
+     * ネストしたプロパティの値の検証を実行する。
+     * @param &lt;S&gt; ネストしたプロパティのクラスタイプ
+     * @param validator ネストしたプロパティに対するValidator
+     * @param targetObject ネストしたプロパティのインスタンス
+     * @param errors エラー情報
+     * @param subPath ネストするパス
+     * @param groups バリデーション時のヒントとなるグループ。
+     * @throws IllegalArgumentException {@literal validator == null or targetObject == null or errors == null}
+     */
+    protected &lt;S&gt; void invokeNestedValidator(final ObjectValidator&lt;S&gt; validator, final S targetObject,
+            final SheetBindingErrors&lt;?&gt; errors, final String subPath, final Class&lt;?&gt;... groups) {
+
+<span class="nc" id="L27">        ArgUtils.notNull(validator, &quot;validator&quot;);</span>
+<span class="nc" id="L28">        ArgUtils.notNull(targetObject, &quot;targetObject&quot;);</span>
+<span class="nc" id="L29">        ArgUtils.notNull(errors, &quot;errors&quot;);</span>
+
+<span class="nc" id="L31">        errors.pushNestedPath(subPath);</span>
+        try {
+<span class="nc" id="L33">            validator.validate(targetObject, errors, groups);</span>
+        } finally {
+<span class="nc" id="L35">            errors.popNestedPath();</span>
+        }
+<span class="nc" id="L37">    }</span>
+
+    /**
+     * リストや配列の形式のネストしたプロパティの値の検証を実行する。
+     * @param &lt;S&gt; ネストしたプロパティのクラスタイプ
+     * @param validator ネストしたプロパティに対するValidator
+     * @param targetObject ネストしたプロパティのインスタンス
+     * @param errors エラー情報
+     * @param subPath ネストするパス
+     * @param index リストや配列のインデックス。0から始まる。
+     * @param groups バリデーション時のヒントとなるグループ。
+     * @throws IllegalArgumentException {@literal validator == null or targetObject == null or errors == null}
+     * @throws IllegalArgumentException {@literal index &lt; 0}
+     */
+    protected &lt;S&gt; void invokeNestedValidator(final ObjectValidator&lt;S&gt; validator, final S targetObject,
+            final SheetBindingErrors&lt;?&gt; errors, final String subPath, final int index, final Class&lt;?&gt;... groups) {
+
+<span class="fc" id="L54">        ArgUtils.notNull(validator, &quot;validator&quot;);</span>
+<span class="fc" id="L55">        ArgUtils.notNull(targetObject, &quot;targetObject&quot;);</span>
+<span class="fc" id="L56">        ArgUtils.notNull(errors, &quot;errors&quot;);</span>
+<span class="fc" id="L57">        ArgUtils.notMin(index, 0, &quot;index&quot;);</span>
+
+<span class="fc" id="L59">        errors.pushNestedPath(subPath, index);</span>
+        try {
+<span class="fc" id="L61">            validator.validate(targetObject, errors, groups);</span>
+        } finally {
+<span class="fc" id="L63">            errors.popNestedPath();</span>
+        }
+<span class="fc" id="L65">    }</span>
+
+    /**
+     * マップ形式のネストしたプロパティの値の検証を実行する。
+     * @param &lt;S&gt; ネストしたプロパティのクラスタイプ
+     * @param validator ネストしたプロパティに対するValidator
+     * @param targetObject ネストしたプロパティのインスタンス
+     * @param errors エラー情報
+     * @param subPath ネストするパス
+     * @param key マップのキー。
+     * @param groups バリデーション時のヒントとなるグループ。
+     * @throws IllegalArgumentException {@literal validator == null or targetObject == null or errors == null or key == null}
+     * @throws IllegalArgumentException {@literal key.length() == 0}
+     */
+    protected &lt;S&gt; void invokeNestedValidator(final ObjectValidator&lt;S&gt; validator, final S targetObject,
+            final SheetBindingErrors&lt;?&gt; errors, final String subPath, final String key, final Class&lt;?&gt;... groups) {
+
+<span class="nc" id="L82">        ArgUtils.notNull(validator, &quot;validator&quot;);</span>
+<span class="nc" id="L83">        ArgUtils.notNull(targetObject, &quot;targetObject&quot;);</span>
+<span class="nc" id="L84">        ArgUtils.notNull(errors, &quot;errors&quot;);</span>
+<span class="nc" id="L85">        ArgUtils.notEmpty(key, &quot;key&quot;);</span>
+
+<span class="nc" id="L87">        errors.pushNestedPath(subPath, key);</span>
+        try {
+<span class="nc" id="L89">            validator.validate(targetObject, errors, groups);</span>
+        } finally {
+<span class="nc" id="L91">            errors.popNestedPath();</span>
+        }
+<span class="nc" id="L93">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

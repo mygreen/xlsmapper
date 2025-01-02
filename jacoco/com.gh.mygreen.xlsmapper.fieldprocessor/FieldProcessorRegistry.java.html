@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FieldProcessorRegistry.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor</a> &gt; <span class="el_source">FieldProcessorRegistry.java</span></div><h1>FieldProcessorRegistry.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor;
+
+import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.gh.mygreen.xlsmapper.annotation.XlsArrayCells;
+import com.gh.mygreen.xlsmapper.annotation.XlsCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsComment;
+import com.gh.mygreen.xlsmapper.annotation.XlsHorizontalRecords;
+import com.gh.mygreen.xlsmapper.annotation.XlsIterateTables;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledArrayCells;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledCell;
+import com.gh.mygreen.xlsmapper.annotation.XlsLabelledComment;
+import com.gh.mygreen.xlsmapper.annotation.XlsSheetName;
+import com.gh.mygreen.xlsmapper.annotation.XlsVerticalRecords;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.ArrayCellsProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.CellProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.CommentProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.HorizontalRecordsProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.IterateTablesProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledArrayCellsProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCellProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.LabelledCommentProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.SheetNameProcessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.impl.VerticalRecordsProcessor;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+
+
+/**
+ * {@link FieldProcessor}を管理するクラス。
+ * 
+ * @version 2.1
+ * @author Naoki Takezoe
+ * @author T.TSUCHIE
+ *
+ */
+public class FieldProcessorRegistry {
+    
+<span class="fc" id="L40">    private Map&lt;Class&lt;? extends Annotation&gt;, FieldProcessor&lt;?&gt;&gt; pocessorMap = new ConcurrentHashMap&lt;&gt;();</span>
+    
+<span class="fc" id="L42">    public FieldProcessorRegistry() {</span>
+<span class="fc" id="L43">        this.pocessorMap = new ConcurrentHashMap&lt;&gt;();</span>
+        
+<span class="fc" id="L45">        init();</span>
+<span class="fc" id="L46">    }</span>
+    
+    /**
+     * {@link FieldProcessor}の登録状態を初期値に戻します。
+     */
+    public void init() {
+        
+<span class="fc" id="L53">        pocessorMap.clear();</span>
+        
+        //標準のフィールドプロセッサを登録する。
+<span class="fc" id="L56">        registerProcessor(XlsSheetName.class, new SheetNameProcessor());</span>
+<span class="fc" id="L57">        registerProcessor(XlsCell.class, new CellProcessor());</span>
+<span class="fc" id="L58">        registerProcessor(XlsLabelledCell.class, new LabelledCellProcessor());</span>
+<span class="fc" id="L59">        registerProcessor(XlsHorizontalRecords.class, new HorizontalRecordsProcessor());</span>
+<span class="fc" id="L60">        registerProcessor(XlsVerticalRecords.class, new VerticalRecordsProcessor());</span>
+<span class="fc" id="L61">        registerProcessor(XlsIterateTables.class, new IterateTablesProcessor());</span>
+<span class="fc" id="L62">        registerProcessor(XlsArrayCells.class, new ArrayCellsProcessor());</span>
+<span class="fc" id="L63">        registerProcessor(XlsLabelledArrayCells.class, new LabelledArrayCellsProcessor());</span>
+<span class="fc" id="L64">        registerProcessor(XlsComment.class, new CommentProcessor());</span>
+<span class="fc" id="L65">        registerProcessor(XlsLabelledComment.class, new LabelledCommentProcessor());</span>
+        
+<span class="fc" id="L67">    }</span>
+    
+    /**
+     * アノテーションに対する{@link FieldProcessor}を取得する。
+     * @param annoClass  取得対象のアノテーションのクラスタイプ。
+     * @return 見つからない場合はnullを返す。
+     * @throws NullPointerException {@literal annoClass}
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;A extends Annotation&gt; FieldProcessor&lt;A&gt; getProcessor(final Class&lt;A&gt; annoClass) {
+<span class="fc" id="L77">        ArgUtils.notNull(annoClass, &quot;annoClass&quot;);</span>
+        
+<span class="fc" id="L79">        return (FieldProcessor&lt;A&gt;) pocessorMap.get(annoClass);</span>
+    }
+    
+    /**
+     * アノテーションに対する{@link FieldProcessor}を登録する。
+     * @param annoClass 登録対象のアノテーションのクラスタイプ。
+     * @param processor フィールドプロセッサーのインスタンス。{@link FieldProcessor}を実装している必要がある。
+     * @throws NullPointerException {@literal annoClass == null or processor == null.}
+     */
+    public &lt;A extends Annotation&gt; void registerProcessor(final Class&lt;A&gt; annoClass, final FieldProcessor&lt;A&gt; processor) {
+<span class="fc" id="L89">        ArgUtils.notNull(annoClass, &quot;annoClass&quot;);</span>
+<span class="fc" id="L90">        ArgUtils.notNull(processor, &quot;processor&quot;);</span>
+        
+<span class="fc" id="L92">        pocessorMap.put(annoClass, processor);</span>
+        
+<span class="fc" id="L94">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

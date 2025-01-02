@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommentProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor.impl</a> &gt; <span class="el_source">CommentProcessor.java</span></div><h1>CommentProcessor.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
+
+import java.util.Optional;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+
+import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.LoadingWorkObject;
+import com.gh.mygreen.xlsmapper.SavingWorkObject;
+import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.XlsComment;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.AbstractFieldProcessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+
+/**
+ * アノテーション {@link XlsComment} を処理するクラスです。
+ *
+ * @since 2.1
+ * @author T.TSUCHIE
+ */
+<span class="fc" id="L28">public class CommentProcessor extends AbstractFieldProcessor&lt;XlsComment&gt; {</span>
+
+    @Override
+    public void loadProcess(final Sheet sheet, final Object beansObj, final XlsComment anno, final FieldAccessor accessor,
+            final Configuration config, final LoadingWorkObject work) throws XlsMapperException {
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if(!accessor.isWritable()) {</span>
+            // セルの値を書き込むメソッド／フィールドがない場合はスキップ
+<span class="fc" id="L36">            return;</span>
+        }
+        
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if(!Utils.isLoadCase(anno.cases())) {</span>
+<span class="nc" id="L40">            return;</span>
+        }
+        
+<span class="fc" id="L43">        validatePropertyType(accessor, anno);</span>
+
+<span class="fc" id="L45">        final CellPosition cellAddress = getCellPosition(accessor, anno);</span>
+<span class="fc" id="L46">        accessor.setPosition(beansObj, cellAddress);</span>
+        
+<span class="fc" id="L48">        final Cell xlsCell = POIUtils.getCell(sheet, cellAddress);</span>
+        
+<span class="fc" id="L50">        config.getCommentOperator().loadCellComment(</span>
+<span class="fc" id="L51">                (targetObj, comment) -&gt; accessor.setValue(targetObj, comment),</span>
+                xlsCell, beansObj, accessor, config);
+        
+<span class="fc" id="L54">    }</span>
+    
+    /**
+     * プロパティのクラスタイプの検証。文字列以外はエラーとする。
+     * @param accessor プロパティ情報
+     * @param anno アノテーション
+     */
+    private void validatePropertyType(final FieldAccessor accessor, final XlsComment anno) {
+        
+<span class="fc" id="L63">        final Class&lt;?&gt; clazz = accessor.getType();</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if(!String.class.isAssignableFrom(clazz)) {</span>
+<span class="fc" id="L65">            throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.notSupportType&quot;)</span>
+<span class="fc" id="L66">                    .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="fc" id="L67">                    .varWithAnno(&quot;anno&quot;, XlsComment.class)</span>
+<span class="fc" id="L68">                    .varWithClass(&quot;actualType&quot;, clazz)</span>
+<span class="fc" id="L69">                    .var(&quot;expectedType&quot;, &quot;String&quot;)</span>
+<span class="fc" id="L70">                    .format());</span>
+        }
+<span class="fc" id="L72">    }</span>
+
+    /**
+     * アノテーションから、セルのアドレスを取得する。
+     * @param accessor フィールド情報
+     * @param anno アノテーション
+     * @return 値が設定されているセルのアドレス
+     * @throws AnnotationInvalidException アドレスの設定値が不正な場合
+     */
+    private CellPosition getCellPosition(final FieldAccessor accessor, final XlsComment anno) throws AnnotationInvalidException {
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if(Utils.isNotEmpty(anno.address())) {</span>
+            try {
+<span class="fc" id="L85">                return CellPosition.of(anno.address());</span>
+<span class="fc" id="L86">            } catch(IllegalArgumentException e) {</span>
+<span class="fc" id="L87">                throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.attr.invalidAddress&quot;)</span>
+<span class="fc" id="L88">                        .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="fc" id="L89">                        .varWithAnno(&quot;anno&quot;, XlsComment.class)</span>
+<span class="fc" id="L90">                        .var(&quot;attrName&quot;, &quot;address&quot;)</span>
+<span class="fc" id="L91">                        .var(&quot;attrValue&quot;, anno.address())</span>
+<span class="fc" id="L92">                        .format());</span>
+            }
+
+        } else {
+<span class="fc bfc" id="L96" title="All 2 branches covered.">            if(anno.row() &lt; 0) {</span>
+<span class="fc" id="L97">                throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
+<span class="fc" id="L98">                        .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="fc" id="L99">                        .varWithAnno(&quot;anno&quot;, XlsComment.class)</span>
+<span class="fc" id="L100">                        .var(&quot;attrName&quot;, &quot;row&quot;)</span>
+<span class="fc" id="L101">                        .var(&quot;attrValue&quot;, anno.row())</span>
+<span class="fc" id="L102">                        .var(&quot;min&quot;, 0)</span>
+<span class="fc" id="L103">                        .format());</span>
+            }
+
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">            if(anno.column() &lt; 0) {</span>
+<span class="nc" id="L107">                throw new AnnotationInvalidException(anno, MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
+<span class="nc" id="L108">                        .var(&quot;property&quot;, accessor.getNameWithClass())</span>
+<span class="nc" id="L109">                        .varWithAnno(&quot;anno&quot;, XlsComment.class)</span>
+<span class="nc" id="L110">                        .var(&quot;attrName&quot;, &quot;column&quot;)</span>
+<span class="nc" id="L111">                        .var(&quot;attrValue&quot;, anno.column())</span>
+<span class="nc" id="L112">                        .var(&quot;min&quot;, 0)</span>
+<span class="nc" id="L113">                        .format());</span>
+
+            }
+
+<span class="fc" id="L117">            return CellPosition.of(anno.row(), anno.column());</span>
+        }
+
+    }
+
+    @Override
+    public void saveProcess(final Sheet sheet, final Object targetObj, final XlsComment anno, final FieldAccessor accessor,
+            final Configuration config, final SavingWorkObject work) throws XlsMapperException {
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if(!accessor.isReadable()) {</span>
+            // セルの値を参照するメソッド／フィールドがない場合はスキップ
+<span class="fc" id="L128">            return;</span>
+        }
+        
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if(!Utils.isSaveCase(anno.cases())) {</span>
+<span class="nc" id="L132">            return;</span>
+        }
+        
+<span class="fc" id="L135">        validatePropertyType(accessor, anno);</span>
+
+<span class="fc" id="L137">        final CellPosition cellAddress = getCellPosition(accessor, anno);</span>
+<span class="fc" id="L138">        final Cell xlsCell = POIUtils.getCell(sheet, cellAddress);</span>
+<span class="fc" id="L139">        accessor.setPosition(targetObj, cellAddress);</span>
+        
+<span class="fc" id="L141">        config.getCommentOperator().saveCellComment((beanObj) -&gt; Optional.ofNullable((String)accessor.getValue(beanObj)),</span>
+                xlsCell, targetObj, accessor, config);
+        
+<span class="fc" id="L144">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

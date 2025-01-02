@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultCellFormatter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper</a> &gt; <span class="el_source">DefaultCellFormatter.java</span></div><h1>DefaultCellFormatter.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper;
+
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.poi.ss.usermodel.Cell;
+
+import com.github.mygreen.cellformatter.FormatterResolver;
+import com.github.mygreen.cellformatter.POICell;
+import com.github.mygreen.cellformatter.POICellFormatter;
+
+
+/**
+ * 標準のセルフォーマッター。
+ * 書式をフォーマットするライブラリ、&lt;a href=&quot;https://github.com/mygreen/excel-cellformatter&quot; target=&quot;_blank&quot;&gt;excel-cellformatter&lt;/a&gt;を利用する。
+ *
+ * @version 2.0
+ * @since 0.5
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L23">public class DefaultCellFormatter implements CellFormatter {</span>
+
+    /**
+     * 値をキャッシュするかどうか
+     */
+    private boolean cached;
+
+    /**
+     * 値のキャッシュ
+     */
+<span class="fc" id="L33">    private Map&lt;String, String&gt; cacheData = new ConcurrentHashMap&lt;&gt;();</span>
+
+<span class="fc" id="L35">    private POICellFormatter poiCellFormatter = new POICellFormatter();</span>
+
+    @Override
+    public void init(boolean cached) {
+<span class="fc" id="L39">        setCached(cached);</span>
+<span class="fc" id="L40">        clearCacheData();</span>
+<span class="fc" id="L41">    }</span>
+
+    @Override
+    public String format(final Cell cell) {
+<span class="fc" id="L45">        return format(cell, Locale.getDefault());</span>
+    }
+
+    @Override
+    public String format(final Cell cell, final Locale locale) {
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if(isCached()) {</span>
+<span class="fc" id="L52">            final String cachedKey = createKey(cell, locale);</span>
+<span class="fc" id="L53">            return cacheData.computeIfAbsent(cachedKey, key -&gt; poiCellFormatter.formatAsString(cell, locale));</span>
+
+        } else {
+<span class="fc" id="L56">            return poiCellFormatter.formatAsString(cell, locale);</span>
+        }
+    }
+
+    /**
+     * キャッシュのキーを作成する。
+     * @param cell
+     * @param locale
+     * @return
+     */
+    private String createKey(final Cell cell, final Locale locale) {
+
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if(cell == null) {</span>
+<span class="nc" id="L69">            return &quot;empty_cell_value&quot;;</span>
+        }
+
+<span class="fc" id="L72">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L73">        sb.append(&quot;:sheet=&quot;).append(cell.getSheet().getSheetName());</span>
+<span class="fc" id="L74">        sb.append(&quot;:address=&quot;).append(cell.getAddress().formatAsString());</span>
+<span class="fc" id="L75">        sb.append(&quot;:locale=&quot;).append(locale.toString());</span>
+
+<span class="fc" id="L77">        return sb.toString();</span>
+    }
+
+    /**
+     * POICellFormatterを取得する
+     * @return
+     */
+    public POICellFormatter getPoiCellFormatter() {
+<span class="nc" id="L85">        return poiCellFormatter;</span>
+    }
+
+    /**
+     * POICellFormatterを設定する。
+     * @param poiCellFormatter
+     */
+    public void setPoiCellFormatter(POICellFormatter poiCellFormatter) {
+<span class="nc" id="L93">        this.poiCellFormatter = poiCellFormatter;</span>
+<span class="nc" id="L94">    }</span>
+
+    /**
+     * 値をキャッシュするかどうか。
+     * @return trueのときキャッシュする。
+     */
+    public boolean isCached() {
+<span class="fc" id="L101">        return cached;</span>
+    }
+
+    /**
+     * 値をキャッシュするかどうか設定します。
+     * @param cached trueのときキャッシュする。
+     */
+    public void setCached(boolean cached) {
+<span class="fc" id="L109">        this.cached = cached;</span>
+<span class="fc" id="L110">    }</span>
+
+    /**
+     * キャッシュをクリアします。
+     */
+    public void clearCacheData() {
+<span class="fc" id="L116">        this.cacheData.clear();</span>
+<span class="fc" id="L117">    }</span>
+
+    @Override
+    public String getPattern(final Cell cell) {
+<span class="fc" id="L121">        return getPattern(cell, Locale.getDefault());</span>
+    }
+
+    @Override
+    public String getPattern(final Cell cell, final Locale locale) {
+
+<span class="fc" id="L127">        final POICell poiCell = new POICell(cell);</span>
+<span class="fc" id="L128">        final FormatterResolver formatterResolver = poiCellFormatter.getFormatterResolver();</span>
+
+<span class="fc" id="L130">        final short formatIndex = poiCell.getFormatIndex();</span>
+<span class="fc" id="L131">        final String formatPattern = poiCell.getFormatPattern();</span>
+
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if(formatterResolver.canResolve(formatIndex)) {</span>
+<span class="fc" id="L134">            return formatterResolver.getFormatter(formatIndex).getPattern(locale);</span>
+
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        } else if(formatterResolver.canResolve(formatPattern)) {</span>
+<span class="fc" id="L137">            return formatterResolver.getFormatter(formatPattern).getPattern(locale);</span>
+
+        } else {
+<span class="fc" id="L140">            return formatPattern;</span>
+
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

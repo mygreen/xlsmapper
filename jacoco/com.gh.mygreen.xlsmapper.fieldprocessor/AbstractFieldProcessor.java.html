@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractFieldProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor</a> &gt; <span class="el_source">AbstractFieldProcessor.java</span></div><h1>AbstractFieldProcessor.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor;
+
+import java.lang.annotation.Annotation;
+
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.annotation.XlsConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.CellConverterFactory;
+import com.gh.mygreen.xlsmapper.cellconverter.ConversionException;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
+
+
+/**
+ * 各種アノテーションを処理するためのクラスの抽象クラス。
+ * &lt;p&gt;通常はこのクラスを継承して作成します。&lt;/p&gt;
+ *
+ * @param &lt;A&gt; サポートするアノテーション
+ * @version 2.0
+ * @author T.TSUCHIE
+ *
+ */
+<span class="fc" id="L23">public abstract class AbstractFieldProcessor&lt;A extends Annotation&gt; implements FieldProcessor&lt;A&gt; {</span>
+
+    /**
+     * 該当するタイプのConverterが見つからないときの例外のインスタンスを作成する。
+     * @param targetType クラスタイプ
+     * @return {@link ConversionException} のインスタンス
+     */
+    protected ConversionException newNotFoundCellConverterExpcetion(final Class&lt;?&gt; targetType) {
+<span class="nc" id="L31">        return new ConversionException(</span>
+<span class="nc" id="L32">                MessageBuilder.create(&quot;cellConverter.notFound&quot;)</span>
+<span class="nc" id="L33">                    .varWithClass(&quot;classType&quot;, targetType)</span>
+<span class="nc" id="L34">                    .format(),</span>
+                targetType);
+    }
+
+    /**
+     * 指定したタイプに対する{@link CellConverter}を取得します。
+     * &lt;p&gt;アノテーション「{@link XlsConverter}」が付与されている場合、そちらの設定値を優先します。&lt;/p&gt;
+     *
+     * @param accessor フィールド情報
+     * @param config システム情報設定。
+     * @return {@link CellConverter}のインスタンス
+     * @throws ConversionException {@link CellConverter}が見つからない場合。
+     */
+    protected CellConverter&lt;?&gt; getCellConverter(final FieldAccessor accessor, final Configuration config) throws ConversionException {
+
+        final CellConverter&lt;?&gt; converter;
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if(accessor.hasAnnotation(XlsConverter.class)) {</span>
+<span class="fc" id="L52">            XlsConverter converterAnno = accessor.getAnnotationNullable(XlsConverter.class);</span>
+<span class="fc" id="L53">            converter = config.createBean(converterAnno.value()).create(accessor, config);</span>
+
+<span class="fc" id="L55">        } else {</span>
+<span class="fc" id="L56">            CellConverterFactory&lt;?&gt; converterFactory = config.getConverterRegistry().getConverterFactory(accessor.getType());</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">            if(converterFactory == null) {</span>
+<span class="nc" id="L58">                throw newNotFoundCellConverterExpcetion(accessor.getType());</span>
+            }
+<span class="fc" id="L60">            converter = converterFactory.create(accessor, config);</span>
+        }
+
+<span class="fc" id="L63">        return converter;</span>
+    }
+
+    /**
+     * コンポーネントタイプを指定して、指定したタイプに対する{@link CellConverter}を取得します。
+     * &lt;p&gt;アノテーション「{@link XlsConverter}」が付与されている場合、そちらの設定値を優先します。&lt;/p&gt;
+     *
+     * @param componentType コンポーネントのクラスタイプ
+     * @param accessor フィールド情報
+     * @param config システム情報設定。
+     * @return {@link CellConverter}のインスタンス
+     * @throws ConversionException {@link CellConverter}が見つからない場合。
+     */
+    protected CellConverter&lt;?&gt; getCellConverter(final Class&lt;?&gt; componentType, final FieldAccessor accessor, final Configuration config)
+            throws ConversionException {
+
+        final CellConverter&lt;?&gt; converter;
+
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if(accessor.hasAnnotation(XlsConverter.class)) {</span>
+<span class="nc" id="L82">            XlsConverter converterAnno = accessor.getAnnotationNullable(XlsConverter.class);</span>
+<span class="nc" id="L83">            converter = config.createBean(converterAnno.value()).create(accessor, config);</span>
+
+<span class="nc" id="L85">        } else {</span>
+<span class="fc" id="L86">            CellConverterFactory&lt;?&gt; converterFactory = config.getConverterRegistry().getConverterFactory(componentType);</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">            if(converterFactory == null) {</span>
+<span class="nc" id="L88">                throw newNotFoundCellConverterExpcetion(componentType);</span>
+            }
+<span class="fc" id="L90">            converter = converterFactory.create(accessor, config);</span>
+        }
+
+<span class="fc" id="L93">        return converter;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

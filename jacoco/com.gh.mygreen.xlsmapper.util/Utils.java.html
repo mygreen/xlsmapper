@@ -1,0 +1,989 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Utils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.util</a> &gt; <span class="el_source">Utils.java</span></div><h1>Utils.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.util;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
+
+import org.apache.poi.ss.usermodel.Sheet;
+
+import com.gh.mygreen.xlsmapper.BeanFactory;
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.XlsMapperException;
+import com.gh.mygreen.xlsmapper.annotation.XlsTrim;
+import com.gh.mygreen.xlsmapper.cellconverter.DefaultElementConverter;
+import com.gh.mygreen.xlsmapper.cellconverter.ElementConverter;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+
+
+/**
+ * ユーティリティクラス。
+ *
+ * @version 2.3
+ * @author T.TSUCHIE
+ * @author Naoki Takezoe
+ * @author Mitsuyoshi Hasegawa
+ *
+ */
+<span class="nc" id="L39">public class Utils {</span>
+
+    @SuppressWarnings(&quot;rawtypes&quot;)
+<span class="fc" id="L42">    private static final ElementConverter ELEMENT_CONVERTER = new DefaultElementConverter();</span>
+
+    /**
+     * コレクションの要素を指定した区切り文字で繋げて1つの文字列とする。
+     * @param col 処理対象のコレクション。
+     * @param separator 区切り文字。
+     * @param ignoreEmptyElement 空、nullの要素を無視するかどうか。
+     * @param trim トリムをするかどうか。
+     * @param elementConverter 要素を変換するクラス。
+     * @return 結合した文字列
+     */
+    @SuppressWarnings(&quot;rawtypes&quot;)
+    public static String join(final Collection&lt;?&gt; col, final String separator,
+            final boolean ignoreEmptyElement, final boolean trim, final ElementConverter elementConverter) {
+
+<span class="fc" id="L57">        final List&lt;Object&gt; list = new ArrayList&lt;Object&gt;();</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for(Object element : col) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            if(element == null) {</span>
+<span class="fc" id="L60">                continue;</span>
+            }
+
+<span class="fc" id="L63">            Object value = element;</span>
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            if(element instanceof String) {</span>
+<span class="fc" id="L66">                String str = (String) element;</span>
+<span class="fc bfc" id="L67" title="All 4 branches covered.">                if(ignoreEmptyElement &amp;&amp; isEmpty(str)) {</span>
+<span class="fc" id="L68">                    continue;</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">                } else if(trim) {</span>
+<span class="fc" id="L71">                    value = str.trim();</span>
+                }
+
+<span class="pc bpc" id="L74" title="3 of 4 branches missed.">            } else if(element instanceof Character &amp;&amp; isEmpty(element.toString())) {</span>
+<span class="nc" id="L75">                String str = element.toString();</span>
+<span class="nc bnc" id="L76" title="All 4 branches missed.">                if(ignoreEmptyElement &amp;&amp; isEmpty(str)) {</span>
+<span class="nc" id="L77">                    continue;</span>
+
+<span class="nc bnc" id="L79" title="All 2 branches missed.">                } else if(trim) {</span>
+<span class="nc" id="L80">                    value = str.trim().charAt(0);</span>
+                }
+
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">            } else if(char.class.isAssignableFrom(element.getClass())) {</span>
+<span class="nc" id="L84">                String str = element.toString();</span>
+<span class="nc bnc" id="L85" title="All 4 branches missed.">                if(ignoreEmptyElement &amp;&amp; isEmpty(str)) {</span>
+<span class="nc" id="L86">                    continue;</span>
+
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                } else if(trim) {</span>
+<span class="nc" id="L89">                    value = str.trim().charAt(0);</span>
+                }
+            }
+
+<span class="fc" id="L93">            list.add(value);</span>
+
+<span class="fc" id="L95">        }</span>
+
+<span class="fc" id="L97">        return join(list, separator, elementConverter);</span>
+
+    }
+
+    /**
+     * 配列の要素を指定した区切り文字で繋げて1つの文字列とする。
+     * @param arrays 結合対象の配列
+     * @param separator 区切り文字
+     * @return 結合した文字列
+     */
+    public static String join(final Object[] arrays, final String separator) {
+
+<span class="fc" id="L109">        return join(arrays, separator, ELEMENT_CONVERTER);</span>
+
+    }
+
+    /**
+     * 配列の要素を指定した区切り文字で繋げて1つの文字列とする。
+     * @param arrays 結合対象の配列
+     * @param separator 区切り文字
+     * @param elementConverter 要素を変換するクラス。
+     * @return 結合した文字列
+     */
+    @SuppressWarnings({&quot;rawtypes&quot;, &quot;unchecked&quot;})
+    public static String join(final Object[] arrays, final String separator, final ElementConverter elementConverter) {
+
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if(arrays == null) {</span>
+<span class="nc" id="L124">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L127">        final int len = arrays.length;</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if(len == 0) {</span>
+<span class="nc" id="L129">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L132">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        for(int i=0; i &lt; len; i++) {</span>
+<span class="fc" id="L134">            final Object element = arrays[i];</span>
+<span class="fc" id="L135">            sb.append(elementConverter.convertToString(element));</span>
+
+<span class="pc bpc" id="L137" title="1 of 4 branches missed.">            if(separator != null &amp;&amp; (i &lt; len-1)) {</span>
+<span class="fc" id="L138">                sb.append(separator);</span>
+            }
+        }
+
+<span class="fc" id="L142">        return sb.toString();</span>
+
+    }
+
+    /**
+     * Collectionの要素を指定した区切り文字で繋げて1つの文字列とする。
+     * @param col 結合対象のコレクション
+     * @param separator 区切り文字
+     * @return 結合した文字列
+     */
+    public static String join(final Collection&lt;?&gt; col, final String separator) {
+<span class="fc" id="L153">        return join(col, separator, ELEMENT_CONVERTER);</span>
+    }
+
+    /**
+     * Collectionの要素を指定した区切り文字で繋げて1つの文字列とする。
+     * @param col 結合対象のコレクション
+     * @param separator 区切り文字
+     * @param elementConverter 要素を変換するクラス。
+     * @return 結合した文字列
+     */
+    @SuppressWarnings({&quot;rawtypes&quot;, &quot;unchecked&quot;})
+    public static String join(final Collection&lt;?&gt; col, final String separator, final ElementConverter elementConverter) {
+
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">        if(col == null) {</span>
+<span class="nc" id="L167">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L170">        final int size = col.size();</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        if(size == 0) {</span>
+<span class="fc" id="L172">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L175">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        for(Iterator&lt;?&gt; itr = col.iterator(); itr.hasNext();) {</span>
+<span class="fc" id="L177">            final Object element = itr.next();</span>
+<span class="fc" id="L178">            String text = elementConverter.convertToString(element);</span>
+<span class="fc" id="L179">            sb.append(text);</span>
+
+<span class="pc bpc" id="L181" title="1 of 4 branches missed.">            if(separator != null &amp;&amp; itr.hasNext()) {</span>
+<span class="fc" id="L182">                sb.append(separator);</span>
+            }
+<span class="fc" id="L184">        }</span>
+
+<span class="fc" id="L186">        return sb.toString();</span>
+
+    }
+
+    /**
+     * 先頭の文字を大文字にする。
+     * &lt;pre&gt;
+     * Utils.capitalize(null)  = null
+     * Utils.capitalize(&quot;&quot;)    = &quot;&quot;
+     * Utils.capitalize(&quot;cat&quot;) = &quot;Cat&quot;
+     * Utils.capitalize(&quot;cAt&quot;) = &quot;CAt&quot;
+     * &lt;/pre&gt;
+     * @param str
+     * @return 引数がnull、空文字の場合、そのまま返す。
+     */
+    public static String capitalize(final String str) {
+        final int strLen;
+<span class="fc bfc" id="L203" title="All 4 branches covered.">        if(str == null || (strLen = str.length()) == 0) {</span>
+<span class="fc" id="L204">            return str;</span>
+        }
+
+<span class="fc" id="L207">        return new StringBuilder(strLen)</span>
+<span class="fc" id="L208">            .append(String.valueOf(str.charAt(0)).toUpperCase())</span>
+<span class="fc" id="L209">            .append(str.substring(1))</span>
+<span class="fc" id="L210">            .toString();</span>
+    }
+
+    /**
+     * 先頭の文字を小文字にする。
+     * @param str 変換対象の文字
+     * @return 引数がnull、空文字の場合、そのまま返す。
+     */
+    public static String uncapitalize(final String str) {
+        final int strLen;
+<span class="fc bfc" id="L220" title="All 4 branches covered.">        if(str == null || (strLen = str.length()) == 0) {</span>
+<span class="fc" id="L221">            return str;</span>
+        }
+
+<span class="fc" id="L224">        return new StringBuilder(strLen)</span>
+<span class="fc" id="L225">            .append(String.valueOf(str.charAt(0)).toLowerCase())</span>
+<span class="fc" id="L226">            .append(str.substring(1))</span>
+<span class="fc" id="L227">            .toString();</span>
+    }
+
+    /**
+     * システム設定に従いラベルを比較する。
+     * &lt;p&gt;正規表現や正規化を行い指定する。
+     *
+     * @since 1.1
+     * @param text1 セルのラベル
+     * @param text2 アノテーションに指定されているラベル。
+     *              {@literal /&lt;ラベル&gt;/}と指定する場合、正規表現による比較を行う。
+     * @param config システム設定
+     * @return true:ラベルが一致する。比較対象のラベルがnullの場合は、falseを返す。
+     */
+    public static boolean matches(final String text1, final String text2, final Configuration config){
+        
+<span class="pc bpc" id="L243" title="2 of 4 branches missed.">        if(text1 == null || text2 == null) {</span>
+<span class="nc" id="L244">            return false;</span>
+        }
+        
+<span class="pc bpc" id="L247" title="1 of 6 branches missed.">        if(config.isRegexLabelText() &amp;&amp; text2.startsWith(&quot;/&quot;) &amp;&amp; text2.endsWith(&quot;/&quot;)){</span>
+<span class="fc" id="L248">            return normalize(text1, config).matches(text2.substring(1, text2.length() - 1));</span>
+        } else {
+<span class="fc" id="L250">            return normalize(text1, config).equals(normalize(text2, config));</span>
+//            return normalize(text1, config).equals(text2);
+        }
+    }
+
+    /**
+     * システム設定に従いラベルを正規化する。
+     * @since 1.1
+     * @param text セルのラベル
+     * @param config システム設定
+     * @return true:ラベルが一致する。
+     */
+    public static String normalize(final String text, final Configuration config){
+<span class="pc bpc" id="L263" title="1 of 4 branches missed.">        if(text != null &amp;&amp; config.isNormalizeLabelText()){</span>
+<span class="fc" id="L264">            return text.trim().replaceAll(&quot;[\n\r]&quot;, &quot;&quot;).replaceAll(&quot;[\t 　]+&quot;, &quot; &quot;);</span>
+        }
+<span class="fc" id="L266">        return text;</span>
+    }
+
+    /**
+     * 文字列が空文字か判定する。
+     * &lt;p&gt;文字数が1でかつ、{@literal \u0000}のときは、trueを判定する。&lt;/p&gt;
+     * @param str 判定対象の文字
+     * @return trueの場合、空文字を判定する。
+     */
+    public static boolean isEmpty(final String str) {
+<span class="fc bfc" id="L276" title="All 4 branches covered.">        if(str == null || str.isEmpty()) {</span>
+<span class="fc" id="L277">            return true;</span>
+        }
+
+<span class="fc bfc" id="L280" title="All 2 branches covered.">        if(str.length() == 1) {</span>
+<span class="fc bfc" id="L281" title="All 2 branches covered.">            return str.charAt(0) == '\u0000';</span>
+        }
+
+<span class="fc" id="L284">        return false;</span>
+    }
+
+    /**
+     * 文字列が空文字でないか判定する。
+     * @param str 判定対象の文字
+     * @return
+     */
+    public static boolean isNotEmpty(final String str) {
+<span class="fc bfc" id="L293" title="All 2 branches covered.">        return !isEmpty(str);</span>
+    }
+
+    /**
+     * コレクションが空か判定する。
+     * @param collection
+     * @return nullまたはサイズが0のときにtrueを返す。
+     */
+    public static boolean isEmpty(final Collection&lt;?&gt; collection) {
+<span class="nc bnc" id="L302" title="All 4 branches missed.">        if(collection == null || collection.isEmpty()) {</span>
+<span class="nc" id="L303">            return true;</span>
+        }
+
+<span class="nc" id="L306">        return false;</span>
+    }
+
+    public static boolean isNotEmpty(final Collection&lt;?&gt; collection) {
+<span class="nc bnc" id="L310" title="All 2 branches missed.">        return !isEmpty(collection);</span>
+    }
+    
+    /**
+     * Mapが空か判定する。
+     * @param map
+     * @return nullまたはサイズが0のときにtrueを返す。
+     */
+    public static boolean isEmpty(final Map&lt;?, ?&gt; map) {
+<span class="pc bpc" id="L319" title="2 of 4 branches missed.">        if(map == null || map.isEmpty()) {</span>
+<span class="fc" id="L320">            return true;</span>
+        }
+
+<span class="nc" id="L323">        return false;</span>
+    }
+
+    public static boolean isNotEmpty(final Map&lt;?, ?&gt; map) {
+<span class="pc bpc" id="L327" title="1 of 2 branches missed.">        return !isEmpty(map);</span>
+    }
+
+    /**
+     * 配列がが空か判定する。
+     * @param arrays
+     * @return nullまたは、配列のサイズが0のときにtrueを返す。
+     */
+    public static boolean isEmpty(final Object[] arrays) {
+<span class="pc bpc" id="L336" title="1 of 4 branches missed.">        if(arrays == null || arrays.length == 0) {</span>
+<span class="fc" id="L337">            return true;</span>
+        }
+
+<span class="fc" id="L340">        return false;</span>
+    }
+
+    /**
+     * 配列が空でないか判定する
+     * @param arrays
+     * @return
+     */
+    public static boolean isNotEmpty(final Object[] arrays) {
+<span class="nc bnc" id="L349" title="All 2 branches missed.">        return !isEmpty(arrays);</span>
+    }
+    
+    /**
+     * オブジェクトの比較を行う。
+     * &lt;p&gt;値がnullの場合を考慮する。
+     * @param obj1
+     * @param obj2
+     * @return
+     */
+    public static boolean equals(final Object obj1, final Object obj2) {
+
+<span class="pc bpc" id="L361" title="3 of 4 branches missed.">        if(obj1 == null &amp;&amp; obj2 == null) {</span>
+<span class="nc" id="L362">            return true;</span>
+        }
+
+<span class="pc bpc" id="L365" title="1 of 2 branches missed.">        if(obj1 == null) {</span>
+<span class="nc" id="L366">            return false;</span>
+        }
+
+<span class="pc bpc" id="L369" title="1 of 2 branches missed.">        if(obj2 == null) {</span>
+<span class="nc" id="L370">            return false;</span>
+        }
+
+<span class="fc" id="L373">        return obj1.equals(obj2);</span>
+
+    }
+
+    public static boolean notEquals(final Object obj1, final Object obj2) {
+<span class="nc bnc" id="L378" title="All 2 branches missed.">        return !equals(obj1, obj2);</span>
+    }
+
+    /**
+     * オブジェクトを文字列に変換する。
+     * &lt;p&gt;nullの場合、文字列として &quot;null&quot;を返す。
+     * &lt;p&gt;単純に、{@link Object#toString()}を呼び出す。
+     * @param value
+     * @return
+     */
+    public static String convertToString(final Object value) {
+
+<span class="nc bnc" id="L390" title="All 2 branches missed.">        if(value == null) {</span>
+<span class="nc" id="L391">            return &quot;null&quot;;</span>
+        }
+
+<span class="nc" id="L394">        return value.toString();</span>
+
+    }
+
+    /**
+     * アノテーションの属性trimに従い、文字列をトリムする。
+     * @param value トリム対象の文字
+     * @param trimAnno トリムのアノテーション
+     * @return トリミングした結果。
+     */
+    public static String trim(final String value, final Optional&lt;XlsTrim&gt; trimAnno) {
+
+<span class="pc bpc" id="L406" title="1 of 4 branches missed.">        if(!trimAnno.isPresent() || value == null) {</span>
+<span class="fc" id="L407">            return value;</span>
+        }
+
+<span class="fc" id="L410">        return value.trim();</span>
+
+    }
+
+    /**
+     * 文字列をトリムする。
+     * @param value トリム対象の文字
+     * @param trimmed トリムするかどうか。
+     * @return トリミングした結果。
+     */
+    public static String trim(final String value, final boolean trimmed) {
+<span class="fc bfc" id="L421" title="All 4 branches covered.">        if(!trimmed || value == null) {</span>
+<span class="fc" id="L422">            return value;</span>
+        }
+
+<span class="fc" id="L425">        return value.trim();</span>
+
+    }
+    
+    /**
+     * 文字列をbooleanに変換します。
+     * 
+     * @since 2.3
+     * @param value 変換対象の値。
+     * @param defaultValue 変換対象がnull or 空文字の時のデフォルト値。
+     * @return 引数がnullのとき、falseを返します。
+     */
+    public static boolean toBoolean(final String value, final boolean defaultValue) {
+<span class="fc" id="L438">        String text = trim(value, true);</span>
+<span class="fc bfc" id="L439" title="All 2 branches covered.">        if(isEmpty(text)) {</span>
+<span class="fc" id="L440">            return defaultValue;</span>
+        }
+        
+<span class="fc" id="L443">        return Boolean.valueOf(text.toLowerCase());</span>
+    }
+
+    /**
+     * PostProcessなどのメソッドを実行する。
+     * &lt;p&gt;メソッドの引数が既知のものであれば、インスタンスを設定する。
+     *
+     * @param processObj 実行対象の処理が埋め込まれているオブジェクト。
+     * @param method 実行対象のメソッド情報
+     * @param beanObj 処理対象のBeanオブジェクト。
+     * @param sheet シート情報
+     * @param config 共通設定
+     * @param errors エラー情報
+     * @param processCase 処理ケース
+     * @throws XlsMapperException
+     */
+    public static void invokeNeedProcessMethod(final Object processObj, final Method method, final Object beanObj,
+            final Sheet sheet, final Configuration config, final SheetBindingErrors&lt;?&gt; errors, final ProcessCase processCase)
+                    throws XlsMapperException {
+
+<span class="fc" id="L463">        final Class&lt;?&gt;[] paramTypes = method.getParameterTypes();</span>
+<span class="fc" id="L464">        final Object[] paramValues =  new Object[paramTypes.length];</span>
+
+<span class="fc bfc" id="L466" title="All 2 branches covered.">        for(int i=0; i &lt; paramTypes.length; i++) {</span>
+<span class="fc bfc" id="L467" title="All 2 branches covered.">            if(Sheet.class.isAssignableFrom(paramTypes[i])) {</span>
+<span class="fc" id="L468">                paramValues[i] = sheet;</span>
+
+<span class="fc bfc" id="L470" title="All 2 branches covered.">            } else if(Configuration.class.isAssignableFrom(paramTypes[i])) {</span>
+<span class="fc" id="L471">                paramValues[i] = config;</span>
+
+<span class="fc bfc" id="L473" title="All 2 branches covered.">            } else if(SheetBindingErrors.class.isAssignableFrom(paramTypes[i])) {</span>
+<span class="fc" id="L474">                paramValues[i] = errors;</span>
+
+<span class="pc bpc" id="L476" title="1 of 2 branches missed.">            } else if(paramTypes[i].isAssignableFrom(beanObj.getClass())) {</span>
+<span class="fc" id="L477">                paramValues[i] = beanObj;</span>
+
+<span class="nc bnc" id="L479" title="All 2 branches missed.">            } else if(ProcessCase.class.equals(paramTypes[i])) {</span>
+<span class="nc" id="L480">                paramValues[i] = processCase;</span>
+
+<span class="nc bnc" id="L482" title="All 2 branches missed.">            } else if(paramTypes[i].equals(Object.class)) {</span>
+<span class="nc" id="L483">                paramValues[i] = beanObj;</span>
+
+            } else {
+<span class="nc" id="L486">                paramValues[i] = null;</span>
+            }
+        }
+
+        try {
+<span class="fc" id="L491">            method.setAccessible(true);</span>
+<span class="fc" id="L492">            method.invoke(processObj, paramValues);</span>
+<span class="nc" id="L493">        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc bnc" id="L494" title="All 2 branches missed.">            Throwable t = e.getCause() == null ? e : e.getCause();</span>
+<span class="nc" id="L495">            throw new XlsMapperException(</span>
+<span class="nc" id="L496">                    String.format(&quot;fail execute method '%s#%s'.&quot;, processObj.getClass().getName(), method.getName()),</span>
+                    t);
+<span class="fc" id="L498">        }</span>
+<span class="fc" id="L499">    }</span>
+
+    /**
+     * 文字列形式のロケールをオブジェクトに変換する。
+     * &lt;p&gt;アンダーバーで区切った'ja_JP'を分解して、Localeに渡す。
+     * @param str
+     * @return 引数が空の時はデフォルトロケールを返す。
+     */
+    public static Locale getLocale(final String str) {
+
+<span class="fc bfc" id="L509" title="All 2 branches covered.">        if(isEmpty(str)) {</span>
+<span class="fc" id="L510">            return Locale.getDefault();</span>
+        }
+
+<span class="pc bpc" id="L513" title="1 of 2 branches missed.">        if(!str.contains(&quot;_&quot;)) {</span>
+<span class="nc" id="L514">            return new Locale(str);</span>
+        }
+
+<span class="fc" id="L517">        final String[] split = str.split(&quot;_&quot;);</span>
+<span class="pc bpc" id="L518" title="1 of 2 branches missed.">        if(split.length == 2) {</span>
+<span class="fc" id="L519">            return new Locale(split[0], split[1]);</span>
+
+        } else {
+<span class="nc" id="L522">            return new Locale(split[0], split[1], split[2]);</span>
+        }
+
+    }
+
+    /**
+     * エスケープ文字を除去した文字列を取得する。
+     * @param str
+     * @param escapeChar
+     * @return
+     */
+    public static String removeEscapeChar(final String str, final char escapeChar) {
+
+<span class="pc bpc" id="L535" title="2 of 4 branches missed.">        if(str == null || str.isEmpty()) {</span>
+<span class="nc" id="L536">            return str;</span>
+        }
+
+<span class="fc" id="L539">        final String escapeStr = String.valueOf(escapeChar);</span>
+<span class="fc" id="L540">        StringBuilder sb = new StringBuilder();</span>
+
+<span class="fc" id="L542">        LinkedList&lt;String&gt; stack = new LinkedList&lt;String&gt;();</span>
+
+<span class="fc" id="L544">        final int length = str.length();</span>
+<span class="fc bfc" id="L545" title="All 2 branches covered.">        for(int i=0; i &lt; length; i++) {</span>
+<span class="fc" id="L546">            final char c = str.charAt(i);</span>
+
+<span class="fc bfc" id="L548" title="All 2 branches covered.">            if(StackUtils.equalsTopElement(stack, escapeStr)) {</span>
+                // スタックの一番上がエスケープ文字の場合
+<span class="fc" id="L550">                StackUtils.popup(stack);</span>
+<span class="fc" id="L551">                sb.append(c);</span>
+
+<span class="fc bfc" id="L553" title="All 2 branches covered.">            } else if(c == escapeChar) {</span>
+                // スタックに積む
+<span class="fc" id="L555">                stack.push(String.valueOf(c));</span>
+
+            } else {
+<span class="fc" id="L558">                sb.append(c);</span>
+            }
+
+        }
+
+<span class="pc bpc" id="L563" title="1 of 2 branches missed.">        if(!stack.isEmpty()) {</span>
+<span class="nc" id="L564">            sb.append(StackUtils.popupAndConcat(stack));</span>
+        }
+
+<span class="fc" id="L567">        return sb.toString();</span>
+
+    }
+
+    /**
+     * Listのインスタンスを他のCollectionのインスタンスに変換する。
+     * &lt;p&gt;ただし、変換先のクラスタイプがインタフェースの場合は変換しない。
+     * &lt;p&gt;変換元のクラスと変換先のクラスが同じ場合は、変換しない。
+     *
+     * @since 1.0
+     * @param list 変換元のListのインスタンス
+     * @param toClass 変換先のCollectionのクラス
+     * @param beanFactory てインスタンスを生成するファクトリクラス。
+     * @return 変換したコレクションのインスタンス
+     */
+    @SuppressWarnings({&quot;rawtypes&quot;, &quot;unchecked&quot;})
+    public static Collection convertListToCollection(final List list, final Class&lt;Collection&gt; toClass,
+            final BeanFactory&lt;Class&lt;?&gt;, Object&gt; beanFactory) {
+
+<span class="fc bfc" id="L586" title="All 2 branches covered.">        if(list.getClass().equals(toClass)) {</span>
+<span class="fc" id="L587">            return list;</span>
+        }
+
+<span class="fc bfc" id="L590" title="All 2 branches covered.">        if(toClass.isInterface()) {</span>
+<span class="fc bfc" id="L591" title="All 2 branches covered.">            if(List.class.isAssignableFrom(toClass)) {</span>
+                // 変換先がListの実態の場合はそのまま。
+<span class="fc" id="L593">                return list;</span>
+
+<span class="fc bfc" id="L595" title="All 2 branches covered.">            } else if(Set.class.isAssignableFrom(toClass)) {</span>
+
+<span class="fc" id="L597">                Collection value = (Collection) beanFactory.create(LinkedHashSet.class);</span>
+<span class="fc" id="L598">                value.addAll(list);</span>
+<span class="fc" id="L599">                return value;</span>
+
+<span class="fc bfc" id="L601" title="All 2 branches covered.">            } else if(Queue.class.isAssignableFrom(toClass)) {</span>
+
+<span class="fc" id="L603">                Collection value = (Collection) beanFactory.create(LinkedList.class);</span>
+<span class="fc" id="L604">                value.addAll(list);</span>
+<span class="fc" id="L605">                return value;</span>
+
+<span class="pc bpc" id="L607" title="1 of 2 branches missed.">            } else if(Collection.class.isAssignableFrom(toClass)) {</span>
+<span class="fc" id="L608">                Collection value = (Collection) beanFactory.create(ArrayList.class);</span>
+<span class="fc" id="L609">                value.addAll(list);</span>
+<span class="fc" id="L610">                return value;</span>
+
+            } else {
+<span class="nc" id="L613">                throw new IllegalArgumentException(&quot;not support class type:&quot; + toClass.getName());</span>
+            }
+
+        }
+
+<span class="fc" id="L618">        Collection value = (Collection) beanFactory.create(toClass);</span>
+<span class="fc" id="L619">        value.addAll(list);</span>
+
+<span class="fc" id="L621">        return value;</span>
+
+    }
+
+    /**
+     * CollectionのインスタンスをListに変換する。
+     *
+     * @since 1.0
+     * @param collection 変換元のCollectionのインスタンス。
+     * @return 変換したListのインスタンス。
+     */
+    public static &lt;T&gt; List&lt;T&gt; convertCollectionToList(final Collection&lt;T&gt; collection) {
+
+<span class="fc bfc" id="L634" title="All 2 branches covered.">        if(List.class.isAssignableFrom(collection.getClass())) {</span>
+<span class="fc" id="L635">            return (List&lt;T&gt;)collection;</span>
+        }
+
+<span class="fc" id="L638">        return new ArrayList&lt;&gt;(collection);</span>
+
+    }
+
+    /**
+     * リストに要素のインデックスを指定して追加します。
+     * &lt;p&gt;リストのサイズが足りない場合は、サイズを自動的に変更します。&lt;/p&gt;
+     * @since 2.0
+     * @param list リスト
+     * @param element 追加する要素。値はnullでもよい。
+     * @param index 追加する要素のインデックス番号(0以上)
+     * @throws IllegalArgumentException {@literal list == null.}
+     * @throws IllegalArgumentException {@literal index &lt; 0.}
+     */
+    public static &lt;P&gt; void addListWithIndex(final List&lt;P&gt; list, final P element, final int index) {
+<span class="fc" id="L653">        ArgUtils.notNull(list, &quot;list&quot;);</span>
+<span class="fc" id="L654">        ArgUtils.notMin(index, 0, &quot;index&quot;);</span>
+
+<span class="fc" id="L656">        final int listSize = list.size();</span>
+<span class="fc bfc" id="L657" title="All 2 branches covered.">        if(listSize &lt; index) {</span>
+            // 足りない場合は、要素を追加する。
+<span class="fc" id="L659">            final int lackSize = index - listSize;</span>
+<span class="fc bfc" id="L660" title="All 2 branches covered.">            for(int i=0; i &lt; lackSize; i++) {</span>
+<span class="fc" id="L661">                list.add(null);</span>
+            }
+<span class="fc" id="L663">            list.add(element);</span>
+
+<span class="fc bfc" id="L665" title="All 2 branches covered.">        } else if(listSize == index) {</span>
+            // 最後の要素に追加する
+<span class="fc" id="L667">            list.add(element);</span>
+
+        } else {
+            // リストのサイズが足りている場合
+<span class="fc" id="L671">            list.set(index, element);</span>
+        }
+
+<span class="fc" id="L674">    }</span>
+
+    /**
+     * プリミティブ型のデフォルト値を取得します。
+     * @param type 変換対象のクラスタイプ。
+     * @return 対応していない型の場合は、nullを返します。
+     * @throws IllegalArgumentException {@literal type is null.}
+     */
+    public static Object getPrimitiveDefaultValue(final Class&lt;?&gt; type) {
+<span class="fc" id="L683">        ArgUtils.notNull(type, &quot;type&quot;);</span>
+
+<span class="fc bfc" id="L685" title="All 2 branches covered.">        if(!type.isPrimitive()) {</span>
+<span class="fc" id="L686">            return null;</span>
+        }
+
+<span class="fc bfc" id="L689" title="All 2 branches covered.">        if(type.equals(boolean.class)) {</span>
+<span class="fc" id="L690">            return false;</span>
+
+<span class="fc bfc" id="L692" title="All 2 branches covered.">        } else if(type.equals(char.class)) {</span>
+<span class="fc" id="L693">            return '\u0000';</span>
+
+<span class="fc bfc" id="L695" title="All 2 branches covered.">        } else if(type.equals(byte.class)) {</span>
+<span class="fc" id="L696">            return (byte)0;</span>
+
+<span class="fc bfc" id="L698" title="All 2 branches covered.">        } else if(type.equals(short.class)) {</span>
+<span class="fc" id="L699">            return (short)0;</span>
+
+<span class="fc bfc" id="L701" title="All 2 branches covered.">        } else if(type.equals(int.class)) {</span>
+<span class="fc" id="L702">            return 0;</span>
+
+<span class="fc bfc" id="L704" title="All 2 branches covered.">        } else if(type.equals(long.class)) {</span>
+<span class="fc" id="L705">            return 0l;</span>
+
+<span class="fc bfc" id="L707" title="All 2 branches covered.">        } else if(type.equals(float.class)) {</span>
+<span class="fc" id="L708">            return 0.0f;</span>
+
+<span class="pc bpc" id="L710" title="1 of 2 branches missed.">        } else if(type.equals(double.class)) {</span>
+<span class="fc" id="L711">            return 0.0d;</span>
+
+        }
+
+<span class="nc" id="L715">        return null;</span>
+    }
+
+    /**
+     * 配列を{@link List}に変換します。
+     * プリミティブ型の配列をを考慮して処理します。
+     * @param object 変換対象の配列
+     * @param componentType 配列の要素のタイプ
+     * @return 配列がnullの場合は、空のリストに変換します。
+     * @throws IllegalArgumentException {@literal arrayが配列でない場合。componentTypeがサポートしていないプリミティブ型の場合。}
+     */
+    public static List&lt;Object&gt; asList(final Object object, final Class&lt;?&gt; componentType) {
+<span class="fc" id="L727">        ArgUtils.notNull(componentType, &quot;componentType&quot;);</span>
+
+<span class="fc bfc" id="L729" title="All 2 branches covered.">        if(object == null) {</span>
+<span class="fc" id="L730">            return new ArrayList&lt;&gt;();</span>
+        }
+
+<span class="fc bfc" id="L733" title="All 2 branches covered.">        if(!object.getClass().isArray()) {</span>
+<span class="fc" id="L734">            throw new IllegalArgumentException(String.format(&quot;args0 is not arrays : %s.&quot;, object.getClass().getName()));</span>
+        }
+
+<span class="fc bfc" id="L737" title="All 2 branches covered.">        if(!componentType.isPrimitive()) {</span>
+<span class="fc" id="L738">            return Arrays.asList((Object[])object);</span>
+        }
+
+<span class="fc bfc" id="L741" title="All 2 branches covered.">        if(componentType.equals(boolean.class)) {</span>
+<span class="fc" id="L742">            boolean[] array = (boolean[])object;</span>
+<span class="fc" id="L743">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L744" title="All 2 branches covered.">            for(boolean v : array) {</span>
+<span class="fc" id="L745">                list.add(v);</span>
+            }
+<span class="fc" id="L747">            return list;</span>
+
+<span class="fc bfc" id="L749" title="All 2 branches covered.">        } else if(componentType.equals(char.class)) {</span>
+<span class="fc" id="L750">            char[] array = (char[])object;</span>
+<span class="fc" id="L751">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L752" title="All 2 branches covered.">            for(char v : array) {</span>
+<span class="fc" id="L753">                list.add(v);</span>
+            }
+<span class="fc" id="L755">            return list;</span>
+
+<span class="fc bfc" id="L757" title="All 2 branches covered.">        } else if(componentType.equals(byte.class)) {</span>
+<span class="fc" id="L758">            byte[] array = (byte[])object;</span>
+<span class="fc" id="L759">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L760" title="All 2 branches covered.">            for(byte v : array) {</span>
+<span class="fc" id="L761">                list.add(v);</span>
+            }
+<span class="fc" id="L763">            return list;</span>
+
+<span class="fc bfc" id="L765" title="All 2 branches covered.">        } else if(componentType.equals(short.class)) {</span>
+<span class="fc" id="L766">            short[] array = (short[])object;</span>
+<span class="fc" id="L767">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L768" title="All 2 branches covered.">            for(short v : array) {</span>
+<span class="fc" id="L769">                list.add(v);</span>
+            }
+<span class="fc" id="L771">            return list;</span>
+
+<span class="fc bfc" id="L773" title="All 2 branches covered.">        } else if(componentType.equals(int.class)) {</span>
+<span class="fc" id="L774">            int[] array = (int[])object;</span>
+<span class="fc" id="L775">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L776" title="All 2 branches covered.">            for(int v : array) {</span>
+<span class="fc" id="L777">                list.add(v);</span>
+            }
+<span class="fc" id="L779">            return list;</span>
+
+<span class="fc bfc" id="L781" title="All 2 branches covered.">        } else if(componentType.equals(long.class)) {</span>
+<span class="fc" id="L782">            long[] array = (long[])object;</span>
+<span class="fc" id="L783">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L784" title="All 2 branches covered.">            for(long v : array) {</span>
+<span class="fc" id="L785">                list.add(v);</span>
+            }
+<span class="fc" id="L787">            return list;</span>
+
+<span class="fc bfc" id="L789" title="All 2 branches covered.">        } else if(componentType.equals(float.class)) {</span>
+<span class="fc" id="L790">            float[] array = (float[])object;</span>
+<span class="fc" id="L791">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L792" title="All 2 branches covered.">            for(float v : array) {</span>
+<span class="fc" id="L793">                list.add(v);</span>
+            }
+<span class="fc" id="L795">            return list;</span>
+
+<span class="pc bpc" id="L797" title="1 of 2 branches missed.">        } else if(componentType.equals(double.class)) {</span>
+<span class="fc" id="L798">            double[] array = (double[])object;</span>
+<span class="fc" id="L799">            List&lt;Object&gt; list = new ArrayList&lt;&gt;(array.length);</span>
+<span class="fc bfc" id="L800" title="All 2 branches covered.">            for(double v : array) {</span>
+<span class="fc" id="L801">                list.add(v);</span>
+            }
+<span class="fc" id="L803">            return list;</span>
+
+        }
+
+<span class="nc" id="L807">        throw new IllegalArgumentException(String.format(&quot;not support primitive type : %s.&quot;, componentType.getName()));</span>
+
+    }
+
+    /**
+     * コレクションを配列に変換する。
+     * @param collection 変換対象のコレクション。
+     * @return 変換した配列。
+     * @throws IllegalArgumentException {@literal collection is null.}
+     */
+    public static int[] toArray(final Collection&lt;Integer&gt; collection) {
+<span class="fc" id="L818">        ArgUtils.notNull(collection, &quot;collection&quot;);</span>
+
+<span class="fc" id="L820">        final int size = collection.size();</span>
+<span class="fc" id="L821">        final int[] array = new int[size];</span>
+
+<span class="fc" id="L823">        int i=0;</span>
+<span class="fc bfc" id="L824" title="All 2 branches covered.">        for(Integer value : collection) {</span>
+<span class="fc" id="L825">            array[i] = value;</span>
+<span class="fc" id="L826">            i++;</span>
+<span class="fc" id="L827">        }</span>
+
+<span class="fc" id="L829">        return array;</span>
+    }
+
+    /**
+     * 配列のサイズを取得します。
+     * プリミティブ型の配列をを考慮して処理します。
+     * @param object 取得対象の配列
+     * @param componentType 配列の要素のタイプ
+     * @return 配列がnullの場合は、0を返します。
+     * @throws IllegalArgumentException {@literal arrayが配列でない場合。componentTypeがサポートしていないプリミティブ型の場合。}
+     */
+    public static int getArraySize(final Object object, final Class&lt;?&gt; componentType) {
+
+<span class="fc" id="L842">        ArgUtils.notNull(componentType, &quot;componentType&quot;);</span>
+
+<span class="pc bpc" id="L844" title="1 of 2 branches missed.">        if(object == null) {</span>
+<span class="nc" id="L845">            return 0;</span>
+        }
+
+<span class="pc bpc" id="L848" title="1 of 2 branches missed.">        if(!object.getClass().isArray()) {</span>
+<span class="nc" id="L849">            throw new IllegalArgumentException(String.format(&quot;args0 is not arrays : %s.&quot;, object.getClass().getName()));</span>
+        }
+
+<span class="fc bfc" id="L852" title="All 2 branches covered.">        if(!componentType.isPrimitive()) {</span>
+<span class="fc" id="L853">            return ((Object[])object).length;</span>
+        }
+
+<span class="pc bpc" id="L856" title="1 of 2 branches missed.">        if(componentType.equals(boolean.class)) {</span>
+<span class="nc" id="L857">            return ((boolean[]) object).length;</span>
+
+<span class="pc bpc" id="L859" title="1 of 2 branches missed.">        } else if(componentType.equals(char.class)) {</span>
+<span class="nc" id="L860">            return ((char[]) object).length;</span>
+
+<span class="pc bpc" id="L862" title="1 of 2 branches missed.">        } else if(componentType.equals(byte.class)) {</span>
+<span class="nc" id="L863">            return ((byte[]) object).length;</span>
+
+<span class="pc bpc" id="L865" title="1 of 2 branches missed.">        } else if(componentType.equals(short.class)) {</span>
+<span class="nc" id="L866">            return ((short[]) object).length;</span>
+
+<span class="pc bpc" id="L868" title="1 of 2 branches missed.">        } else if(componentType.equals(int.class)) {</span>
+<span class="fc" id="L869">            return ((int[]) object).length;</span>
+
+<span class="nc bnc" id="L871" title="All 2 branches missed.">        } else if(componentType.equals(long.class)) {</span>
+<span class="nc" id="L872">            return ((long[]) object).length;</span>
+
+<span class="nc bnc" id="L874" title="All 2 branches missed.">        } else if(componentType.equals(float.class)) {</span>
+<span class="nc" id="L875">            return ((byte[]) object).length;</span>
+
+<span class="nc bnc" id="L877" title="All 2 branches missed.">        } else if(componentType.equals(double.class)) {</span>
+<span class="nc" id="L878">            return ((byte[]) object).length;</span>
+
+        }
+
+<span class="nc" id="L882">        throw new IllegalArgumentException(String.format(&quot;not support primitive type : %s.&quot;, componentType.getName()));</span>
+    }
+
+    /**
+     * 文字列配列の結合
+     * @param array1
+     * @param array2
+     * @return 結合した配列。引数のどちらからnullの場合は、cloneした配列を返します。
+     */
+    public static String[] concat(final String[] array1, final String[] array2) {
+
+<span class="pc bpc" id="L893" title="1 of 4 branches missed.">        if(array1 == null || array1.length == 0) {</span>
+<span class="fc" id="L894">            return clone(array2);</span>
+
+<span class="pc bpc" id="L896" title="1 of 4 branches missed.">        } else if(array2 == null || array2.length == 0) {</span>
+<span class="fc" id="L897">            return clone(array1);</span>
+        }
+
+<span class="fc" id="L900">        final String[] joinedArray = new String[array1.length + array2.length];</span>
+<span class="fc" id="L901">        System.arraycopy(array1, 0, joinedArray, 0, array1.length);</span>
+<span class="fc" id="L902">        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);</span>
+<span class="fc" id="L903">        return joinedArray;</span>
+
+    }
+
+    /**
+     * 文字列の配列をクローンします。
+     * @param array クローン対象の配列
+     * @return クローンした配列。引数がnullの場合は、nullを返します。
+     */
+    public static String[] clone(final String[] array) {
+<span class="pc bpc" id="L913" title="1 of 2 branches missed.">        if (array == null) {</span>
+<span class="nc" id="L914">            return null;</span>
+        }
+<span class="fc" id="L916">        return array.clone();</span>
+    }
+
+    /**
+     * 読み込み処理のケースか判定する。
+     * &lt;p&gt;ケースが指定されていないときは、該当すると判定する。&lt;/p&gt;
+     * @since 2.0
+     * @param cases 判定対象のケース
+     * @return trueのとき、読み込み対象と判定する。
+     */
+    public static boolean isLoadCase(final ProcessCase[] cases) {
+
+<span class="pc bpc" id="L928" title="1 of 4 branches missed.">        if(cases == null || cases.length == 0) {</span>
+<span class="fc" id="L929">            return true;</span>
+        }
+
+<span class="pc bpc" id="L932" title="1 of 2 branches missed.">        for(ProcessCase pc : cases) {</span>
+<span class="pc bpc" id="L933" title="1 of 2 branches missed.">            if(pc == ProcessCase.Load) {</span>
+<span class="fc" id="L934">                return true;</span>
+            }
+        }
+
+<span class="nc" id="L938">        return false;</span>
+
+    }
+
+    /**
+     * 書き込み処理のケースか判定する。
+     * &lt;p&gt;ケースが指定されていないときは、該当すると判定する。&lt;/p&gt;
+     * @since 2.0
+     * @param cases 判定対象のケース
+     * @return trueのとき、書き込み対象と判定する。
+     */
+    public static boolean isSaveCase(final ProcessCase[] cases) {
+
+<span class="pc bpc" id="L951" title="1 of 4 branches missed.">        if(cases == null || cases.length == 0) {</span>
+<span class="fc" id="L952">            return true;</span>
+        }
+
+<span class="fc bfc" id="L955" title="All 2 branches covered.">        for(ProcessCase pc : cases) {</span>
+<span class="pc bpc" id="L956" title="1 of 2 branches missed.">            if(pc == ProcessCase.Save) {</span>
+<span class="nc" id="L957">                return true;</span>
+            }
+        }
+
+<span class="fc" id="L961">        return false;</span>
+
+    }
+
+    /**
+     * 現在の処理ケースが該当するか判定する。
+     * &lt;p&gt;ケースが指定されていないときは、該当すると判定する。&lt;/p&gt;
+     * @param currentCase 現在の処理ケース
+     * @param cases 判定対象のケース
+     * @return trueのとき判定対象。
+     * @throws IllegalArgumentException {@code currentCase is null.}
+     */
+    public static boolean isProcessCase(final ProcessCase currentCase, ProcessCase[] cases) {
+
+<span class="fc" id="L975">        ArgUtils.notNull(currentCase, &quot;currentCase&quot;);</span>
+
+<span class="fc bfc" id="L977" title="All 2 branches covered.">        if(currentCase == ProcessCase.Load) {</span>
+<span class="fc" id="L978">            return isLoadCase(cases);</span>
+<span class="pc bpc" id="L979" title="1 of 2 branches missed.">        } else if(currentCase == ProcessCase.Save) {</span>
+<span class="fc" id="L980">            return isSaveCase(cases);</span>
+        } else {
+<span class="nc" id="L982">            throw new IllegalArgumentException(&quot;currentCase is not support:&quot; + currentCase);</span>
+        }
+
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

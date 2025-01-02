@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultFieldFormatter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation.fieldvalidation</a> &gt; <span class="el_source">DefaultFieldFormatter.java</span></div><h1>DefaultFieldFormatter.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation.fieldvalidation;
+
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+
+/**
+ * 標準のフィールドのフォーマッタ。
+ *
+ * @since 1.0
+ * @author T.TSUCHIE
+ * @param &lt;T&gt; フィールドのタイプ
+ *
+ */
+public class DefaultFieldFormatter&lt;T&gt; implements FieldFormatter&lt;T&gt; {
+    
+    /**
+     * フォーマットする際の書式
+     */
+    private final String pattern;
+    
+    /**
+     * フォーマッタのコンストラクタ
+     * @param pattern フォーマットする際の書式。書式を指定しない場合はnullを指定する。
+     */
+<span class="nc" id="L31">    public DefaultFieldFormatter(final String pattern) {</span>
+<span class="nc" id="L32">        this.pattern = pattern;</span>
+<span class="nc" id="L33">    }</span>
+    
+    @Override
+    public String format(final T value) {
+        
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        if(value == null) {</span>
+<span class="nc" id="L39">            return null;</span>
+        }
+        
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if(Utils.isEmpty(pattern)) {</span>
+<span class="nc" id="L43">            return value.toString();</span>
+        }
+        
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if(value instanceof Number) {</span>
+<span class="nc" id="L47">            final NumberFormat fomatter = new DecimalFormat(pattern);</span>
+<span class="nc" id="L48">            return fomatter.format(value);</span>
+            
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        } else if(value instanceof Date) {</span>
+<span class="nc" id="L51">            final DateFormat formatter = new SimpleDateFormat(pattern);</span>
+<span class="nc" id="L52">            return formatter.format(value);</span>
+            
+        } else {
+<span class="nc" id="L55">            return value.toString();</span>
+        }
+    }
+    
+    /**
+     * フォーマットする際の書式
+     * @return
+     */
+    public String getPattern() {
+<span class="nc" id="L64">        return pattern;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

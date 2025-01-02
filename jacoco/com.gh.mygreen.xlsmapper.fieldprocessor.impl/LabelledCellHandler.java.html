@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LabelledCellHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.fieldprocessor.impl</a> &gt; <span class="el_source">LabelledCellHandler.java</span></div><h1>LabelledCellHandler.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.fieldprocessor.impl;
+
+import java.awt.Point;
+import java.lang.annotation.Annotation;
+import java.util.Optional;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
+
+import com.gh.mygreen.xlsmapper.AnnotationInvalidException;
+import com.gh.mygreen.xlsmapper.Configuration;
+import com.gh.mygreen.xlsmapper.annotation.LabelledCellType;
+import com.gh.mygreen.xlsmapper.fieldaccessor.FieldAccessor;
+import com.gh.mygreen.xlsmapper.fieldprocessor.CellNotFoundException;
+import com.gh.mygreen.xlsmapper.fieldprocessor.ProcessCase;
+import com.gh.mygreen.xlsmapper.localization.MessageBuilder;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.CellFinder;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+import com.gh.mygreen.xlsmapper.util.ClassUtils;
+import com.gh.mygreen.xlsmapper.util.POIUtils;
+import com.gh.mygreen.xlsmapper.util.Utils;
+
+/**
+ * ラベル付きのセルの開始位置を検索するクラス。
+ * 
+ * @version 2.1
+ * @since 2.0
+ * @author T.TSUCHIE
+ *
+ */
+public class LabelledCellHandler {
+
+    private final FieldAccessor field;
+
+    private final Sheet sheet;
+
+    private final Configuration config;
+
+<span class="fc" id="L41">    public LabelledCellHandler(final FieldAccessor field, final Sheet sheet, final Configuration config) {</span>
+<span class="fc" id="L42">        this.field = field;</span>
+<span class="fc" id="L43">        this.sheet = sheet;</span>
+<span class="fc" id="L44">        this.config = config;</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     * ラベル情報
+     *
+     */
+<span class="fc" id="L51">    public static class LabelInfo {</span>
+
+        /**
+         * 値のセル - ラベルのセルではない。
+         */
+        Cell valueCell;
+
+        /**
+         * 値のセルの位置情報
+         */
+        CellPosition valueAddress;
+
+        /**
+         * ラベルセルの値
+         */
+        String label;
+
+    }
+
+    /**
+     * 汎用的にアノテーションの属性にアクセスするためのクラス。
+     *
+     */
+    private static class AnnotationProxy {
+
+        private final Annotation target;
+
+<span class="fc" id="L78">        public AnnotationProxy(final Annotation target) {</span>
+<span class="fc" id="L79">            ArgUtils.notNull(target, &quot;target&quot;);</span>
+<span class="fc" id="L80">            this.target = target;</span>
+<span class="fc" id="L81">        }</span>
+
+        /**
+         * 対象となるアノテーションを取得する
+         * @return アノテーションのインスタンス。
+         */
+        public Annotation getTarget() {
+<span class="fc" id="L88">            return target;</span>
+        }
+
+        /**
+         * アノテーションのクラスタイプを取得する。
+         * @return アノテーションのクラスタイプ
+         */
+        public Class&lt;? extends Annotation&gt; annotationType() {
+<span class="fc" id="L96">            return target.annotationType();</span>
+        }
+
+        /**
+         * 見出しセルから見て値が設定されているセルの位置・方向を指定します。
+         * @return アノテーションの属性「type」の値。属性が存在しない場合は、nullを返す。
+         */
+        public LabelledCellType type() {
+<span class="fc" id="L104">            return ClassUtils.getAnnotationAttribute(target, &quot;type&quot;, LabelledCellType.class).orElse(null);</span>
+        }
+
+        /**
+         * 属性「type」の方向に向かって指定したセル数分を検索し、最初に発見した空白以外のセルの値を取得します。
+         * @return アノテーションの属性「range」の値
+         */
+        public int range() {
+<span class="fc" id="L112">            return ClassUtils.getAnnotationAttribute(target, &quot;range&quot;, int.class).orElse(1);</span>
+        }
+
+        /**
+         * ラベルセルから指定したセル数分離れたセルの値をマッピングする際に指定します。
+         * @return アノテーションの属性「skip」の値
+         */
+        public int skip() {
+<span class="fc" id="L120">            return ClassUtils.getAnnotationAttribute(target, &quot;skip&quot;, int.class).orElse(0);</span>
+        }
+
+        /**
+         * 見出しとなるセルの値を指定します。
+         * @return アノテーションの属性「label」の値
+         */
+        public String label() {
+<span class="fc" id="L128">            return ClassUtils.getAnnotationAttribute(target, &quot;label&quot;, String.class).orElse(&quot;&quot;);</span>
+        }
+
+        /**
+         * 同じラベルのセルが複数ある場合に領域の見出しを指定します。
+         * @return アノテーションの属性「headerLabel」の値
+         */
+        public String headerLabel() {
+<span class="fc" id="L136">            return ClassUtils.getAnnotationAttribute(target, &quot;headerLabel&quot;, String.class).orElse(&quot;&quot;);</span>
+        }
+
+        /**
+         * 見出しとなるセルの行番号を指定します。
+         * @return アノテーションの属性「labelRow」の値
+         */
+        public int labelRow() {
+<span class="fc" id="L144">            return ClassUtils.getAnnotationAttribute(target, &quot;labelRow&quot;, int.class).orElse(-1);</span>
+        }
+
+        /**
+         * 見出しとなるセルの列番号を指定します。
+         * @return アノテーションの属性「labelColumn」の値
+         */
+        public int labelColumn() {
+<span class="fc" id="L152">            return ClassUtils.getAnnotationAttribute(target, &quot;labelColumn&quot;, int.class).orElse(-1);</span>
+        }
+
+        /**
+         * セルが見つからなかった場合はエラーとなりますが、optional属性にtrueを指定しておくと、無視して処理を続行します。
+         * @return アノテーションの属性「optional」の値
+         */
+        public boolean optional() {
+<span class="fc" id="L160">            return ClassUtils.getAnnotationAttribute(target, &quot;optional&quot;, boolean.class).orElse(false);</span>
+        }
+
+        /**
+         * ラベルセルが結合している場合を考慮するかどうか指定します。
+         * @return アノテーションの属性「labelMerged」の値
+         */
+        public boolean labelMerged() {
+<span class="fc" id="L168">            return ClassUtils.getAnnotationAttribute(target, &quot;labelMerged&quot;, boolean.class).orElse(false);</span>
+        }
+
+    }
+
+    /**
+     * 見出し付きのセルの情報を取得する。
+     * @param anno マッピング情報が設定されているアノテーション
+     * @param processCase 処理ケース
+     * @return ラベルや値が設定されているセルの開始情報
+     */
+    public Optional&lt;LabelInfo&gt; handle(final Annotation anno, final ProcessCase processCase) {
+
+<span class="fc" id="L181">        final AnnotationProxy annoProxy = new AnnotationProxy(anno);</span>
+
+        // ラベルの位置を取得する
+<span class="fc" id="L184">        final Optional&lt;CellPosition&gt; labelPosition = getLabelPosition(annoProxy);</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        if(!labelPosition.isPresent()) {</span>
+<span class="fc" id="L186">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L189">        final int column = labelPosition.get().getColumn();</span>
+<span class="fc" id="L190">        final int row = labelPosition.get().getRow();</span>
+
+        /*
+         * 見出しか結合している場合を考慮する場合
+         * ・結合サイズ分で補正する。
+         * ・考慮しない場合は、mergedXXXSizeの値は0のまま。
+         */
+<span class="fc" id="L197">        int mergedRowSize = 0;</span>
+<span class="fc" id="L198">        int mergedColumnSize = 0;</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        if(annoProxy.labelMerged()) {</span>
+<span class="fc" id="L200">            CellRangeAddress mergedRegion = POIUtils.getMergedRegion(sheet, row, column);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">            if(mergedRegion != null) {</span>
+<span class="fc" id="L202">                mergedRowSize = mergedRegion.getLastRow() - mergedRegion.getFirstRow();</span>
+<span class="fc" id="L203">                mergedColumnSize = mergedRegion.getLastColumn() - mergedRegion.getFirstColumn();</span>
+            }
+        }
+
+<span class="fc" id="L207">        int range = annoProxy.range();</span>
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">        if(range &lt; 1){</span>
+<span class="nc" id="L209">            range = 1;</span>
+        }
+
+        // 値が設定されているセルを検索する。
+<span class="fc" id="L213">        Point targetPosition = new Point();</span>
+<span class="fc" id="L214">        Cell targetCell = null;</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">        for(int i=0; i &lt; range; i++){</span>
+<span class="fc" id="L216">            final int index = annoProxy.skip() + i +1;</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">            if(annoProxy.type() == LabelledCellType.Left) {</span>
+<span class="fc" id="L218">                targetPosition.x = column - index;</span>
+<span class="fc" id="L219">                targetPosition.y = row;</span>
+<span class="fc" id="L220">                targetCell = POIUtils.getCell(sheet, targetPosition);</span>
+
+<span class="fc bfc" id="L222" title="All 2 branches covered.">            } else if(annoProxy.type() == LabelledCellType.Right) {</span>
+<span class="fc" id="L223">                targetPosition.x = column + index + mergedColumnSize;</span>
+<span class="fc" id="L224">                targetPosition.y = row;</span>
+<span class="fc" id="L225">                targetCell = POIUtils.getCell(sheet, targetPosition);</span>
+
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">            } else if(annoProxy.type() == LabelledCellType.Bottom) {</span>
+<span class="fc" id="L228">                targetPosition.x = column;</span>
+<span class="fc" id="L229">                targetPosition.y = row + index + mergedRowSize;</span>
+<span class="fc" id="L230">                targetCell = POIUtils.getCell(sheet, targetPosition);</span>
+
+            }
+
+<span class="fc bfc" id="L234" title="All 2 branches covered.">            if(POIUtils.getCellContents(targetCell, config.getCellFormatter()).length() &gt; 0){</span>
+<span class="fc" id="L235">                break;</span>
+            }
+
+<span class="fc bfc" id="L238" title="All 2 branches covered.">            if(processCase.equals(ProcessCase.Save)) {</span>
+                /*
+                 * 書き込み時は、属性rangeの範囲を考慮しない。
+                 * テンプレートファイルの場合、値は空を設定しているため。
+                 */
+<span class="fc" id="L243">                break;</span>
+            }
+        }
+
+<span class="fc" id="L247">        final LabelInfo info = new LabelInfo();</span>
+<span class="fc" id="L248">        info.valueCell = targetCell;</span>
+<span class="fc" id="L249">        info.valueAddress = CellPosition.of(targetPosition);</span>
+<span class="fc" id="L250">        info.label = POIUtils.getCellContents(POIUtils.getCell(sheet, column, row), config.getCellFormatter());</span>
+
+<span class="fc" id="L252">        return Optional.of(info);</span>
+    }
+    
+    /**
+     * ラベルの位置情報を取得する。
+     * @since 2.1
+     * @param anno マッピング情報が設定されているアノテーション
+     * @return ラベルの位置情報。見つからない場合は、空を返す。
+     */
+    public Optional&lt;CellPosition&gt; getLabelPosition(final Annotation anno) {
+<span class="fc" id="L262">        return getLabelPosition(new AnnotationProxy(anno));</span>
+        
+    }
+
+    /**
+     * ラベルの位置を取得する。
+     * @param anno アノテーションの情報
+     * @return ラベルの位置。見つからない場合は、空を返す。
+     *         ただし、見つからない場合、設定により例外をスローする場合がある。
+     */
+    private Optional&lt;CellPosition&gt; getLabelPosition(final AnnotationProxy anno) {
+
+<span class="fc bfc" id="L274" title="All 2 branches covered.">        if(Utils.isNotEmpty(anno.label())) {</span>
+            // 属性「label」によるラベルの指定がある場合
+            try {
+<span class="fc bfc" id="L277" title="All 2 branches covered.">                if(Utils.isNotEmpty(anno.headerLabel())){</span>
+<span class="fc" id="L278">                    Cell headerCell = CellFinder.query(sheet, anno.headerLabel(), config).findWhenNotFoundException();</span>
+<span class="fc" id="L279">                    Cell labelCell = CellFinder.query(sheet, anno.label(), config)</span>
+<span class="fc" id="L280">                            .startPosition(headerCell.getColumnIndex(), headerCell.getRowIndex() + 1)</span>
+<span class="fc" id="L281">                            .findWhenNotFoundException();</span>
+<span class="fc" id="L282">                    return Optional.of(CellPosition.of(labelCell));</span>
+
+                } else {
+<span class="fc" id="L285">                    Cell labelCell = CellFinder.query(sheet, anno.label(), config).findWhenNotFoundException();</span>
+<span class="fc" id="L286">                    return Optional.of(CellPosition.of(labelCell));</span>
+                }
+<span class="fc" id="L288">            } catch(CellNotFoundException ex){</span>
+<span class="fc bfc" id="L289" title="All 2 branches covered.">                if(anno.optional()){</span>
+<span class="fc" id="L290">                    return Optional.empty();</span>
+                } else {
+<span class="fc" id="L292">                    throw ex;</span>
+                }
+            }
+
+        } else {
+            /*
+             * 属性「labelRow」「labelColumn」によるアドレスを直接指定の場合
+             * これは、アノテーション @XlsIterateTables の中で指定しているときに設定される。
+             */
+<span class="fc bfc" id="L301" title="All 2 branches covered.">            if(anno.labelRow() &lt; 0) {</span>
+<span class="fc" id="L302">                throw new AnnotationInvalidException(anno.getTarget(), MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
+<span class="fc" id="L303">                        .var(&quot;property&quot;, field.getNameWithClass())</span>
+<span class="fc" id="L304">                        .varWithAnno(&quot;anno&quot;, anno.annotationType())</span>
+<span class="fc" id="L305">                        .var(&quot;attrName&quot;, &quot;labelRow&quot;)</span>
+<span class="fc" id="L306">                        .var(&quot;attrValue&quot;, anno.labelRow())</span>
+<span class="fc" id="L307">                        .var(&quot;min&quot;, 0)</span>
+<span class="fc" id="L308">                        .format());</span>
+            }
+
+<span class="pc bpc" id="L311" title="1 of 2 branches missed.">            if(anno.labelColumn() &lt; 0) {</span>
+<span class="nc" id="L312">                throw new AnnotationInvalidException(anno.getTarget(), MessageBuilder.create(&quot;anno.attr.min&quot;)</span>
+<span class="nc" id="L313">                        .var(&quot;property&quot;, field.getNameWithClass())</span>
+<span class="nc" id="L314">                        .varWithAnno(&quot;anno&quot;, anno.annotationType())</span>
+<span class="nc" id="L315">                        .var(&quot;attrName&quot;, &quot;labelColumn&quot;)</span>
+<span class="nc" id="L316">                        .var(&quot;attrValue&quot;, anno.labelColumn())</span>
+<span class="nc" id="L317">                        .var(&quot;min&quot;, 0)</span>
+<span class="nc" id="L318">                        .format());</span>
+
+            }
+
+<span class="fc" id="L322">            return Optional.of(CellPosition.of(anno.labelRow(), anno.labelColumn()));</span>
+        }
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
