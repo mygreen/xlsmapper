@@ -45,11 +45,6 @@ Apache License verion 2.0
     # mvn clean package
     ```
 4. Generate site files. (with Docker)
-    1. build docker for sphinx.
-    ```console
-    docker build -t xlsmapper/sphinx ./docker/sphinx
-    ```
-    2. generate site.
     ```console
     # mvn site -Dgpg.skip=true
     ```
