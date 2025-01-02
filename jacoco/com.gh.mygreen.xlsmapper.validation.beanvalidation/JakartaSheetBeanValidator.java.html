@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JakartaSheetBeanValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">XlsMapper</a> &gt; <a href="index.source.html" class="el_package">com.gh.mygreen.xlsmapper.validation.beanvalidation</a> &gt; <span class="el_source">JakartaSheetBeanValidator.java</span></div><h1>JakartaSheetBeanValidator.java</h1><pre class="source lang-java linenums">package com.gh.mygreen.xlsmapper.validation.beanvalidation;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import org.hibernate.validator.internal.engine.path.NodeImpl;
+import org.hibernate.validator.internal.engine.path.PathImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gh.mygreen.xlsmapper.fieldaccessor.LabelGetterFactory;
+import com.gh.mygreen.xlsmapper.fieldaccessor.PositionGetterFactory;
+import com.gh.mygreen.xlsmapper.localization.MessageInterpolator;
+import com.gh.mygreen.xlsmapper.localization.ResourceBundleMessageResolver;
+import com.gh.mygreen.xlsmapper.util.ArgUtils;
+import com.gh.mygreen.xlsmapper.util.CellPosition;
+import com.gh.mygreen.xlsmapper.util.Utils;
+import com.gh.mygreen.xlsmapper.validation.FieldError;
+import com.gh.mygreen.xlsmapper.validation.ObjectValidator;
+import com.gh.mygreen.xlsmapper.validation.SheetBindingErrors;
+import com.gh.mygreen.xlsmapper.validation.fieldvalidation.FieldFormatter;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Path;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.metadata.ConstraintDescriptor;
+
+
+/**
+ * Jakarta Bean Validaion 3.0/3.1 を利用したValidator.
+ * 
+ * @since 2.3
+ * @author T.TSUCHIE
+ *
+ */
+public class JakartaSheetBeanValidator implements ObjectValidator&lt;Object&gt; {
+    
+<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(JakartaSheetBeanValidator.class);</span>
+    
+    /**
+     * BeanValidationのアノテーションの属性で、メッセージ中の変数から除外するもの。
+     * &lt;p&gt;メッセージの再構築を行う際に必要
+     */
+    private static final Set&lt;String&gt; EXCLUDE_MESSAGE_ANNOTATION_ATTRIBUTES;
+    static {
+<span class="nc" id="L55">        Set&lt;String&gt; set = new HashSet&lt;String&gt;(3);</span>
+<span class="nc" id="L56">        set.add(&quot;message&quot;);</span>
+<span class="nc" id="L57">        set.add(&quot;groups&quot;);</span>
+<span class="nc" id="L58">        set.add(&quot;payload&quot;);</span>
+        
+<span class="nc" id="L60">        EXCLUDE_MESSAGE_ANNOTATION_ATTRIBUTES = Collections.unmodifiableSet(set);</span>
+<span class="nc" id="L61">    }</span>
+    
+    private final Validator targetValidator;
+    
+<span class="nc" id="L65">    public JakartaSheetBeanValidator(final Validator targetValidator) {</span>
+<span class="nc" id="L66">        ArgUtils.notNull(targetValidator, &quot;targetValidator&quot;);</span>
+<span class="nc" id="L67">        this.targetValidator = targetValidator;</span>
+<span class="nc" id="L68">    }</span>
+    
+<span class="nc" id="L70">    public JakartaSheetBeanValidator() {</span>
+<span class="nc" id="L71">        this.targetValidator = createDefaultValidator();</span>
+<span class="nc" id="L72">    }</span>
+    
+    /**
+     * Bean Validaion のデフォルトのインスタンスを作成します。
+     * @return Validatorのインスタンス。
+     */
+    protected Validator createDefaultValidator() {
+        
+<span class="nc" id="L80">        final ValidatorFactory validatorFactory = Validation.byDefaultProvider().configure()</span>
+<span class="nc" id="L81">                .messageInterpolator(new JakartaMessageInterpolatorAdapter(new ResourceBundleMessageResolver(), new MessageInterpolator()))</span>
+<span class="nc" id="L82">                .buildValidatorFactory();</span>
+<span class="nc" id="L83">        final Validator validator = validatorFactory.usingContext()</span>
+<span class="nc" id="L84">                .getValidator();</span>
+        
+<span class="nc" id="L86">        return validator;</span>
+    }
+    
+    /**
+     * Bean ValidationのValidatorを取得する。
+     * @return Validatorのインスタンス。
+     */
+    public Validator getTargetValidator() {
+<span class="nc" id="L94">        return targetValidator;</span>
+    }
+    
+    /**
+     * グループを指定して検証を実行する。
+     * @param targetObj 検証対象のオブジェクト。
+     * @param errors エラーオブジェクト
+     * @param groups BeanValiationのグループのクラス
+     */
+    @Override
+    public void validate(final Object targetObj, final SheetBindingErrors&lt;?&gt; errors, final Class&lt;?&gt;... groups) {
+        
+<span class="nc" id="L106">        ArgUtils.notNull(targetObj, &quot;targetObj&quot;);</span>
+<span class="nc" id="L107">        ArgUtils.notNull(errors, &quot;errors&quot;);</span>
+        
+<span class="nc" id="L109">        processConstraintViolation(getTargetValidator().validate(targetObj, groups), errors);</span>
+        
+<span class="nc" id="L111">    }</span>
+    
+    /**
+     * BeanValidationの検証結果をSheet用のエラーに変換する
+     * @param violations BeanValidationの検証結果
+     * @param errors シートのエラー
+     */
+    protected void processConstraintViolation(final Set&lt;ConstraintViolation&lt;Object&gt;&gt; violations,
+            final SheetBindingErrors&lt;?&gt; errors) {
+        
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        for(ConstraintViolation&lt;Object&gt; violation : violations) {</span>
+            
+<span class="nc" id="L123">            final String fieldName = violation.getPropertyPath().toString();</span>
+<span class="nc" id="L124">            final Optional&lt;FieldError&gt; fieldError = errors.getFirstFieldError(fieldName);</span>
+            
+<span class="nc bnc" id="L126" title="All 4 branches missed.">            if(fieldError.isPresent() &amp;&amp; fieldError.get().isConversionFailure()) {</span>
+                // 型変換エラーが既存のエラーにある場合は、処理をスキップする。
+<span class="nc" id="L128">                continue;</span>
+            }
+            
+<span class="nc" id="L131">            final ConstraintDescriptor&lt;?&gt; cd = violation.getConstraintDescriptor();</span>
+            
+<span class="nc" id="L133">            final String[] errorCodes = determineErrorCode(cd);</span>
+            
+<span class="nc" id="L135">            final Map&lt;String, Object&gt; errorVars = createVariableForConstraint(cd);</span>
+            
+<span class="nc" id="L137">            final String nestedPath = errors.buildFieldPath(fieldName);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">            if(Utils.isEmpty(nestedPath)) {</span>
+                // オブジェクトエラーの場合
+<span class="nc" id="L140">                errors.createGlobalError(errorCodes)</span>
+<span class="nc" id="L141">                    .variables(errorVars)</span>
+<span class="nc" id="L142">                    .defaultMessage(violation.getMessageTemplate())</span>
+<span class="nc" id="L143">                    .buildAndAddError();</span>
+                
+            } else {
+                // フィールドエラーの場合
+                
+                // 親のオブジェクトから、セルの座標を取得する
+<span class="nc" id="L149">                final Object parentObj = violation.getLeafBean();</span>
+<span class="nc" id="L150">                final Path path = violation.getPropertyPath();</span>
+<span class="nc" id="L151">                Optional&lt;CellPosition&gt; cellAddress = Optional.empty();</span>
+<span class="nc" id="L152">                Optional&lt;String&gt; label = Optional.empty();</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">                if(Path.class.isAssignableFrom(PathImpl.class)) {</span>
+<span class="nc" id="L154">                    final String pathNodeName = getPathNodeName(path);</span>
+<span class="nc" id="L155">                    cellAddress = new PositionGetterFactory().create(parentObj.getClass(), pathNodeName)</span>
+<span class="nc" id="L156">                            .map(getter -&gt; getter.get(parentObj)).orElse(Optional.empty());</span>
+                    
+<span class="nc" id="L158">                    label = new LabelGetterFactory().create(parentObj.getClass(), pathNodeName)</span>
+<span class="nc" id="L159">                            .map(getter -&gt; getter.get(parentObj)).orElse(Optional.empty());</span>
+                    
+                }
+                
+                // フィールドフォーマッタ
+<span class="nc" id="L164">                Class&lt;?&gt; fieldType = errors.getFieldType(nestedPath);</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">                if(fieldType != null) {</span>
+<span class="nc" id="L166">                    FieldFormatter&lt;?&gt; fieldFormatter = errors.findFieldFormatter(nestedPath, fieldType);</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">                    if(fieldFormatter != null) {</span>
+<span class="nc" id="L168">                        errorVars.putIfAbsent(&quot;fieldFormatter&quot;, fieldFormatter);</span>
+                    }
+                }
+                
+                // 実際の値を取得する
+<span class="nc" id="L173">                errorVars.putIfAbsent(&quot;validatedValue&quot;, violation.getInvalidValue());</span>
+                
+<span class="nc" id="L175">                errors.createFieldError(fieldName, errorCodes)</span>
+<span class="nc" id="L176">                    .variables(errorVars)</span>
+<span class="nc" id="L177">                    .address(cellAddress)</span>
+<span class="nc" id="L178">                    .label(label)</span>
+<span class="nc" id="L179">                    .defaultMessage(violation.getMessageTemplate())</span>
+<span class="nc" id="L180">                    .buildAndAddError();</span>
+                
+            }
+            
+<span class="nc" id="L184">        }</span>
+        
+<span class="nc" id="L186">    }</span>
+    
+    /**
+     * BeanValidationのPathの名称を取得する。
+     * &lt;p&gt;Hibernateのバージョンにより、パッケージが異なるのでリフレクションで取得する。
+     * 
+     * @param path パス
+     * @return 名称
+     */
+    private String getPathNodeName(final Path path) {
+        
+        try {
+<span class="nc" id="L198">            Method getLeafNodeMethod = PathImpl.class.getMethod(&quot;getLeafNode&quot;);</span>
+<span class="nc" id="L199">            Object leafNodeObj = getLeafNodeMethod.invoke(path);</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">            if(leafNodeObj == null) {</span>
+<span class="nc" id="L201">                return null;</span>
+            }
+            
+<span class="nc" id="L204">            Method getNodeNameMethod = NodeImpl.class.getMethod(&quot;getName&quot;);</span>
+<span class="nc" id="L205">            Object nodeName = getNodeNameMethod.invoke(leafNodeObj);</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">            return nodeName != null ? nodeName.toString() : null;</span>
+            
+<span class="nc" id="L208">        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L209">            throw new RuntimeException(&quot;fail PathImple.getLeafNode().getName()&quot;, e);</span>
+        }
+        
+    }
+    
+    /**
+     * エラーコードを決定する。
+     * &lt;p&gt;※ユーザ指定メッセージの場合はエラーコードは空。&lt;/p&gt;
+     * 
+     * @since 2.3
+     * @param descriptor フィールド情報
+     * @return エラーコード
+     */
+    protected String[] determineErrorCode(final ConstraintDescriptor&lt;?&gt; descriptor) {
+        
+        // バリデーション用アノテーションから属性「message」のでデフォルト値を取得し、変更されているかどう比較する。
+<span class="nc" id="L225">        String defaultMessage = null;</span>
+        try {
+<span class="nc" id="L227">            Method messageMethod = descriptor.getAnnotation().annotationType().getMethod(&quot;message&quot;);</span>
+<span class="nc" id="L228">            messageMethod.setAccessible(true);</span>
+<span class="nc" id="L229">            defaultMessage = Objects.toString(messageMethod.getDefaultValue(), null);</span>
+<span class="nc" id="L230">        } catch (NoSuchMethodException | SecurityException e) {</span>
+<span class="nc" id="L231">            logger.warn(&quot;Fail getting annotation's attribute 'message' for &quot; + descriptor.getAnnotation().annotationType().getSimpleName() , e);</span>
+<span class="nc" id="L232">        }</span>
+        
+<span class="nc bnc" id="L234" title="All 2 branches missed.">        if(!descriptor.getMessageTemplate().equals(defaultMessage)) {</span>
+            /*
+             * アノテーション属性「message」の値がデフォルト値から変更されている場合は、
+             * ユーザー指定メッセージとして判断し、エラーコードは空にしてユーザー指定メッセージを優先させる。
+             */
+<span class="nc" id="L239">            return new String[]{};</span>
+            
+        } else {
+            // アノテーションのクラス名をもとに生成する。
+<span class="nc" id="L243">            return new String[]{</span>
+<span class="nc" id="L244">                    descriptor.getAnnotation().annotationType().getSimpleName(),</span>
+<span class="nc" id="L245">                    descriptor.getAnnotation().annotationType().getCanonicalName(),</span>
+<span class="nc" id="L246">                    descriptor.getAnnotation().annotationType().getCanonicalName() + &quot;.message&quot;</span>
+            };
+        }
+    }
+    
+    /**
+     * BeanValidationのアノテーションの値を元に、メッセージ変数を作成する。
+     * @param descriptor
+     * @return メッセージ変数
+     */
+    protected Map&lt;String, Object&gt; createVariableForConstraint(final ConstraintDescriptor&lt;?&gt; descriptor) {
+        
+<span class="nc" id="L258">        final Map&lt;String, Object&gt; vars = new HashMap&lt;String, Object&gt;();</span>
+        
+<span class="nc bnc" id="L260" title="All 2 branches missed.">        for(Map.Entry&lt;String, Object&gt; entry : descriptor.getAttributes().entrySet()) {</span>
+<span class="nc" id="L261">            final String attrName = entry.getKey();</span>
+<span class="nc" id="L262">            final Object attrValue = entry.getValue();</span>
+            
+            // メッセージ変数で必要ないものを除外する
+<span class="nc bnc" id="L265" title="All 2 branches missed.">            if(EXCLUDE_MESSAGE_ANNOTATION_ATTRIBUTES.contains(attrName)) {</span>
+<span class="nc" id="L266">                continue;</span>
+            }
+            
+<span class="nc" id="L269">            vars.put(attrName, attrValue);</span>
+<span class="nc" id="L270">        }</span>
+        
+<span class="nc" id="L272">        return vars;</span>
+        
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
