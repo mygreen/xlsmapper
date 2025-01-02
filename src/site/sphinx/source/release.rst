@@ -20,7 +20,7 @@ ver.2.3 - 2025-01-02
 
     * ``EncodingControl`` を使用し、UTF-8のプロパティファイルをResourceBundle経由で読み込んだ時に文字化けする事象を修正しました。
 
-* `#130 <https://github.com/mygreen/xlsmapper/pull/130>`_ Jakarta Bean Validation 3.0に対応しました。
+* `#130 <https://github.com/mygreen/xlsmapper/pull/130>`_ Jakarta Bean Validation 3.0/3.1に対応しました。
 
 * `#131 <https://github.com/mygreen/xlsmapper/pull/131>`_ GitHub Actions にてテストビルド時する際に、タイムゾーン `Asia/Tokyo` を固定にしました。
 

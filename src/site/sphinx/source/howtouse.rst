@@ -69,7 +69,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
 
    * - | Jakarta Bean Validation  (option)
        | ( `Hibernate Validator <http://hibernate.org/validator/>`_ )
-     - | ver.3.0
+     - | ver.3.0/3.1
        | (Hibernate Validator 8.x)
 
 
