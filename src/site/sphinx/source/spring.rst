@@ -28,7 +28,7 @@ Spring Frameworkのコンテナで管理可能、DI可能な部分は、次の�
    * - :ref:`独自のリスナーの実装機能 <annotationXlsListener>`
      - リスナクラスがSpringBeanとして管理可能です。
      
-   * - :ref:`独自のRecordFinderの実装機能 <annotationXlsRecordFinder>`
+   * - :doc:`独自のRecordFinderの実装機能 <annotation_mapping_recordfinder>`
      - ``RecordFinder`` の実装クラスがSpringBeanとして管理可能です。
      
 

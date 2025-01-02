@@ -1,7 +1,3 @@
-
-
-.. _annotationXlsNumberConverter:
-
 ------------------------------------
 ``@XlsNumberConverter``
 ------------------------------------

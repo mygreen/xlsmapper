@@ -91,9 +91,9 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
 
 まず、シート1つに対して、POJOクラスを作成します。
 
-* シート名を指定するために、アノテーション :ref:`@XlsSheet <annotationXlsSheet>` をクラスに付与します。
-* 見出し付きのセル「Date」をマッピングするフィールドに、アノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` に付与します。
-* 表「User List」をマッピングするListのフィールドに、アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を付与します。
+* シート名を指定するために、アノテーション :doc:`@XlsSheet <annotation_mapping_sheet>` をクラスに付与します。
+* 見出し付きのセル「Date」をマッピングするフィールドに、アノテーション :doc:`@XlsLabelledCell <annotation_mapping_labelledcell>` に付与します。
+* 表「User List」をマッピングするListのフィールドに、アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` を付与します。
 
 .. sourcecode:: java
     :linenos:
@@ -114,7 +114,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
 
 続いて、表「User List」の1レコードをマッピングするための、POJOクラスを作成します。
 
-* レコードの列をマッピングするために、アノテーション :ref:`@XlsColumn <annotationXlsColumn>` をフィールドに付与します。
+* レコードの列をマッピングするために、アノテーション :doc:`@XlsColumn <annotation_mapping_column>` をフィールドに付与します。
 
 * フィールドのクラスタイプが、intや列挙型の場合もマッピングできます。
 
@@ -176,11 +176,11 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
 
 続いて、読み込み時に作成したシート用のマッピングクラスに、書き込み時の設定を付け加えるために修正します。
 
-* セル「Date」の書き込み時の書式を指定するために、アノテーション :ref:`@XlsDateTimeConverter <annotationXlsDateTimeConverter>` に付与します。
+* セル「Date」の書き込み時の書式を指定するために、アノテーション :doc:`@XlsDateTimeConverter <annotation_converter_datetime>` に付与します。
 
   * 属性 ``excelPattern`` でExcelのセルの書式を設定します。
 
-* 表「User List」のレコードを追加する操作を指定するために、アノテーション :ref:`@XlsRecordOption <annotationXlsRecordOption>` を付与し、その属性 ``overOperation`` を指定します。
+* 表「User List」のレコードを追加する操作を指定するために、アノテーション :doc:`@XlsRecordOption <annotation_mapping_recordoption>` を付与し、その属性 ``overOperation`` を指定します。
   
   * テンプレート上は、レコードが1行分しかないですが、実際に書き込むレコード数が2つ以上の場合、足りなくなるため、その際のシートの操作方法を指定します。
   
@@ -246,7 +246,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 XlsMapperはアノテーションを付与してJavaBeansとExcelをマッピングするライブラリです。
-アノテーション :ref:`@XlsSheet <annotationXlsSheet>` を付与したJavaBeanを作成したうえで以下のようにして読み込みを行います。
+アノテーション :doc:`@XlsSheet <annotation_mapping_sheet>` を付与したJavaBeanを作成したうえで以下のようにして読み込みを行います。
 
 .. sourcecode:: java
     
@@ -256,7 +256,7 @@ XlsMapperはアノテーションを付与してJavaBeansとExcelをマッピン
         SampleSheet.class                   // アノテーションを付与したクラス。
         );
 
-なお、:ref:`@XlsCell <annotationXlsCell>`、 :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`、 :ref:`@XlsColumn <annotationXlsColumn>` アノテーションでマッピングするプロパティにおいて、マッピングできる型は、 :doc:`型変換用アノテーション <annotation_converter>` を使用することでカスタマイズできます。
+なお、:doc:`@XlsCell <annotation_mapping_cell>`、 :doc:`@XlsLabelledCell <annotation_mapping_labelledcell>`、 :doc:`@XlsColumn <annotation_mapping_column>` アノテーションでマッピングするプロパティにおいて、マッピングできる型は、 :doc:`型変換用アノテーション <annotation_converter>` を使用することでカスタマイズできます。
 
 より具体的な使用例はXlsMapperのディストリビューションに同梱されているテストケースのソースコードをご覧ください。
 
@@ -308,7 +308,7 @@ Apache POIは、ver.3.5以上に対応しています。
 単一のシートの書き込む場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-書き込む際には、:ref:`@XlsSheet <annotationXlsSheet>` アノテーションを付与したJavaBeansのクラスのインスタンスを渡します。
+書き込む際には、:doc:`@XlsSheet <annotation_mapping_sheet>` アノテーションを付与したJavaBeansのクラスのインスタンスを渡します。
 また、雛形となるテンプレートのシートを記述しているExcelファイルを引数に渡します。
 
 .. sourcecode:: java
@@ -356,7 +356,7 @@ Apache POIは、ver.3.5以上に対応しています。
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 複数のシートを読み込む場合、``XlsMapper#saveMultplue(...)`` を使用します。
-書き込むJavaBeansのクラスのインスタンスは、アノテーション :ref:`@XlsSheet <annotationXlsSheet>` を付与する必要があります。
+書き込むJavaBeansのクラスのインスタンスは、アノテーション :doc:`@XlsSheet <annotation_mapping_sheet>` を付与する必要があります。
 シートのオブジェクトは配列として渡します。
 
 .. sourcecode:: java
@@ -373,7 +373,7 @@ Apache POIは、ver.3.5以上に対応しています。
 
 .. note::
     アノテーション ``@XlsSheet(regexp="正規表現*")`` のようにシート名を正規表現で定義している場合、
-    書き込み先のシート名はアノテーション :ref:`@XlsSheetName <annotationXlsSheetName>` を付与したフィールドを元に決定します。
+    書き込み先のシート名はアノテーション :doc:`@XlsSheetName <annotation_mapping_sheetname>` を付与したフィールドを元に決定します。
     
 テンプレートのExcelファイル中にシートが1つしかない場合、書き込む個数分コピーしておく必要があります。
 このような場合、書き込み対象のテンプレートファイルを事前に処理しておきます。

@@ -1,7 +1,3 @@
-
-
-.. _annotationXlsSheetName:
-
 --------------------------------
 ``@XlsSheetName``
 --------------------------------
@@ -24,7 +20,7 @@
 .. note:: 
     
     
-    書き込み時に、アノテーション :ref:`@XlsSheet(regex="\<シート名\>") <annotationXlsSheet>` にて、
+    書き込み時に、アノテーション :doc:`@XlsSheet(regex="\<シート名\>") <annotation_mapping_sheet>` にて、
     シート名を正規表現で指定している場合は、 ``@XlsSheetName`` を付与しているフィールドで書き込むシートを決定します。
     
     そのため書き込む前に、シート名を指定する必要があります。

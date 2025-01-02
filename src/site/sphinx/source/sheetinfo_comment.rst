@@ -13,8 +13,8 @@
    
    セルのコメントを取得できるのは、アノテーション ``@XlsCell, @XlsLabelledCell, @XlsColumn, @XlsMapColumns, @XlsArrayColumns, @XlsArrayCell, @XlsLabelledArrayCell`` を付与したプロパティです。
    
-   見出しセルに対するコメントの取得は、アノテーション :ref:`@XlsLablledComment <annotationXlsLabelledComment>` を使用します。
-   さらに、任意の位置のセルのコメントの取得は、アノテーション :ref:`@XlsComment <annotationXlsComment>` を使用します。
+   見出しセルに対するコメントの取得は、アノテーション :doc:`@XlsLablledComment <annotation_mapping_labelledcomment>` を使用します。
+   さらに、任意の位置のセルのコメントの取得は、アノテーション :doc:`@XlsComment <annotation_mapping_comment>` を使用します。
 
 
 1. ``Map<String, String> comments`` というフィールドを定義しておくとプロパティ名をキーにセルの位置がセットされるようになっています。
@@ -182,7 +182,7 @@
 
 .. note:: 
 
-    書き込み時のコメントの枠サイズなどは、アノテーション :ref:`@XlsCommentOption <annotationXlsCommentOption>` を使用します。
+    書き込み時のコメントの枠サイズなどは、アノテーション :doc:`@XlsCommentOption <annotation_mapping_commentoption>` を使用します。
     
     フォントなどは、セルの設定値を引き継ぎます。
     ただし、すでにコメントが設定されている場合は、設定されている書式に従います。

@@ -1,12 +1,8 @@
-
-
-.. _annotationXlsCommentOption:
-
 --------------------------------------
 ``@XlsCommentOption``
 --------------------------------------
 
-アノテーション :ref:`@XlsComment <annotationXlsComment>` 、 :ref:`@XlsLabelledComment <annotationXlsLabelledComment>`  において、書き込み時のコメントの書式などを指定するためのアノテーションです。 `[ver.2.1+]`
+アノテーション :doc:`@XlsComment <annotation_mapping_comment>` 、 :doc:`@XlsLabelledComment <annotation_mapping_labelledcomment>`  において、書き込み時のコメントの書式などを指定するためのアノテーションです。 `[ver.2.1+]`
 
 また、フィールド ``Map<String, String> comments`` でコメントをマッピングするセルに対しても指定可能です。
 

@@ -1,12 +1,8 @@
-
-
-.. _annotationXlsRecordFinder:
-
 --------------------------------------
 ``@XlsRecordFinder``
 --------------------------------------
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、 :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>`  において、データレコードの開始位置が既存のアノテーションの属性だと表現できない場合に、任意の実装方法を指定するようにします。 `[ver.2.0+]`
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` 、 :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>`  において、データレコードの開始位置が既存のアノテーションの属性だと表現できない場合に、任意の実装方法を指定するようにします。 `[ver.2.0+]`
 
 * 属性 ``value`` で、レコードの開始位置を検索する ``RecordFinder`` の実装クラスを指定します。
 * 属性 ``args`` で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。

@@ -1,12 +1,8 @@
-
-
-.. _annotationXlsArrayOption:
-
 --------------------------------
 ``@XlsArrayOption``
 --------------------------------
 
-アノテーション :ref:`@XlsArrayCells <annotationXlsArrayCells>` 、 :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>` 、:ref:`@XlsArrayColumns <annotationXlsArrayColumns>` において、書き込み時の配列・リストの操作を指定するためのアノテーションです。 `[ver.2.0+]`
+アノテーション :doc:`@XlsArrayCells <annotation_mapping_arraycells>` 、 :doc:`@XlsLabelledArrayCells <annotation_mapping_labelledarraycells>` 、:doc:`@XlsArrayColumns <annotation_mapping_arraycolumns>` において、書き込み時の配列・リストの操作を指定するためのアノテーションです。 `[ver.2.0+]`
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

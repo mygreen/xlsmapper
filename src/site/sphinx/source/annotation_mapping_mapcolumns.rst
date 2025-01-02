@@ -1,13 +1,9 @@
-
-
-.. _annotationXlsMapColumns:
-
 ------------------------------------
 ``@XlsMapColumns``
 ------------------------------------
 
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` もしくは :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` において、
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` もしくは :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` において、
 指定されたレコード用クラスのカラム数が可変の場合に、それらのカラムを ``java.util.Map`` として設定します。
 
 * BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。

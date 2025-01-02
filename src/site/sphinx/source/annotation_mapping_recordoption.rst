@@ -1,12 +1,8 @@
-
-
-.. _annotationXlsRecordOption:
-
 --------------------------------------
 ``@XlsRecordOption``
 --------------------------------------
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、 :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>`  において、書き込み時のレコードの操作を指定するためのアノテーションです。 `[ver.2.0+]`
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` 、 :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>`  において、書き込み時のレコードの操作を指定するためのアノテーションです。 `[ver.2.0+]`
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

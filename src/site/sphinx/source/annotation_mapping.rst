@@ -16,49 +16,49 @@
    * - アノテーション
      - 概要
      
-   * - :ref:`@XlsSheet <annotationXlsSheet>`
+   * - :doc:`@XlsSheet <annotation_mapping_sheet>`
      - シートをマッピングするためにクラスに付与し使用します。
 
-   * - :ref:`@XlsSheetName <annotationXlsSheetName>`
+   * - :doc:`@XlsSheetName <annotation_mapping_sheetname>`
      - シート名をマッピングします。
 
-   * - :ref:`@XlsCell <annotationXlsCell>`
+   * - :doc:`@XlsCell <annotation_mapping_cell>`
      - セルの座標を直接指定してマッピングします。
 
-   * - :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`
+   * - :doc:`@XlsLabelledCell <annotation_mapping_labelledcell>`
      - 見出し付きのセルをマッピングします。
 
-   * - :ref:`@XlsArrayCells <annotationXlsArrayCells>`
+   * - :doc:`@XlsArrayCells <annotation_mapping_arraycells>`
      - 連続し隣接するセルを配列またはリストにマッピングします。
 
-   * - :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>`
+   * - :doc:`@XlsLabelledArrayCells <annotation_mapping_labelledarraycells>`
      - 見出し付きの連続し隣接するセルを配列またはリストにマッピングします。
 
-   * - :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>`
+   * - :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>`
      - 水平方向に連続する行のレコードを持つ表をマッピングします。
 
-   * - :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>`
+   * - :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>`
      - 垂直方向に連続する列のレコードを持つ表をマッピングします。
 
-   * - :ref:`@XlsColumn <annotationXlsColumn>`
+   * - :doc:`@XlsColumn <annotation_mapping_column>`
      - レコードのカラムをマッピングします。
 
-   * - :ref:`@XlsMapColumns <annotationXlsMapColumns>`
+   * - :doc:`@XlsMapColumns <annotation_mapping_mapcolumns>`
      - レコードの可変長のカラムをマッピングします。
 
-   * - :ref:`@XlsArrayColumns <annotationXlsArrayColumns>`
+   * - :doc:`@XlsArrayColumns <annotation_mapping_arraycolumns>`
      - レコードの隣接するカラムをマッピングします。
 
-   * - :ref:`@XlsNestedRecords <annotationXlsNestedRecords>`
+   * - :doc:`@XlsNestedRecords <annotation_mapping_nestedrecords>`
      - 入れ子構造のレコードをマッピングします。
 
-   * - :ref:`@XlsIterateTables <annotationXlsIterateTables>`
+   * - :doc:`@XlsIterateTables <annotation_mapping_iteratetables>`
      - シート内で繰り返される同一構造の表をマッピングします。
 
-   * - :ref:`@XlsComment <annotationXlsComment>`
+   * - :doc:`@XlsComment <annotation_mapping_comment>`
      - セルの座標を直接指定して、セルのコメントをマッピングします。
 
-   * - :ref:`@XlsLablledComment <annotationXlsLabelledComment>`
+   * - :doc:`@XlsLablledComment <annotation_mapping_labelledcomment>`
      - 指定したラベルセルのコメント情報をマッピングします。
 
 
@@ -69,22 +69,22 @@
    * - アノテーション
      - 概要
      
-   * - :ref:`@XlsOrder <annotationXlsOrder>`
+   * - :doc:`@XlsOrder <annotation_mapping_order>`
      - フィールドの処理順序を指定するために使用します。
 
-   * - :ref:`@XlsIgnorable <annotationXlsIgnorable>`
+   * - :doc:`@XlsIgnorable <annotation_mapping_ignorable>`
      - レコードを読み飛ばすことが可能か判定するためのメソッドに使用します。
 
-   * - :ref:`@XlsArrayOption <annotationXlsArrayOption>`
+   * - :doc:`@XlsArrayOption <annotation_mapping_arrayoption>`
      - 連続し隣接するセルを配列またはリストを書き込む際の制御を行います。
 
-   * - :ref:`@XlsRecordOption <annotationXlsRecordOption>`
+   * - :doc:`@XlsRecordOption <annotation_mapping_recordoption>`
      - レコードを書き込む際の制御を行います。
 
-   * - :ref:`@XlsRecordFinder <annotationXlsRecordFinder>`
+   * - :doc:`@XlsRecordFinder <annotation_mapping_recordfinder>`
      - レコードの開始位置をプログラマティックに指定します。
 
-   * - :ref:`@XlsCommentOption <annotationXlsCommentOption>`
+   * - :doc:`@XlsCommentOption <annotation_mapping_commentoption>`
      - 書き込み時のセルのコメントのサイズなどの制御を指定します。
 
 .. 以降は、埋め込んで作成する

@@ -12,7 +12,7 @@
 
 .. note::
 
-   数式指定用のアノテーションは、セルをマッピングするアノテーション :ref:`@XlsCell <annotationXlsCell>` 、 :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`、 :ref:`@XlsArrayCells <annotationXlsArrayCells>`、 :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>`、 :ref:`@XlsColumn <annotationXlsColumn>`、 :ref:`@XlsMapColumns <annotationXlsMapColumns>`、 :ref:`@XlsArrayColumns <annotationXlsArrayColumns>`  を付与しているプロパティに対して有効になります。
+   数式指定用のアノテーションは、セルをマッピングするアノテーション :doc:`@XlsCell <annotation_mapping_cell>` 、 :doc:`@XlsLabelledCell <annotation_mapping_labelledcell>`、 :doc:`@XlsArrayCells <annotation_mapping_arraycells>`、 :doc:`@XlsLabelledArrayCells <annotation_mapping_labelledarraycells>`、 :doc:`@XlsColumn <annotation_mapping_column>`、 :doc:`@XlsMapColumns <annotation_mapping_mapcolumns>`、 :doc:`@XlsArrayColumns <annotation_mapping_arraycolumns>`  を付与しているプロパティに対して有効になります。
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -288,7 +288,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
 数式にセルの座標を含む場合、セルを書き込んだ後に行を追加すると、セルの位置がずれる場合があります。
 これは、内部で使用しているExcelのライブラリ「Apaceh POI」は、行を追加しても数式中の座標は不変であるためです。
 
-このような場合、 アノテーション :ref:`@XlsOrder <annotationXlsOrder>` を使い、処理順序を指定することで回避できます。
+このような場合、 アノテーション :doc:`@XlsOrder <annotation_mapping_order>` を使い、処理順序を指定することで回避できます。
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
