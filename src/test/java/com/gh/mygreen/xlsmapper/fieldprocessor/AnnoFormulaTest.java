@@ -2,6 +2,7 @@ package com.gh.mygreen.xlsmapper.fieldprocessor;
 
 import static com.gh.mygreen.xlsmapper.TestUtils.*;
 import static com.gh.mygreen.xlsmapper.xml.XmlBuilder.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -92,7 +93,7 @@ public class AnnoFormulaTest {
                         .field(createField("c1")
                                 .override(true)
                                 .annotation(createAnnotation(XlsFormula.class)
-                                        .attribute("value", "SUM(C2:${x:colToAlpha(columnNumber+2)}3)")
+                                        .attribute("value", "SUM(C2:${f:colToAlpha(columnNumber+2)}3)")
                                         .buildAnnotation())
                                 .buildField())
                         .buildClass())

@@ -1,12 +1,8 @@
-
-
-.. _annotationXlsNestedRecords:
-
 ------------------------------------------
 ``@XlsNestedRecords``
 ------------------------------------------
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` もしくは :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` のレコード用クラスにおいて、ツリー構造のように入れ子になっている表をマッピングする際に使用します。 `[ver.1.4+]`
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` もしくは :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` のレコード用クラスにおいて、ツリー構造のように入れ子になっている表をマッピングする際に使用します。 `[ver.1.4+]`
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 一対多の関係
@@ -24,7 +20,7 @@
 
 * 属性 ``@XlsHorizotanlRecords#terminalLabel`` の終端の判定は、入れ子になったレコードごとに判定されます。
 
-* 読み込みの際、アノテーション :ref:`@XlsIgnorable <annotationXlsIgnorable>` で、空のレコードを読み飛ばした結果、レコード数が0件となった場合は、要素数0個リストや配列が設定されます。
+* 読み込みの際、アノテーション :doc:`@XlsIgnorable <annotation_mapping_ignorable>` で、空のレコードを読み飛ばした結果、レコード数が0件となった場合は、要素数0個リストや配列が設定されます。
 
 .. figure:: ./_static/NestedRecords_oneToMany.png
    :align: center

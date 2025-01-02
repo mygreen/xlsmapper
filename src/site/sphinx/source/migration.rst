@@ -8,6 +8,12 @@
 :doc:`リリースノート <release>` も参考にしてください。
 
 --------------------------------------------------------
+To ver.2.3
+--------------------------------------------------------
+
+* 数式を指定するアノテーション ``@XlsFormula`` の属性 value 内で、使用可能な予め登録されている関数の接頭語を ``x:`` ⇒ ``f:`` に変更します。
+
+--------------------------------------------------------
 To ver.2.0
 --------------------------------------------------------
 
@@ -36,8 +42,8 @@ To ver.2.0
   * 要素をパース/フォーマットするクラス ``ItemConverter`` の名称を ``ElementConverter`` に変更します。
     デフォルト実装クラスの名称も ``DefaultItemConverter`` → ``DefaultElementConverter`` に変更します。
 
-* マッピングの順番を指定するアノテーション ``@XlsHint(order=1)`` の名称を :ref:`@XlsOrder <annotationXlsOrder>` に変更します。
-* レコードをスキップするかどうか判定用のメソッドを指定するアノテーション ``@XlsIsEmpty`` の名称を :ref:`@XlsIgnorable <annotationXlsIgnorable>` に変更します。
+* マッピングの順番を指定するアノテーション ``@XlsHint(order=1)`` の名称を :doc:`@XlsOrder <annotation_mapping_order>` に変更します。
+* レコードをスキップするかどうか判定用のメソッドを指定するアノテーション ``@XlsIsEmpty`` の名称を :doc:`@XlsIgnorable <annotation_mapping_ignorable>` に変更します。
 * リスナーを指定するアノテーション ``@XlsListener`` の属性 ``listenerClass`` の名称を ``value`` に変更するか、省略します。
 * :doc:`システム設定のプロパティ<configuration>` を指定するクラス ``XlsConfig`` の名称を ``Configuration`` に変更します。
 * 複数のシートをマッピングした結果を格納するクラス ``SheetBingingErrorsContainer`` の名称を ``MultipleSheetBindingErrors`` に変更します。
@@ -46,10 +52,10 @@ To ver.2.0
 アノテーションの定義の変更
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* トリムをするアノテーションを ``@XlsConverter(trim=true)`` を、 :ref:`@XlsTrim <annotationXlsTrim>` に変更します。
-* 初期値を指摘するアノテーション ``@XlsConverter(defaultValue="初期値")`` を、 :ref:`@XlsDefaultValue("初期値") <annotationXlsDefaultValue>` に変更します。
-* セルの書き込み時の制御設定を行うアノテーション ``@XlsConverter(wrapText=true, shrinkToFit=false)`` を、 `@XlsCellOption(wrapText=true, shrinkToFit=false) <annotationXlsCellOption>` に変更します。
-* レコードの書き込み時のオプションを指定するアノテーション ``@XlsHorizontalRecords(overRecord=..., remainedRecord=...)`` を、 :ref:`@XlsRecordOption(overOperation=..., remainedOperation=...) <annotationXlsRecordOption>` に変更します。 
+* トリムをするアノテーションを ``@XlsConverter(trim=true)`` を、 :doc:`@XlsTrim <annotation_valueconverter_trim>` に変更します。
+* 初期値を指摘するアノテーション ``@XlsConverter(defaultValue="初期値")`` を、 :doc:`@XlsDefaultValue("初期値") <annotation_valueconverter_defaultvalue>` に変更します。
+* セルの書き込み時の制御設定を行うアノテーション ``@XlsConverter(wrapText=true, shrinkToFit=false)`` を、 :doc:`@XlsCellOption(wrapText=true, shrinkToFit=false) <annotation_converter_celloption>` に変更します。
+* レコードの書き込み時のオプションを指定するアノテーション ``@XlsHorizontalRecords(overRecord=..., remainedRecord=...)`` を、 :doc:`@XlsRecordOption(overOperation=..., remainedOperation=...) <annotation_mapping_recordoption>` に変更します。 
     
     * アノテーション ``@XlsVerticalRecords(overRecord=..., remainedRecord=...)`` も同様に変更します。
 
@@ -74,11 +80,11 @@ To ver.1.1
 
   * 該当するアノテーションは、``@XlsConverter/@XlsBooleanConverer/@XlsNumberConverter/@XlsDateConverter/XlsEnumConverer/@XlsArrayConverter`` です。
 
-* アノテーション :ref:`@XlsHorizonalRecords <annotationXlsHorizontalRecords>` と :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` の属性 ``skipEmptyRecord`` を ``ignoreEmptyErecord`` に変更します。
+* アノテーション :doc:`@XlsHorizonalRecords <annotation_mapping_horizontalrecords>` と :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` の属性 ``skipEmptyRecord`` を ``ignoreEmptyErecord`` に変更します。
 
 * アノテーション :ref:`@XlsConverter <annotationXlsConverter>` の属性 ``forceWrapText`` を ``wrapText`` に、属性 ``forceShrinkToFit`` を ``shrinkToFit`` 変更します。
 
-* アノテーション :ref:`@XlsNumberConverter <annotationXlsNumberConverter>` 、 :ref:`@XlsDateConverter <annotationXlsDateTimeConverter>` の属性 ``pattern`` を ``javaPattern`` に変更します。さらに、属性 ``excelPattern`` で、書き込み時のExcelの書式を指定します。
+* アノテーション :doc:`@XlsNumberConverter <annotation_converter_number>` 、 :doc:`@XlsDateConverter <annotation_converter_datetime>` の属性 ``pattern`` を ``javaPattern`` に変更します。さらに、属性 ``excelPattern`` で、書き込み時のExcelの書式を指定します。
 
 
 * XML読み込み用のクラス ``XmlLoader`` を ``XmlIO`` に変更します。

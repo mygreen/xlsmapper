@@ -1,13 +1,9 @@
-
-
-.. _annotationXlsMapColumns:
-
 ------------------------------------
 ``@XlsMapColumns``
 ------------------------------------
 
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` もしくは :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` において、
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` もしくは :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` において、
 指定されたレコード用クラスのカラム数が可変の場合に、それらのカラムを ``java.util.Map`` として設定します。
 
 * BeanにはMapを引数に取るフィールドまたはメソッドを用意し、このアノテーションを記述します。
@@ -40,7 +36,7 @@
 終了条件のセルを指定する場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-属性 ``nextColumnName`` で、指定した前のカラムまでが処理対象となり、マッピングの終了条件を指定することができます。 `[ver1.2+]`
+属性 ``nextColumnName`` で、指定した前のカラムまでが処理対象となり、マッピングの終了条件を指定できます。 `[ver1.2+]`
 
 * 属性 ``optional`` で、見出しとなるセルが見つからない場合に無視するかどうかを指定しできます。 `[ver2.0+]`
 
@@ -209,9 +205,9 @@
 書き込み処理の場合、マップのキーがデータごとに異なり、テンプレートのフォーマットと合わない場合があります。
 
 そのような場合、テンプレートファイルを書き込むデータに合わせて書き換えます。
-その際には、 :doc:`ライフサイクル・コールバック用のアノテーション <annotation_lifecycle>` ``@XlsPreSave`` で、実装を行うことができます。
+その際には、 :doc:`ライフサイクル・コールバック用のアノテーション <annotation_lifecycle>` ``@XlsPreSave`` で、実装できます。
 
-実装処理は、Apache POIのAPIを使って行います。。
+実装処理は、Apache POIのAPIを使って行います。
 
 .. figure:: ./_static/MapColumns_preSave.png
    :align: center

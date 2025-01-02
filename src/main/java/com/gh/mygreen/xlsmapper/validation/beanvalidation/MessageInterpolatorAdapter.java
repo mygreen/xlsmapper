@@ -3,7 +3,6 @@ package com.gh.mygreen.xlsmapper.validation.beanvalidation;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.validation.metadata.ConstraintDescriptor;
 
@@ -14,7 +13,7 @@ import com.gh.mygreen.xlsmapper.util.ArgUtils;
 
 /**
  * XlsMapperの{@link MessageInterpolator}とBeanValidationの{@link javax.validation.MessageInterpolator}のAdaptor。
- * <p>BeanValidatorのメッセ－時処理時、特に式言語の実装切り替えする場合に利用する。
+ * <p>BeanValidatorのメッセ－ジ処理時、特に式言語の実装切り替えする場合に利用する。
  *
  * @author T.TSUCHIE
  *
@@ -62,13 +61,6 @@ public class MessageInterpolatorAdapter implements javax.validation.MessageInter
         
         // 検証対象の値
         vars.computeIfAbsent("validatedValue", key -> context.getValidatedValue());
-        
-        // デフォルトのメッセージ
-        final String defaultCode = String.format("%s.message", descriptor.getAnnotation().annotationType().getCanonicalName());
-        final Optional<String> defaultMessage = messageResolver.getMessage(defaultCode);
-        
-        vars.put(defaultCode, 
-                defaultMessage.orElseThrow(() -> new RuntimeException(String.format("not found message code '%s'", defaultCode))));
         
         return vars;
     }

@@ -1,7 +1,7 @@
 package com.gh.mygreen.xlsmapper.util;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -10,7 +10,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.gh.mygreen.xlsmapper.util.PropertyPathTokenizer;
 import com.gh.mygreen.xlsmapper.util.PropertyPath.Token;
 
 /**

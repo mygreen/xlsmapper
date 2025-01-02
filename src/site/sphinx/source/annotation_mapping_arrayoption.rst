@@ -1,19 +1,15 @@
-
-
-.. _annotationXlsArrayOption:
-
 --------------------------------
 ``@XlsArrayOption``
 --------------------------------
 
-アノテーション :ref:`@XlsArrayCells <annotationXlsArrayCells>` 、 :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>` 、:ref:`@XlsArrayColumns <annotationXlsArrayColumns>` において、書き込み時の配列・リストの操作を指定するためのアノテーションです。 `[ver.2.0+]`
+アノテーション :doc:`@XlsArrayCells <annotation_mapping_arraycells>` 、 :doc:`@XlsLabelledArrayCells <annotation_mapping_labelledarraycells>` 、:doc:`@XlsArrayColumns <annotation_mapping_arraycolumns>` において、書き込み時の配列・リストの操作を指定するためのアノテーションです。 `[ver.2.0+]`
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 書き込み時に配列・リストのサイズが不足している場合(overOperation)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-アノテーション ``@XlsArrayOption`` を指定することで、書き込み時のセルの制御を指定することができます。
+アノテーション ``@XlsArrayOption`` を指定することで、書き込み時のセルの制御を指定できます。
 
 * 属性 ``overOperation`` で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 ``size`` の値が小さく、足りない場合の操作を指定します。
 
@@ -46,7 +42,7 @@
 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-アノテーション ``@XlsArrayOption`` を指定することで、書き込み時のセルの制御を指定することができます。
+アノテーション ``@XlsArrayOption`` を指定することで、書き込み時のセルの制御を指定できます。
 
 
 * 属性 ``remainedOperation`` で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 ``size`` の値が大きく、余っている場合の操作を指定します。

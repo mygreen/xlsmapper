@@ -1,7 +1,3 @@
-
-
-.. _annotationXlsHorizontalRecords:
-
 ---------------------------------
 ``@XlsHorizontalRecords``
 ---------------------------------
@@ -22,8 +18,8 @@ Colelction(List, Set)型または配列のフィールドに付与します。
 List型などの場合、Genericsのタイプとして、マッピング先のBeanクラスを指定します。
 指定しない場合は、アノテーションの属性 ``recordClass`` でクラス型を指定します。
 
-レコード用クラスは、列の定義をアノテーション :ref:`@XlsColumn <annotationXlsColumn>` や :ref:`@XlsMapColumns <annotationXlsMapColumns>` で指定します。
-また、ツリー構造のように入れ子になったレコードをマッピングする場合は、 :ref:`@XlsNestedRecords <annotationXlsNestedRecords>` を使用します。
+レコード用クラスは、列の定義をアノテーション :doc:`@XlsColumn <annotation_mapping_column>` や :doc:`@XlsMapColumns <annotation_mapping_mapcolumns>` で指定します。
+また、ツリー構造のように入れ子になったレコードをマッピングする場合は、 :doc:`@XlsNestedRecords <annotation_mapping_nestedrecords>` を使用します。
 
 
 .. sourcecode:: java
@@ -212,7 +208,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 空のレコードを読み飛ばす条件の指定
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-レコード用のクラスには、レコードを宇読み飛ばすかどうか判定するためのメソッド用意し、アノテーション :ref:`@XlsIgnorable <annotationXlsIgnorable>` を付与します。
+レコード用のクラスには、レコードを宇読み飛ばすかどうか判定するためのメソッド用意し、アノテーション :doc:`@XlsIgnorable <annotation_mapping_ignorable>` を付与します。
 
 また、この属性は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。
 
@@ -282,7 +278,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 属性 ``headerLimit`` を指定すると、テーブルのカラムが指定数見つかったタイミングでExcelシートの走査を終了します。
 主に無駄な走査を抑制したい場合に指定します。
 
-例えば、:ref:`@XlsIterateTables <annotationXlsIterateTables>` において、
+例えば、:doc:`@XlsIterateTables <annotation_mapping_iteratetables>` において、
 テーブルが隣接しており終端を検出できないときに、カラム数を明示的に指定してテーブルを区切りたい場合に使用します。
 
 以下の例は、列の見出しセルを3つ分検出したところでそのテーブルの終端と見なします。
@@ -344,7 +340,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 書き込み時にレコードが不足、余分である場合の操作の指定
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-アノテーション :ref:`@XlsRecordOption <annotationXlsRecordOption>` を指定することで、書き込み時のレコードの制御を指定することができます。
+アノテーション :doc:`@XlsRecordOption <annotation_mapping_recordoption>` を指定することで、書き込み時のレコードの制御を指定できます。
 
 * 属性 ``overOperation`` で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が足りないときの操作を指定します。
 * 属性 ``remainedOperation`` で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が余っているときの操作を指定します。
@@ -371,7 +367,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
 任意の位置からレコードが開始するかを指定する場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-データレコードの途中で中見出しがあり、分割されているような表の場合、アノテーション :ref:`@XlsRecordFinder <annotationXlsRecordFinder>` で、レコードの開始位置を決める処理を指定することができます。 `[ver2.0+]`
+データレコードの途中で中見出しがあり、分割されているような表の場合、アノテーション :doc:`@XlsRecordFinder <annotation_mapping_recordfinder>` で、レコードの開始位置を決める処理を指定できます。 `[ver2.0+]`
 
 * 属性 ``value`` で、レコードの開始位置を検索する実装クラスを指定します。
 * 属性 ``args`` で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。
@@ -436,7 +432,7 @@ List型などの場合、Genericsのタイプとして、マッピング先のBe
   
 
 これらの指定が可能な属性は、``tableLabel`` , ``terminateLabel`` です。
-さらに、レコードの列の見出し :ref:`@XlsColumn <annotationXlsColumn>` も、この機能が有効になります。
+さらに、レコードの列の見出し :doc:`@XlsColumn <annotation_mapping_column>` も、この機能が有効になります。
 
 
 .. sourcecode:: java

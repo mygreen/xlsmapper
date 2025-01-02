@@ -1,11 +1,10 @@
 package com.gh.mygreen.xlsmapper.expression;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
-import static com.gh.mygreen.xlsmapper.TestUtils.*;
-
+import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -26,9 +25,12 @@ public class ExpressionLanguageJEXLImplTest {
     
     private ExpressionLanguageJEXLImpl el;
     
+    private ExpressionLanguageJEXLImpl elResticted;
+    
     @Before
     public void setUp() throws Exception {
-        this.el = new ExpressionLanguageJEXLImpl();
+        this.el = new ExpressionLanguageJEXLImpl(Collections.emptyMap(), false);
+        this.elResticted = new ExpressionLanguageJEXLImpl(Collections.emptyMap(), true);
     }
     
     @Test(expected=IllegalArgumentException.class)
@@ -120,12 +122,7 @@ public class ExpressionLanguageJEXLImplTest {
     @Test
     public void testEvalate_function() {
         
-        // 関数の登録
-        Map<String, Object> funcs = new HashMap<>(); 
-        funcs.put("x", CustomFunctions.class);
-        el.getJexlEngine().setFunctions(funcs);
-        
-        String expression = "x:colToAlpha(columnNumber)";
+        String expression = "f:colToAlpha(columnNumber)";
         
         Map<String, Object> vars = new HashMap<>();
         vars.put("columnNumber", 1);
@@ -133,6 +130,21 @@ public class ExpressionLanguageJEXLImplTest {
         String eval = (String) el.evaluate(expression, vars);
         assertThat(eval, is("A"));
         
+    }
+    
+    /**
+     * ELインジェクション
+     */
+    @Test
+    public void test_injection() {
+
+        String expression = "''.getClass().forName('java.lang.Runtime').getRuntime().exec('notepad')";
+
+        Object eval = elResticted.evaluate(expression, Collections.emptyMap());
+        
+        // 評価に失敗しnullが返ってくる
+        assertThat(eval, nullValue());
+
     }
     
     

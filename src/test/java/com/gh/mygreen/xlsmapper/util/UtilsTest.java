@@ -1,8 +1,10 @@
 package com.gh.mygreen.xlsmapper.util;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

@@ -1,18 +1,14 @@
-
-
-.. _annotationXlsVerticalRecords:
-
 ---------------------------------------
 ``@XlsVerticalRecords``
 ---------------------------------------
 
 垂直方向に連続する列をListまたは配列にマッピングします。
-要するに :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を垂直方向にしたものです。
+要するに :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` を垂直方向にしたものです。
 
-メソッドに定義する場合、:ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` と同じくList型の引数を1つだけ取るsetterメソッドに対して付与します。
+メソッドに定義する場合、:doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` と同じくList型の引数を1つだけ取るsetterメソッドに対して付与します。
 
-ここでは、アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` と異なる部分を説明します。
-共通の使い方は、アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` の説明を参照してください。
+ここでは、アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` と異なる部分を説明します。
+共通の使い方は、アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` の説明を参照してください。
 
 .. figure:: ./_static/VerticalRecord.png
    :align: center
@@ -73,7 +69,7 @@
 
 表の名称が定義してあるセルの直後に表がなく離れている場合、属性 ``right`` で表の開始位置が **右方向** にどれだけ離れているか指定します。 `[ver1.0]+`
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` の属性 ``bottom`` と同じような意味になります。
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` の属性 ``bottom`` と同じような意味になります。
 
 .. figure:: ./_static/VerticalRecord_right.png
    :align: center
@@ -99,7 +95,7 @@
 属性 ``tableLabelAbove`` の値が ``true`` のときのみ有効になります。
 表の名称がセルの直後に表がなく離れている場合、属性 ``bottom`` で表の開始位置が **下方向** にどれだけ離れているか指定します。 `[ver2.0]+`
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` の属性 ``bottom`` と同じような意味になります。
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` の属性 ``bottom`` と同じような意味になります。
 
 .. figure:: ./_static/VerticalRecord_bottom.png
    :align: center
@@ -124,7 +120,7 @@
 
 表の見出しセルが横に結合され、データレコードの開始位置が離れている場合、属性 ``headerRight`` でデータレコードの開始位置がどれだけ離れているか指定します。 `[ver1.1+]`
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` の属性 ``headerBottom`` と同じような意味になります。
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` の属性 ``headerBottom`` と同じような意味になります。
 
 下記の例の場合、見出しの「テスト結果」は横に結合されているため :ref:`@XlsColumn(headerMerged=N) <annotationXlsColumnHeaderMerged>` と組み合わせて利用します。
 
@@ -175,7 +171,7 @@
 書き込み時にレコードが不足、余分である場合の操作の指定
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-アノテーション :ref:`@XlsRecordOption <annotationXlsRecordOption>` を指定することで、書き込み時のレコードの制御を指定することができます。
+アノテーション :doc:`@XlsRecordOption <annotation_mapping_recordoption>` を指定することで、書き込み時のレコードの制御を指定できます。
 
 * 属性 ``overOperation`` で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が足りないときの操作を指定します。
  
@@ -208,7 +204,7 @@
 任意の位置からレコードが開始するかを指定する場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-データレコードの途中で中見出しがあり、分割されているような表の場合、アノテーション :ref:`@XlsRecordFinder <annotationXlsRecordFinder>` で、レコードの開始位置を決める処理を指定することができます。 `[ver2.0+]`
+データレコードの途中で中見出しがあり、分割されているような表の場合、アノテーション :doc:`@XlsRecordFinder <annotation_mapping_recordfinder>` で、レコードの開始位置を決める処理を指定できます。 `[ver2.0+]`
 
 * 属性 ``value`` で、レコードの開始位置を検索する実装クラスを指定します。
 * 属性 ``args`` で、レコードの開始位置を検索する実装クラスに渡す引数を指定します。
