@@ -23,17 +23,6 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 		<url>https://github.com/mygreen/xlsmapper</url>
 	</scm>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
-	
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -62,17 +51,6 @@ XlsMapper is Java Library for mapping Excel sheets to POJO.
 		<poi.version>5.1.0</poi.version>
 		<spring.version>3.2.11.RELEASE</spring.version>
 		<jacoco.include.package>com.gh.mygreen.xlsmapper.*</jacoco.include.package>
-
-		<!-- SonarQubeの解析から除外したいファイル -->
-		<sonar.exclusions>
-			**/sample/*,
-			**/*Test.*,
-			**/*.js,
-		</sonar.exclusions>
-		<sonar.projectName>${project.groupId}/${project.artifactId}</sonar.projectName>
-		<sonar.host.url>https://sonarcloud.io/</sonar.host.url>
-		<sonar.organization>mygreen-github</sonar.organization>
-		<sonar.coverage.jacoco.xmlReportPaths>${project.directory}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<profiles>
@@ -314,19 +292,12 @@ $(document).ready(function() {
 				</dependencies>
 			</plugin>
 			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.7.0.1746</version>
-			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.8</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.6.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					<publishingServerId>central</publishingServerId>
 				</configuration>
 			</plugin>
 
@@ -562,10 +533,6 @@ $(document).ready(function() {
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</reporting>
