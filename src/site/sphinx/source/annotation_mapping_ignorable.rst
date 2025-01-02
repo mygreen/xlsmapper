@@ -1,15 +1,12 @@
-
-.. _annotationXlsIgnorable:
-
 --------------------------------
 ``@XlsIgnorable``
 --------------------------------
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、:ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` を使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` 、:doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` を使用して、読み込む際に、空のレコードを読み飛ばしたい場合、
 レコードが空と判定するためのメソッドに付与します。
 
 * ``@XlsIgnorable`` を付与したメソッドは、publicかつ引数なしの戻り値がboolean型の書式にする必要があります。
-* :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` でも同様に使用できます。
+* :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` でも同様に使用できます。
 
 また、この機能は読み込み時のみに有効です。書き込み時は、空のレコードでもそのまま出力されます。
 
@@ -62,7 +59,7 @@ IsEmptyBuilderを使った記述の簡単化
 
 * ``IsEmptyBuilder#reflectionIsEmpty(...)`` を利用して判定する場合、位置情報を保持するフィールド ``Map<String, Point> positions`` などは除外対象とする必要があります。
 * 独自に判定する場合、``IsEmptyBuilder#append(...)`` を利用します。
-* さらに、 ``IsEmptyBuilder#compare(IsEmptyComparator)`` を利用することで独自の判定をすることができます。その際に、Lambda式を利用すると簡潔に記載できます。
+* さらに、 ``IsEmptyBuilder#compare(IsEmptyComparator)`` を利用することで独自の判定をできます。その際に、Lambda式を利用すると簡潔に記載できます。
 
 .. sourcecode:: java
     :linenos:

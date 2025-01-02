@@ -3,18 +3,18 @@
 --------------------------------------------------------
 
 
-読み込み時にマッピングしたセルに設定されているコメントを取得することができます。 `[ver.2.1]`
+読み込み時に、マッピングしたセルに設定されているコメントを取得できます。 `[ver.2.1]`
 
-書き込み時は、セルにコメントを設定することができます。
+書き込み時は、セルにコメントを設定できます。
 
-取得方法は複数ありますが、 ``Map<String, String> comments`` フィールドを用いるのが記述量が少なく簡単だと思います。
+取得方法は複数ありますが、 ``Map<String, String> comments`` フィールドを用いる方が記述量を少なくできます。
  
 .. note:: 
    
    セルのコメントを取得できるのは、アノテーション ``@XlsCell, @XlsLabelledCell, @XlsColumn, @XlsMapColumns, @XlsArrayColumns, @XlsArrayCell, @XlsLabelledArrayCell`` を付与したプロパティです。
    
-   見出しセルに対するコメントの取得は、アノテーション :ref:`@XlsLablledComment <annotationXlsLabelledComment>` を使用します。
-   さらに、任意の位置のセルのコメントの取得は、アノテーション :ref:`@XlsComment <annotationXlsComment>` を使用します。
+   見出しセルに対するコメントの取得は、アノテーション :doc:`@XlsLablledComment <annotation_mapping_labelledcomment>` を使用します。
+   さらに、任意の位置のセルのコメントの取得は、アノテーション :doc:`@XlsComment <annotation_mapping_comment>` を使用します。
 
 
 1. ``Map<String, String> comments`` というフィールドを定義しておくとプロパティ名をキーにセルの位置がセットされるようになっています。
@@ -104,7 +104,7 @@
 
 書き込み時は、読み込み時と同様に複数の定義方法があります。
 
-書き込むコメント情報の定義方法は複数ありますが、 ``Map<String, String> comments`` フィールドを用いるのが記述量が少なく簡単だと思います。
+書き込むコメント情報の定義方法は複数ありますが、 ``Map<String, String> comments`` フィールドを用いる方が記述量を少なくできます。
 
 各プロパティに対するメソッドを定義しておけば、getterメソッド経由で取得されます。
 
@@ -115,21 +115,21 @@
     // 書き込むデータの定義
     SampleSheet sheet = new SampleSheet();
     
-    SampleRecord record = new SampleRecord();
+    SampleRecord item = new SampleRecord();
     
     // コメントを保持するフィールドのインスタンス定義
-    record.comments = new HashMal<>();
+    item.comments = new HashMal<>();
     
     // プロパティ「name」に対するコメントを設定する
-    record.comments.put("name", "コメント1");
+    item.comments.put("name", "コメント1");
     
     // @XlsMapColumnsに対するコメントを設定する。
-    record.comments.put("attendedMap[4月1日]", "コメント2");
-    record.comments.put("attendedMap[4月2日]", "コメント3");
+    item.comments.put("attendedMap[4月1日]", "コメント2");
+    item.comments.put("attendedMap[4月2日]", "コメント3");
     
-    // @XlsArrayColumnsNi対するコメントを設定する。
-    record.comments.put("rubyList[0]", "コメント4");
-    record.comments.put("rubyList[1]", "コメント5");
+    // @XlsArrayColumnsに対するコメントを設定する。
+    item.comments.put("rubyList[0]", "コメント4");
+    item.comments.put("rubyList[1]", "コメント5");
     
     // レコードの定義
     public class SampleRecord {
@@ -182,7 +182,7 @@
 
 .. note:: 
 
-    書き込み時のコメントの枠サイズなどは、アノテーション :ref:`@XlsCommentOption <annotationXlsCommentOption>` を使用します。
+    書き込み時のコメントの枠サイズなどは、アノテーション :doc:`@XlsCommentOption <annotation_mapping_commentoption>` を使用します。
     
     フォントなどは、セルの設定値を引き継ぎます。
     ただし、すでにコメントが設定されている場合は、設定されている書式に従います。

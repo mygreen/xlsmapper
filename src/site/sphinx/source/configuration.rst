@@ -3,7 +3,7 @@
 ====================================================
 
 
-読み込み時及び書き込み時の動作をConfigurationクラスでカスタマイズすることができます。
+読み込み時及び書き込み時の動作をConfigurationクラスでカスタマイズできます。
 
 .. sourcecode:: java
     :linenos:
@@ -37,7 +37,7 @@ Configurationは、XlsMapperクラスのインスタンスを作成時にも持�
     SheetObject sheet = xlsMapper.load(
         new FileInputStream("example.xls"), SheetObject.class);
 
-Configurationでは以下の設定を行うことができます。
+Configurationでは以下の設定ができます。
 
 .. list-table:: Configurationで設定可能な項目
    :widths: 20 30 50
@@ -73,20 +73,20 @@ Configurationでは以下の設定を行うことができます。
    * - ``mergeCellOnSave``
      - ``boolean``
      - | 書き込み時にセルの結合を行うかどうか。
-       | アノテーション :ref:`@XlsColumn <annotationXlsColumn>` の属性mergedを書き込み時も考慮します。
+       | アノテーション :doc:`@XlsColumn <annotation_mapping_column>` の属性mergedを書き込み時も考慮します。
        | 初期値は'false'です。
    
    * - ``correctNameRangeOnSave``
      - ``boolean``
      - | 書き込み時に名前の定義範囲を修正するかどうか。
-       | アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、:ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` でレコードの追加を行った箇所に名前の定義があるときに考慮します。
+       | アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` 、:doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` でレコードの追加を行った箇所に名前の定義があるときに考慮します。
        | 初期値は'false'です。
        | **Ver.0.3以上** から利用可能です。
    
    * - ``correctCellDataValidationOnSave``
      - ``boolean``
      - | 書き込み時に名前のセルの入力規則を修正するかどうか。
-       | アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、:ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` でレコードの追加を行った箇所に入力規則が設定されているときに考慮します。
+       | アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` 、:doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` でレコードの追加を行った箇所に入力規則が設定されているときに考慮します。
        | 初期値は'false'です。
        | **Ver.0.3以上** から利用可能です。
    
@@ -120,17 +120,17 @@ Configurationでは以下の設定を行うことができます。
    * - ``beanFactory``
      - ``BeanFactory``
      - | 読み込み時などのJavaBeansオブジェクトのインスタンスを作成すためのコールバック用クラス。
-       | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用することができます。
+       | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用できます。
        
    * - ``bindingErrorsFactory``
      - ``SheetBindingErrorsFactory``
      - | マッピング時のエラー情報 ``SheetBindingErrors`` のインスタンスを作成すためのコールバック用クラス。
-       | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用することができます。
+       | 独自の実装を渡すことで、SpringFrameworkなどのDIコンテナで管理しているクラスを使用できます。
        | **Ver.2.0以上** から利用可能です。
        
    * - ``sheetFinder``
      - ``SheetFinder``
-     - | アノテーション :ref:`@XlsSheet <annotationXlsSheet>` に基づき処理対象のシートを抽出するクラス。
+     - | アノテーション :doc:`@XlsSheet <annotation_mapping_sheet>` に基づき処理対象のシートを抽出するクラス。
        | **Ver.1.1以上** から利用可能です。
    
    * - ``formulaFormatter``
@@ -147,7 +147,7 @@ Configurationでは以下の設定を行うことができます。
    * - ``commentOperator``
      - ``CellCommentOperator``
      - | セルのコメント情報をマッピングするデフォルトの処理を設定します。
-       | 詳細は、:doc:`sheetinfo_comment` や :ref:`@XlsCommentOption <annotationXlsCommentOption>` を参照してください。
+       | 詳細は、:doc:`sheetinfo_comment` や :doc:`@XlsCommentOption <annotation_mapping_commentoption>` を参照してください。
        | **Ver.2.1以上** から利用可能です。
 
 

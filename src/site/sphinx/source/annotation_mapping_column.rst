@@ -1,12 +1,8 @@
-
-
-.. _annotationXlsColumn:
-
 -------------------------------
 ``@XlsColumn``
 -------------------------------
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` または :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` において、
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` または :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` において、
 1つのカラムをマッピングします。
 
 * 属性 ``columnName`` で、見出しとなるセルのラベルを指定します。

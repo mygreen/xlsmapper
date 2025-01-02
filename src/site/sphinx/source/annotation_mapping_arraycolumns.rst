@@ -1,12 +1,8 @@
-
-
-.. _annotationXlsArrayColumns:
-
 --------------------------------
 ``@XlsArrayColumns``
 --------------------------------
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` もしくは :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` において、
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` もしくは :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` において、
 指隣接する連続したカラムカラムを、Collection(List, Set)または配列にマッピングします。 `[ver.2.0+]`
 
 * 属性 ``columnName`` で、見出しとなるセルのラベルを指定します。
@@ -90,7 +86,7 @@
 書き込み時に配列・リストのサイズが不足、または余分である場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-アノテーション :ref:`@XlsArrayOption <annotationXlsArrayOption>` を指定することで、書き込み時のセルの制御を指定することができます。
+アノテーション :doc:`@XlsArrayOption <annotation_mapping_arrayoption>` を指定することで、書き込み時のセルの制御を指定できます。
 
 * 属性 ``overOperation`` で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 ``size`` の値が小さく、足りない場合の操作を指定します。
 * 属性 ``remainedOperation`` で、書き込み時にJavaオブジェクトの配列・リストのサイズに対して、属性 ``size`` の値が大きく、余っている場合の操作を指定します。

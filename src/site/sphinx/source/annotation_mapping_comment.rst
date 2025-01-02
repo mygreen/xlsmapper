@@ -1,6 +1,3 @@
-
-.. _annotationXlsComment:
-
 ---------------------------------
 ``@XlsComment``
 ---------------------------------
@@ -9,7 +6,7 @@
 
 フィールドまたはメソッドに対して付与します。
 
-書込み時のコメントの書式の制御は、アノテーション :ref:`@XlsCommentOption <annotationXlsCommentOption>` で指定します。
+書込み時のコメントの書式の制御は、アノテーション :doc:`@XlsCommentOption <annotation_mapping_commentoption>` で指定します。
 
 * 属性 ``column`` 、 ``row`` で、インデックスを指定します。
    

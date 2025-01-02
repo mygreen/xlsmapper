@@ -44,9 +44,9 @@ ver.2.1 - 2019-06-23
 * `#104 <https://github.com/mygreen/xlsmapper/pull/104>`_ セルコメントのマッピング機能を追加しました。
 
   * 既存のセルのマッピング時にセルコメントもマッピングできるフィールド ``comments`` を追加( :doc:`sheetinfo_comment` )。
-  * :ref:`@XlsComment <annotationXlsComment>` - セルの座標を直接指定して、セルのコメントをマッピングします。
-  * :ref:`@XlsLablledComment <annotationXlsLabelledComment>` - レコードの隣接するカラムをマッピングします。
-  * :ref:`@XlsCommentOption <annotationXlsCommentOption>` - 書き込み時のセルのコメントのサイズなどの制御を指定します。
+  * :doc:`@XlsComment <annotation_mapping_comment>` - セルの座標を直接指定して、セルのコメントをマッピングします。
+  * :doc:`@XlsLablledComment <annotation_mapping_labelledcomment>` - レコードの隣接するカラムをマッピングします。
+  * :doc:`@XlsCommentOption <annotation_mapping_commentoption>` - 書き込み時のセルのコメントのサイズなどの制御を指定します。
 
 
 .. _realease_2_0:
@@ -71,27 +71,27 @@ ver.2.0 - 2018-06-30
 
 * 隣接するセルをマッピング可能なアノテーションを追加しました。
 
-  * :ref:`@XlsArrayCells <annotationXlsArrayCells>` - 連続し隣接するセルを配列またはリストにマッピングします。
-  * :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>` - 見出し付きの連続し隣接するセルを配列またはリストにマッピングします。
-  * :ref:`@XlsArrayColumns <annotationXlsArrayColumns>` - レコードの隣接するカラムをマッピングします。
-  * :ref:`@XlsArrayOption <annotationXlsArrayOption>` - 上記のアノテーションの書き込み時の設定を補助します。
+  * :doc:`@XlsArrayCells <annotation_mapping_arraycells>` - 連続し隣接するセルを配列またはリストにマッピングします。
+  * :doc:`@XlsLabelledArrayCells <annotation_mapping_labelledarraycells>` - 見出し付きの連続し隣接するセルを配列またはリストにマッピングします。
+  * :doc:`@XlsArrayColumns <annotation_mapping_arraycolumns>` - レコードの隣接するカラムをマッピングします。
+  * :doc:`@XlsArrayOption <annotation_mapping_arrayoption>` - 上記のアノテーションの書き込み時の設定を補助します。
 
 * 既存のアノテーションから機能を分離し、新たに以下の補助的なアノテーションを追加しました。
 
-  * 値をトリムするアノテーション ``@XlsConverter(trim=true)`` を機能分離し、 :ref:`@XlsTrim <annotationXlsTrim>` を追加しました。
-  * 初期値を指摘するアノテーション ``@XlsConverter(defaultValue="初期値")`` を機能分離し、 :ref:`@XlsDefaultValue <annotationXlsDefaultValue>` を追加しました。
-  * セルの書き込み時の制御設定を行うアノテーション ``@XlsConverter(wrapText=true, shrinkToFit=false)`` を機能分離し、`@XlsCellOption <annotationXlsCellOption>` を追加しました。
+  * 値をトリムするアノテーション ``@XlsConverter(trim=true)`` を機能分離し、 :doc:`@XlsTrim <annotation_valueconverter_trim>` を追加しました。
+  * 初期値を指摘するアノテーション ``@XlsConverter(defaultValue="初期値")`` を機能分離し、 :doc:`@XlsDefaultValue <annotation_valueconverter_defaultvalue>` を追加しました。
+  * セルの書き込み時の制御設定を行うアノテーション ``@XlsConverter(wrapText=true, shrinkToFit=false)`` を機能分離し、:doc:`@XlsCellOption <annotation_converter_celloption>` を追加しました。
   
     * さらに、 ``@XlsCellOption`` において、属性 ``horizontalAlign`` 、 ``verticalAlign`` にて、セルの横方向、縦方向の位置を指定できます。
   
-  * レコードの書き込み時のオプションを指定するアノテーション ``@XlsHorizontalRecords(overRecord=..., remainedRecord=...)`` を機能分離し、 :ref:`@XlsRecordOption <annotationXlsRecordOption>` を追加しました。 
+  * レコードの書き込み時のオプションを指定するアノテーション ``@XlsHorizontalRecords(overRecord=..., remainedRecord=...)`` を機能分離し、 :doc:`@XlsRecordOption <annotation_mapping_recordoption>` を追加しました。 
     
     * アノテーション ``@XlsVerticalRecords(overRecord=..., remainedRecord=...)`` も同様に機能分離しました。
 
-* ``@XlsHorizontalRecords/XlsVerticalRecords`` でレコードをマッピングする際に、データ開始位置をプログラマティックに指定できるアノテーション :ref:`@XlsRecordFinder <annotationXlsRecordFinder>` を追加しました。
+* ``@XlsHorizontalRecords/XlsVerticalRecords`` でレコードをマッピングする際に、データ開始位置をプログラマティックに指定できるアノテーション :doc:`@XlsRecordFinder <annotation_mapping_recordfinder>` を追加しました。
 
 
-* レコードをマッピングする際に、そのレコードを除外するアノテーション ``@XlsIsEmpty`` の名称を :ref:`@XlsIgnorable <annotationXlsIgnorable>` に変更しました。
+* レコードをマッピングする際に、そのレコードを除外するアノテーション ``@XlsIsEmpty`` の名称を :doc:`@XlsIgnorable <annotation_mapping_ignorable>` に変更しました。
 
   * さらに、レコードを除外する条件として、 ``@XlsHorizontalRecords(ignoreEmptyRecord=true)`` を指定しなくても除外するようにしました。属性 ``ignoreEmptyRecord`` は削除しました。
 
@@ -108,20 +108,20 @@ ver.2.0 - 2018-06-30
     デフォルト実装クラスの名称も ``DefaultItemConverter`` → ``DefaultElementConverter`` に変更しました。
 
 
-* マッピングの順番を指定するアノテーション ``@XlsHint(order=1)`` の名称を :ref:`@XlsOrder <annotationXlsOrder>` に変更しました。
+* マッピングの順番を指定するアノテーション ``@XlsHint(order=1)`` の名称を :doc:`@XlsOrder <annotation_mapping_order>` に変更しました。
 
-* レコードをスキップするかどうか判定用のメソッドを指定するアノテーション ``@XlsIsEmpty`` の名称を :ref:`@XlsIgnorable <annotationXlsIgnorable>` に変更しました。
+* レコードをスキップするかどうか判定用のメソッドを指定するアノテーション ``@XlsIsEmpty`` の名称を :doc:`@XlsIgnorable <annotation_mapping_ignorable>` に変更しました。
 
-* 見出し付きセルをマッピングするアノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` において、見出し用のセルが結合されているかを考慮する属性 ``labelMarged`` を追加しました。
+* 見出し付きセルをマッピングするアノテーション :doc:`@XlsLabelledCell <annotation_mapping_labelledcell>` において、見出し用のセルが結合されているかを考慮する属性 ``labelMarged`` を追加しました。
 
   * 従来は、結合されていても考慮されていないため、属性 ``skip`` で結合セル分を読み飛ばしていましたが、属性 ``labelMarged`` の初期値は true となるため、動作が変わってきます。
 
-* 縦方向のレコードをマッピングするアノテーション :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` において、表の開始位置を指定する 属性 ``bottom`` を追加しました。
+* 縦方向のレコードをマッピングするアノテーション :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` において、表の開始位置を指定する 属性 ``bottom`` を追加しました。
 
-* 繰り返す表をマッピングするアノテーション :ref:`@XlsIterateTables <annotationXlsIterateTables>` において、以下の変更を行いました。
+* 繰り返す表をマッピングするアノテーション :doc:`@XlsIterateTables <annotation_mapping_iteratetables>` において、以下の変更を行いました。
 
   * マッピング可能なクラスタイプとして ``java.util.Collection/java.util.Set`` 型に対応しました。
-  * 縦方向のレコードをマッピングするアノテーション :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` に対応しました。
+  * 縦方向のレコードをマッピングするアノテーション :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` に対応しました。
   * 開始位置を指定する属性 ``address`` を削除しました。
 
 * :doc:`システム設定のプロパティ<configuration>` を指定するクラス ``XlsConfig`` の名称を ``Configuration`` に変更しました。さらに、以下の項目を追加しました。
@@ -262,7 +262,7 @@ ver.1.4.1 - 2016-04-29
 ver.1.4 - 2016-03-21
 --------------------------------------------------------
 
-* `#79 <https://github.com/mygreen/xlsmapper/issues/79>`_ : :ref:`@XlsNestedRecords <annotationXlsNestedRecords>` による、入れ子構造の表をマッピングする機能を追加しました。
+* `#79 <https://github.com/mygreen/xlsmapper/issues/79>`_ : :doc:`@XlsNestedRecords <annotation_mapping_nestedrecords>` による、入れ子構造の表をマッピングする機能を追加しました。
 
 * セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.7に対応しました。
 
@@ -290,18 +290,18 @@ ver.1.2 - 2016-03-12
 
 * `#71 <https://github.com/mygreen/xlsmapper/issues/71>`_ : アノテーション ``@XlsColumn`` などを付与したフィールドが、``java.util.LinkedList`` などの具象クラスの場合をサポートしました。
 
-* `#76 <https://github.com/mygreen/xlsmapper/issues/76>`_ : アノテーション :ref:`@XlsMapColumns <annotationXlsMapColumns>` に属性 ``nextColumnName`` を追加、マッピングの終了条件のセルを指定できるようにしました。
+* `#76 <https://github.com/mygreen/xlsmapper/issues/76>`_ : アノテーション :doc:`@XlsMapColumns <annotation_mapping_mapcolumns>` に属性 ``nextColumnName`` を追加、マッピングの終了条件のセルを指定できるようにしました。
 
 
 --------------------------------------------------------
 ver.1.1 - 2016-03-08
 --------------------------------------------------------
 
-* `#3 <https://github.com/mygreen/xlsmapper/issues/3>`_ : :ref:`@XlsArrayConverter <annotationXlsArrayConverter>` に属性 ``itemConverterClass`` を追加し、任意のクラス型を変換できるようにしました。
+* `#3 <https://github.com/mygreen/xlsmapper/issues/3>`_ : :doc:`@XlsArrayConverter <annotation_converter_array>` に属性 ``itemConverterClass`` を追加し、任意のクラス型を変換できるようにしました。
 
 * `#66 <https://github.com/mygreen/xlsmapper/issues/66>`_ : セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.6に対応しました。
 
-* `#67 <https://github.com/mygreen/xlsmapper/issues/67>`_ : アノテーション :ref:`@XlsNumberConverter <annotationXlsNumberConverter>` 、 :ref:`@XlsDateConverter <annotationXlsDateTimeConverter>` の属性 ``pattern`` を廃止し、
+* `#67 <https://github.com/mygreen/xlsmapper/issues/67>`_ : アノテーション :doc:`@XlsNumberConverter <annotation_converter_number>` 、 :doc:`@XlsDateConverter <annotation_converter_datetime>` の属性 ``pattern`` を廃止し、
   読み込み用の書式の属性 ``javaPattern`` と書き込み用の書式の属性 ``excelPattern`` を追加しました。
 
 
@@ -311,32 +311,32 @@ ver.1.1 - 2016-03-08
   * XML読み込み用のクラス ``XmlLoader`` の名称を ``XmlIO`` に変更し、XMLの書き込み用メソッドを追加しました。
   * 例外クラス ``XmlLoadException`` の名称を ``XmlOperateException`` に変更しました。
   * 読み込み時/書き込み時の処理対象となるシートの抽出処理を、 ``SheetFinder`` クラスに分離しました。
-    :doc:`XlsMapperConfigのプロパティ「sheetFinder」<configuration>` でカスタマイズすることができます。
+    :doc:`XlsMapperConfigのプロパティ「sheetFinder」<configuration>` でカスタマイズできます。
 
 * `#72 <https://github.com/mygreen/xlsmapper/issues/72>`_ : ラベルや見出しを正規表現で指定、正規化してマッピングする機能を追加しました。
 
   * :doc:`システム設定のプロパティ <configuration>` として、 ``regexLabelText`` , ``normalizeLabelText`` を追加。
   
-  * :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` の属性 ``label`` , ``headerLabel`` で有効になります。
+  * :doc:`@XlsLabelledCell <annotation_mapping_labelledcell>` の属性 ``label`` , ``headerLabel`` で有効になります。
   
-  * :ref:`@XlsHorizonalRecords <annotationXlsHorizontalRecords>` の属性 ``tableLabel`` , ``terminateLabel`` で有効になります。
+  * :doc:`@XlsHorizonalRecords <annotation_mapping_horizontalrecords>` の属性 ``tableLabel`` , ``terminateLabel`` で有効になります。
 
-  * :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` の属性 ``tableLabel`` , ``terminateLabel`` で有効になります。
+  * :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` の属性 ``tableLabel`` , ``terminateLabel`` で有効になります。
   
-  * :ref:`@XlsIterateTables <annotationXlsIterateTables>` の属性 ``tableLabel`` で有効になります。
+  * :doc:`@XlsIterateTables <annotation_mapping_iteratetables>` の属性 ``tableLabel`` で有効になります。
 
 
 * `#73 <https://github.com/mygreen/xlsmapper/issues/73>`_ : 見出し結合されている場合の属性を追加しました。
 
-  * :ref:`@XlsHorizonalRecords(headerBottom) <annotationXlsHorizontalRecords>` を追加しました。
+  * :doc:`@XlsHorizonalRecords(headerBottom) <annotation_mapping_horizontalrecords>` を追加しました。
 
-  * :ref:`@XlsVerticalRecords(headerRight) <annotationXlsVerticalRecords>` を追加しました。
+  * :doc:`@XlsVerticalRecords(headerRight) <annotation_mapping_verticalrecords>` を追加しました。
 
 * `#74 <https://github.com/mygreen/xlsmapper/issues/74>`_ : 型変換用のアノテーションのパッケージ ``～.xlsmapper.annotation.converter`` を ``～.xlsmapper.annotation`` に移動しました。
 
 * `#75 <https://github.com/mygreen/xlsmapper/issues/75>`_ : 一部のアノテーションの属性名を変更しました。
 
-  * アノテーション :ref:`@XlsHorizonalRecords <annotationXlsHorizontalRecords>` と :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` の属性 ``skipEmptyRecord`` を ``ignoreEmptyErecord`` に変更しました。
+  * アノテーション :doc:`@XlsHorizonalRecords <annotation_mapping_horizontalrecords>` と :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` の属性 ``skipEmptyRecord`` を ``ignoreEmptyErecord`` に変更しました。
 
   * アノテーション :ref:`@XlsConverter <annotationXlsConverter>` の属性 ``forceWrapText`` を ``wrapText`` に、属性 ``forceShrinkToFit`` を ``shrinkToFit`` 変更しました。
 
@@ -376,13 +376,13 @@ ver.1.0 - 2015-07-19
 
 * `#50 <https://github.com/mygreen/xlsmapper/issues/50>`_ : クラス ``IsEmptyBuilder`` にて、検証対象のタイプがMap, Collection, 配列の場合、要素をチェックするように機能追加しました。要素の値が全てnullまたは空と判定できた場合は、そのオブジェクトの値が空と判定します。
 
-    * 設定用クラス ``IsEmptyConfig`` で、要素をチェックするかなどを変更することができます。
+    * 設定用クラス ``IsEmptyConfig`` で、要素をチェックするかなどを変更できます。
 
 * `#53 <https://github.com/mygreen/xlsmapper/issues/53>`_ : フィールドの入力値検証を行うためのFieldValidatorの実装である、「MaxValidator/MinValidator/RangeValidator」において、メッセージ表示用に値をフォーマットを ``FieldFormatter`` で行うように機能追加しました。
 
     * 標準では、``DefaultFieldFormatter`` が設定されていますが、独自の実装に切り替えることができます。
 
-* `#56 <https://github.com/mygreen/xlsmapper/issues/56>`_ : AnnotationReaderで読み込むXMLに属性 ``override=true`` を定義すると、JavaクラスとXMLファイルでそｚれぞれに定義しているアノテーションの差分を考慮するよう機能追加しました。
+* `#56 <https://github.com/mygreen/xlsmapper/issues/56>`_ : AnnotationReaderで読み込むXMLに属性 ``override=true`` を定義すると、JavaクラスとXMLファイルでそれぞれに定義しているアノテーションの差分を考慮するよう機能追加しました。
 
 * `#58 <https://github.com/mygreen/xlsmapper/issues/58>`_ : ドキュメント `拡張方法 <http://mygreen.github.io/xlsmapper/sphinx/extension.html>`_ を記載しました。
 
@@ -407,7 +407,7 @@ ver.0.5 - 2015-06-29
 
 * `#21 <https://github.com/mygreen/xlsmapper/issues/21>`_ : セルの値を取得する方法を別ライブラリ `excel-cellformatter <http://mygreen.github.io/excel-cellformatter/>`_ の最新版ver.0.4に対応しました。
 
-* `#22 <https://github.com/mygreen/xlsmapper/issues/22>`_ : 内部クラス定義にてクラス定義がprivateなどの非公開の場合ににも対応しました。読み込み時にインスタンスの生成に失敗する事象を改善しました。
+* `#22 <https://github.com/mygreen/xlsmapper/issues/22>`_ : 内部クラス定義にてクラス定義がprivateなどの非公開の場合にも対応しました。読み込み時にインスタンスの生成に失敗する事象を改善しました。
 
 * `#23 <https://github.com/mygreen/xlsmapper/issues/23>`_ : 読み込み時に、文字列形式のセルをdoubleなどの数値型のクラスにマッピングする際にエラーが発生する事象を改善しました。
 
@@ -549,7 +549,7 @@ ver.0.2.2 - 2014-12-01
 
 下記の不良を修正。
  
-* `#5 <https://github.com/mygreen/xlsmapper/issues/5>`_  : 書き込み時に、リストのトリムが有効にならない。
+* `#5 <https://github.com/mygreen/xlsmapper/issues/5>`_  : 書き込み時に、リストのトリムが有効になりません。
 
 * `#6 <https://github.com/mygreen/xlsmapper/issues/6>`_  : 入力値検証の際に変数の値がnullにしているとNPEが発生する。
 

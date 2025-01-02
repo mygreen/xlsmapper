@@ -2,9 +2,9 @@
 SpringFrameworkとの連携
 =========================================================
 
-DI(Depenency Injection) 機能のフレームワーク `Spring Framework <https://projects.spring.io/spring-framework/>`_ と連携することができます。
+DI(Depenency Injection) 機能のフレームワーク `Spring Framework <https://projects.spring.io/spring-framework/>`_ と連携できます。
 
-Spring Framework のコンテナで管理可能、DI可能な部分は、次の箇所になります。
+Spring Frameworkのコンテナで管理可能、DI可能な部分は、次の箇所になります。
 
 これらの機能・箇所は、 ``com.gh.mygreen.xlsmapper.BeanFactory`` によるインスタンスを新しく作成する箇所であり、その実装を ``com.gh.mygreen.xlsmapper.SpringBeanFactory`` に切り替え得ることで、DIを実現します。
 
@@ -28,7 +28,7 @@ Spring Framework のコンテナで管理可能、DI可能な部分は、次の�
    * - :ref:`独自のリスナーの実装機能 <annotationXlsListener>`
      - リスナクラスがSpringBeanとして管理可能です。
      
-   * - :ref:`独自のRecordFinderの実装機能 <annotationXlsRecordFinder>`
+   * - :doc:`独自のRecordFinderの実装機能 <annotation_mapping_recordfinder>`
      - ``RecordFinder`` の実装クラスがSpringBeanとして管理可能です。
      
 

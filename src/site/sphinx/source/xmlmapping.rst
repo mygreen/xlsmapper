@@ -3,9 +3,9 @@ XMLによるマッピング方法
 ====================================================
 
 
-アノテーションだけではなく、外部XMLファイルでマッピングを行うことも可能です。
-これはダイナミック・アノテーションという、アノテーションと同様の情報をXMLファイルで定義することで行います。
+アノテーションだけではなく、外部XMLファイルでマッピングができます。
 
+これはダイナミック・アノテーションという、アノテーションと同様の情報をXMLファイルで定義します。
 
 以下にクラスに対してアノテーションを付与するXMLファイルの例を示します。
 
@@ -45,7 +45,7 @@ XMLによるマッピング方法
     </annotations>
 
 
-フィールドにアノテーションを付与することも可能です。
+フィールドにアノテーションを付与できます。
 
 .. sourcecode:: xml
     :linenos:
@@ -63,7 +63,8 @@ XMLによるマッピング方法
     </annotations>
 
 
-外部XMLファイルを使う場合、ハードコードされたアノテーションを外部XMLファイルの内容でオーバーライドすることが可能です。
+外部XMLファイルを使う場合、ハードコードされたアノテーションを外部XMLファイルの内容でオーバーライドできます。
+
 XML情報は ``AnnotationMappingInfo`` として読み込み、 ``Configuration#setAnnotationMapping(..)`` メソッドに渡します。
 
 .. sourcecode:: java
@@ -81,8 +82,8 @@ XML情報は ``AnnotationMappingInfo`` として読み込み、 ``Configuration#
     SheetObject sheet = xlsMapper.load(new FileInputStream("example.xls"), SheetObject.class);
 
 
-ClassやMethod、Fieldオブジェクトから直接アノテーションを取得する代わりに ``AnnotationReader`` を使えば、
-XMLで宣言されたアノテーションと、クラスに埋め込まれているアノテーションを区別せずに取得することができます。
+ClassやMethod、Fieldオブジェクトから直接アノテーションを取得する代わりに ``AnnotationReader`` を使えば、XMLで宣言されたアノテーションと、クラスに埋め込まれているアノテーションを区別せずに取得できます。
+
 ``AnnotationReader`` にはこの他にもメソッド、フィールドに付与されたアノテーションを取得するためのメソッドも用意されています。
 
 
@@ -179,7 +180,7 @@ XMLを動的に組み立てる場合
 このような時は、XMLをJavaにて動的に組み立てる方法を取ることができます。
 
 XMLを動的に組み立てるには、 各XMLのオブジェクトのビルダクラスである ``XmlInfo.Builder`` などを利用します。
-さらに、ヘルパクラスである ``com.gh.mygreen.xlsmapper.xml.XmlBuilder`` を利用すると、より直感的に作成することができます。
+さらに、ヘルパクラスである ``com.gh.mygreen.xlsmapper.xml.XmlBuilder`` を利用すると、より直感的に作成できます。
 
 * XmlBuilderを、**static import** するとより使い安くなります。
 * AnnotationMappingInfoオブジェクトは、``com.gh.mygreen.xlsmapper.xml.XmlIO#save(...)`` メソッドでファイルに保存します。

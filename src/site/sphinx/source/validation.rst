@@ -196,11 +196,11 @@ Validatorは、 ``ObjectValidatorSupport`` を継承して作成します。
 
 * プロパティファイルは、文字コードをUTF-8に設定し、asciiコードへの変換は不要です。 `[ver.2.0+]`
 
-* エラーメッセージは、下記の表「エラーメッセージの一致順」に従い一致したものが用いれます。
+* エラーメッセージは、下記の表「エラーメッセージの一致順」に従い一致したものが用いられます。
   
   * 型変換エラーは、読み込み時に自動的にチェックされ、エラーコードは、 ``cellTypeMismatch`` と決まっています。
 
-* メッセージ中ではEL式を利用することができます。
+* メッセージ中ではEL式を利用できます。
 * メッセージ中の通常の変数は、``{変数名}`` で定義し、EL式は ``${EL式}`` で定義します。
   
   * ただし、EL式のライブラリを依存関係に追加しておく必要があります。
@@ -420,7 +420,7 @@ Bean Validationのカスタマイズ
 
 BeanValidationのメッセージファイルを他のファイルやSpringのMessageSourcesから取得することもできます。
 
-XlsMapperのクラス ``com.gh.mygreen.xlsmapper.validation.beanvalidation.MessageResolverInterpolator`` を利用することで、BeanValidationのメッセージ処理クラスをブリッジすることができます。
+XlsMapperのクラス ``com.gh.mygreen.xlsmapper.validation.beanvalidation.MessageResolverInterpolator`` を利用することで、BeanValidationのメッセージ処理クラスをブリッジできます。
 
 上記の「メッセージファイルのブリッジ用クラス」を渡すことができます。
 
@@ -441,7 +441,7 @@ XlsMapperのクラス ``com.gh.mygreen.xlsmapper.validation.beanvalidation.Messa
 
 
 Bean Validation1.1から式中にEL式が利用できるようになりましたが、その参照実装であるHibernate Validator5.xでは、EL2.x系を利用し、EL3.xの書式は利用できません。
-EL式の処理系をXlsMapperのクラス ``com.gh.mygreen.xlsmapper.validation.MessageInterpolator`` を利用することでEL式の処理系を変更することができます。
+EL式の処理系をXlsMapperのクラス ``com.gh.mygreen.xlsmapper.validation.MessageInterpolator`` を利用することでEL式の処理系を変更できます。
 
 XslMapperの ``ExpressionLanguageELImpl`` は、EL3.0のライブラリが読み込まれている場合、3.x系の処理に切り替えます。
 

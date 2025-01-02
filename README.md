@@ -1,7 +1,6 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mygreen/xlsmapper/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.mygreen/xlsmapper/)
 [![Javadocs](http://javadoc.io/badge/com.github.mygreen/xlsmapper.svg?color=blue)](http://javadoc.io/doc/com.github.mygreen/xlsmapper)
 [![Java CI with Maven](https://github.com/mygreen/xlsmapper/workflows/Java%20CI%20with%20Maven/badge.svg)](https://github.com/mygreen/xlsmapper/actions?query=workflow%3A%22Java+CI+with+Maven%22)
-[![SonarQube](https://sonarcloud.io/api/project_badges/measure?project=com.github.mygreen%3Axlsmapper&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.github.mygreen%3Axlsmapper)
 
 # XlsMapper
 
@@ -20,7 +19,7 @@ Apache License verion 2.0
 # Setup
 
 1. Add dependency for XlsMapper
-    ```xml
+    ```xml:pom.xml
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
@@ -29,7 +28,7 @@ Apache License verion 2.0
     ```
 
 2. Add dependency for Logging library. Example Logback.
-    ```xml
+    ```xml:pom.xml
     <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
@@ -46,11 +45,6 @@ Apache License verion 2.0
     # mvn clean package
     ```
 4. Generate site files. (with Docker)
-    1. build docker for sphinx.
-    ```console
-    docker build -t xlsmapper/sphinx ./docker/sphinx
-    ```
-    2. generate site.
     ```console
     # mvn site -Dgpg.skip=true
     ```

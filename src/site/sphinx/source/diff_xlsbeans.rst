@@ -2,7 +2,7 @@
 XLSBeansとの違い
 ======================================
 
-XlsMapperは、XLSBeans ver.1.1 のソースを元に開発を行っています。
+XlsMapperは、`XLSBeans ver.1.1 <https://github.com/takezoe/xlsbeans>`_ のソースを元に開発をしています。
 
 そのため、仕様、特にアノテーションの使い方はXLSBeansと共通しています。
 XLSBeansとの違いを以下に示します。
@@ -13,7 +13,7 @@ XLSBeansとの違いを以下に示します。
 
 * アノテーションの名称を ``@Xls～`` （例. ``@Column => @XlsColumn`` ） として、他のライブラリのアノテーションと区別がつきやすいようにしています。
 
-* アノテーション ``@XlsCell`` などセルの座標を指定する際に、Excel形式 `A3` のように指定する :ref:`属性address <annotationXlsCell>` を追加し、指定しやすいようにしています。
+* アノテーション ``@XlsCell`` などセルの座標を指定する際に、Excel形式 `A3` のように指定する :doc:`属性address <annotation_mapping_cell>` を追加し、指定しやすいようにしています。
 
 * エラーメッセージの内容を詳細に表示し、設定間違いの対応をしやすくしています。
 
@@ -32,7 +32,7 @@ XLSBeansとの違いを以下に示します。
 
 * :ref:`書き込み機能 <howtouseSheetSave>` があります。
   
-  * アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、 :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` に書き込み用の属性を追加し、行が余ったときや足りないときの動作をカスタマイズできます。
+  * アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` 、 :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` に書き込み用の属性を追加し、行が余ったときや足りないときの動作をカスタマイズできます。
                 
 * 読み込み時、書き込み時の :doc:`コールバック用メソッドを定義するためのアノテーション <annotation_lifecycle>` ``@XlsPreLoad/@XlsPostLoad/@XlsPreSave/@XlsPostLoad`` が使用できます。
   

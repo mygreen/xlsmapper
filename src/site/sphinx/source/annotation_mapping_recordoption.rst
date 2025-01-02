@@ -1,19 +1,15 @@
-
-
-.. _annotationXlsRecordOption:
-
 --------------------------------------
 ``@XlsRecordOption``
 --------------------------------------
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 、 :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>`  において、書き込み時のレコードの操作を指定するためのアノテーションです。 `[ver.2.0+]`
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` 、 :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>`  において、書き込み時のレコードの操作を指定するためのアノテーションです。 `[ver.2.0+]`
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 書き込み時に配列・リストのサイズが不足している場合(overOperation)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-アノテーション ``@XlsRecordOption`` を指定することで、書き込み時のレコードの制御を指定することができます。
+アノテーション ``@XlsRecordOption`` を指定することで、書き込み時のレコードの制御を指定できます。
 
 * 属性 ``overOperation`` で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が足りない場合の操作を指定します。
 
@@ -56,7 +52,7 @@
 書き込み時に配列・リストのサイズが余っている場合(remainedOperation)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-アノテーション ``@XlsRecordOption`` を指定することで、書き込み時のセルの制御を指定することができます。
+アノテーション ``@XlsRecordOption`` を指定することで、書き込み時のセルの制御を指定できます。
 
 
 * 属性 ``remainedOperation`` で、書き込み時にJavaオブジェクトのレコード数に対して、シートのレコード数が余っている場合の操作を指定します。

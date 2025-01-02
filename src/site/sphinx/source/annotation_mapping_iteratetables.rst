@@ -1,6 +1,3 @@
-
-.. _annotationXlsIterateTables:
-
 -------------------------------------
 ``@XlsIterateTables``
 -------------------------------------
@@ -8,13 +5,13 @@
 同一の構造の表がシート内で繰り返し出現する場合に使用し、Collection(List、Set)または配列にマッピングします。
 次のアノテーションを組み合わせて構成します。
 
-* 横方向の表をマッピングするアノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` 。
-* 縦方向の表をマッピングするアノテーション :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` `[ver.2.0+]` 。
+* 横方向の表をマッピングするアノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` 。
+* 縦方向の表をマッピングするアノテーション :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` `[ver.2.0+]` 。
 
-  * ただし、アノテーション ``@XlsHorizontalRecords`` と同時に使用することはできません。
+  * ただし、アノテーション ``@XlsHorizontalRecords`` と同時に使用はできません。
 
-* 見出し付きの1つのセルをマッピングするアノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` 。
-* 見出し付きの連続し隣接する複数のセルをマッピングするアノテーション :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>` `[ver.2.0+]`。
+* 見出し付きの1つのセルをマッピングするアノテーション :doc:`@XlsLabelledCell <annotation_mapping_labelledcell>` 。
+* 見出し付きの連続し隣接する複数のセルをマッピングするアノテーション :doc:`@XlsLabelledArrayCells <annotation_mapping_labelledarraycells>` `[ver.2.0+]`。
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -23,8 +20,7 @@
 
 属性 ``tableLabel`` で繰り返し部分の表の名称を指定します。
 
-また、属性bottomは、``@XlsIterateTables`` 内で :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を使用する場合に、
-テーブルの開始位置が ``@XlsIterateTables`` の表の名称セルからどれだけ離れているかを指定します。
+また、属性bottomは、``@XlsIterateTables`` 内で :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` を使用する場合に、テーブルの開始位置が ``@XlsIterateTables`` の表の名称セルからどれだけ離れているかを指定します。
 
 .. figure:: ./_static/IterateTables.png
    :align: center
@@ -44,9 +40,9 @@
     }
 
 
-繰り返し部分に対応するJavaBeanでは以下のように、アノテーション :ref:`@XlsLabelledCell <annotationXlsLabelledCell>` :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を使用することができます。
+繰り返し部分に対応するJavaBeanでは以下のように、アノテーション :doc:`@XlsLabelledCell <annotation_mapping_labelledcell>` :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` を使用できます。
 
-アノテーション :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を使用する場合、属性tableLabel は設定する必要はありません。
+アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` を使用する場合、属性tableLabel は設定する必要はありません。
 ``@XlsIterateTables`` の属性 tableLabelとbottomの値を引き継ぐため、指定しなくても問題ないためです。
 
 .. sourcecode:: java
@@ -63,7 +59,7 @@
     }
 
 
-繰り返し部分に対応するJavaBeanで :ref:`@XlsHorizontalRecords <annotationXlsHorizontalRecords>` を使用した場合、通常の場合と同じく :ref:`@XlsColumn <annotationXlsColumn>` や :ref:`@XlsMapColumns <annotationXlsMapColumns>` で列とのマッピングを行います。
+繰り返し部分に対応するJavaBeanで :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` を使用した場合、通常の場合と同じく :doc:`@XlsColumn <annotation_mapping_column>` や :doc:`@XlsMapColumns <annotation_mapping_mapcolumns>` で列とのマッピングを行います。
 
 .. sourcecode:: java
     :linenos:
@@ -95,7 +91,7 @@
 縦方向の表を組み合わせてマッピングする場合
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-縦方向の表をマッピングするアノテーション :ref:`@XlsVerticalRecords <annotationXlsVerticalRecords>` も使用することができます。
+縦方向の表をマッピングするアノテーション :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` も使用できます。
 
 * ただし、横方向の表をマッピングするアノテーション ``@XlsHorizontalRecords`` と同時に使用することはできません。
 * 属性 ``tableLabelAbove=true`` が自動的に有効になり、表の見出しが上部にあることを前提に処理されます。

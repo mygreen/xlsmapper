@@ -65,28 +65,28 @@
    * - アノテーション
      - 概要
    
-   * - :ref:`@XlsBooleanConverter <annotationXlsBooleanConverter>`
+   * - :doc:`@XlsBooleanConverter <annotation_converter_boolean>`
      - ブール型に対する書式を指定します。
 
-   * - :ref:`@XlsNumberConverter <annotationXlsNumberConverter>`
+   * - :doc:`@XlsNumberConverter <annotation_converter_number>`
      - 数値型に対する書式を指定します。
 
-   * - :ref:`@XlsDateTimeConverter <annotationXlsDateTimeConverter>`
+   * - :doc:`@XlsDateTimeConverter <annotation_converter_datetime>`
      - 日時型に対する書式を指定します。
 
-   * - :ref:`@XlsEnumConverter <annotationXlsEnumConverter>`
+   * - :doc:`@XlsEnumConverter <annotation_converter_enum>`
      - 列挙型に対する書式を指定します。
 
-   * - :ref:`@XlsArrayConverter <annotationXlsArrayConverter>`
+   * - :doc:`@XlsArrayConverter <annotation_converter_array>`
      - Collection型や配列型に対する書式を指定します。
 
-   * - :ref:`@XlsCellOption <annotationXlsCellOption>`
+   * - :doc:`@XlsCellOption <annotation_converter_celloption>`
      - 書き込み時のセルの配置位置やインデントなどの書式を指定します。
 
 
 .. note::
 
-   書式指定用のアノテーションは、セルをマッピングするアノテーション :ref:`@XlsCell <annotationXlsCell>` 、 :ref:`@XlsLabelledCell <annotationXlsLabelledCell>`、 :ref:`@XlsArrayCells <annotationXlsArrayCells>`、 :ref:`@XlsLabelledArrayCells <annotationXlsLabelledArrayCells>`、 :ref:`@XlsColumn <annotationXlsColumn>`、 :ref:`@XlsMapColumns <annotationXlsMapColumns>`、 :ref:`@XlsArrayColumns <annotationXlsArrayColumns>`  を付与しているプロパティに対して有効になります。
+   書式指定用のアノテーションは、セルをマッピングするアノテーション :doc:`@XlsCell <annotation_mapping_cell>` 、 :doc:`@XlsLabelledCell <annotation_mapping_labelledcell>`、 :doc:`@XlsArrayCells <annotation_mapping_arraycells>`、 :doc:`@XlsLabelledArrayCells <annotation_mapping_labelledarraycells>`、 :doc:`@XlsColumn <annotation_mapping_column>`、 :doc:`@XlsMapColumns <annotation_mapping_mapcolumns>`、 :doc:`@XlsArrayColumns <annotation_mapping_arraycolumns>`  を付与しているプロパティに対して有効になります。
 
 
 .. 以降は、埋め込んで作成する
