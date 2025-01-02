@@ -20,7 +20,7 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
-        <version>2.2</version>
+        <version>2.3</version>
     </dependency>
 
 
@@ -66,6 +66,11 @@ Mavenを使用する場合は *pom.xml* に以下の記述を追加してくだ�
        | ( `Hibernate Validator <http://hibernate.org/validator/>`_ )
      - | ver.1.0/1.1/2.0
        | (Hibernate Validator 4.x/5.x/6.x)
+
+   * - | Jakarta Bean Validation  (option)
+       | ( `Hibernate Validator <http://hibernate.org/validator/>`_ )
+     - | ver.3.0/3.1
+       | (Hibernate Validator 8.x)
 
 
 .. _howtouseSheetLoad:

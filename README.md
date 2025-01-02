@@ -12,9 +12,10 @@ Apache License verion 2.0
 
 # Depends
 + Java1.8
-+ Apache POI v5.1.0
-+ SpringFramework 3.0+ (optional)
-+ BeanValidation 1.0/1.1/2.0 (optional)
++ Apache POI v5.1.0+
++ Spring Framework 3.0+ (optional)
++ Bean Validation 1.0/1.1/2.0 (optional)
++ Jakarta Bean Validation 3.0/3.1 (optional)
 
 # Setup
 
@@ -23,7 +24,7 @@ Apache License verion 2.0
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
-        <version>2.2</version>
+        <version>2.3</version>
     </dependency>
     ```
 
@@ -38,7 +39,7 @@ Apache License verion 2.0
 
 # Build
 
-1. Setup Java SE 8 (1.8.0_121+)
+1. Setup Java SE 8
 2. Setup Maven
 3. Build jar files.
     ```console

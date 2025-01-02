@@ -75,8 +75,9 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
    * - 関数の形式
      - 説明
    
-   * - ``x:colToAlpha(<列番号>)``
-     - 1から始まる列番号を英字名に変換します。
+   * - ``f:colToAlpha(<列番号>)``
+     - | 1から始まる列番号を英字名に変換します。
+       | v2.2以前では、関数の接頭語は ``x:`` でした。v2.3から ``f:`` に変更されました。
 
 
 自身のJavaBeanも変数 ``targetBean`` として登録されているため、任意のメソッドを呼び出すこともできます。
@@ -115,7 +116,7 @@ Javaのアノテーションの仕様上、属性valueのみを指定する時�
         
         // 数式の指定（変数、EL式を使用して指定）
         @XlsColumn(columnName="合計")
-        @XlsFormula(value="SUM(${x:colToAlpha(targetBean.kokugoColNum)}{rowNumber}:${x:colToAlpha(targetBean.sansuColNum)}{rowNumber})", primary=true)
+        @XlsFormula(value="SUM(${f:colToAlpha(targetBean.kokugoColNum)}{rowNumber}:${f:colToAlpha(targetBean.sansuColNum)}{rowNumber})", primary=true)
         private int sum;
         
         // プロパティ「kokugo」の列番号を返す。

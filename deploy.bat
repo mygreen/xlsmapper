@@ -7,6 +7,6 @@ call env.bat
 
 call mvn -version
 
-call mvn clean deploy
+call mvn clean verify deploy
 
 pause
