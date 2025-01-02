@@ -19,7 +19,7 @@ Apache License verion 2.0
 # Setup
 
 1. Add dependency for XlsMapper
-    ```xml
+    ```xml:pom.xml
     <dependency>
         <groupId>com.github.mygreen</groupId>
         <artifactId>xlsmapper</artifactId>
@@ -28,7 +28,7 @@ Apache License verion 2.0
     ```
 
 2. Add dependency for Logging library. Example Logback.
-    ```xml
+    ```xml:pom.xml
     <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
