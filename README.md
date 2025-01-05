@@ -1,5 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mygreen/xlsmapper/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.mygreen/xlsmapper/)
-[![Javadocs](http://javadoc.io/badge/com.github.mygreen/xlsmapper.svg?color=blue)](http://javadoc.io/doc/com.github.mygreen/xlsmapper)
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.github.mygreen/xlsmapper?color=ffa500)](https://central.sonatype.com/artifact/com.github.mygreen/xlsmapper) [![Javadocs](http://javadoc.io/badge/com.github.mygreen/xlsmapper.svg?color=blue)](http://javadoc.io/doc/com.github.mygreen/xlsmapper)
 [![Java CI with Maven](https://github.com/mygreen/xlsmapper/workflows/Java%20CI%20with%20Maven/badge.svg)](https://github.com/mygreen/xlsmapper/actions?query=workflow%3A%22Java+CI+with+Maven%22)
 
 # XlsMapper
