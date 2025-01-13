@@ -3,7 +3,7 @@
 --------------------------------
 
 アノテーション :doc:`@XlsHorizontalRecords <annotation_mapping_horizontalrecords>` もしくは :doc:`@XlsVerticalRecords <annotation_mapping_verticalrecords>` において、
-指隣接する連続したカラムカラムを、Collection(List, Set)または配列にマッピングします。 `[ver.2.0+]`
+隣接する連続したカラムを、Collection(List, Set)または配列にマッピングします。 `[ver.2.0+]`
 
 * 属性 ``columnName`` で、見出しとなるセルのラベルを指定します。
 
