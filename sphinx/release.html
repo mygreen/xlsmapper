@@ -411,11 +411,17 @@
 <ul class="simple">
 <li><p>脆弱性 <a class="reference external" href="https://owasp.org/www-community/vulnerabilities/Expression_Language_Injection">ELインジェクション</a> 対策として、任意のプログラムが実行可能だったため、JEXL v3.3から導入された <a class="reference external" href="https://commons.apache.org/proper/commons-jexl/apidocs/org/apache/commons/jexl3/introspection/JexlPermissions.html">JexlPermissions</a> によるEL式中で実行／参照可能なクラスなどを制限するようにしました。</p></li>
 <li><p>システムプロパティ <code class="docutils literal notranslate"><span class="pre">xlsmapper.jexlRestricted</span></code> / <code class="docutils literal notranslate"><span class="pre">xlsmapper.jexlPermissions</span></code> にて、EL式の実行制限を変更することができます。詳細は、「 <a class="reference internal" href="configuration_systemproperty.html"><span class="doc">Javaシステムプロパティによる設定</span></a> 」を参照してください。</p></li>
-<li><p>式言語の接頭語を <code class="docutils literal notranslate"><span class="pre">x:</span></code> ⇒ <code class="docutils literal notranslate"><span class="pre">f:</span></code> に変更し、エラーメッセージの <cite>f:</cite> に統一しました。
-* 数式を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsFormula</span></code> の属性 value 内で使用可能な予め登録されている関数の接頭語に影響があります。</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">MessageInterpolator</span></code> にてエラーメッセージを組み立てる際に、ELインジェクションの起点とならないよう、EL式 / 変数形式は再帰的評価の対象外設定を追加しました。
-* メッセージソースのみ再帰的評価の対象とするように変更しました。
-* さらに、メッセージソースの再帰的評価の回数の上限として、最大5回までと制限を設けました。</p></li>
+<li><p>式言語の接頭語を <code class="docutils literal notranslate"><span class="pre">x:</span></code> ⇒ <code class="docutils literal notranslate"><span class="pre">f:</span></code> に変更し、エラーメッセージの <cite>f:</cite> に統一しました。</p>
+<ul>
+<li><p>数式を指定するアノテーション <code class="docutils literal notranslate"><span class="pre">&#64;XlsFormula</span></code> の属性 value 内で使用可能な予め登録されている関数の接頭語に影響があります。</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MessageInterpolator</span></code> にてエラーメッセージを組み立てる際に、ELインジェクションの起点とならないよう、EL式 / 変数形式は再帰的評価の対象外設定を追加しました。</p>
+<ul>
+<li><p>メッセージソースのみ再帰的評価の対象とするように変更しました。</p></li>
+<li><p>さらに、メッセージソースの再帰的評価の回数の上限として、最大5回までと制限を設けました。</p></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><p><a class="reference external" href="https://github.com/mygreen/xlsmapper/pull/129">#129</a>  文字コード指定のプロパティファイルを読み込んだ時文字化けする事象を修正しました。</p>

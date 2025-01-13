@@ -11,8 +11,11 @@ ver.2.3 - 2025-01-02
   * 脆弱性 `ELインジェクション <https://owasp.org/www-community/vulnerabilities/Expression_Language_Injection>`__ 対策として、任意のプログラムが実行可能だったため、JEXL v3.3から導入された `JexlPermissions <https://commons.apache.org/proper/commons-jexl/apidocs/org/apache/commons/jexl3/introspection/JexlPermissions.html>`_ によるEL式中で実行／参照可能なクラスなどを制限するようにしました。
   * システムプロパティ ``xlsmapper.jexlRestricted`` / ``xlsmapper.jexlPermissions`` にて、EL式の実行制限を変更することができます。詳細は、「 :doc:`configuration_systemproperty` 」を参照してください。
   * 式言語の接頭語を ``x:`` ⇒ ``f:`` に変更し、エラーメッセージの `f:` に統一しました。
+
     * 数式を指定するアノテーション ``@XlsFormula`` の属性 value 内で使用可能な予め登録されている関数の接頭語に影響があります。
+
   * ``MessageInterpolator`` にてエラーメッセージを組み立てる際に、ELインジェクションの起点とならないよう、EL式 / 変数形式は再帰的評価の対象外設定を追加しました。
+
     * メッセージソースのみ再帰的評価の対象とするように変更しました。
     * さらに、メッセージソースの再帰的評価の回数の上限として、最大5回までと制限を設けました。
 
